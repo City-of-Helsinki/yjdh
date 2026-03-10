@@ -3,10 +3,7 @@ import { APPLICATION_START_DATE } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import {
-  BENEFIT_TYPES,
-  ORGANIZATION_TYPES,
-} from 'benefit-shared/constants';
+import { BENEFIT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { DateInput, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
@@ -26,7 +23,6 @@ import {
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
-import { $SubFieldContainer } from '../Application.sc';
 import StepperActions from '../stepperActions/StepperActions';
 import { findIntersectionOfTouchedAndErroredFields } from '../utils';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
@@ -400,8 +396,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={32}>
-          <$SubHeader weight="400">
-          </$SubHeader>
+          <$SubHeader weight="400" />
         </$GridCell>
         <$GridCell $colSpan={32}>
           <SelectionGroup
@@ -419,10 +414,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(
-                  fields.apprenticeshipProgram.name,
-                  false
-                );
+                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -434,10 +426,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                formik.setFieldValue(
-                  fields.apprenticeshipProgram.name,
-                  true
-                );
+                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />
