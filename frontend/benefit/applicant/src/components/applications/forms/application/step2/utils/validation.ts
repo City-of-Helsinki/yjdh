@@ -11,7 +11,6 @@ import {
   EMPLOYEE_KEYS,
   MAX_MONTHLY_PAY,
   ORGANIZATION_TYPES,
-  PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import {
