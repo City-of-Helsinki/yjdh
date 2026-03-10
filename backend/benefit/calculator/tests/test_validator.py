@@ -54,7 +54,7 @@ def test_instalment_status_transitions(from_status, to_status):
 @pytest.mark.parametrize(
     "to_date, expected_due_date, expected_status_code",
     [
-        ("2026-03-26", "25.03.2026", 200),  # Valid date change
+        ("2026-03-25", "25.03.2026", 200),  # Valid date change
         (
             "2026-01-01",
             "15.05.2026",
