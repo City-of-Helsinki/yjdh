@@ -103,6 +103,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     },
     env: {
       APP_NAME: packageJson.name,
+      NEXT_PUBLIC_APP_NAME: appName,
       APP_VERSION: packageJson.version,
       BUILD_TIME: new Date().toISOString(),
       ...envOverrides,
