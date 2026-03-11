@@ -1,5 +1,5 @@
 import logging
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib import auth
@@ -37,9 +37,16 @@ class MockOAuth2CallbackView(View):
             request.session["_adfs_user_id"] = str(user.id)
 
         next_url = request.GET.get("next")
+        # To support cross-origin redirects in local development (e.g., from backend
+        # on localhost:8000 to Handler UI on localhost:3200), we must authorize
+        # the destination. Standard Django security (url_has_allowed_host_and_scheme)
+        # requires an explicit allow-list of hosts to permit cross-origin jumps.
+        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
+        allowed_hosts.append(request.get_host())
+
         if next_url and url_has_allowed_host_and_scheme(
             url=next_url,
-            allowed_hosts={request.get_host()},
+            allowed_hosts=allowed_hosts,
             require_https=request.is_secure(),
         ):
             redirect_url = next_url
@@ -56,13 +63,11 @@ class MockOAuth2LogoutView(View):
         # redirect back to the correct client (e.g., Handlers UI on localhost:3200)
         # instead of falling back to a static default.
         next_url = request.GET.get("next")
-        # Derive allowed hosts from the configured CORS origins to ensure that
-        # url_has_allowed_host_and_scheme receives a proper host allow-list.
-        allowed_hosts = {
-            urlparse(origin).netloc
-            for origin in getattr(settings, "CORS_ALLOWED_ORIGINS", []) or []
-            if urlparse(origin).netloc
-        }
+        # Standard Django security requires an explicit allow-list of hosts to permit
+        # cross-origin redirects.
+        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
+        allowed_hosts.append(request.get_host())
+
         if next_url and url_has_allowed_host_and_scheme(
             url=next_url,
             allowed_hosts=allowed_hosts,

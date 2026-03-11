@@ -17,6 +17,7 @@ from shared.helsinki_profile.exceptions import HelsinkiProfileError
 from shared.helsinki_profile.hp_client import HelsinkiProfileClient
 from shared.oidc.utils import (
     get_checksum_header,
+    get_eauth_login_success_url,
     get_userinfo,
     store_token_info_in_eauth_session,
 )
@@ -148,11 +149,11 @@ class EauthAuthenticationCallbackView(View):
     http_method_names = ["get"]
 
     def login_success(self):
-        url = settings.LOGIN_REDIRECT_URL
+        url = get_eauth_login_success_url(self.request)
 
         lang = self.request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
         if lang:
-            url = f"{url}/{lang}/"
+            url = f"{url.rstrip('/')}/{lang}/"
 
         return HttpResponseRedirect(url)
 

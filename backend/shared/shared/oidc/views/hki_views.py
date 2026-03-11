@@ -52,10 +52,27 @@ class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
 class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
     """
     Override OIDC client authentication callback login success method.
+
+    We override this method to ensure that after `mozilla_django_oidc` successfully
+    processes the OIDC callback, we can gracefully direct the user to the
+    eAuthorizations init flow (`eauth_authentication_init`). The default behaviour
+    from the 3rd-party library relies on fixed config variables.
+
+    Note that `mozilla_django_oidc` natively validates the 'next' query parameter
+    during the request phase and stores it in the session as 'oidc_login_next'.
+    We capture that validated URL here and pass it along to our eAuthorizations
+    flow via 'eauth_next_url'.
     """
 
     def login_success(self):
         super().login_success()
+
+        # `mozilla_django_oidc` validates the explicit `next` parameter against
+        # OIDC_REDIRECT_ALLOWED_HOSTS and stores it securely in `oidc_login_next`.
+        next_url = self.request.session.get("oidc_login_next")
+        if next_url:
+            self.request.session["eauth_next_url"] = next_url
+
         return HttpResponseRedirect(reverse("eauth_authentication_init"))
 
     def login_failure(self):
