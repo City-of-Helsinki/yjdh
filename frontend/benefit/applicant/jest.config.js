@@ -22,7 +22,7 @@ const config = {
     '<rootDir>/../../shared/src/test/',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/'],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: '<rootDir>/jest-canvas-env.js',
 };
 
 module.exports = createJestConfig(config);

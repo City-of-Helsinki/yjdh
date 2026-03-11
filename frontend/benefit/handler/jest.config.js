@@ -23,6 +23,7 @@ const config = {
     '<rootDir>/../../shared/src/server/next-server.js',
     '<rootDir>/../../shared/src/test/',
   ],
+  testEnvironment: '<rootDir>/jest-canvas-env.js',
 };
 
 module.exports = createJestConfig(config);

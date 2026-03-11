@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - ".github/workflows/bf-shared-frontend-tests.yml"
+      - "frontend/benefit/shared/**"
+      - "frontend/shared/**"
+      - "frontend/jest.config.js"
+      - "frontend/tsconfig.json"
   push:
     branches: [main]
   workflow_dispatch:
