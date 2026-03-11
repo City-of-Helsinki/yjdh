@@ -3,6 +3,7 @@ import os
 import tempfile
 from datetime import datetime
 from functools import partial
+from urllib.parse import urlparse
 
 import environ
 import saml2
@@ -231,6 +232,7 @@ MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
 YOUTH_URL = env.str("YOUTH_URL")
 HANDLER_URL = env.str("HANDLER_URL")
+EMPLOYER_URL = env.str("EMPLOYER_URL", default=None)
 NEXT_PUBLIC_BACKEND_URL = env("NEXT_PUBLIC_BACKEND_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
@@ -326,6 +328,13 @@ CSRF_TRUSTED_ORIGINS = convert_to_django_4_2_csrf_trusted_origins(
 )
 CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
+
+ALLOWED_OAUTH2_REDIRECT_HOSTS = env.list(
+    "ALLOWED_OAUTH2_REDIRECT_HOSTS",
+    default=[
+        urlparse(HANDLER_URL).netloc,
+    ],
+)
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")

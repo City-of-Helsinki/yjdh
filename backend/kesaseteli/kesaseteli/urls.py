@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView
-from django.urls import include, path
+from django.urls import include, path, reverse_lazy
+from django.views.generic import RedirectView
 from rest_framework import routers
 
 from applications.api.v1 import views as application_views
@@ -49,7 +49,13 @@ urlpatterns = [
         YouthApplicationExcelExportViewSet.as_view({"get": "list"}),
         name="youth-excel-download",
     ),
-    path("logout/", LogoutView.as_view(), name="logout"),
+    path(
+        "logout/",
+        RedirectView.as_view(
+            url=reverse_lazy("django_auth_adfs:logout"), query_string=True
+        ),
+        name="logout",
+    ),
 ]
 
 if settings.NEXT_PUBLIC_ENABLE_SUOMIFI:
