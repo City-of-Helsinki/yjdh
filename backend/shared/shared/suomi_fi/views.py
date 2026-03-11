@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from djangosaml2.views import AssertionConsumerServiceView, MetadataView
@@ -28,6 +29,15 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
         super(SuomiFiAssertionConsumerServiceView, self).post_login_hook(
             request, user, session_info
         )
+
+    def custom_redirect(self, user, relay_state: str, session_info) -> str:
+        """
+        Intercept the validated `RelayState` and manually route the user completely
+        through the eAuthorizations pipeline before allowing the final redirect.
+        """
+        if relay_state:
+            self.request.session["eauth_next_url"] = relay_state
+        return reverse("eauth_authentication_init")
 
 
 class SuomiFiMetadataView(MetadataView):
