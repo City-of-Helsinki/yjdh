@@ -1,6 +1,7 @@
 import base64
 import os
 import tempfile
+from datetime import datetime
 
 import environ
 import saml2
@@ -10,6 +11,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from saml2.sigver import get_xmlsec_binary
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.types import SamplingContext
 
 from applications.target_groups import (
     NinthGraderTargetGroup,
@@ -52,11 +54,14 @@ env = environ.Env(
     MAIL_MAILGUN_API=(str, ""),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
+    SENTRY_RELEASE=(str, None),
     SENTRY_ATTACH_STACKTRACE=(bool, False),
     SENTRY_MAX_BREADCRUMBS=(int, 0),
     SENTRY_REQUEST_BODIES=(str, "never"),
     SENTRY_SEND_DEFAULT_PII=(bool, False),
     SENTRY_WITH_LOCALS=(bool, False),
+    SENTRY_TRACES_SAMPLE_RATE=(float, None),
+    SENTRY_TRACES_IGNORE_PATHS=(list, ["/healthz", "/readiness"]),
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -149,6 +154,8 @@ env = environ.Env(
     SUOMIFI_ADMINISTRATIVE_LAST_NAME=(str, None),
     SUOMIFI_ADMINISTRATIVE_EMAIL=(str, None),
     EXCEL_DOWNLOAD_BATCH_SIZE=(int, 50),
+    APP_RELEASE=(str, ""),
+    OPENSHIFT_BUILD_COMMIT=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -186,11 +193,29 @@ if env("DATABASE_PASSWORD"):
 
 CACHES = {"default": env.cache()}
 
+# Release metadata for readiness probe
+COMMIT_HASH = env("OPENSHIFT_BUILD_COMMIT")
+APP_RELEASE = env("APP_RELEASE")
+APP_BUILD_TIME = datetime.fromtimestamp(os.path.getmtime(__file__))
+
 SENTRY_ATTACH_STACKTRACE = env.bool("SENTRY_ATTACH_STACKTRACE")
 SENTRY_MAX_BREADCRUMBS = env.int("SENTRY_MAX_BREADCRUMBS")
 SENTRY_REQUEST_BODIES = env.str("SENTRY_REQUEST_BODIES")
 SENTRY_SEND_DEFAULT_PII = env.bool("SENTRY_SEND_DEFAULT_PII")
 SENTRY_WITH_LOCALS = env.bool("SENTRY_WITH_LOCALS")
+SENTRY_TRACES_SAMPLE_RATE = env("SENTRY_TRACES_SAMPLE_RATE")
+SENTRY_TRACES_IGNORE_PATHS = env.list("SENTRY_TRACES_IGNORE_PATHS")
+
+
+def _sentry_traces_sampler(sampling_context: SamplingContext) -> float:
+    """Exclude health check endpoints from Sentry tracing."""
+    if (parent_sampled := sampling_context.get("parent_sampled")) is not None:
+        return float(parent_sampled)
+    path = sampling_context.get("wsgi_environ", {}).get("PATH_INFO", "")
+    if path.rstrip("/") in SENTRY_TRACES_IGNORE_PATHS:
+        return 0
+    return SENTRY_TRACES_SAMPLE_RATE or 0
+
 
 sentry_sdk.init(
     attach_stacktrace=SENTRY_ATTACH_STACKTRACE,
@@ -199,9 +224,10 @@ sentry_sdk.init(
     send_default_pii=SENTRY_SEND_DEFAULT_PII,
     include_local_variables=SENTRY_WITH_LOCALS,
     dsn=env.str("SENTRY_DSN"),
-    release="n/a",
+    release=env("SENTRY_RELEASE"),
     environment=env("SENTRY_ENVIRONMENT"),
     integrations=[DjangoIntegration()],
+    traces_sampler=_sentry_traces_sampler,
 )
 
 MEDIA_ROOT = env("MEDIA_ROOT")

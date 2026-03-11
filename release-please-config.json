@@ -34,7 +34,8 @@
     },
     "backend/kesaseteli": {
       "release-type": "python",
-      "package-name": "kesaseteli-backend"
+      "package-name": "kesaseteli-backend",
+      "extra-files": ["backend/kesaseteli/kesaseteli/__init__.py"]
     },
     "frontend/kesaseteli/employer": {
       "release-type": "node",
