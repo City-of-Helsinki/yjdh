@@ -1,4 +1,4 @@
-name: CI
+name: (BF) Backend CI
 
 on:
   push:
@@ -19,3 +19,5 @@ jobs:
         echo 'DEBUG=1' >> .env
         echo 'OIDC_OP_BASE_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect' >> .env
         echo 'CSRF_TRUSTED_ORIGINS=https://*.dev.hel.ninja' >> .env
+
+        sudo apt-get install wkhtmltopdf
