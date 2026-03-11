@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - ".github/workflows/bf-handler-frontend-tests.yml"
+      - "frontend/benefit/handler/**"
+      - "frontend/benefit/shared/**"
+      - "frontend/shared/**"
+      - "frontend/jest.config.js"
+      - "frontend/tsconfig.json"
   push:
     branches: [main]
   workflow_dispatch:
