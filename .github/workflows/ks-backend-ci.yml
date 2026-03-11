@@ -1,0 +1,23 @@
+name: (BF) Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  common:
+    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@main
+    secrets: inherit
+    with:
+      python-version: 3.12
+      postgres-major-version: 17
+      working-directory: ./backend/benefit
+      extra-commands: |
+        echo 'DEBUG=1' >> .env
+        echo 'OIDC_OP_BASE_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect' >> .env
+        echo 'CSRF_TRUSTED_ORIGINS=https://*.dev.hel.ninja' >> .env
+
+        sudo apt-get install wkhtmltopdf
