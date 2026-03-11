@@ -13,6 +13,8 @@ const helsinkiProfileEndpoint = {
 };
 
 export const BackendEndpoint = {
+  ADFS_LOGIN: '/oauth2/login/',
+  ADFS_LOGOUT: '/oauth2/logout/',
   ADDITIONAL_INFO: '/v1/additional_info/',
   COMPANY: '/v1/company/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
