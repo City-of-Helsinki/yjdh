@@ -1,3 +1,4 @@
+from unittest import mock
 from urllib.parse import urljoin
 
 import pytest
@@ -82,3 +83,27 @@ def test_callback_view_with_unsafe_next(settings, client):
     assert user.is_authenticated
     assert response.status_code == 302
     assert response.url == settings.ADFS_LOGIN_REDIRECT_URL
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    CORS_ALLOWED_ORIGINS=["http://localhost:3200"],
+)
+def test_mock_adfs_logout_deep_link(client):
+    """
+    Test that the mock logout view respects the `next` parameter
+    if it matches an allowed host.
+    """
+    deep_link = "http://localhost:3200/login"
+    logout_url = f"{reverse('django_auth_adfs:logout')}?next={deep_link}"
+
+    with mock.patch(
+        "shared.azure_adfs.mock_views.url_has_allowed_host_and_scheme",
+        return_value=True,
+    ):
+        response = client.get(logout_url)
+
+    assert response.status_code == 302
+    assert response.url == deep_link
+    assert "_auth_user_id" not in client.session
