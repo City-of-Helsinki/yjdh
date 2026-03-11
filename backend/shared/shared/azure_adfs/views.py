@@ -1,10 +1,15 @@
 import logging
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from django.conf import settings
 from django.shortcuts import redirect
+
+try:
+    from django.utils.http import url_has_allowed_host_and_scheme
+except ImportError:
+    from django.utils.http import is_safe_url as url_has_allowed_host_and_scheme
 from django.utils.encoding import iri_to_uri
-from django_auth_adfs.views import OAuth2CallbackView
+from django_auth_adfs.views import OAuth2CallbackView, OAuth2LogoutView
 
 LOGGER = logging.getLogger(__name__)
 
@@ -97,3 +102,50 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
         LOGGER.error(f"Invalid login. Status: {response.status_code}. Error: {msg}")
 
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL_FAILURE)
+
+
+class HelsinkiOAuth2LogoutView(OAuth2LogoutView):
+    """
+    Custom OAuth2 Logout view that accepts a `next` parameter to determine where
+    the user should be redirected after successful ADFS logout.
+
+    Why override the default?
+    The default `django_auth_adfs.views.OAuth2LogoutView` does not support dynamic
+    redirects upon logout. It clears the local session but statically redirects to the
+    Azure AD endpoint without passing a return URL, leaving the user stranded or
+    subject to fallback logic. By overriding it, we can intercept the response
+    and append the `post_logout_redirect_uri` parameter based on the `next` value
+    passed by the client (e.g. Handlers UI or Django Admin), ensuring graceful
+    multi-client support. For example, the Django Admin site natively appends
+    `?next=/admin/` to login and logout requests, which this view can safely
+    parse and redirect back to.
+    """
+
+    def _append_next_url_to_response(self, request, response):
+        next_url = request.GET.get("next")
+        # Derive allowed hosts from the configured CORS origins to ensure that
+        # url_has_allowed_host_and_scheme receives a proper host allow-list.
+        allowed_hosts = {
+            urlparse(origin).netloc
+            for origin in getattr(settings, "CORS_ALLOWED_ORIGINS", []) or []
+            if urlparse(origin).netloc
+        }
+        if next_url and url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts=allowed_hosts,
+            require_https=request.is_secure(),
+        ):
+            # Append the post_logout_redirect_uri parameter for Azure AD
+            url_parts = list(urlparse(response.url))
+            query = parse_qs(url_parts[4])
+            query.update({"post_logout_redirect_uri": [next_url]})
+            url_parts[4] = urlencode(query, doseq=True)
+            response["Location"] = urlunparse(url_parts)
+
+        return response
+
+    def get(self, request):
+        return self._append_next_url_to_response(request, super().get(request))
+
+    def post(self, request):
+        return self._append_next_url_to_response(request, super().post(request))

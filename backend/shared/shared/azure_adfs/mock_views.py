@@ -1,5 +1,5 @@
 import logging
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
 from django.contrib import auth
@@ -51,5 +51,26 @@ class MockOAuth2CallbackView(View):
 class MockOAuth2LogoutView(View):
     def get(self, request):
         auth.logout(request)
-        logout_url = urljoin(settings.ADFS_LOGIN_REDIRECT_URL, "/login?logout=true")
-        return redirect(logout_url)
+        # Similar to the real Azure AD flow via HelsinkiOAuth2LogoutView,
+        # we extract the `next` parameter so local development can dynamically
+        # redirect back to the correct client (e.g., Handlers UI on localhost:3200)
+        # instead of falling back to a static default.
+        next_url = request.GET.get("next")
+        # Derive allowed hosts from the configured CORS origins to ensure that
+        # url_has_allowed_host_and_scheme receives a proper host allow-list.
+        allowed_hosts = {
+            urlparse(origin).netloc
+            for origin in getattr(settings, "CORS_ALLOWED_ORIGINS", []) or []
+            if urlparse(origin).netloc
+        }
+        if next_url and url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts=allowed_hosts,
+            require_https=request.is_secure(),
+        ):
+            redirect_url = next_url
+        else:
+            redirect_url = urljoin(
+                settings.ADFS_LOGIN_REDIRECT_URL, "/login?logout=true"
+            )
+        return redirect(redirect_url)
