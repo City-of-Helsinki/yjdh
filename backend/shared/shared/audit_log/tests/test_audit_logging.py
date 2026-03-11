@@ -7,6 +7,7 @@ from django.test import override_settings
 from django.utils.timezone import now
 
 from shared.audit_log import audit_logging
+from shared.audit_log.audit_logging import FieldChange
 from shared.audit_log.enums import Operation, Status
 from shared.audit_log.models import AuditLogEntry
 from shared.audit_log.tasks import (
@@ -412,3 +413,33 @@ def test_clear_audit_log(user, fixed_datetime):
     assert AuditLogEntry.objects.filter(id=new_sent_log.id).exists()
     assert AuditLogEntry.objects.filter(id=expired_unsent_log.id).exists()
     assert deleted_count == 1
+
+
+@pytest.mark.django_db
+@override_settings(AUDIT_LOG_ORIGIN="TEST_SERVICE")
+def test_log_update_with_audit_field_changes_attribute(fixed_datetime, user):
+    """
+    Test that "audit_field_changes" attribute's field changes are put to
+    audit event's "changes".
+    """
+    user.audit_field_changes = [
+        FieldChange(field="email", old="old@example.org", new="new@example.org"),
+        FieldChange(field="username", old="old_username", new="new_username"),
+    ]
+
+    audit_logging.log(
+        user,
+        "",
+        Operation.UPDATE,
+        user,
+        get_time=fixed_datetime,
+        ip_address="192.168.1.1",
+    )
+
+    target = AuditLogEntry.objects.first().message["audit_event"]["target"]
+    assert target["changes"] == [
+        "email changed from old@example.org to new@example.org",
+        "username changed from old_username to new_username",
+    ]
+    # The logging should've consumed the "audit_field_changes" attribute:
+    assert not hasattr(user, "audit_field_changes")

@@ -12,6 +12,7 @@ from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.viewsets import ModelViewSet
 
 from shared.audit_log import audit_logging
+from shared.audit_log.audit_logging import FieldChange
 from shared.audit_log.enums import Operation, Status
 from shared.audit_log.utils import get_remote_address
 
@@ -27,6 +28,9 @@ class AuditLoggingModelViewSet(ModelViewSet):
         "DELETE": Operation.DELETE,
     }
     created_instance: Optional[Model] = None
+    # Add field changes to UPDATEs' audit log using serializer,
+    # not django-simple-history. Opt-in, can be enabled in subclass.
+    audit_changes_via_serializer: bool = False
 
     def permission_denied(self, request, message=None, code=None):
         self._log_permission_denied()
@@ -73,8 +77,51 @@ class AuditLoggingModelViewSet(ModelViewSet):
 
     @transaction.atomic
     def perform_update(self, serializer):
-        with self.record_action():
-            super().perform_update(serializer)
+        if self.audit_changes_via_serializer:
+            # Track field changes for audit log using serializer
+            instance = serializer.instance
+            # Filter out auto_now / auto_now_add fields (modified_at, created_at)
+            # and one_to_many, many_to_many, many_to_one and one_to_one relations
+            # so tracked fields are easier to handle.
+            #
+            # KNOWN LIMITATION: Does not log all fields' changes, only a subset.
+            #
+            # Relevant documentation:
+            # - one_to_many, many_to_many, many_to_one, one_to_one, attname:
+            #   - https://docs.djangoproject.com/en/5.2/ref/models/fields/
+            tracked_field_names = {
+                field.attname
+                for field in instance._meta.get_fields()
+                if not field.one_to_many  # e.g. GenericRelation, reverse of ForeignKey
+                and not field.many_to_many  # ManyToManyField
+                and not field.many_to_one  # e.g. ForeignKey
+                and not field.one_to_one  # e.g. OneToOneField
+                and not getattr(field, "auto_now", False)  # e.g. modified_at
+                and not getattr(field, "auto_now_add", False)  # e.g. created_at
+            }
+            old_values = {
+                field: getattr(instance, field)
+                for field in serializer.fields
+                if hasattr(instance, field) and field in tracked_field_names
+            }
+            with self.record_action(target=instance):
+                super().perform_update(serializer)
+                # Add the field changes to instance's "audit_field_changes" attribute
+                # which is read by audit_logging.log function:
+                changes = []
+                for field, old_value in sorted(old_values.items()):
+                    new_value = getattr(instance, field)
+                    if type(old_value) is not type(new_value) or old_value != new_value:
+                        field_change = FieldChange(
+                            field=field,
+                            old=old_value,
+                            new=new_value,
+                        )
+                        changes.append(field_change)
+                instance.audit_field_changes = changes
+        else:
+            with self.record_action():
+                super().perform_update(serializer)
 
     @transaction.atomic
     def perform_destroy(self, instance):
