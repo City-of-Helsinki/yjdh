@@ -1,6 +1,9 @@
 {
   "appName": "Kesäsetelin käsittelijäliittymä",
   "header": {
+    "loginLabel": "Kirjaudu palveluun",
+    "logoutLabel": "Kirjaudu ulos",
+    "userAriaLabelPrefix": "Käyttäjä:",
     "createApplicationWithoutSsnLabel": "Luo hakemus ilman henkilötunnusta",
     "linkSkipToContent": "Siirry sisältöön",
     "menuToggleAriaLabel": "Valikko",
