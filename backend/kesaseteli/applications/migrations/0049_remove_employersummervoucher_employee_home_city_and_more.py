@@ -4,50 +4,49 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0048_employerapplication_add_timestamp_and_status_indexes'),
+        ("applications", "0048_employerapplication_add_timestamp_and_status_indexes"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='employersummervoucher',
-            name='employee_home_city',
+            model_name="employersummervoucher",
+            name="employee_home_city",
         ),
         migrations.RemoveField(
-            model_name='employersummervoucher',
-            name='employee_name',
+            model_name="employersummervoucher",
+            name="employee_name",
         ),
         migrations.RemoveField(
-            model_name='employersummervoucher',
-            name='employee_postcode',
+            model_name="employersummervoucher",
+            name="employee_postcode",
         ),
         migrations.RemoveField(
-            model_name='employersummervoucher',
-            name='employee_school',
+            model_name="employersummervoucher",
+            name="employee_school",
         ),
         migrations.RemoveField(
-            model_name='employersummervoucher',
-            name='employee_ssn',
+            model_name="employersummervoucher",
+            name="employee_ssn",
         ),
         migrations.RemoveField(
-            model_name='historicalemployersummervoucher',
-            name='employee_home_city',
+            model_name="historicalemployersummervoucher",
+            name="employee_home_city",
         ),
         migrations.RemoveField(
-            model_name='historicalemployersummervoucher',
-            name='employee_name',
+            model_name="historicalemployersummervoucher",
+            name="employee_name",
         ),
         migrations.RemoveField(
-            model_name='historicalemployersummervoucher',
-            name='employee_postcode',
+            model_name="historicalemployersummervoucher",
+            name="employee_postcode",
         ),
         migrations.RemoveField(
-            model_name='historicalemployersummervoucher',
-            name='employee_school',
+            model_name="historicalemployersummervoucher",
+            name="employee_school",
         ),
         migrations.RemoveField(
-            model_name='historicalemployersummervoucher',
-            name='employee_ssn',
+            model_name="historicalemployersummervoucher",
+            name="employee_ssn",
         ),
     ]
