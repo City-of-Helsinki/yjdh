@@ -1,4 +1,4 @@
-name: (BF) Backend CI
+name: (KS) Backend CI
 
 on:
   push:
@@ -14,10 +14,9 @@ jobs:
     with:
       python-version: 3.12
       postgres-major-version: 17
-      working-directory: ./backend/benefit
+      working-directory: ./backend/kesaseteli
       extra-commands: |
         echo 'DEBUG=1' >> .env
         echo 'OIDC_OP_BASE_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect' >> .env
-        echo 'CSRF_TRUSTED_ORIGINS=https://*.dev.hel.ninja' >> .env
 
-        sudo apt-get install wkhtmltopdf
+        sudo apt-get install xmlsec1 libsasl2-dev libssl-dev
