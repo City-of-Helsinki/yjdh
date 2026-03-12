@@ -1,0 +1,23 @@
+name: (KS) Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - '.github/workflows/ks-backend-ci.yml'
+      - '.pre-commit-config.yaml'
+      - 'backend/kesaseteli/**'
+      - 'backend/shared/**'
+  workflow_dispatch:
+
+jobs:
+  common:
+    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@main
+    secrets: inherit
+    with:
+      python-version: 3.12
+      postgres-major-version: 17
+      working-directory: ./backend/kesaseteli
+      extra-commands: |
+        sudo apt-get install xmlsec1 libsasl2-dev libssl-dev
