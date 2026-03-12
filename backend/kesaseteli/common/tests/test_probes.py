@@ -59,9 +59,6 @@ def test_readiness_returns_200_when_db_ok(client):
     assert data["status"] == "ok"
     assert data["database"] == "ok"
     assert set(data) == {"status", "packageVersion", "release", "buildTime", "database"}
-    assert "packageVersion" in data
-    assert "release" in data
-    assert "buildTime" in data
 
 
 @pytest.mark.django_db
