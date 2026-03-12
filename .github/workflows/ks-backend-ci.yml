@@ -4,7 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    paths:
+      - '.github/workflows/ks-backend-ci.yml'
+      - '.pre-commit-config.yaml'
+      - 'backend/kesaseteli/**'
+      - 'backend/shared/**'
   workflow_dispatch:
 
 jobs:
