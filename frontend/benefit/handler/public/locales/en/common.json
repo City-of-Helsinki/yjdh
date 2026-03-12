@@ -1911,7 +1911,7 @@
       },
       "changeInstalmentDate": {
         "heading": "Eräpäivän muutos",
-        "helperText": "Kiirjoita päivämäärä muodossa P.K.VVVV",
+        "helperText": "Kirjoita päivämäärä muodossa PP.KK.VVVV",
         "buttons": {
           "cancel": "Peruuta",
           "confirm": "Vahvista"
