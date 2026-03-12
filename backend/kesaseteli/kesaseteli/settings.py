@@ -60,7 +60,7 @@ env = environ.Env(
     SENTRY_REQUEST_BODIES=(str, "never"),
     SENTRY_SEND_DEFAULT_PII=(bool, False),
     SENTRY_WITH_LOCALS=(bool, False),
-    SENTRY_TRACES_SAMPLE_RATE=(float, None),
+    SENTRY_TRACES_SAMPLE_RATE=(float, 0),
     SENTRY_TRACES_IGNORE_PATHS=(list, ["/healthz", "/readiness"]),
     CORS_ALLOWED_ORIGINS=(list, []),
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
@@ -208,12 +208,34 @@ SENTRY_TRACES_IGNORE_PATHS = env.list("SENTRY_TRACES_IGNORE_PATHS")
 
 
 def _sentry_traces_sampler(sampling_context: SamplingContext) -> float:
-    """Exclude health check endpoints from Sentry tracing."""
-    if (parent_sampled := sampling_context.get("parent_sampled")) is not None:
-        return float(parent_sampled)
+    """
+    Decide whether to sample a transaction for Sentry tracing.
+
+    Called once per transaction (root span) by Sentry
+    Return value is a probability in [0, 1]
+    and Sentry samples the transaction when rand < rate
+    0 means drop, 1 means always send
+    and values in between means sample the transaction at that rate.
+    E.g. return value 0.1 means sample the transaction 10% of the time.
+
+    The function has two short-circuits that are checked in order:
+    1. Paths in SENTRY_TRACES_IGNORE_PATHS (e.g. /healthz, /readiness) are
+       always dropped, even when part of a distributed trace.
+    2. If the parent transaction is sampled, return it so distributed
+       traces stay consistent.
+    Otherwise return SENTRY_TRACES_SAMPLE_RATE (or 0 if not set).
+
+    :param sampling_context: Sentry-provided context (path, parent_sampled, etc.).
+    :return: Sampling probability in [0, 1]
+    """
+    # Explicitly ignored paths
     path = sampling_context.get("wsgi_environ", {}).get("PATH_INFO", "")
     if path.rstrip("/") in SENTRY_TRACES_IGNORE_PATHS:
         return 0
+    # Respect the parent transaction's sampling decision for distributed traces.
+    if (parent_sampled := sampling_context.get("parent_sampled")) is not None:
+        return float(parent_sampled)
+    # Use the configured sample rate (or 0 if not set).
     return SENTRY_TRACES_SAMPLE_RATE or 0
 
 
