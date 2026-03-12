@@ -9,7 +9,7 @@ on:
 
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@main
+    uses: City-of-Helsinki/.github/.github/workflows/ci-django-api.yml@ci-django-api_working-directory
     secrets: inherit
     with:
       python-version: 3.12
