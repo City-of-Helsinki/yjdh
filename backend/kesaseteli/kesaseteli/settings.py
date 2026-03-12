@@ -2,6 +2,7 @@ import base64
 import os
 import tempfile
 from datetime import datetime
+from functools import partial
 
 import environ
 import saml2
@@ -11,13 +12,13 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from saml2.sigver import get_xmlsec_binary
 from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.types import SamplingContext
 
 from applications.target_groups import (
     NinthGraderTargetGroup,
     UpperSecondaryFirstYearTargetGroup,
 )
 from common.backward_compatibility import convert_to_django_4_2_csrf_trusted_origins
+from kesaseteli.sentry_config import sentry_traces_sampler
 from shared.suomi_fi.utils import get_contact_person_configuration
 
 checkout_dir = environ.Path(__file__) - 2
@@ -207,38 +208,6 @@ SENTRY_TRACES_SAMPLE_RATE = env("SENTRY_TRACES_SAMPLE_RATE")
 SENTRY_TRACES_IGNORE_PATHS = env.list("SENTRY_TRACES_IGNORE_PATHS")
 
 
-def _sentry_traces_sampler(sampling_context: SamplingContext) -> float:
-    """
-    Decide whether to sample a transaction for Sentry tracing.
-
-    Called once per transaction (root span) by Sentry
-    Return value is a probability in [0, 1]
-    and Sentry samples the transaction when rand < rate
-    0 means drop, 1 means always send
-    and values in between means sample the transaction at that rate.
-    E.g. return value 0.1 means sample the transaction 10% of the time.
-
-    The function has two short-circuits that are checked in order:
-    1. Paths in SENTRY_TRACES_IGNORE_PATHS (e.g. /healthz, /readiness) are
-       always dropped, even when part of a distributed trace.
-    2. If the parent transaction is sampled, return it so distributed
-       traces stay consistent.
-    Otherwise return SENTRY_TRACES_SAMPLE_RATE (or 0 if not set).
-
-    :param sampling_context: Sentry-provided context (path, parent_sampled, etc.).
-    :return: Sampling probability in [0, 1]
-    """
-    # Explicitly ignored paths
-    path = sampling_context.get("wsgi_environ", {}).get("PATH_INFO", "")
-    if path.rstrip("/") in SENTRY_TRACES_IGNORE_PATHS:
-        return 0
-    # Respect the parent transaction's sampling decision for distributed traces.
-    if (parent_sampled := sampling_context.get("parent_sampled")) is not None:
-        return float(parent_sampled)
-    # Use the configured sample rate (or 0 if not set).
-    return SENTRY_TRACES_SAMPLE_RATE or 0
-
-
 sentry_sdk.init(
     attach_stacktrace=SENTRY_ATTACH_STACKTRACE,
     max_breadcrumbs=SENTRY_MAX_BREADCRUMBS,
@@ -249,7 +218,11 @@ sentry_sdk.init(
     release=env("SENTRY_RELEASE"),
     environment=env("SENTRY_ENVIRONMENT"),
     integrations=[DjangoIntegration()],
-    traces_sampler=_sentry_traces_sampler,
+    traces_sampler=partial(
+        sentry_traces_sampler,
+        ignore_paths=SENTRY_TRACES_IGNORE_PATHS,
+        sample_rate=SENTRY_TRACES_SAMPLE_RATE or 0,
+    ),
 )
 
 MEDIA_ROOT = env("MEDIA_ROOT")
