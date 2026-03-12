@@ -13,12 +13,3 @@ class HistoricalChanges:
         bases=(simple_history.models.HistoricalChanges, models.Model),
     ```
     """
-
-
-class HistoricalRecords:
-    """
-    Temporary stub replacing HistoricalRecords class from django-simple-history package.
-    """
-
-    def __init__(self, *args, **kwargs):
-        pass
