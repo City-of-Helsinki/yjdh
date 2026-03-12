@@ -292,26 +292,28 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               );
             }}
           >
-            {() => (
-              <TextInput
-                id={fields.companyBankAccountNumber.name}
-                name={fields.companyBankAccountNumber.name}
-                label={fields.companyBankAccountNumber.label}
-                invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                errorText={getErrorMessage(
-                  fields.companyBankAccountNumber.name
-                )}
-                required
-                helperText={t(
-                  `${translationsBase}.fields.companyBankAccountNumber.placeholder`
-                )}
-              />
-            )}
+            {
+              (() => (
+                <TextInput
+                  id={fields.companyBankAccountNumber.name}
+                  name={fields.companyBankAccountNumber.name}
+                  label={fields.companyBankAccountNumber.label}
+                  invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  aria-invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  errorText={getErrorMessage(
+                    fields.companyBankAccountNumber.name
+                  )}
+                  required
+                  helperText={t(
+                    `${translationsBase}.fields.companyBankAccountNumber.placeholder`
+                  )}
+                />
+              )) as unknown as React.ReactNode
+            }
           </InputMask>
         </$GridCell>
         {data.organizationType.toLowerCase() ===

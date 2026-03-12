@@ -7,6 +7,7 @@ import { getLocalStorageItem } from 'shared/utils/localstorage.utils';
 import BackendAPIContext from './BackendAPIContext';
 
 export interface BackendAPIProviderProps {
+  children?: React.ReactNode;
   baseURL: string;
   headers?: Headers;
   isLocalStorageCsrf?: boolean;

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { init } from '@socialgouv/matomo-next';
+import { initMatomo } from 'shared/utils/matomo';
 
 const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED === 'true';
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
@@ -30,7 +30,7 @@ const useMatomo = ({
 
   useEffect(() => {
     if (isMatomoConfigured) {
-      init({ url, siteId, jsTrackerFile, phpTrackerFile });
+      initMatomo({ url, siteId, jsTrackerFile, phpTrackerFile });
     }
   }, [isMatomoConfigured, url, siteId, jsTrackerFile, phpTrackerFile]);
 
