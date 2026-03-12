@@ -254,23 +254,25 @@ const CompanySection: React.FC<Props> = ({
               );
             }}
           >
-            {() => (
-              <TextInput
-                id={fields.companyBankAccountNumber.name}
-                name={fields.companyBankAccountNumber.name}
-                label={fields.companyBankAccountNumber.label}
-                invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                errorText={getErrorMessage(
-                  fields.companyBankAccountNumber.name
-                )}
-                required
-              />
-            )}
+            {
+              (() => (
+                <TextInput
+                  id={fields.companyBankAccountNumber.name}
+                  name={fields.companyBankAccountNumber.name}
+                  label={fields.companyBankAccountNumber.label}
+                  invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  aria-invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  errorText={getErrorMessage(
+                    fields.companyBankAccountNumber.name
+                  )}
+                  required
+                />
+              )) as unknown as React.ReactNode
+            }
           </InputMask>
           <$HelpText>{fields.companyBankAccountNumber.placeholder}</$HelpText>
         </$GridCell>

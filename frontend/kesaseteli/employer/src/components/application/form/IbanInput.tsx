@@ -39,7 +39,9 @@ const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
     if (!valid) {
       setErrorText(
         t(
-          `common:application.form.errors.${ValidationErrorsIBAN[errorCodes[0]]}`
+          `common:application.form.errors.${
+            ValidationErrorsIBAN[errorCodes[0]]
+          }`
         )
       );
       return false;
@@ -59,23 +61,25 @@ const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
         return newState;
       }}
     >
-      {() => (
-        <TextInputBase<ApplicationFormData>
-          registerOptions={{
-            required: true,
-            maxLength: 34,
-            ...(process.env.NODE_ENV !== 'test' && {
-              validate: validateBankAccount,
-            }),
-            setValueAs: electronicFormatIBAN,
-          }}
-          id={id}
-          placeholder={t('common:application.form.helpers.bank_account')}
-          errorText={errorText ?? getDefaultErrorText()}
-          label={t(`common:application.form.inputs.bank_account_number`)}
-          {...$gridCellProps}
-        />
-      )}
+      {
+        (() => (
+          <TextInputBase<ApplicationFormData>
+            registerOptions={{
+              required: true,
+              maxLength: 34,
+              ...(process.env.NODE_ENV !== 'test' && {
+                validate: validateBankAccount,
+              }),
+              setValueAs: electronicFormatIBAN,
+            }}
+            id={id}
+            placeholder={t('common:application.form.helpers.bank_account')}
+            errorText={errorText ?? getDefaultErrorText()}
+            label={t(`common:application.form.inputs.bank_account_number`)}
+            {...$gridCellProps}
+          />
+        )) as unknown as React.ReactNode
+      }
     </InputMask>
   );
 };

@@ -33,7 +33,7 @@ const SelectionGroup = <T,>({
 }: Props<T>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
 
-  const idString = id as string;
+  const inputId = String(id);
 
   return (
     <$GridCell {...$gridCellProps}>
@@ -41,9 +41,10 @@ const SelectionGroup = <T,>({
         name={id}
         rules={registerOptions}
         control={control}
+        render={({ field: { onChange: controllerOnChange, value, ref } }) => (
           <$SelectionGroup
-            id={idString}
-            data-testid={idString}
+            id={inputId}
+            data-testid={inputId}
             direction={direction}
             errorText={errorText}
             label={label}
