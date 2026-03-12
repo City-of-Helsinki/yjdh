@@ -92,7 +92,12 @@ from kesaseteli.sentry_config import sentry_traces_sampler
         ),
     ],
 )
-def test_sentry_traces_sampler(context, ignore_paths, sample_rate, expected):
+def test_sentry_traces_sampler(
+    context: dict,
+    ignore_paths: list[str],
+    sample_rate: float | None,
+    expected: float,
+) -> None:
     """
     Test that sampler returns correct probability for given context and config.
     """
@@ -114,7 +119,10 @@ def test_sentry_traces_sampler(context, ignore_paths, sample_rate, expected):
         ("/healthz", ["/healthz/"]),
     ],
 )
-def test_normalization_contract_quota_protection(path_info, ignore_paths_config):
+def test_normalization_contract_quota_protection(
+    path_info: str,
+    ignore_paths_config: list[str],
+) -> None:
     """
     Enforce normalization contract: any config format must exclude health checks.
 
@@ -130,13 +138,13 @@ def test_normalization_contract_quota_protection(path_info, ignore_paths_config)
     assert result == 0
 
 
-def test_sentry_traces_sampler_requires_ignore_paths():
+def test_sentry_traces_sampler_requires_ignore_paths() -> None:
     """Missing ignore_paths raises TypeError."""
     with pytest.raises(TypeError, match="ignore_paths"):
         sentry_traces_sampler({}, sample_rate=0.1)
 
 
-def test_sentry_traces_sampler_requires_sample_rate():
+def test_sentry_traces_sampler_requires_sample_rate() -> None:
     """Missing sample_rate raises TypeError."""
     with pytest.raises(TypeError, match="sample_rate"):
         sentry_traces_sampler({}, ignore_paths=[])
