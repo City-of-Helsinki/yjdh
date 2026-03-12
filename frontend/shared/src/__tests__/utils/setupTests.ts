@@ -9,40 +9,54 @@ expect.extend(toHaveNoViolations);
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
 
-// eslint-disable-next-line no-console
-const originalError = console.error;
-let consoleWarnSpy: jest.SpyInstance;
-let consoleErrorSpy: jest.SpyInstance;
-beforeAll(() => {
-  const messagesToIgnore = [
-    'Warning: You seem to have overlapping act() calls, this is not supported',
-    'When testing, code that causes React state updates should be wrapped into act(...)',
-    'Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component',
-    'Using ReactElement as a label is against good usability and accessibility practices. Please prefer plain strings.',
-    'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
-    'downshift: A component has changed the uncontrolled prop',
-  ];
+// Next.js 15's useRouter throws if RouterContext is null.
+// Mock the shared-runtime context to provide the mock router as fallback.
+jest.mock('next/dist/shared/lib/router-context.shared-runtime', () => {
+  const React = require('react');
+  const mock = require('next-router-mock');
+  return { RouterContext: React.createContext(mock.default) };
+});
 
-  const filterErrors = (...args: string[]) => {
+/* eslint-disable no-console */
+const originalWarn = console.warn;
+const originalError = console.error;
+/* eslint-enable no-console */
+
+const messagesToIgnore = [
+  'Warning: You seem to have overlapping act() calls, this is not supported',
+  'When testing, code that causes React state updates should be wrapped into act(...)',
+  'An update to',
+  'Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component',
+  'Using ReactElement as a label is against good usability and accessibility practices. Please prefer plain strings.',
+  'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
+  'downshift: A component has changed the uncontrolled prop',
+  'ReactDOM.render is no longer supported in React 18',
+  'All radio buttons in a SelectionGroup are unchecked',
+];
+
+// Directly replace console methods instead of using jest.spyOn so that
+// jest's reporter does not capture and redisplay the suppressed messages.
+const createFilter =
+  (original: (...data: unknown[]) => void) =>
+  (...args: unknown[]) => {
     if (
       args.length > 0 &&
       isString(args[0]) &&
-      messagesToIgnore.some((msg) => args[0].includes(msg))
+      messagesToIgnore.some((msg) => (args[0] as string).includes(msg))
     ) {
-      return () => {};
+      return;
     }
-    return originalError.call(console, args);
+    original.apply(console, args);
   };
 
-  consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(filterErrors);
-  consoleErrorSpy = jest
-    .spyOn(console, 'error')
-    .mockImplementation(filterErrors);
+beforeAll(() => {
+  console.warn = createFilter(originalWarn);
+  console.error = createFilter(originalError);
 });
 
 window.scrollTo = jest.fn();
 
 afterAll(() => {
-  consoleWarnSpy.mockRestore();
-  consoleErrorSpy.mockRestore();
+  console.warn = originalWarn;
+  console.error = originalError;
 });

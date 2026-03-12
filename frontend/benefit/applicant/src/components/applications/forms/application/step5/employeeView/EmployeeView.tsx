@@ -1,5 +1,5 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { BENEFIT_TYPES, PAY_SUBSIDY_GRANTED } from 'benefit-shared/constants';
+import { BENEFIT_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
@@ -18,22 +18,6 @@ import {
   $ApplicationDetailValue,
   $ApplicationDetailWrapper,
 } from '../../ApplicationInfo.sc';
-
-const paySubsidyTranslation = (value: PAY_SUBSIDY_GRANTED): string => {
-  switch (value) {
-    case PAY_SUBSIDY_GRANTED.GRANTED:
-      return 'paySubsidyDefault';
-
-    case PAY_SUBSIDY_GRANTED.GRANTED_AGED:
-      return 'paySubsidyAged';
-
-    case PAY_SUBSIDY_GRANTED.NOT_GRANTED:
-      return 'paySubsidyNone';
-
-    default:
-      return 'paySubsidyNone';
-  }
-};
 
 export interface EmployeeViewProps {
   data: Application;
@@ -223,7 +207,11 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           </$ApplicationDetailRow>
         </$ApplicationDetailWrapper>
       </SummarySection>
-      <SummarySection header={t(`${translationsBase}.employee.fields.apprenticeshipProgram.label`)}>
+      <SummarySection
+        header={t(
+          `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+        )}
+      >
         <$ApplicationDetailWrapper>
           <$ApplicationDetailRow data-testid="application-field-apprenticeshipProgram">
             <$ApplicationDetailValue>
