@@ -125,9 +125,7 @@ def _get_instalment_variables(
     instalment_1 = instalment_1_qs[0] if instalment_1_qs else None
 
     if not instalment_1:
-        raise ValueError(
-            "No instalment found for the first half of the benefit period."
-        )
+        return [("", 0), ("", 0)]
 
     instalment_2_qs = application.calculation.instalments.filter(instalment_number=2)
     instalment_2 = instalment_2_qs[0] if instalment_2_qs else None
