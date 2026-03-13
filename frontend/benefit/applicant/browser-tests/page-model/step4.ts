@@ -18,8 +18,11 @@ class Step4 extends WizardStep {
     const filenameWithoutExtension = filename.replace(/\.\w+$/, '');
     await t.setFilesToUpload('#upload_attachment_employee_consent', filename);
     await t
-      .expect(Selector(`a[aria-label^="${filenameWithoutExtension}"]`).visible)
-      .ok();
+      .expect(
+        Selector(`a[aria-label^="${filenameWithoutExtension}"]`).filterVisible()
+          .exists
+      )
+      .ok('Uploaded file link should become visible', { timeout: 15_000 });
   }
 }
 

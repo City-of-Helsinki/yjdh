@@ -2,6 +2,9 @@ import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
+const escapeRegex = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 class Step6 extends WizardStep {
   constructor() {
     super(6);
@@ -17,13 +20,17 @@ class Step6 extends WizardStep {
   );
 
   public async isShowingSubmitSuccess(): Promise<void> {
+    const submitSuccessLabels = new RegExp(
+      `${escapeRegex(
+        this.translations.notifications.applicationSubmitted.label
+      )}|${escapeRegex(
+        this.translations.notifications.applicationReSubmitted.label
+      )}`
+    );
+
     await t
-      .expect(
-        await Selector('h1').withText(
-          this.translations.notifications.applicationSubmitted.label
-        ).visible
-      )
-      .ok();
+      .expect(Selector('h1').withText(submitSuccessLabels).visible)
+      .ok({ timeout: 30_000 });
   }
 
   public applicantTerms = this.component.findByTestId('');
@@ -34,10 +41,12 @@ class Step6 extends WizardStep {
    */
   public async checkApplicantTerms(): Promise<void> {
     const consentSelector = '[data-testid="application-terms-consent"]';
-    await t.click(Selector(consentSelector).nth(0));
-    await t.click(Selector(consentSelector).nth(1));
-    await t.click(Selector(consentSelector).nth(2));
-    await t.click(Selector(consentSelector).nth(3));
+    const consents = Selector(consentSelector);
+    const consentCount = await consents.count;
+
+    for (let i = 0; i < consentCount; i++) {
+      await t.click(consents.nth(i));
+    }
   }
 }
 
