@@ -1,7 +1,7 @@
 from django.urls import include, path, re_path
-from django_auth_adfs.views import OAuth2LoginView, OAuth2LogoutView
+from django_auth_adfs.views import OAuth2LoginView
 
-from shared.azure_adfs.views import HelsinkiOAuth2CallbackView
+from shared.azure_adfs.views import HelsinkiOAuth2CallbackView, HelsinkiOAuth2LogoutView
 from shared.common.views import MockEnabledProxyView
 
 from .mock_views import (
@@ -14,7 +14,7 @@ app_name = "django_auth_adfs"
 
 urlpatterns = [
     re_path(
-        r"^callback$",
+        r"^callback/?$",
         MockEnabledProxyView(
             real_view_class=HelsinkiOAuth2CallbackView,
             mock_view_class=MockOAuth2CallbackView,
@@ -22,16 +22,17 @@ urlpatterns = [
         name="callback",
     ),
     re_path(
-        r"^login$",
+        r"^login/?$",
         MockEnabledProxyView(
             real_view_class=OAuth2LoginView, mock_view_class=MockOAuth2LoginView
         ),
         name="login",
     ),
     re_path(
-        r"^logout$",
+        r"^logout/?$",
         MockEnabledProxyView(
-            real_view_class=OAuth2LogoutView, mock_view_class=MockOAuth2LogoutView
+            real_view_class=HelsinkiOAuth2LogoutView,
+            mock_view_class=MockOAuth2LogoutView,
         ),
         name="logout",
     ),

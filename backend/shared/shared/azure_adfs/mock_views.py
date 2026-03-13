@@ -37,9 +37,16 @@ class MockOAuth2CallbackView(View):
             request.session["_adfs_user_id"] = str(user.id)
 
         next_url = request.GET.get("next")
+        # To support cross-origin redirects in local development (e.g., from backend
+        # on localhost:8000 to Handler UI on localhost:3200), we must authorize
+        # the destination. Standard Django security (url_has_allowed_host_and_scheme)
+        # requires an explicit allow-list of hosts to permit cross-origin jumps.
+        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
+        allowed_hosts.append(request.get_host())
+
         if next_url and url_has_allowed_host_and_scheme(
             url=next_url,
-            allowed_hosts={request.get_host()},
+            allowed_hosts=allowed_hosts,
             require_https=request.is_secure(),
         ):
             redirect_url = next_url
@@ -51,5 +58,24 @@ class MockOAuth2CallbackView(View):
 class MockOAuth2LogoutView(View):
     def get(self, request):
         auth.logout(request)
-        logout_url = urljoin(settings.ADFS_LOGIN_REDIRECT_URL, "/login?logout=true")
-        return redirect(logout_url)
+        # Similar to the real Azure AD flow via HelsinkiOAuth2LogoutView,
+        # we extract the `next` parameter so local development can dynamically
+        # redirect back to the correct client (e.g., Handlers UI on localhost:3200)
+        # instead of falling back to a static default.
+        next_url = request.GET.get("next")
+        # Standard Django security requires an explicit allow-list of hosts to permit
+        # cross-origin redirects.
+        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
+        allowed_hosts.append(request.get_host())
+
+        if next_url and url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts=allowed_hosts,
+            require_https=request.is_secure(),
+        ):
+            redirect_url = next_url
+        else:
+            redirect_url = urljoin(
+                settings.ADFS_LOGIN_REDIRECT_URL, "/login?logout=true"
+            )
+        return redirect(redirect_url)

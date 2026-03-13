@@ -1,15 +1,39 @@
+import base64
+import binascii
 import logging
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import redirect
+
+try:
+    from django.utils.http import url_has_allowed_host_and_scheme
+except ImportError:
+    from django.utils.http import is_safe_url as url_has_allowed_host_and_scheme
 from django.utils.encoding import iri_to_uri
-from django_auth_adfs.views import OAuth2CallbackView
+from django_auth_adfs.views import OAuth2CallbackView, OAuth2LogoutView
 
 LOGGER = logging.getLogger(__name__)
 
 
-class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
+class HelsinkiOAuth2ViewMixin:
+    """
+    Mixin to provide shared utility methods for ADFS views.
+    """
+
+    def _get_allowed_hosts(self):
+        """
+        Derive allowed hosts from the configured ALLOWED_OAUTH2_REDIRECT_HOSTS setting.
+        """
+        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
+        # Also include the current host to allow redirects to the same site
+        if hasattr(self, "request"):
+            allowed_hosts.append(self.request.get_host())
+        return allowed_hosts
+
+
+class HelsinkiOAuth2CallbackView(HelsinkiOAuth2ViewMixin, OAuth2CallbackView):
     """
     Custom OAuth2 Callback view that prioritizes specific landing pages
     for clients while preserving deep links for Admin/Staff.
@@ -52,6 +76,59 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
             and url_query_parameters.get("response_type") == ["code"]
         )
 
+    def _apply_state_redirect_override(self, request, response):
+        """
+        Manually recover cross-origin redirect targets from the 'state' parameter.
+
+        Why is this needed?
+        The underlying `django-auth-adfs` library has a hardcoded host check: it only
+        allows redirects back to the exact same host that initiated the login.
+        In local development and multi-client environments, we often need to jump
+        from the API (e.g. localhost:8000) back to a specific UI (e.g. localhost:3200).
+
+        This method extracts the base64-encoded 'next' URL from the OAuth2 'state'
+        parameter. If the decoded URL is safe and belongs to an authorized host
+        (as defined by `self._get_allowed_hosts()`), we manually override the
+        Location header in the response object to ensure the user lands on the
+        correct client application.
+
+        References:
+        - This limitation is documented in: https://github.com/snok/django-auth-adfs/issues/355.
+        """
+        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
+        state = request.GET.get("state")
+
+        # If allowed_hosts is empty, there is nothing to do. The handler would be same
+        # as in super(). If there is no state, there is nothing to do either.
+        if allowed_hosts and state:
+            try:
+                decoded_next = base64.urlsafe_b64decode(state.encode()).decode()
+                # Check if the recovered URL is safe and authorized
+                if url_has_allowed_host_and_scheme(
+                    url=decoded_next,
+                    allowed_hosts=self._get_allowed_hosts(),
+                    require_https=request.is_secure(),
+                ):
+                    response["Location"] = iri_to_uri(decoded_next)
+                else:
+                    message = (
+                        f"ADFS callback 'state' contained an unauthorized or "
+                        f"unsafe redirect target: {decoded_next}"
+                    )
+                    LOGGER.warning(message)
+                    raise SuspiciousOperation(message)
+            except SuspiciousOperation:
+                raise
+            except (ValueError, binascii.Error):
+                # NOTE: this should have had failed already with super().get().
+                # This was likely a standard ADFS state, not our custom one.
+                LOGGER.debug(
+                    "ADFS callback 'state' parameter is not our custom base64 URL: "
+                    f"{state}"
+                )
+                return response
+        return response
+
     def get(self, request):
         # 1. Execute the library's standard logic.
         # This handles the OAuth2 code exchange and decodes the 'state' parameter
@@ -62,31 +139,24 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
         if response.status_code != 302:
             return self._handle_error_response(response)
 
-        # 2. Check for MFA or manual session overrides
+        # 2. Safety Case: Do not interfere with "Don't Touch" redirects.
+        # If the library is redirecting back to ADFS for MFA (Multi-Factor Auth),
+        # we must return immediately. If we proceeded to the state-override
+        # below, we would accidentally replace the MFA challenge URL with the
+        # final application URL, breaking the login flow.
         if self.is_response_adfs_authorization_redirect(response):
             return response
 
+        # 3. Escape hatch: Manual session-based overrides.
+        # If this flag is set in the session, we return the library's choice
+        # immediately and skip the state-based redirect recovery below.
         if request.session.pop("USE_ORIGINAL_REDIRECT_URL", False):
             return response
 
-        # 3. Determine the final destination
-        # 'response.url' is now either the decoded 'next' path or LOGIN_REDIRECT_URL.
-        target_url = response.url
-        default_login_url = getattr(settings, "LOGIN_REDIRECT_URL", "/")
-
-        # Check if the user is heading to the Admin site
-        is_admin_path = target_url.startswith("/admin")
-
-        # Check if the user is heading to a specific deep link
-        # (i.e., target is NOT the generic home or default landing page)
-        is_specific_destination = target_url not in (default_login_url, "/", "")
-
-        if is_admin_path or is_specific_destination:
-            # Re-encode URI to handle special characters safely in headers
-            return redirect(iri_to_uri(target_url))
-
-        # 4. Fallback.
-        return redirect(settings.ADFS_LOGIN_REDIRECT_URL)
+        # 4. Final routing: Override the redirect if 'state' provides an authorized
+        # destination. django-auth-adfs only allows the same host, so cross-origin
+        # targets are manually recovered here.
+        return self._apply_state_redirect_override(request, response)
 
     def _handle_error_response(self, response):
         error_messages = {
@@ -97,3 +167,43 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
         LOGGER.error(f"Invalid login. Status: {response.status_code}. Error: {msg}")
 
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL_FAILURE)
+
+
+class HelsinkiOAuth2LogoutView(HelsinkiOAuth2ViewMixin, OAuth2LogoutView):
+    """
+    Custom OAuth2 Logout view that accepts a `next` parameter to determine where
+    the user should be redirected after successful ADFS logout.
+
+    Why override the default?
+    The default `django_auth_adfs.views.OAuth2LogoutView` does not support dynamic
+    redirects upon logout. It clears the local session but statically redirects to the
+    Azure AD endpoint without passing a return URL, leaving the user stranded or
+    subject to fallback logic. By overriding it, we can intercept the response
+    and append the `post_logout_redirect_uri` parameter based on the `next` value
+    passed by the client (e.g. Handlers UI or Django Admin), ensuring graceful
+    multi-client support. For example, the Django Admin site natively appends
+    `?next=/admin/` to login and logout requests, which this view can safely
+    parse and redirect back to.
+    """
+
+    def _append_next_url_to_response(self, request, response):
+        next_url = request.GET.get("next")
+        if next_url and url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts=self._get_allowed_hosts(),
+            require_https=request.is_secure(),
+        ):
+            # Append the post_logout_redirect_uri parameter for Azure AD
+            url_parts = list(urlparse(response.url))
+            query = parse_qs(url_parts[4])
+            query.update({"post_logout_redirect_uri": [next_url]})
+            url_parts[4] = urlencode(query, doseq=True)
+            response["Location"] = urlunparse(url_parts)
+
+        return response
+
+    def get(self, request):
+        return self._append_next_url_to_response(request, super().get(request))
+
+    def post(self, request):
+        return self._append_next_url_to_response(request, super().post(request))

@@ -11,6 +11,30 @@ from django.http import HttpRequest
 from django.utils import timezone
 
 
+def get_eauth_login_success_url(request: HttpRequest) -> str:
+    """
+    Determine the redirect URL after a successful eAuthorizations or Helsinki Profile
+    login.
+
+    This function supports dynamic redirects by checking the user's session for
+    an 'eauth_next_url'. This allows 3rd-party authentication flows (like Suomi.fi or
+    Helsinki Profile) to return the user back to the exact URL they originated from,
+    rather than a hardcoded fallback.
+
+    If no explicit 'eauth_next_url' is found in the session, it gracefully falls back
+    to `settings.LOGIN_REDIRECT_URL`.
+
+    :param request: The HttpRequest containing the current session.
+    :return: A string representing the URL to redirect the user to.
+    """
+    next_url = request.session.pop("eauth_next_url", None)
+
+    if next_url:
+        return next_url
+
+    return settings.LOGIN_REDIRECT_URL
+
+
 def get_userinfo(request: HttpRequest) -> dict:
     from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 
