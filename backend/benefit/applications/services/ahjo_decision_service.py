@@ -1,6 +1,7 @@
 from string import Template
 from typing import List
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 
 from applications.enums import DecisionType
@@ -25,15 +26,20 @@ def replace_decision_template_placeholders(
     """Replace the placeholders starting with $ in the decision template with real data"""  # noqa: E501
     text_to_replace = Template(text_to_replace)
     start_date = (
-        application.calculation.start_date.strftime("%d.%m.%Y")
+        application.calculation.start_date
         if decision_type == DecisionType.ACCEPTED
         else application.start_date
     )
+    start_date_str = start_date.strftime("%d.%m.%Y")
     end_date = (
-        application.calculation.end_date.strftime("%d.%m.%Y")
+        application.calculation.end_date
         if decision_type == DecisionType.ACCEPTED
         else application.end_date
     )
+    end_date_str = end_date.strftime("%d.%m.%Y")
+    instalments_data = _get_instalment_variables(application, start_date, end_date)
+    benefit_instalment1_range, benefit_instalment1_sum = instalments_data[0]
+    benefit_instalment2_range, benefit_instalment2_sum = instalments_data[1]
     try:
         return text_to_replace.substitute(
             company=application.company.name,
@@ -43,7 +49,11 @@ def replace_decision_template_placeholders(
                 if decision_type == DecisionType.ACCEPTED
                 else ""
             ),
-            benefit_date_range=f"{start_date} - {end_date}",
+            benefit_date_range=f"{start_date_str} - {end_date_str}",
+            benefit_instalment1_range=benefit_instalment1_range,
+            benefit_instalment1_sum=benefit_instalment1_sum,
+            benefit_instalment2_range=benefit_instalment2_range,
+            benefit_instalment2_sum=benefit_instalment2_sum,
         )
     except AhjoDecisionError as e:
         raise ValueError(f"Error in preparing the decision proposal template: {e}")
@@ -102,3 +112,41 @@ def _generate_decision_text_string(
     return replace_decision_template_placeholders(
         decision_string, decision_type, application
     )
+
+
+def _get_instalment_variables(
+    application, start_date, end_date
+) -> list[tuple[str, int]]:
+    """
+    Returns a list of tuples representing the
+    instalment ranges and sums for the application.
+    """
+    instalment_1_qs = application.calculation.instalments.filter(instalment_number=1)
+    instalment_1 = instalment_1_qs[0] if instalment_1_qs else None
+
+    if not instalment_1:
+        return [("", 0), ("", 0)]
+
+    instalment_2_qs = application.calculation.instalments.filter(instalment_number=2)
+    instalment_2 = instalment_2_qs[0] if instalment_2_qs else None
+
+    start_date_str = start_date.strftime("%d.%m.%Y")
+    midpoint_date = start_date + relativedelta(months=6, days=-1)
+    midpoint_date_str = midpoint_date.strftime("%d.%m.%Y")
+    second_half_date = midpoint_date + relativedelta(days=1)
+    second_half_date_str = second_half_date.strftime("%d.%m.%Y")
+    end_date_str = end_date.strftime("%d.%m.%Y")
+
+    first_range = (
+        f"{start_date_str} - {midpoint_date_str}"
+        if midpoint_date < end_date
+        else f"{start_date_str} - {end_date_str}"
+    )
+    second_range = (
+        f"{second_half_date_str} - {end_date_str}" if instalment_2 else first_range
+    )
+
+    first_sum = instalment_1.amount
+    second_sum = instalment_2.amount if instalment_2 else 0
+
+    return [(first_range, first_sum), (second_range, second_sum)]

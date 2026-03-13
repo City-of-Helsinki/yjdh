@@ -2,6 +2,7 @@ import decimal
 from datetime import timedelta
 
 import pytest
+from dateutil.relativedelta import relativedelta
 from django.urls import reverse
 from django.utils import timezone
 from resilient_logger.models import ResilientLogEntry
@@ -76,7 +77,7 @@ def test_talpa_csv_output(
             due_date = timezone.now().date()
             if i == 1:
                 status = InstalmentStatus.WAITING
-                due_date = timezone.now() + timedelta(days=181)
+                due_date = timezone.now() + relativedelta(months=6)
 
             Instalment.objects.create(
                 calculation=application.calculation,
