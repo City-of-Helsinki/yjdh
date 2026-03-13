@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.http import HttpResponse
 from django.urls import include, path
 from rest_framework import routers
 
@@ -10,6 +9,7 @@ from applications.views import (
     EmployerApplicationExcelDownloadView,
     YouthApplicationExcelExportViewSet,
 )
+from common.views import healthz, readiness
 from companies.api.v1.views import GetCompanyView
 from shared.suomi_fi.views import (
     SuomiFiAssertionConsumerServiceView,
@@ -77,12 +77,7 @@ if settings.ENABLE_ADMIN:
 #
 # Kubernetes liveness & readiness probes
 #
-def healthz(*args, **kwargs):
-    return HttpResponse(status=200)
-
-
-def readiness(*args, **kwargs):
-    return HttpResponse(status=200)
-
-
-urlpatterns += [path("healthz", healthz), path("readiness", readiness)]
+urlpatterns += [
+    path("healthz", healthz, name="healthz"),
+    path("readiness", readiness, name="readiness"),
+]
