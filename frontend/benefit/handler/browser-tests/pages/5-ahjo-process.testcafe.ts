@@ -103,7 +103,7 @@ test('Open form and create a decision proposal', async (t: TestController) => {
   // Has decision text in editor
   await t
     .expect(Selector('[data-testid="decisionText"] .tiptap').child().count)
-    .eql(2);
+    .eql(3);
 
   // Has justification text in editor
   await t
@@ -114,7 +114,7 @@ test('Open form and create a decision proposal', async (t: TestController) => {
 
   await t
     .expect(Selector('[data-testid="decision-text-preview"]').child().count)
-    .eql(2);
+    .eql(3);
 
   await t
     .expect(
