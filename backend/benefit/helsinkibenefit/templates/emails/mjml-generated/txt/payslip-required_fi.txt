@@ -1,0 +1,23 @@
+{% comment %} NEVER MAKE MODIFICATIONS TO THIS GENERATED FILE DIRECTLY, ALL MODIFICATIONS SHOULD BE DONE TO MJML TEMPLATE FILES! {% endcomment %}Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteitä
+Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteitä
+
+Hei!
+
+Myönsimme teille Helsinki-lisää työntekijän palkkaamiseen. Helsinki-lisä maksetaan kahdessa erässä. Tuen saajana olet velvollinen ilmoittamaan meille työsuhteeseen maksetun palkan. Saadakseen toisen Helsinki-lisän maksuerän työnantajan on toimitettava:
+Palkkakuitti tai pankinsuoritustosite maksetusta palkasta.
+
+Ilmoittaminen hoituu helposti https://helsinkilisa.hel.fi/fi/login
+
+Ystävällisin terveisin,
+Helsinki-lisän tiimi
+
+Hakemuksen tiedot
+Hakemusnumero {{ application.application_number }}
+Tuen saaja {{ application.company_name }}
+Tukiaika {{ application.start_date }}-{{ application.end_date }}
+
+Kirjaudu ja/tai toimita tarvittava liite
+
+Jos et ole käyttänyt asiointipalvelua, niin voit toimittaa liitteen turvasähköpostilla
+Lähetä liite https://suojattusahkoposti.hel.fi/
+suojatun yhteyden kautta osoitteeseen helsinkilisa@hel.fi
