@@ -15,7 +15,7 @@ on:
 
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main
+    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main  # foo
     secrets: inherit
     with:
       node-version: 22.x
