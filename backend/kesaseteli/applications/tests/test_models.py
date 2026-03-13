@@ -33,75 +33,61 @@ def _get_email_template_image_file(image_name: str) -> bytes:
 
 def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
     """
-    Create EmployerSummerVouchers for given year sorted by last_submitted_at.
+    Create EmployerSummerVouchers for given year sorted by submitted_at.
     """
     vouchers: List[EmployerSummerVoucher] = []
-    for created_at, last_submitted_at_list, attachment_count in [
-        (utc_datetime(year, 1, 13), [utc_datetime(year, 1, 18)], 0),
-        (utc_datetime(year, 2, 1), [], 0),
-        (utc_datetime(year, 1, 1), [utc_datetime(year, 2, 9)], 1),
-        (utc_datetime(year, 2, 21), [], 3),
-        (utc_datetime(year, 2, 20), [utc_datetime(year, 2, 22)], 10),
-        (utc_datetime(year, 3, 2), [], 5),
-        (utc_datetime(year, 3, 8), [utc_datetime(year, 3, 10)], 4),
-        (
-            utc_datetime(year, 1, 3),
-            [
-                utc_datetime(year, 3, 3),
-                utc_datetime(year, 3, 5),
-                utc_datetime(year, 3, 11),
-            ],
-            0,
-        ),
-        (utc_datetime(year, 1, 1), [utc_datetime(year, 3, 12)], 1),
-        (
-            utc_datetime(year, 3, 10),
-            [utc_datetime(year, 3, 11), utc_datetime(year, 9, 1)],
-            0,
-        ),
-        (utc_datetime(year, 2, 1), [utc_datetime(year, 9, 2)], 1),
-        (utc_datetime(year, 2, 5), [utc_datetime(year, 9, 2)], 1),
-        (utc_datetime(year, 2, 2), [utc_datetime(year, 9, 2)], 1),
+    for created_at, submitted_at, attachment_count in [
+        (utc_datetime(year, 1, 13), utc_datetime(year, 1, 18), 0),
+        (utc_datetime(year, 2, 1), utc_datetime(year, 2, 1), 0),
+        (utc_datetime(year, 1, 1), utc_datetime(year, 2, 9), 1),
+        (utc_datetime(year, 2, 21), utc_datetime(year, 2, 21), 3),
+        (utc_datetime(year, 2, 20), utc_datetime(year, 2, 22), 10),
+        (utc_datetime(year, 3, 2), utc_datetime(year, 3, 2), 5),
+        (utc_datetime(year, 3, 8), utc_datetime(year, 3, 10), 4),
+        (utc_datetime(year, 1, 3), utc_datetime(year, 3, 11), 0),
+        (utc_datetime(year, 1, 1), utc_datetime(year, 3, 12), 1),
+        (utc_datetime(year, 3, 10), utc_datetime(year, 9, 1), 0),
+        (utc_datetime(year, 2, 1), utc_datetime(year, 9, 2), 1),
+        (utc_datetime(year, 2, 5), utc_datetime(year, 9, 2), 1),
+        (utc_datetime(year, 2, 2), utc_datetime(year, 9, 2), 1),
     ]:
         with freeze_time(created_at):
             voucher = EmployerSummerVoucherFactory(
                 application=EmployerApplicationFactory(
-                    status=EmployerApplicationStatus.SUBMITTED
+                    status=EmployerApplicationStatus.SUBMITTED,
+                    submitted_at=submitted_at,
                 )
             )
             AttachmentFactory.create_batch(
                 size=attachment_count, summer_voucher=voucher
             )
-            for last_submitted_at in last_submitted_at_list:
-                with freeze_time(last_submitted_at):
-                    voucher.save()
             vouchers.append(voucher)
 
-    return sorted(vouchers, key=operator.attrgetter("last_submitted_at"))
+    return sorted(vouchers, key=operator.attrgetter("submitted_at"))
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("year", [2021, 2022])
-def test_employer_summer_voucher_last_submitted_at(year):
+def test_employer_summer_voucher_submitted_at(year):
     """
-    Test EmployerSummerVoucher instances' last_submitted_at property.
+    Test EmployerSummerVoucher instances' submitted_at property.
     """
     vouchers = create_test_employer_summer_vouchers(year=year)
 
     assert len(vouchers) == 13
-    assert vouchers[0].last_submitted_at == utc_datetime(year, 1, 18)
-    assert vouchers[1].last_submitted_at == utc_datetime(year, 2, 1)
-    assert vouchers[2].last_submitted_at == utc_datetime(year, 2, 9)
-    assert vouchers[3].last_submitted_at == utc_datetime(year, 2, 21)
-    assert vouchers[4].last_submitted_at == utc_datetime(year, 2, 22)
-    assert vouchers[5].last_submitted_at == utc_datetime(year, 3, 2)
-    assert vouchers[6].last_submitted_at == utc_datetime(year, 3, 10)
-    assert vouchers[7].last_submitted_at == utc_datetime(year, 3, 11)
-    assert vouchers[8].last_submitted_at == utc_datetime(year, 3, 12)
-    assert vouchers[9].last_submitted_at == utc_datetime(year, 9, 1)
-    assert vouchers[10].last_submitted_at == utc_datetime(year, 9, 2)
-    assert vouchers[11].last_submitted_at == utc_datetime(year, 9, 2)
-    assert vouchers[12].last_submitted_at == utc_datetime(year, 9, 2)
+    assert vouchers[0].submitted_at == utc_datetime(year, 1, 18)
+    assert vouchers[1].submitted_at == utc_datetime(year, 2, 1)
+    assert vouchers[2].submitted_at == utc_datetime(year, 2, 9)
+    assert vouchers[3].submitted_at == utc_datetime(year, 2, 21)
+    assert vouchers[4].submitted_at == utc_datetime(year, 2, 22)
+    assert vouchers[5].submitted_at == utc_datetime(year, 3, 2)
+    assert vouchers[6].submitted_at == utc_datetime(year, 3, 10)
+    assert vouchers[7].submitted_at == utc_datetime(year, 3, 11)
+    assert vouchers[8].submitted_at == utc_datetime(year, 3, 12)
+    assert vouchers[9].submitted_at == utc_datetime(year, 9, 1)
+    assert vouchers[10].submitted_at == utc_datetime(year, 9, 2)
+    assert vouchers[11].submitted_at == utc_datetime(year, 9, 2)
+    assert vouchers[12].submitted_at == utc_datetime(year, 9, 2)
 
 
 @pytest.mark.django_db

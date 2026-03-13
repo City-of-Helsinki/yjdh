@@ -7,7 +7,6 @@ django-filter
 django-localflavor
 django-searchable-encrypted-fields
 django-sequences
-django-simple-history
 django-storages[azure]
 django~=5.2
 djangorestframework
