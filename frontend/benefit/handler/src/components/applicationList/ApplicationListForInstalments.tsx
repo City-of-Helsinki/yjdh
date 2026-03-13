@@ -1,4 +1,4 @@
-import { ROUTES } from 'benefit/handler/constants';
+import { APPLICATION_LIST_TABS, ROUTES } from 'benefit/handler/constants';
 import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import {
   ApplicationListTableColumns,
@@ -11,7 +11,7 @@ import {
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconErrorFill, Table, Tag } from 'hds-react';
+import { IconErrorFill, Table, Tag, Dialog, DateInput, Button } from 'hds-react';
 import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
@@ -19,6 +19,7 @@ import LoadingSkeleton from 'react-loading-skeleton';
 import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import {
+  convertToBackendDateFormat,
   convertToUIDateFormat,
   sortFinnishDate,
 } from 'shared/utils/date.utils';
@@ -39,6 +40,7 @@ import {
 } from './ApplicationList.sc';
 import ApplicationTableFooter from './ApplicationTableFooter';
 import { useApplicationList } from './useApplicationList';
+import useInstalmentDateChange from "benefit/handler/hooks/useInstalmentDateChange";
 
 export interface ApplicationListProps {
   heading: string;
@@ -55,7 +57,7 @@ const buildApplicationUrl = (
     return `${ROUTES.APPLICATION_FORM_NEW}?id=${id}`;
   }
 
-  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}`;
+  const applicationUrl = `${ROUTES.APPLICATION}?id=${id}&returnTab=${APPLICATION_LIST_TABS.SECOND_INSTALMENTS}`;
   if (openDrawer) {
     return `${applicationUrl}&openDrawer=1`;
   }
@@ -82,10 +84,14 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+  const [instalmentNewDate, setInstalmentNewDate] = React.useState(convertToUIDateFormat('2025-01-25') ?? '');
   const [isInstalmentCancelModalShown, setIsInstalmentCancelModalShown] =
+    React.useState(false);
+  const [isInstalmentChangeDateDialogShown, setIsInstalmentChangeDateDialogShown] =
     React.useState(false);
   const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
     useInstalmentStatusTransition();
+  const { mutate: changeInstalmentDate } = useInstalmentDateChange();
 
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
@@ -215,6 +221,19 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
     setIsInstalmentCancelModalShown(false);
   };
 
+  const onSubmitChangeDate = (): void => {
+    changeInstalmentDate({
+      id: selectedInstalment?.id,
+      dueDate: convertToBackendDateFormat(instalmentNewDate)
+    })
+    setIsInstalmentChangeDateDialogShown(false);
+  };
+
+  const onOpenChangeDateDialog = (): void => {
+    setInstalmentNewDate(convertToUIDateFormat(selectedInstalment?.dueDate));   // ← seed with current due date
+    setIsInstalmentChangeDateDialogShown(true);
+  };
+
   return (
     <$InstalmentList data-testid="instalment-list">
       {list.length > 0 ? (
@@ -240,6 +259,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               translationsBase={translationsBase}
               changeInstalmentStatus={changeInstalmentStatus}
               setIsInstalmentCancelModalShown={setIsInstalmentCancelModalShown}
+              setIsInstalmentChangeDateDialogShown={onOpenChangeDateDialog}
             />
           )}
           <Modal
@@ -265,6 +285,42 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               />
             }
           />
+          <Dialog
+            id="instalment-change-date"
+            aria-labelledby="instalment-change-date-title"
+            aria-describedby="instalment-change-date-description"
+            isOpen={isInstalmentChangeDateDialogShown}
+            close={() => setIsInstalmentChangeDateDialogShown(false)}
+            closeButtonLabelText="Close info dialog"
+          >
+            <Dialog.Header
+              id="instalment-change-date-title"
+              title={t('common:instalments.dialog.changeInstalmentDate.heading')}
+            />
+            <Dialog.Content>
+              <DateInput
+                id="instalment-change-date-dateinput"
+                label="Viimeinen työpäivä"
+                helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
+                language="fi"
+                onChange={(value:string) => setInstalmentNewDate(value)}
+                value={instalmentNewDate}
+                required
+              />
+            </Dialog.Content>
+            <Dialog.ActionButtons>
+              <Button
+                id="instalment-change-date-cancel-button"
+                onClick={() => setIsInstalmentChangeDateDialogShown(false)}>
+                {t(`common:instalments.dialog.changeInstalmentDate.buttons.cancel`)}
+              </Button>
+              <Button
+                id="instalment-change-date-confirm-button"
+                onClick={() => onSubmitChangeDate()}>
+                {t(`common:instalments.dialog.changeInstalmentDate.buttons.confirm`)}
+              </Button>
+            </Dialog.ActionButtons>
+          </Dialog>
         </>
       ) : (
         <$EmptyHeading>

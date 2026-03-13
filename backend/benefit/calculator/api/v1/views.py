@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
@@ -51,51 +54,74 @@ class InstalmentView(APIView):
 
     def patch(self, request, instalment_id):
         instalment = get_object_or_404(Instalment, pk=instalment_id)
-        instalment_status = request.data["status"]
-        serializer = InstalmentSerializer(
-            instalment, data={"status": instalment_status}, partial=True
-        )
-        if serializer.is_valid():
+        serializer = None
+        instalment_status = None
+
+        if "status" in request.data:
+            instalment_status = request.data["status"]
+            serializer = InstalmentSerializer(
+                instalment, data={"status": instalment_status}, partial=True
+            )
+        elif "due_date" in request.data:
+            try:
+                instalment_due_date = datetime.strptime(
+                    request.data["due_date"], "%Y-%m-%d"
+                ).date()
+            except ValueError:
+                return Response(
+                    _("Invalid date format"), status=status.HTTP_400_BAD_REQUEST
+                )
+            serializer = InstalmentSerializer(
+                instalment, data={"due_date": instalment_due_date}, partial=True
+            )
+        else:
+            return Response(_("Invalid request"), status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             application = instalment.calculation.application
             instalment_count = instalment.calculation.instalments.count()
+            if instalment_status is not None:
+                if instalment.instalment_number == 1:
+                    if instalment_status == InstalmentStatus.ACCEPTED:
+                        application.talpa_status = (
+                            ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
+                        )
+                        application.save()
 
-            if instalment.instalment_number == 1:
-                if instalment_status == InstalmentStatus.ACCEPTED:
-                    application.talpa_status = (
-                        ApplicationTalpaStatus.NOT_PROCESSED_BY_TALPA
+                    if instalment_status == InstalmentStatus.PAID:
+                        if instalment_count == 1:
+                            application.talpa_status = (
+                                ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
+                            )
+                            application.batch.status = (
+                                ApplicationBatchStatus.SENT_TO_TALPA
+                            )
+                        else:
+                            application.talpa_status = (
+                                ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
+                            )
+                            application.batch.status = (
+                                ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
+                            )
+                        instalment.amount_paid = instalment.amount_after_recoveries
+                        application.archived = True
+                        instalment.save()
+                        application.save()
+                        application.batch.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                if instalment.instalment_number == 2:
+                    first_instalment = instalment.calculation.instalments.get(
+                        instalment_number=1
                     )
-                    application.save()
-
-                if instalment_status == InstalmentStatus.PAID:
-                    if instalment_count == 1:
-                        application.talpa_status = (
-                            ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA
-                        )
-                        application.batch.status = ApplicationBatchStatus.SENT_TO_TALPA
-                    else:
-                        application.talpa_status = (
-                            ApplicationTalpaStatus.PARTIALLY_SENT_TO_TALPA
-                        )
-                        application.batch.status = (
-                            ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA
-                        )
-                    instalment.amount_paid = instalment.amount_after_recoveries
-                    application.archived = True
-                    instalment.save()
-                    application.save()
-                    application.batch.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            if instalment.instalment_number == 2:
-                first_instalment = instalment.calculation.instalments.get(
-                    instalment_number=1
-                )
-                if (
-                    instalment_status == InstalmentStatus.CANCELLED
-                    and first_instalment.amount_paid is not None
-                ):
-                    application.archived = True
-                    application.save()
+                    if (
+                        instalment_status == InstalmentStatus.CANCELLED
+                        and first_instalment.amount_paid is not None
+                    ):
+                        application.archived = True
+                        application.save()
+                        return Response(serializer.data, status=status.HTTP_200_OK)
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
