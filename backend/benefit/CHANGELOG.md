@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.4...benefit-backend-v2.13.0) (2026-03-14)
+
+
+### Features
+
+* **benefit:** New states for instalments ([124ab1f](https://github.com/City-of-Helsinki/yjdh/commit/124ab1ffa9eabec36f5528d3aee2285a0ae6624d))
+
+
+### Bug Fixes
+
+* **benefit:** Added a test for state transitions ([0f84e34](https://github.com/City-of-Helsinki/yjdh/commit/0f84e34a434494f358bd8295334628e124ebf676))
+* **benefit:** Added fetching new instalment statuses to backend ([e808360](https://github.com/City-of-Helsinki/yjdh/commit/e808360084b25088b2a9e0074a0d83d8f14413ed))
+
+
+### Dependencies
+
+* Bump authlib from 1.6.6 to 1.6.7 in /backend/benefit ([0d36e65](https://github.com/City-of-Helsinki/yjdh/commit/0d36e6513e7826421173b409dcc4c0293ddf386c))
+* Bump django from 5.2.11 to 5.2.12 in /backend/benefit ([9efe736](https://github.com/City-of-Helsinki/yjdh/commit/9efe73643ae62aa126c8423470f320fabb27fd6a))
+
 ## [2.12.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.3...benefit-backend-v2.12.4) (2026-02-19)
 
 
