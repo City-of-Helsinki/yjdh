@@ -1,6 +1,10 @@
 import Employment from '@frontend/shared/src/types/employment';
 import axios, { AxiosResponseHeaders } from 'axios';
+import https from 'https';
 import { RequestMock } from 'testcafe';
+
+// Self-signed certificate is used in local development; skip verification in test proxies
+const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 import {
   HeadersInput,
@@ -143,7 +147,7 @@ const handleEmployerApplicationsPut = async (
     const response = await axios.put<{ summer_vouchers?: VoucherData[] }>(
       req.url,
       body,
-      { headers: req.headers }
+      { headers: req.headers, httpsAgent }
     );
 
     const responseBody = response.data;
@@ -174,7 +178,7 @@ const handleEmployerApplicationsGet = async (
   try {
     const response = await axios.get<{ summer_vouchers?: VoucherData[] }>(
       req.url,
-      { headers: req.headers }
+      { headers: req.headers, httpsAgent }
     );
 
     const responseBody = response.data;
@@ -224,6 +228,7 @@ export const attachmentsMock = RequestMock()
         // Proxy to real backend so attachments are actually stored
         const response = await axios.post(req.url, req.body, {
           headers: req.headers,
+          httpsAgent,
         });
         res.headers = getTestCafeHeaders(
           response.headers as AxiosResponseHeaders
