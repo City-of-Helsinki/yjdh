@@ -55,7 +55,9 @@ const BaseApp: React.FC<Props> = ({
     <>
       <ThemeProvider theme={theme}>
         <Head>
-          <title>{title?.length > 0 ? title : t('common:appName')}</title>
+          <title>
+            {title && title.length > 0 ? title : t('common:appName')}
+          </title>
         </Head>
         <GlobalStyling />
         <LayoutComponent>

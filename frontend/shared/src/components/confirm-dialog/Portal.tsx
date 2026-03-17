@@ -11,9 +11,8 @@ const Portal: React.FC = ({ children }) => {
     return () => setMounted(false);
   }, []);
 
-  return mounted
-    ? createPortal(children, document.querySelector(`#${PORTAL_ID}`))
-    : null;
+  const portalRoot = document.querySelector(`#${PORTAL_ID}`);
+  return portalRoot ? createPortal(children, portalRoot) : null;
 };
 
 export default Portal;

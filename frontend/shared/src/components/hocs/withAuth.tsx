@@ -12,10 +12,10 @@ import isServerSide from 'shared/server/is-server-side';
  * will be added to.
  * @param redirectLocation The location to redirect to.
  */
-const withAuth = <P,>(
+const withAuth = <P extends JSX.IntrinsicAttributes>(
   WrappedComponent: React.FC<P>,
   redirectLocation = '/login'
-): typeof WrappedComponent =>
+): React.FC<P> =>
   function Wrapped(props: P) {
     const { isLoading, isAuthenticated } = useAuth();
     const goToPage = useGoToPage();

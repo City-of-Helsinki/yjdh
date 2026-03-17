@@ -11,10 +11,10 @@ type ExtendedComponentProps = {
   toggleMenu: () => void;
   closeMenu: () => void;
   handleLogin: (
-    event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined
+    event?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement> | undefined
   ) => void;
   handleLogout: (
-    event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined
+    event?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement> | undefined
   ) => void;
   t: TFunction;
 };
@@ -29,7 +29,9 @@ const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
 
   const { t } = useTranslation();
 
-  const handleLogin = (event?: React.MouseEvent<HTMLAnchorElement>): void => {
+  const handleLogin = (
+    event?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ): void => {
     if (event) {
       event.preventDefault();
     }
@@ -38,7 +40,9 @@ const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
     }
   };
 
-  const handleLogout = (event?: React.MouseEvent<HTMLAnchorElement>): void => {
+  const handleLogout = (
+    event?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ): void => {
     if (event) {
       event.preventDefault();
     }

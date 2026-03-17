@@ -4,7 +4,7 @@ import {
   TextInput as HdsTextInput,
 } from 'hds-react';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -13,12 +13,12 @@ import InputProps from 'shared/types/input-props';
 
 import { $TextInput } from './TextInput.sc';
 
-export type TextInputProps<T> = InputProps<T> & {
+export type TextInputProps<T extends FieldValues> = InputProps<T> & {
   type?: 'text' | 'decimal' | 'number' | 'textArea';
   placeholder?: string;
 } & GridCellProps;
 
-const getComponentType = <T,>(
+const getComponentType = <T extends FieldValues>(
   type: TextInputProps<T>['type']
 ): typeof HdsTextInput | typeof HdsNumberInput | typeof HdsTextArea => {
   switch (type) {
@@ -35,7 +35,7 @@ const getComponentType = <T,>(
   }
 };
 
-const TextInput = <T,>({
+const TextInput = <T extends FieldValues>({
   id,
   type = 'text',
   placeholder,

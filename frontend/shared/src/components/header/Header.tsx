@@ -116,13 +116,13 @@ const Header: React.FC<HeaderProps> = ({
       >
         <HdsHeader.SkipLink
           skipTo={`#${MAIN_CONTENT_ID}`}
-          label={skipToContentLabel}
+          label={skipToContentLabel || ''}
         />
         <HdsHeader.ActionBar
-          frontPageLabel={title}
-          title={title}
-          titleAriaLabel={title}
-          titleHref={titleUrl}
+          frontPageLabel={title || ''}
+          title={title || ''}
+          titleAriaLabel={title || ''}
+          titleHref={titleUrl || ''}
           logo={
             <Logo
               alt="Helsinki"
@@ -130,7 +130,7 @@ const Header: React.FC<HeaderProps> = ({
               src={logoSrcFromLanguageAndTheme()}
             />
           }
-          logoHref={titleUrl}
+          logoHref={titleUrl || ''}
           menuButtonLabel={menuToggleAriaLabel || ''}
           onMenuClick={toggleMenu}
         >
@@ -153,7 +153,6 @@ const Header: React.FC<HeaderProps> = ({
               icon={<IconUser />}
               aria-label={`${login.userAriaLabelPrefix} ${login.userName}`}
               label={login.userName}
-              onClick={() => handleLogout}
               fixedRightPosition
             >
               <HdsHeader.ActionBarSubItem
