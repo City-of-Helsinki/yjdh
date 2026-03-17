@@ -8,7 +8,7 @@ import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils'
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import noop from 'lodash/noop';
 import { ErrorOption } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
