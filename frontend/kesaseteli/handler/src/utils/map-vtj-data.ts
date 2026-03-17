@@ -19,11 +19,13 @@ type VtjInfo = {
   isDead: boolean;
 };
 
-const addressIsValid = (address: VtjAddress): boolean =>
-  isWithinInterval(new Date(), {
-    startDate: address.AsuminenAlkupvm,
-    endDate: address.AsuminenLoppupvm,
-  });
+const addressIsValid = (address?: VtjAddress | null): boolean =>
+  address
+    ? isWithinInterval(new Date(), {
+        startDate: address.AsuminenAlkupvm ?? undefined,
+        endDate: address.AsuminenLoppupvm ?? undefined,
+      })
+    : false;
 
 export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const {
@@ -34,40 +36,42 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const notFound =
     vtjData.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
   const providedAt = vtjData.Asiakasinfo?.InfoS ?? '';
-  const fullName = `${vtjData.Henkilo.NykyisetEtunimet.Etunimet} ${vtjData.Henkilo.NykyinenSukunimi.Sukunimi}`;
+  const fullName = `${vtjData.Henkilo?.NykyisetEtunimet?.Etunimet ?? ''} ${
+    vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi ?? ''
+  }`.trim();
   const differentLastName =
-    vtjData.Henkilo.NykyinenSukunimi.Sukunimi.toLowerCase() !==
+    vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi?.toLowerCase() !==
     last_name.toLowerCase();
 
-  const socialSecurityNumber = vtjData.Henkilo.Henkilotunnus['#text'] ?? '-';
+  const socialSecurityNumber = vtjData.Henkilo?.Henkilotunnus?.['#text'] ?? '-';
 
   const permanentAddress = addressIsValid(
-    vtjData.Henkilo.VakinainenKotimainenLahiosoite
+    vtjData.Henkilo?.VakinainenKotimainenLahiosoite
   )
-    ? vtjData.Henkilo.VakinainenKotimainenLahiosoite
+    ? vtjData.Henkilo?.VakinainenKotimainenLahiosoite
     : undefined;
   const temporaryAddress = addressIsValid(
-    vtjData.Henkilo.TilapainenKotimainenLahiosoite
+    vtjData.Henkilo?.TilapainenKotimainenLahiosoite
   )
-    ? vtjData.Henkilo.TilapainenKotimainenLahiosoite
+    ? vtjData.Henkilo?.TilapainenKotimainenLahiosoite
     : undefined;
   const addressNotFound = !permanentAddress && !temporaryAddress;
 
   const { LahiosoiteS, Postinumero, PostitoimipaikkaS } =
     permanentAddress ?? temporaryAddress ?? {};
   const fullAddress = !addressNotFound
-    ? `${LahiosoiteS} ${Postinumero} ${PostitoimipaikkaS}`
+    ? `${LahiosoiteS ?? ''} ${Postinumero ?? ''} ${PostitoimipaikkaS ?? ''}`
     : '-';
   const outsideHelsinki = PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
   const differentPostCode = Postinumero !== postcode;
 
   const { dateOfBirth } = FinnishSSN.parse(
-    vtjData.Henkilo.Henkilotunnus['#text']
+    vtjData.Henkilo?.Henkilotunnus?.['#text'] ?? ''
   );
   const age = new Date().getFullYear() - dateOfBirth.getFullYear();
   const notInTargetAgeGroup = !TARGET_GROUP_AGES.includes(age);
 
-  const isDead = vtjData.Henkilo.Kuolintiedot.Kuollut === '1';
+  const isDead = vtjData.Henkilo?.Kuolintiedot?.Kuollut === '1';
   return {
     notFound,
     providedAt,

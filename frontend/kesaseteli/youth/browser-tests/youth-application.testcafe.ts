@@ -9,7 +9,6 @@ import requestLogger, {
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import {
   getCurrentUrl,
-  getUrlParam,
   goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
@@ -31,7 +30,6 @@ import {
   attendsHelsinkianSchool,
   attendsUnlistedSchool,
   autoAcceptedApplication,
-  hasAge,
   is9thGraderAge,
   isDead,
   isUpperSecondaryEducation1stYearStudentAge,

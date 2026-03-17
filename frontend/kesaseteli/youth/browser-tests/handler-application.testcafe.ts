@@ -35,7 +35,7 @@ const url = getFrontendUrl('/');
 let youthForm: YouthForm;
 let thankYouPage: ThankYouPage;
 
-const translationsApi = getYouthTranslationsApi();
+getYouthTranslationsApi();
 
 fixture('Handler Application')
   .page(url)
