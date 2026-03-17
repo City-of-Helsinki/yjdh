@@ -67,7 +67,9 @@ describe('Dashboard', () => {
       screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Tervetuloa Kesäseteli -palvelun työnantajien käyttöliittymään/)
+      screen.getByText(
+        /Tervetuloa Kesäseteli -palvelun työnantajien käyttöliittymään/
+      )
     ).toBeInTheDocument();
   });
 
@@ -85,7 +87,7 @@ describe('Dashboard', () => {
 
   it('renders vouchers in the table', () => {
     renderWithProviders({ vouchers: mockVouchers });
-    expect(screen.getByText(voucher1.employee_name)).toBeInTheDocument();
+    expect(screen.getByText(voucher1.employee_name ?? '')).toBeInTheDocument();
     expect(
       screen.getByText(voucher1.summer_voucher_serial_number)
     ).toBeInTheDocument();
@@ -105,8 +107,6 @@ describe('Dashboard', () => {
 
   it('does not render the organisation name element when organisationName is not provided', () => {
     renderWithProviders();
-    expect(
-      screen.queryByText(/asioit organisaation/i)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/asioit organisaation/i)).not.toBeInTheDocument();
   });
 });

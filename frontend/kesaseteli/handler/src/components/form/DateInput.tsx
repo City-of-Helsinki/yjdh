@@ -82,7 +82,7 @@ const DateInput = ({
         // Otherwise the error message won't be cleared and
         // the value remains invalid after the date has been picked.
         clearErrors();
-        setValue(value);
+        setValue(value ?? '');
       }}
       {...$gridCellProps}
     />

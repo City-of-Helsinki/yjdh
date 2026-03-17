@@ -119,7 +119,9 @@
   },
   "assistive": {
     "clearChoice": "Töm valet",
-    "clearAllChoices": "Töm alla val"
+    "clearChoices": "Töm alla val",
+    "clearAllChoices": "Töm alla val",
+    "openDropdown": "Öppna rullgardinsmenyn"
   },
   "notificationPages": {
     "thankyou": {

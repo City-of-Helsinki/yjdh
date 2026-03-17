@@ -35,9 +35,10 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
   const goToPage = useGoToPage();
   const handleDefaultError = useErrorHandler();
 
-  const [submitError, setSubmitError] = React.useState<SubmitError | null>(
-    null
-  );
+  // eslint-disable-next-line unicorn/no-useless-undefined
+  const [submitError, setSubmitError] = React.useState<
+    SubmitError | undefined
+  >();
 
   const { formState, setError, getValues, reset } =
     useFormContext<YouthFormData>();
@@ -49,12 +50,14 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
     !formState.isSubmitted &&
     submitError?.type === 'please_recheck_data'
   ) {
-    setSubmitError(null);
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    setSubmitError(undefined);
   }
 
   return {
     handleSaveSuccess: (application: CreatedYouthApplication): void => {
-      setSubmitError(null);
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      setSubmitError(undefined);
       const url =
         isRealIntegrationsEnabled() || !application.id
           ? '/thankyou'
@@ -68,7 +71,8 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
           case 'already_assigned':
           case 'email_in_use':
           case 'inadmissible_data':
-            setSubmitError(null);
+            // eslint-disable-next-line unicorn/no-useless-undefined
+            setSubmitError(undefined);
             // eslint-disable-next-line no-console
             console.log(
               `Application creation failed: ${error.response.data.code}`,

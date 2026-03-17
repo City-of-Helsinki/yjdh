@@ -119,7 +119,9 @@
   },
   "assistive": {
     "clearChoice": "Clear the selection",
-    "clearAllChoices": "Clear all selected"
+    "clearChoices": "Clear all selections",
+    "clearAllChoices": "Clear all selected",
+    "openDropdown": "Open the dropdown"
   },
   "notificationPages": {
     "thankyou": {

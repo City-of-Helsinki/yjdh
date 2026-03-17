@@ -143,13 +143,13 @@ const useApplicationApi = <T = Application>(
     employmentIndex: number,
     onSuccess = noop
   ) => {
-    const formDataVoucher = draftApplication.summer_vouchers[employmentIndex];
+    const formDataVoucher = draftApplication.summer_vouchers?.[employmentIndex];
     getEmploymentQuery.mutate(
       {
-        employee_name: formDataVoucher.employee_name,
+        employee_name: formDataVoucher?.employee_name ?? '',
         summer_voucher_serial_number:
-          formDataVoucher.summer_voucher_serial_number,
-        employer_summer_voucher_id: formDataVoucher.id,
+          formDataVoucher?.summer_voucher_serial_number ?? '',
+        employer_summer_voucher_id: formDataVoucher?.id ?? '',
       },
       {
         onSuccess: (data) => {
@@ -166,7 +166,7 @@ const useApplicationApi = <T = Application>(
         onError: (error: unknown) => {
           // eslint-disable-next-line no-console
           console.error(error);
-          if (Axios.isAxiosError(error) && error.response.status === 404) {
+          if (Axios.isAxiosError(error) && error.response?.status === 404) {
             // Not found error
             showErrorToast(
               t(
