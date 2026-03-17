@@ -100,15 +100,17 @@ const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <div data-testid="header" className={className}>
+    <div
+      data-testid="header"
+      className={className}
+      style={
+        {
+          '--header-max-width': mainTheme.headerWidth.max,
+        } as React.CSSProperties
+      }
+    >
       <HdsHeader
         theme={theme}
-        style={
-          {
-            '--header-max-width': mainTheme.headerWidth.max,
-          } as React.CSSProperties
-        }
-        title={title}
         onDidChangeLanguage={onLanguageChange}
         languages={languageOptions}
       >
@@ -135,8 +137,8 @@ const Header: React.FC<HeaderProps> = ({
           {customItems}
           {login && !login?.isAuthenticated && !hideLogin && (
             <HdsHeader.ActionBarButton
-              id="sign-in"
               label={login.loginLabel}
+              // @ts-ignore
               onClick={() => handleLogin()}
               icon={<IconSignin />}
               fixedRightPosition

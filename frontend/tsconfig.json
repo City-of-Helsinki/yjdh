@@ -14,10 +14,14 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsxImportSource": "react",
+    "jsx": "preserve"
   },
-  "exclude": ["**/node_modules", "**/.next"]
+  "exclude": [
+    "**/node_modules",
+    "**/.next"
+  ]
 }
