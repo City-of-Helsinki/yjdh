@@ -140,7 +140,7 @@ pygments==2.19.2
     # via
     #   ipython
     #   ipython-pygments-lexers
-pyjwt==2.11.0
+pyjwt==2.12.0
     # via
     #   django-auth-adfs
     #   mozilla-django-oidc
