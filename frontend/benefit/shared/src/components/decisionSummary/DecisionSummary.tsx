@@ -17,24 +17,27 @@ import {
 import { Button, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {$Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import Accordion from "shared/components/accordion/Accordion";
 
 type Props = {
-  application: Application;
-  actions: ReactNode;
-  itemComponent?: React.ComponentType<AlterationAccordionItemProps>;
-  detailList: DecisionDetailList;
-  extraInformation?: ReactNode;
+  application: Application,
+  actions: ReactNode,
+  itemComponent?: React.ComponentType<AlterationAccordionItemProps>,
+  detailList: DecisionDetailList,
+  extraInformation?: ReactNode,
+  afterActionsInformation?: ReactNode,
 };
 
 const DecisionSummary = ({
-  application,
-  actions,
-  itemComponent: ItemComponent,
-  detailList,
-  extraInformation,
-}: Props): JSX.Element => {
+                           application,
+                           actions,
+                           itemComponent: ItemComponent,
+                           detailList,
+                           extraInformation,
+                           afterActionsInformation
+                         }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const isNotRejected = ![
@@ -100,6 +103,7 @@ const DecisionSummary = ({
         })}
       </$DecisionDetails>
       {extraInformation}
+      {afterActionsInformation}
       {isNotRejected && application.handledByAhjoAutomation && (
         <$DecisionActionContainer>
           <Button
@@ -112,6 +116,10 @@ const DecisionSummary = ({
             {t('common:applications.decision.actions.showDecision')}
           </Button>
         </$DecisionActionContainer>
+      )}
+      {isNotRejected && (
+        <>
+        </>
       )}
       {isNotRejected && (
         <>

@@ -294,6 +294,11 @@ msgid "Salary Benefit"
 msgstr "Employee's consent for processing personal data"
 
 #, fuzzy
+#| msgid "payslip"
+msgid "payslip"
+msgstr "Payslip"
+
+#, fuzzy
 #| msgid "education_contract"
 msgid "Commission Benefit"
 msgstr "Agreement on providing apprenticeship training"

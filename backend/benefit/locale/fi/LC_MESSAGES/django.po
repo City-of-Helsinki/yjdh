@@ -347,6 +347,11 @@ msgid "employee consent"
 msgstr "Suostumus työntekijän henkilötietojen käsittelyyn"
 
 #, fuzzy
+#| msgid "payslip"
+msgid "payslip"
+msgstr "Palkkakuitti"
+
+#, fuzzy
 #| msgid "application"
 msgid "full application"
 msgstr "hakemus"
