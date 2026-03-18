@@ -1,5 +1,53 @@
 # Changelog
 
+## [2.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.4...benefit-backend-v2.13.0) (2026-03-18)
+
+
+### Features
+
+* **benefit:** Added integration test for command request_payslip ([59a5c14](https://github.com/City-of-Helsinki/yjdh/commit/59a5c141e62ef92a9b3ad54d912d8845c4c55a05))
+* **benefit:** Added unit test for _send_notification_mail ([ca0b904](https://github.com/City-of-Helsinki/yjdh/commit/ca0b904e1df578988609c9c881fe4a086d6d1a41))
+* **benefit:** Automatic checkpoint notification ([015c509](https://github.com/City-of-Helsinki/yjdh/commit/015c50934fb9997c8dd9477a7e8891be2a35467a))
+* **benefit:** Automatic checkpoint notification ([6930035](https://github.com/City-of-Helsinki/yjdh/commit/6930035be268c06191af513166671cabbead9d78))
+* **benefit:** Changing the test for date ranges and sums ([1b08d47](https://github.com/City-of-Helsinki/yjdh/commit/1b08d47439a4f7d50f9e1a5b1d394e6a9389254c))
+* **benefit:** Created tests for sending emails ([c062145](https://github.com/City-of-Helsinki/yjdh/commit/c062145250223b2ed36be92ef1c66253fcca703b))
+* **benefit:** Date ranges of instalments in decisions ([37837b2](https://github.com/City-of-Helsinki/yjdh/commit/37837b25f4c6c4285574d497d0366779e0f1aa2e))
+* **benefit:** Fixed .po files ([fe361d5](https://github.com/City-of-Helsinki/yjdh/commit/fe361d5d9044eafb1e1d5da29660eb43f84a9a6e))
+* **benefit:** Generated email templates for notification emails ([5fec78d](https://github.com/City-of-Helsinki/yjdh/commit/5fec78d1af81cf6f622c3f4737dc2f75307ed4b4))
+* **benefit:** New actions for instalments ([9777640](https://github.com/City-of-Helsinki/yjdh/commit/977764040c50bfd68297ba5be5741a3e351b8ca2))
+* **benefit:** New states for instalments ([124ab1f](https://github.com/City-of-Helsinki/yjdh/commit/124ab1ffa9eabec36f5528d3aee2285a0ae6624d))
+* **benefit:** Test for changing date ([6676462](https://github.com/City-of-Helsinki/yjdh/commit/66764626a85c605582c44b58a0d2764c4276c387))
+* **benefit:** Test information in mail body ([090264e](https://github.com/City-of-Helsinki/yjdh/commit/090264eabddbc2b0483d44ddfcf90820deffd635))
+
+
+### Bug Fixes
+
+* **benefit:** Added a test for state transitions ([0f84e34](https://github.com/City-of-Helsinki/yjdh/commit/0f84e34a434494f358bd8295334628e124ebf676))
+* **benefit:** Added fetching new instalment statuses to backend ([e808360](https://github.com/City-of-Helsinki/yjdh/commit/e808360084b25088b2a9e0074a0d83d8f14413ed))
+* **benefit:** Augmented the tests ([84d7184](https://github.com/City-of-Helsinki/yjdh/commit/84d71849f52d797a7b4788bf4e0cfc57789d0cde))
+* **benefit:** Changed test date format ([47d08dc](https://github.com/City-of-Helsinki/yjdh/commit/47d08dc6bc30da930e1ec6c03e6895f4a92d6521))
+* **benefit:** Corrected states for instalment actions ([d168935](https://github.com/City-of-Helsinki/yjdh/commit/d168935dc3b5194037edf178d758b5d37c262b09))
+* **benefit:** Fixed no instalments case ([3f7bfd7](https://github.com/City-of-Helsinki/yjdh/commit/3f7bfd752ef1799296ff778b0dabc28cf265f56f))
+* **benefit:** Fixed the calculation of 2nd instalment due date ([a457a09](https://github.com/City-of-Helsinki/yjdh/commit/a457a09f7e9603f7e44ba8e9fbe393f66423d9b9))
+* **benefit:** Fixed the email context information ([7a7a4fb](https://github.com/City-of-Helsinki/yjdh/commit/7a7a4fb017403eca772bf75896095adf4d76051f))
+* **benefit:** Fixed the notify_applications logic ([2f88dd4](https://github.com/City-of-Helsinki/yjdh/commit/2f88dd4486bb29537ac69ba4640976f56d15958a))
+* **benefit:** Fixed the test for request payslip ([b825770](https://github.com/City-of-Helsinki/yjdh/commit/b825770300ef2b0f4de09dab5a70064289eb6c2c))
+* **benefit:** Fixed the tests ([82c483a](https://github.com/City-of-Helsinki/yjdh/commit/82c483a8209c468c201a9d0f98e3230376d91318))
+* **benefit:** Fixes according to review ([aa9ee8a](https://github.com/City-of-Helsinki/yjdh/commit/aa9ee8a24b5628420084217d5726420ac1c7c8a9))
+* **benefit:** Fixes from Sentry bot and refactoring ([b7beef3](https://github.com/City-of-Helsinki/yjdh/commit/b7beef33058fd5210954b9d5db915ddd2175d883))
+* **benefit:** Linting fixes to the code ([7bd7549](https://github.com/City-of-Helsinki/yjdh/commit/7bd7549b4fff773f49b2093b10960e90cc6d1277))
+* **benefit:** Minor alterations to the code ([08ecbad](https://github.com/City-of-Helsinki/yjdh/commit/08ecbad556cb61eccf2ffaea6dec21e608c480db))
+* **benefit:** Writing tests for the code ([6c1c9c8](https://github.com/City-of-Helsinki/yjdh/commit/6c1c9c8cfc4963853c81ac2c182ca8c96f7bfd1f))
+
+
+### Dependencies
+
+* Bump authlib from 1.6.6 to 1.6.7 in /backend/benefit ([0d36e65](https://github.com/City-of-Helsinki/yjdh/commit/0d36e6513e7826421173b409dcc4c0293ddf386c))
+* Bump authlib from 1.6.7 to 1.6.9 in /backend/benefit ([94b5c4f](https://github.com/City-of-Helsinki/yjdh/commit/94b5c4f5ae76e1fe3e7ab8afb7486d22105f2d0e))
+* Bump django from 5.2.11 to 5.2.12 in /backend/benefit ([9efe736](https://github.com/City-of-Helsinki/yjdh/commit/9efe73643ae62aa126c8423470f320fabb27fd6a))
+* Bump pyasn1 from 0.6.2 to 0.6.3 in /backend/benefit ([a9533c7](https://github.com/City-of-Helsinki/yjdh/commit/a9533c768c8af0373166899fdc92bdf26ea98f04))
+* Bump pyjwt from 2.10.1 to 2.12.0 in /backend/benefit ([9638061](https://github.com/City-of-Helsinki/yjdh/commit/9638061a65fe2dffc423d1928f87bc4a6671d571))
+
 ## [2.12.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.3...benefit-backend-v2.12.4) (2026-02-19)
 
 
