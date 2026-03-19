@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.20.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.19.0...benefit-applicant-v3.20.0) (2026-03-19)
+
+
+### Features
+
+* **benefit:** Test for application step 5&6 ([fe22ab7](https://github.com/City-of-Helsinki/yjdh/commit/fe22ab75821f60e635e4a670bec849c6fd87a677))
+
+
+### Bug Fixes
+
+* **benefit:** Fix application send message ([e2141cd](https://github.com/City-of-Helsinki/yjdh/commit/e2141cd6e112a1411a2d2a89649ea49c43b43c8c))
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [3.19.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.18.1...benefit-applicant-v3.19.0) (2026-02-19)
 
 
