@@ -2,6 +2,9 @@ import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integr
 
 import isSuomiFiEnabled from '../flags/is-suomi-fi-enabled';
 
+// Django contrib admin site uses this field name for redirects
+export const REDIRECT_FIELD_NAME = 'next';
+
 const suomiFiEndpoint = {
   LOGIN: '/saml2/login/',
   LOGOUT: '/saml2/logout/',
@@ -13,6 +16,8 @@ const helsinkiProfileEndpoint = {
 };
 
 export const BackendEndpoint = {
+  ADFS_LOGIN: '/oauth2/login/',
+  ADFS_LOGOUT: '/oauth2/logout/',
   ADDITIONAL_INFO: '/v1/additional_info/',
   COMPANY: '/v1/company/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',

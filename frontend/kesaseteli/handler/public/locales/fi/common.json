@@ -1,6 +1,9 @@
 {
   "appName": "Kesäsetelin käsittelijäliittymä",
   "header": {
+    "loginLabel": "Kirjaudu palveluun",
+    "logoutLabel": "Kirjaudu ulos",
+    "userAriaLabelPrefix": "Käyttäjä:",
     "createApplicationWithoutSsnLabel": "Luo hakemus ilman henkilötunnusta",
     "linkSkipToContent": "Siirry sisältöön",
     "menuToggleAriaLabel": "Valikko",
@@ -20,6 +23,14 @@
   "404Page": {
     "pageNotFoundLabel": "Sivua ei löytynyt",
     "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
+  },
+  "loginPage": {
+    "logoutMessageLabel": "Olet kirjautunut ulos",
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
   "403Page": {
     "forbiddenPageLabel": "Sinulla ei ole oikeuksia",

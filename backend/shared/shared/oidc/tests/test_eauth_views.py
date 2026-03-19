@@ -130,10 +130,19 @@ def test_eauth_callback_view(requests_mock, user_client, user):
     requests_mock.get(matcher, json=organization_roles_json)
 
     callback_url = f"{reverse('eauth_authentication_callback')}?code=test"
+
+    # First test: With explicit next URL in session
+    session = user_client.session
+    session["eauth_next_url"] = "http://example.com/dynamic/redirect/"
+    session.save()
+
     response = user_client.get(callback_url)
 
     assert response.status_code == 302
-    assert response.url == settings.LOGIN_REDIRECT_URL
+    assert response.url == "http://example.com/dynamic/redirect/"
+
+    # Verify the value was popped from the session
+    assert "eauth_next_url" not in user_client.session
 
     access_token_expires = timezone.now() + timezone.timedelta(seconds=600)
     assert user_client.session.get("eauth_access_token") == "test2"

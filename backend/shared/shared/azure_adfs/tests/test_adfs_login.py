@@ -216,7 +216,7 @@ def test_adfs_callback(
             response = client.get(callback_url)
 
     assert response.status_code == 302
-    assert response.url == settings.ADFS_LOGIN_REDIRECT_URL
+    assert response.url == "/"
     assert "_auth_user_id" in client.session
 
 
@@ -382,27 +382,36 @@ def test_adfs_callback_admin_link(
 
 
 @pytest.mark.django_db
-@override_settings(
-    NEXT_PUBLIC_MOCK_FLAG=False,
-    ADFS_LOGIN_REDIRECT_URL="http://example.com/adfs-default",
-    LOGIN_REDIRECT_URL="http://example.com/login-default",
-)
 @pytest.mark.parametrize(
-    "target_url",
+    "target_url, state_url, expected_url, expected_status",
     [
-        "/",
-        "http://example.com/login-default",
+        ("/", None, "/", 302),
+        (
+            "http://example.com/login-default",
+            None,
+            "http://example.com/login-default",
+            302,
+        ),
+        ("/", "http://unauthorized.com/test", None, 400),
+        ("/", "http://localhost:3200/test", "http://localhost:3200/test", 302),
     ],
 )
-def test_adfs_callback_fallback(
+@override_settings(
+    ALLOWED_OAUTH2_REDIRECT_HOSTS=["localhost:3200"],
+)
+def test_adfs_callback_routing(
     client,
     requests_mock,
     user,
     target_url,
+    state_url,
+    expected_url,
+    expected_status,
 ):
     """
-    Test that the callback falls back to ADFS_LOGIN_REDIRECT_URL if the target URL
-    is just slash (root) or the default LOGIN_REDIRECT_URL.
+    Test that the callback uses 'state' for redirection if it contains an authorized URL,
+    otherwise it preserves the library's default (super().get() choice).
+    Unauthorized URLs in 'state' should raise SuspiciousOperation (400 Bad Request).
     """
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
@@ -419,8 +428,18 @@ def test_adfs_callback_fallback(
             ) as mock_super_get:
                 mock_super_get.return_value = redirect(target_url)
 
-                callback_url = f"{reverse('django_auth_adfs:callback')}?code=test&state=coded_state"
-                response = client.get(callback_url)
+                params = {"code": "test"}
+                if state_url:
+                    params["state"] = base64.urlsafe_b64encode(
+                        state_url.encode()
+                    ).decode()
+                else:
+                    # Missing state or invalid base64 should trigger fallback path
+                    params["state"] = "invalid_base64"
 
-    assert response.status_code == 302
-    assert response.url == "http://example.com/adfs-default"
+                callback_url = reverse("django_auth_adfs:callback")
+                response = client.get(callback_url, params)
+
+    assert response.status_code == expected_status
+    if expected_url:
+        assert response.url == expected_url

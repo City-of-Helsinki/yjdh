@@ -1,6 +1,7 @@
 import base64
 import os
 import tempfile
+from urllib.parse import urlparse
 
 import environ
 import saml2
@@ -210,6 +211,7 @@ MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
 YOUTH_URL = env.str("YOUTH_URL")
 HANDLER_URL = env.str("HANDLER_URL")
+EMPLOYER_URL = env.str("EMPLOYER_URL", default=None)
 NEXT_PUBLIC_BACKEND_URL = env("NEXT_PUBLIC_BACKEND_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
@@ -305,6 +307,13 @@ CSRF_TRUSTED_ORIGINS = convert_to_django_4_2_csrf_trusted_origins(
 )
 CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
+
+ALLOWED_OAUTH2_REDIRECT_HOSTS = env.list(
+    "ALLOWED_OAUTH2_REDIRECT_HOSTS",
+    default=[
+        urlparse(HANDLER_URL).netloc,
+    ],
+)
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
@@ -418,10 +427,13 @@ AUTH_ADFS = {
     "AUDIENCE": ADFS_CLIENT_ID,
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
-    "CLAIM_MAPPING": {"email": "mail"},
+    "CLAIM_MAPPING": {"email": "upn"},
     "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,
+    # "VERSION": "v2.0",
+    # "SCOPES": ["openid", "profile", "email"],
+    # "CONFIG_RELOAD_INTERVAL": 0,
 }
 
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
