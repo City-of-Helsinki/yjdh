@@ -1,5 +1,3 @@
-include:
-  - employer.yml
 services:
   backend:
     build:

@@ -49,8 +49,8 @@ const Checkbox = <T,>({
         <HdsCheckbox
           {...field}
           value={String(value)}
-          data-testid={id}
-          id={id}
+          data-testid={id as string}
+          id={id as string}
           required={required}
           errorText={errorText}
           label={

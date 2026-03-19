@@ -4,6 +4,7 @@ import React from 'react';
 import { $Body, $Bottom, $Close, $Drawer, $Title, $Top } from './Drawer.sc';
 
 export type DrawerProps = {
+  children?: React.ReactNode;
   title?: string;
   closeText?: string;
   footer?: React.ReactNode;

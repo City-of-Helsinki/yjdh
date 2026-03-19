@@ -33,7 +33,7 @@ const SelectionGroup = <T,>({
 }: Props<T>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
 
-  const idString = id as string;
+  const inputId = String(id);
 
   return (
     <$GridCell {...$gridCellProps}>
@@ -43,8 +43,8 @@ const SelectionGroup = <T,>({
         control={control}
         render={({ field: { onChange: controllerOnChange, value, ref } }) => (
           <$SelectionGroup
-            id={idString}
-            data-testid={idString}
+            id={inputId}
+            data-testid={inputId}
             direction={direction}
             errorText={errorText}
             label={label}
@@ -53,9 +53,9 @@ const SelectionGroup = <T,>({
           >
             {values.map((val) => (
               <RadioButton
-                key={`${idString}-${val}`}
-                id={`${idString}-${val}`}
-                data-testid={`${idString}-${val}`}
+                key={`${inputId}-${val}`}
+                id={`${inputId}-${val}`}
+                data-testid={`${inputId}-${val}`}
                 label={getValueText(val)}
                 value={val}
                 onChange={(event) => {

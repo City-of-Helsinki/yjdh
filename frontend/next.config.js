@@ -40,14 +40,11 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
   const config = {
     productionBrowserSourceMaps: !disableSourceMaps,
     poweredByHeader: false,
-    swcMinify: true,
     compiler: {
       styledComponents: true,
     },
-    experimental: {
-      externalDir: true,
-    },
     output: 'standalone',
+    outputFileTracingRoot: require('path').join(__dirname, '../../'),
     typescript: {
       /** Do not run TypeScript during production builds (`next build`). */
       ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,

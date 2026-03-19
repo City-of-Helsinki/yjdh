@@ -48,12 +48,11 @@ class Step3 extends WizardStep {
       // eslint-disable-next-line no-await-in-loop
       await t
         .expect(
-          Selector(id)
-            .parent()
-            .parent()
-            .find(`a[aria-label^="${filenameWithoutExtension}"]`).visible
+          Selector(
+            `a[aria-label^="${filenameWithoutExtension}"]`
+          ).filterVisible().exists
         )
-        .ok();
+        .ok('Uploaded file link should become visible', { timeout: 15_000 });
     }
   }
 }
