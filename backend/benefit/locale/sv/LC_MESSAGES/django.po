@@ -348,6 +348,11 @@ msgid "employee consent"
 msgstr "Behandlingen av personuppgifterna av personen som ska sysselsättas"
 
 #, fuzzy
+#| msgid "payslip"
+msgid "payslip"
+msgstr "Lönebesked"
+
+#, fuzzy
 #| msgid "application"
 msgid "full application"
 msgstr "Ansökan"

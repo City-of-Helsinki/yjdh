@@ -300,6 +300,7 @@ export type Application = {
   applicantTermsApprovalNeeded?: boolean;
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
+  employerAssurance?: boolean | null;
   calculation?: Calculation;
   submittedAt?: string;
   paySubsidies?: PaySubsidy[];
@@ -497,6 +498,7 @@ export type ApplicationData = {
   applicant_terms_approval_needed?: boolean;
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
+  employer_assurance?: boolean | null;
   calculation?: CalculationData;
   pay_subsidies?: PaySubsidyData[];
   duration_in_months_rounded?: string;

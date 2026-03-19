@@ -106,6 +106,7 @@ class AttachmentType(models.TextChoices):
     )
     HELSINKI_BENEFIT_VOUCHER = "helsinki_benefit_voucher", _("helsinki benefit voucher")
     EMPLOYEE_CONSENT = "employee_consent", _("employee consent")
+    PAYSLIP = "payslip", _("payslip")
     FULL_APPLICATION = "full_application", _("full application")
     OTHER_ATTACHMENT = "other_attachment", _("other attachment")
     PDF_SUMMARY = "pdf_summary", _("pdf summary")

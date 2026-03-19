@@ -501,6 +501,11 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     apprenticeship_program = models.BooleanField(null=True)
 
     """
+    Employer's assurance that the contract has been fulfilled as planned
+    """
+    employer_assurance = models.BooleanField(null=True)
+
+    """
     After applications are moved to archive, they are hidden from the default view.
     """
     archived = models.BooleanField()

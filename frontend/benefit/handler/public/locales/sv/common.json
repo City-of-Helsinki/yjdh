@@ -770,6 +770,19 @@
         "text": "Tuen automaattinen maksu on epäonnistunut. Palauta hakemus odottamaan automaattista Talpa-käsittelyä tai merkitse maksu suoritetuksi jolloin maksutapahtuma on vahvistettava manuaalisesti Talpalta."
       }
     },
+    "paidSalaries": {
+      "heading": "Maksetut palkat",
+      "assurance": "Asiakas vakuuttaa työsuhteen toteutuneen suunnitellusti",
+      "buttons": {
+        "pending": "Kesken",
+        "accept": "Hyväksy",
+        "uploadAttachment": "Lisää liite"
+      },
+      "error": {
+        "heading": "Työnantajan vakuutuksen asetus",
+        "text": "Työnantajan vakuutksen asetus epäonnistui."
+      }
+    },
     "decision": {
       "description": {
         "accepted": "Hakemus on hyväksytty ja Helsinki-lisää on myönnetty aikavälille {{dateRangeStart}} – {{dateRangeEnd}}",

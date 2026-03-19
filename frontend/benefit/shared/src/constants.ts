@@ -137,6 +137,7 @@ export enum ATTACHMENT_TYPES {
   EDUCATION_CONTRACT = 'education_contract',
   HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
   EMPLOYEE_CONSENT = 'employee_consent',
+  PAYSLIP = 'payslip',
   FULL_APPLICATION = 'full_application',
   OTHER_ATTACHMENT = 'other_attachment',
 }

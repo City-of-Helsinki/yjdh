@@ -870,6 +870,20 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         application.save()
         return Response(status=status.HTTP_200_OK)
 
+    @action(methods=["PATCH"], detail=True, url_path="change-employer-assurance")
+    @transaction.atomic
+    def change_employer_assurance(self, request, pk=None) -> HttpResponse:
+        application = self.get_object()
+        employer_assurance = request.data.get("employer_assurance")
+        if not employer_assurance:
+            return Response(
+                _("Field employer_assurance is required"),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        application.employer_assurance = employer_assurance
+        application.save()
+        return Response(status=status.HTTP_200_OK)
+
     @action(methods=["GET"], detail=True, url_path="clone_as_draft")
     @transaction.atomic
     def clone_as_draft(self, request, pk) -> HttpResponse:
