@@ -52,3 +52,7 @@ class KesaseteliAdminSite(admin.AdminSite):
 
 class KesaseteliAdminConfig(AdminConfig):
     default_site = "kesaseteli.admin_site.KesaseteliAdminSite"
+
+    def ready(self):
+        super().ready()
+        from . import admin  # noqa
