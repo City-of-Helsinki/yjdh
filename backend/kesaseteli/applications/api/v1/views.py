@@ -736,6 +736,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = EmployerApplicationFilter
+    audit_changes_via_serializer = True
 
     def get_queryset(self):
         queryset = (
