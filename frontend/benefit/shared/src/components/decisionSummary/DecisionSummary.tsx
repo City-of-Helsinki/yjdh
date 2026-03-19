@@ -17,9 +17,8 @@ import {
 import { Button, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
-import {$Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import Accordion from "shared/components/accordion/Accordion";
 
 type Props = {
   application: Application,

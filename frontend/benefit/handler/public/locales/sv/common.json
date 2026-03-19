@@ -777,6 +777,10 @@
         "pending": "Kesken",
         "accept": "Hyväksy",
         "uploadAttachment": "Lisää liite"
+      },
+      "error": {
+        "heading": "Työnantajan vakuutuksen asetus",
+        "text": "Työnantajan vakuutksen asetus epäonnistui."
       }
     },
     "decision": {

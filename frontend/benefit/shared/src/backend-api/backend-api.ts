@@ -59,7 +59,9 @@ export const HandlerEndpoint = {
   HANDLER_INSTALMENT_STATUS_TRANSITION: (id: string) =>
     `${handlerInstalmentBase(id)}`,
   HANDLER_INSTALMENT_CHANGE_DATE: (id: string) =>
-    `${handlerInstalmentBase(id)}`
+    `${handlerInstalmentBase(id)}`,
+  HANDLER_EMPLOYER_ASSURANCE_CHANGE: (id: string) =>
+    `${handlerApplicationsBase(id)}change_employer_assurance/`,
 } as const;
 
 const applicationsBase = (id: string): string =>

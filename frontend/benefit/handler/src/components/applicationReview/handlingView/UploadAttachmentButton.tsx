@@ -21,7 +21,6 @@ const ALLOWED_FILE_TYPES = [
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const UploadAttachmentButton: React.FC<Props> = ({
-                                                   application,
                                                    onUpload,
                                                    isUploading = false,
                                                  }) => {
@@ -93,7 +92,7 @@ const UploadAttachmentButton: React.FC<Props> = ({
         isOpen={isDialogOpen}
         close={() => setIsDialogOpen(false)}
         aria-labelledby="upload-dialog-title"
-        closeButtonLabelText={t('common:applications.actions.close', 'Sulje')}
+        closeButtonLabelText={t('common:applications.paidSalaries.buttons.close')}
       >
         <Dialog.Header
           id="upload-dialog-title"
