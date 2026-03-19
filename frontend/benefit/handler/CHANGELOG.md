@@ -1,5 +1,30 @@
 # Changelog
 
+## [4.14.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.13.1...benefit-handler-v4.14.0) (2026-03-19)
+
+
+### Features
+
+* **benefit:** New actions for instalments ([9777640](https://github.com/City-of-Helsinki/yjdh/commit/977764040c50bfd68297ba5be5741a3e351b8ca2))
+* **benefit:** New states for instalments ([124ab1f](https://github.com/City-of-Helsinki/yjdh/commit/124ab1ffa9eabec36f5528d3aee2285a0ae6624d))
+* **benefit:** Set default value for date picker ([09494c7](https://github.com/City-of-Helsinki/yjdh/commit/09494c76eeb765b61825b88f1689ae1cb0fcea6a))
+* **benefit:** Test for changing date ([6676462](https://github.com/City-of-Helsinki/yjdh/commit/66764626a85c605582c44b58a0d2764c4276c387))
+
+
+### Bug Fixes
+
+* **benefit:** Corrected states for instalment actions ([d168935](https://github.com/City-of-Helsinki/yjdh/commit/d168935dc3b5194037edf178d758b5d37c262b09))
+* **benefit:** Fixed frontend test ([f1a463c](https://github.com/City-of-Helsinki/yjdh/commit/f1a463c23bf32d2bf5f7dc0c3bfd7352321b2535))
+* **benefit:** Fixes according to review ([aa9ee8a](https://github.com/City-of-Helsinki/yjdh/commit/aa9ee8a24b5628420084217d5726420ac1c7c8a9))
+* **benefit:** Fixes from Sentry bot and refactoring ([b7beef3](https://github.com/City-of-Helsinki/yjdh/commit/b7beef33058fd5210954b9d5db915ddd2175d883))
+* **benefit:** Remove 2nd sum ([578e206](https://github.com/City-of-Helsinki/yjdh/commit/578e2060ac1aa6a8d6c2cef3264020833f476dcf))
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [4.13.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.13.0...benefit-handler-v4.13.1) (2026-02-17)
 
 
