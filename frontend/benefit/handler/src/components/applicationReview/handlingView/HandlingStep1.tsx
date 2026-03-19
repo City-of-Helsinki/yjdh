@@ -144,6 +144,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
           application={application}
           actions={[
             <Button
+              key="report-alteration"
               theme="black"
               variant={canCreate ? 'secondary' : 'primary'}
               onClick={() =>
