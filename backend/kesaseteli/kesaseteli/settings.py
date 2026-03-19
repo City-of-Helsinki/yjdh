@@ -448,10 +448,13 @@ AUTH_ADFS = {
     "AUDIENCE": ADFS_CLIENT_ID,
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
-    "CLAIM_MAPPING": {"email": "mail"},
+    "CLAIM_MAPPING": {"email": "upn"},
     "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,
+    # "VERSION": "v2.0",
+    # "SCOPES": ["openid", "profile", "email"],
+    # "CONFIG_RELOAD_INTERVAL": 0,
 }
 
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
