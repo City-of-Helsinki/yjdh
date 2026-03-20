@@ -165,6 +165,7 @@ const CompanySection: React.FC<Props> = ({
         {formik.values.useAlternativeAddress && (
           <$GridCell as={$Grid} $colSpan={12}>
             <$GridCell $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.companyDepartment.name}
                 name={fields.companyDepartment.name}
@@ -179,6 +180,7 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colStart={1} $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyStreetAddress.name}
                 name={fields.alternativeCompanyStreetAddress.name}
@@ -200,6 +202,7 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyPostcode.name}
                 name={fields.alternativeCompanyPostcode.name}
@@ -221,6 +224,7 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyCity.name}
                 name={fields.alternativeCompanyCity.name}
@@ -258,6 +262,7 @@ const CompanySection: React.FC<Props> = ({
           >
             {
               (() => (
+                // @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here.
                 <TextInput
                   id={fields.companyBankAccountNumber.name}
                   name={fields.companyBankAccountNumber.name}
@@ -330,6 +335,7 @@ const CompanySection: React.FC<Props> = ({
       </FormSection>
       <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -351,6 +357,7 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonLastName.name}
             name={fields.companyContactPersonLastName.name}
@@ -372,6 +379,7 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonPhoneNumber.name}
             name={fields.companyContactPersonPhoneNumber.name}
@@ -393,6 +401,7 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonEmail.name}
             name={fields.companyContactPersonEmail.name}
@@ -523,6 +532,7 @@ const CompanySection: React.FC<Props> = ({
               margin-top: ${theme.spacing.s};
             `}
           >
+            {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
             <TextArea
               id={fields.coOperationNegotiationsDescription.name}
               name={fields.coOperationNegotiationsDescription.name}

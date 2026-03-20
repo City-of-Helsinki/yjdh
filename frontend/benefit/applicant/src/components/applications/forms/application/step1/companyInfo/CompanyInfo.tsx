@@ -298,6 +298,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           >
             {
               ((props: Record<string, unknown>) => (
+                // @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740.
                 <TextInput
                   {...props}
                   id={fields.companyBankAccountNumber.name}
