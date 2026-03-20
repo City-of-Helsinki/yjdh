@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $CompanyInfoWrapper = styled.div`
   display: grid;
@@ -16,11 +16,16 @@ export const $CompanyInfoValue = styled.dd`
   font-size: 1.1em;
 `;
 
-export const $IconWrapper = styled.span<{ $isBeginning?: boolean }>`
+type IconType = {
+  $isBeginning?: boolean;
+  theme: DefaultTheme;
+};
+
+export const $IconWrapper = styled.span<IconType>`
   svg {
-    margin-left: ${(props) =>
+    margin-left: ${(props: IconType) =>
       !props.$isBeginning ? props.theme.spacing.xs2 : 0};
-    margin-right: ${(props) =>
+    margin-right: ${(props: IconType) =>
       props.$isBeginning ? props.theme.spacing.xs2 : 0};
     position: relative;
     top: 5px;

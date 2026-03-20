@@ -1,15 +1,17 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $Description = styled.p`
-  font-size: ${(props) => props.theme.fontSize.heading.xs};
-  line-height: ${(props) => props.theme.lineHeight.l};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.xs};
+  line-height: ${(props: { theme: DefaultTheme }) => props.theme.lineHeight.l};
 `;
 
 export const $DateHeader = styled.p`
-  font-size: ${(props) => props.theme.fontSize.heading.s};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.s};
   font-weight: 500;
 `;
 
 export const $HelpText = styled.p`
-  color: ${(props) => props.theme.colors.black70};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black70};
 `;
