@@ -13,14 +13,18 @@ type Payload = {
 
 const useInstalmentStatusTransition = (): UseMutationResult<
   null,
-  Error,
+  AxiosError<Error, Record<string, string[]>>,
   Payload
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
-  return useMutation<null, Error, Payload>(
+  return useMutation<
+    null,
+    AxiosError<Error, Record<string, string[]>>,
+    Payload
+  >(
     'instalments',
     ({ id, status }: Payload) =>
       handleResponse(

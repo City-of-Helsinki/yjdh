@@ -106,7 +106,7 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
   };
 
   const handleBatchRemoval = (): void => {
-    const allApps = applications.map((app) => app.id);
+    const allApps = (applications || []).map((app) => app.id || '');
     removeApp({ appIds: allApps, batchId: id });
     setModalBatchRemoval(false);
   };

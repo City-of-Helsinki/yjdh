@@ -70,7 +70,7 @@ const AlterationFormContainer: React.FC<Props> = ({
 
   const handleError = (error: AxiosError<unknown>): void => {
     const errorData = camelcaseKeys(error.response?.data ?? {});
-    const errors = [];
+    const errors: JSX.Element[] = [];
 
     const getErrorItem = (
       fieldKey: string,

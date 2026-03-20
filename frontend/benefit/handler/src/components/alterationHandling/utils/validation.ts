@@ -7,37 +7,36 @@ import {
   validateIsAfterOrOnDate,
   validateIsBeforeOrOnDate,
 } from 'benefit-shared/utils/dates';
-import { validateNumberField } from 'benefit-shared/utils/validation';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { getNumberValueOrNull } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
-import { RequiredBooleanSchema } from 'yup/lib/boolean';
-import { RequiredStringSchema } from 'yup/lib/string';
 
 export const getValidationSchema = (
   application: Application,
   alteration: ApplicationAlteration,
   t: TFunction
-): unknown => {
-  const testRecoveryDateMin: Yup.TestConfig<string> = {
+): Yup.AnyObjectSchema => {
+  const testRecoveryDateMin: Yup.TestConfig<string | null | undefined> = {
     message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-      min: convertToUIDateFormat(application.startDate),
+      min: convertToUIDateFormat(application.startDate ?? ''),
     }),
     test: (value = ''): boolean =>
-      validateIsAfterOrOnDate(value, application.startDate),
+      validateIsAfterOrOnDate(value ?? '', application.startDate ?? ''),
   };
 
-  const testRecoveryDateMax: Yup.TestConfig<string> = {
+  const testRecoveryDateMax: Yup.TestConfig<string | null | undefined> = {
     message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
-      max: convertToUIDateFormat(application.endDate),
+      max: convertToUIDateFormat(application.endDate ?? ''),
     }),
     test: (value = ''): boolean =>
-      validateIsBeforeOrOnDate(value, application.endDate),
+      validateIsBeforeOrOnDate(value ?? '', application.endDate ?? ''),
   };
 
   return Yup.object().shape({
-    application: Yup.string().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    application: Yup.string()
+      .nullable()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     recoveryStartDate: Yup.string()
       .nullable()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
@@ -50,41 +49,77 @@ export const getValidationSchema = (
       .test(testRecoveryDateMax)
       .when(
         'recoveryStartDate',
-        (recoveryStartDate: string, schema: RequiredStringSchema<string>) =>
+        (
+          recoveryStartDate: string | undefined,
+          schema: Yup.StringSchema<string | null | undefined, object>
+        ) =>
           schema.test({
             message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
               min: convertToUIDateFormat(recoveryStartDate),
             }),
-            test: (value = '') =>
+            test: (value: string | null | undefined) =>
               recoveryStartDate
-                ? validateIsAfterOrOnDate(value, recoveryStartDate)
+                ? validateIsAfterOrOnDate(value ?? '', recoveryStartDate)
                 : true,
           })
       ),
     manualRecoveryAmount: Yup.string().when('isManual', {
-      is: (isManual) => isManual === true,
-      then: () =>
-        validateNumberField(
-          0,
-          application?.calculation?.calculatedBenefitAmount
-            ? Number(application.calculation.calculatedBenefitAmount)
-            : Infinity,
-          {
-            required: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-            typeError: t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
-          }
-        ),
+      is: (isManual: boolean) => isManual === true,
+      then: (schema) =>
+        schema
+          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
+          .test(
+            'is-numeric',
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID),
+            (value) => {
+              if (value === null || value === undefined) return true;
+              return (
+                !Number.isNaN(parseFloat(value)) &&
+                Number.isFinite(parseFloat(value))
+              );
+            }
+          )
+          .test(
+            'min-value',
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN, { min: 0 }),
+            (value) => {
+              if (value === null || value === undefined) return true;
+              return parseFloat(value) >= 0;
+            }
+          )
+          .test(
+            'max-value',
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX, {
+              max: application?.calculation?.calculatedBenefitAmount,
+            }),
+            (value) => {
+              if (value === null || value === undefined) return true;
+              return (
+                parseFloat(value) <=
+                (application?.calculation?.calculatedBenefitAmount
+                  ? Number(application.calculation.calculatedBenefitAmount)
+                  : Infinity)
+              );
+            }
+          ),
     }),
-    isManual: Yup.boolean().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    isManual: Yup.boolean()
+      .nullable()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     isRecoverable: Yup.boolean()
+      .nullable()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
       .when('recoveryAmount', {
-        is: (recoveryAmount) => getNumberValueOrNull(recoveryAmount) === 0,
-        then: (schema: RequiredBooleanSchema<boolean>) =>
+        is: (recoveryAmount: string) =>
+          getNumberValueOrNull(recoveryAmount) === 0,
+        then: (schema) =>
           schema.oneOf([false], t(VALIDATION_MESSAGE_KEYS.EMPTY_RECOVERY)),
       }),
-    recoveryJustification: Yup.string().required(
-      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-    ),
+    recoveryJustification: Yup.string()
+      .nullable()
+      .when('isRecoverable', {
+        is: (isRecoverable: boolean) => isRecoverable === false,
+        then: (schema) => schema.required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      }),
   });
 };

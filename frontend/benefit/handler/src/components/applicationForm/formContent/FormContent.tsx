@@ -530,7 +530,9 @@ const FormContent: React.FC<Props> = ({
             />
           </SelectionGroup>
         </$GridCell>
-        {TRUTHY_SUBSIDIES.has(formik.values.paySubsidyGranted) && (
+        {TRUTHY_SUBSIDIES.has(
+          formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
+        ) && (
           <$GridCell
             as={$Grid}
             $colSpan={12}
@@ -691,13 +693,19 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
         )}
-        {TRUTHY_SUBSIDIES.has(formik.values.paySubsidyGranted) && (
+        {TRUTHY_SUBSIDIES.has(
+          formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
+        ) && (
           <$GridCell $colSpan={12}>
             <AttachmentsList
               attachments={attachments}
               attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
               handleQuietSave={handleQuietSave}
-              title={t(paySubsidyTitle(formik.values.paySubsidyGranted))}
+              title={t(
+                paySubsidyTitle(
+                  formik.values.paySubsidyGranted as PAY_SUBSIDY_GRANTED
+                )
+              )}
               required
             />
           </$GridCell>
@@ -733,7 +741,7 @@ const FormContent: React.FC<Props> = ({
           withoutDivider
           header={t(`${translationsBase}.headings.validity`)}
         >
-          {application?.applicantTermsInEffect?.applicantConsents.map(
+          {(application?.applicantTermsInEffect?.applicantConsents || []).map(
             (consent, i) => (
               <$GridCell
                 $colSpan={12}

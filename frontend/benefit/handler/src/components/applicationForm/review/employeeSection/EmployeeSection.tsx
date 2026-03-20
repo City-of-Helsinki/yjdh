@@ -21,7 +21,7 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
       header={t(`${translationsBase}.headings.employment1`)}
       action={
         <EditButton
-          section={fields.employee?.firstName.name}
+          section={fields?.employee?.firstName?.name ?? ''}
           dispatchStep={dispatchStep}
         />
       }

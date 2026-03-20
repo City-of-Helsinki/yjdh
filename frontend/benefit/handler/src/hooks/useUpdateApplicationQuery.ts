@@ -34,12 +34,15 @@ const useUpdateApplicationQuery = (): UseMutationResult<
         void queryClient.invalidateQueries('applications');
         void queryClient.invalidateQueries('application');
         if (
+          response.status &&
           [
             APPLICATION_STATUSES.ACCEPTED,
             APPLICATION_STATUSES.REJECTED,
           ].includes(response.status)
         ) {
-          void router.push(`/application?id=${response.id}&action=submit`);
+          void router.push(
+            `/application?id=${response.id || ''}&action=submit`
+          );
         }
       },
       onError: (error: AxiosError) => {

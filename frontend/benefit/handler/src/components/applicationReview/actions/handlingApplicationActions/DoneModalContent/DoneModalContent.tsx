@@ -14,7 +14,7 @@ import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import { $Header, $Text } from '../HandlingApplicationActions.sc';
 
 type ComponentProps = {
-  handledApplication: HandledAplication;
+  handledApplication: HandledAplication | null;
   onClose: () => void;
   onSubmit: () => void;
   calculationRows: Row[];
@@ -30,7 +30,7 @@ const DoneModalContent: React.FC<ComponentProps> = ({
   const { t } = useTranslation();
 
   const isApproved =
-    handledApplication.status === APPLICATION_STATUSES.ACCEPTED;
+    handledApplication?.status === APPLICATION_STATUSES.ACCEPTED;
   const description = handledApplication?.logEntryComment;
 
   const { totalRow, dateRangeRows, helsinkiBenefitMonthlyRows } =

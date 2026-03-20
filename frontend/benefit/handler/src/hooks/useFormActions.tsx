@@ -69,7 +69,7 @@ const getErrorContent = (
   errorData: {
     data: Record<string, string[]>;
   }
-): JSX.Element[] => {
+): React.ReactElement[] => {
   try {
     return Object.entries(errorData).map(([key, value]) => {
       if (key === APPLICATION_FIELD_KEYS.EMPLOYEE) {
@@ -79,10 +79,10 @@ const getErrorContent = (
               key={emplKey}
               href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}
             >
-              {emplValue}
+              {emplValue as React.ReactNode}
             </a>
           )
-        )[0];
+        )[0] as React.ReactElement;
       }
       if (key === 'approveTerms') {
         return (
@@ -140,11 +140,35 @@ const useFormActions = (
       deleteApplicationError;
 
     if (error) {
-      const errorData = camelcaseKeys(error.response?.data ?? {});
-      const isContentTypeHTML = typeof errorData === 'string';
+      const errorDataFromResponse = error.response?.data;
+      const errorDataCamelCased = camelcaseKeys(errorDataFromResponse ?? {});
+
+      const isContentTypeHTML = typeof errorDataFromResponse === 'string';
+
+      let dataForGetErrorContent: Record<string, string[]>;
+
+      if (isContentTypeHTML) {
+        dataForGetErrorContent = {};
+      } else {
+        const potentialErrorData = errorDataCamelCased; // Capture type as `unknown`
+        dataForGetErrorContent =
+          typeof potentialErrorData === 'object' &&
+          potentialErrorData !== null &&
+          !Array.isArray(potentialErrorData) &&
+          Object.values(potentialErrorData as Record<string, unknown>).every(
+            // Explicitly cast here for Object.values
+            (value) =>
+              Array.isArray(value) && value.every((v) => typeof v === 'string')
+          )
+            ? (potentialErrorData as unknown as Record<string, string[]>)
+            : {};
+      }
+
       const errorText = isContentTypeHTML
         ? t('common:error.generic.text')
-        : getErrorContent(t, errorData);
+        : getErrorContent(t, {
+            data: dataForGetErrorContent,
+          });
 
       hdsToast({
         autoDismissTime: 20_000,
@@ -164,16 +188,17 @@ const useFormActions = (
 
   const getCalculationValuesOnPaySubsidyChange = (
     values: Partial<Application>
-  ): Calculation => ({
-    ...values.calculation,
-    monthlyPay: stringToFloatValue(values.employee.monthlyPay),
-    vacationMoney: stringToFloatValue(values.employee.vacationMoney),
-    otherExpenses: stringToFloatValue(values.employee.otherExpenses),
-    stateAidMaxPercentage: values.calculation?.stateAidMaxPercentage || null,
-    targetGroupCheck: false,
-    overrideMonthlyBenefitAmount: null,
-    overrideMonthlyBenefitAmountComment: '',
-  });
+  ): Calculation =>
+    ({
+      ...values.calculation,
+      monthlyPay: stringToFloatValue(values.employee?.monthlyPay),
+      vacationMoney: stringToFloatValue(values.employee?.vacationMoney),
+      otherExpenses: stringToFloatValue(values.employee?.otherExpenses),
+      stateAidMaxPercentage: values.calculation?.stateAidMaxPercentage ?? null,
+      targetGroupCheck: false,
+      overrideMonthlyBenefitAmount: null,
+      overrideMonthlyBenefitAmountComment: '',
+    } as Calculation);
 
   const getPayloadForCalculation = (
     values: Partial<Application>
@@ -185,13 +210,13 @@ const useFormActions = (
     ) {
       return {
         ...values.calculation,
-        monthlyPay: stringToFloatValue(values.employee.monthlyPay),
-        otherExpenses: stringToFloatValue(values.employee.otherExpenses),
-        vacationMoney: stringToFloatValue(values.employee.vacationMoney),
+        monthlyPay: stringToFloatValue(values.employee?.monthlyPay),
+        otherExpenses: stringToFloatValue(values.employee?.otherExpenses),
+        vacationMoney: stringToFloatValue(values.employee?.vacationMoney),
         overrideMonthlyBenefitAmount: stringToFloatValue(
-          values.calculation.overrideMonthlyBenefitAmount
+          values.calculation?.overrideMonthlyBenefitAmount
         ),
-      };
+      } as Calculation;
     }
     return getCalculationValuesOnPaySubsidyChange(values);
   };
@@ -203,13 +228,13 @@ const useFormActions = (
       values.paySubsidyGranted === initialApplication?.paySubsidyGranted &&
       values.apprenticeshipProgram === initialApplication?.apprenticeshipProgram
     ) {
-      return [...values.paySubsidies];
+      return [...(values.paySubsidies || [])];
     }
     return [
       PAY_SUBSIDY_GRANTED.GRANTED,
       PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-    ].includes(values.paySubsidyGranted)
-      ? [PAY_SUBSIDIES_OVERRIDE]
+    ].includes(values.paySubsidyGranted as PAY_SUBSIDY_GRANTED)
+      ? [PAY_SUBSIDIES_OVERRIDE as unknown as PaySubsidy]
       : [];
   };
 
@@ -315,11 +340,11 @@ const useFormActions = (
     const values = { ...currentValues };
     values.status = APPLICATION_STATUSES.RECEIVED;
     values.approveTerms = {
-      terms: application?.applicantTermsInEffect?.id,
+      terms: application?.applicantTermsInEffect?.id || '',
       selectedApplicantConsents:
         application?.applicantTermsInEffect?.applicantConsents.map(
           (consent) => consent.id
-        ),
+        ) || [],
     };
     const data = prepareDataForSubmission(getNormalizedValues(values));
 

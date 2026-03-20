@@ -44,22 +44,28 @@ export const isAcceptedOrRejected = (status: APPLICATION_STATUSES): boolean =>
 export const isInPayment = (
   application: ApplicationListItemData | Application
 ): boolean =>
-  [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
+  application.status === APPLICATION_STATUSES.ACCEPTED &&
   !isString(application.batch) &&
   [BATCH_STATUSES.DECIDED_ACCEPTED, BATCH_STATUSES.REJECTED_BY_TALPA].includes(
-    application?.batch?.status
+    application?.batch && !isString(application.batch)
+      ? application.batch.status
+      : ('' as BATCH_STATUSES)
   );
 
 export const isPendingInstalment = (
   application: ApplicationListItemData | Application
 ): boolean =>
-  [APPLICATION_STATUSES.ACCEPTED].includes(application.status) &&
+  application.status === APPLICATION_STATUSES.ACCEPTED &&
   !isString(application.batch) &&
   [
     BATCH_STATUSES.DECIDED_ACCEPTED,
     BATCH_STATUSES.REJECTED_BY_TALPA,
     BATCH_STATUSES.PARTIALLY_SENT_TO_TALPA,
-  ].includes(application?.batch?.status);
+  ].includes(
+    application?.batch && !isString(application.batch)
+      ? application.batch.status
+      : ('' as BATCH_STATUSES)
+  );
 
 const HandlerIndex: React.FC<ApplicationListProps> = ({
   layoutBackgroundColor,
@@ -83,30 +89,39 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
     list.filter(
       (app: ApplicationListItemData) =>
         app.ahjoCaseId &&
+        app.status &&
         isAcceptedOrRejected(app.status) &&
         !isString(app.batch) &&
-        !isBatchStatusHandlingComplete(app?.batch?.status)
+        app.batch &&
+        !isBatchStatusHandlingComplete(app.batch.status)
     ).length;
 
   const getTabCountInstalments = (): number =>
     list.filter(
-      (app: ApplicationListItemData) => app.secondInstalment && isPendingInstalment(app)
+      (app: ApplicationListItemData) =>
+        app.secondInstalment && isPendingInstalment(app)
     ).length;
 
   const getTabCountInPayment = (): number =>
     list.filter(
       (app: ApplicationListItemData) =>
         !isString(app.batch) &&
+        app.status &&
         [APPLICATION_STATUSES.ACCEPTED].includes(app.status) &&
         [
           BATCH_STATUSES.DECIDED_ACCEPTED,
           BATCH_STATUSES.REJECTED_BY_TALPA,
-        ].includes(app?.batch?.status)
+        ].includes(
+          app?.batch && !isString(app.batch)
+            ? app.batch.status
+            : ('' as BATCH_STATUSES)
+        )
     ).length;
 
   const getTabCountUndecided = (): number =>
     list.filter(
-      (app: ApplicationListItemData) => !isAcceptedOrRejected(app.status)
+      (app: ApplicationListItemData) =>
+        app.status && !isAcceptedOrRejected(app.status)
     ).length;
 
   const getTabCount = (
@@ -118,8 +133,9 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
     if (handled === 'instalments') return getTabCountInstalments();
 
     if (handled === 'all') return getTabCountUndecided();
-    return list.filter((app: ApplicationListItemData) =>
-      statuses.includes(app.status)
+    return list.filter(
+      (app: ApplicationListItemData) =>
+        app.status && statuses.includes(app.status)
     ).length;
   };
 
@@ -145,7 +161,7 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
 
   React.useEffect(() => {
     if (!router.isReady) return;
-    setActiveTab(parseInt(tab as string, 10) || 0);
+    setActiveTab(parseInt((tab as string) || '0', 10) || 0);
   }, [router.isReady, tab]);
 
   if (activeTab === null) {
@@ -222,7 +238,9 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) => !isAcceptedOrRejected(app.status))}
+                list={list.filter(
+                  (app) => app.status && !isAcceptedOrRejected(app.status)
+                )}
                 heading={t(`${translationBase}.all`)}
                 status={ALL_APPLICATION_STATUSES}
               />
@@ -231,8 +249,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.DRAFT].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.DRAFT].includes(app.status)
                 )}
                 heading={t(`${translationBase}.draft`)}
                 status={[APPLICATION_STATUSES.DRAFT]}
@@ -242,8 +262,10 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.RECEIVED].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.RECEIVED].includes(app.status)
                 )}
                 heading={t(`${translationBase}.received`)}
                 status={[APPLICATION_STATUSES.RECEIVED]}
@@ -253,16 +275,20 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.HANDLING].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.HANDLING].includes(app.status)
                 )}
                 heading={t(`${translationBase}.handling`)}
                 status={[APPLICATION_STATUSES.HANDLING]}
               />
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.INFO_REQUIRED].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.INFO_REQUIRED].includes(app.status)
                 )}
                 heading={t(`${translationBase}.infoRequired`)}
                 status={[APPLICATION_STATUSES.INFO_REQUIRED]}
@@ -276,11 +302,14 @@ const HandlerIndex: React.FC<ApplicationListProps> = ({
                   (app) =>
                     !isString(app.batch) &&
                     app.ahjoCaseId &&
+                    app.status &&
                     [
                       APPLICATION_STATUSES.ACCEPTED,
                       APPLICATION_STATUSES.REJECTED,
                     ].includes(app.status) &&
-                    !isBatchStatusHandlingComplete(app?.batch?.status)
+                    app.batch &&
+                    !isString(app.batch) &&
+                    !isBatchStatusHandlingComplete(app.batch.status)
                 )}
                 heading={t(`${translationBase}.pending`)}
                 status={[

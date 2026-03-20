@@ -85,7 +85,7 @@ const ApplicationsArchive: React.FC = () => {
   ): void => {
     setFilterSelection(selection);
     setDecisionRange(null);
-    setSubsidyInEffect(value);
+    setSubsidyInEffect(value || null);
     setDisplayLoadAll(true);
     setLoadAll(false);
   };
@@ -94,7 +94,7 @@ const ApplicationsArchive: React.FC = () => {
     value?: number
   ): void => {
     setFilterSelection(selection);
-    setDecisionRange(value);
+    setDecisionRange(value || null);
     setSubsidyInEffect(null);
     setDisplayLoadAll(true);
     setLoadAll(false);
@@ -230,13 +230,13 @@ const ApplicationsArchive: React.FC = () => {
       </>
 
       <ApplicationArchiveList
-        data={searchResults?.matches}
+        data={searchResults?.matches || []}
         isSearchLoading={isSearchLoading}
       />
       {displayLoadAll &&
         !isSearchLoading &&
         searchString.length === 0 &&
-        searchResults?.matches?.length >= 30 && (
+        (searchResults?.matches || []).length >= 30 && (
           <Button
             style={{ marginTop: 'var(--spacing-m)' }}
             theme="coat"

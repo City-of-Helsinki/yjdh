@@ -59,13 +59,15 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   const { theme, bgColor, withAction } = useReviewSection(action, withMargin);
   const { reviewState, handleUpdateReviewState } =
     React.useContext(ReviewStateContext);
-  const sectionState = reviewState[section];
+  const sectionState = section ? reviewState[section] : undefined;
 
   const router = useRouter();
   const { t } = useTranslation();
 
   const handleReviewClick = (): void => {
-    handleUpdateReviewState({ ...reviewState, [section]: !sectionState });
+    if (section) {
+      handleUpdateReviewState({ ...reviewState, [section]: !sectionState });
+    }
   };
 
   const CheckIcon: React.FC = () => {

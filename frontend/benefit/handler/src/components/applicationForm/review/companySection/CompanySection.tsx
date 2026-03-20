@@ -49,7 +49,7 @@ const CompanySection: React.FC<ReviewChildProps> = ({
           <$ViewFieldBold>
             {t(`${translationsBase}.fields.address.label`)}
           </$ViewFieldBold>
-          <$ViewField>{`${data.company?.streetAddress}, ${
+          <$ViewField>{`${data.company?.streetAddress || ''}, ${
             data.company?.postcode || ''
           } ${data.company?.city || ''}`}</$ViewField>
           <$ViewFieldBold>
@@ -100,7 +100,7 @@ const CompanySection: React.FC<ReviewChildProps> = ({
         header={t(`${translationsBase}.headings.company2`)}
         action={
           <EditButton
-            section={fields.companyContactPersonFirstName.name}
+            section={fields?.companyContactPersonFirstName?.name ?? ''}
             dispatchStep={dispatchStep}
           />
         }
@@ -142,7 +142,7 @@ const CompanySection: React.FC<ReviewChildProps> = ({
           header={t(`${translationsBase}.headings.company6`)}
           action={
             <EditButton
-              section={fields.deMinimisAidSet.name}
+              section={fields?.deMinimisAidSet?.name ?? ''}
               dispatchStep={dispatchStep}
             />
           }
@@ -177,7 +177,7 @@ const CompanySection: React.FC<ReviewChildProps> = ({
               </$GridCell>
               <$GridCell $colSpan={2}>
                 <$SummaryTableValue>
-                  {formatFloatToEvenEuros(amount)}
+                  {formatFloatToEvenEuros(amount || 0)}
                 </$SummaryTableValue>
               </$GridCell>
               <$GridCell>
@@ -194,7 +194,7 @@ const CompanySection: React.FC<ReviewChildProps> = ({
           </$GridCell>
           <$GridCell $colSpan={2}>
             <$SummaryTableLastLine>
-              {formatFloatToEvenEuros(data.totalDeminimisAmount)}
+              {formatFloatToEvenEuros(data.totalDeminimisAmount || 0)}
             </$SummaryTableLastLine>
           </$GridCell>
         </SummarySection>
@@ -203,7 +203,7 @@ const CompanySection: React.FC<ReviewChildProps> = ({
         header={t(`${translationsBase}.headings.company4`)}
         action={
           <EditButton
-            section={fields.coOperationNegotiations.name}
+            section={fields?.coOperationNegotiations?.name ?? ''}
             dispatchStep={dispatchStep}
           />
         }

@@ -44,7 +44,9 @@ type HandlingStepProps = {
   setIsRecalculationRequired: React.Dispatch<React.SetStateAction<boolean>>;
   isRecalculationRequired: boolean;
   calculationsErrors: ErrorData | undefined | null;
-  setCalculationErrors: React.Dispatch<React.SetStateAction<ErrorData>>;
+  setCalculationErrors: React.Dispatch<
+    React.SetStateAction<ErrorData | undefined | null>
+  >;
 };
 
 const HandlingStep1: React.FC<HandlingStepProps> = ({
@@ -62,32 +64,36 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
     APPLICATION_STATUSES.CANCELLED,
     APPLICATION_STATUSES.REJECTED,
     APPLICATION_STATUSES.INFO_REQUIRED,
-  ].includes(application.status);
+  ].includes(application?.status as APPLICATION_STATUSES);
   const showBasicDecisionFields =
-    application.status !== APPLICATION_STATUSES.CANCELLED;
+    application?.status !== APPLICATION_STATUSES.CANCELLED;
 
   const decisionDetailList = useMemo<DecisionDetailList>(
     () => [
       {
         accessor: (app) => (
           <>
-            <StatusIcon status={app.status} />
-            {t(`common:applications.statuses.${app.status}`)}
+            <StatusIcon status={app.status as APPLICATION_STATUSES} />
+            {app.status
+              ? t(`common:applications.statuses.${app.status}`)
+              : null}
           </>
         ),
         key: 'status',
       },
       {
         accessor: (app) =>
-          formatFloatToEvenEuros(app.calculation?.calculatedBenefitAmount),
+          formatFloatToEvenEuros(
+            app.calculation?.calculatedBenefitAmount || ''
+          ),
         key: 'benefitAmount',
         showIf: () => showMonetaryFields,
       },
       {
         accessor: (app) =>
-          `${convertToUIDateFormat(app.startDate)} – ${convertToUIDateFormat(
-            app.endDate
-          )}`,
+          `${convertToUIDateFormat(
+            app.startDate || ''
+          )} – ${convertToUIDateFormat(app.endDate || '')}`,
         key: 'benefitPeriod',
         showIf: () => showMonetaryFields,
       },
@@ -98,21 +104,24 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
       },
       {
         accessor: (app) =>
-          app.calculation.grantedAsDeMinimisAid
+          app.calculation?.grantedAsDeMinimisAid
             ? t('utility.yes')
             : t('utility.no'),
         key: 'grantedAsDeMinimis',
         showIf: () => showMonetaryFields,
       },
       {
-        accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate),
+        accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate || ''),
         key: 'decisionDate',
         showIf: () => showBasicDecisionFields,
       },
       {
         accessor: (app) =>
           app.batch?.handler &&
-          getFullName(app.batch.handler.firstName, app.batch.handler.lastName),
+          getFullName(
+            app.batch.handler.firstName || '',
+            app.batch.handler.lastName || ''
+          ),
         key: 'handler',
       },
       {
@@ -124,7 +133,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
     [t, showMonetaryFields, showBasicDecisionFields]
   );
 
-  const hasPendingAlteration = application.alterations.some(
+  const hasPendingAlteration = (application.alterations || []).some(
     (alteration) => alteration.state === ALTERATION_STATE.RECEIVED
   );
 
@@ -148,7 +157,9 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
               variant={canCreate ? 'secondary' : 'primary'}
               onClick={() =>
                 router.push(
-                  `${ROUTES.NEW_ALTERATION}?applicationId=${application.id}`
+                  `${ROUTES.NEW_ALTERATION}?applicationId=${
+                    application.id || ''
+                  }`
                 )
               }
               iconLeft={<IconPlus />}

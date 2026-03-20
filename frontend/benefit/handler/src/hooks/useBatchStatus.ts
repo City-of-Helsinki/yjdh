@@ -41,7 +41,7 @@ const useBatchStatus = (
     errorResponse: BatchError,
     previousStatus: BATCH_STATUSES
   ): void => {
-    setBatchCloseAnimation(false);
+    setBatchCloseAnimation?.(false);
     if (errorResponse.response?.data?.errorKey) {
       const { errorKey } = errorResponse.response.data;
       showErrorToast(
@@ -86,7 +86,7 @@ const useBatchStatus = (
           (previousStatus === BATCH_STATUSES.AHJO_REPORT_CREATED &&
             backendStatus === BATCH_STATUSES.AWAITING_FOR_DECISION)
         ) {
-          setBatchCloseAnimation(true);
+          setBatchCloseAnimation?.(true);
           setTimeout(() => {
             void queryClient.invalidateQueries('applicationsList');
           }, 700);

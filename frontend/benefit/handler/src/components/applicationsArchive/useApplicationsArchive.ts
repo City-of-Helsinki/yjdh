@@ -26,61 +26,70 @@ export enum DECISION_RANGE {
 }
 interface ApplicationListProps {
   t: TFunction;
-  searchResults: SearchResponse;
+  searchResults: SearchResponse | undefined;
   isSearchLoading: boolean;
   shouldHideList: boolean;
   submitSearch: (value: string) => void;
 }
 
+const sortApplicationsByHandledAt = (
+  data: ApplicationData[]
+): ApplicationData[] =>
+  [...data].sort(
+    (a: ApplicationData, b: ApplicationData): number =>
+      Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
+  );
+
+const transformApplicationArchiveData = (
+  application: ApplicationData
+): ApplicationListItemData => {
+  const {
+    id = '',
+    employee,
+    company,
+    handled_at,
+    application_number: applicationNum,
+    status,
+    calculation,
+    alterations,
+  } = application;
+
+  return {
+    id,
+    status,
+    companyName: company ? company.name : '-',
+    companyId: company ? company.business_id : '-',
+    employeeName:
+      getFullNameListing(employee?.first_name, employee?.last_name) || '-',
+    handledAt: convertToUIDateFormat(handled_at) || '-',
+    applicationNum,
+    alterations,
+    calculationEndDate:
+      status &&
+      [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.ARCHIVAL].includes(
+        status
+      )
+        ? convertToUIDateFormat(calculation?.end_date) || '-'
+        : '-',
+  };
+};
+
 export const prepareSearchData = (
   data: ApplicationData[]
-): ApplicationListItemData[] =>
-  data
-    ? data
-        .sort(
-          (a: ApplicationData, b: ApplicationData): number =>
-            Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
-        )
-        .map((application: ApplicationData): ApplicationListItemData => {
-          const {
-            id = '',
-            employee,
-            company,
-            handled_at,
-            application_number: applicationNum,
-            status,
-            calculation,
-            alterations,
-          } = application;
-
-          return {
-            id,
-            status,
-            companyName: company ? company.name : '-',
-            companyId: company ? company.business_id : '-',
-            employeeName:
-              getFullNameListing(employee?.first_name, employee?.last_name) ||
-              '-',
-            handledAt: convertToUIDateFormat(handled_at) || '-',
-            applicationNum,
-            alterations,
-            calculationEndDate: [
-              APPLICATION_STATUSES.ACCEPTED,
-              APPLICATION_STATUSES.ARCHIVAL,
-            ].includes(status)
-              ? convertToUIDateFormat(calculation?.end_date) || '-'
-              : '-',
-          };
-        })
-    : [];
+): ApplicationListItemData[] => {
+  if (!data) return [];
+  return sortApplicationsByHandledAt(data).map((item) =>
+    transformApplicationArchiveData(item)
+  );
+};
 
 const useApplicationsArchive = (
   searchString: string,
   archived: boolean,
   includeArchivalApplications: boolean,
-  subsidyInEffect: SUBSIDY_IN_EFFECT,
-  decisionRange: number,
-  applicationNum?: string,
+  subsidyInEffect: SUBSIDY_IN_EFFECT | null,
+  decisionRange: number | null,
+  applicationNum?: string | null,
   loadAll?: boolean
 ): ApplicationListProps => {
   const { t } = useTranslation();
@@ -91,12 +100,11 @@ const useApplicationsArchive = (
     error,
     mutate: getSearchResults,
   } = useSearchApplicationQuery(
-    searchString,
     archived,
     includeArchivalApplications,
-    subsidyInEffect,
-    decisionRange,
-    applicationNum,
+    subsidyInEffect ?? undefined,
+    decisionRange ?? undefined,
+    applicationNum ?? undefined,
     loadAll
   );
 
@@ -108,7 +116,9 @@ const useApplicationsArchive = (
     searchResults,
     isSearchLoading,
     shouldHideList,
-    submitSearch: (value: string) => getSearchResults(value),
+    submitSearch: (value: string) => {
+      getSearchResults(value);
+    },
   };
 };
 

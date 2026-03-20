@@ -21,7 +21,7 @@ const AlterationHandlingConfirmationModal = ({
   isOpen,
   values,
   isWorking,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const { t } = useTranslation();
 
   if (!values) {
@@ -40,7 +40,7 @@ const AlterationHandlingConfirmationModal = ({
       title={t(`${translationBase}.title`)}
       submitButtonLabel=""
       cancelButtonLabel=""
-      handleToggle={null}
+      handleToggle={noop}
       handleSubmit={noop}
       headerIcon={<IconInfoCircle />}
       customContent={
@@ -50,7 +50,7 @@ const AlterationHandlingConfirmationModal = ({
               {t(`${translationBase}.description`, {
                 startDate: values.recoveryStartDate,
                 endDate: values.recoveryEndDate,
-                amount: formatFloatToEvenEuros(values.recoveryAmount),
+                amount: formatFloatToEvenEuros(values.recoveryAmount ?? '0'),
               })}
             </p>
           </Dialog.Content>
