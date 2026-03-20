@@ -24,19 +24,23 @@ type Props = {
   application: Application;
 };
 
-const AlterationForm = ({ application }: Props): JSX.Element => {
+const AlterationForm = ({ application }: Props): JSX.Element | null => {
   const { t, formik, language, isSubmitted } = useContext(
     AlterationFormContext
   );
 
+  if (!t || !formik) {
+    return null; // Render nothing if context is not fully provided
+  }
+
   const { alterationType, useEinvoice, endDate } = formik.values;
 
   const minEndDate = useMemo<Date>(
-    () => new Date(application.startDate),
+    () => new Date(application.startDate ?? ''),
     [application.startDate]
   );
   const maxEndDate = useMemo<Date>(
-    () => new Date(application.endDate),
+    () => new Date(application.endDate ?? ''),
     [application.endDate]
   );
   const minResumeDate = useMemo<Date>(() => {
@@ -50,14 +54,14 @@ const AlterationForm = ({ application }: Props): JSX.Element => {
   const translationBase = 'common:applications.alterations.new';
 
   const disableOccupiedDates = (date: Date): boolean =>
-    application.alterations.some(
+    application.alterations?.some(
       (alteration) =>
         alteration.state === ALTERATION_STATE.HANDLED &&
-        alteration.recoveryStartDate <=
+        (alteration.recoveryStartDate ?? '') <=
           formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
-        alteration.recoveryEndDate >=
+        (alteration.recoveryEndDate ?? '') >=
           formatDate(date, DATE_FORMATS.BACKEND_DATE)
-    );
+    ) ?? false;
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -205,9 +209,9 @@ const AlterationForm = ({ application }: Props): JSX.Element => {
               id="alteration-use-einvoice-no"
               value="0"
               label={t(`${translationBase}.fields.useEinvoice.no`, {
-                streetAddress: application.company.streetAddress,
-                postCode: application.company.postcode,
-                city: application.company.city,
+                streetAddress: application.company?.streetAddress,
+                postCode: application.company?.postcode,
+                city: application.company?.city,
               })}
               name="useEinvoice"
               checked={!useEinvoice}
