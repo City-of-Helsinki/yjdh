@@ -26,7 +26,7 @@ export const formatOrTranslateValue = (
     return value ? t('common:utility.yes') : t('common:utility.no');
   }
   if (typeof value === 'object' && value !== null) {
-    return value;
+    return String(value);
   }
 
   if (
@@ -104,8 +104,8 @@ export const getDeMinimisDates = (aidSet: DeMinimisAid[]): string =>
     .join(', ');
 
 export const getDeMinimisChanged = (
-  setA: DeMinimisAid,
-  setB: DeMinimisAid
+  setA: Record<string, string | number>,
+  setB: Record<string, string | number>
 ): boolean => JSON.stringify(setA) !== JSON.stringify(setB);
 
 export const getDiffPrefilter = (

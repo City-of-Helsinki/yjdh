@@ -31,14 +31,14 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
           min: convertToUIDateFormat(application.startDate),
         }),
         test: (value = '') =>
-          validateIsAfterOrOnDate(value, application.startDate),
+          validateIsAfterOrOnDate(value as string, application.startDate ?? ''),
       })
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
           max: convertToUIDateFormat(application.endDate),
         }),
         test: (value = '') =>
-          validateIsBeforeOrOnDate(value, application.endDate),
+          validateIsBeforeOrOnDate(value as string, application.endDate ?? ''),
       }),
     resumeDate: Yup.string()
       .nullable()
@@ -52,25 +52,30 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
               min: convertToUIDateFormat(application.startDate),
             }),
             test: (value = '') =>
-              validateIsAfterOrOnDate(value, application.startDate),
+              validateIsAfterOrOnDate(
+                value as string,
+                application.startDate ?? ''
+              ),
           })
           .test({
             message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
               max: convertToUIDateFormat(application.endDate),
             }),
             test: (value = '') =>
-              validateIsBeforeOrOnDate(value, application.endDate),
+              validateIsBeforeOrOnDate(
+                value as string,
+                application.endDate ?? ''
+              ),
           })
-          .when(['endDate'], (endDate: string, schema: Yup.StringSchema) =>
-            Yup.string()
-              .test({
-                message: t(
-                  'common:applications.alterations.new.validation.resumeDateBeforeEndDate'
-                ),
-                test: (value = '') => !validateIsBeforeOrOnDate(value, endDate),
-              })
-              // eslint-disable-next-line unicorn/prefer-spread
-              .concat(schema)
+
+          .when('endDate', (endDate: string, schema: any) =>
+            schema.test({
+              message: t(
+                'common:applications.alterations.new.validation.resumeDateBeforeEndDate'
+              ),
+              test: (value = '') =>
+                !validateIsBeforeOrOnDate(value, endDate ?? ''),
+            })
           ),
       }),
     reason: Yup.string(),

@@ -141,11 +141,11 @@ BatchProps) => {
                 onSubmit={handleSubmitToDraft}
               />
             ) : null}
-            {isModalBatchToCompletion ? (
+            {isModalBatchToCompletion && getModalTranslations() ? (
               <ConfirmModalContent
                 variant="primary"
-                heading={getModalTranslations().heading}
-                text={getModalTranslations().text}
+                heading={getModalTranslations()?.heading || ''}
+                text={getModalTranslations()?.text || ''}
                 onClose={handleModalClose}
                 onSubmit={() => void handleBatchToTalpa()}
               />

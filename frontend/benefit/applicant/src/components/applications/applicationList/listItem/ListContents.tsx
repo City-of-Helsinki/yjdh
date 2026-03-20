@@ -43,7 +43,7 @@ const ListContents = ({
   onListLengthChanged,
   beforeList,
   afterList,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   useEffect(() => {
     onListLengthChanged?.(shouldShowSkeleton, list.length);
   }, [shouldShowSkeleton, list.length, onListLengthChanged]);
@@ -67,10 +67,10 @@ const ListContents = ({
           <$HeadingContainer>
             <$Heading>{headingText}</$Heading>
             <$OrderByContainer>
-              {orderByOptions?.length > 1 && (
+              {(orderByOptions?.length ?? 0) > 1 && (
                 <Select<OptionType>
                   id={`application-list-${status.join('-')}-order-by`}
-                  options={orderByOptions}
+                  options={orderByOptions || []}
                   defaultValue={orderBy}
                   onChange={setOrderBy}
                   label={t('common:applications.list.common.sortOrder')}

@@ -70,12 +70,15 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
       </$GridCell>
       <$DeMinimisGridForm>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.granter.name}
             name={fields.granter.name}
             label={fields.granter.label}
             placeholder={fields.granter.placeholder}
-            onBlur={(event) => handleBlur(event)}
+            onBlur={(event: React.FocusEvent<HTMLInputElement, Element>) =>
+              handleBlur(event)
+            }
             onChange={formik.handleChange}
             value={formik.values.granter}
             invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
@@ -85,12 +88,15 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.amount.name}
             name={fields.amount.name}
             label={fields.amount.label || ''}
             placeholder={fields.amount.placeholder}
-            onBlur={(event) => handleBlur(event)}
+            onBlur={(event: React.FocusEvent<HTMLInputElement, Element>) =>
+              handleBlur(event)
+            }
             onChange={(e) =>
               formik.setFieldValue(
                 fields.amount.name,
@@ -108,13 +114,16 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
+          {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
           <DateInput
             id={fields.grantedAt.name}
             name={fields.grantedAt.name}
             label={fields.grantedAt.label}
             placeholder={fields.grantedAt.placeholder}
             language={language}
-            onBlur={(event) => handleBlur(event)}
+            onBlur={(event: React.FocusEvent<HTMLInputElement, Element>) =>
+              handleBlur(event)
+            }
             onChange={(value) =>
               formik.setFieldValue(fields.grantedAt.name, value)
             }
@@ -147,7 +156,9 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
               !formik.isValid ||
               sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
             }
-            onClick={(e) => onSubmit(e)}
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+              onSubmit(e)
+            }
             iconLeft={<IconPlusCircle />}
             fullWidth
           >

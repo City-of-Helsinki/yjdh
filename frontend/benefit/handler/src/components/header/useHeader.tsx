@@ -28,7 +28,7 @@ type ExtendedComponentProps = {
   languageOptions: OptionType<string>[];
   isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
-  handleLanguageChange: (newLanguage: SUPPORTED_LANGUAGES) => void;
+  handleLanguageChange: (newLanguage: string) => void;
   handleNavigationItemClick: (pathname: string) => void;
   handleTitleClick: () => void;
 };
@@ -56,8 +56,8 @@ const useHeader = (): ExtendedComponentProps => {
         label: (
           <>
             {t('common:header.navigation.alterations')}
-            {!isAlterationListLoading && alterationData?.length > 0 && (
-              <NumberTag count={alterationData.length} />
+            {!isAlterationListLoading && (alterationData?.length ?? 0) > 0 && (
+              <NumberTag count={alterationData?.length ?? 0} />
             )}
           </>
         ),
@@ -83,7 +83,7 @@ const useHeader = (): ExtendedComponentProps => {
           <>
             {t('common:header.navigation.alterations')}
             {!isAlterationListLoading && (
-              <NumberTag count={alterationData?.length} />
+              <NumberTag count={alterationData?.length ?? 0} />
             )}
           </>
         ),
@@ -105,7 +105,7 @@ const useHeader = (): ExtendedComponentProps => {
     [items.default, items.newAhjo, isNewAhjoMode]
   );
 
-  const handleLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
+  const handleLanguageChange = (newLanguage: string): void => {
     void router.push('/', '/', { locale: newLanguage });
   };
 

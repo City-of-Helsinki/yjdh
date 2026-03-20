@@ -1,5 +1,5 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $ActionContainer = styled.div`
   display: flex;
@@ -11,8 +11,10 @@ export const $ActionContainer = styled.div`
   hr {
     min-width: 280px;
     border: 0;
-    border-top: 1px solid ${(props) => props.theme.colors.black30};
-    border-bottom: 1px solid ${(props) => props.theme.colors.black10};
+    border-top: 1px solid
+      ${(props: { theme: DefaultTheme }) => props.theme.colors.black30};
+    border-bottom: 1px solid
+      ${(props: { theme: DefaultTheme }) => props.theme.colors.black10};
   }
   > button,
   .custom-combobox {

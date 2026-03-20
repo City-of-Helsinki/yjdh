@@ -49,8 +49,8 @@ const useAlterationHandling = ({
   const submitForm = (data: ApplicationAlterationHandlingForm): void => {
     updateAlteration(
       {
-        id: alteration.id,
-        applicationId: application.id,
+        id: String(alteration.id ?? ''),
+        applicationId: application.id ?? '',
         data: {
           application: application.id,
           recovery_start_date: convertToBackendDateFormat(
@@ -58,7 +58,7 @@ const useAlterationHandling = ({
           ),
           recovery_end_date: convertToBackendDateFormat(data.recoveryEndDate),
           recovery_amount: data.isRecoverable
-            ? String(stringToFloatValue(data.recoveryAmount))
+            ? String(stringToFloatValue(data.recoveryAmount ?? '0'))
             : '0',
           recovery_justification: data.recoveryJustification,
           is_recoverable: data.isRecoverable,
@@ -66,16 +66,18 @@ const useAlterationHandling = ({
         },
       },
       {
-        onSuccess: () => onSuccess(data.isRecoverable),
+        onSuccess: () => onSuccess(Boolean(data.isRecoverable)),
         onError,
       }
     );
   };
 
-  const startDate = add(parseDate(alteration.endDate), { days: 1 });
+  const startDate = add(parseDate(alteration.endDate) ?? new Date(), {
+    days: 1,
+  });
   const endDate = alteration.resumeDate
-    ? sub(parseDate(alteration.resumeDate), { days: 1 })
-    : parseDate(application.endDate);
+    ? sub(parseDate(alteration.resumeDate) ?? new Date(), { days: 1 })
+    : parseDate(application.endDate) ?? new Date();
 
   const formik = useFormik<ApplicationAlterationHandlingForm>({
     initialValues: {

@@ -44,7 +44,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
   const { mutate: changeHandler } = useChangeHandlerMutation();
 
   const takeControl = (): void => {
-    changeHandler(data.id);
+    changeHandler(data.id || '');
   };
 
   if (!data.applicationNumber || data.status === APPLICATION_STATUSES.DRAFT) {
@@ -93,7 +93,10 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
               </$ItemWrapper>
             </$Col>
             <$Col>
-              <StatusLabel status={data.status} archived={data.archived} />
+              <StatusLabel
+                status={data.status as APPLICATION_STATUSES}
+                archived={data.archived}
+              />
             </$Col>
           </$InnerWrapper>
         </Container>
@@ -101,7 +104,9 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
       {isApplicationReadOnly && (
         <$NoticeBar>
           {t(`common:review.notifications.handlerMismatch`, {
-            handler: `${data.handler?.firstName} ${data.handler?.lastName[0]}.`,
+            handler: `${data.handler?.firstName || ''} ${
+              data.handler?.lastName?.[0] || ''
+            }.`,
           })}{' '}
           <Button
             variant="supplementary"

@@ -53,10 +53,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
     handledApplication,
   } = useHandlingApplicationActions(application);
 
-  const canBeOpenedForEdit = [
-    APPLICATION_STATUSES.HANDLING,
-    APPLICATION_STATUSES.INFO_REQUIRED,
-  ].includes(application.status);
+  const canBeOpenedForEdit =
+    application.status &&
+    [
+      APPLICATION_STATUSES.HANDLING,
+      APPLICATION_STATUSES.INFO_REQUIRED,
+    ].includes(application.status);
 
   return (
     <$Wrapper data-testid={dataTestId}>
@@ -79,10 +81,11 @@ const HandlingApplicationActions: React.FC<Props> = ({
             {t(`${translationsBase}.close`)}
           </Button>
         )}
-        {[
-          APPLICATION_STATUSES.ACCEPTED,
-          APPLICATION_STATUSES.REJECTED,
-        ].includes(application.status) &&
+        {application.status &&
+          [
+            APPLICATION_STATUSES.ACCEPTED,
+            APPLICATION_STATUSES.REJECTED,
+          ].includes(application.status) &&
           !application.batch &&
           !application.archived && (
             <Button
@@ -153,7 +156,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
               handledApplication={handledApplication}
               onClose={closeDoneDialog}
               onSubmit={onDone}
-              calculationRows={application.calculation?.rows}
+              calculationRows={application.calculation?.rows || []}
             />
           }
         />

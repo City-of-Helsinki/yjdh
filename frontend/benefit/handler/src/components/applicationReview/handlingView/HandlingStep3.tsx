@@ -44,9 +44,9 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             $css={{ marginTop: 0, marginBottom: theme.spacing.xs }}
           />
           <Heading
-            header={`${application?.company?.name}, ${t(
+            header={`${application?.company?.name || ''}, ${t(
               'common:review.decisionProposal.preview.application'
-            )} ${application?.applicationNumber}`}
+            )} ${application?.applicationNumber || ''}`}
             size="l"
             as="p"
             weight="400"
@@ -66,7 +66,7 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             <div
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
-                __html: application.decisionProposalDraft.decisionText,
+                __html: application.decisionProposalDraft?.decisionText || '',
               }}
               data-testid="decision-text-preview"
             />
@@ -86,7 +86,8 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             <div
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
-                __html: application.decisionProposalDraft.justificationText,
+                __html:
+                  application.decisionProposalDraft?.justificationText || '',
               }}
               data-testid="justification-text-preview"
             />

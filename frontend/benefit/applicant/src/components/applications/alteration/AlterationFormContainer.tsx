@@ -8,6 +8,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import AlterationForm from 'benefit-shared/components/alterationForm/AlterationForm';
 import { $SaveActionFormErrorText } from 'benefit-shared/components/alterationForm/AlterationForm.sc';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
+import { AlterationFormContextType } from 'benefit-shared/context/AlterationFormContext';
 import AlterationFormProvider from 'benefit-shared/context/AlterationFormProvider';
 import {
   Application,
@@ -58,7 +59,7 @@ const AlterationFormContainer: React.FC<Props> = ({
 
   const handleError = (error: AxiosError<unknown>): void => {
     const errorData = camelcaseKeys(error.response?.data ?? {});
-    const errors = [];
+    const errors: JSX.Element[] = [];
 
     const getErrorItem = (
       fieldKey: string,
@@ -112,7 +113,9 @@ const AlterationFormContainer: React.FC<Props> = ({
 
   return (
     <$AlterationFormContainer>
-      <AlterationFormProvider {...alterationFormContextValues}>
+      <AlterationFormProvider
+        {...(alterationFormContextValues as unknown as AlterationFormContextType)}
+      >
         <AlterationForm application={application} />
       </AlterationFormProvider>
       <$Hr />

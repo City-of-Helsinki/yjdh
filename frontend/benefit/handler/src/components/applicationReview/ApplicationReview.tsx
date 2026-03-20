@@ -28,11 +28,12 @@ import NotificationView from './notificationView/NotificationView';
 import { useApplicationReview } from './useApplicationReview';
 
 const renderStepper = (
-  isNewAhjoMode,
+  isNewAhjoMode: boolean,
   stepState: StepStateType,
-  status: APPLICATION_STATUSES
-): JSX.Element =>
+  status?: APPLICATION_STATUSES
+): React.ReactNode =>
   isNewAhjoMode &&
+  status &&
   [APPLICATION_STATUSES.HANDLING, APPLICATION_STATUSES.INFO_REQUIRED].includes(
     status
   ) ? (
@@ -78,17 +79,71 @@ const ApplicationReview: React.FC = () => {
 
   const showNewAhjoActions =
     isNewAhjoMode &&
-    (application.status === APPLICATION_STATUSES.HANDLING ||
-      application.status === APPLICATION_STATUSES.CANCELLED ||
-      application.status === APPLICATION_STATUSES.ACCEPTED ||
-      application.status === APPLICATION_STATUSES.REJECTED ||
-      application.status === APPLICATION_STATUSES.INFO_REQUIRED);
+    (application?.status === APPLICATION_STATUSES.HANDLING ||
+      application?.status === APPLICATION_STATUSES.CANCELLED ||
+      application?.status === APPLICATION_STATUSES.ACCEPTED ||
+      application?.status === APPLICATION_STATUSES.REJECTED ||
+      application?.status === APPLICATION_STATUSES.INFO_REQUIRED);
 
   const showOldActions =
     !isNewAhjoMode &&
-    (application.status === APPLICATION_STATUSES.HANDLING ||
-      application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-      HANDLED_STATUSES.includes(application.status));
+    (application?.status === APPLICATION_STATUSES.HANDLING ||
+      application?.status === APPLICATION_STATUSES.INFO_REQUIRED ||
+      (application?.status && HANDLED_STATUSES.includes(application.status)));
+
+  const renderMainContent = (): React.ReactNode => {
+    switch (stepState.activeStepIndex) {
+      case 0:
+        return (
+          <ApplicationReviewStep1
+            application={application}
+            setIsRecalculationRequired={setIsRecalculationRequired}
+            setCalculationErrors={setCalculationErrors}
+            calculationsErrors={calculationsErrors}
+            isRecalculationRequired={isRecalculationRequired}
+          />
+        );
+
+      case 1:
+        return <ApplicationReviewStep2 application={application} />;
+
+      case 2:
+        return <ApplicationReviewStep3 application={application} />;
+
+      default:
+        return null;
+    }
+  };
+
+  const renderStickyActions = (): React.ReactNode => (
+    <StickyActionBar>
+      {application?.status === APPLICATION_STATUSES.RECEIVED && (
+        <ReceivedApplicationActions
+          application={application}
+          data-testid="received-application-actions"
+        />
+      )}
+
+      {showOldActions && (
+        <HandlingApplicationActions
+          application={application}
+          data-testid="handling-application-actions"
+        />
+      )}
+
+      {showNewAhjoActions && (
+        <HandlingApplicationActionsAhjo
+          application={application}
+          stepperDispatch={stepperDispatch}
+          stepState={stepState}
+          isApplicationReadOnly={isApplicationReadOnly}
+          data-testid="handling-application-actions"
+          isRecalculationRequired={isRecalculationRequired}
+          isCalculationsErrors={!!calculationsErrors}
+        />
+      )}
+    </StickyActionBar>
+  );
 
   return (
     <>
@@ -100,52 +155,9 @@ const ApplicationReview: React.FC = () => {
       <$ApplicationReview>
         {renderStepper(isNewAhjoMode, stepState, application?.status)}
         {isApplicationReadOnly && <$ApplicationReviewLocked />}
-
-        {stepState.activeStepIndex === 0 && (
-          <ApplicationReviewStep1
-            application={application}
-            setIsRecalculationRequired={setIsRecalculationRequired}
-            setCalculationErrors={setCalculationErrors}
-            calculationsErrors={calculationsErrors}
-            isRecalculationRequired={isRecalculationRequired}
-          />
-        )}
-
-        {stepState.activeStepIndex === 1 && (
-          <ApplicationReviewStep2 application={application} />
-        )}
-        {stepState.activeStepIndex === 2 && (
-          <ApplicationReviewStep3 application={application} />
-        )}
+        {renderMainContent()}
       </$ApplicationReview>
-
-      <StickyActionBar>
-        {application.status === APPLICATION_STATUSES.RECEIVED && (
-          <ReceivedApplicationActions
-            application={application}
-            data-testid="received-application-actions"
-          />
-        )}
-
-        {showOldActions && (
-          <HandlingApplicationActions
-            application={application}
-            data-testid="handling-application-actions"
-          />
-        )}
-
-        {showNewAhjoActions && (
-          <HandlingApplicationActionsAhjo
-            application={application}
-            stepperDispatch={stepperDispatch}
-            stepState={stepState}
-            isApplicationReadOnly={isApplicationReadOnly}
-            data-testid="handling-application-actions"
-            isRecalculationRequired={isRecalculationRequired}
-            isCalculationsErrors={!!calculationsErrors}
-          />
-        )}
-      </StickyActionBar>
+      {renderStickyActions()}
       <$StickyBarSpacing />
     </>
   );

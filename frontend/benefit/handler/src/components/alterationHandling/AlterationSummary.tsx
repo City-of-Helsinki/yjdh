@@ -22,18 +22,22 @@ const AlterationSummary: React.FC<Props> = ({ alteration, application }) => {
       <div>
         <dt>{t(`${translationBase}.summary.type.label`)}</dt>
         <dd>
-          {t(`${translationBase}.summary.type.${alteration.alterationType}`)}
+          {t(
+            `${translationBase}.summary.type.${String(
+              alteration.alterationType
+            )}`
+          )}
         </dd>
       </div>
       <div>
         <dt>{t(`${translationBase}.summary.endDate`)}</dt>
-        <dd>{formatDate(new Date(alteration.endDate))}</dd>
+        <dd>{formatDate(new Date(alteration.endDate ?? ''))}</dd>
       </div>
       <div>
         {alteration.alterationType === ALTERATION_TYPE.SUSPENSION && (
           <>
             <dt>{t(`${translationBase}.summary.resumeDate`)}</dt>
-            <dd>{formatDate(new Date(alteration.resumeDate))}</dd>
+            <dd>{formatDate(new Date(alteration.resumeDate ?? ''))}</dd>
           </>
         )}
       </div>
@@ -64,8 +68,8 @@ const AlterationSummary: React.FC<Props> = ({ alteration, application }) => {
           <div>
             <dt>{t(`${translationBase}.summary.billingAddress`)}</dt>
             <dd>
-              {application.company.streetAddress},{' '}
-              {application.company.postcode} {application.company.city}
+              {application.company?.streetAddress},{' '}
+              {application.company?.postcode} {application.company?.city}
             </dd>
           </div>
           <div />

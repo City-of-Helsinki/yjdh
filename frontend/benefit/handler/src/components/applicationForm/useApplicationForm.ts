@@ -59,12 +59,12 @@ type ExtendedComponentProps = {
   application: Application;
   formik: FormikProps<Partial<Application>>;
   fields: ApplicationFields;
+  handleSave: () => void;
   handleSaveDraft: () => void;
   handleDelete: () => void;
-  handleSave: () => void;
+  handleSubmit: () => void;
   handleQuietSave: () => Promise<ApplicationData | void>;
   handleValidation: () => Promise<boolean>;
-  handleSubmit: () => void;
   showDeminimisSection: boolean;
   minEndDate: Date;
   maxEndDate: Date | undefined;
@@ -79,8 +79,8 @@ type ExtendedComponentProps = {
   checkedConsentArray: boolean[];
   getConsentErrorText: (consentIndex: number) => string;
   handleConsentClick: (consentIndex: number) => void;
-  initialApplication: Application;
-  user: User;
+  initialApplication: Application | null;
+  user: User | undefined;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -99,14 +99,14 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   const { isFormActionNew, isFormActionEdit } = useApplicationFormContext();
 
   const [application, setApplication] = React.useState<Application>(
-    getApplication(null, id, isFormActionNew)
+    getApplication(undefined, id, isFormActionNew)
   );
   const [initialApplication, setInitialApplication] =
-    React.useState<Application>(null);
+    React.useState<Application | null>(null);
 
   const { onSave, onQuietSave, onSubmit, onNext, onDelete } = useFormActions(
     application,
-    initialApplication
+    initialApplication || ({} as Application)
   );
 
   const { deMinimisAids, unfinishedDeMinimisAidRow } =
@@ -123,11 +123,11 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     status: applicationDataStatus,
     data,
     error: applicationDataError,
-  } = useApplicationQueryWithState(id, setApplication);
+  } = useApplicationQueryWithState(id || '', setApplication);
 
-  const getPaperApplicationDate = (): string | null => {
+  const getPaperApplicationDate = (): string | undefined => {
     if (application?.applicationOrigin === APPLICATION_ORIGINS.APPLICANT)
-      return null;
+      return undefined;
     return application?.paperApplicationDate
       ? formatDate(parseDate(application.paperApplicationDate))
       : formatDate(new Date());
@@ -143,7 +143,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
         ? formatDate(parseDate(application.endDate))
         : undefined,
       [APPLICATION_FIELDS.PAPER_APPLICATION_DATE]: getPaperApplicationDate(),
-    },
+    } as Partial<Application>,
     validationSchema: getValidationSchema(
       t,
       organizationType,
@@ -153,7 +153,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     validateOnBlur: true,
     enableReinitialize: true,
     onSubmit: (values) =>
-      onNext(values, dispatchStep, activeStep, id, application),
+      onNext(values, dispatchStep, activeStep, id ?? undefined, application),
   });
 
   React.useEffect(() => {
@@ -162,7 +162,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     if (
       data &&
       initialApplication &&
-      formik.values.employee.id &&
+      formik.values.employee?.id &&
       !isEqual(formik.values.attachments, application.attachments)
     ) {
       const applicationWithUpdatedAttachments = {
@@ -232,10 +232,10 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   };
 
   const handleQuietSave = async (): Promise<ApplicationData | void> =>
-    onQuietSave(values, id);
+    onQuietSave(values, id ?? undefined);
 
   const handleSaveDraft = async (): Promise<void> => {
-    await onSave(values, id);
+    await onSave(values, id ?? undefined);
   };
   const handleDelete = (): void => {
     onDelete(application.id ?? '');
@@ -293,17 +293,16 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     return true;
   };
 
-  const handleSave = async (): Promise<void> =>
-    formik.validateForm().then((errors): Promise<void> | void => {
-      if (!checkDeMinimisForm()) {
-        return null;
-      }
+  const handleSave = async (): Promise<void> => {
+    const errors = await formik.validateForm();
+    if (!checkDeMinimisForm()) {
+      return;
+    }
 
-      if (!errorActions(errors)) {
-        return formik.submitForm();
-      }
-      return null;
-    });
+    if (!errorActions(errors)) {
+      await formik.submitForm();
+    }
+  };
 
   const handleValidation = (): Promise<boolean> =>
     formik.validateForm().then((errors) => {
@@ -314,7 +313,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     });
 
   const handleSubmit = async (): Promise<void> => {
-    await onSubmit(values, id);
+    await onSubmit(values, id ?? undefined);
   };
 
   const showDeminimisSection =
@@ -341,10 +340,12 @@ export const useApplicationForm = (): ExtendedComponentProps => {
 
   const subsidyOptions = React.useMemo(getSubsidyOptions, []);
 
-  const getSelectValue = (fieldName: keyof Application): OptionType | null =>
-    subsidyOptions.find(
-      (o) => o.value?.toString() === String(values?.[fieldName])
-    ) ?? null;
+  const getSelectValue = (fieldName: keyof Application): OptionType | null => {
+    const value = (values as Application)?.[fieldName];
+    return (
+      subsidyOptions.find((o) => o.value?.toString() === String(value)) ?? null
+    );
+  };
 
   if (getInitialConsentValues().length !== checkedConsentArray.length) {
     setCheckedConsentArray(getInitialConsentValues());
@@ -387,7 +388,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     handleDelete,
     handleValidation,
     showDeminimisSection,
-    minEndDate,
+    minEndDate: minEndDate ?? new Date(),
     maxEndDate,
     setEndDate,
     getSelectValue,

@@ -33,6 +33,7 @@ const useUpdateApplicationQuery = (
       onSuccess: (updatedApplication: ApplicationData) => {
         if (
           setIsSubmittedApplication &&
+          updatedApplication.status &&
           [
             APPLICATION_STATUSES.HANDLING,
             APPLICATION_STATUSES.RECEIVED,

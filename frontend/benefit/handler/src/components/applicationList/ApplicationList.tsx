@@ -70,21 +70,22 @@ const buildApplicationUrl = (
 };
 
 const getFirstInstalmentTotalAmount = (
-  calculatedBenefitAmount: string,
+  calculatedBenefitAmount?: string,
   secondInstalment?: Instalment,
   alterations?: ApplicationAlteration[]
 ): string | JSX.Element => {
-  let firstInstalment = parseInt(calculatedBenefitAmount, 10);
+  const benefitAmount = calculatedBenefitAmount || '0';
+  let firstInstalment = parseInt(benefitAmount, 10);
   let recoveryAmount = 0;
   if (secondInstalment) {
     firstInstalment -= parseInt(
-      String(secondInstalment?.amountAfterRecoveries),
+      String(secondInstalment.amountAfterRecoveries || 0),
       10
     );
     recoveryAmount = alterations
       ? alterations?.reduce(
           (prev: number, cur: ApplicationAlteration) =>
-            prev + parseInt(cur.recoveryAmount, 10),
+            prev + parseInt(cur.recoveryAmount || '0', 10),
           0
         )
       : 0;
@@ -92,9 +93,7 @@ const getFirstInstalmentTotalAmount = (
   return secondInstalment ? (
     <>
       {formatFloatToEvenEuros(firstInstalment)} /{' '}
-      {formatFloatToEvenEuros(
-        parseInt(calculatedBenefitAmount, 10) - recoveryAmount
-      )}
+      {formatFloatToEvenEuros(parseInt(benefitAmount, 10) - recoveryAmount)}
     </>
   ) : (
     formatFloatToEvenEuros(firstInstalment)
@@ -113,9 +112,9 @@ export const renderPaymentTagPerStatus = (
   <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
     <Tag
       onClick={
-        talpaStatus === TALPA_STATUSES.REJECTED_BY_TALPA && id
+        talpaStatus === TALPA_STATUSES.REJECTED_BY_TALPA && id && clickTalpaTag
           ? () => clickTalpaTag(id, talpaStatus)
-          : null
+          : undefined
       }
     >
       {t(`applications.list.columns.talpaStatuses.${String(talpaStatus)}`)}
@@ -183,7 +182,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       id: string,
       applicationStatus: APPLICATION_STATUSES,
       unreadMessagesCount: number,
-      ahjoError: AhjoError
+      ahjoError?: AhjoError
     ): JSX.Element => (
       <$TableActions>
         {Number(unreadMessagesCount) > 0 ? (
@@ -247,8 +246,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     [t]
   );
 
-  const columns = React.useMemo(() => {
-    const cols: ApplicationListTableColumns[] = [
+  const getBasicColumns = React.useCallback(
+    (): ApplicationListTableColumns[] => [
       {
         transform: ({
           id,
@@ -258,9 +257,9 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         }: ApplicationListTableTransforms) => (
           <$Link
             href={buildApplicationUrl(
-              id,
-              applicationStatus,
-              unreadMessagesCount > 0
+              id || '',
+              applicationStatus || ('' as APPLICATION_STATUSES),
+              (unreadMessagesCount || 0) > 0
             )}
           >
             {String(companyName)}
@@ -285,169 +284,215 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         key: 'employeeName',
         isSortable: true,
       },
-    ];
+    ],
+    [getHeader]
+  );
 
-    if (
-      isVisibleOnlyForStatus.handling ||
-      isVisibleOnlyForStatus.infoRequired
-    ) {
-      cols.push({
-        headerName: getHeader('handlerName'),
-        key: 'handlerName',
-        isSortable: true,
-      });
-    }
-    if (
-      (!status.includes(APPLICATION_STATUSES.DRAFT) &&
-        !status.includes(APPLICATION_STATUSES.ACCEPTED) &&
-        !status.includes(APPLICATION_STATUSES.REJECTED)) ||
-      isAllStatuses
-    ) {
-      cols.push({
-        headerName: getHeader('submittedAt'),
-        key: 'submittedAt',
-        isSortable: true,
-        customSortCompareFunction: sortFinnishDate,
-      });
-    }
-
-    if (
-      (!inPayment && isVisibleOnlyForStatus.accepted) ||
-      isVisibleOnlyForStatus.rejected
-    ) {
-      cols.push({
-        headerName: getHeader('handledAt'),
-        key: 'handledAt',
-        isSortable: true,
-        customSortCompareFunction: sortFinnishDate,
-      });
-    }
-
-    if (isVisibleOnlyForStatus.draft) {
-      cols.push({
-        headerName: getHeader('modifiedAt'),
-        key: 'modifiedAt',
-        isSortable: true,
-        customSortCompareFunction: sortFinnishDateTime,
-      });
-    }
-
-    if (
-      !inPayment &&
-      (isVisibleOnlyForStatus.accepted ||
-        isVisibleOnlyForStatus.rejected ||
-        isVisibleOnlyForStatus.infoRequired ||
+  const getStatusDependentColumns = React.useCallback(
+    (cols: ApplicationListTableColumns[]) => {
+      if (
         isVisibleOnlyForStatus.handling ||
-        isAllStatuses)
-    ) {
-      cols.push(
-        {
-          transform: ({
-            status: applicationStatus,
-            additionalInformationNeededBy,
-          }: ApplicationListTableTransforms) =>
-            renderTagWrapper(applicationStatus, additionalInformationNeededBy),
-          headerName: getHeader('applicationStatus'),
-          key: 'status',
+        isVisibleOnlyForStatus.infoRequired
+      ) {
+        cols.push({
+          headerName: getHeader('handlerName'),
+          key: 'handlerName',
           isSortable: true,
-        },
+        });
+      }
+      if (
+        (!status.includes(APPLICATION_STATUSES.DRAFT) &&
+          !status.includes(APPLICATION_STATUSES.ACCEPTED) &&
+          !status.includes(APPLICATION_STATUSES.REJECTED)) ||
+        isAllStatuses
+      ) {
+        cols.push({
+          headerName: getHeader('submittedAt'),
+          key: 'submittedAt',
+          isSortable: true,
+          customSortCompareFunction: sortFinnishDate,
+        });
+      }
 
-        {
-          transform: ({
-            id,
-            status: applicationStatus,
-            unreadMessagesCount,
-            ahjoError,
-          }: ApplicationListTableTransforms) =>
-            renderTableActions(
+      if (
+        (!inPayment && isVisibleOnlyForStatus.accepted) ||
+        isVisibleOnlyForStatus.rejected
+      ) {
+        cols.push({
+          headerName: getHeader('handledAt'),
+          key: 'handledAt',
+          isSortable: true,
+          customSortCompareFunction: sortFinnishDate,
+        });
+      }
+
+      if (isVisibleOnlyForStatus.draft) {
+        cols.push({
+          headerName: getHeader('modifiedAt'),
+          key: 'modifiedAt',
+          isSortable: true,
+          customSortCompareFunction: sortFinnishDateTime,
+        });
+      }
+    },
+    [
+      getHeader,
+      inPayment,
+      isAllStatuses,
+      isVisibleOnlyForStatus.accepted,
+      isVisibleOnlyForStatus.draft,
+      isVisibleOnlyForStatus.handling,
+      isVisibleOnlyForStatus.infoRequired,
+      isVisibleOnlyForStatus.rejected,
+      status,
+    ]
+  );
+
+  const getActionColumns = React.useCallback(
+    (cols: ApplicationListTableColumns[]) => {
+      if (
+        !inPayment &&
+        (isVisibleOnlyForStatus.accepted ||
+          isVisibleOnlyForStatus.rejected ||
+          isVisibleOnlyForStatus.infoRequired ||
+          isVisibleOnlyForStatus.handling ||
+          isAllStatuses)
+      ) {
+        cols.push(
+          {
+            transform: ({
+              status: applicationStatus,
+              additionalInformationNeededBy,
+            }: ApplicationListTableTransforms) =>
+              renderTagWrapper(
+                applicationStatus || ('' as APPLICATION_STATUSES),
+                additionalInformationNeededBy || ''
+              ),
+            headerName: getHeader('applicationStatus'),
+            key: 'status',
+            isSortable: true,
+          },
+
+          {
+            transform: ({
               id,
-              applicationStatus,
+              status: applicationStatus,
               unreadMessagesCount,
-              ahjoError
-            ),
-          headerName: getHeader('unreadMessagesCount'),
-          key: 'unreadMessagesCount',
-          isSortable: false,
-        }
-      );
-    }
+              ahjoError,
+            }: ApplicationListTableTransforms) =>
+              renderTableActions(
+                id || '',
+                applicationStatus || ('' as APPLICATION_STATUSES),
+                unreadMessagesCount as number,
+                ahjoError
+              ),
+            headerName: getHeader('unreadMessagesCount'),
+            key: 'unreadMessagesCount',
+            isSortable: false,
+          }
+        );
+      }
 
-    if (isVisibleOnlyForStatus.received) {
-      cols.push({
-        transform: ({ applicationOrigin }: ApplicationListTableTransforms) => (
-          <div>
-            <Tag>
-              {t(
-                `common:applications.list.columns.applicationOrigins.${String(
-                  applicationOrigin
-                )}`
-              )}
-            </Tag>
-          </div>
-        ),
-        headerName: getHeader('origin'),
-        key: 'applicationOrigin',
-        isSortable: true,
-      });
-    }
+      if (isVisibleOnlyForStatus.received) {
+        cols.push({
+          transform: ({
+            applicationOrigin,
+          }: ApplicationListTableTransforms) => (
+            <div>
+              <Tag>
+                {t(
+                  `common:applications.list.columns.applicationOrigins.${String(
+                    applicationOrigin
+                  )}`
+                )}
+              </Tag>
+            </div>
+          ),
+          headerName: getHeader('origin'),
+          key: 'applicationOrigin',
+          isSortable: true,
+        });
+      }
+    },
+    [
+      getHeader,
+      inPayment,
+      isAllStatuses,
+      isVisibleOnlyForStatus.accepted,
+      isVisibleOnlyForStatus.handling,
+      isVisibleOnlyForStatus.infoRequired,
+      isVisibleOnlyForStatus.received,
+      isVisibleOnlyForStatus.rejected,
+      renderTableActions,
+      renderTagWrapper,
+      t,
+    ]
+  );
+
+  const getPaymentColumns = React.useCallback(
+    (
+      cols: ApplicationListTableColumns[],
+      onTalpaTagClick: (id: string) => void
+    ) => {
+      if (inPayment) {
+        cols.push(
+          {
+            customSortCompareFunction: sortFinnishDate,
+            headerName: getHeader('decisionDate'),
+            key: 'decisionDate',
+            isSortable: true,
+          },
+          {
+            headerName: getHeader('paymentStatus'),
+            key: 'paymentStatus',
+            isSortable: true,
+            transform: ({
+              talpaStatus,
+              firstInstalment,
+            }: ApplicationListTableTransforms) =>
+              renderPaymentTagPerStatus(
+                t,
+                talpaStatus as TALPA_STATUSES,
+                firstInstalment?.id,
+                onTalpaTagClick
+              ),
+          },
+          {
+            headerName: getHeader('calculatedBenefitAmount'),
+            key: 'calculatedBenefitAmount',
+            transform: ({
+              calculatedBenefitAmount,
+              secondInstalment,
+            }: ApplicationListTableTransforms) =>
+              getFirstInstalmentTotalAmount(
+                calculatedBenefitAmount ? String(calculatedBenefitAmount) : '0',
+                secondInstalment || undefined
+              ),
+          }
+        );
+      }
+    },
+    [getHeader, inPayment, t]
+  );
+
+  const columns = React.useMemo(() => {
+    const cols = getBasicColumns();
+    getStatusDependentColumns(cols);
+    getActionColumns(cols);
+
     const onTalpaTagClick = (id: string): void => {
       setShowTaplaModal(true);
       setSelectedApplication(id);
     };
 
-    if (inPayment) {
-      cols.push(
-        {
-          customSortCompareFunction: sortFinnishDate,
-          headerName: getHeader('decisionDate'),
-          key: 'decisionDate',
-          isSortable: true,
-        },
-        {
-          headerName: getHeader('paymentStatus'),
-          key: 'paymentStatus',
-          isSortable: true,
-          transform: ({
-            talpaStatus,
-            firstInstalment,
-          }: ApplicationListTableTransforms) =>
-            renderPaymentTagPerStatus(
-              t,
-              talpaStatus as TALPA_STATUSES,
-              firstInstalment?.id,
-              onTalpaTagClick
-            ),
-        },
-        {
-          headerName: getHeader('calculatedBenefitAmount'),
-          key: 'calculatedBenefitAmount',
-          transform: ({
-            calculatedBenefitAmount,
-            secondInstalment,
-          }: ApplicationListTableTransforms) =>
-            getFirstInstalmentTotalAmount(
-              String(calculatedBenefitAmount),
-              secondInstalment || null
-            ),
-        }
-      );
-    }
+    getPaymentColumns(cols, onTalpaTagClick);
 
     return cols.filter(Boolean);
   }, [
-    getHeader,
-    isVisibleOnlyForStatus.handling,
-    isVisibleOnlyForStatus.infoRequired,
-    isVisibleOnlyForStatus.accepted,
-    isVisibleOnlyForStatus.rejected,
-    isVisibleOnlyForStatus.draft,
-    isVisibleOnlyForStatus.received,
-    status,
-    isAllStatuses,
-    inPayment,
-    renderTagWrapper,
-    renderTableActions,
-    t,
+    getBasicColumns,
+    getStatusDependentColumns,
+    getActionColumns,
+    getPaymentColumns,
   ]);
 
   if (isLoading) {

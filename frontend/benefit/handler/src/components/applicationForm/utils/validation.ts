@@ -99,7 +99,7 @@ export const getValidationSchema = (
       .nullable()
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-        test: (val) => {
+        test: (val?: boolean | null) => {
           if (
             organizationType?.toLowerCase() ===
             ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
@@ -113,7 +113,7 @@ export const getValidationSchema = (
       .nullable()
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-        test: (val) => {
+        test: (val?: boolean | null) => {
           if (
             organizationType?.toLowerCase() ===
             ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
@@ -175,7 +175,7 @@ export const getValidationSchema = (
       })
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-        test: (val) => {
+        test: (val?: boolean | null) => {
           if (
             organizationType?.toLowerCase() ===
             ORGANIZATION_TYPES.COMPANY.toLowerCase()
@@ -200,7 +200,8 @@ export const getValidationSchema = (
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
       .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
-        is: (value: PAY_SUBSIDY_GRANTED) =>
+        is: (value?: PAY_SUBSIDY_GRANTED) =>
+          value &&
           [
             PAY_SUBSIDY_GRANTED.GRANTED,
             PAY_SUBSIDY_GRANTED.GRANTED_AGED,
@@ -245,7 +246,7 @@ export const getValidationSchema = (
         .test(
           'is-decimal',
           t(VALIDATION_MESSAGE_KEYS.NUMBER_TWO_DECIMALS),
-          (value: number): boolean =>
+          (value?: number): boolean =>
             value ? /^\d+.?\d{1,2}$/.test(String(value)) : false
         )
         .transform((_value, originalValue) =>

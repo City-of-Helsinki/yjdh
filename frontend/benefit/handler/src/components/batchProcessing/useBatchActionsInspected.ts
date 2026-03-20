@@ -56,7 +56,7 @@ const useBatchActionsInspected = (
     isSuccess,
     isError,
     mutate: setBatchDecided,
-  } = useBatchInspected(setBatchCloseAnimation, applications.length);
+  } = useBatchInspected(setBatchCloseAnimation, applications?.length);
 
   const parseLocalizedDateString = (
     _: string,
@@ -66,7 +66,7 @@ const useBatchActionsInspected = (
     if (isValid(parsed)) {
       return new Date(format(parsed, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
     }
-    return undefined;
+    return false;
   };
 
   const translations = {

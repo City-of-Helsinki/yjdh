@@ -22,7 +22,7 @@ const useCloneApplicationMutation = (): UseMutationResult<
 
   return useMutation(
     'clone_application',
-    (id?: string) =>
+    (id: string) =>
       handleResponse<Response>(
         axios.get(HandlerEndpoint.HANDLER_APPLICATIONS_CLONE_AS_DRAFT(id))
       ),

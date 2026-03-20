@@ -90,13 +90,15 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
 
   const { mutate: removeApp } = useRemoveAppFromBatch(setBatchCloseAnimation);
   const openAppRemovalDialog = (appId: string): void => {
-    const selectedApp = apps.find((app) => app.id === appId);
-    setAppToRemove(selectedApp);
+    const selectedApp = (apps || []).find((app) => app.id === appId);
+    setAppToRemove(selectedApp || null);
     setIsConfirmAppRemoval(true);
   };
 
   const onAppRemovalSubmit = (): void => {
-    removeApp({ appIds: [appToRemove.id], batchId });
+    if (appToRemove) {
+      removeApp({ appIds: [appToRemove.id], batchId });
+    }
     setIsConfirmAppRemoval(false);
     setAppToRemove(null);
   };
@@ -163,7 +165,9 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           >
             {' '}
           </Button>
-        ) : null,
+        ) : (
+          ''
+        ),
     });
   }
   if (status === BATCH_STATUSES.REJECTED_BY_TALPA) {
@@ -193,7 +197,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           <IconCheckCircleFill color="var(--color-tram)" />
           <$BatchStatusValue>
             {`${t('common:batches.list.columns.statuses.accepted')} (${
-              applications?.length
+              applications?.length || 0
             })`}
           </$BatchStatusValue>
         </>
@@ -204,7 +208,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
         <IconCrossCircleFill color="var(--color-brick)" />
         <$BatchStatusValue>
           {`${t('common:batches.list.columns.statuses.rejected')} (${
-            applications?.length
+            applications?.length || 0
           })`}
         </$BatchStatusValue>
       </>
@@ -221,7 +225,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             BATCH_STATUSES.DECIDED_ACCEPTED,
           ].includes(status)
             ? theme.colors.fogDark
-            : null
+            : undefined
         }
       >
         <Modal
@@ -233,7 +237,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           handleToggle={noop}
           variant="primary"
           customContent={
-            isConfirmAppRemoval ? (
+            isConfirmAppRemoval && appToRemove ? (
               <ConfirmModalContent
                 variant="primary"
                 heading={t('common:batches.dialog.removeApplication.heading')}
@@ -288,7 +292,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
             </div>
           )}
           <div>
-            {applications.length > 0 ? (
+            {(applications || []).length > 0 ? (
               <button
                 type="button"
                 data-testid="toggle-batch-applications"
