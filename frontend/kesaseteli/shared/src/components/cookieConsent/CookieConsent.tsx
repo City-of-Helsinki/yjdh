@@ -51,9 +51,9 @@ const CookieConsent: React.FC<CookieConsentProps> = ({
   );
 
   return asPage ? (
-    <CookiePage contentSource={contentSource} />
+    <CookiePage contentSource={contentSource as any} />
   ) : (
-    <CookieModal contentSource={contentSource} />
+    <CookieModal contentSource={contentSource as any} />
   );
 };
 

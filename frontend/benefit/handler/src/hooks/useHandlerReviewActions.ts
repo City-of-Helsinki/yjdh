@@ -27,7 +27,9 @@ interface HandlerReviewActions {
 
 const useHandlerReviewActions = (
   application: Application,
-  setCalculationErrors?: React.Dispatch<React.SetStateAction<ErrorData>>
+  setCalculationErrors?: React.Dispatch<
+    React.SetStateAction<ErrorData | undefined | null>
+  >
 ): HandlerReviewActions => {
   const updateApplicationQuery = useUpdateApplicationQuery();
 
@@ -160,10 +162,8 @@ const useHandlerReviewActions = (
     if (!setCalculationErrors) return;
     if (updateApplicationQuery.error) {
       // Can parse error codes from data on 400s, set generic error on 500
-      if (
-        updateApplicationQuery.error.response?.status >= 400 &&
-        updateApplicationQuery.error.response?.status < 500
-      ) {
+      const status = updateApplicationQuery.error.response?.status;
+      if (status && status >= 400 && status < 500) {
         setCalculationErrors(
           camelcaseKeys(updateApplicationQuery.error.response?.data ?? {})
         );
@@ -174,7 +174,7 @@ const useHandlerReviewActions = (
           },
         } as ErrorData);
       }
-    } else {
+    } else if (setCalculationErrors) {
       setCalculationErrors(null);
     }
   }, [updateApplicationQuery.error, setCalculationErrors, t]);
@@ -187,7 +187,7 @@ const useHandlerReviewActions = (
     void updateApplicationQuery.mutate(getSalaryBenefitData(values));
   };
 
-  const { navigateBack } = useRouterNavigation(application.status);
+  const { navigateBack } = useRouterNavigation(application?.status);
 
   const onSaveAndClose = (): void => {
     void navigateBack();

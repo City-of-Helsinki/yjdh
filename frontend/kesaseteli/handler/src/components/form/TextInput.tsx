@@ -22,7 +22,7 @@ export type TextInputProps = {
   type?: TextInputBaseProps<ApplicationWithoutSsnFormData>['type'];
   placeholder?: string;
   helperFormat?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value?: string) => void;
   autoComplete?: AutoComplete;
 } & GridCellProps;
 

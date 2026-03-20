@@ -35,12 +35,13 @@ const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
   }, [inputRef, cursor]);
 
   const validateBankAccount = (value: string): boolean => {
-    const { errorCodes, valid } = validateIBAN(electronicFormatIBAN(value));
+    const { errorCodes, valid } = validateIBAN(
+      electronicFormatIBAN(value ?? undefined) ?? undefined
+    );
     if (!valid) {
       setErrorText(
         t(
-          `common:application.form.errors.${
-            ValidationErrorsIBAN[errorCodes[0]]
+          `common:application.form.errors.${ValidationErrorsIBAN[errorCodes[0]]
           }`
         )
       );
@@ -57,13 +58,15 @@ const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
       value={getValue()}
       beforeMaskedValueChange={(newState) => {
         // eslint-disable-next-line no-param-reassign
-        newState.value = friendlyFormatIBAN(newState.value).trim();
+        newState.value = friendlyFormatIBAN(newState.value ?? undefined)?.trim() ?? '';
         return newState;
       }}
     >
       {
         (() => (
           <TextInputBase<ApplicationFormData>
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore  
             registerOptions={{
               required: true,
               maxLength: 34,

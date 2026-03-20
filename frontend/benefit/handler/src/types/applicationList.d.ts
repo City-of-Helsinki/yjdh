@@ -1,5 +1,13 @@
-import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { AhjoError, Instalment } from 'benefit-shared/types/application';
+import {
+  APPLICATION_ORIGINS,
+  APPLICATION_STATUSES,
+  TALPA_STATUSES,
+} from 'benefit-shared/constants';
+import {
+  AhjoError,
+  ApplicationAlteration,
+  Instalment,
+} from 'benefit-shared/types/application';
 
 export interface ApplicationListTableTransforms {
   id?: string;
@@ -8,11 +16,11 @@ export interface ApplicationListTableTransforms {
   additionalInformationNeededBy?: string | Date;
   status?: APPLICATION_STATUSES;
   applicationOrigin?: APPLICATION_ORIGINS;
-  ahjoError: AhjoError;
+  ahjoError?: AhjoError;
   calculatedBenefitAmount?: string;
   firstInstalment?: Instalment;
   secondInstalment?: Instalment;
-  alterations: ApplicationAlterationData[];
+  alterations?: ApplicationAlteration[];
   talpaStatus?: TALPA_STATUSES;
 }
 
@@ -21,6 +29,6 @@ export interface ApplicationListTableColumns {
   key: string;
   headerName: string;
   sortIconType?: 'string' | 'other';
-  transform?: ({ ...args }: TableTransforms) => string | JSX.Element;
-  customSortCompareFunction?: (a: string, b: string) => void;
+  transform?: (args: ApplicationListTableTransforms) => string | JSX.Element;
+  customSortCompareFunction?: (a: string, b: string) => number;
 }

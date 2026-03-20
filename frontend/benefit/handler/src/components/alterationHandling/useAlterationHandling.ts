@@ -9,8 +9,8 @@ import { TFunction, useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 
 type AlterationHandlingProps = {
-  application: Application;
-  alteration: ApplicationAlteration;
+  application?: Application;
+  alteration: ApplicationAlteration | null;
   isLoading: boolean;
   t: TFunction;
 };
@@ -21,20 +21,22 @@ const useAlterationHandling = (): AlterationHandlingProps => {
   const applicationId = router?.query?.applicationId?.toString() ?? '';
   const alterationId =
     router?.query?.alterationId && !Array.isArray(router.query.alterationId)
-      ? Number(router.query.alterationId)
+      ? router.query.alterationId.toString()
       : '';
   const [isLoading, setIsLoading] = useState(true);
 
   const { status: applicationDataStatus, data: applicationData } =
     useApplicationQuery(applicationId);
 
-  const application: Application = camelcaseKeys(applicationData || {}, {
-    deep: true,
-  });
+  const application = applicationData
+    ? (camelcaseKeys(applicationData, {
+        deep: true,
+      }) as unknown as Application)
+    : undefined;
 
   const alteration: ApplicationAlteration | null =
-    application.alterations?.find(
-      (candidate) => candidate.id === alterationId
+    application?.alterations?.find(
+      (candidate) => String(candidate.id) === String(alterationId)
     ) || null;
 
   useEffect(() => {

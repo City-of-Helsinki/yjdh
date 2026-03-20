@@ -20,7 +20,7 @@ import { ThemeProvider } from 'styled-components';
 type Props = AppProps & {
   header?: React.ReactNode;
   footer?: React.ReactNode;
-  layout?: React.FC;
+  layout?: React.ComponentType<React.PropsWithChildren<any>>;
   title?: string;
 };
 
@@ -55,7 +55,9 @@ const BaseApp: React.FC<Props> = ({
     <>
       <ThemeProvider theme={theme}>
         <Head>
-          <title>{title?.length > 0 ? title : t('common:appName')}</title>
+          <title>
+            {title && title.length > 0 ? title : t('common:appName')}
+          </title>
         </Head>
         <GlobalStyling />
         <LayoutComponent>

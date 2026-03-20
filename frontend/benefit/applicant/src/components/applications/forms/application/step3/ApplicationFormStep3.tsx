@@ -1,6 +1,9 @@
 import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/AttachmentsIngress';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  ATTACHMENT_TYPES,
+} from 'benefit-shared/constants';
 import React from 'react';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
@@ -59,7 +62,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
-        applicationStatus={data?.status}
+        applicationStatus={data?.status ?? APPLICATION_STATUSES.DRAFT}
       />
     </>
   );

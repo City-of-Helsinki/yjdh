@@ -38,15 +38,15 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
           header={t('common:review.decisionProposal.list.title')}
           as="h3"
         />
-        {handledApplication.status === APPLICATION_STATUSES.ACCEPTED && (
+        {handledApplication?.status === APPLICATION_STATUSES.ACCEPTED && (
           <p>
             {t('common:review.decisionProposal.list.text.accepted', {
-              months: tableRows.at(-1)?.duration,
-              startAndEndDate: `${tableRows.at(-1)?.dates}`,
+              months: tableRows[tableRows.length - 1]?.duration,
+              startAndEndDate: `${tableRows[tableRows.length - 1]?.dates}`,
             })}
           </p>
         )}
-        {handledApplication.status === APPLICATION_STATUSES.REJECTED && (
+        {handledApplication?.status === APPLICATION_STATUSES.REJECTED && (
           <p>{t('common:review.decisionProposal.list.text.rejected')}</p>
         )}
         <hr />
@@ -79,13 +79,13 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
           </div>
           <div>
             <dt>{t('common:review.decisionProposal.list.employerName')}</dt>
-            <dd>{company.name}</dd>
+            <dd>{company?.name}</dd>
           </div>
           {decisionProposalDraft.status === APPLICATION_STATUSES.REJECTED && (
             <div>
               <dt>{t('common:review.decisionProposal.list.employeeName')}</dt>
               <dd>
-                {employee.firstName} {employee.lastName}
+                {employee?.firstName} {employee?.lastName}
               </dd>
             </div>
           )}
@@ -112,13 +112,13 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
           <div style={{ maxWidth: '220px', minWidth: '220px' }}>
             <dt>{t('common:review.decisionProposal.list.decisionMaker')}</dt>
             <dd>
-              {handledApplication.decisionMakerName ||
+              {handledApplication?.decisionMakerName ||
                 decisionProposalDraft.decisionMakerName}
             </dd>
           </div>
         </$HorizontalList>
       </$GridCell>
-      {handledApplication.status === APPLICATION_STATUSES.ACCEPTED && (
+      {handledApplication?.status === APPLICATION_STATUSES.ACCEPTED && (
         <$GridCell $colSpan={12}>
           <hr />
 

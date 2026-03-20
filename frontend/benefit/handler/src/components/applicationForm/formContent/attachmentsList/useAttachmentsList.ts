@@ -41,10 +41,10 @@ const useAttachmentsList = (
     mutate: uploadAttachment,
     isLoading: isUploading,
     isError: isUploadingError,
-    error: uploadError
+    error: uploadError,
   } = useUploadAttachmentQuery();
 
-  const [error, setError] = React.useState<ErrorResponse | null>( uploadError);
+  const [error, setError] = React.useState<ErrorResponse | null>(uploadError);
 
   React.useEffect(() => {
     if (isUploadingError) {
@@ -54,9 +54,11 @@ const useAttachmentsList = (
 
   React.useEffect(() => {
     if (error?.response?.status === 400) {
-      showErrorToast(t(`common:error.malware.errorTitle`), error?.response?.data?.non_field_errors[0]);
-    }
-    else if (isRemovingError) {
+      showErrorToast(
+        t(`common:error.malware.errorTitle`),
+        error?.response?.data?.non_field_errors?.[0] || ''
+      );
+    } else if (isRemovingError) {
       showErrorToast(
         t(`common:error.attachments.title`),
         t(`common:error.attachments.generic`)

@@ -1,14 +1,14 @@
 import { ToggleButton } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 const $FilterBar = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.s};
-  margin-bottom: ${(props) => props.theme.spacing.s};
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
 `;
 
 type Props = {

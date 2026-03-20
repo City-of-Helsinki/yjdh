@@ -64,7 +64,9 @@ const initialTrainingCompensationValues = {
 
 const useSalaryBenefitCalculatorData = (
   application: Application,
-  setCalculationErrors: React.Dispatch<React.SetStateAction<ErrorData>>
+  setCalculationErrors: React.Dispatch<
+    React.SetStateAction<ErrorData | undefined | null>
+  >
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
 

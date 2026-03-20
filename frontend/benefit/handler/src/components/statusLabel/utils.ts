@@ -2,9 +2,12 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { DefaultTheme } from 'styled-components';
 
 export const statusColorMap = (
-  status: APPLICATION_STATUSES
+  status?: APPLICATION_STATUSES
 ): keyof DefaultTheme['colors'] => {
   const variant = 'MediumLight';
+  if (!status) {
+    return `coatOfArms${variant}`;
+  }
   switch (status) {
     case APPLICATION_STATUSES.HANDLING:
       return `coatOfArms${variant}`;

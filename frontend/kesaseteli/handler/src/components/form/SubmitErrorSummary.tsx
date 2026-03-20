@@ -35,6 +35,9 @@ const SubmitErrorSummary: React.FC<Props> = ({ error }) => {
         }
       );
     }
+    if (error.type === null) {
+      return null;
+    }
     assertUnreachable(error.type, 'Unknown submit error type');
     return null;
   }, [error.errorFields, error.type, t]);

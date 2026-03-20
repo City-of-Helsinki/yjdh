@@ -38,7 +38,7 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
   const translationsBase = 'common:calculators.result';
   const { t } = useTranslation();
   const { rowsWithoutTotal, totalRow, totalRowDescription } =
-    extractCalculatorRows(data?.calculation?.rows);
+    extractCalculatorRows(data?.calculation?.rows || []);
 
   // Group rows into sections to give monthly subtotals a separate background color
   const sections = groupCalculatorRows(rowsWithoutTotal);

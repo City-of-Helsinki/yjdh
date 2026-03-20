@@ -34,7 +34,7 @@ type SearchProps = {
   isSearchLoading: boolean;
 };
 
-const STATUS_SORT_RANK = {
+const STATUS_SORT_RANK: Record<string, number> = {
   [APPLICATION_STATUSES.ACCEPTED]: 1,
   [APPLICATION_STATUSES.REJECTED]: 0,
   [APPLICATION_STATUSES.CANCELLED]: -1,
@@ -136,16 +136,18 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     },
     {
       transform: ({ alterations }: TableTransforms) =>
-        alterations?.length > 0 && (
+        alterations?.length > 0 ? (
           <$AlterationBadge
-            $requiresAttention={alterations.some(({ state }) =>
+            $requiresAttention={alterations.some((a) =>
               [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
-                state
+                a.state as ALTERATION_STATE
               )
             )}
           >
             {alterations.length}
           </$AlterationBadge>
+        ) : (
+          ''
         ),
       headerName: '',
       key: 'alterations',

@@ -1,12 +1,13 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $PageHeader = styled.div`
   display: block;
-  margin-bottom: ${(props) => props.theme.spacing.s};
-  margin-top: ${(props) => props.theme.spacing.m};
-  margin-bottom: ${(props) => props.theme.spacing.m};
-  border-bottom: ${(props) => `1px solid ${props.theme.colors.black20}`};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+  border-bottom: ${(props: { theme: DefaultTheme }) =>
+    `1px solid ${props.theme.colors.black20}`};
 
   ${respondAbove('md')`
     flex: 1 0 100%;
@@ -19,7 +20,7 @@ export const $PageHeader = styled.div`
 export const $HeaderItem = styled.div``;
 
 export const $HeaderRightColumnItem = styled.div`
-  margin-top: ${(props) => props.theme.spacing.m};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
 
   ${respondAbove('md')`
     text-align: right;
@@ -27,7 +28,8 @@ export const $HeaderRightColumnItem = styled.div`
 `;
 
 export const $PageHeading = styled.h1`
-  font-size: ${(props) => props.theme.fontSize.heading.xl};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.xl};
   font-weight: normal;
   margin: 0;
 `;
@@ -35,22 +37,25 @@ export const $PageHeading = styled.h1`
 export const $PageHeadingApplicant = styled.div`
   margin-top: var(--spacing-m);
   margin-bottom: var(--spacing-m);
-  font-size: ${(props) => props.theme.fontSize.body.xl};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.body.xl};
 `;
 
 export const $PageSubHeading = styled.p`
-  color: ${(props) => props.theme.colors.coatOfArms};
-  font-size: ${(props) => props.theme.fontSize.heading.s};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.coatOfArms};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.s};
   font-weight: 500;
-  margin-top: ${(props) => props.theme.spacing.l};
-  margin-bottom: ${(props) => props.theme.spacing.m};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
 `;
 
 export const $PageHeadingHelperText = styled.div`
-  font-size: ${(props) => props.theme.fontSize.heading.xs};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.xs};
   font-weight: normal;
-  margin-top: ${(props) => props.theme.spacing.l};
-  margin-bottom: ${(props) => props.theme.spacing.m};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
 `;
 
 export const $SpinnerContainer = styled.div`
@@ -67,8 +72,8 @@ export const $AskemContainer = styled.div`
   flex-direction: column;
   min-height: 129px;
   margin: 0;
-  padding-left: ${(props) => props.theme.spacing.l};
-  padding-right: ${(props) => props.theme.spacing.l};
+  padding-left: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
+  padding-right: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
   ${respondAbove('sm')`
     flex-direction: row;
   `}
@@ -85,11 +90,12 @@ export const $AskemItem = styled.div`
       font-weight: 500;
     }
     .rns-inputs .rns-form-submit {
-      background-color: ${(props) => props.theme.colors.coatOfArms};
+      background-color: ${(props: { theme: DefaultTheme }) =>
+        props.theme.colors.coatOfArms};
       color: white;
       font-family: var(--font-default);
-      padding: ${(props) => props.theme.spacing.xs}
-        ${(props) => props.theme.spacing.m};
+      padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs}
+        ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
     }
   }
 `;
@@ -98,6 +104,6 @@ export const $NoApplicationsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.xs};
-  margin: ${(props) => props.theme.spacingLayout.xl} 0;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
+  margin: ${(props: { theme: DefaultTheme }) => props.theme.spacingLayout.xl} 0;
 `;

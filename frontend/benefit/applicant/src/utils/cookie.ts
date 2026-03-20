@@ -16,5 +16,5 @@ const parseConsentsCookie = (): ConsentsCookie | undefined => {
 
 export const canShowAskem = (lang: string): boolean => {
   const consentsCookie = parseConsentsCookie();
-  return consentsCookie && consentsCookie.rns && lang === 'fi';
+  return (consentsCookie?.rns && lang === 'fi') || false;
 };

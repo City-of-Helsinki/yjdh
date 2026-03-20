@@ -5,7 +5,10 @@ import {
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
+import {
+  ATTACHMENT_TYPES,
+  PAY_SUBSIDY_GRANTED,
+} from 'benefit-shared/constants';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import camelCase from 'lodash/camelCase';
 import { useTranslation } from 'next-i18next';
@@ -23,7 +26,9 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       id={data.id}
       header={t(`${translationsBase}.headings.heading8`)}
       section="employment"
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? true : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? true : null
+      }
     >
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
@@ -36,7 +41,9 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`${translationsBase}.fields.workingHours`)}
         </$ViewFieldBold>
         <$ViewField large>
-          {parseFloat(data.employee?.workingHours).toLocaleString('fi-FI')}{' '}
+          {parseFloat(String(data.employee?.workingHours || 0)).toLocaleString(
+            'fi-FI'
+          )}{' '}
           {t(`${translationsBase}.fields.workingHoursText`)}
         </$ViewField>
       </$GridCell>
@@ -92,7 +99,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField large>
           {t(
             `${translationsBase}.fields.paySubsidyGranted.${camelCase(
-              data.paySubsidyGranted
+              data.paySubsidyGranted || ''
             )}`
           )}
         </$ViewField>
@@ -113,7 +120,11 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         attachments={data.attachments || []}
       />
       <AttachmentsListView
-        title={t(paySubsidyTitle(data.paySubsidyGranted))}
+        title={t(
+          paySubsidyTitle(
+            data.paySubsidyGranted || PAY_SUBSIDY_GRANTED.NOT_GRANTED
+          )
+        )}
         type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
         attachments={data.attachments || []}
       />

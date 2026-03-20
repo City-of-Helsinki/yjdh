@@ -74,14 +74,16 @@ const buildApplicationUrl = (
 export const renderInstalmentTagPerStatus = (
   t: TFunction,
   status?: INSTALMENT_STATUSES
-): JSX.Element =>
+): JSX.Element | string =>
   status ? (
     <$TagWrapper $colors={getInstalmentTagStyleForStatus(status)}>
       <Tag>
         {t(`common:applications.list.columns.instalmentStatuses.${status}`)}
       </Tag>
     </$TagWrapper>
-  ) : null;
+  ) : (
+    ''
+  );
 
 const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   heading,
@@ -115,9 +117,9 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         }: ApplicationListTableTransforms) => (
           <$Link
             href={buildApplicationUrl(
-              id,
-              applicationStatus,
-              unreadMessagesCount > 0
+              id || '',
+              applicationStatus || ('' as APPLICATION_STATUSES),
+              (unreadMessagesCount || 0) > 0
             )}
           >
             {String(companyName)}
@@ -142,52 +144,59 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         key: 'dueDate',
         isSortable: true,
         customSortCompareFunction: sortFinnishDate,
-        transform: ({ secondInstalment }: ApplicationListTableTransforms) =>
-          convertToUIDateFormat(secondInstalment?.dueDate),
+        transform: (args: ApplicationListTableTransforms) =>
+          convertToUIDateFormat(args.secondInstalment?.dueDate || ''),
       },
 
       {
-        transform: ({ secondInstalment }: ApplicationListTableTransforms) =>
+        transform: (args: ApplicationListTableTransforms) =>
           renderInstalmentTagPerStatus(
             t,
-            secondInstalment?.status as INSTALMENT_STATUSES
+            args.secondInstalment?.status as INSTALMENT_STATUSES
           ),
         headerName: getHeader('paymentStatus'),
         key: 'status',
         isSortable: true,
       },
       {
-        transform: ({ secondInstalment }: ApplicationListTableTransforms) =>
-          secondInstalment?.amountAfterRecoveries > 0 ? (
+        transform: ({ secondInstalment }: ApplicationListTableTransforms) => {
+          const amountAfterRecoveries = parseFloat(
+            String(secondInstalment?.amountAfterRecoveries || 0)
+          );
+          const amount = parseFloat(String(secondInstalment?.amount || 0));
+          return amountAfterRecoveries > 0 ? (
             <>
-              {formatFloatToEvenEuros(
-                Math.max(0, secondInstalment?.amountAfterRecoveries)
-              )}
+              {formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}
+              {' / '}
+              {formatFloatToEvenEuros(amount)}
             </>
           ) : (
             <$Wrapper>
               <$Column>
                 <IconErrorFill color="var(--color-alert)" />{' '}
-                {formatFloatToEvenEuros(secondInstalment.amountAfterRecoveries)}
+                {formatFloatToEvenEuros(amountAfterRecoveries)}
               </$Column>
             </$Wrapper>
-          ),
+          );
+        },
         headerName: getHeader('instalmentAmount'),
         key: 'instalmentAmount',
         isSortable: true,
       },
       {
-        transform: ({ alterations }: ApplicationListTableTransforms) =>
-          alterations?.length > 0 && (
+        transform: (args: ApplicationListTableTransforms) =>
+          (args.alterations || []).length > 0 ? (
             <$AlterationBadge
-              $requiresAttention={alterations.some(({ state }) =>
+              $requiresAttention={(args.alterations || []).some(({ state }) =>
                 [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
                   state as ALTERATION_STATE
                 )
               )}
             >
-              {alterations.length}
+              {args.alterations?.length}
             </$AlterationBadge>
+          ) : (
+            ''
           ),
         headerName: '',
         key: 'alterations',
@@ -223,10 +232,12 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
     )?.secondInstalment || null;
 
   const onSubmitCancel = (): void => {
-    changeInstalmentStatus({
-      id: selectedInstalment?.id,
-      status: INSTALMENT_STATUSES.CANCELLED,
-    });
+    if (selectedInstalment?.id) {
+      changeInstalmentStatus({
+        id: selectedInstalment.id,
+        status: INSTALMENT_STATUSES.CANCELLED,
+      });
+    }
     setIsInstalmentCancelModalShown(false);
   };
 
@@ -255,13 +266,13 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             rows={list}
             cols={columns}
             checkboxSelection
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
+            selectedRows={selectedRows.map(String)}
+            setSelectedRows={(rows) => setSelectedRows(rows)}
             zebra
           />
           {selectedRows.length > 0 && (
             <ApplicationTableFooter
-              selectedRows={selectedRows}
+              selectedRows={selectedRows.map(String)}
               list={list}
               isLoading={isLoading}
               isLoadingStatusChange={isLoadingStatusChange}
@@ -286,8 +297,10 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
                   'common:instalments.dialog.cancelInstalment.heading'
                 )}
                 text={t('common:instalments.dialog.cancelInstalment.text', {
-                  sum: formatFloatToEvenEuros(selectedInstalment?.amount),
-                  details: `${selectedApplication?.applicationNum}, ${selectedApplication?.companyName} / ${selectedApplication?.employeeName}`,
+                  sum: formatFloatToEvenEuros(selectedInstalment?.amount || 0),
+                  details: `${selectedApplication?.applicationNum || ''}, ${
+                    selectedApplication?.companyName || ''
+                  } / ${selectedApplication?.employeeName || ''}`,
                 })}
                 onClose={() => setIsInstalmentCancelModalShown(false)}
                 onSubmit={onSubmitCancel}

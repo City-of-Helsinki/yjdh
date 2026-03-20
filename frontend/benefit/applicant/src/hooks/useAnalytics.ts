@@ -7,7 +7,7 @@ export const useAskem = (
   lang: string | undefined,
   isSubmittedApplication: boolean
 ): boolean => {
-  const showAskem = canShowAskem(lang);
+  const showAskem = canShowAskem(lang || '');
   useEffect(() => {
     if (!canShowAskem) {
       return () => {};
@@ -20,7 +20,7 @@ export const useAskem = (
     const canonicalUrl = `https://${window.location.host}/application`;
 
     window.rnsData = {
-      apiKey: process.env.NEXT_PUBLIC_ASKEM_API_KEY,
+      apiKey: process.env.NEXT_PUBLIC_ASKEM_API_KEY || '',
       title: 'Helsinki-lisä',
       canonicalUrl,
       disableFonts: true,

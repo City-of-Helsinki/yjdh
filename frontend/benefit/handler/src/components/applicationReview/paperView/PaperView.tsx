@@ -20,7 +20,11 @@ const PaperView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       id={data.id}
       header={t(`${translationsBase}.headings.heading12`)}
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? (
+          <span />
+        ) : null
+      }
       section="paper"
     >
       <$GridCell $colSpan={6}>

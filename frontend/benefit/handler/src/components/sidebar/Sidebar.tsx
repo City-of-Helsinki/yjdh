@@ -36,22 +36,22 @@ const Sidebar: React.FC<ComponentProps> = ({
     handleCreateNote,
     handleMarkMessagesRead,
     handleMarkLastMessageUnread,
-  } = useSidebar(application?.id);
+  } = useSidebar(application.id || '');
 
   useEffect(() => {
     if (isOpen) {
       handleMarkMessagesRead();
     }
-  }, [handleMarkMessagesRead, isOpen, messages.length]);
+  }, [handleMarkMessagesRead, isOpen, messages?.length]);
 
   const closeAndMarkAsUnread = (): void => {
-    handleMarkLastMessageUnread(null, {
+    handleMarkLastMessageUnread(undefined, {
       onSuccess: onClose,
     });
   };
 
   const haveApplicantMessages =
-    messages?.length > 0 &&
+    (messages?.length ?? 0) > 0 &&
     messages.some(
       (message) => message.messageType === MESSAGE_TYPES.APPLICANT_MESSAGE
     );
@@ -114,7 +114,7 @@ const Sidebar: React.FC<ComponentProps> = ({
             placeholder={t('common:messenger.composeNote')}
             onSend={handleCreateNote}
           />
-          <Messages data={notes?.reverse()} variant="note" />
+          <Messages data={[...(notes || [])].reverse()} variant="note" />
         </TabPanel>
         <TabPanel
           css={`
@@ -123,7 +123,7 @@ const Sidebar: React.FC<ComponentProps> = ({
             flex-grow: 1;
           `}
         >
-          <ChangeList data={application.changes} />
+          <ChangeList data={application.changes || []} />
         </TabPanel>
       </Tabs>
     </Drawer>

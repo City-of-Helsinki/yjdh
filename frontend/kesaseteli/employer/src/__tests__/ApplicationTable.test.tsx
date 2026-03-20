@@ -32,7 +32,11 @@ const renderWithTheme = (
 ): RenderResult =>
   render(
     <ThemeProvider theme={theme}>
-      <ApplicationTable vouchers={vouchers} showOnlyMine={showOnlyMine} onToggleOnlyMine={onToggleOnlyMine} />
+      <ApplicationTable
+        vouchers={vouchers}
+        showOnlyMine={showOnlyMine}
+        onToggleOnlyMine={onToggleOnlyMine}
+      />
     </ThemeProvider>
   );
 
@@ -57,7 +61,7 @@ describe('ApplicationTable', () => {
     renderWithTheme(mockVouchers);
     // expect(screen.getByText('Aiemmat kesäsetelihakemukset')).toBeInTheDocument();
     for (const voucher of mockVouchers) {
-      expect(screen.getByText(voucher.employee_name)).toBeInTheDocument();
+      expect(screen.getByText(voucher.employee_name ?? '')).toBeInTheDocument();
       expect(
         screen.getByText(voucher.summer_voucher_serial_number)
       ).toBeInTheDocument();

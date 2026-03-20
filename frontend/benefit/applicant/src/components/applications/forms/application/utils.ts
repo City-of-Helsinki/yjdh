@@ -41,9 +41,14 @@ const flattenObject = (
 export const findIntersectionOfTouchedAndErroredFields = (
   touched: FormikTouched<Partial<Application>>,
   errors: FormikErrors<Partial<Application>>
-): string[] =>
-  Object.keys(flattenObject(touched)).filter((field) =>
-    Object.keys(flattenObject(errors)).find((errorField) =>
+): string[] => {
+  const flattenedTouched = touched
+    ? flattenObject(touched as SimpleObject)
+    : {};
+  const flattenedErrors = errors ? flattenObject(errors as SimpleObject) : {};
+  return Object.keys(flattenedTouched as object).filter((field) =>
+    Object.keys(flattenedErrors as object).find((errorField) =>
       errorField.includes(field)
     )
   );
+};

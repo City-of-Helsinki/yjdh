@@ -84,7 +84,12 @@ const AlterationHandlingForm = ({
   const handleAlterationCsvDownload = (): void => {
     setIsCSVDownloadDone(true);
   };
-  const { navigateBack } = useRouterNavigation(null, null, null, true);
+  const { navigateBack } = useRouterNavigation(
+    undefined,
+    undefined,
+    undefined,
+    true
+  );
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -148,7 +153,7 @@ const AlterationHandlingForm = ({
                 required
                 errorText={
                   isCalculationOutOfDate
-                    ? null
+                    ? undefined
                     : getErrorMessage('isRecoverable')
                 }
                 tooltipText={t(

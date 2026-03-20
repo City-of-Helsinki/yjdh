@@ -29,8 +29,8 @@ export const setAppLoaded = (): void => {
 export const isTruthy = (value: string | boolean): boolean =>
   ['1', true, 'true'].includes(value);
 
-export const formatIBAN = (ibanNumber: string): string =>
-  friendlyFormatIBAN(ibanNumber);
+export const formatIBAN = (ibanNumber: string | null | undefined): string =>
+  friendlyFormatIBAN(ibanNumber ?? '') || '';
 
 export const paySubsidyTitle = (paySubsidy: PAY_SUBSIDY_GRANTED): string =>
   paySubsidy === PAY_SUBSIDY_GRANTED.GRANTED_AGED

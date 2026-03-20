@@ -34,8 +34,8 @@ const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
   let batches: BatchProposal[] = [];
   if (query.data) {
     batches = query.data?.map((batchProposal: BatchProposal): BatchProposal => {
-      const applications = batchProposal.applications.map(
-        (app): ApplicationInBatch => {
+      const applications = (batchProposal.applications || []).map(
+        (app: ApplicationInBatch): ApplicationInBatch => {
           const {
             id,
             status,
@@ -59,7 +59,7 @@ const useBatchProposal = (filterByStatus: BATCH_STATUSES[]): BatchListProps => {
             status,
             benefitAmount,
             handled_at: convertToUIDateFormat(handled_at),
-            business_id: company?.business_id,
+            business_id: company?.business_id || '',
           };
         }
       );

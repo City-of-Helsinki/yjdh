@@ -1,17 +1,22 @@
 import { $StatusIcon } from 'benefit-shared/components/statusIcon/StatusIcon.sc';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { IconAlertCircleFill, IconCheckCircle, IconCheckCircleFill, IconCrossCircleFill } from 'hds-react';
+import {
+  IconAlertCircleFill,
+  IconCheckCircle,
+  IconCheckCircleFill,
+  IconCrossCircleFill,
+} from 'hds-react';
 import React from 'react';
 
 type Props = {
-  status: APPLICATION_STATUSES
-}
+  status: APPLICATION_STATUSES;
+};
 
 const StatusIcon = ({ status }: Props): JSX.Element => {
-  let Component;
+  let Component: React.ElementType | null = null;
   switch (status) {
     case APPLICATION_STATUSES.DRAFT:
-      Component = <span />;
+      Component = () => <span />;
       break;
 
     case APPLICATION_STATUSES.INFO_REQUIRED:
@@ -44,7 +49,7 @@ const StatusIcon = ({ status }: Props): JSX.Element => {
 
   return (
     <$StatusIcon className={`status-icon status-icon--${status}`}>
-      <Component />
+      {Component && <Component />}
     </$StatusIcon>
   );
 };

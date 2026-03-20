@@ -18,17 +18,17 @@ import snakecaseKeys from 'snakecase-keys';
 
 type Props = {
   application: Application;
-  onSuccess?: MutationFunction<void, ApplicationAlterationData>;
+  onSuccess: MutationFunction<void, ApplicationAlterationData>;
   onError?: (error: AxiosError<unknown>) => void;
 };
 
 type OutProps = {
   t: TFunction;
-  formik: FormikProps<Partial<ApplicationAlteration>>;
+  formik: FormikProps<ApplicationAlteration>;
   language: Language;
   isSubmitted: boolean;
-  handleSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  error: AxiosError;
+  handleSubmit: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  error: AxiosError | null;
   isSubmitting: boolean;
 };
 
@@ -64,10 +64,10 @@ const useAlterationForm = ({
 
   const formik = useFormik<ApplicationAlteration>({
     initialValues: {
-      application: application.id,
-      alterationType: null,
-      endDate: null,
-      resumeDate: null,
+      application: application.id || '',
+      alterationType: undefined,
+      endDate: undefined,
+      resumeDate: undefined,
       reason: '',
       useEinvoice: false,
       contactPersonName: `${application.companyContactPersonFirstName} ${application.companyContactPersonLastName}`,
@@ -82,15 +82,16 @@ const useAlterationForm = ({
     onSubmit: submitForm,
   });
 
-  const handleSubmit = (): void => {
+  const handleSubmit = (e?: React.MouseEvent<HTMLButtonElement>): void => {
+    if (e) e.preventDefault();
     setIsSubmitted(true);
     void formik.validateForm().then((errors) => {
       const invalidFields = Object.keys(errors);
       if (invalidFields.length === 0) {
         void formik.submitForm();
       }
-
-      return null;
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      return undefined;
     });
   };
 
@@ -98,7 +99,7 @@ const useAlterationForm = ({
     if (error && onError) {
       onError(error);
     }
-  }, [t, error, onError]);
+  }, [error, onError]);
 
   return {
     t,
@@ -107,7 +108,7 @@ const useAlterationForm = ({
     isSubmitted,
     isSubmitting: isLoading,
     handleSubmit,
-    error: null,
+    error,
   };
 };
 

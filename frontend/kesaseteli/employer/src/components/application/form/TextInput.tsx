@@ -16,7 +16,7 @@ export type TextInputProps = {
   type?: TextInputBaseProps<ApplicationFormData>['type'];
   placeholder?: string;
   helperFormat?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value?: string) => void;
   autoComplete?: AutoComplete;
   disabled?: boolean;
   readOnly?: boolean;

@@ -5,7 +5,7 @@ import { ROUTES } from '../constants';
 export type APPLICATION_FORM_ACTIONS = 'edit' | 'new';
 
 export const useApplicationFormContext = (): {
-  applicationAction: APPLICATION_FORM_ACTIONS;
+  applicationAction: APPLICATION_FORM_ACTIONS | null;
   isFormActionNew: boolean;
   isFormActionEdit: boolean;
 } => {

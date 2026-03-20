@@ -17,7 +17,11 @@ const BenefitView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       id={data.id}
       header={t(`${translationsBase}.headings.heading7`)}
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? (
+          <span />
+        ) : null
+      }
       section="benefit"
     >
       <$GridCell $colStart={1} $colSpan={2}>
