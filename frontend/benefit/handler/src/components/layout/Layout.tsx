@@ -27,7 +27,8 @@ interface StyledProps {
   backgroundColor?: string;
 }
 export const $BackgroundWrapper = styled.div<StyledProps>`
-  background-color: ${(props) => (props ? props.backgroundColor : '#fff')};
+  background-color: ${(props: StyledProps) =>
+    props ? props.backgroundColor : '#fff'};
   height: 100%;
 `;
 
