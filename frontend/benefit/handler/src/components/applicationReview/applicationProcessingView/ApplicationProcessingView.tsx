@@ -90,7 +90,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 checked={
                   handledApplication?.status === APPLICATION_STATUSES.REJECTED
                 }
-                onChange={(value) => {
+                onChange={(value: boolean) => {
                   if (value) {
                     setHandledApplication({
                       ...handledApplication,
@@ -119,6 +119,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
             </$Grid>
             <$Grid>
               <$GridCell $colSpan={6}>
+                {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
                 <TextArea
                   id="proccessRejectedComments"
                   name="proccessRejectedComments"
@@ -145,7 +146,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 checked={
                   handledApplication?.status === APPLICATION_STATUSES.ACCEPTED
                 }
-                onChange={(value) => {
+                onChange={(value: boolean) => {
                   if (value) {
                     setHandledApplication({
                       ...handledApplication,
@@ -212,6 +213,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   $colStart={1}
                   style={{ paddingTop: theme.spacing.l }}
                 >
+                  {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
                   <TextArea
                     id="proccessAcceptedComments"
                     name="proccessAcceptedComments"
