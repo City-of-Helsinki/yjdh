@@ -1,10 +1,11 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 type Props = {
   layoutBackgroundColor: string;
+  theme: DefaultTheme;
 };
 
 export const $FooterWrapper = styled.div<Props>`
-  padding-top: ${(props) => props.theme.spacing.xl4};
-  background-color: ${(props) => props.layoutBackgroundColor};
+  padding-top: ${(props: Props) => props.theme.spacing.xl4};
+  background-color: ${(props: Props) => props.layoutBackgroundColor};
 `;

@@ -1,25 +1,27 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $PageHeading = styled.h1`
-  font-size: ${(props) => props.theme.fontSize.heading.xl};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.xl};
   font-weight: normal;
 `;
 
 type SectionProps = {
   $headingBottomBorder: boolean;
+  theme: DefaultTheme;
 };
 
 export const $Section = styled.section<SectionProps>`
-  background-color: ${(props) => props.theme.colors.silverLight};
-  padding: ${(props) => props.theme.spacing.l};
-  margin-bottom: ${(props) => props.theme.spacing.m};
+  background-color: ${(props: SectionProps) => props.theme.colors.silverLight};
+  padding: ${(props: SectionProps) => props.theme.spacing.l};
+  margin-bottom: ${(props: SectionProps) => props.theme.spacing.m};
 
   h2 {
-    padding-bottom: ${(props) => props.theme.spacing.s};
-    margin: 0 0 ${(props) => props.theme.spacing.xs} 0;
+    padding-bottom: ${(props: SectionProps) => props.theme.spacing.s};
+    margin: 0 0 ${(props: SectionProps) => props.theme.spacing.xs} 0;
   }
-  ${(props) => {
+  ${(props: SectionProps) => {
     if (props.$headingBottomBorder) {
       return `
         h2 {
@@ -38,7 +40,7 @@ export const $AlterationDetails = styled.dl`
   flex-direction: column;
   flex-wrap: wrap;
   box-sizing: border-box;
-  margin: 0 calc(${(props) => props.theme.spacing.s} * -1);
+  margin: 0 calc(${(props: SectionProps) => props.theme.spacing.s} * -1);
 
   ${respondAbove('md')`
     flex-direction: row;
@@ -51,12 +53,12 @@ export const $AlterationDetails = styled.dl`
 
   div {
     box-sizing: border-box;
-    padding: ${(props) => props.theme.spacing.s};
+    padding: ${(props: SectionProps) => props.theme.spacing.s};
   }
 
   dt {
     font-weight: 500;
-    margin-bottom: ${(props) => props.theme.spacing.s};
+    margin-bottom: ${(props: SectionProps) => props.theme.spacing.s};
   }
 
   dd {
@@ -72,11 +74,12 @@ export const $StickyBarWrapper = styled.div`
 
 export const $StickyBarColumn = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.s};
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
 `;
 
 export const $TalpaGuideText = styled.p`
-  margin: ${(props) => `0 0 ${props.theme.spacing.l} 0`};
+  margin: ${(props: { theme: DefaultTheme }) =>
+    `0 0 ${props.theme.spacing.l} 0`};
 `;
 
 export const $SaveActionFormErrorText = styled.div`
@@ -86,9 +89,9 @@ export const $SaveActionFormErrorText = styled.div`
 
   display: flex;
   align-items: center;
-  color: ${(props) => props.theme.colors.error};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.error};
   svg {
     width: 48px;
-    fill: ${(props) => props.theme.colors.error};
+    fill: ${(props: { theme: DefaultTheme }) => props.theme.colors.error};
   }
 `;

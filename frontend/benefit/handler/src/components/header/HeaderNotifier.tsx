@@ -35,7 +35,9 @@ const Header: React.FC = () => {
       aria-live="polite"
     >
       {applicationsWithMessages?.length > 0 && (
-        <$ToggleButton onClick={(e) => handleMessageCenterClick(e)}>
+        <$ToggleButton
+          onClick={(e: React.MouseEvent) => handleMessageCenterClick(e)}
+        >
           <IconBell />
           <span>{applicationsWithMessages?.length}</span>
         </$ToggleButton>
