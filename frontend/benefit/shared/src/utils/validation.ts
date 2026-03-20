@@ -1,7 +1,6 @@
 import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import { getNumberValueOrNull } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
-import { RequiredNumberSchema } from 'yup/lib/number';
 import { AnyObject } from 'yup/lib/types';
 
 export const validateNumberField = (
@@ -11,11 +10,13 @@ export const validateNumberField = (
     typeError: string;
     required: string;
   }
-): RequiredNumberSchema<number, AnyObject> =>
+): Yup.NumberSchema<number | undefined, AnyObject> =>
   Yup.number()
-    .transform((_value, originalValue) => getNumberValueOrNull(originalValue))
+    .transform((_value, originalValue) => {
+      const numberValue = getNumberValueOrNull(originalValue);
+      return numberValue === null ? undefined : numberValue;
+    })
     .typeError(texts.typeError)
-    .nullable()
     .min(min, (param) => ({
       min: param.min,
       key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,

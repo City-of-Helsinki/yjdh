@@ -14,8 +14,8 @@ type Response = {
 
 const useCloneApplicationMutation = (): UseMutationResult<
   Response,
-  unknown,
-  string | null
+  AxiosError<unknown, unknown>,
+  string | undefined
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();

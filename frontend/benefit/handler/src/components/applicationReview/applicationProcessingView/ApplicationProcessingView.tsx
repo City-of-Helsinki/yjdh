@@ -73,7 +73,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
     totalRowDescription,
     dateRangeRows,
     helsinkiBenefitMonthlyRows,
-  } = extractCalculatorRows(data?.calculation?.rows);
+  } = extractCalculatorRows(data?.calculation?.rows || []);
 
   return (
     <ReviewSection withMargin withBorder>

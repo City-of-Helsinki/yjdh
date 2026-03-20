@@ -19,12 +19,14 @@ import {
   PAY_SUBSIDY_OPTIONS,
   TRUTHY_SUBSIDIES,
 } from 'benefit-shared/constants';
-import { ApplicationData } from 'benefit-shared/types/application';
+import { ApplicationData, Employee } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import isAfter from 'date-fns/isAfter';
 import isValid from 'date-fns/isValid';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikErrors } from 'formik';
+// eslint-disable-next-line lodash/import-scope
+import type { Dictionary } from 'lodash';
 import fromPairs from 'lodash/fromPairs';
 import isEmpty from 'lodash/isEmpty';
 import { TFunction } from 'next-i18next';
@@ -49,7 +51,7 @@ const getApplication = (
   isNewApplication = true
 ): Application =>
   applicationData
-    ? camelcaseKeys(
+    ? (camelcaseKeys(
         {
           ...applicationData,
           start_date: convertToUIDateFormat(applicationData.start_date),
@@ -70,21 +72,30 @@ const getApplication = (
                 vacation_money: String(
                   stringToFloatValue(applicationData.calculation.vacation_money)
                 ),
-                override_monthly_benefit_amount: String(
-                  stringToFloatValue(
-                    applicationData.calculation.override_monthly_benefit_amount
-                  )
-                ),
+                override_monthly_benefit_amount:
+                  applicationData.calculation
+                    .override_monthly_benefit_amount !== undefined
+                    ? String(
+                        stringToFloatValue(
+                          applicationData.calculation
+                            .override_monthly_benefit_amount
+                        )
+                      )
+                    : null,
+                rows: (applicationData.calculation.rows || []).map((row) => ({
+                  ...row,
+                  description_type: row.description_type || null,
+                })),
               }
             : undefined,
         },
         {
           deep: true,
         }
-      )
+      ) as unknown as Application)
     : {
         ...APPLICATION_INITIAL_VALUES,
-        id,
+        id: id ?? undefined,
         status: isNewApplication
           ? APPLICATION_STATUSES.DRAFT
           : APPLICATION_STATUSES.HANDLING,
@@ -103,10 +114,7 @@ const getFields = (t: TFunction, tSections: string): ApplicationFields => {
 
   const fieldsPairs: (
     | [APPLICATION_FIELD_KEYS, Field]
-    | [
-        APPLICATION_FIELD_KEYS.EMPLOYEE,
-        Record<EMPLOYEE_KEYS, Field<EmployeeFieldName>>
-      ]
+    | [APPLICATION_FIELD_KEYS.EMPLOYEE, Dictionary<Field<EmployeeFieldName>>]
   )[] = Object.values(APPLICATION_FIELDS).map((fieldName) => {
     if (isString(fieldName)) {
       return [
@@ -129,15 +137,12 @@ const getFields = (t: TFunction, tSections: string): ApplicationFields => {
         },
       ]);
 
-    const employeeDict = fromPairs(employeeFields) as Record<
-      EMPLOYEE_KEYS,
-      Field<EmployeeFieldName>
-    >;
+    const employeeDict = fromPairs(employeeFields);
 
     return [APPLICATION_FIELD_KEYS.EMPLOYEE, employeeDict];
   });
 
-  return fromPairs<Field | Record<EMPLOYEE_KEYS, Field<EmployeeFieldName>>>(
+  return fromPairs<Field | Dictionary<Field<EmployeeFieldName>>>(
     fieldsPairs
   ) as ApplicationFields;
 };
@@ -157,9 +162,9 @@ const handleErrorFieldKeys = (
 ): APPLICATION_FIELD_KEYS | APPLICATION_FIELD_KEYS.EMPLOYEE => {
   let newErrorFieldKey = errorFieldKey;
   if (errorFieldKey === APPLICATION_FIELD_KEYS.EMPLOYEE) {
-    const employeeFieldKey = Object.keys(
-      (errs[errorFieldKey] as APPLICATION_FIELD_KEYS.EMPLOYEE) ?? {}
-    )[0];
+    const employeeErrors = (errs as FormikErrors<Application>)
+      .employee as FormikErrors<Employee>;
+    const employeeFieldKey = Object.keys(employeeErrors ?? {})[0];
     newErrorFieldKey = [APPLICATION_FIELD_KEYS.EMPLOYEE, employeeFieldKey].join(
       '.'
     ) as APPLICATION_FIELD_KEYS.EMPLOYEE;
@@ -210,7 +215,10 @@ const requiredAttachments = (
     )
   );
   let hasPaySubsidyDecision = true;
-  if (TRUTHY_SUBSIDIES.has(values.paySubsidyGranted)) {
+  if (
+    values.paySubsidyGranted &&
+    TRUTHY_SUBSIDIES.has(values.paySubsidyGranted)
+  ) {
     hasPaySubsidyDecision = !isEmpty(
       values?.attachments?.find(
         (att: BenefitAttachment) =>

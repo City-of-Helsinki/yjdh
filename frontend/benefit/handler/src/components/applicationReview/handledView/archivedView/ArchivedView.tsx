@@ -5,6 +5,7 @@ import {
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import StatusLabel from 'benefit/handler/components/statusLabel/StatusLabel';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -31,7 +32,7 @@ const ArchivedView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           <$ViewFieldBold style={{ color: theme.colors.coatOfArms }}>
             {t(`${translationsBase}.ready`)}
           </$ViewFieldBold>
-          <StatusLabel status={data.status} />
+          <StatusLabel status={data.status as APPLICATION_STATUSES} />
         </$HandledHeader>
         <$ViewFieldBold large>
           {t(`${translationsBase}.${data.status || ''}`)}

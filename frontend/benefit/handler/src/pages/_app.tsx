@@ -59,6 +59,7 @@ const App: React.FC<AppProps> = (appProps) => {
       isLocalStorageCsrf
     >
       <AppContextProvider>
+        {/* @ts-expect-error TS2322 - children prop is missing in hds-react QueryClientProvider */}
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <BaseApp

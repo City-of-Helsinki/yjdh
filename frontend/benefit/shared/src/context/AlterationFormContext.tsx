@@ -6,12 +6,12 @@ import React from 'react';
 import { Language } from 'shared/i18n/i18n';
 
 export type AlterationFormContextType = {
-  t: TFunction;
-  formik: FormikProps<Partial<ApplicationAlteration>>;
+  t: TFunction | null;
+  formik: FormikProps<Partial<ApplicationAlteration>> | null;
   language: Language;
   isSubmitted: boolean;
-  handleSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  error: AxiosError;
+  handleSubmit: ((e: React.MouseEvent<HTMLButtonElement>) => void) | null;
+  error: AxiosError | null;
   isSubmitting: boolean;
 };
 

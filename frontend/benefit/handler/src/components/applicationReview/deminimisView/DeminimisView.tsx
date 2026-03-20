@@ -21,7 +21,11 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       id={data.id}
       header={t(`${translationsBase}.headings.heading3`)}
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? (
+          <span />
+        ) : null
+      }
       section="deMinimisAids"
     >
       {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (

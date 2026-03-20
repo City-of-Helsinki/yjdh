@@ -89,8 +89,8 @@ export const useRouterNavigation = (
 
     if (isArchived) {
       // When looking matching applications, return to the archive with search params
-      if (ROUTES.HOME && /\?appNo|&appNo/.test(previousLocation)) {
-        return router.push(previousLocation);
+      if (ROUTES.HOME && /\?appNo|&appNo/.test(previousLocation || '')) {
+        return router.push(previousLocation || ROUTES.HOME);
       }
 
       // Otherwise just return to archive
@@ -103,7 +103,7 @@ export const useRouterNavigation = (
     if (isApplicationView) {
       return router.push(`/?tab=${statusToTabId()}`);
     }
-    return router.push(previousLocation);
+    return router.push(previousLocation || ROUTES.HOME);
   }, [
     forceRouteToAlterations,
     router,

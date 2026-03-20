@@ -69,77 +69,64 @@ const AlterationCalculator = ({
   const [calculationRangeValid, setCalculationRangeValid] =
     useState<boolean>(true);
 
-  const applicationStartDate = new Date(application.startDate);
-  const applicationEndDate = new Date(application.endDate);
+  const applicationStartDate = new Date(application.startDate || '');
+  const applicationEndDate = new Date(application.endDate || '');
 
   const disableOccupiedDates = (date: Date): boolean =>
-    application.alterations.some(
+    (application.alterations || []).some(
       (alteration) =>
         alteration.state === ALTERATION_STATE.HANDLED &&
+        alteration.recoveryStartDate &&
+        alteration.recoveryEndDate &&
         alteration.recoveryStartDate <=
           formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
         alteration.recoveryEndDate >=
           formatDate(date, DATE_FORMATS.BACKEND_DATE)
     );
 
-  const rangeHasOccupiedDates = (range: Interval): boolean =>
-    application.alterations.some((alteration) => {
-      if (
-        alteration.state !== ALTERATION_STATE.HANDLED ||
-        !alteration.recoveryStartDate ||
-        !alteration.recoveryEndDate
-      ) {
-        return false;
-      }
+  const rangeHasOccupiedDates = React.useCallback(
+    (range: Interval): boolean =>
+      (application.alterations || []).some((alteration) => {
+        if (
+          alteration.state !== ALTERATION_STATE.HANDLED ||
+          !alteration.recoveryStartDate ||
+          !alteration.recoveryEndDate
+        ) {
+          return false;
+        }
 
-      const alterationRange = {
-        start: parseDate(alteration.recoveryStartDate),
-        end: parseDate(alteration.recoveryEndDate),
-      };
-      return (
-        alteration.state === ALTERATION_STATE.HANDLED &&
-        areIntervalsOverlapping(range, alterationRange)
-      );
-    });
+        const recoveryStartDate = parseDate(alteration.recoveryStartDate);
+        const recoveryEndDate = parseDate(alteration.recoveryEndDate);
 
-  const calculateRecoveryAmount = (): void => {
-    const startDate = parseDate(formik.values.recoveryStartDate);
-    const endDate = parseDate(formik.values.recoveryEndDate);
+        if (!recoveryStartDate || !recoveryEndDate) {
+          return false;
+        }
 
-    setCalculationRangeValid(true);
+        const alterationRange = {
+          start: recoveryStartDate,
+          end: recoveryEndDate,
+        };
+        return (
+          alteration.state === ALTERATION_STATE.HANDLED &&
+          areIntervalsOverlapping(range, alterationRange)
+        );
+      }),
+    [application.alterations]
+  );
 
-    if (startDate > endDate) {
-      formik.setFieldValue('recoveryAmount', '0');
-      setCalculationDescription(null);
-      return;
-    }
-
-    if (
-      rangeHasOccupiedDates({
-        start: startDate,
-        end: endDate,
-      })
-    ) {
-      setCalculationRangeValid(false);
-      formik.setFieldValue('recoveryAmount', '0');
-      setCalculationDescription(null);
-      setCalculationOutOfDate(false);
-      return;
-    }
-
-    let total: number;
-
-    // eslint-disable-next-line unicorn/prefer-ternary
-    if (formik.values.isManual) {
-      total = getNumberValue(formik.values?.manualRecoveryAmount || 0);
-    } else {
-      total = tableRows.reduce((sum, row) => {
+  const calculateAutomaticRecoveryAmount = React.useCallback(
+    (startDate: Date, endDate: Date): number =>
+      tableRows.reduce((sum, row) => {
         if (!row.startDate || !row.endDate) {
           return sum;
         }
 
         const rowStartDate = parseDate(row.startDate);
         const rowEndDate = parseDate(row.endDate);
+
+        if (!rowStartDate || !rowEndDate) {
+          return sum;
+        }
 
         if (
           !areIntervalsOverlapping(
@@ -160,25 +147,65 @@ const AlterationCalculator = ({
         const overlapStart = max([startDate, rowStartDate]);
         const overlapEnd = min([endDate, rowEndDate]);
 
+        if (!overlapStart || !overlapEnd) {
+          return sum;
+        }
+
         const months = diffMonths(overlapEnd, overlapStart);
         const amountOverOverlapPeriod =
           Number(row.amountNumber) * (months / row.duration);
 
         return sum + amountOverOverlapPeriod;
-      }, 0);
+      }, 0),
+    [tableRows]
+  );
+
+  const calculateRecoveryAmount = React.useCallback((): void => {
+    const startDate = parseDate(formik.values.recoveryStartDate);
+    const endDate = parseDate(formik.values.recoveryEndDate);
+
+    setCalculationRangeValid(true);
+
+    if (!startDate || !endDate || startDate > endDate) {
+      formik.setFieldValue('recoveryAmount', '0');
+      setCalculationDescription(null);
+      return;
     }
+
+    if (
+      rangeHasOccupiedDates({
+        start: startDate,
+        end: endDate,
+      })
+    ) {
+      setCalculationRangeValid(false);
+      formik.setFieldValue('recoveryAmount', '0');
+      setCalculationDescription(null);
+      setCalculationOutOfDate(false);
+      return;
+    }
+
+    const total = formik.values.isManual
+      ? getNumberValue(formik.values?.manualRecoveryAmount || 0)
+      : calculateAutomaticRecoveryAmount(startDate, endDate);
 
     formik.setFieldValue('recoveryAmount', total.toFixed(2));
     setCalculationDescription(
       t(`${translationBase}.calculation.resultDescription`, {
         months: diffMonths(endDate, startDate),
-        startDate: formik.values.recoveryStartDate,
-        endDate: formik.values.recoveryEndDate,
+        startDate: formik.values.recoveryStartDate || '',
+        endDate: formik.values.recoveryEndDate || '',
       })
     );
     setCalculationOutOfDate(false);
     onCalculationChange(false);
-  };
+  }, [
+    formik,
+    calculateAutomaticRecoveryAmount,
+    t,
+    onCalculationChange,
+    rangeHasOccupiedDates,
+  ]);
 
   const handleChange =
     (field: string) =>
@@ -312,7 +339,7 @@ const AlterationCalculator = ({
               <$HighlightWrapper>
                 <SalaryCalculatorHighlight
                   description={calculationDescription}
-                  amount={formik.values.recoveryAmount}
+                  amount={formik.values.recoveryAmount || '0'}
                   testId="calculationResult"
                 />
               </$HighlightWrapper>

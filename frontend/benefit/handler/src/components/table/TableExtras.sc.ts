@@ -64,7 +64,7 @@ export const $TableGrid = styled.div<TableGridProps>`
 `;
 
 type TableWrapperProps = {
-  borderColor: string;
+  borderColor?: string;
 };
 
 export const $TableWrapper = styled.div<TableWrapperProps>`

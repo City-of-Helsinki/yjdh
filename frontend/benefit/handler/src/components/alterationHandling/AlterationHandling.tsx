@@ -26,6 +26,7 @@ const AlterationHandling = (): JSX.Element => {
   const translationBase = 'common:applications.alterations.handling';
 
   const onSuccess = (isRecoverable: boolean): void => {
+    if (!application) return;
     const notificationTranslationBase = `common:notifications.alterationHandled.${
       isRecoverable ? 'recoverable' : 'nonrecoverable'
     }`;
@@ -37,12 +38,14 @@ const AlterationHandling = (): JSX.Element => {
         applicationNumber: application.applicationNumber,
       }),
     });
-    return void router.push(`${ROUTES.APPLICATION}?id=${application.id}`);
+    void router.push(
+      `${String(ROUTES.APPLICATION)}?id=${String(application.id)}`
+    );
   };
 
   const onError = (error: AxiosError<unknown>): void => {
     const errorData = camelcaseKeys(error.response?.data ?? {});
-    const errors = [];
+    const errors: JSX.Element[] = [];
 
     const getErrorItem = (
       fieldKey: string,
@@ -119,11 +122,31 @@ const AlterationHandling = (): JSX.Element => {
     );
   }
 
+  if (!application) {
+    return (
+      <Container>
+        <$PageHeading>
+          {t(`${translationBase}.headings.pageHeading`)}
+        </$PageHeading>
+        <p>{t(`${translationBase}.error.applicationNotFound`)}</p>
+        <Button
+          theme="coat"
+          onClick={() => router.push(ROUTES.ALTERATIONS)}
+          iconLeft={<IconArrowLeft />}
+        >
+          {t(`${translationBase}.actions.returnToAlterationList`)}
+        </Button>
+      </Container>
+    );
+  }
+
   const applicationFound = !!application?.id;
   const alterationFound = !!alteration?.id;
   const alterationCanBeHandled =
     alterationFound &&
-    [ALTERATION_STATE.RECEIVED || ALTERATION_STATE.OPENED].includes(
+    alteration &&
+    alteration.state &&
+    [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
       alteration.state
     );
 
@@ -134,7 +157,7 @@ const AlterationHandling = (): JSX.Element => {
         isApplicationReadOnly={false}
         data-testid="application-header"
       />
-      {alterationCanBeHandled ? (
+      {alterationCanBeHandled && alteration ? (
         <AlterationHandlingForm
           application={application}
           alteration={alteration}
@@ -156,8 +179,10 @@ const AlterationHandling = (): JSX.Element => {
             onClick={() =>
               router.push(
                 applicationFound
-                  ? `${ROUTES.APPLICATION}/?id=${application.id}`
-                  : `${ROUTES.ALTERATIONS}`
+                  ? `${String(ROUTES.APPLICATION)}/?id=${String(
+                      application.id
+                    )}`
+                  : ROUTES.ALTERATIONS
               )
             }
             iconLeft={<IconArrowLeft />}

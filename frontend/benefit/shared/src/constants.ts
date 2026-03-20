@@ -73,6 +73,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   DE_MINIMIS_AID_SET = 'deMinimisAidSet',
   CO_OPERATION_NEGOTIATIONS = 'coOperationNegotiations',
   CO_OPERATION_NEGOTIATIONS_DESCRIPTION = 'coOperationNegotiationsDescription',
+  PAPER_APPLICATION_DATE = 'paperApplicationDate',
   // ORGANIZATION_TYPE = 'organizationType',
 }
 
@@ -248,5 +249,5 @@ export enum INSTALMENT_STATUSES {
   COMPLETED = 'completed',
   REQUESTED = 'requested',
   RESPONDED = 'responded',
-  PENDING = 'pending'
+  PENDING = 'pending',
 }

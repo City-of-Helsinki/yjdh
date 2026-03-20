@@ -28,46 +28,49 @@ const AlterationAccordionItem = ({
     useDeleteApplicationAlterationQuery();
 
   const deleteItem = (): void => {
-    deleteAlteration(
-      { id: String(alteration.id), applicationId: application.id },
-      {
-        onSuccess: () => {
-          setIsDeleteModalOpen(false);
-          return void hdsToast({
-            autoDismissTime: 0,
-            type: 'success',
-            labelText: t(
-              `common:notifications.alterationDeleted.label${
-                alteration.alterationType === ALTERATION_TYPE.TERMINATION
-                  ? 'Termination'
-                  : 'Suspension'
-              }`
-            ),
-            text: t('common:notifications.alterationDeleted.message'),
-          });
-        },
-        onError: (error) => {
-          const errorData = camelcaseKeys(error.response?.data ?? {});
-          const isContentTypeHTML = typeof errorData === 'string';
+    if (application.id) {
+      deleteAlteration(
+        { id: String(alteration.id), applicationId: application.id },
+        {
+          onSuccess: () => {
+            setIsDeleteModalOpen(false);
+            return void hdsToast({
+              autoDismissTime: 0,
+              type: 'success',
+              labelText: t(
+                `common:notifications.alterationDeleted.label${
+                  alteration.alterationType === ALTERATION_TYPE.TERMINATION
+                    ? 'Termination'
+                    : 'Suspension'
+                }`
+              ),
+              text: t('common:notifications.alterationDeleted.message'),
+            });
+          },
+          onError: (error) => {
+            const errorData = camelcaseKeys(error.response?.data ?? {});
+            const isContentTypeHTML = typeof errorData === 'string';
 
-          void hdsToast({
-            autoDismissTime: 0,
-            type: 'error',
-            labelText: t('common:notifications.applicationDeleteError.label'),
-            text:
-              isContentTypeHTML || Object.keys(errorData).length === 0
+            void hdsToast({
+              autoDismissTime: 0,
+              type: 'error',
+              labelText: t('common:notifications.applicationDeleteError.label'),
+              text: (isContentTypeHTML || Object.keys(errorData).length === 0
                 ? t('common:error.generic.text')
-                : Object.entries(errorData).map(([key, value]) =>
-                    typeof value === 'string' ? (
-                      <span key={key}>{value}</span>
-                    ) : (
-                      prettyPrintObject({ data: value })
+                : Object.entries(errorData)
+                    .map(([key, value]) =>
+                      typeof value === 'string' ? (
+                        <span key={key}>{value}</span>
+                      ) : (
+                        value && prettyPrintObject({ data: value })
+                      )
                     )
-                  ),
-          });
-        },
-      }
-    );
+                    .filter(Boolean)) as (string | JSX.Element)[],
+            });
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -105,7 +108,10 @@ const AlterationAccordionItem = ({
                   'common:applications.decision.alterationList.item.recoveryAmount'
                 )}
               </dt>
-              <dd>{formatFloatToEvenEuros(alteration.recoveryAmount)}</dd>
+              <dd>
+                {alteration.recoveryAmount &&
+                  formatFloatToEvenEuros(alteration.recoveryAmount)}
+              </dd>
             </$GridCell>
             <$GridCell $colSpan={6}>
               <dt>
@@ -165,8 +171,8 @@ const AlterationAccordionItem = ({
               )}
             </dt>
             <dd>
-              {application.company.streetAddress},{' '}
-              {application.company.postcode} {application.company.city}
+              {application.company?.streetAddress},{' '}
+              {application.company?.postcode} {application.company?.city}
             </dd>
           </$GridCell>
         )}

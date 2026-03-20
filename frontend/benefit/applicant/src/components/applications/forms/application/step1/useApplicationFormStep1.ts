@@ -53,7 +53,7 @@ const mapFieldValues = (
     name: APPLICATION_FIELDS_STEP1_KEYS;
     label: string;
     placeholder: string;
-    mask: { format: string; stripVal(val: string): string };
+    mask?: { format: string; stripVal(val: string): string };
   }
 ] => [
   fieldName,
@@ -81,7 +81,7 @@ const shouldDisplayDeMinimisError = (
 
 const hasBusinessActivitiesOrIsCompany = (
   hasBusinessActivities: boolean,
-  organizationType: ORGANIZATION_TYPES
+  organizationType: ORGANIZATION_TYPES | undefined
 ): boolean =>
   hasBusinessActivities === true ||
   organizationType === ORGANIZATION_TYPES.COMPANY;
@@ -103,10 +103,12 @@ const useApplicationFormStep1 = (
   const organizationType = data?.organization_type;
 
   const onNextCallback = (values: FormikValues): Promise<void> =>
-    onNext(values).then((submitOk): Promise<void> => {
+    onNext(values).then((submitOk): void => {
       // Make sure context is cleared
       if (submitOk) setDeMinimisAids([]);
-      return null;
+
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      return undefined;
     });
 
   const formik = useFormik({

@@ -7,13 +7,17 @@ const Portal: React.FC = ({ children }) => {
 
   useEffect(() => {
     setMounted(true);
-
     return () => setMounted(false);
   }, []);
 
-  return mounted
-    ? createPortal(children, document.querySelector(`#${PORTAL_ID}`))
-    : null;
+  // 1. If we aren't mounted yet (Server-side or first render), return null immediately.
+  // This prevents the code below from ever touching 'document' on the server.
+  if (!mounted) return null;
+
+  // 2. Now it's safe to use document because we know we're in the browser.
+  const portalRoot = document.querySelector(`#${PORTAL_ID}`);
+
+  return portalRoot ? createPortal(children, portalRoot) : null;
 };
 
 export default Portal;

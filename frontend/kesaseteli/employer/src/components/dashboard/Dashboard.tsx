@@ -10,39 +10,41 @@ import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import LinkText from 'shared/components/link-text/LinkText';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 import ApplicationTable from './ApplicationTable';
 
 const $HeaderGrid = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: ${(props) => props.theme.spacing.xl};
-  margin-bottom: ${(props) => props.theme.spacing.xl};
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
 
-  @media (max-width: ${(props) => props.theme.breakpoints.m}) {
+  @media (max-width: ${(props: { theme: DefaultTheme }) =>
+      props.theme.breakpoints.m}) {
     grid-template-columns: 1fr;
   }
 `;
 
 const $OrganisationName = styled.div`
-  font-size: ${(props) => props.theme.fontSize.body.l};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.l};
   line-height: 1.5;
   font-weight: bold;
 `;
 
 const $IntroText = styled.div`
-  font-size: ${(props) => props.theme.fontSize.body.l};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.l};
   line-height: 1.5;
 `;
 
 const $ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: ${(props) => props.theme.fontSize.body.l};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.l};
   line-height: 1.5;
-  gap: ${(props) => props.theme.spacing.s};
-  @media (max-width: ${(props) => props.theme.breakpoints.m}) {
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
+  @media (max-width: ${(props: { theme: DefaultTheme }) =>
+      props.theme.breakpoints.m}) {
     align-items: flex-start;
   }
 `;
@@ -55,13 +57,13 @@ type Props = {
   organisationName?: string;
 };
 
-const Dashboard: React.FC<Props> = ({
+const Dashboard = ({
   vouchers,
   draftApplicationId,
   showOnlyMine,
   onToggleOnlyMine,
   organisationName,
-}) => {
+}: Props): React.ReactElement => {
   const { t } = useTranslation('common');
   const locale = useLocale();
   const router = useRouter();
@@ -86,11 +88,11 @@ const Dashboard: React.FC<Props> = ({
     <Container>
       <Head>
         <title>{t('common:appName')}</title>
-      </Head>
+      </Head>{' '}
+      as React.ReactElement
       <$Header>
         <$Heading>{t('common:dashboard.header')}</$Heading>
       </$Header>
-
       {organisationName && (
         <$OrganisationName>
           <p>
@@ -98,7 +100,6 @@ const Dashboard: React.FC<Props> = ({
           </p>
         </$OrganisationName>
       )}
-
       <$HeaderGrid>
         <$IntroText>
           <p>{t('common:dashboard.welcome')}</p>
@@ -120,15 +121,15 @@ const Dashboard: React.FC<Props> = ({
         <$ButtonContainer>
           <p>{t('common:dashboard.createApplicationGuidance')}</p>
           <Button
-            iconLeft={<IconPlus aria-hidden />}
+            iconLeft={(<IconPlus aria-hidden />) as React.ReactElement}
             onClick={handleCreateNew}
             isLoading={createApplicationQuery.isLoading}
+            loadingText={t('common:appName')}
           >
             {t('common:thankyouPage.createNewApplication')}
           </Button>
         </$ButtonContainer>
       </$HeaderGrid>
-
       <h2>{t('common:dashboard.previousApplications')}</h2>
       <ApplicationTable
         vouchers={vouchers}
@@ -136,7 +137,7 @@ const Dashboard: React.FC<Props> = ({
         onToggleOnlyMine={onToggleOnlyMine}
       />
     </Container>
-  );
+  ) as React.ReactElement;
 };
 
 export default Dashboard;

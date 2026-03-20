@@ -28,7 +28,7 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
   const translationsBase = 'common:calculators.result';
   const { t } = useTranslation();
   const { rowsWithoutTotal, totalRow, totalRowDescription } =
-    extractCalculatorRows(data?.calculation?.rows);
+    extractCalculatorRows(data?.calculation?.rows || []);
 
   if (isRecalculationRequired) {
     return null;

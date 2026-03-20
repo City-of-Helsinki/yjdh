@@ -92,18 +92,17 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
 
-  const navigateToIndex = React.useCallback(
-    (): void =>
-      void router.push({
-        pathname: '/',
-        query: {
-          tab: APPLICATION_LIST_TABS[
-            application?.status as unknown as keyof typeof APPLICATION_LIST_TABS
-          ],
-        },
-      }),
-    [router, application.status]
-  );
+  const navigateToIndex = React.useCallback((): void => {
+    if (!application.status) return;
+    void router.push({
+      pathname: '/',
+      query: {
+        tab: APPLICATION_LIST_TABS[
+          application.status as unknown as keyof typeof APPLICATION_LIST_TABS
+        ],
+      },
+    });
+  }, [router, application.status]);
 
   const effectSaveAndClose = (): void => {
     if (
@@ -126,6 +125,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const effectApplicationStatusChange = (): void => {
     if (
+      application.status &&
       [APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED].includes(
         application.status
       ) &&
@@ -155,13 +155,69 @@ const HandlingApplicationActions: React.FC<Props> = ({
   }, [isError]);
 
   const isCalculationInvalid = (): boolean =>
-    (application.calculation.rows.length === 0 &&
+    ((application.calculation?.rows || []).length === 0 &&
       handledApplication?.status === APPLICATION_STATUSES.ACCEPTED) ||
     isRecalculationRequired ||
     isCalculationsErrors;
 
+  const getValidationFields = (): {
+    missing: Record<string, boolean>;
+    id: Record<string, string>;
+  } => ({
+    missing: {
+      status: !handledApplication?.status,
+      calculation: isCalculationInvalid(),
+      logEntry:
+        (handledApplication?.logEntryComment?.length ?? 0) <= 0 &&
+        handledApplication?.status === APPLICATION_STATUSES.REJECTED,
+      decisionMakerId:
+        !handledApplication?.decisionMakerId ||
+        handledApplication?.decisionMakerId?.length <= 0,
+      signerId:
+        !handledApplication?.signerId ||
+        handledApplication?.signerId?.length <= 0,
+      // Use longer length to take HTML tags into account
+      decisionText: (handledApplication?.decisionText?.length ?? 0) <= 10,
+      justificationText:
+        (handledApplication?.justificationText?.length ?? 0) <= 10,
+    },
+    id: {
+      status: '#proccessRejectedRadio',
+      calculation: '#endDate',
+      logEntry: '#proccessRejectedRadio',
+      decisionMakerId: '#radio-decision-maker-0',
+      decisionText: '[data-testid="decisionText"]',
+      signerId: '[data-testid="decisionText"]',
+      justificationText: '[data-testid="justificationText"]',
+    },
+  });
+
+  const handleValidationErrors = (
+    fields: ReturnType<typeof getValidationFields>
+  ): void => {
+    const missingFields = Object.keys(fields.missing).filter(
+      (key) => fields.missing[key]
+    );
+    let interval = 0;
+    missingFields.forEach((key, index) => {
+      if (index === 0) {
+        focusAndScrollToSelector(String(fields.id[key]));
+      }
+      setTimeout(() => {
+        showErrorToast(
+          t('common:review.decisionProposal.errors.title'),
+          t(`common:review.decisionProposal.errors.fields.${key}`)
+        );
+      }, interval);
+      interval += 200;
+    });
+  };
+
   const validateNextStep = (currentStepIndex: number): boolean => {
-    if (application.status === APPLICATION_STATUSES.INFO_REQUIRED) {
+    if (
+      application.status &&
+      application.status === APPLICATION_STATUSES.INFO_REQUIRED
+    ) {
       focusAndScroll('header-info-needed');
       showErrorToast(
         t('common:status.additional_information_needed'),
@@ -169,34 +225,8 @@ const HandlingApplicationActions: React.FC<Props> = ({
       );
       return true;
     }
-    const fields = {
-      missing: {
-        status: !handledApplication?.status,
-        calculation: isCalculationInvalid(),
-        logEntry:
-          handledApplication?.logEntryComment?.length <= 0 &&
-          handledApplication?.status === APPLICATION_STATUSES.REJECTED,
-        decisionMakerId:
-          !handledApplication?.decisionMakerId ||
-          handledApplication?.decisionMakerId?.length <= 0,
-        signerId:
-          !handledApplication?.signerId ||
-          handledApplication?.signerId?.length <= 0,
-        // Use longer length to take HTML tags into account
-        decisionText: handledApplication?.decisionText?.length <= 10,
-        justificationText: handledApplication?.justificationText?.length <= 10,
-      },
-      id: {
-        status: '#proccessRejectedRadio',
-        calculation: '#endDate',
-        logEntry: '#proccessRejectedRadio',
-        decisionMakerId: '#radio-decision-maker-0',
-        decisionText: '[data-testid="decisionText"]',
-        signerId: '[data-testid="decisionText"]',
-        justificationText: '[data-testid="justificationText"]',
-      },
-    };
 
+    const fields = getValidationFields();
     const errorStep1 =
       fields.missing.status ||
       fields.missing.calculation ||
@@ -204,14 +234,6 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
     let errorStep2 = false;
     if (currentStepIndex > 0) {
-      fields.missing.decisionMakerId =
-        !handledApplication?.decisionMakerId ||
-        handledApplication?.decisionMakerId?.length <= 0;
-
-      fields.missing.signerId =
-        !handledApplication?.signerId ||
-        handledApplication?.signerId?.length <= 0;
-
       errorStep2 =
         fields.missing.decisionText ||
         fields.missing.justificationText ||
@@ -220,22 +242,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     }
 
     if (errorStep1 || errorStep2) {
-      const missingFields = Object.keys(fields.missing).filter(
-        (key) => fields.missing[key]
-      );
-      let interval = 0;
-      missingFields.forEach((key, index) => {
-        if (index === 0) {
-          focusAndScrollToSelector(String(fields.id[key]));
-        }
-        setTimeout(() => {
-          showErrorToast(
-            t('common:review.decisionProposal.errors.title'),
-            t(`common:review.decisionProposal.errors.fields.${key}`)
-          );
-        }, interval);
-        interval += 200;
-      });
+      handleValidationErrors(fields);
     }
 
     return errorStep1 || errorStep2;
@@ -246,7 +253,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
       updateApplication({
         ...handledApplication,
         reviewStep: Math.min(stepState.activeStepIndex + 2, 4),
-        applicationId: application.id,
+        applicationId: application.id || '',
       });
     } else {
       // Final step, just open confirmation modal before submitting
@@ -258,7 +265,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     updateApplication({
       ...handledApplication,
       reviewStep: Math.max(0, stepState.activeStepIndex),
-      applicationId: application.id,
+      applicationId: application.id || '',
     });
   };
 
@@ -275,7 +282,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     updateApplication({
       ...handledApplication,
       reviewStep: stepState.activeStepIndex + 1,
-      applicationId: application.id,
+      applicationId: application.id || '',
     });
     setIsSavingAndClosing(true);
   };
@@ -289,10 +296,57 @@ const HandlingApplicationActions: React.FC<Props> = ({
     if (clonedData?.id) void router.push(`/application?id=${clonedData.id}`);
   }, [clonedData?.id, router]);
 
-  const handleClone = (): void =>
+  const handleClone = (): void => {
     // eslint-disable-next-line no-alert
-    window.confirm('Haluatko varmasti kloonata tämän hakemuksen?') &&
-    cloneApplication(application.id);
+    if (window.confirm('Haluatko varmasti kloonata tämän hakemuksen?')) {
+      cloneApplication(application.id || '');
+    }
+  };
+
+  const renderModals = (): JSX.Element => (
+    <>
+      {isConfirmationModalOpen && (
+        <Modal
+          id="Handler-confirmDeleteApplicationModal"
+          isOpen={isConfirmationModalOpen}
+          title={t(`${translationsBase}.reasonCancelDialogTitle`)}
+          submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
+          handleToggle={closeDialog}
+          handleSubmit={noop}
+          headerIcon={<IconInfoCircle />}
+          submitButtonIcon={<IconTrash />}
+          variant="danger"
+          customContent={
+            <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
+          }
+        />
+      )}
+      {isDoneConfirmationModalOpen && (
+        <Modal
+          id="Handler-confirmDecisionApplicationModal"
+          isOpen={isDoneConfirmationModalOpen}
+          title={t(`${translationsBase}.confirm`)}
+          submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
+          handleToggle={closeDoneDialog}
+          handleSubmit={noop}
+          headerIcon={<IconInfoCircle />}
+          className=""
+          variant="primary"
+          theme={theme.components.modal.coat}
+          customContent={
+            <DoneModalContent
+              handledApplication={handledApplication}
+              onClose={closeDoneDialog}
+              onSubmit={() => handleNext(true)}
+              calculationRows={application.calculation?.rows || []}
+            />
+          }
+        />
+      )}
+    </>
+  );
 
   return (
     <$Wrapper data-testid={dataTestId}>
@@ -323,7 +377,8 @@ const HandlingApplicationActions: React.FC<Props> = ({
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
 
-        {process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' &&
+        {application.status &&
+          process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' &&
           stepState.activeStepIndex === 0 &&
           [
             APPLICATION_STATUSES.ACCEPTED,
@@ -341,11 +396,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
             </Button>
           )}
 
-        {![
-          APPLICATION_STATUSES.CANCELLED,
-          APPLICATION_STATUSES.ACCEPTED,
-          APPLICATION_STATUSES.REJECTED,
-        ].includes(application.status) &&
+        {application.status &&
+          ![
+            APPLICATION_STATUSES.CANCELLED,
+            APPLICATION_STATUSES.ACCEPTED,
+            APPLICATION_STATUSES.REJECTED,
+          ].includes(application.status) &&
           stepState.activeStepIndex === 0 &&
           !application.archived && (
             <Button
@@ -387,46 +443,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
         </$Column>
       )}
 
-      {isConfirmationModalOpen && (
-        <Modal
-          id="Handler-confirmDeleteApplicationModal"
-          isOpen={isConfirmationModalOpen}
-          title={t(`${translationsBase}.reasonCancelDialogTitle`)}
-          submitButtonLabel=""
-          cancelButtonLabel={t('common:applications.actions.close')}
-          handleToggle={closeDialog}
-          handleSubmit={noop}
-          headerIcon={<IconInfoCircle />}
-          submitButtonIcon={<IconTrash />}
-          variant="danger"
-          customContent={
-            <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
-          }
-        />
-      )}
-      {isDoneConfirmationModalOpen && (
-        <Modal
-          id="Handler-confirmDecisionApplicationModal"
-          isOpen={isDoneConfirmationModalOpen}
-          title={t(`${translationsBase}.confirm`)}
-          submitButtonLabel=""
-          cancelButtonLabel={t('common:applications.actions.close')}
-          handleToggle={closeDoneDialog}
-          handleSubmit={noop}
-          headerIcon={<IconInfoCircle />}
-          className=""
-          variant="primary"
-          theme={theme.components.modal.coat}
-          customContent={
-            <DoneModalContent
-              handledApplication={handledApplication}
-              onClose={closeDoneDialog}
-              onSubmit={() => handleNext(true)}
-              calculationRows={application.calculation?.rows}
-            />
-          }
-        />
-      )}
+      {renderModals()}
       <Sidebar
         application={application as HandlerApplication}
         isOpen={isMessagesDrawerVisible}

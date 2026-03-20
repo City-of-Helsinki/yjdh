@@ -3,10 +3,19 @@
   "compilerOptions": {
     "baseUrl": "../../",
     "paths": {
-      "kesaseteli/handler/*": ["kesaseteli/handler/src/*","kesaseteli/handler/browser-tests/*"],
-      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
-      "shared/*": ["shared/src/*","shared/browser-tests/*"]
-    }
+      "kesaseteli/handler/*": [
+        "kesaseteli/handler/src/*",
+        "kesaseteli/handler/browser-tests/*"
+      ],
+      "kesaseteli-shared/*": [
+        "kesaseteli/shared/src/*"
+      ],
+      "shared/*": [
+        "shared/src/*",
+        "shared/browser-tests/*"
+      ]
+    },
+    "strict": true
   },
   "include": [
     "next-env.d.ts",

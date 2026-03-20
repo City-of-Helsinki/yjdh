@@ -9,7 +9,6 @@ import {
 import { FormikProps, useFormik } from 'formik';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { MutationFunction } from 'react-query';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 import { convertDateFormat } from 'shared/utils/date.utils';
@@ -17,7 +16,7 @@ import snakecaseKeys from 'snakecase-keys';
 
 type Props = {
   application: Application;
-  onSuccess?: MutationFunction<void, ApplicationAlterationData>;
+  onSuccess?: (data: ApplicationAlterationData) => void | Promise<void>;
   onError?: (error: AxiosError<unknown>) => void;
 };
 
@@ -26,8 +25,8 @@ type OutProps = {
   formik: FormikProps<Partial<ApplicationAlteration>>;
   language: Language;
   isSubmitted: boolean;
-  handleSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  error: AxiosError;
+  handleSubmit: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  error: AxiosError | null;
   isSubmitting: boolean;
 };
 
@@ -48,28 +47,35 @@ const useAlterationForm = ({
     onSuccess,
   });
 
-  const submitForm = (data: ApplicationAlteration): void => {
-    const payload = snakecaseKeys(
+  const submitForm = (data: Partial<ApplicationAlteration>): void => {
+    const payload = (
+      snakecaseKeys as unknown as (
+        obj: unknown,
+        options: unknown
+      ) => ApplicationAlterationData
+    )(
       {
         ...data,
         endDate: convertDateFormat(data.endDate),
         resumeDate: convertDateFormat(data.resumeDate) || undefined,
       },
       { deep: true }
-    ) as ApplicationAlterationData;
+    );
 
     createQuery(payload);
   };
 
-  const formik = useFormik<ApplicationAlteration>({
+  const formik = useFormik<Partial<ApplicationAlteration>>({
     initialValues: {
-      application: application.id,
-      alterationType: null,
-      endDate: null,
-      resumeDate: null,
+      application: application.id ?? '',
+      alterationType: undefined,
+      endDate: undefined,
+      resumeDate: undefined,
       reason: '',
       useEinvoice: false,
-      contactPersonName: `${application.companyContactPersonFirstName} ${application.companyContactPersonLastName}`,
+      contactPersonName: `${application.companyContactPersonFirstName ?? ''} ${
+        application.companyContactPersonLastName ?? ''
+      }`,
       einvoiceProviderName: '',
       einvoiceProviderIdentifier: '',
       einvoiceAddress: '',
@@ -106,7 +112,7 @@ const useAlterationForm = ({
     isSubmitted,
     isSubmitting: isLoading,
     handleSubmit,
-    error: null,
+    error: (error as AxiosError) || null,
   };
 };
 

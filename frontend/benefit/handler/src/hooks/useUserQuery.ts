@@ -57,8 +57,10 @@ const useUserQuery = <T extends User>(
       select,
       onSuccess: (user: User): void => {
         checkForStaffStatus(user);
-        setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
-        axios.defaults.headers['X-CSRFToken'] = user.csrf_token;
+        if (user.csrf_token) {
+          setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
+          axios.defaults.headers['X-CSRFToken'] = user.csrf_token;
+        }
       },
       onError: (error) => handleError(error),
     }

@@ -4,6 +4,7 @@ import styled, { DefaultTheme } from 'styled-components';
 
 interface AvatarProps {
   $backgroundColor: keyof DefaultTheme['colors'];
+  theme: DefaultTheme;
 }
 
 export const $ListItemWrapper = styled.div`
@@ -13,8 +14,9 @@ export const $ListItemWrapper = styled.div`
 
 export const $ListItem = styled.li`
   display: block;
-  background-color: ${(props) => props.theme.colors.white};
-  padding: ${(props) => props.theme.spacing.xs};
+  background-color: ${(props: { theme: DefaultTheme }) =>
+    props.theme.colors.white};
+  padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
   justify-content: space-between;
 
   ${respondAbove('md')`
@@ -24,7 +26,7 @@ export const $ListItem = styled.li`
 
 export const $ItemContent = styled.div`
   display: grid;
-  grid-gap: ${(props) => props.theme.spacing.m};
+  grid-gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
   width: 100%;
   margin-bottom: var(--spacing-s);
 
@@ -38,7 +40,7 @@ export const $ItemContent = styled.div`
 `;
 
 export const $Avatar = styled.div<AvatarProps>`
-  ${(props) => `
+  ${(props: AvatarProps) => `
     background-color: ${props.theme.colors[props.$backgroundColor]};
     color: ${props.theme.colors.white};
     font-size: ${props.theme.fontSize.heading.xs};
@@ -59,11 +61,11 @@ export const $Avatar = styled.div<AvatarProps>`
 `;
 
 export const $DataColumn = styled.div`
-  color: ${(props) => props.theme.colors.black90};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black90};
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: ${(props) => props.theme.spacing.xs};
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
 `;
 
 export const $DataHeader = styled.div`
@@ -85,10 +87,10 @@ export const $StatusDataColumn = styled($DataColumn)`
 
 export const $StatusDataValue = styled($DataValue)`
   align-items: center;
-  gap: ${(props) => props.theme.spacing.xs3};
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs3};
 
   .list-item-status--${APPLICATION_STATUSES.INFO_REQUIRED} & {
-    color: ${(props) => props.theme.colors.alertDark};
+    color: ${(props: { theme: DefaultTheme }) => props.theme.colors.alertDark};
   }
 `;
 
@@ -103,11 +105,12 @@ export const $ItemActions = styled.div`
 export const $ListInfo = styled.div`
   display: grid;
   grid-template-columns: 60px 3fr;
-  grid-gap: ${(props) => props.theme.spacing.m};
-  background-color: ${(props) => props.theme.colors.coatOfArms};
-  padding: ${(props) => props.theme.spacing.xs2};
-  color: ${(props) => props.theme.colors.white};
-  margin-bottom: ${(props) => props.theme.spacing.l};
+  grid-gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+  background-color: ${(props: { theme: DefaultTheme }) =>
+    props.theme.colors.coatOfArms};
+  padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs2};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.white};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
 `;
 
 export const $ListInfoInner = styled.div`
@@ -117,5 +120,5 @@ export const $ListInfoInner = styled.div`
 `;
 
 export const $ListInfoText = styled.div`
-  padding: 0 ${(props) => props.theme.spacing.xs2};
+  padding: 0 ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs2};
 `;

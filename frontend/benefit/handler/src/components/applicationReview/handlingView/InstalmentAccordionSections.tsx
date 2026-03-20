@@ -43,10 +43,12 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
   }, [isInstalmentStatusChanged]);
 
   const handleTalpaStatusChange = (talpaStatus: INSTALMENT_STATUSES): void => {
-    changeInstalmentStatus({
-      id: data?.firstInstalment?.id,
-      status: talpaStatus,
-    });
+    if (data?.firstInstalment?.id) {
+      changeInstalmentStatus({
+        id: data.firstInstalment.id,
+        status: talpaStatus,
+      });
+    }
   };
   const secondInstalmentText = data.secondInstalment ? (
     <>
@@ -128,12 +130,12 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
         <>
           <hr />
 
-          {data.alterations
+          {(data.alterations || [])
             .filter(
               (alteration) => alteration.state === ALTERATION_STATE.HANDLED
             )
             .map((alteration) => (
-              <$Section className="recoverable">
+              <$Section key={alteration.id} className="recoverable">
                 <$CalculatorTableRow>
                   <$ViewField>
                     {t(`${translationsBase}.alterationRow`, {
@@ -146,7 +148,9 @@ const InstalmentAccordionSections: React.FC<Props> = ({ data }) => {
                     })}
                   </$ViewField>
                   <$RowWrap>
-                    {formatFloatToEvenEuros(alteration.recoveryAmount)}
+                    {formatFloatToEvenEuros(
+                      Number(alteration.recoveryAmount || 0)
+                    )}
                   </$RowWrap>
                 </$CalculatorTableRow>
               </$Section>

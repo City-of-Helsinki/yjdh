@@ -1,6 +1,7 @@
 import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
 import { $Markdown } from 'benefit/applicant/components/termsOfService/TermsOfService';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { TextProp } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
 import * as React from 'react';
@@ -29,9 +30,9 @@ const ApplicationFormStep6: React.FC<
     getErrorText,
     cbPrefix,
     textLocale,
-    checkedArray,
     applicantTermsInEffectUrl,
     applicantTermsInEffectMd,
+    checkedArray,
   } = useApplicationFormStep6(data, setIsSubmittedApplication);
 
   return (
@@ -45,7 +46,8 @@ const ApplicationFormStep6: React.FC<
                   <$Markdown>{applicantTermsInEffectMd}</$Markdown>
                 </$GridCell>
               ) : null}
-              {applicantTermsInEffectUrl.length > 0 ? (
+              {applicantTermsInEffectUrl &&
+              applicantTermsInEffectUrl.length > 0 ? (
                 <>
                   <$GridCell $colSpan={12}>
                     <PdfViewer file={applicantTermsInEffectUrl} scale={1.8} />
@@ -94,7 +96,7 @@ const ApplicationFormStep6: React.FC<
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
-        applicationStatus={data?.status}
+        applicationStatus={data?.status ?? APPLICATION_STATUSES.DRAFT}
         lastStep
       />
     </form>

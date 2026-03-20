@@ -47,15 +47,18 @@ AlterationAccordionItemProps): JSX.Element => {
   const { mutate: updateAlteration, status: cancelStatus } =
     useUpdateApplicationAlterationQuery();
 
-  const deletable = [
-    ALTERATION_STATE.RECEIVED,
-    ALTERATION_STATE.OPENED,
-  ].includes(alteration.state);
-  const cancellable = [ALTERATION_STATE.HANDLED].includes(alteration.state);
-  const isHandled = [
-    ALTERATION_STATE.HANDLED,
-    ALTERATION_STATE.CANCELLED,
-  ].includes(alteration.state);
+  const deletable =
+    alteration.state &&
+    [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
+      alteration.state
+    );
+  const cancellable =
+    alteration.state && [ALTERATION_STATE.HANDLED].includes(alteration.state);
+  const isHandled =
+    alteration.state &&
+    [ALTERATION_STATE.HANDLED, ALTERATION_STATE.CANCELLED].includes(
+      alteration.state
+    );
 
   const handlerName = alteration.handledBy
     ? `${alteration.handledBy.firstName} ${alteration.handledBy.lastName[0]}.`
@@ -65,7 +68,7 @@ AlterationAccordionItemProps): JSX.Element => {
     : '-';
 
   const onActionError = (error: AxiosError<ErrorData>): void => {
-    const errorData = camelcaseKeys(error.response?.data ?? {});
+    const errorData = camelcaseKeys(error.response?.data ?? {}) as ErrorData;
     const isContentTypeHTML = typeof errorData === 'string';
 
     void hdsToast({
@@ -87,7 +90,7 @@ AlterationAccordionItemProps): JSX.Element => {
 
   const deleteItem = (): void => {
     deleteAlteration(
-      { id: String(alteration.id), applicationId: application.id },
+      { id: String(alteration.id), applicationId: application.id ?? '' },
       {
         onSuccess: () => {
           setIsDeleteModalOpen(false);
@@ -108,8 +111,8 @@ AlterationAccordionItemProps): JSX.Element => {
   const setItemCancelled = (): void => {
     updateAlteration(
       {
-        id: alteration.id,
-        applicationId: application.id,
+        id: String(alteration.id),
+        applicationId: application.id ?? '',
         data: { state: ALTERATION_STATE.CANCELLED },
       },
       {
@@ -136,12 +139,14 @@ AlterationAccordionItemProps): JSX.Element => {
       </$DecisionCalculatorAccordionIconContainer>
       <$TagContainer>
         <$Tag
-          $state={alteration.state}
+          $state={alteration.state ?? ALTERATION_STATE.RECEIVED}
           aria-hidden="true"
           data-testid="alteration-state-tag"
         >
           {t(
-            `applications.decision.alterationList.item.state.${alteration.state}`
+            `applications.decision.alterationList.item.state.${
+              alteration.state ?? ALTERATION_STATE.RECEIVED
+            }`
           )}
         </$Tag>
       </$TagContainer>
@@ -169,7 +174,9 @@ AlterationAccordionItemProps): JSX.Element => {
             </dt>
             <dd>
               {t(
-                `applications.decision.alterationList.item.state.${alteration.state}`
+                `applications.decision.alterationList.item.state.${
+                  alteration.state ?? ALTERATION_STATE.RECEIVED
+                }`
               )}
             </dd>
           </$GridCell>
@@ -181,7 +188,7 @@ AlterationAccordionItemProps): JSX.Element => {
                     'common:applications.decision.alterationList.item.cancelledAt'
                   )}
                 </dt>
-                <dd>{formatDate(new Date(alteration.cancelledAt))}</dd>
+                <dd>{formatDate(new Date(alteration.cancelledAt ?? ''))}</dd>
               </$GridCell>
               <$GridCell $colSpan={3}>
                 <dt>
@@ -204,7 +211,7 @@ AlterationAccordionItemProps): JSX.Element => {
                   'common:applications.decision.alterationList.item.handledAt'
                 )}
               </dt>
-              <dd>{formatDate(new Date(alteration.handledAt))}</dd>
+              <dd>{formatDate(new Date(alteration.handledAt ?? ''))}</dd>
             </$GridCell>
           ) : (
             <$GridCell $colSpan={3}>
@@ -213,7 +220,7 @@ AlterationAccordionItemProps): JSX.Element => {
                   'common:applications.decision.alterationList.item.receivedAt'
                 )}
               </dt>
-              <dd>{formatDate(new Date(alteration.createdAt))}</dd>
+              <dd>{formatDate(new Date(alteration.createdAt ?? ''))}</dd>
             </$GridCell>
           )}
           {isHandled && alteration.isRecoverable && (
@@ -232,7 +239,9 @@ AlterationAccordionItemProps): JSX.Element => {
                     'common:applications.decision.alterationList.item.recoveryAmount'
                   )}
                 </dt>
-                <dd>{formatFloatToEvenEuros(alteration.recoveryAmount)}</dd>
+                <dd>
+                  {formatFloatToEvenEuros(alteration.recoveryAmount ?? '0')}
+                </dd>
               </$GridCell>
               <$GridCell $colSpan={3}>
                 <dt>
@@ -326,8 +335,8 @@ AlterationAccordionItemProps): JSX.Element => {
                 )}
               </dt>
               <dd>
-                {application.company.streetAddress},{' '}
-                {application.company.postcode} {application.company.city}
+                {application.company?.streetAddress},{' '}
+                {application.company?.postcode} {application.company?.city}
               </dd>
             </$GridCell>
           )}

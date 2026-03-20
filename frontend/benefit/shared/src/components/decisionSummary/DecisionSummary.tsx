@@ -34,13 +34,13 @@ const DecisionSummary = ({
   itemComponent: ItemComponent,
   detailList,
   extraInformation,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const { t } = useTranslation();
 
   const isNotRejected = ![
     APPLICATION_STATUSES.REJECTED,
     APPLICATION_STATUSES.CANCELLED,
-  ].includes(application.status);
+  ].includes(application.status ?? APPLICATION_STATUSES.DRAFT);
 
   if (
     isNotRejected &&
@@ -51,14 +51,14 @@ const DecisionSummary = ({
   }
 
   const openDecisionLink = (): void => {
-    const id = application.ahjoCaseId.split(' ').join('-');
+    const id = application.ahjoCaseId?.split(' ').join('-');
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     window.open(`https://paatokset.hel.fi/fi/asia/${id}`, '_blank');
   };
 
   const sortedAlterations = application.alterations?.sort(
-    (a, b) => Date.parse(a.endDate) - Date.parse(b.endDate)
+    (a, b) => Date.parse(a.endDate ?? '') - Date.parse(b.endDate ?? '')
   );
 
   return (
@@ -119,20 +119,21 @@ const DecisionSummary = ({
             {t('common:applications.decision.headings.existingAlterations')}
           </$Subheading>
           <$AlterationListCount>
-            {application.alterations?.length > 0
+            {(application.alterations?.length ?? 0) > 0
               ? t('common:applications.decision.alterationList.count', {
-                  count: application.alterations.length,
+                  count: application.alterations?.length ?? 0,
                 })
               : t('common:applications.decision.alterationList.empty')}
           </$AlterationListCount>
           <div data-testid="alteration-list">
-            {sortedAlterations.map((alteration) => (
-              <ItemComponent
-                key={alteration.id}
-                alteration={alteration}
-                application={application}
-              />
-            ))}
+            {ItemComponent &&
+              (sortedAlterations || []).map((alteration) => (
+                <ItemComponent
+                  key={alteration.id}
+                  alteration={alteration}
+                  application={application}
+                />
+              ))}
           </div>
           <$AlterationActionContainer>{actions}</$AlterationActionContainer>
         </>

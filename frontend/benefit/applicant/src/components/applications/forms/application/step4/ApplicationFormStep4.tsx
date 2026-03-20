@@ -1,7 +1,10 @@
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
 import { EMPLOYEE_CONSENT_FILE_PREFIX } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  ATTACHMENT_TYPES,
+} from 'benefit-shared/constants';
 import {
   Button,
   IconArrowRight,
@@ -167,7 +170,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
-        applicationStatus={data?.status}
+        applicationStatus={data?.status ?? APPLICATION_STATUSES.DRAFT}
       />
     </>
   );

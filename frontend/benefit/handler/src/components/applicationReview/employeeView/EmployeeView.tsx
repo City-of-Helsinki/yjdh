@@ -27,7 +27,9 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       id={data.id}
       header={t(`${translationsBase}.headings.heading5`)}
       section="employee"
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? true : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? true : null
+      }
     >
       <$GridCell $colSpan={6}>
         <$ViewFieldBold large>
