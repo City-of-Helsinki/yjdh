@@ -11,6 +11,7 @@ export type HeadingProps = {
   'data-testid'?: string;
   weight?: string;
   $css?: CSSProp;
+  children?: React.ReactNode;
 };
 
 export const $Header = styled.h1<HeadingProps>`
