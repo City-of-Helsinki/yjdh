@@ -41,7 +41,7 @@ const PaginatedApplicationList: React.FC<Props> = ({
     isArchived,
     orderByOptions,
   });
-  const [currentPage, setPage] = useState<number | null>(initialPage ?? null);
+  const [currentPage, setPage] = useState<number>(initialPage ?? 0);
 
   let items =
     list?.map((props) => <ListItem key={props.id} {...props} />) || [];

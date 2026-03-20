@@ -3,7 +3,11 @@ import { APPLICATION_START_DATE } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { BENEFIT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  BENEFIT_TYPES,
+  ORGANIZATION_TYPES,
+} from 'benefit-shared/constants';
 import { DateInput, SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
@@ -73,6 +77,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     <form onSubmit={handleSubmit} noValidate>
       <FormSection headerLevel="h2" header={t(`${translationsBase}.heading1`)}>
         <$GridCell $colSpan={3}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.firstName.name}
             name={fields.employee.firstName.name}
@@ -88,6 +93,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.lastName.name}
             name={fields.employee.lastName.name}
@@ -103,6 +109,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.socialSecurityNumber.name}
             name={fields.employee.socialSecurityNumber.name}
@@ -184,6 +191,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       >
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.jobTitle.name}
             name={fields.employee.jobTitle.name}
@@ -199,6 +207,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.workingHours.name}
             name={fields.employee.workingHours.name}
@@ -219,6 +228,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.collectiveBargainingAgreement.name}
             name={fields.employee.collectiveBargainingAgreement.name}
@@ -261,6 +271,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </$SubHeader>
         </$GridCell>
         <$GridCell $colSpan={2}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.monthlyPay.name}
             name={fields.employee.monthlyPay.name}
@@ -284,6 +295,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.vacationMoney.name}
             name={fields.employee.vacationMoney.name}
@@ -311,6 +323,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.otherExpenses.name}
             name={fields.employee.otherExpenses.name}
@@ -350,6 +363,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </$SubHeader>
         </$GridCell>
         <$GridCell $colSpan={6}>
+          {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
           <DateInput
             id={fields.startDate.name}
             name={fields.startDate.name}
@@ -375,6 +389,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           –
         </$GridCell>
         <$GridCell $colSpan={6}>
+          {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
           <DateInput
             id={fields.endDate.name}
             name={fields.endDate.name}
@@ -462,7 +477,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         }
         handleBack={handleBack}
         handleDelete={handleDelete}
-        applicationStatus={data?.status}
+        applicationStatus={data?.status ?? APPLICATION_STATUSES.DRAFT}
       />
     </form>
   );

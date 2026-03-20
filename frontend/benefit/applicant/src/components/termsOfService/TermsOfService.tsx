@@ -71,7 +71,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
             {t('common:login.termsOfServiceHeader')}
           </h2>
         </$GridCell>
-        {termsInEffectMarkdown?.length > 0 ? (
+        {termsInEffectMarkdown && termsInEffectMarkdown.length > 0 ? (
           <$GridCell
             $colSpan={12}
             css={`
@@ -82,7 +82,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
             <$Markdown>{termsInEffectMarkdown}</$Markdown>
           </$GridCell>
         ) : null}
-        {termsInEffectUrl?.length > 0 ? (
+        {termsInEffectUrl && termsInEffectUrl.length > 0 ? (
           <>
             <$GridCell
               $colSpan={12}

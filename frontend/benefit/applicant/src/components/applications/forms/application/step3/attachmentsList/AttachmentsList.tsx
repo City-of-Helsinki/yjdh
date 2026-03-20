@@ -20,7 +20,7 @@ const getTitleTranslation = (
   t: TFunction,
   translationsBase: string,
   attachmentType: ATTACHMENT_TYPES,
-  attachmentTypeTranslationKey: string
+  attachmentTypeTranslationKey: string | undefined
 ): string => {
   const key = attachmentTypeTranslationKey
     ? String(attachmentTypeTranslationKey)
@@ -57,7 +57,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
         t,
         translationsBase,
         attachmentType,
-        attachmentTypeTranslationKey
+        attachmentTypeTranslationKey || ''
       )}
       attachmentType={attachmentType}
       name={attachmentType}

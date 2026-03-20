@@ -38,7 +38,7 @@ const AlterationDeleteModal = ({
       )}
       submitButtonLabel=""
       cancelButtonLabel=""
-      handleToggle={null}
+      handleToggle={noop}
       handleSubmit={noop}
       headerIcon={<IconInfoCircle />}
       customContent={

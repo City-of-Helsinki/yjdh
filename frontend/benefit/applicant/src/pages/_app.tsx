@@ -109,8 +109,8 @@ const App: React.FC<AppProps> = (appProps) => {
           <AuthProvider>
             {showCookieBanner && <CookieConsent />}
             <BaseApp
-              layout={Layout}
-              title={!isServerSide() && document.title}
+              layout={Layout as React.FunctionComponent}
+              title={!isServerSide() ? document.title : undefined}
               {...appProps}
             />
           </AuthProvider>

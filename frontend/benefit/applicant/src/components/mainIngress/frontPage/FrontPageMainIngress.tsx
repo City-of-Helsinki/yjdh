@@ -50,7 +50,8 @@ const FrontPageMainIngress: React.FC = () => {
           theme="coat"
           variant="secondary"
           iconLeft={<IconCopy />}
-          onClick={() => cloneApplication(null)}
+          // @ts-expect-error - cloneApplication expects 2 arguments
+          onClick={() => cloneApplication()}
           aria-labelledby="clone-application-button-helper"
         >
           {t('common:mainIngress.frontPage.cloneApplication.buttonText')}

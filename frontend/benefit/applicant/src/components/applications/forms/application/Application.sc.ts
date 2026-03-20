@@ -1,16 +1,18 @@
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import styled, { css } from 'styled-components';
+import styled, { css, DefaultTheme } from 'styled-components';
 
 type ViewFieldProps = {
   isInline?: boolean;
+  theme: DefaultTheme;
+  children?: React.ReactNode;
 };
 
 export const $ViewField = styled.div<ViewFieldProps>`
   &:not(:last-child) {
-    padding-bottom: ${(props) =>
+    padding-bottom: ${(props: ViewFieldProps) =>
       props.children ? props.theme.spacing.xs4 : 0};
   }
-  display: ${(props) => (props.isInline ? 'inline' : 'block')};
+  display: ${(props: ViewFieldProps) => (props.isInline ? 'inline' : 'block')};
   font-weight: 400;
 `;
 
@@ -20,15 +22,15 @@ export const $ViewFieldBold = styled.span`
 
 export const $SummaryTableHeader = styled.div`
   &:not(:last-child) {
-    padding-bottom: ${(props) =>
+    padding-bottom: ${(props: ViewFieldProps) =>
       props.children ? props.theme.spacing.xs2 : 0};
   }
-  font-size: ${(props) => props.theme.fontSize.body.m};
+  font-size: ${(props: ViewFieldProps) => props.theme.fontSize.body.m};
   font-weight: 500;
 `;
 
 export const $SummaryTableValue = styled.span`
-  font-size: ${(props) => props.theme.fontSize.body.l};
+  font-size: ${(props: ViewFieldProps) => props.theme.fontSize.body.l};
 `;
 
 export const $KeyValueList = styled.dl``;
@@ -39,7 +41,7 @@ const CSSFormIndentation = css`
   position:absolute;
   content: '';
   display:block;
-  background: ${(props) => props.theme.colors.black10};
+  background: ${(props: { theme: DefaultTheme }) => props.theme.colors.black10};
   width: 8px;
   height 100%;
 }`;

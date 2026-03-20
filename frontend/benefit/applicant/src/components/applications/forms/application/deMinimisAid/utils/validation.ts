@@ -41,7 +41,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
           max: convertToUIDateFormat(DE_MINIMIS_AID_GRANTED_AT_MAX_DATE),
         }),
-        test: (value) => validateIsTodayOrPastDate(value),
+        test: (value) => !value || validateIsTodayOrPastDate(value),
       })
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {

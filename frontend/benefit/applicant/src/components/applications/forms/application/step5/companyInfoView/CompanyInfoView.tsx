@@ -111,7 +111,8 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 )}
               </$ApplicationDetailLabel>
               <$ApplicationDetailValue>
-                {formatIBAN(data?.companyBankAccountNumber)}
+                {data?.companyBankAccountNumber &&
+                  formatIBAN(data.companyBankAccountNumber)}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
 
@@ -234,7 +235,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 </$GridCell>
                 <$GridCell $colSpan={2}>
                   <$SummaryTableValue data-testid="application-field-deMinimisAidsAmount">
-                    {formatFloatToCurrency(aid.amount)}
+                    {aid.amount && formatFloatToCurrency(aid.amount)}
                   </$SummaryTableValue>
                 </$GridCell>
                 <$GridCell>

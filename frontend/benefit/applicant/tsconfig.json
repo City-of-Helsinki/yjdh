@@ -13,6 +13,7 @@
     "**/*.ts",
     "**/*.tsx",
     "../../shared/src/types/*.d.ts",
-    "../shared/src/utils/dates.ts"
+    "../shared/src/utils/dates.ts",
+    "src/types/pdf-worker.d.ts"
   ]
 }

@@ -49,20 +49,19 @@ export const getValidationSchema = (
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
           min: '30 päivää aloituspäivästä',
         }),
-        test: (endDate: string, context) =>
-          validateIsAfterOrOnDate(
-            endDate,
-            convertToUIDateFormat(
-              addDays(
-                getDateFromDateString(
-                  String(
-                    (context?.parent as { startDate?: string })?.startDate
-                  ) || '30.12.2100'
-                ),
-                30
+        test: (endDate: string | undefined, context) => {
+          if (!endDate) return false;
+          const startDate = String(
+            (context?.parent as { startDate?: string })?.startDate || ''
+          );
+          const date = getDateFromDateString(startDate);
+          return date
+            ? validateIsAfterOrOnDate(
+                endDate,
+                convertToUIDateFormat(addDays(date, 30))
               )
-            )
-          ),
+            : false;
+        },
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]:
       Yup.boolean()
