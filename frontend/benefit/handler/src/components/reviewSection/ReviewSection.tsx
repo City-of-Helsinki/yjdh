@@ -14,7 +14,7 @@ import {
   $Section,
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 import {
   $ActionLeft,
@@ -38,7 +38,8 @@ export type ReviewSectionProps = {
 
 const $ReviewSection = styled($Grid)`
   hr {
-    border-color: ${({ theme }) => theme.colors.coatOfArms};
+    border-color: ${({ theme }: { theme: DefaultTheme }) =>
+      theme.colors.coatOfArms};
     opacity: 0.125;
   }
 `;

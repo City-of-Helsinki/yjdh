@@ -5,8 +5,9 @@ type TooltipProps = {
 };
 
 export const $TooltipWrapper = styled.div<TooltipProps>`
-  opacity: ${(props) => (!props.disabled ? '1' : '0.3')};
-  pointer-events: ${(props) => (!props.disabled ? 'all' : 'none')};
+  opacity: ${(props: TooltipProps) => (!props.disabled ? '1' : '0.3')};
+  pointer-events: ${(props: TooltipProps) =>
+    !props.disabled ? 'all' : 'none'};
 
   label {
     display: inline-flex;

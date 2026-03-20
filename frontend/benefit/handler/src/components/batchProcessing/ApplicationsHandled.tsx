@@ -59,9 +59,10 @@ const ApplicationsHandled: React.FC<Props> = ({
         transform: ({
           id,
           companyName,
-        }: // eslint-disable-next-line react/no-unused-prop-types
-        {
+        }: {
+          // eslint-disable-next-line react/no-unused-prop-types
           id: string | number;
+          // eslint-disable-next-line react/no-unused-prop-types
           companyName: string;
         }) => <$Link href={`/application?id=${id}`}>{companyName}</$Link>,
         headerName: getHeader('companyName'),

@@ -1,13 +1,14 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $Heading = styled.h2`
   margin-top: var(--spacing-xl);
 `;
 
 export const $Empty = styled.div`
-  background-color: ${(props) => props.theme.colors.black5};
-  color: ${(props) => props.theme.colors.black50};
-  padding: ${(props) => props.theme.spacing.s};
+  background-color: ${(props: { theme: DefaultTheme }) =>
+    props.theme.colors.black5};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black50};
+  padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
 `;
 
 export const $EmptyHeading = styled.h2`
@@ -27,12 +28,13 @@ type TagWrapperProps = {
     background: string;
     text: string;
   };
+  theme: DefaultTheme;
 };
 
 export const $TagWrapper = styled.div<TagWrapperProps>`
   #hds-tag {
-    background: ${(props) => props.$colors.background};
-    color: ${(props) => props.$colors.text};
+    background: ${(props: TagWrapperProps) => props.$colors.background};
+    color: ${(props: TagWrapperProps) => props.$colors.text};
 
     #hds-tag-label span {
       display: flex;
@@ -53,21 +55,23 @@ export const $UnreadMessagesCount = styled.div`
   top: -5px;
   right: -11px;
   border-radius: 50%;
-  font-size: ${(props) => props.theme.fontSize.body.s};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.s};
   font-weight: 300;
-  color: ${(props) => props.theme.colors.white};
-  background-color: ${(props) => props.theme.colors.coatOfArms};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.white};
+  background-color: ${(props: { theme: DefaultTheme }) =>
+    props.theme.colors.coatOfArms};
 `;
 
 interface $AlterationBadgeProps {
   $requiresAttention?: boolean;
+  theme: DefaultTheme;
 }
 export const $AlterationBadge = styled.div<$AlterationBadgeProps>`
-  background: ${(props) =>
+  background: ${(props: $AlterationBadgeProps) =>
     props.$requiresAttention
       ? props.theme.colors.coatOfArms
       : props.theme.colors.black40};
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }: $AlterationBadgeProps) => theme.colors.white};
   font-size: 14px;
   line-height: 1;
   width: 14px;
@@ -89,12 +93,14 @@ export const $InstalmentList = styled.div`
 
 type $ActionErrorsProps = {
   $errorText: string;
+  theme: DefaultTheme;
 };
 
 export const $ActionErrors = styled.div<$ActionErrorsProps>`
   &:not(:first-child) {
     margin-left: 20px;
-    border-left: 2px solid ${({ theme }) => theme.colors.black10};
+    border-left: 2px solid
+      ${({ theme }: $ActionErrorsProps) => theme.colors.black10};
     padding-left: 8px;
   }
   .custom-tooltip-error {
@@ -104,22 +110,27 @@ export const $ActionErrors = styled.div<$ActionErrorsProps>`
 
     button:focus {
       box-shadow: 0 0 0 var(--button-focus-outline-width)
-        ${({ theme }) => theme.colors.error};
+        ${({ theme }: $ActionErrorsProps) => theme.colors.error};
     }
 
     // Override HDS Tooltip styles
     section {
-      background-color: ${({ theme }) => theme.colors.errorLight};
+      background-color: ${({ theme }: $ActionErrorsProps) =>
+        theme.colors.errorLight};
       &[data-popper-placement='top'] {
-        border-bottom: 8px solid ${({ theme }) => theme.colors.error};
+        border-bottom: 8px solid
+          ${({ theme }: $ActionErrorsProps) => theme.colors.error};
         > div[class]:last-child {
-          border-top-color: ${({ theme }) => theme.colors.error};
+          border-top-color: ${({ theme }: $ActionErrorsProps) =>
+            theme.colors.error};
         }
       }
       &[data-popper-placement='bottom'] {
-        border-top: 8px solid ${({ theme }) => theme.colors.error};
+        border-top: 8px solid
+          ${({ theme }: $ActionErrorsProps) => theme.colors.error};
         > div[class]:last-child {
-          border-bottom-color: ${({ theme }) => theme.colors.error};
+          border-bottom-color: ${({ theme }: $ActionErrorsProps) =>
+            theme.colors.error};
         }
       }
     }
@@ -134,14 +145,14 @@ export const $ActionErrors = styled.div<$ActionErrorsProps>`
     &:after {
       display: block;
       line-height: 1.05;
-      content: '${({ $errorText }) => $errorText}';
+      content: '${({ $errorText }: $ActionErrorsProps) => $errorText}';
       text-align: center;
       font-size: 12px;
-      color: ${({ theme }) => theme.colors.error};
+      color: ${({ theme }: $ActionErrorsProps) => theme.colors.error};
     }
 
     svg {
-      color: ${({ theme }) => theme.colors.error};
+      color: ${({ theme }: $ActionErrorsProps) => theme.colors.error};
     }
   }
 `;
