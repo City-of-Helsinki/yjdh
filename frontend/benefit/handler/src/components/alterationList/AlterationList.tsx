@@ -95,7 +95,9 @@ const AlterationList: React.FC<Props> = ({ isLoading, list }) => {
             iconRight={<IconArrowRight />}
             onClick={() =>
               router.push(
-                `${ROUTES.HANDLE_ALTERATION}/?applicationId=${application}&alterationId=${id}`
+                `${ROUTES.HANDLE_ALTERATION}/?applicationId=${String(
+                  application
+                )}&alterationId=${String(id)}`
               )
             }
           >

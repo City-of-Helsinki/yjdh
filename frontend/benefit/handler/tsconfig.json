@@ -3,9 +3,16 @@
   "compilerOptions": {
     "baseUrl": "../../",
     "paths": {
-      "benefit/handler/*": ["benefit/handler/src/*"],
-      "benefit-shared/*": ["benefit/shared/src/*"],
-      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+      "benefit/handler/*": [
+        "benefit/handler/src/*"
+      ],
+      "benefit-shared/*": [
+        "benefit/shared/src/*"
+      ],
+      "shared/*": [
+        "shared/src/*",
+        "shared/browser-tests/*"
+      ]
     }
   },
   "include": [

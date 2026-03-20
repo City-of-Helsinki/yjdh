@@ -100,27 +100,29 @@ const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <div data-testid="header" className={className}>
+    <div
+      data-testid="header"
+      className={className}
+      style={
+        {
+          '--header-max-width': mainTheme.headerWidth.max,
+        } as React.CSSProperties
+      }
+    >
       <HdsHeader
         theme={theme}
-        style={
-          {
-            '--header-max-width': mainTheme.headerWidth.max,
-          } as React.CSSProperties
-        }
-        title={title}
         onDidChangeLanguage={onLanguageChange}
         languages={languageOptions}
       >
         <HdsHeader.SkipLink
           skipTo={`#${MAIN_CONTENT_ID}`}
-          label={skipToContentLabel}
+          label={skipToContentLabel || ''}
         />
         <HdsHeader.ActionBar
-          frontPageLabel={title}
-          title={title}
-          titleAriaLabel={title}
-          titleHref={titleUrl}
+          frontPageLabel={title || ''}
+          title={title || ''}
+          titleAriaLabel={title || ''}
+          titleHref={titleUrl || ''}
           logo={
             <Logo
               alt="Helsinki"
@@ -128,15 +130,15 @@ const Header: React.FC<HeaderProps> = ({
               src={logoSrcFromLanguageAndTheme()}
             />
           }
-          logoHref={titleUrl}
+          logoHref={titleUrl || ''}
           menuButtonLabel={menuToggleAriaLabel || ''}
           onMenuClick={toggleMenu}
         >
           {customItems}
           {login && !login?.isAuthenticated && !hideLogin && (
             <HdsHeader.ActionBarButton
-              id="sign-in"
               label={login.loginLabel}
+              // @ts-ignore
               onClick={() => handleLogin()}
               icon={<IconSignin />}
               fixedRightPosition
@@ -151,7 +153,6 @@ const Header: React.FC<HeaderProps> = ({
               icon={<IconUser />}
               aria-label={`${login.userAriaLabelPrefix} ${login.userName}`}
               label={login.userName}
-              onClick={() => handleLogout}
               fixedRightPosition
             >
               <HdsHeader.ActionBarSubItem

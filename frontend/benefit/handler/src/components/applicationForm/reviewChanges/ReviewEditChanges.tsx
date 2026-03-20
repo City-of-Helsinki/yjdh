@@ -40,9 +40,9 @@ const ReviewEditChanges: React.FC<ReviewEditChangesProps> = ({
 
   const deMinimisChanges = {
     initial: {
-      amount: getDeMinimisSum(initialValues.deMinimisAidSet),
-      granters: getDeMinimisGranters(initialValues.deMinimisAidSet),
-      grantedAt: getDeMinimisDates(initialValues.deMinimisAidSet),
+      amount: getDeMinimisSum(initialValues.deMinimisAidSet || []),
+      granters: getDeMinimisGranters(initialValues.deMinimisAidSet || []),
+      grantedAt: getDeMinimisDates(initialValues.deMinimisAidSet || []),
     },
     current: {
       amount: getDeMinimisSum(deMinimisAids),
@@ -60,15 +60,15 @@ const ReviewEditChanges: React.FC<ReviewEditChangesProps> = ({
   const [changes, setChanges] = useState<Difference[]>([]);
 
   useEffect(() => {
-    const diff: Difference[] =
-      deepDiff(initialValues, currentValues, (path: string[], key: string) =>
+    const diff =
+      (deepDiff(initialValues, currentValues, (path: string[], key: string) =>
         getDiffPrefilter(
           path,
           key,
-          requiredKeys,
+          requiredKeys as Set<APPLICATION_FIELD_KEYS>,
           currentValues.applicationOrigin === APPLICATION_ORIGINS.HANDLER
         )
-      ) || [];
+      ) as Difference[]) || [];
     setChanges(diff);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

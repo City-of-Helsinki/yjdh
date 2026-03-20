@@ -27,7 +27,9 @@ const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       id={data.id}
       header={t(`${translationsBase}.headings.heading9`)}
       section="approval"
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? true : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? true : null
+      }
     >
       {data.applicationOrigin === APPLICATION_ORIGINS.APPLICANT ? (
         <$GridCell $colSpan={12}>

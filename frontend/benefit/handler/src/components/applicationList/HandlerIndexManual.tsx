@@ -54,8 +54,10 @@ const HandlerIndexManual: React.FC<ApplicationListProps> = ({
   ): string => t(`${translationBase}.${headingStatus}`);
 
   const getTabCount = (statuses: APPLICATION_STATUSES[]): number =>
-    list.filter((app: ApplicationListItemData) => statuses.includes(app.status))
-      .length;
+    list.filter(
+      (app: ApplicationListItemData) =>
+        app.status && statuses.includes(app.status)
+    ).length;
 
   const getListHeadingByStatus = (
     headingStatus: APPLICATION_STATUSES | 'all',
@@ -130,8 +132,10 @@ const HandlerIndexManual: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.DRAFT].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.DRAFT].includes(app.status)
                 )}
                 heading={t(`${translationBase}.draft`)}
                 status={[APPLICATION_STATUSES.DRAFT]}
@@ -141,8 +145,10 @@ const HandlerIndexManual: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.RECEIVED].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.RECEIVED].includes(app.status)
                 )}
                 heading={t(`${translationBase}.received`)}
                 status={[APPLICATION_STATUSES.RECEIVED]}
@@ -152,16 +158,20 @@ const HandlerIndexManual: React.FC<ApplicationListProps> = ({
             <Tabs.TabPanel>
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.HANDLING].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.HANDLING].includes(app.status)
                 )}
                 heading={t(`${translationBase}.handling`)}
                 status={[APPLICATION_STATUSES.HANDLING]}
               />
               <ApplicationList
                 isLoading={isLoading}
-                list={list.filter((app) =>
-                  [APPLICATION_STATUSES.INFO_REQUIRED].includes(app.status)
+                list={list.filter(
+                  (app) =>
+                    app.status &&
+                    [APPLICATION_STATUSES.INFO_REQUIRED].includes(app.status)
                 )}
                 heading={t(`${translationBase}.infoRequired`)}
                 status={[APPLICATION_STATUSES.INFO_REQUIRED]}

@@ -15,7 +15,7 @@ type AlterationPageProps = {
 };
 
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
-  id && status !== 'idle' && status !== 'loading';
+  !!(id && status !== 'idle' && status !== 'loading');
 
 const useAlterationPage = (): AlterationPageProps => {
   const router = useRouter();
@@ -44,7 +44,10 @@ const useAlterationPage = (): AlterationPageProps => {
   return {
     id,
     t,
-    application: camelcaseKeys(existingApplication, { deep: true }) ?? null,
+    application:
+      (existingApplication &&
+        (camelcaseKeys(existingApplication, { deep: true }) as Application)) ||
+      null,
     isLoading,
     isError: !!existingApplicationError,
   };

@@ -44,14 +44,14 @@ const Header: React.FC = () => {
         <h2>{t('common:header.messages')}</h2>
         <ul>
           {applicationsWithMessages.map((application) => (
-            <li key={application.id}>
+            <li key={application.id || 'missing-id'}>
               <$ApplicationWithMessages
-                onClick={() => handleMessageItemClick(application.id)}
+                onClick={() => handleMessageItemClick(application.id || '')}
               >
                 <div>
                   <strong>Hakemus {application.application_number}</strong>
                 </div>
-                <div>{application.company.name}</div>
+                <div>{application.company?.name || ''}</div>
                 <div>
                   {application.employee?.first_name}{' '}
                   {application.employee?.last_name}

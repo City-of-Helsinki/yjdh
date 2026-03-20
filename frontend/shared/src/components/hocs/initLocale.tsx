@@ -4,7 +4,7 @@ import React from 'react';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const initLocale =
-  <P,>(WrappedComponent: React.FC<P>): typeof WrappedComponent =>
+  <P extends object>(WrappedComponent: React.ComponentType<P>): React.FC<P> =>
   (props: P) => {
     const router = useRouter();
     const { locale } = router;

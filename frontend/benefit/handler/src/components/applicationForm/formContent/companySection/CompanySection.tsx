@@ -100,31 +100,33 @@ const CompanySection: React.FC<Props> = ({
                 {t(`${translationsBase}.companyName`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.name} />
+                <WithCheckbox text={application?.company?.name ?? ''} />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyBusinessId`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.businessId} />
+                <WithCheckbox text={application?.company?.businessId ?? ''} />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyStreetAddress`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.streetAddress} />
+                <WithCheckbox
+                  text={application?.company?.streetAddress ?? ''}
+                />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyPostcode`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.postcode} />
+                <WithCheckbox text={application?.company?.postcode ?? ''} />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyCity`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.city} />
+                <WithCheckbox text={application?.company?.city ?? ''} />
               </$CompanyInfoValue>
             </$CompanyInfoWrapper>
             <$GridCell

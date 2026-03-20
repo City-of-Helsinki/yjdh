@@ -6,13 +6,13 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import { ErrorData } from '../types/common';
 
-const useDeleteApplicationQuery = (): UseMutationResult<
-  ApplicationAlterationData,
+const useUpdateApplicationAlterationQuery = (): UseMutationResult<
+  null,
   AxiosError<ErrorData>,
   {
-    id: number,
-    applicationId: string,
-    data: Partial<ApplicationAlterationData>
+    id: string;
+    applicationId: string;
+    data: Partial<ApplicationAlterationData>;
   }
 > => {
   const { axios, handleResponse } = useBackendAPI();
@@ -21,14 +21,16 @@ const useDeleteApplicationQuery = (): UseMutationResult<
     'updateApplicationAlteration',
     ({ id, data }) =>
       handleResponse<null>(
-        axios.patch(`${BackendEndpoint.HANDLER_APPLICATION_ALTERATION}${id}/`, { ...data }),
+        axios.patch(`${BackendEndpoint.HANDLER_APPLICATION_ALTERATION}${id}/`, {
+          ...data,
+        })
       ),
     {
-      onSuccess: (data, { applicationId }) => {
+      onSuccess: (_data, { applicationId }) => {
         void queryClient.resetQueries(['applications', applicationId]);
       },
     }
   );
 };
 
-export default useDeleteApplicationQuery;
+export default useUpdateApplicationAlterationQuery;

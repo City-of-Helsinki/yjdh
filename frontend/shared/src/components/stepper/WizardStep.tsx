@@ -28,7 +28,7 @@ const WizardStep: React.FC<Props> = ({ title, index = 0 }) => {
         `common:application.step${index + 1}.header`
       )}`}
       tabIndex={0}
-      onKeyPress={(event) => {
+      onKeyPress={(event: React.KeyboardEvent) => {
         if (event.key === 'Enter' || event.key === ' ') {
           goToIndexStep();
         }

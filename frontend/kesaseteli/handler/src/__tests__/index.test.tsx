@@ -174,7 +174,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
       const { LahiosoiteS, PostitoimipaikkaS } =
         application.encrypted_handler_vtj_json.Henkilo
-          .VakinainenKotimainenLahiosoite;
+          ?.VakinainenKotimainenLahiosoite ?? {};
 
       await indexPageApi.expectations.vtjInfoIsPresent();
       await indexPageApi.expectations.vtjFieldValueIsPresent(

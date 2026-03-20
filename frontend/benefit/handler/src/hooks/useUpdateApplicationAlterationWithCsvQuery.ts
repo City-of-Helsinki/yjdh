@@ -10,9 +10,9 @@ const useUpdateApplicationAlterationWithCsvQuery = (): UseMutationResult<
   Blob,
   AxiosError<ErrorData>,
   {
-    id: number,
-    applicationId: string,
-    data: Partial<ApplicationAlterationData>
+    id: string;
+    applicationId: string;
+    data: Partial<ApplicationAlterationData>;
   }
 > => {
   const { axios } = useBackendAPI();
@@ -23,24 +23,27 @@ const useUpdateApplicationAlterationWithCsvQuery = (): UseMutationResult<
     async ({ id, applicationId, data }) => {
       const params = `?application_id=${applicationId}&alteration_id=${id}`;
       const endpoint = `${BackendEndpoint.HANDLER_APPLICATION_ALTERATION_UPDATE_WITH_CSV}${params}`;
-      
-      const response = await axios.patch(endpoint, { ...data }, {
-        responseType: 'blob',
-        headers: {
-          'Content-Type': 'application/json',
+
+      const response = await axios.patch(
+        endpoint,
+        { ...data },
+        {
+          responseType: 'blob',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
 
       if (response.data instanceof Blob) {
         return response.data;
       }
       throw new Error('Unexpected response type');
-    
     },
     {
-    onSuccess: (_, { applicationId }) => {
-      void queryClient.invalidateQueries(['applications', applicationId]);
-    },
+      onSuccess: (_, { applicationId }) => {
+        void queryClient.invalidateQueries(['applications', applicationId]);
+      },
     }
   );
 };

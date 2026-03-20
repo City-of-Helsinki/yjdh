@@ -86,7 +86,7 @@ const SentryErrorPage: NextPage<CustomErrorProps> = (props) => {
     <ErrorPage
       title={t('common:errorPage.title')}
       errorId={sentryErrorId ?? browserSentryErrorId}
-      message={message}
+      message={message || ''}
       retry={useGoToFrontPage()}
     />
   );

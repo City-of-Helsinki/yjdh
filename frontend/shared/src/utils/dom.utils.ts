@@ -28,7 +28,7 @@ const handleScroll = (element?: HTMLElement): void => {
 export const focusAndScroll = (elementId: string): void => {
   // eslint-disable-next-line unicorn/prefer-query-selector
   const element = document.getElementById(elementId);
-  return handleScroll(element);
+  return handleScroll(element ?? undefined);
 };
 
 /**

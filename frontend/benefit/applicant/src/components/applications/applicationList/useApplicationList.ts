@@ -162,10 +162,10 @@ const useApplicationList = ({
     );
 
     const avatar = {
-      color: getAvatarBGColor(appStatus),
+      color: appStatus ? getAvatarBGColor(appStatus) : 'black40',
       initials: getInitials(contactPersonName),
     };
-    const allowedAction = getAllowedActions(id, appStatus);
+    const allowedAction = appStatus && getAllowedActions(id, appStatus);
     const submittedAt = submitted_at
       ? convertToUIDateFormat(submitted_at)
       : '-';
@@ -177,11 +177,12 @@ const useApplicationList = ({
       convertToUIDateFormat(additional_information_needed_by);
     const translationValues: Record<string, string> = {};
 
-    if (appStatus === APPLICATION_STATUSES.INFO_REQUIRED) {
+    if (appStatus === APPLICATION_STATUSES.INFO_REQUIRED && editEndDate) {
       translationValues.date = editEndDate;
     }
 
-    const statusText = getStatusTranslation(appStatus, translationValues);
+    const statusText =
+      appStatus && getStatusTranslation(appStatus, translationValues);
 
     const commonProps = {
       id,
@@ -222,7 +223,7 @@ const useApplicationList = ({
   const shouldHideList =
     !shouldShowSkeleton && Array.isArray(data) && data.length === 0;
 
-  const hasItems = list?.length > 0;
+  const hasItems = (list || []).length > 0;
 
   return {
     list: list || [],

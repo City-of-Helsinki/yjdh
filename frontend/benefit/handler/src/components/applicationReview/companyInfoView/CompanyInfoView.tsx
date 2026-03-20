@@ -18,7 +18,11 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       id={data.id}
       header={t(`${translationsBase}.headings.heading1`)}
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? (
+          <span />
+        ) : null
+      }
       section="company"
     >
       <$GridCell $colSpan={6}>
@@ -35,14 +39,16 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`${translationsBase}.fields.organizationType`)}
         </$ViewFieldBold>
         <$ViewField large>
-          {t(`common:organizationTypes.${data.company?.organizationType}`)}
+          {t(
+            `common:organizationTypes.${data.company?.organizationType || ''}`
+          )}
         </$ViewField>
       </$GridCell>
       <$GridCell $colSpan={6} $colStart={1}>
         <$ViewFieldBold>
           {t(`${translationsBase}.fields.address`)}
         </$ViewFieldBold>
-        <$ViewField large>{`${data.company?.streetAddress}, ${
+        <$ViewField large>{`${data.company?.streetAddress || ''}, ${
           data.company?.postcode || ''
         } ${data.company?.city || ''}`}</$ViewField>
       </$GridCell>

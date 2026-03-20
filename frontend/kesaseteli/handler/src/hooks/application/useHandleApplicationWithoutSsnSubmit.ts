@@ -63,7 +63,7 @@ const useHandleApplicationWithoutSsnSubmit = (): ReturnType => {
         handleDefaultError(error);
       }
     },
-    submitError,
+    submitError: submitError ?? undefined,
   };
 };
 

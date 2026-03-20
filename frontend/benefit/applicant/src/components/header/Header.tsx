@@ -46,12 +46,12 @@ const Header: React.FC = () => {
         titleUrl={
           locale === SUPPORTED_LANGUAGES.FI
             ? ROUTES.HOME
-            : `/${locale}${ROUTES.HOME}`
+            : `/${locale ?? ''}${ROUTES.HOME}`
         }
         skipToContentLabel={t('common:header.linkSkipToContent')}
         menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
         languages={languageOptions}
-        onLanguageChange={handleLanguageChange}
+        onLanguageChange={handleLanguageChange as (lang: string) => void}
         login={{
           isAuthenticated: !isLoginPage && isSuccess,
           loginLabel: t('common:header.loginLabel'),

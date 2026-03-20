@@ -38,7 +38,7 @@ const AlterationCancelModal = ({
             : 'Suspension'
         }`,
         {
-          endDate: formatDate(new Date(alteration.endDate)),
+          endDate: formatDate(new Date(alteration.endDate ?? '')),
           resumeDate: alteration.resumeDate
             ? formatDate(new Date(alteration.resumeDate))
             : '-',
@@ -46,7 +46,7 @@ const AlterationCancelModal = ({
       )}
       submitButtonLabel=""
       cancelButtonLabel=""
-      handleToggle={null}
+      handleToggle={noop}
       handleSubmit={noop}
       headerIcon={<IconInfoCircle />}
       customContent={

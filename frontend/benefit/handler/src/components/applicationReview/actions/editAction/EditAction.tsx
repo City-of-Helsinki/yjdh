@@ -22,7 +22,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
     status: APPLICATION_STATUSES.INFO_REQUIRED | APPLICATION_STATUSES.HANDLING
   ): void => {
     requireAdditionalInformation({
-      id: application.id,
+      id: application.id || '',
       status,
     });
   };

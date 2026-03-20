@@ -34,12 +34,12 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
   const handleDownloadCsv = async (): Promise<void> => {
     try {
       const response = await updateMutation.mutateAsync({
-        id: alteration.id,
+        id: String(alteration.id ?? ''),
         applicationId: alteration.application,
         data,
       });
       downloadFile(response, 'csv');
-      onSubmit(); // Call the onSubmit function after successful download
+      onSubmit?.(); // Call the onSubmit function after successful download
     } catch (error) {
       // Handle error (e.g., show an error message to the user)
     }

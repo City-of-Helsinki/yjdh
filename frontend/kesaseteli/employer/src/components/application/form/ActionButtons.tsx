@@ -132,7 +132,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           theme="coat"
           data-testid="next-button"
           iconRight={<IconArrowRight />}
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             // eslint-disable-next-line no-console
             console.debug('ActionButtons: handleSubmit called');
             void handleSubmit(handleSuccess, handleInvalid)(e);

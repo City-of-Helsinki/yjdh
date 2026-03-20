@@ -32,9 +32,12 @@ const useRemoveAppFromBatch = (
     'removeApplicationFromBatch',
     ({ appIds, batchId }: Payload) =>
       handleResponse<Response>(
-        axios.patch<Response>(HandlerEndpoint.BATCH_APP_DEASSIGN(batchId), {
-          application_ids: appIds,
-        })
+        axios.patch<Response>(
+          HandlerEndpoint.BATCH_APP_DEASSIGN(batchId || ''),
+          {
+            application_ids: appIds,
+          }
+        )
       ),
     {
       onSuccess: ({ remainingApps }: Response) => {

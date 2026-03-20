@@ -21,7 +21,7 @@ const PaperSection: React.FC<ReviewChildProps> = ({
       header={t(`${translationsBase}.headings.paper2`)}
       action={
         <EditButton
-          section={fields.paperApplicationDate.name}
+          section={fields?.paperApplicationDate?.name || ''}
           dispatchStep={dispatchStep}
         />
       }

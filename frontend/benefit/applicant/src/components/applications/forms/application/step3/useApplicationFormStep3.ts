@@ -18,7 +18,7 @@ type ExtendedComponentProps = {
   handleDelete: () => void;
   attachments: BenefitAttachment[];
   hasRequiredAttachments: boolean;
-  paySubsidyGranted?: PAY_SUBSIDY_GRANTED;
+  paySubsidyGranted?: PAY_SUBSIDY_GRANTED | null;
 };
 
 const useApplicationFormStep3 = (
@@ -40,7 +40,7 @@ const useApplicationFormStep3 = (
     const applicantHasPaySubsidyGranted = [
       PAY_SUBSIDY_GRANTED.GRANTED,
       PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-    ].includes(application.paySubsidyGranted);
+    ].includes(application.paySubsidyGranted as PAY_SUBSIDY_GRANTED);
 
     if (
       application.benefitType === BENEFIT_TYPES.EMPLOYMENT ||

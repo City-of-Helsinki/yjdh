@@ -69,14 +69,17 @@ const useApplicationFormStep2 = (
   const formik = useFormik<Application>({
     initialValues: {
       ...application,
-      [APPLICATION_FIELDS_STEP2.START_DATE]: application.startDate
+      [APPLICATION_FIELDS_STEP2_KEYS.START_DATE]: application.startDate
         ? formatDate(parseDate(application.startDate))
         : undefined,
-      [APPLICATION_FIELDS_STEP2.END_DATE]: application.endDate
+      [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: application.endDate
         ? formatDate(parseDate(application.endDate))
         : undefined,
     },
-    validationSchema: getValidationSchema(organizationType, t),
+    validationSchema: getValidationSchema(
+      organizationType ?? ORGANIZATION_TYPES.COMPANY,
+      t
+    ),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
@@ -220,7 +223,7 @@ const useApplicationFormStep2 = (
     clearCommissionValues,
     clearPaySubsidyValues,
     getErrorMessage,
-    organizationType,
+    organizationType: organizationType ?? ORGANIZATION_TYPES.COMPANY,
     handleSubmit,
     handleSave,
     handleBack: onBack,

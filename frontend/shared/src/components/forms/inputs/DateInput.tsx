@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -11,7 +11,7 @@ import { isString } from 'shared/utils/type-guards';
 
 import { $DateInput } from './DateInput.sc';
 
-type Props<T> = Omit<InputProps<T>, 'onChange'> &
+type Props<T extends FieldValues> = Omit<InputProps<T>, 'onChange'> &
   Required<{ onChange: InputProps<T>['onChange'] }> &
   GridCellProps;
 
@@ -24,7 +24,7 @@ type Props<T> = Omit<InputProps<T>, 'onChange'> &
  *
  * FIXME: This should change when the HDS is upgraded to the v. 3.0.0.
  */
-const DateInput = <T,>({
+const DateInput = <T extends FieldValues>({
   id,
   registerOptions,
   // NOTE: the onChange is currently not in the same format

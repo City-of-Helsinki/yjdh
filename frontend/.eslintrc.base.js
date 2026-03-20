@@ -45,6 +45,8 @@ module.exports = {
         '**/*Accordion*.tsx',
         '**/*Button*.tsx',
         '**/*Selection*.tsx',
+        '**/youth-form/**/*.tsx',
+        '**/youth-form/**/*.ts',
       ],
       rules: {
         'testing-library/render-result-naming-convention': 'off',

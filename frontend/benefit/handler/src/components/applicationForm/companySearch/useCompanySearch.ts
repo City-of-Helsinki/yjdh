@@ -103,7 +103,9 @@ const useCompanySearch = (): ExtendedComponentProps => {
 
   const onSelectCompany = async (): Promise<void> => {
     setIsLoading(true);
-    await getCompanyAndCreateDraft(selectedCompany);
+    if (selectedCompany) {
+      await getCompanyAndCreateDraft(selectedCompany);
+    }
     setCompanies([]);
   };
 

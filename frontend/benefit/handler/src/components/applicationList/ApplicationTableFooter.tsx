@@ -17,7 +17,7 @@ interface TableFooterProps {
   isLoadingStatusChange: boolean;
   translationsBase: string;
   changeInstalmentStatus: (params: {
-    id?: string;
+    id: string;
     status: INSTALMENT_STATUSES;
   }) => void;
   setIsInstalmentCancelModalShown: (show: boolean) => void;
@@ -44,10 +44,12 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
     )?.secondInstalment || null;
 
   const handleStatusChange = (status: INSTALMENT_STATUSES): void => {
-    changeInstalmentStatus({
-      id: selectedInstalment.id,
-      status,
-    });
+    if (selectedInstalment?.id) {
+      changeInstalmentStatus({
+        id: selectedInstalment.id,
+        status,
+      });
+    }
   };
 
   // If no rows or multiple rows selected, show hint

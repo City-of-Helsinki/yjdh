@@ -27,7 +27,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { totalRow, dateRangeRows, helsinkiBenefitMonthlyRows } =
-    extractCalculatorRows(data.calculation?.rows);
+    extractCalculatorRows(data.calculation?.rows || []);
 
   return (
     <ReviewSection
@@ -39,7 +39,7 @@ const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           <$ViewFieldBold style={{ color: theme.colors.coatOfArms }}>
             {t(`${translationsBase}.common.ready`)}
           </$ViewFieldBold>
-          <StatusLabel status={data.status} />
+          <StatusLabel status={data.status as APPLICATION_STATUSES} />
         </$HandledHeader>
         <$HandledHr dashed />
         {data.status === APPLICATION_STATUSES.ACCEPTED && (

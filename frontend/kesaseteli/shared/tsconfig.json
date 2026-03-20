@@ -4,8 +4,14 @@
     "jsx": "react",
     "baseUrl": "../../",
     "paths": {
-      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
-      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+      "kesaseteli-shared/*": [
+        "kesaseteli/shared/src/*"
+      ],
+      "shared/*": [
+        "shared/src/*",
+        "shared/browser-tests/*"
+      ]
     }
   }
+}
 }

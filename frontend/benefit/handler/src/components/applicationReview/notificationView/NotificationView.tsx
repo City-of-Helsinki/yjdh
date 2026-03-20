@@ -3,7 +3,7 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button } from 'hds-react'; 
+import { Button } from 'hds-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -71,7 +71,7 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                 <p>
                   {t('common:review.decisionProposal.submitted.altText')}
                   {': '}
-                  <Link href={`${ROUTES.APPLICATION}?id=${data?.id}`}>
+                  <Link href={`${ROUTES.APPLICATION}?id=${data?.id || ''}`}>
                     {data?.applicationNumber}
                   </Link>
                   {', '}
@@ -112,7 +112,7 @@ const NotificationView: React.FC<Props> = ({ data }) => {
               {[
                 APPLICATION_STATUSES.ACCEPTED,
                 APPLICATION_STATUSES.REJECTED,
-              ].includes(data?.status) && (
+              ].includes(data?.status as APPLICATION_STATUSES) && (
                 <$GridCell $colSpan={10} $colStart={3}>
                   <$ActionsContainer>
                     <Button theme="coat" onClick={handleGoHome}>

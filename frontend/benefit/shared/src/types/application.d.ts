@@ -327,6 +327,7 @@ export type Application = {
   firstInstalment?: Instalment;
   secondInstalment?: Instalment;
   talpaStatus?: TALPA_STATUSES;
+  paperApplicationDate?: string;
 } & Step1 &
   Step2;
 
@@ -373,7 +374,7 @@ export interface Step1 {
 }
 
 export interface Step2 {
-  [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_GRANTED;
+  [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_GRANTED | null;
   [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
   [APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
   [APPLICATION_FIELDS_STEP2_KEYS.START_DATE]?: string | '';
@@ -480,7 +481,7 @@ export type ApplicationData = {
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
   pay_subsidy_granted?: PAY_SUBSIDY_GRANTED;
-  pay_subsidy_percent?: PaySubsidyPercent;
+  pay_subsidy_percent?: PaySubsidyPercent | null;
   additional_pay_subsidy_percent?: PaySubsidyPercent;
   apprenticeship_program?: boolean;
   archived: boolean; // required

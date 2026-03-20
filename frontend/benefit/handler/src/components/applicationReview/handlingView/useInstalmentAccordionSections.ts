@@ -23,10 +23,10 @@ const useInstalmentAccordionSections = (data: Application): Props => {
     firstInstalment: data.secondInstalment
       ? Math.max(
           0,
-          parseInt(data.calculation.calculatedBenefitAmount, 10) -
+          parseInt(String(data.calculation?.calculatedBenefitAmount || 0), 10) -
             data.secondInstalment.amount
         )
-      : parseInt(data.calculation.calculatedBenefitAmount, 10),
+      : parseInt(String(data.calculation?.calculatedBenefitAmount || 0), 10),
     secondInstalment: data.secondInstalment?.amountAfterRecoveries || 0,
     secondInstalmentMax: data.secondInstalment?.amount || 0,
     total: 0,
@@ -34,12 +34,15 @@ const useInstalmentAccordionSections = (data: Application): Props => {
     alterations:
       data.alterations
         ?.filter((obj) => obj.state === ALTERATION_STATE.HANDLED)
-        .reduce((prev, cur) => prev + parseInt(cur.recoveryAmount, 10), 0) || 0,
+        .reduce(
+          (prev, cur) => prev + parseInt(String(cur.recoveryAmount || 0), 10),
+          0
+        ) || 0,
   };
 
   amounts.total = amounts.firstInstalment + amounts.secondInstalment;
   amounts.totalAfterRecoveries =
-    parseInt(data.calculation?.calculatedBenefitAmount, 10) -
+    parseInt(String(data.calculation?.calculatedBenefitAmount || 0), 10) -
     amounts.alterations;
 
   const isSecondInstalmentReduced =

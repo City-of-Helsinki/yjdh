@@ -58,13 +58,13 @@ const AlterationPage = (): JSX.Element => {
     );
   }
 
-  const hasHandledTermination = application.alterations.some(
+  const hasHandledTermination = application?.alterations?.some(
     (alteration) =>
       alteration.state === ALTERATION_STATE.HANDLED &&
       alteration.alterationType === ALTERATION_TYPE.TERMINATION
   );
 
-  const isAccepted = application.status === APPLICATION_STATUSES.ACCEPTED;
+  const isAccepted = application?.status === APPLICATION_STATUSES.ACCEPTED;
 
   return (
     <Container>
@@ -87,7 +87,7 @@ const AlterationPage = (): JSX.Element => {
         </$MainHeaderItem>
         <$HeaderItem>
           <$PageHeadingApplicant>
-            {application.employee.firstName} {application.employee.lastName}
+            {application?.employee?.firstName} {application?.employee?.lastName}
           </$PageHeadingApplicant>
         </$HeaderItem>
         <$HeaderRightColumnItem>
@@ -99,7 +99,7 @@ const AlterationPage = (): JSX.Element => {
             `}
           >
             {t('common:applications.pageHeaders.sent', {
-              applicationNumber: application.applicationNumber,
+              applicationNumber: application?.applicationNumber,
               submittedAt: convertToUIDateAndTimeFormat(
                 application?.submittedAt
               ),
@@ -107,7 +107,7 @@ const AlterationPage = (): JSX.Element => {
           </$PageSubHeading>
         </$HeaderRightColumnItem>
       </$PageHeader>
-      {!hasHandledTermination && isAccepted && (
+      {!hasHandledTermination && isAccepted && application && (
         <>
           <$Grid>
             <$GridCell $colSpan={8}>

@@ -16,7 +16,7 @@ interface ActionProps {
 }
 
 const Actions: React.FC<ActionProps> = ({
-  customItems,
+  customItems = [],
   placeholder,
   sendText,
   errorText,
@@ -38,8 +38,7 @@ const Actions: React.FC<ActionProps> = ({
     setMessageValue('');
   };
 
-  const showAllActionsOnOneLine =
-    customItems?.filter((item) => !!item).length < 2;
+  const showAllActionsOnOneLine = customItems?.filter(Boolean).length < 2;
 
   return (
     <>

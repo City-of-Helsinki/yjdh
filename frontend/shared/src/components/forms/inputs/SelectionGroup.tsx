@@ -1,7 +1,7 @@
 import { RadioButton, SelectionGroupProps } from 'hds-react';
 import noop from 'lodash/noop';
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -10,7 +10,7 @@ import InputProps from 'shared/types/input-props';
 
 import { $SelectionGroup } from './SelectionGroup.sc';
 
-type Props<T> = Omit<InputProps<T>, 'label'> & {
+type Props<T extends FieldValues> = Omit<InputProps<T>, 'label'> & {
   label?: string;
   direction?: SelectionGroupProps['direction'];
   values: readonly string[];
@@ -18,7 +18,7 @@ type Props<T> = Omit<InputProps<T>, 'label'> & {
   disabled?: boolean;
 } & GridCellProps;
 
-const SelectionGroup = <T,>({
+const SelectionGroup = <T extends FieldValues>({
   id,
   registerOptions,
   direction,
@@ -37,7 +37,7 @@ const SelectionGroup = <T,>({
 
   return (
     <$GridCell {...$gridCellProps}>
-      <Controller
+      <Controller<T>
         name={id}
         rules={registerOptions}
         control={control}

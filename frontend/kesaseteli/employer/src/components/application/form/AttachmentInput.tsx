@@ -44,7 +44,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readO
   const attachmentType = fieldName as AttachmentType;
 
   const { applicationQuery } = useApplicationApi<string>({
-    select: (application) => application.summer_vouchers[index].id,
+    select: (application) => application.summer_vouchers[index].id ?? '',
   });
 
   const summerVoucherId = applicationQuery.isSuccess

@@ -61,14 +61,14 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     validUntil,
   } = props;
 
-  const ActionIcon = allowedAction.Icon;
+  const ActionIcon = allowedAction?.Icon;
 
   return (
     <$ListItemWrapper>
       <$ListItem>
         <$ItemContent>
-          <$Avatar $backgroundColor={avatar.color} title={contactPersonName}>
-            {avatar.initials}
+          <$Avatar $backgroundColor={avatar?.color} title={contactPersonName}>
+            {avatar?.initials}
           </$Avatar>
           <$DataColumn>
             <$DataHeader>{t(`${translationBase}.common.employee`)}</$DataHeader>
@@ -94,7 +94,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
               <$DataValue>{applicationNum}</$DataValue>
             </$DataColumn>
           )}
-          {statusText && (
+          {statusText && status && (
             <$StatusDataColumn className={`list-item-status--${status}`}>
               <$DataHeader>{t(`${translationBase}.common.status`)}</$DataHeader>
               <$StatusDataValue>
@@ -112,29 +112,31 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             </$DataColumn>
           )}
         </$ItemContent>
-        <$ItemActions>
-          <Button
-            data-testid="application-edit-button"
-            variant={
-              status === APPLICATION_STATUSES.INFO_REQUIRED
-                ? 'primary'
-                : 'secondary'
-            }
-            iconLeft={ActionIcon && <ActionIcon />}
-            theme={
-              status === APPLICATION_STATUSES.INFO_REQUIRED ? 'coat' : 'black'
-            }
-            onClick={() => allowedAction.handleAction(false)}
-            fullWidth
-          >
-            {allowedAction.label}
-          </Button>
-        </$ItemActions>
+        {allowedAction && (
+          <$ItemActions>
+            <Button
+              data-testid="application-edit-button"
+              variant={
+                status === APPLICATION_STATUSES.INFO_REQUIRED
+                  ? 'primary'
+                  : 'secondary'
+              }
+              iconLeft={ActionIcon && <ActionIcon />}
+              theme={
+                status === APPLICATION_STATUSES.INFO_REQUIRED ? 'coat' : 'black'
+              }
+              onClick={() => allowedAction.handleAction(false)}
+              fullWidth
+            >
+              {allowedAction.label}
+            </Button>
+          </$ItemActions>
+        )}
       </$ListItem>
       {Number(unreadMessagesCount) > 0 && (
         <$ListInfo>
           <$GridCell $colStart={2}>
-            <$ListInfoInner onClick={() => allowedAction.handleAction(true)}>
+            <$ListInfoInner onClick={() => allowedAction?.handleAction(true)}>
               <IconSpeechbubbleText />
               <$ListInfoText>
                 {t('common:applications.list.common.newMessages', {
