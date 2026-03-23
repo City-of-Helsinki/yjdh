@@ -33,33 +33,31 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
     []
   );
   if (attachmentItems.length === 0) return null;
-  return (
-    attachmentItems.length > 0 && (
-      <$GridCell $colSpan={6}>
-        {title && <$ViewFieldBold>{title}</$ViewFieldBold>}
-        {attachmentItems.map((attachment) => (
-          <$ViewField
-            onClick={() => handleOpenFile(attachment)}
-            aria-label={`${attachment.attachmentFileName}_open`}
-            css={{
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: `${theme.spacing.xs}`,
-              fontSize: theme.fontSize.body.m,
-              color: theme.colors.coatOfArms,
-              cursor: 'pointer',
-            }}
-            key={attachment.attachmentFileName}
-          >
-            <IconPaperclip aria-label={attachment.attachmentFileName} />
-            <span css={{ textDecoration: 'underline' }}>
-              {attachment.attachmentFileName}
-            </span>
-          </$ViewField>
-        ))}
-      </$GridCell>
-    )
-  );
+  return attachmentItems.length > 0 ? (
+    <$GridCell $colSpan={6}>
+      {title && <$ViewFieldBold>{title}</$ViewFieldBold>}
+      {attachmentItems.map((attachment) => (
+        <$ViewField
+          onClick={() => handleOpenFile(attachment)}
+          aria-label={`${attachment.attachmentFileName}_open`}
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+            marginTop: `${theme.spacing.xs}`,
+            fontSize: theme.fontSize.body.m,
+            color: theme.colors.coatOfArms,
+            cursor: 'pointer',
+          }}
+          key={attachment.attachmentFileName}
+        >
+          <IconPaperclip aria-label={attachment.attachmentFileName} />
+          <span css={{ textDecoration: 'underline' }}>
+            {attachment.attachmentFileName}
+          </span>
+        </$ViewField>
+      ))}
+    </$GridCell>
+  ) : null;
 };
 
 export default AttachmentsListView;

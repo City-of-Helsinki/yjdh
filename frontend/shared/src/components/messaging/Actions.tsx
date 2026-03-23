@@ -44,6 +44,7 @@ const Actions: React.FC<ActionProps> = ({
     <>
       {notification && <$Notification>{notification}</$Notification>}
       <$Actions>
+        {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
         <TextArea
           disabled={!canWriteNewMessages}
           id={componentId}
