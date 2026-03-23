@@ -6,14 +6,14 @@ import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-appli
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
 import { collectErrorFieldsFromResponse } from 'kesaseteli-shared/utils/youth-form-data.utils';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
-import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
 import useGdprMaskedFormValues from 'shared/hooks/useGdprMaskedFormValues';
-import useGoToPage from 'shared/hooks/useGoToPage';
-import useLocale from 'shared/hooks/useLocale';
+import useGoToPage from 'kesaseteli-shared/hooks/useGoToPage';
+import useLocale from 'kesaseteli-shared/hooks/useLocale';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
 
 type ErrorNotificationType = 'please_recheck_data' | 'validation_error' | null;
@@ -78,7 +78,7 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
               `Application creation failed: ${error.response.data.code}`,
               gdprFormValues
             );
-            void router.push(`${locale}/${encodeURIComponent(errorCode)}`);
+            void router.push(`/${locale}/${encodeURIComponent(errorCode)}`);
             return;
 
           case 'please_recheck_data':

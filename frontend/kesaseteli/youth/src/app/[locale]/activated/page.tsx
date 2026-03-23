@@ -1,8 +1,9 @@
-import { GetStaticProps, NextPage } from 'next';
-import { useTranslation } from 'next-i18next';
+'use client';
+
+import { NextPage } from 'next';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import NotificationPage from 'shared/components/pages/NotificationPage';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const ActivatedPage: NextPage = () => {
   const { t } = useTranslation();
@@ -14,8 +15,5 @@ const ActivatedPage: NextPage = () => {
     />
   );
 };
-
-export const getStaticProps: GetStaticProps =
-  getServerSideTranslations('common');
 
 export default ActivatedPage;

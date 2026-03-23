@@ -3,7 +3,7 @@ import SubmitErrorSummary from 'kesaseteli/youth/components/youth-form/SubmitErr
 import YouthFormFields from 'kesaseteli/youth/components/youth-form/YouthFormFields';
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useHandleYouthApplicationSubmit from 'kesaseteli/youth/hooks/useHandleYouthApplicationSubmit';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
 import Heading from 'shared/components/forms/heading/Heading';

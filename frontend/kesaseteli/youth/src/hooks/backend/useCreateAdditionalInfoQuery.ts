@@ -12,8 +12,8 @@ import {
   useQueryClient,
 } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useErrorHandler from 'shared/hooks/useErrorHandler';
-import useGetLanguage from 'shared/hooks/useGetLanguage';
+import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
+import useGetLanguage from 'kesaseteli-shared/hooks/useGetLanguage';
 
 const useCreateAdditionalInfoQuery = (
   applicationId: CreatedYouthApplication['id'],

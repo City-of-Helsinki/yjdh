@@ -1,7 +1,7 @@
 import SchoolSelection from 'kesaseteli/youth/components/youth-form/SchoolSelection';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
-import { Trans, useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import React from 'react';
 import Checkbox from 'shared/components/forms/inputs/Checkbox';
 import SocialSecurityNumberInput from 'shared/components/forms/inputs/SocialSecurityNumberInput';

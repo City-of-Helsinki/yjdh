@@ -1,8 +1,9 @@
-import { GetStaticProps } from 'next';
-import { useTranslation } from 'next-i18next';
+'use client';
+
+import { NextPage } from 'next';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import NotificationPage from 'shared/components/pages/NotificationPage';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const AlreadyAssignedPage: React.FC = () => {
   const { t } = useTranslation();
@@ -16,8 +17,5 @@ const AlreadyAssignedPage: React.FC = () => {
     />
   );
 };
-
-export const getStaticProps: GetStaticProps =
-  getServerSideTranslations('common');
 
 export default AlreadyAssignedPage;

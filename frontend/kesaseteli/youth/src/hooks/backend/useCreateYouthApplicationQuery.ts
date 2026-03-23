@@ -5,7 +5,7 @@ import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { convertFormDataToApplication } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useGetLanguage from 'shared/hooks/useGetLanguage';
+import useGetLanguage from 'kesaseteli-shared/hooks/useGetLanguage';
 
 type Options = {
   request_additional_information?: YouthApplication['request_additional_information'];

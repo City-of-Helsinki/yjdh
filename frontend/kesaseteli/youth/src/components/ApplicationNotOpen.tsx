@@ -1,6 +1,6 @@
 import { Notification } from 'hds-react';
 import Head from 'next/head';
-import { Trans, useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';

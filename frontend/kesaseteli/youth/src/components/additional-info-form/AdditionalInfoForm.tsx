@@ -4,7 +4,7 @@ import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additio
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonOption from 'kesaseteli-shared/types/additional-info-reason-option';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
 import Heading from 'shared/components/forms/heading/Heading';

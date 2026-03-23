@@ -15,12 +15,18 @@
         "shared/browser-tests/*"
       ]
     },
-    "strict": true
+    "strict": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../../shared/src/types/*.d.ts"
+    "../../shared/src/types/*.d.ts",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
   ]
 }

@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { usePathname, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
-import useLocale from 'shared/hooks/useLocale';
+import useLocale from 'kesaseteli-shared/hooks/useLocale';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 
@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
-  const { asPath } = router;
+  const pathname = usePathname();
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] =>
@@ -23,11 +23,14 @@ const Header: React.FC = () => {
 
   const handleLanguageChange = React.useCallback(
     (lang: string): void => {
-      void router.push(asPath, asPath, {
-        locale: lang,
-      });
+      if (!pathname) return;
+      // In App Router with i18n middleware, we change the locale segment in the path
+      const segments = pathname.split('/');
+      segments[1] = lang;
+      const newPath = segments.join('/');
+      router.push(newPath);
     },
-    [router, asPath]
+    [router, pathname]
   );
 
   return (

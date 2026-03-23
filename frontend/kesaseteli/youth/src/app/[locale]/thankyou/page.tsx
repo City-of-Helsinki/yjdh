@@ -1,21 +1,22 @@
+'use client';
+
 import useActivationLinkExpirationHours from 'kesaseteli/youth/hooks/useActivationLinkExpirationHours';
 import getActivationLinkExpirationSeconds from 'kesaseteli/youth/utils/get-activation-link-expiration-seconds';
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
-import { GetStaticProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { NextPage } from 'next';
+import { useSearchParams } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import NotificationPage from 'shared/components/pages/NotificationPage';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { getFirstValue } from 'shared/utils/array.utils';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const applicationId = getFirstValue(router.query?.id);
+  const searchParams = useSearchParams();
+  const applicationId = getFirstValue(searchParams?.get('id'));
   const showActivationLink = !isRealIntegrationsEnabled() && applicationId;
   const [seconds, setSeconds] = React.useState(
     getActivationLinkExpirationSeconds()
@@ -61,8 +62,5 @@ const ThankYouPage: NextPage = () => {
     </NotificationPage>
   );
 };
-
-export const getStaticProps: GetStaticProps =
-  getServerSideTranslations('common');
 
 export default ThankYouPage;

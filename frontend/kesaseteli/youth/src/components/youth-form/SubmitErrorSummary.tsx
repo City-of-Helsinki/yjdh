@@ -1,7 +1,7 @@
 import { ErrorSummary } from 'hds-react';
 import { SubmitError } from 'kesaseteli/youth/hooks/useHandleYouthApplicationSubmit';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import alignCenterSvg from 'shared/styles/svg/align-center-svg.sc';

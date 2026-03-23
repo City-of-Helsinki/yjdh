@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import { FieldValues, get, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
 
