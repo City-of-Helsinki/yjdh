@@ -84,7 +84,7 @@ const DecisionMakerSection: React.FC<DecisionMakerSectionProps> = ({
               value={option.id}
               label={option.name}
               checked={selectedDecisionMaker?.id === option?.id}
-              onChange={(value) => {
+              onChange={(value: unknown) => {
                 setSelectedDecisionMaker({
                   id: option.id,
                   name: option.name,

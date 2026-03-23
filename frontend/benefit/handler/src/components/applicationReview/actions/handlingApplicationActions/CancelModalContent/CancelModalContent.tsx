@@ -34,6 +34,7 @@ const CancelModalContent: React.FC<ComponentProps> = ({
             {t(`${translationsBase}.reasonCancelDialogDescription`)}
           </$GridCell>
           <$GridCell $colSpan={12}>
+            {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
             <TextArea
               id="proccessRejectedComments"
               name="proccessRejectedComments"
