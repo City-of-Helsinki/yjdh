@@ -8,6 +8,12 @@ import { $FooterWrapper } from './Footer.sc';
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   const locale = useLocale();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const logoLang = locale === 'sv' ? 'sv' : 'fi';
   const logoSrcFromLanguage = (): string => {
     if (logoLang === 'fi') return logoFiDark;
@@ -16,6 +22,10 @@ const FooterSection: React.FC = () => {
 
     return logoFiDark;
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <$FooterWrapper>
