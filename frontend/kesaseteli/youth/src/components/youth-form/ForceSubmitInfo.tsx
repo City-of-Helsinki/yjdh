@@ -1,7 +1,7 @@
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useHandleYouthApplicationSubmit from 'kesaseteli/youth/hooks/useHandleYouthApplicationSubmit';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
 
 const ForceSubmitInfo: React.FC = () => {

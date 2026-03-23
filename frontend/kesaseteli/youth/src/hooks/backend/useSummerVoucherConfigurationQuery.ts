@@ -1,7 +1,7 @@
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
 import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
 import { useQuery, UseQueryResult } from 'react-query';
-import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
 
 const useSummerVoucherConfigurationQuery = (): UseQueryResult<
   SummerVoucherConfiguration[]

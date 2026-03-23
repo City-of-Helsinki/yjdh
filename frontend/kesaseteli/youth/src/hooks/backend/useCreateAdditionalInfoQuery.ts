@@ -2,6 +2,8 @@ import {
   getAdditionalInfoQueryKey,
   getYouthApplicationStatusQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
+import useGetLanguage from 'kesaseteli-shared/hooks/useGetLanguage';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { convertFormDataToApplication } from 'kesaseteli-shared/utils/additional-info-form-data.utils';
@@ -12,8 +14,6 @@ import {
   useQueryClient,
 } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
-import useGetLanguage from 'kesaseteli-shared/hooks/useGetLanguage';
 
 const useCreateAdditionalInfoQuery = (
   applicationId: CreatedYouthApplication['id'],

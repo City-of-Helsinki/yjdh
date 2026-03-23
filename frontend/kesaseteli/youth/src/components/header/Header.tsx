@@ -1,8 +1,8 @@
-import { usePathname, useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import React from 'react';
-import BaseHeader from 'shared/components/header/Header';
 import useLocale from 'kesaseteli-shared/hooks/useLocale';
+import { usePathname, useRouter } from 'next/navigation';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import BaseHeader from 'shared/components/header/Header';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 

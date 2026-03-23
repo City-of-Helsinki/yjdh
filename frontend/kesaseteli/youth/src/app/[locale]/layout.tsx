@@ -1,7 +1,12 @@
 import React from 'react';
-import StyledComponentsRegistry from '../StyledComponentsRegistry';
-import I18nClientProvider from '../I18nClientProvider';
+
 import ClientProviders from '../ClientProviders';
+import I18nClientProvider from '../I18nClientProvider';
+import StyledComponentsRegistry from '../StyledComponentsRegistry';
+
+export async function generateStaticParams() {
+  return [{ locale: 'fi' }, { locale: 'en' }, { locale: 'sv' }];
+}
 
 export default async function LocaleLayout({
   children,
@@ -11,7 +16,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const resolvedParams = await params;
-  const locale = resolvedParams.locale;
+  const {locale} = resolvedParams;
 
   // Prevent crashes when Next.js passes non-locale strings (like favicon.ico) to the layout
   const locales = ['fi', 'en', 'sv'];

@@ -2,15 +2,15 @@
 
 import AdditionalInfoForm from 'kesaseteli/youth/components/additional-info-form/AdditionalInfoForm';
 import useYouthApplicationStatusQuery from 'kesaseteli/youth/hooks/backend/useYouthApplicationStatusQuery';
+import useRouterQueryParam from 'kesaseteli-shared/hooks/useRouterQueryParam';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import { NextPage } from 'next';
-import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useRouterQueryParam from 'kesaseteli-shared/hooks/useRouterQueryParam';
 
 const AdditionalInfo: NextPage = () => {
   const { t } = useTranslation();

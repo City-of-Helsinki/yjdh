@@ -1,18 +1,28 @@
-'use client';
-
-import { NextPage } from 'next';
-import { useTranslation } from 'react-i18next';
+import { Metadata } from 'next';
 import React from 'react';
 import NotificationPage from 'shared/components/pages/NotificationPage';
 
-const AlreadyActivatedPage: React.FC = () => {
-  const { t } = useTranslation();
+import { getCommonTranslations } from '../../../lib/i18n-server';
+
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = (await getCommonTranslations(locale)) as any;
+  return {
+    title: `${t.notificationPages.alreadyActivated.title} | ${t.appName}`,
+  };
+}
+
+export default async function AlreadyActivatedPage({ params }: Props): Promise<React.ReactElement> {
+  const { locale } = await params;
+  const t = (await getCommonTranslations(locale)) as any;
   return (
     <NotificationPage
       type="error"
-      title={t(`common:notificationPages.alreadyActivated.title`)}
+      title={t.notificationPages.alreadyActivated.title}
     />
   );
-};
-
-export default AlreadyActivatedPage;
+}

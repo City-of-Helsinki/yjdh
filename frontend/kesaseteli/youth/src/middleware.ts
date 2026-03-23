@@ -16,33 +16,34 @@ function getLocale(request: NextRequest): string {
 
   const preferredLocale = acceptLanguage
     .split(',')
-    .map((lang) => lang.split(';')[0].trim().substring(0, 2))
-    .find((lang) => locales.includes(lang));
+    .map((lang: string) => lang.split(';')[0].trim().slice(0, 2))
+    .find((lang: string) => locales.includes(lang));
 
   return preferredLocale || defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
+export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
-  
+
   // Skip public files, api routes, Next.js internal paths
   if (
     pathname.startsWith('/_next') ||
     pathname.includes('.') ||
     pathname.startsWith('/api')
   ) {
-    return;
+    return NextResponse.next();
   }
 
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathnameHasLocale) return;
+  if (pathnameHasLocale) return NextResponse.next();
 
   const locale = getLocale(request);
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-  return NextResponse.redirect(request.nextUrl);
+  const redirectUrl = request.nextUrl.clone();
+  redirectUrl.pathname = `/${locale}${pathname}`;
+  return NextResponse.redirect(redirectUrl);
 }
 
 export const config = {

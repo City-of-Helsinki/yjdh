@@ -1,7 +1,7 @@
 import { Footer, Logo, logoFiDark, logoSvDark } from 'hds-react';
-import { useTranslation } from 'react-i18next';
-import React from 'react';
 import useLocale from 'kesaseteli-shared/hooks/useLocale';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { $FooterWrapper } from './Footer.sc';
 

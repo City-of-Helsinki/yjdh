@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { FieldValues, get, RegisterOptions, useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import Id from 'shared/types/id';
 
 type InputProps<T extends FieldValues> = {

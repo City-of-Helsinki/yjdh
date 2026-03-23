@@ -5,8 +5,8 @@ import getActivationLinkExpirationSeconds from 'kesaseteli/youth/utils/get-activ
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import { NextPage } from 'next';
 import { useSearchParams } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import NotificationPage from 'shared/components/pages/NotificationPage';

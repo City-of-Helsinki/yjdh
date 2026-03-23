@@ -2,6 +2,9 @@ import {
   isYouthApplicationCreationError,
   isYouthApplicationValidationError,
 } from 'kesaseteli/youth/utils/type-guards';
+import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
+import useGoToPage from 'kesaseteli-shared/hooks/useGoToPage';
+import useLocale from 'kesaseteli-shared/hooks/useLocale';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
@@ -10,10 +13,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
-import useErrorHandler from 'kesaseteli-shared/hooks/useErrorHandler';
 import useGdprMaskedFormValues from 'shared/hooks/useGdprMaskedFormValues';
-import useGoToPage from 'kesaseteli-shared/hooks/useGoToPage';
-import useLocale from 'kesaseteli-shared/hooks/useLocale';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
 
 type ErrorNotificationType = 'please_recheck_data' | 'validation_error' | null;

@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { I18nextProvider } from 'react-i18next';
 import i18next from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import React, { useMemo } from 'react';
+import { I18nextProvider , initReactI18next } from 'react-i18next';
 
 export default function I18nClientProvider({
   children,

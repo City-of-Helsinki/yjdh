@@ -1,7 +1,8 @@
+'use client';
+
 import { Notification } from 'hds-react';
-import Head from 'next/head';
-import { Trans, useTranslation } from 'react-i18next';
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
 import LinkText from 'shared/components/link-text/LinkText';
@@ -10,9 +11,6 @@ const ApplicationNotOpen: React.FC = () => {
   const { t } = useTranslation();
   return (
     <Container>
-      <Head>
-        <title>{t(`common:appName`)}</title>
-      </Head>
       <Heading
         size="l"
         header={t('common:youthApplication.applicationNotOpen')}

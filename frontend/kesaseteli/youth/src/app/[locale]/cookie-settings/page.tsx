@@ -2,8 +2,8 @@
 
 import CookieSettings from 'kesaseteli-shared/components/cookieSettings/CookieSettings';
 import { NextPage } from 'next';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const CookieSettingsPage: NextPage = () => {
   const { t } = useTranslation();
