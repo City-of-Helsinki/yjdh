@@ -1,5 +1,5 @@
 import useLocale from 'shared/hooks/useLocale';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/compat/router';
 import React from 'react';
 import { CookieModal, CookiePage } from 'hds-react';
 import useCookieConsent from 'shared/hooks/useCookieConsent';
@@ -16,11 +16,11 @@ const CookieConsent: React.FC<CookieConsentProps> = ({
 }) => {
   const locale = useLocale();
   const router = useRouter();
-  const { pathname, asPath, query } = router;
+  const { pathname, asPath, query } = router || {};
 
   const onLanguageChange = React.useCallback(
     (newLanguage: string): void => {
-      void router.push({ pathname, query }, asPath, {
+      void router?.push({ pathname, query }, asPath, {
         locale: newLanguage,
       });
     },
