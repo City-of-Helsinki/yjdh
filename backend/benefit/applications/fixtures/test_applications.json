@@ -1437,7 +1437,7 @@
       "status": "accepted",
       "talpa_status": "rejected_by_talpa",
       "application_origin": "applicant",
-      "application_number": 125000,
+      "application_number": 125001,
       "company_name": "Demo I. Haanpää Oy",
       "company_form": "OY",
       "company_form_code": 16,
@@ -1644,7 +1644,7 @@
       "modified_at": "2024-11-04T11:20:46.842Z",
       "calculation": "aa52e56a-3d64-4129-ae7d-423585d47766",
       "instalment_number": 1,
-      "amount": "9600.00",
+      "amount": "9000.00",
       "due_date": "2024-11-04",
       "status": "error_in_talpa"
     }
@@ -1657,7 +1657,7 @@
       "modified_at": "2024-11-04T11:20:46.842Z",
       "calculation": "aa52e56a-3d64-4129-ae7d-423585d47766",
       "instalment_number": 2,
-      "amount": "1624.00",
+      "amount": "2224.00",
       "due_date": "2025-05-04",
       "status": "waiting"
     }

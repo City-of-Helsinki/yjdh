@@ -298,7 +298,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             <Dialog.Content>
               <DateInput
                 id="instalment-change-date-dateinput"
-                label="Viimeinen työpäivä"
+                label={t("common:instalments.dialog.changeInstalmentDate.label")}
                 helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
                 language="fi"
                 onChange={(value:string) => setInstalmentNewDate(value)}
