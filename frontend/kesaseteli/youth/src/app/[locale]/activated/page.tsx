@@ -10,7 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = (await getCommonTranslations(locale)) as any;
+  const t = (await getCommonTranslations(locale));
   return {
     title: `${t.notificationPages.activated.title} | ${t.appName}`,
   };
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ActivatedPage({ params }: Props): Promise<React.ReactElement> {
   const { locale } = await params;
-  const t = (await getCommonTranslations(locale)) as any;
+  const t = (await getCommonTranslations(locale));
   return (
     <NotificationPage
       type="success"

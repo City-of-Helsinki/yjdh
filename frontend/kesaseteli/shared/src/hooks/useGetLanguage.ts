@@ -1,12 +1,12 @@
-import { useRouter } from 'next/compat/router';
+import { useParams } from 'next/navigation';
 import React from 'react';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 const useGetLanguage = (): (() => Language) => {
-  const router = useRouter();
+  const params = useParams();
   return React.useCallback(
-    () => ((router?.locale ?? DEFAULT_LANGUAGE) as Language),
-    [router?.locale]
+    () => ((params?.locale ?? DEFAULT_LANGUAGE) as Language),
+    [params?.locale]
   );
 };
 

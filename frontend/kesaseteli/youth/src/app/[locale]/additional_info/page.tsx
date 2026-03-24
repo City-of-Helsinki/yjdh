@@ -2,8 +2,8 @@
 
 import AdditionalInfoForm from 'kesaseteli/youth/components/additional-info-form/AdditionalInfoForm';
 import useYouthApplicationStatusQuery from 'kesaseteli/youth/hooks/backend/useYouthApplicationStatusQuery';
-import useRouterQueryParam from 'kesaseteli-shared/hooks/useRouterQueryParam';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
+import useRouterQueryParam from 'kesaseteli-shared/hooks/useRouterQueryParam';
 import { NextPage } from 'next';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -23,7 +23,7 @@ const AdditionalInfo: NextPage = () => {
     criteriaMode: 'all',
   });
 
-  const isLoading = isRouterLoading || applicationStatusQuery.isLoading;
+  const {isLoading} = applicationStatusQuery;
   const isSuccess = applicationId && applicationStatusQuery.isSuccess;
   const notFound = applicationStatusQuery.isError || !applicationId;
 

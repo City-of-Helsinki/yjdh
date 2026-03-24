@@ -13,13 +13,13 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = (await getCommonTranslations(locale)) as any;
+  const t = (await getCommonTranslations(locale)) as { appName: string };
   return {
     title: t.appName,
   };
 }
 
-export default async function YouthIndex({ params }: Props): Promise<React.ReactElement> {
+export default async function YouthIndex(): Promise<React.ReactElement> {
   const configuration = await getConfiguration();
 
   const currentYear = new Date().getFullYear();

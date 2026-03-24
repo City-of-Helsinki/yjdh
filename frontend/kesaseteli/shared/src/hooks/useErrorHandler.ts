@@ -1,5 +1,5 @@
-import { useRouter } from 'next/compat/router';
-import { useTranslation } from 'next-i18next';
+import { usePathname } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import handleError from 'shared/error-handler/error-handler';
 import useGoToPage from 'kesaseteli-shared/hooks/useGoToPage';
 
@@ -13,8 +13,7 @@ type Props = {
 
 const useErrorHandler = (props: Props = {}): ErrorHandlerFunction => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const pathname = router?.pathname || '';
+  const pathname = usePathname();
   const goToPage = useGoToPage();
 
   return (error: Error | unknown) =>
