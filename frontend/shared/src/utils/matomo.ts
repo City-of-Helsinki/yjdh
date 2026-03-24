@@ -30,13 +30,13 @@ export function initMatomo(config: MatomoConfig): void {
   // via useCookieConsent hook when user accepts cookies
   window._paq.push(['requireConsent'], ['requireCookieConsent']);
 
-  window._paq.push(['trackPageView'], ['enableLinkTracking']);
-
   const u = url.endsWith('/') ? url : `${url}/`;
   window._paq.push(
     ['setTrackerUrl', `${u}${phpTrackerFile}`],
     ['setSiteId', siteId]
   );
+
+  window._paq.push(['trackPageView'], ['enableLinkTracking']);
 
   const script = document.createElement('script');
   script.type = 'text/javascript';

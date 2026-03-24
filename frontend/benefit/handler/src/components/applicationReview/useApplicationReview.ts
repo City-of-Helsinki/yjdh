@@ -152,10 +152,10 @@ const useApplicationReview = (): ExtendedComponentProps => {
           applicationNumber: application.applicationNumber,
         })
       );
-      window.history.replaceState(
+      globalThis.history.replaceState(
         null,
         '',
-        `${window.location.pathname}?id=${application.id || ''}`
+        `${globalThis.location.pathname}?id=${application.id || ''}`
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

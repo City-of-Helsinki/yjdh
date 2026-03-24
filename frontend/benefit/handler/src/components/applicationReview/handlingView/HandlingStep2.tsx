@@ -309,12 +309,17 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
 
   React.useEffect(() => {
     if (signerOptions && signerOptions.length > 0) {
+      const firstSigner = signerOptions[0];
       setSelectedSigner({
         id:
-          handledApplication?.signerId || decisionProposalDraft?.signerId || '',
+          handledApplication?.signerId ||
+          decisionProposalDraft?.signerId ||
+          firstSigner.id ||
+          '',
         name:
           handledApplication?.signerName ||
           decisionProposalDraft?.signerName ||
+          firstSigner.name ||
           '',
       });
     }

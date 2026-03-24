@@ -58,8 +58,13 @@ const App: React.FC<AppProps> = (appProps) => {
     }
   }, []);
 
-  // Track page views on route changes
+  // Track page views on route changes (skip initial load — already tracked by initMatomo)
+  const isInitialLoad = React.useRef(true);
   useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
     if (MATOMO_ENABLED === 'true') {
       trackPageView();
     }

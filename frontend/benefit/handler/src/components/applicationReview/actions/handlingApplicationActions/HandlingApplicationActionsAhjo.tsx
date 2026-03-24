@@ -177,9 +177,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
         !handledApplication?.signerId ||
         handledApplication?.signerId?.length <= 0,
       // Use longer length to take HTML tags into account
-      decisionText: (handledApplication?.decisionText?.length ?? 0) <= 10,
+      decisionText:
+        !handledApplication?.decisionText ||
+        handledApplication.decisionText.length <= 10,
       justificationText:
-        (handledApplication?.justificationText?.length ?? 0) <= 10,
+        !handledApplication?.justificationText ||
+        handledApplication.justificationText.length <= 10,
     },
     id: {
       status: '#proccessRejectedRadio',
