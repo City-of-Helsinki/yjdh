@@ -245,7 +245,21 @@ const HandlingApplicationActions: React.FC<Props> = ({
     }
 
     if (errorStep1 || errorStep2) {
-      handleValidationErrors(fields);
+      const step2Fields = new Set([
+        'decisionText',
+        'justificationText',
+        'signerId',
+        'decisionMakerId',
+      ]);
+      const filteredFields = {
+        ...fields,
+        missing: Object.fromEntries(
+          Object.entries(fields.missing).filter(
+            ([key]) => currentStepIndex > 0 || !step2Fields.has(key)
+          )
+        ),
+      };
+      handleValidationErrors(filteredFields);
     }
 
     return errorStep1 || errorStep2;

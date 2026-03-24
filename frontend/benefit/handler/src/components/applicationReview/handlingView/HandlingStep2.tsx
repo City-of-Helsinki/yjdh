@@ -255,7 +255,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   const { data: signerOptions } = useAhjoSettingsQuery('ahjo_signer');
 
   const selectTemplate = (option: DecisionProposalTemplateData): void => {
-    if (!selectedDecisionMaker) return;
+    if (!selectedDecisionMaker || !handledApplication) return;
 
     setTemplateForDecisionText(
       replaceDecisionTemplatePlaceholders(
@@ -310,19 +310,27 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   React.useEffect(() => {
     if (signerOptions && signerOptions.length > 0) {
       const firstSigner = signerOptions[0];
-      setSelectedSigner({
-        id:
-          handledApplication?.signerId ||
-          decisionProposalDraft?.signerId ||
-          firstSigner.id ||
-          '',
-        name:
-          handledApplication?.signerName ||
-          decisionProposalDraft?.signerName ||
-          firstSigner.name ||
-          '',
-      });
+      const signerId =
+        handledApplication?.signerId ||
+        decisionProposalDraft?.signerId ||
+        firstSigner.id ||
+        '';
+      const signerName =
+        handledApplication?.signerName ||
+        decisionProposalDraft?.signerName ||
+        firstSigner.name ||
+        '';
+      setSelectedSigner({ id: signerId, name: signerName });
+      // Persist to shared context so validation can see the signerId
+      if (signerId && !handledApplication?.signerId) {
+        setHandledApplication({
+          ...handledApplication,
+          signerId,
+          signerName,
+        } as Application);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     signerOptions,
     decisionProposalDraft,
