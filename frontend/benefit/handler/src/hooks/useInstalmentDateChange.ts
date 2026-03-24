@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
@@ -29,7 +28,7 @@ const useInstalmentDateChange = (): UseMutationResult<null, Error, Payload> => {
         void queryClient.invalidateQueries('application');
         void queryClient.invalidateQueries('applications');
       },
-      onError: (error: AxiosError<Error, Record<string, string[]>>) => {
+      onError: (error: Error) => {
         showErrorToast(
           t('common:error.newDate.label'),
           t('common:error.newDate.text')

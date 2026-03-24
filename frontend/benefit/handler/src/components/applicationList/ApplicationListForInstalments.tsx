@@ -92,7 +92,9 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
 }) => {
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
-  const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = React.useState<(string | number)[]>(
+    []
+  );
   const [instalmentNewDate, setInstalmentNewDate] = React.useState(
     convertToUIDateFormat('2025-01-25') ?? ''
   );
@@ -242,10 +244,12 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   };
 
   const onSubmitChangeDate = (): void => {
-    changeInstalmentDate({
-      id: selectedInstalment?.id,
-      dueDate: convertToBackendDateFormat(instalmentNewDate),
-    });
+    if (selectedInstalment?.id) {
+      changeInstalmentDate({
+        id: selectedInstalment.id,
+        dueDate: convertToBackendDateFormat(instalmentNewDate),
+      });
+    }
     setIsInstalmentChangeDateDialogShown(false);
   };
 
@@ -322,6 +326,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               )}
             />
             <Dialog.Content>
+              {/* @ts-expect-error -- HDS DateInput types are overly strict with TS 5.9 */}
               <DateInput
                 id="instalment-change-date-dateinput"
                 label="Viimeinen työpäivä"
