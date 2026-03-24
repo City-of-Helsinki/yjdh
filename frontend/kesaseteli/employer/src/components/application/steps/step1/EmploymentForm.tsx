@@ -74,17 +74,21 @@ const useFetchEmployeeData = (
   const [isEmployeeDataFetched, setIsEmployeeDataFetched] =
     useState<boolean>(false);
 
-  const employeeSsn = useWatch({
+  const [employeeSsn, employeePhoneNumber, employmentPostcode] = useWatch({
     control,
-    name: `summer_vouchers.${index}.employee_ssn`,
+    name: [
+      `summer_vouchers.${index}.employee_ssn`,
+      `summer_vouchers.${index}.employee_phone_number`,
+      `summer_vouchers.${index}.employment_postcode`,
+    ],
   });
 
-  // Set fetched state when SSN is populated
+  // Set fetched state when SSN, phone number or postcode is populated
   useEffect(() => {
-    if (employeeSsn) {
+    if (employeeSsn || employeePhoneNumber || employmentPostcode) {
       setIsEmployeeDataFetched(true);
     }
-  }, [employeeSsn]);
+  }, [employeeSsn, employeePhoneNumber, employmentPostcode]);
 
   const handleGetEmployeeData = useCallback((): void => {
     const currentValues = getValues();
@@ -96,7 +100,10 @@ const useFetchEmployeeData = (
     };
 
     const performFetch = (appData: Application | DraftApplication): void => {
-      void fetchEmployment(appData, index, handleReset);
+      void fetchEmployment(appData, index, (app) => {
+        handleReset(app);
+        setIsEmployeeDataFetched(true);
+      });
     };
 
     if (voucher.id) {
