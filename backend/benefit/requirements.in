@@ -4,6 +4,8 @@ django-cors-headers
 django-environ
 django-extensions
 django-filter
+django-helusers
+social-auth-app-django
 django-localflavor
 django-logger-extra
 django-phonenumber-field[phonenumbers]

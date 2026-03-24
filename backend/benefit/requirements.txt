@@ -43,12 +43,15 @@ cryptography==43.0.3
     #   drf-oidc-auth
     #   josepy
     #   mozilla-django-oidc
+    #   pyjwt
     #   pyopenssl
     #   pysaml2
 defusedxml==0.7.1
     # via
     #   djangosaml2
     #   pysaml2
+    #   python3-openid
+    #   social-auth-core
 deprecation==2.1.0
     # via django-helusers
 django==5.2.13
@@ -75,6 +78,7 @@ django==5.2.13
     #   helsinki-profile-gdpr-api
     #   mozilla-django-oidc
     #   sentry-sdk
+    #   social-auth-app-django
     #   yjdh-backend-shared
 django-auth-adfs==1.15.1
     # via
@@ -90,8 +94,10 @@ django-extensions==4.1
     #   yjdh-backend-shared
 django-filter==25.2
     # via -r requirements.in
-django-helusers==0.14.4
-    # via helsinki-profile-gdpr-api
+django-helusers==1.1.0
+    # via
+    #   -r requirements.in
+    #   helsinki-profile-gdpr-api
 django-localflavor==5.0
     # via -r requirements.in
 django-logger-extra==1.1.0
@@ -173,6 +179,10 @@ mozilla-django-oidc==4.0.1
     #   yjdh-backend-shared
 numpy==2.3.5
     # via pandas
+oauthlib==3.3.1
+    # via
+    #   requests-oauthlib
+    #   social-auth-core
 openpyxl==3.1.5
     # via -r requirements.in
 packaging==25.0
@@ -196,7 +206,10 @@ pycparser==2.23
 pycryptodome==3.23.0
     # via django-searchable-encrypted-fields
 pyjwt==2.12.0
-    # via django-auth-adfs
+    # via
+    #   django-auth-adfs
+    #   pyjwt
+    #   social-auth-core
 pyopenssl==24.2.1
     # via pysaml2
 pysaml2==7.5.4
@@ -216,6 +229,8 @@ python-stdnum==2.1
     # via
     #   -r requirements.in
     #   django-localflavor
+python3-openid==3.2.0
+    # via social-auth-core
 pytz==2025.2
     # via pandas
 pyyaml==6.0.3
@@ -237,6 +252,10 @@ requests==2.33.1
     #   drf-oidc-auth
     #   mozilla-django-oidc
     #   pysaml2
+    #   requests-oauthlib
+    #   social-auth-core
+requests-oauthlib==2.0.0
+    # via social-auth-core
 rpds-py==0.29.0
     # via
     #   jsonschema
@@ -249,6 +268,10 @@ six==1.17.0
     # via
     #   ecdsa
     #   python-dateutil
+social-auth-app-django==5.7.0
+    # via -r requirements.in
+social-auth-core==4.8.5
+    # via social-auth-app-django
 sqlparse==0.5.4
     # via
     #   django
