@@ -192,6 +192,7 @@ class HelsinkiBenefitCalculator:
 
         first_instalment_amount = self.first_instalment_limit
         second_instalment_amount = total_benefit_amount - first_instalment_amount
+        benefit_start_date = self.calculation.start_date
 
         return [
             (
@@ -203,7 +204,7 @@ class HelsinkiBenefitCalculator:
             (
                 2,
                 second_instalment_amount,
-                timezone.now() + relativedelta(months=6),
+                benefit_start_date + relativedelta(months=6),
                 InstalmentStatus.WAITING,
             ),
         ]
