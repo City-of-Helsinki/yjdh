@@ -1,9 +1,9 @@
 from datetime import datetime
 from uuid import uuid4
 
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from helsinki_gdpr.models import SerializableMixin
+from helusers.models import AbstractUser
 
 
 def format_date(date: datetime) -> str | None:

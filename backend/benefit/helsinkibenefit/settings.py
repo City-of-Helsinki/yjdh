@@ -2,6 +2,7 @@ import os
 from urllib.parse import urlparse
 
 import environ
+import helusers.defaults
 import sentry_sdk
 from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
@@ -194,6 +195,12 @@ env = environ.Env(
     PAY_SUBSIDY_MAX_FOR_70_PERCENT=(int, 1770),
     PAY_SUBSIDY_MAX_FOR_50_PERCENT=(int, 1260),
     SALARY_BENEFIT_MAX=(int, 800),
+    HELUSERS_PASSWORD_LOGIN_DISABLED=(bool, False),
+    HELUSERS_PASSWORD_LOGIN_ALLOWLIST=(list, []),
+    SOCIAL_AUTH_TUNNISTAMO_KEY=(str, ""),
+    SOCIAL_AUTH_TUNNISTAMO_SECRET=(str, ""),
+    SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT=(str, ""),
+    HELUSERS_BACK_CHANNEL_LOGOUT_ENABLED=(bool, True),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -305,7 +312,6 @@ INSTALLED_APPS = [
     "calculator.apps.AppConfig",
     "messages",
     # libraries
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -321,7 +327,9 @@ INSTALLED_APPS = [
     "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
+    "social_django",
     "helusers.apps.HelusersConfig",
+    "helusers.apps.HelusersAdminConfig",
     "logger_extra",
     "resilient_logger",
 ]
@@ -499,9 +507,13 @@ SESSION_COOKIE_SECURE = True
 TERMS_OF_SERVICE_SESSION_KEY = env.str("TERMS_OF_SERVICE_SESSION_KEY")
 
 AUTHENTICATION_BACKENDS = (
+    "helusers.tunnistamo_oidc.TunnistamoOIDCAuth",
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
-    "django.contrib.auth.backends.ModelBackend",
+    # shared mocking system needs ModelBackend
+    "django.contrib.auth.backends.ModelBackend"
+    if NEXT_PUBLIC_MOCK_FLAG
+    else "helusers.auth.HelusersModelBackend",
 )
 
 DISABLE_TOS_APPROVAL_CHECK = env.bool("DISABLE_TOS_APPROVAL_CHECK")
@@ -675,3 +687,15 @@ PAY_SUBSIDY_MAX_FOR_100_PERCENT = env.int("PAY_SUBSIDY_MAX_FOR_100_PERCENT")
 PAY_SUBSIDY_MAX_FOR_70_PERCENT = env.int("PAY_SUBSIDY_MAX_FOR_70_PERCENT")
 PAY_SUBSIDY_MAX_FOR_50_PERCENT = env.int("PAY_SUBSIDY_MAX_FOR_50_PERCENT")
 SALARY_BENEFIT_MAX = env.int("SALARY_BENEFIT_MAX")
+
+
+HELUSERS_PASSWORD_LOGIN_DISABLED = env("HELUSERS_PASSWORD_LOGIN_DISABLED")
+HELUSERS_PASSWORD_LOGIN_ALLOWLIST = env("HELUSERS_PASSWORD_LOGIN_ALLOWLIST")
+HELUSERS_BACK_CHANNEL_LOGOUT_ENABLED = env("HELUSERS_BACK_CHANNEL_LOGOUT_ENABLED")
+
+SOCIAL_AUTH_PIPELINE = helusers.defaults.SOCIAL_AUTH_PIPELINE
+SOCIAL_AUTH_TUNNISTAMO_KEY = env("SOCIAL_AUTH_TUNNISTAMO_KEY")
+SOCIAL_AUTH_TUNNISTAMO_SECRET = env("SOCIAL_AUTH_TUNNISTAMO_SECRET")
+SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT = env("SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT")
+
+SESSION_SERIALIZER = "helusers.sessions.TunnistamoOIDCSerializer"

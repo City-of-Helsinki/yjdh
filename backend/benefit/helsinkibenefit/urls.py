@@ -184,6 +184,8 @@ urlpatterns = [
     ),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
+    path("pysocial/", include("social_django.urls", namespace="social")),
+    path("helauth/", include("helusers.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("openapi/", SpectacularAPIView.as_view(), name="schema"),
     path(
