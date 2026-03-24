@@ -47,7 +47,11 @@ const ApplicationFormStep5: React.FC<
     handleClose,
     translationsBase,
     isSubmit,
-  } = useApplicationFormStep5(data, setIsSubmittedApplication, setIsResubmission);
+  } = useApplicationFormStep5(
+    data,
+    setIsSubmittedApplication ?? (() => {}),
+    setIsResubmission
+  );
 
   const {
     data: clonedData,
