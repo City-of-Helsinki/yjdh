@@ -8,7 +8,9 @@ module.exports = {
   },
   moduleNameMapper: {
     ['^benefit/shared/test/(.*)$']: '<rootDir>/test/$1',
+    [`^benefit-shared\/(.*)$`]: '<rootDir>/src/$1',
     [`^benefit/shared\/(.*)$`]: '<rootDir>src/$1',
+    [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
