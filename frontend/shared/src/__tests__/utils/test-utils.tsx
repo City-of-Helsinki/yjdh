@@ -15,9 +15,12 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 const customRender: CustomRender = (ui, routerOverride) => {
-  jest.spyOn(router, 'useRouter').mockReturnValue(routerOverride as NextRouter);
-
-  const utils = render(ui, { wrapper: Wrapper });
+  // eslint-disable-next-line no-console
+  console.log('DEBUG: customRender UI type:', typeof ui);
+  // eslint-disable-next-line no-console
+  console.log('DEBUG: customRender UI is valid element:', React.isValidElement(ui));
+  
+  const utils = render(ui);
   return { ...utils };
 };
 

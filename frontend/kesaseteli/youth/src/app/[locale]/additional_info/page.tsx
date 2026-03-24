@@ -12,7 +12,11 @@ import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 
-const AdditionalInfo: NextPage = () => {
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+const AdditionalInfo: React.FC<Props> = () => {
   const { t } = useTranslation();
   const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
   const applicationStatusQuery = useYouthApplicationStatusQuery(applicationId);
@@ -38,6 +42,7 @@ const AdditionalInfo: NextPage = () => {
 
   return (
     <Container data-testid="additional-info">
+      {/* @ts-expect-error: FormProvider is not properly typed for React 19 */}
       <FormProvider {...methods}>
         {isSuccess &&
           (() => {

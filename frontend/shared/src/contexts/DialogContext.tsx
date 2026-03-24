@@ -82,7 +82,7 @@ export const DialogContext = React.createContext<
   () => {},
 ]);
 
-export const DialogContextProvider: React.FC = ({ children }) => {
+export const DialogContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <DialogContext.Provider value={[state, dispatch]}>

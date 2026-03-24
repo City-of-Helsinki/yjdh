@@ -6,7 +6,7 @@ import {
   NotificationType,
 } from 'hds-react';
 import Head from 'next/head';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -35,11 +35,6 @@ const NotificationPage: React.FC<Props> = ({
   const goToFrontPage = useGoToFrontPage();
   return (
     <Container>
-      <Head>
-        <title>
-          {title} | {t(`common:appName`)}
-        </title>
-      </Head>
       <$Notification label={title} type={type} size={size}>
         {message}
       </$Notification>
@@ -50,6 +45,7 @@ const NotificationPage: React.FC<Props> = ({
             <Button
               theme="coat"
               variant="secondary"
+              // @ts-expect-error: IconArrowRight is not properly typed for React 19
               iconLeft={<IconArrowRight />}
               onClick={goToFrontPage}
             >

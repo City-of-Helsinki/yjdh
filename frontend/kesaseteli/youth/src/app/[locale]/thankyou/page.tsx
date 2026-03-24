@@ -12,7 +12,7 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import NotificationPage from 'shared/components/pages/NotificationPage';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 
-const ThankYouPage: NextPage = () => {
+const ThankYouPage: React.FC = () => {
   const { t } = useTranslation();
   const { value: applicationId } = useRouterQueryParam('id');
   const showActivationLink = !isRealIntegrationsEnabled() && applicationId;

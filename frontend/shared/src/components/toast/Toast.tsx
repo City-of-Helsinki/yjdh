@@ -1,6 +1,6 @@
 import { NotificationProps } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { ReactText, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -72,7 +72,7 @@ const hdsToast = ({
   labelText,
   text,
   toastId,
-}: HDSToastArgs): ReactText => {
+}: HDSToastArgs): string | number => {
   const id = toastId ?? uuidv4();
   return toast(
     <NotificationWrapper

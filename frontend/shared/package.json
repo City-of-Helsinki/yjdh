@@ -27,8 +27,8 @@
     "lodash": "^4.17.21",
     "next": "15.1.9",
     "next-i18next": "^15.3.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-hook-form": "^7.30.0",
     "react-loading-skeleton": "^3.0.3",
     "react-query": "^3.34.0",
@@ -39,6 +39,8 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "lodash": "^4.17.21",
     "typescript": "^5.9.3"
   }

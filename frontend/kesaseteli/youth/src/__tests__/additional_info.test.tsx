@@ -5,7 +5,7 @@ import {
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getAdditionalInfoPageApi from 'kesaseteli/youth/__tests__/utils/components/get-additional-info-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
-import AdditionalInfoPage from 'kesaseteli/youth/pages/additional_info';
+import AdditionalInfoPage from 'kesaseteli/youth/app/[locale]/additional_info/page';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeAdditionalInfoApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
@@ -15,27 +15,27 @@ import SLOW_JEST_TIMEOUT from 'shared/__tests__/utils/slow-jest-timeout';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
-describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
+describe('frontend/kesaseteli/youth/src/app/[locale]/additional_info/page.tsx', () => {
   const APPLICATION_ID = 'abc-123';
 
   it('should not violate accessibility', async () => {
     const {
       renderResult: { container },
-    } = renderComponent(<AdditionalInfoPage />, { query: {} });
+    } = renderComponent(<AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, { query: {} });
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
   it(`shows error toast when backend returns bad request`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 400);
-    renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
+    renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, { query: { id: APPLICATION_ID } });
     await headerApi.expectations.errorToastIsShown();
   });
 
   it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 500);
     const spyPush = jest.fn();
-    renderPage(AdditionalInfoPage, {
+    renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, {
       push: spyPush,
       query: { id: APPLICATION_ID },
     });
@@ -49,7 +49,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   });
 
   it(`shows that application is not found when id query param is not present`, async () => {
-    renderPage(AdditionalInfoPage, { query: {} });
+    renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, { query: {} });
     await getAdditionalInfoPageApi().expectations.notificationIsPresent(
       'notFound'
     );
@@ -57,7 +57,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   it(`shows that application is not found when backend returns 404`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 404);
-    renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
+    renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, { query: { id: APPLICATION_ID } });
     await getAdditionalInfoPageApi().expectations.notificationIsPresent(
       'notFound'
     );
@@ -68,7 +68,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
-      renderPage(AdditionalInfoPage, {
+      renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, {
         query: { id: APPLICATION_ID },
       });
       const additionalInfoPageApi = getAdditionalInfoPageApi();
@@ -84,7 +84,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that additional info is sent', async () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
-        renderPage(AdditionalInfoPage, {
+        renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, {
           query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
@@ -100,7 +100,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
-        renderPage(AdditionalInfoPage, {
+        renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, {
           query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
@@ -115,7 +115,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
-      renderPage(AdditionalInfoPage, {
+      renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, {
         query: { id: APPLICATION_ID },
       });
       const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID);
@@ -137,7 +137,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
             status: 'additional_information_requested',
           });
-          renderPage(AdditionalInfoPage, {
+          renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: DEFAULT_LANGUAGE })} />, {
             query: { id: APPLICATION_ID },
           });
           const { additional_info_description, additional_info_user_reasons } =
@@ -165,7 +165,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
             status: 'additional_information_requested',
           });
-          renderPage(AdditionalInfoPage, {
+          renderPage(() => <AdditionalInfoPage params={Promise.resolve({ locale: 'sv' })} />, {
             query: { id: APPLICATION_ID },
             locale: 'sv',
           });

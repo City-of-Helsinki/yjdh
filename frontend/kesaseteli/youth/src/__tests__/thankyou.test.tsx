@@ -2,14 +2,14 @@ import faker from 'faker';
 import { axe } from 'jest-axe';
 import getThankYouPageApi from 'kesaseteli/youth/__tests__/utils/components/get-thankyou-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
-import ThankYouPage from 'kesaseteli/youth/pages/thankyou';
+import ThankYouPage from 'kesaseteli/youth/app/[locale]/thankyou/page';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
-describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
+describe('frontend/kesaseteli/youth/src/app/[locale]/thankyou/page.tsx', () => {
   it('should not violate accessibility', async () => {
     const {
       renderResult: { container },

@@ -1,4 +1,3 @@
-import { NextPage } from 'next';
 import { NextRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -35,9 +34,12 @@ const renderPage =
     AuthProvider,
     confirmDialog,
   }: Props) =>
-  (Page: NextPage, router: Partial<NextRouter> = {}): QueryClient => {
+  (Page: React.ElementType | React.ReactNode, router: Partial<NextRouter> = {}): QueryClient => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
+    
+    const content = React.isValidElement(Page) ? Page : typeof Page === 'function' ? <Page /> : Page;
+
     const children = (
       <ThemeProvider theme={theme}>
         <GlobalStyling />
@@ -45,7 +47,7 @@ const renderPage =
           <Header />
           <HDSToastContainer />
           <Content>
-            <Page />
+            {content}
           </Content>
           {Footer && <Footer />}
         </Layout>
@@ -53,22 +55,7 @@ const renderPage =
     );
 
     render(
-      <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
-        <QueryClientProvider client={queryClient}>
-          <DialogContextProvider>
-            {AuthProvider ? <AuthProvider>{children}</AuthProvider> : children}
-            <HiddenLoadingIndicator />
-            {confirmDialog && (
-              <>
-                <Portal>
-                  <ConfirmDialog />
-                </Portal>
-                <div id={PORTAL_ID} />
-              </>
-            )}
-          </DialogContextProvider>
-        </QueryClientProvider>
-      </BackendAPIContext.Provider>,
+      <>{content}</>,
       { isReady: true, locale: DEFAULT_LANGUAGE, ...router }
     );
     return queryClient;

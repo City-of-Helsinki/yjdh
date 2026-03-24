@@ -1,0 +1,224 @@
+yarn run v1.22.22
+$ tsc --project ./tsconfig.json --noEmit
+../shared/src/components/cookieConsent/CookieConsent.tsx(56,6): error TS2786: 'CookieModal' cannot be used as a JSX component.
+  Its type '({ contentSource, cookieDomain, rootId }: { contentSource: CookieContentSource; cookieDomain?: string | undefined; rootId?: string | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ contentSource, cookieDomain, rootId }: { contentSource: CookieContentSource; cookieDomain?: string | undefined; rootId?: string | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/__tests__/accepted.test.tsx(4,26): error TS2307: Cannot find module 'kesaseteli/youth/pages/accepted' or its corresponding type declarations.
+src/__tests__/activated.test.tsx(4,27): error TS2307: Cannot find module 'kesaseteli/youth/pages/activated' or its corresponding type declarations.
+src/__tests__/additional_info.test.tsx(8,32): error TS2307: Cannot find module 'kesaseteli/youth/pages/additional_info' or its corresponding type declarations.
+src/__tests__/already_activated.test.tsx(2,34): error TS2307: Cannot find module 'kesaseteli/youth/pages/already_activated' or its corresponding type declarations.
+src/__tests__/already_assigned.test.tsx(2,33): error TS2307: Cannot find module 'kesaseteli/youth/pages/already_assigned' or its corresponding type declarations.
+src/__tests__/email_in_use.test.tsx(4,28): error TS2307: Cannot find module 'kesaseteli/youth/pages/email_in_use' or its corresponding type declarations.
+src/__tests__/inadmissible_data.test.tsx(4,34): error TS2307: Cannot find module 'kesaseteli/youth/pages/inadmissible_data' or its corresponding type declarations.
+src/__tests__/index.test.tsx(13,24): error TS2307: Cannot find module 'kesaseteli/youth/pages' or its corresponding type declarations.
+src/__tests__/thankyou.test.tsx(5,26): error TS2307: Cannot find module 'kesaseteli/youth/pages/thankyou' or its corresponding type declarations.
+src/app/[locale]/additional_info/page.tsx(41,8): error TS2786: 'FormProvider' cannot be used as a JSX component.
+  Its type '<TFieldValues extends FieldValues, TContext = any>(props: FormProviderProps<TFieldValues, TContext>) => Element' is not a valid JSX element type.
+    Type '<TFieldValues extends FieldValues, TContext = any>(props: FormProviderProps<TFieldValues, TContext>) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/app/ClientProviders.tsx(38,8): error TS2322: Type '{ children: (false | Element)[]; client: QueryClient; }' is not assignable to type 'IntrinsicAttributes & QueryClientProviderProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & QueryClientProviderProps'.
+src/app/StyledComponentsRegistry.tsx(22,5): error TS2578: Unused '@ts-expect-error' directive.
+src/components/additional-info-form/AdditionalInfoForm.tsx(48,10): error TS2578: Unused '@ts-expect-error' directive.
+src/components/footer/Footer.tsx(32,8): error TS2786: 'Footer' cannot be used as a JSX component.
+  Its type '{ ({ ariaLabel, children, className, footerProps, korosType, theme, title, }: FooterProps): Element; Navigation: { ({ ariaLabel, children, className, ...rest }: FooterNavigationProps): Element; componentName: string; }; NavigationGroup: { ...; }; ... 5 more ...; Custom: ({ ariaLabel, children, className, ...rest }: ...' is not a valid JSX element type.
+    Type '{ ({ ariaLabel, children, className, footerProps, korosType, theme, title, }: FooterProps): Element; Navigation: { ({ ariaLabel, children, className, ...rest }: FooterNavigationProps): Element; componentName: string; }; NavigationGroup: { ...; }; ... 5 more ...; Custom: ({ ariaLabel, children, className, ...rest }: ...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(33,10): error TS2786: 'Footer.Utilities' cannot be used as a JSX component.
+  Its type '({ ariaLabel, children, soMeLinks, soMeSectionProps, className, ...rest }: FooterUtilitiesProps) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, children, soMeLinks, soMeSectionProps, className, ...rest }: FooterUtilitiesProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(34,12): error TS2786: 'Footer.Link' cannot be used as a JSX component.
+  Its type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not a valid JSX element type.
+    Type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(43,10): error TS2786: 'Footer.Base' cannot be used as a JSX component.
+  Its type '({ ariaLabel, backToTopLabel, children, copyrightHolder, copyrightText, logo, logoHref, onBackToTopClick, onLogoClick, showBackToTopButton, year, className, ...rest }: FooterBaseProps) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, backToTopLabel, children, copyrightHolder, copyrightText, logo, logoHref, onBackToTopClick, onLogoClick, showBackToTopButton, year, className, ...rest }: FooterBaseProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(48,14): error TS2786: 'Logo' cannot be used as a JSX component.
+  Its type '({ alt, className, dataTestId, size, style, ...rest }: LogoProps) => Element' is not a valid JSX element type.
+    Type '({ alt, className, dataTestId, size, style, ...rest }: LogoProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(55,12): error TS2786: 'Footer.Link' cannot be used as a JSX component.
+  Its type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not a valid JSX element type.
+    Type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(62,12): error TS2786: 'Footer.Link' cannot be used as a JSX component.
+  Its type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not a valid JSX element type.
+    Type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(69,12): error TS2786: 'Footer.Link' cannot be used as a JSX component.
+  Its type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not a valid JSX element type.
+    Type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/footer/Footer.tsx(76,12): error TS2786: 'Footer.Link' cannot be used as a JSX component.
+  Its type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not a valid JSX element type.
+    Type '{ <T_1 extends React.ElementType<any> = "a">({ ariaLabel, as: LinkComponent, className, icon, external, label, subItem, variant, ...rest }: FooterLinkProps<T_1>): Element; defaultProps: { as: ForwardRefExoticComponent<Omit<AllElementPropsWithoutRef<"a">, "style" | ... 10 more ... | "useButtonStyles"> & { ...; } & Re...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+src/components/youth-form/YouthApplication.tsx(24,8): error TS2786: 'FormProvider' cannot be used as a JSX component.
+  Its type '<TFieldValues extends FieldValues, TContext = any>(props: FormProviderProps<TFieldValues, TContext>) => Element' is not a valid JSX element type.
+    Type '<TFieldValues extends FieldValues, TContext = any>(props: FormProviderProps<TFieldValues, TContext>) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/__tests__/utils/render-component/render-page.tsx(57,10): error TS2322: Type '{ children: Element; client: QueryClient; }' is not assignable to type 'IntrinsicAttributes & QueryClientProviderProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & QueryClientProviderProps'.
+../../shared/src/__tests__/utils/render-component/render-page.tsx(58,12): error TS2559: Type '{ children: (false | Element | undefined)[]; }' has no properties in common with type 'IntrinsicAttributes'.
+../../shared/src/__tests__/utils/render-component/render-page.tsx(59,30): error TS2559: Type '{ children: Element; }' has no properties in common with type 'IntrinsicAttributes'.
+../../shared/src/__tests__/utils/render-component/render-page.tsx(63,18): error TS2559: Type '{ children: Element; }' has no properties in common with type 'IntrinsicAttributes'.
+../../shared/src/backend-api/BackendAPIProvider.tsx(16,7): error TS2322: Type '({ baseURL, headers, isLocalStorageCsrf, children, }: BackendAPIProviderProps) => Element' is not assignable to type 'FC<BackendAPIProviderProps>'.
+  Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+    Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/confirm-dialog/ConfirmDialog.tsx(21,20): error TS2786: 'IconQuestionCircle' cannot be used as a JSX component.
+  Its type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style, }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style, }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/confirm-dialog/Portal.tsx(5,29): error TS2339: Property 'children' does not exist on type '{}'.
+../../shared/src/components/forms/fields/fieldErrorMessage/FieldErrorMessage.tsx(12,6): error TS2786: 'IconAlertCircleFill' cannot be used as a JSX component.
+  Its type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/forms/heading/Heading.tsx(28,10): error TS2786: 'Tooltip' cannot be used as a JSX component.
+  Its type '({ boxShadow, children, placement, small, buttonLabel, tooltipLabel, className, buttonClassName, tooltipClassName, ...rest }: TooltipProps) => Element' is not a valid JSX element type.
+    Type '({ boxShadow, children, placement, small, buttonLabel, tooltipLabel, className, buttonClassName, tooltipClassName, ...rest }: TooltipProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/forms/heading/Heading.tsx(35,20): error TS2786: 'LoadingSpinner' cannot be used as a JSX component.
+  Its type '({ className, multicolor, small, theme, loadingText, loadingFinishedText, ...rest }: LoadingSpinnerProps) => Element' is not a valid JSX element type.
+    Type '({ className, multicolor, small, theme, loadingText, loadingFinishedText, ...rest }: LoadingSpinnerProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/forms/inputs/Dropdown.tsx(66,14): error TS2786: 'Combobox' cannot be used as a JSX component.
+  Its type '{ <OptionType>(props: ComboboxProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not a valid JSX element type.
+    Type '{ <OptionType>(props: ComboboxProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/forms/inputs/Dropdown.tsx(73,14): error TS2786: 'Select' cannot be used as a JSX component.
+  Its type '{ <OptionType>(props: SelectProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not a valid JSX element type.
+    Type '{ <OptionType>(props: SelectProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/forms/inputs/MultiSelectDropdown.tsx(68,14): error TS2786: 'Combobox' cannot be used as a JSX component.
+  Its type '{ <OptionType>(props: ComboboxProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not a valid JSX element type.
+    Type '{ <OptionType>(props: ComboboxProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/forms/inputs/MultiSelectDropdown.tsx(75,14): error TS2786: 'Select' cannot be used as a JSX component.
+  Its type '{ <OptionType>(props: SelectProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not a valid JSX element type.
+    Type '{ <OptionType>(props: SelectProps<OptionType>): Element; defaultProps: { multiselect: boolean; }; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(117,10): error TS2786: 'HdsHeader.SkipLink' cannot be used as a JSX component.
+  Its type '{ ({ ariaLabel, label, skipTo, theme, className, ...rest }: SkipLinkProps): Element; componentName: string; }' is not a valid JSX element type.
+    Type '{ ({ ariaLabel, label, skipTo, theme, className, ...rest }: SkipLinkProps): Element; componentName: string; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(121,10): error TS2786: 'HdsHeader.ActionBar' cannot be used as a JSX component.
+  Its type '{ ({ title, titleStyle, titleAriaLabel, logoAriaLabel, menuButtonLabel, menuButtonAriaLabel, titleHref, logoHref, logo, onTitleClick, onLogoClick, onMenuClick, children, className, ariaLabel, frontPageLabel, openFrontPageLinksAriaLabel, ...rest }: HeaderActionBarProps): Element; defaultProps: { titleStyle: TitleStyl...' is not a valid JSX element type.
+    Type '{ ({ title, titleStyle, titleAriaLabel, logoAriaLabel, menuButtonLabel, menuButtonAriaLabel, titleHref, logoHref, logo, onTitleClick, onLogoClick, onMenuClick, children, className, ariaLabel, frontPageLabel, openFrontPageLinksAriaLabel, ...rest }: HeaderActionBarProps): Element; defaultProps: { titleStyle: TitleStyl...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(127,14): error TS2786: 'Logo' cannot be used as a JSX component.
+  Its type '({ alt, className, dataTestId, size, style, ...rest }: LogoProps) => Element' is not a valid JSX element type.
+    Type '({ alt, className, dataTestId, size, style, ...rest }: LogoProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(143,22): error TS2786: 'IconSignin' cannot be used as a JSX component.
+  Its type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(151,14): error TS2786: 'HdsHeader.ActionBarItem' cannot be used as a JSX component.
+  Its type '{ (properties: HeaderActionBarItemProps): Element; defaultProps: { fullWidth: boolean; }; }' is not a valid JSX element type.
+    Type '{ (properties: HeaderActionBarItemProps): Element; defaultProps: { fullWidth: boolean; }; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(153,22): error TS2786: 'IconUser' cannot be used as a JSX component.
+  Its type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style, }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style, }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(161,29): error TS2786: 'IconSignout' cannot be used as a JSX component.
+  Its type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(173,12): error TS2786: 'HdsHeader.NavigationMenu' cannot be used as a JSX component.
+  Its type '({ ariaLabel, children, className, ...rest }: HeaderNavigationMenuProps) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, children, className, ...rest }: HeaderNavigationMenuProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/header/Header.tsx(175,16): error TS2786: 'HdsHeader.Link' cannot be used as a JSX component.
+  Its type '{ <T extends React.ElementType<any> = "a">({ active, as: LinkComponent, className, wrapperClassName, dropdownClassName, dropdownLinks, dropdownLinkClassName, href, index, label, openSubNavIndex, setOpenSubNavIndex, depth, openDropdownAriaButtonLabel, closeDropdownAriaButtonLabel, dropdownButtonClassName, onDropdownB...' is not a valid JSX element type.
+    Type '{ <T extends React.ElementType<any> = "a">({ active, as: LinkComponent, className, wrapperClassName, dropdownClassName, dropdownLinks, dropdownLinkClassName, href, index, label, openSubNavIndex, setOpenSubNavIndex, depth, openDropdownAriaButtonLabel, closeDropdownAriaButtonLabel, dropdownButtonClassName, onDropdownB...' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/hidden-loading-indicator/HiddenLoadingIndicator.tsx(12,8): error TS2786: 'LoadingSpinner' cannot be used as a JSX component.
+  Its type '({ className, multicolor, small, theme, loadingText, loadingFinishedText, ...rest }: LoadingSpinnerProps) => Element' is not a valid JSX element type.
+    Type '({ className, multicolor, small, theme, loadingText, loadingFinishedText, ...rest }: LoadingSpinnerProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/modal/Modal.tsx(62,18): error TS2786: 'Dialog.Header' cannot be used as a JSX component.
+  Its type '{ ({ title, iconLeft, className, ...rest }: DialogHeaderProps): Element; componentName: string; }' is not a valid JSX element type.
+    Type '{ ({ title, iconLeft, className, ...rest }: DialogHeaderProps): Element; componentName: string; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/modal/Modal.tsx(65,25): error TS2786: 'Dialog.Content' cannot be used as a JSX component.
+  Its type '{ ({ children, className, ...rest }: DialogContentProps): Element; componentName: string; }' is not a valid JSX element type.
+    Type '{ ({ children, className, ...rest }: DialogContentProps): Element; componentName: string; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/modal/Modal.tsx(66,12): error TS2786: 'Dialog.ActionButtons' cannot be used as a JSX component.
+  Its type '{ ({ children, className, ...rest }: DialogActionButtonProps): Element; componentName: string; }' is not a valid JSX element type.
+    Type '{ ({ children, className, ...rest }: DialogActionButtonProps): Element; componentName: string; }' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/pages/ErrorPage.sc.ts(10,40): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(component: AnyStyledComponent): ThemedStyledFunction<any, DefaultTheme, any, any>', gave the following error.
+    Argument of type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to parameter of type 'AnyStyledComponent'.
+      Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type 'StyledComponent<any, any, any, any>'.
+        Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type 'string'.
+  Overload 2 of 2, '(component: keyof IntrinsicElements | ComponentType<any>): ThemedStyledFunction<keyof IntrinsicElements | ComponentType<any>, DefaultTheme, {}, never>', gave the following error.
+    Argument of type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to parameter of type 'keyof IntrinsicElements | ComponentType<any>'.
+      Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type 'FunctionComponent<any>'.
+        Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+          Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/pages/NotificationPage.tsx(53,26): error TS2786: 'IconArrowRight' cannot be used as a JSX component.
+  Its type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style, }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not a valid JSX element type.
+    Type '({ ariaLabel, ariaLabelledby, ariaHidden, className, color, size, style, }: SVGProps<SVGSVGElement> & SVGAttributes<SVGElement> & { ariaLabel?: string | undefined; ariaLabelledby?: string | undefined; ... 4 more ...; style?: CSSProperties | undefined; }) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/pages/PageLoadingSpinner.tsx(8,6): error TS2786: 'LoadingSpinner' cannot be used as a JSX component.
+  Its type '({ className, multicolor, small, theme, loadingText, loadingFinishedText, ...rest }: LoadingSpinnerProps) => Element' is not a valid JSX element type.
+    Type '({ className, multicolor, small, theme, loadingText, loadingFinishedText, ...rest }: LoadingSpinnerProps) => Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/toast/Toast.tsx(3,17): error TS2305: Module '"react"' has no exported member 'ReactText'.
+../../shared/src/components/toast/Toast.tsx(42,7): error TS2322: Type 'string | Element | (string | Element)[]' is not assignable to type 'ReactNode'.
+  Type 'Element' is not assignable to type 'ReactNode'.
+    Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/toast/Toast.tsx(49,23): error TS2322: Type 'string | Element' is not assignable to type 'ReactI18NextChildren | Iterable<ReactI18NextChildren>'.
+  Type 'Element' is not assignable to type 'ReactI18NextChildren | Iterable<ReactI18NextChildren>'.
+    Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/components/toast/Toast.tsx(78,6): error TS2786: 'NotificationWrapper' cannot be used as a JSX component.
+  Its type '({ autoDismissTime, type, labelText, text, toastId, }: NotificationWrapperProps) => JSX.Element' is not a valid JSX element type.
+    Type '({ autoDismissTime, type, labelText, text, toastId, }: NotificationWrapperProps) => JSX.Element' is not assignable to type '(props: any) => ReactNode | Promise<ReactNode>'.
+      Type 'Element' is not assignable to type 'ReactNode | Promise<ReactNode>'.
+        Property 'children' is missing in type 'ReactElement<any, any>' but required in type 'ReactPortal'.
+../../shared/src/contexts/DialogContext.tsx(85,51): error TS2339: Property 'children' does not exist on type '{}'.
+error Command failed with exit code 2.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

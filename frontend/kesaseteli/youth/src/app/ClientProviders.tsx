@@ -35,6 +35,7 @@ export default function ClientProviders({
 
   return (
     <BackendAPIProvider baseURL={getBackendDomain()}>
+      {/* @ts-expect-error: QueryClientProvider is not properly typed for React 19 */}
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <GlobalStyling />
