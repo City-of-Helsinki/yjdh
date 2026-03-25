@@ -1,4 +1,5 @@
 import { APPLICATION_LIST_TABS, ROUTES } from 'benefit/handler/constants';
+import useInstalmentDateChange from 'benefit/handler/hooks/useInstalmentDateChange';
 import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import {
   ApplicationListTableColumns,
@@ -11,7 +12,14 @@ import {
   INSTALMENT_STATUSES,
 } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { IconErrorFill, Table, Tag, Dialog, DateInput, Button } from 'hds-react';
+import {
+  Button,
+  DateInput,
+  Dialog,
+  IconErrorFill,
+  Table,
+  Tag,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
@@ -40,7 +48,6 @@ import {
 } from './ApplicationList.sc';
 import ApplicationTableFooter from './ApplicationTableFooter';
 import { useApplicationList } from './useApplicationList';
-import useInstalmentDateChange from "benefit/handler/hooks/useInstalmentDateChange";
 
 export interface ApplicationListProps {
   heading: string;
@@ -84,11 +91,15 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const { t, translationsBase, getHeader } = useApplicationList();
   const theme = useTheme();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
-  const [instalmentNewDate, setInstalmentNewDate] = React.useState(convertToUIDateFormat('2025-01-25') ?? '');
+  const [instalmentNewDate, setInstalmentNewDate] = React.useState(
+    convertToUIDateFormat('2025-01-25') ?? ''
+  );
   const [isInstalmentCancelModalShown, setIsInstalmentCancelModalShown] =
     React.useState(false);
-  const [isInstalmentChangeDateDialogShown, setIsInstalmentChangeDateDialogShown] =
-    React.useState(false);
+  const [
+    isInstalmentChangeDateDialogShown,
+    setIsInstalmentChangeDateDialogShown,
+  ] = React.useState(false);
   const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
     useInstalmentStatusTransition();
   const { mutate: changeInstalmentDate } = useInstalmentDateChange();
@@ -222,13 +233,13 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const onSubmitChangeDate = (): void => {
     changeInstalmentDate({
       id: selectedInstalment?.id,
-      dueDate: convertToBackendDateFormat(instalmentNewDate)
-    })
+      dueDate: convertToBackendDateFormat(instalmentNewDate),
+    });
     setIsInstalmentChangeDateDialogShown(false);
   };
 
   const onOpenChangeDateDialog = (): void => {
-    setInstalmentNewDate(convertToUIDateFormat(selectedInstalment?.dueDate));   // ← seed with current due date
+    setInstalmentNewDate(convertToUIDateFormat(selectedInstalment?.dueDate)); // ← seed with current due date
     setIsInstalmentChangeDateDialogShown(true);
   };
 
@@ -293,15 +304,21 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
           >
             <Dialog.Header
               id="instalment-change-date-title"
-              title={t('common:instalments.dialog.changeInstalmentDate.heading')}
+              title={t(
+                'common:instalments.dialog.changeInstalmentDate.heading'
+              )}
             />
             <Dialog.Content>
               <DateInput
                 id="instalment-change-date-dateinput"
-                label={t("common:instalments.dialog.changeInstalmentDate.label")}
-                helperText={t('common:instalments.dialog.changeInstalmentDate.helperText')}
+                label={t(
+                  'common:instalments.dialog.changeInstalmentDate.label'
+                )}
+                helperText={t(
+                  'common:instalments.dialog.changeInstalmentDate.helperText'
+                )}
                 language="fi"
-                onChange={(value:string) => setInstalmentNewDate(value)}
+                onChange={(value: string) => setInstalmentNewDate(value)}
                 value={instalmentNewDate}
                 required
               />
@@ -309,13 +326,19 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             <Dialog.ActionButtons>
               <Button
                 id="instalment-change-date-cancel-button"
-                onClick={() => setIsInstalmentChangeDateDialogShown(false)}>
-                {t(`common:instalments.dialog.changeInstalmentDate.buttons.cancel`)}
+                onClick={() => setIsInstalmentChangeDateDialogShown(false)}
+              >
+                {t(
+                  `common:instalments.dialog.changeInstalmentDate.buttons.cancel`
+                )}
               </Button>
               <Button
                 id="instalment-change-date-confirm-button"
-                onClick={() => onSubmitChangeDate()}>
-                {t(`common:instalments.dialog.changeInstalmentDate.buttons.confirm`)}
+                onClick={() => onSubmitChangeDate()}
+              >
+                {t(
+                  `common:instalments.dialog.changeInstalmentDate.buttons.confirm`
+                )}
               </Button>
             </Dialog.ActionButtons>
           </Dialog>

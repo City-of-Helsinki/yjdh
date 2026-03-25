@@ -15,7 +15,6 @@ import {
 } from 'benefit-shared/constants';
 import {
   AhjoError,
-  ApplicationAlteration,
   ApplicationListItemData,
   Instalment,
 } from 'benefit-shared/types/application';
@@ -71,34 +70,16 @@ const buildApplicationUrl = (
 
 const getFirstInstalmentTotalAmount = (
   calculatedBenefitAmount: string,
-  secondInstalment?: Instalment,
-  alterations?: ApplicationAlteration[]
+  secondInstalment?: Instalment
 ): string | JSX.Element => {
   let firstInstalment = parseInt(calculatedBenefitAmount, 10);
-  let recoveryAmount = 0;
   if (secondInstalment) {
     firstInstalment -= parseInt(
       String(secondInstalment?.amountAfterRecoveries),
       10
     );
-    recoveryAmount = alterations
-      ? alterations?.reduce(
-          (prev: number, cur: ApplicationAlteration) =>
-            prev + parseInt(cur.recoveryAmount, 10),
-          0
-        )
-      : 0;
   }
-  return secondInstalment ? (
-    <>
-      {formatFloatToEvenEuros(firstInstalment)} /{' '}
-      {formatFloatToEvenEuros(
-        parseInt(calculatedBenefitAmount, 10) - recoveryAmount
-      )}
-    </>
-  ) : (
-    formatFloatToEvenEuros(firstInstalment)
-  );
+  return formatFloatToEvenEuros(firstInstalment);
 };
 const dateForAdditionalInformationNeededBy = (
   dateString: string | Date
