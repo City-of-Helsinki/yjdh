@@ -1,14 +1,13 @@
 import {
-  APPLICATION_STATUSES,
-  INSTALMENT_STATUSES,
-  TALPA_STATUSES,
-} from 'benefit-shared/constants';
-
-import {
   getInstalmentTagStyleForStatus,
   getTagStyleForStatus,
   getTalpaTagStyleForStatus,
 } from 'benefit/handler/utils/applications';
+import {
+  APPLICATION_STATUSES,
+  INSTALMENT_STATUSES,
+  TALPA_STATUSES,
+} from 'benefit-shared/constants';
 
 describe('applications utils', () => {
   describe('getTagStyleForStatus', () => {
@@ -58,7 +57,7 @@ describe('applications utils', () => {
     );
 
     it('should return default style for undefined status', () => {
-      const result = getInstalmentTagStyleForStatus(undefined);
+      const result = getInstalmentTagStyleForStatus();
       expect(result).toHaveProperty('background');
     });
   });
@@ -77,7 +76,7 @@ describe('applications utils', () => {
     });
 
     it('should return default style for undefined status', () => {
-      const result = getTalpaTagStyleForStatus(undefined);
+      const result = getTalpaTagStyleForStatus();
       expect(result).toHaveProperty('background');
     });
   });

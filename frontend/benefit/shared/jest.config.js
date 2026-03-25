@@ -16,4 +16,5 @@ module.exports = {
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
   ],
   coveragePathIgnorePatterns: ['<rootDir>/benefit/shared/src/pages/'],
+  testEnvironment: '<rootDir>/jest-canvas-env.js',
 };

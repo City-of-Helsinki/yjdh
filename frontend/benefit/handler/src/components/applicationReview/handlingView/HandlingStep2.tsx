@@ -322,7 +322,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
         '';
       setSelectedSigner({ id: signerId, name: signerName });
       // Persist to shared context so validation can see the signerId
-      if (signerId && !handledApplication?.signerId) {
+      if (signerId && handledApplication && !handledApplication.signerId) {
         setHandledApplication({
           ...handledApplication,
           signerId,
