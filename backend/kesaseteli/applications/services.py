@@ -21,46 +21,33 @@ LOGGER = logging.getLogger(__name__)
 
 class TargetGroupValidationService:
     @staticmethod
-    def get_associated_target_group(application: "YouthApplication") -> str | None:
+    def is_applicant_in_target_group(application: "YouthApplication") -> bool:
         """
-        Return the identifier of the first matching target group if the applicant
-        belongs to any of the enabled target groups for the application's year.
-        Returns None if no match found.
-
-        NOTE: API view raises an error if configuration is missing while creating
-        youth application.
+        Check if the applicant belongs to the target group they specified,
+        and that the target group is enabled for the application's year.
+        Returns True if it's a valid match and can be automatically processed.
         """
+        if not application.target_group:
+            return False
 
+        target_group_class = applications.target_groups.get_target_group_class(
+            application.target_group
+        )
+        if not target_group_class:
+            return False
+
+        # Check if the target group is enabled for the year
         try:
             config = SummerVoucherConfiguration.objects.get(
                 year=application.created_at.year
             )
+            if application.target_group not in config.target_group:
+                return False
         except SummerVoucherConfiguration.DoesNotExist:
-            LOGGER.warning(
-                "No SummerVoucherConfiguration found for year %s",
-                application.created_at.year,
-            )
-            return None
+            return False
 
-        for identifier in config.target_group:
-            target_group_class = applications.target_groups.get_target_group_class(
-                identifier
-            )
-            if target_group_class and target_group_class().is_valid(application):
-                return identifier
-
-        return None
-
-    @staticmethod
-    def is_applicant_in_target_group(application: "YouthApplication") -> bool:
-        """
-        Check if the applicant belongs to any of the enabled target groups for the
-        application's year.
-        """
-        return (
-            TargetGroupValidationService.get_associated_target_group(application)
-            is not None
-        )
+        # Check if the applicant actually belongs to this target group
+        return target_group_class().is_valid(application)
 
 
 class EmailTemplateService:
