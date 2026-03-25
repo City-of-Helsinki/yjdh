@@ -41,65 +41,15 @@ const getRandomSubArray = <T>(
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
-  'Apollon yhteiskoulu',
-  'Arabian peruskoulu',
-  'Aurinkolahden peruskoulu',
-  'Botby grundskola',
-  'Elias-koulu',
-  'Grundskolan Norsen',
   'Haagan peruskoulu',
-  'Helsingin Juutalainen yhteiskoulu',
-  'Helsingin Kristillinen koulu',
-  'Helsingin Saksalainen koulu',
-  'Helsingin Suomalainen Yhteiskoulu',
-  'Helsingin Uusi Yhteiskoulu',
   'Helsingin normaalilyseo',
-  'Helsingin ranskalais-suomalainen koulu',
   'Helsingin yhteislyseo',
-  'Helsingin yliopiston Viikin normaalikoulu',
-  'Herttoniemen yhteiskoulu',
-  'Hiidenkiven peruskoulu',
-  'Hoplaxskolan',
-  'Itäkeskuksen peruskoulu',
-  'Jätkäsaaren peruskoulu',
-  'Kalasataman peruskoulu',
-  'Kankarepuiston peruskoulu',
   'Kannelmäen peruskoulu',
-  'Karviaistien koulu',
-  'Kruununhaan yläasteen koulu',
-  'Kruunuvuorenrannan peruskoulu',
-  'Kulosaaren yhteiskoulu',
   'Käpylän peruskoulu',
-  'Laajasalon peruskoulu',
-  'Latokartanon peruskoulu',
-  'Lauttasaaren yhteiskoulu',
-  'Maatullin peruskoulu',
   'Malmin peruskoulu',
-  'Meilahden yläasteen koulu',
-  'Merilahden peruskoulu',
-  'Munkkiniemen yhteiskoulu',
   'Myllypuron peruskoulu',
-  'Oulunkylän yhteiskoulu',
-  'Pasilan peruskoulu',
-  'Pitäjänmäen peruskoulu',
   'Pohjois-Haagan yhteiskoulu',
-  'Porolahden peruskoulu',
-  'Puistolan peruskoulu',
-  'Puistopolun peruskoulu',
-  'Pukinmäenkaaren peruskoulu',
-  'Ressun peruskoulu',
-  'Sakarinmäen peruskoulu',
-  'Solakallion koulu',
-  'Sophie Mannerheimin koulu',
-  'Suomalais-venäläinen koulu',
-  'Taivallahden peruskoulu',
-  'Toivolan koulu',
-  'Torpparinmäen peruskoulu',
   'Töölön yhteiskoulu',
-  'Vartiokylän yläasteen koulu',
-  'Vesalan peruskoulu',
-  'Vuoniityn peruskoulu',
-  'Zacharias Topeliusskolan',
 ];
 
 export const fakeTargetGroups: {
@@ -107,17 +57,17 @@ export const fakeTargetGroups: {
   name: string;
   description: string;
 }[] = [
-  {
-    id: 'primary_target_group',
-    name: '9. luokkalainen',
-    description: '9th graders: 16 years old, MUST live in Helsinki.',
-  },
-  {
-    id: 'secondary_target_group',
-    name: '10. luokkalainen',
-    description: '10th graders: 17 years old, MUST live in Helsinki.',
-  },
-];
+    {
+      id: 'primary_target_group',
+      name: '9. luokkalainen',
+      description: '9th graders: 16 years old, MUST live in Helsinki.',
+    },
+    {
+      id: 'secondary_target_group',
+      name: '10. luokkalainen',
+      description: '10th graders: 17 years old, MUST live in Helsinki.',
+    },
+  ];
 
 const ninethGraderYear = new Date().getFullYear() - 16;
 const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
