@@ -11,6 +11,15 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from stdnum.fi.hetu import is_valid as is_valid_finnish_social_security_number
 
+
+def get_age(birthdate: date, year: Optional[int] = None) -> int:
+    """
+    Calculate the age based on the birthdate and a given year (defaults to the
+    current year).
+    """
+    return (year or date.today().year) - birthdate.year
+
+
 LOGGER = logging.getLogger(__name__)
 
 

@@ -161,6 +161,7 @@ def get_required_fields() -> List[str]:
         "email",
         "phone_number",
         "postcode",
+        "target_group",
     ]
 
 
@@ -597,8 +598,10 @@ def test_youth_applications_detail_update_encrypted_handler_vtj_json(
         assert response.data["encrypted_handler_vtj_json"] == {"test": "override"}
         assert youth_application.encrypted_handler_vtj_json == '{"test": "override"}'
     else:
-        assert response.data["encrypted_handler_vtj_json"] == json.loads(
-            old_encrypted_handler_vtj_json
+        assert response.data["encrypted_handler_vtj_json"] == (
+            json.loads(old_encrypted_handler_vtj_json)
+            if old_encrypted_handler_vtj_json
+            else {}
         )
         assert (
             youth_application.encrypted_handler_vtj_json

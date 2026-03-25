@@ -28,7 +28,7 @@ from applications.models import (
 )
 from applications.target_groups import (
     get_target_group_choices,
-    get_target_group_class,
+    get_target_group_data,
 )
 from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
@@ -149,7 +149,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             .count()
             >= self.MAX_ATTACHMENTS_PER_TYPE
         ):
-            raise serializers.ValidationError(_("Too many attachments"))
+            raise serializers.ValidationError(_("At most five attachments per type"))
 
         if data["content_type"] == "application/pdf":
             if not self._is_valid_pdf(data["attachment_file"]):
@@ -178,6 +178,16 @@ class AttachmentSerializer(serializers.ModelSerializer):
             mime_type = file_type_guess.mime
         uploaded_file.seek(file_pos)  # restore position
         return mime_type == "application/pdf"
+
+
+class TargetGroupSerializer(serializers.Serializer):
+    """
+    Serializer for TargetGroup. Decoupled from any model.
+    """
+
+    id = serializers.CharField()
+    name = serializers.CharField()
+    description = serializers.CharField()
 
 
 class EmployerSummerVoucherListSerializer(serializers.ListSerializer):
@@ -223,19 +233,11 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         required=False,
     )
 
-    target_group = serializers.ChoiceField(
-        choices=get_target_group_choices(),
-        required=False,
-        allow_blank=True,
-        allow_null=True,
-    )
-
     class Meta:
         model = EmployerSummerVoucher
         fields = [
             "id",
             "summer_voucher_serial_number",
-            "target_group",
             "employee_name",
             "employee_school",
             "employee_ssn",
@@ -282,40 +284,6 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
-
-    def _update_target_group(
-        self, instance: EmployerSummerVoucher, target_group: Optional[str]
-    ):
-        """
-        Update the target_group of the youth voucher if it exists.
-
-        TODO: This method should be removed if in the future the target_group field is
-        fully automatically updated or only youth sets the target_group.
-        """
-        if target_group and instance.youth_summer_voucher:
-            instance.youth_summer_voucher.target_group = target_group
-            instance.youth_summer_voucher.save(update_fields=["target_group"])
-        elif target_group:
-            LOGGER.warning(
-                "Discarding target group set for employer summer voucher "
-                f"{instance.id} without youth voucher."
-            )
-
-    def create(self, validated_data: dict):
-        target_group = validated_data.pop("target_group", None)
-        instance = super().create(validated_data)
-        # TODO: remove this when the target_group field is fully automatically updated
-        # or only youth sets the target_group
-        self._update_target_group(instance, target_group)
-        return instance
-
-    def update(self, instance: EmployerSummerVoucher, validated_data: dict):
-        target_group = validated_data.pop("target_group", None)
-        instance = super().update(instance, validated_data)
-        # TODO: remove this when the target_group field is fully automatically updated
-        # or only youth sets the target_group
-        self._update_target_group(instance, target_group)
-        return instance
 
     def validate(self, data):
         data = super().validate(data)
@@ -505,8 +473,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
-    target_group_name = serializers.SerializerMethodField()
-    target_group_description = serializers.SerializerMethodField()
+    target_groups = serializers.SerializerMethodField()
 
     class Meta:
         model = SummerVoucherConfiguration
@@ -515,34 +482,11 @@ class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
             "voucher_value_in_euros",
             "min_work_compensation_in_euros",
             "min_work_hours",
-            "target_group_name",
-            "target_group_description",
-            "target_group",
+            "target_groups",
         ]
 
-    def get_target_group_name(self, obj):
-        names = []
-        for identifier in obj.target_group:
-            target_class = get_target_group_class(identifier)
-            if target_class:
-                names.append(str(target_class().name))
-        return ", ".join(names)
-
-    def get_target_group_description(self, obj):
-        """
-        Return a dictionary mapping target group names to their descriptions.
-
-        Example:
-            {
-                "9. luokkalainen": "9th graders: 16 years old, MUST live in Helsinki."
-            }
-        """
-        descriptions = {}
-        for identifier in obj.target_group:
-            target_class = get_target_group_class(identifier)
-            if target_class:
-                descriptions[str(target_class().name)] = str(target_class().description)
-        return descriptions
+    def get_target_groups(self, obj):
+        return get_target_group_data(obj.target_group)
 
 
 class YouthApplicationSerializer(serializers.ModelSerializer):
@@ -634,10 +578,15 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "postcode",
             "language",
             "request_additional_information",
+            "target_group",
         ]
 
     request_additional_information = serializers.BooleanField(
         required=False, default=False, write_only=True
+    )
+    target_group = serializers.ChoiceField(
+        choices=get_target_group_choices(),
+        required=True,
     )
 
     encrypted_original_vtj_json = serializers.SerializerMethodField(
@@ -712,6 +661,7 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "postcode",
             "language",
+            "target_group",
             "receipt_confirmed_at",
             "status",
             "creator",
@@ -720,6 +670,11 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
             "additional_info_user_reasons",
             "additional_info_description",
         ]
+
+    target_group = serializers.ChoiceField(
+        choices=get_target_group_choices(),
+        required=True,
+    )
 
     def validate_additional_info_description(self, value):
         if value is None or str(value).strip() == "":

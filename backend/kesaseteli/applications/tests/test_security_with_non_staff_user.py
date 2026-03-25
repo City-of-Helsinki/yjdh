@@ -9,6 +9,7 @@ from rest_framework.reverse import reverse
 
 from applications.enums import EmployerApplicationStatus, YouthApplicationStatus
 from applications.models import Attachment, Company, YouthApplication
+from applications.target_groups import NinthGraderTargetGroup
 from applications.tests.data.mock_vtj import mock_vtj_person_id_query_found_content
 from common.tests.factories import (
     AcceptedYouthApplicationFactory,
@@ -859,6 +860,7 @@ def test_youth_application_list_valid_post(user_client):
         "phone_number": "+358 12 3456789",
         "postcode": "00100",
         "language": "fi",
+        "target_group": NinthGraderTargetGroup.identifier,
     }
 
     assert YouthApplication.objects.count() == 0
