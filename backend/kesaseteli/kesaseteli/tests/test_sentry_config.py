@@ -13,82 +13,82 @@ from kesaseteli.sentry_config import sentry_traces_sampler
 @pytest.mark.parametrize(
     "context,ignore_paths,sample_rate,expected",
     [
-        # Path in ignore list
-        (
+        pytest.param(
             {"wsgi_environ": {"PATH_INFO": "/healthz"}},
             ["/healthz"],
             0.5,
             0,
+            id="ignore-path",
         ),
-        # Path with trailing slash
-        (
+        pytest.param(
             {"wsgi_environ": {"PATH_INFO": "/readiness/"}},
             ["/readiness"],
             0.5,
             0,
+            id="path-trailing-slash-normalized",
         ),
-        # Parent sampled True
-        (
+        pytest.param(
             {"parent_sampled": True},
             [],
             0.1,
             1.0,
+            id="parent-sampled-true",
         ),
-        # Parent sampled False
-        (
+        pytest.param(
             {"parent_sampled": False},
             [],
             0.5,
             0.0,
+            id="parent-sampled-false",
         ),
-        # No path, no parent
-        (
+        pytest.param(
             {},
             [],
             0.1,
             0.1,
+            id="fallback-rate-default",
         ),
-        # No path, no parent, sample_rate None
-        (
+        pytest.param(
             {},
             [],
             None,
             0,
+            id="fallback-rate-none",
         ),
-        # Path not ignored
-        (
+        pytest.param(
             {"wsgi_environ": {"PATH_INFO": "/api/v1/"}},
             ["/healthz"],
             0.2,
             0.2,
+            id="path-not-ignored",
         ),
-        # Path ignored before parent (path check wins)
-        (
+        pytest.param(
             {"wsgi_environ": {"PATH_INFO": "/healthz"}, "parent_sampled": True},
             ["/healthz"],
             0.1,
             0,
+            id="path-check-takes-precedence",
         ),
-        # Empty wsgi_environ
-        (
+        pytest.param(
             {"wsgi_environ": {}},
             ["/healthz"],
             0.3,
             0.3,
+            id="empty-wsgi-environ",
         ),
-        # Ignore path without leading slash (config: "healthz" matches "/healthz")
-        (
+        pytest.param(
             {"wsgi_environ": {"PATH_INFO": "/healthz"}},
             ["healthz"],
             0.5,
             0,
+            id="ignore-path-without-leading-slash",
         ),
-        # Ignore path with trailing slash (config: "/readiness/" matches "/readiness")
-        (
+        pytest.param(
             {"wsgi_environ": {"PATH_INFO": "/readiness"}},
             ["/readiness/"],
             0.5,
             0,
+            id="ignore-path-with-trailing-slash",
         ),
     ],
 )
