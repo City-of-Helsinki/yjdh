@@ -1,5 +1,8 @@
 import faker from 'faker';
-import { fakeSchools } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import {
+  fakeSchools,
+  fakeTargetGroups,
+} from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   BackendEndpoint,
   getAdditionalInfoQueryKey,
@@ -49,9 +52,7 @@ export const expectToGetSummerVoucherConfigurationFromBackend = (
       voucher_value_in_euros: 350,
       min_work_compensation_in_euros: 400,
       min_work_hours: 60,
-      target_group_name: 'test',
-      target_group_description: {},
-      target_group: ['test'],
+      target_groups: fakeTargetGroups,
     },
   ]
 ): nock.Scope =>

@@ -42,6 +42,10 @@ class YouthForm extends YouthPageComponent {
     });
   }
 
+  private targetGroupRadioButton(targetGroupId: string): SelectorPromise {
+    return this.component.findByTestId(`target_group-${targetGroupId}`);
+  }
+
   private sendButton = this.component.findByRole('button', {
     name: this.translations.youthApplication.form.sendButton,
   });
@@ -82,6 +86,12 @@ class YouthForm extends YouthPageComponent {
     return t.click(this.checkbox(name));
   }
 
+  public selectTargetGroup(targetGroupId: string): TestControllerPromise {
+    return this.clickSelectRadioButton(
+      this.targetGroupRadioButton(targetGroupId)
+    );
+  }
+
   public clickSendButton(): TestControllerPromise {
     return t.click(this.sendButton);
   }
@@ -109,6 +119,7 @@ class YouthForm extends YouthPageComponent {
     }
     await this.typeInput('phone_number', application.phone_number);
     await this.typeInput('email', application.email);
+    await this.selectTargetGroup(application.target_group);
     await this.toggleCheckbox('termsAndConditions');
     return this.clickSendButton();
   }

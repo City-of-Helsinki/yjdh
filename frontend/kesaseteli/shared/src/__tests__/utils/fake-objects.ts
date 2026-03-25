@@ -102,6 +102,23 @@ export const fakeSchools: string[] = [
   'Zacharias Topeliusskolan',
 ];
 
+export const fakeTargetGroups: {
+  id: string;
+  name: string;
+  description: string;
+}[] = [
+  {
+    id: 'primary_target_group',
+    name: '9. luokkalainen',
+    description: '9th graders: 16 years old, MUST live in Helsinki.',
+  },
+  {
+    id: 'secondary_target_group',
+    name: '10. luokkalainen',
+    description: '10th graders: 17 years old, MUST live in Helsinki.',
+  },
+];
+
 const ninethGraderYear = new Date().getFullYear() - 16;
 const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
 
@@ -154,6 +171,17 @@ export const fakeYouthTargetGroupAge = (): TargetGroupData => {
   };
 };
 
+const AGE_TO_TARGET_GROUP: Record<number, string> = {
+  16: 'primary_target_group',
+  17: 'secondary_target_group',
+};
+
+const targetGroupForSSN = (ssn: string): string => {
+  const { dateOfBirth } = FinnishSSN.parse(ssn);
+  const age = new Date().getFullYear() - dateOfBirth.getFullYear();
+  return AGE_TO_TARGET_GROUP[age] ?? fakeTargetGroups[0].id;
+};
+
 export const fakeYouthApplication = (
   override?: DeepPartial<YouthApplication>
 ): YouthApplication => {
@@ -161,10 +189,13 @@ export const fakeYouthApplication = (
     is_unlisted_school: faker.datatype.boolean(),
     ...override,
   };
+  const social_security_number =
+    (override?.social_security_number as string | undefined) ??
+    fakeYouthTargetGroupAgeSSN();
   return {
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
-    social_security_number: fakeYouthTargetGroupAgeSSN(),
+    social_security_number,
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
     school: is_unlisted_school
       ? faker.commerce.department()
@@ -173,6 +204,7 @@ export const fakeYouthApplication = (
     phone_number: faker.phone.phoneNumber('+358#########'),
     email: faker.internet.email(),
     language: DEFAULT_LANGUAGE,
+    target_group: targetGroupForSSN(social_security_number),
     ...override,
   };
 };
