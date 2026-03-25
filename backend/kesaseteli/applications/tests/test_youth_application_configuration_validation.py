@@ -3,6 +3,7 @@ from django.utils import timezone
 from rest_framework import status
 
 from applications.models import SummerVoucherConfiguration, YouthApplication
+from applications.target_groups import NinthGraderTargetGroup
 from common.tests.utils import get_random_social_security_number_for_year
 from common.urls import get_create_without_ssn_url, get_list_url
 
@@ -25,6 +26,7 @@ def test_create_youth_application_without_configuration(api_client):
         "phone_number": "0401234567",
         "postcode": "00100",
         "language": "fi",
+        "target_group": NinthGraderTargetGroup.identifier,
     }
 
     response = api_client.post(get_list_url(), data, format="json")
@@ -59,6 +61,7 @@ def test_create_youth_application_with_configuration(api_client, settings):
         "phone_number": "0401234567",
         "postcode": "00100",
         "language": "fi",
+        "target_group": NinthGraderTargetGroup.identifier,
     }
 
     response = api_client.post(get_list_url(), data, format="json")
@@ -88,6 +91,7 @@ def test_create_youth_application_without_ssn_without_configuration(
         "postcode": "00100",
         "language": "fi",
         "additional_info_description": "Reason",
+        "target_group": NinthGraderTargetGroup.identifier,
     }
 
     response = staff_client.post(get_create_without_ssn_url(), data, format="json")
@@ -120,6 +124,7 @@ def test_create_youth_application_without_ssn_with_configuration(
         "postcode": "00100",
         "language": "fi",
         "additional_info_description": "Reason",
+        "target_group": NinthGraderTargetGroup.identifier,
     }
 
     response = staff_client.post(get_create_without_ssn_url(), data, format="json")

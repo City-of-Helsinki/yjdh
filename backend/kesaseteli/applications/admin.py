@@ -467,7 +467,7 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
         "modified_at",
     ]
     list_filter = [
-        "target_group",
+        "youth_application__target_group",
         "created_at",
         "modified_at",
     ]
@@ -612,7 +612,7 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
         "modified_at",
     ]
     list_filter = [
-        "youth_summer_voucher__target_group",
+        "youth_summer_voucher__youth_application__target_group",
         ("youth_summer_voucher_id", admin.EmptyFieldListFilter),
         ("_obsolete_unclean_serial_number", admin.EmptyFieldListFilter),
         "created_at",

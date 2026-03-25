@@ -7,7 +7,7 @@ from applications.tests.factories import SummerVoucherConfigurationFactory
 
 
 @pytest.mark.django_db
-def test_summer_voucher_configuration_serializer_target_group_description():
+def test_summer_voucher_configuration_serializer_target_groups():
     # Arrange
     target_group_class = NinthGraderTargetGroup
     with translation.override("fi"):
@@ -15,17 +15,11 @@ def test_summer_voucher_configuration_serializer_target_group_description():
             target_group=[target_group_class().identifier]
         )
         serializer = SummerVoucherConfigurationSerializer(configuration)
-
-        # Act
         data = serializer.data
 
-        # Assert
-        target_group_name = str(target_group_class().name)
-        target_group_description = str(target_group_class().description)
-
-        assert "target_group_description" in data
-        assert isinstance(data["target_group_description"], dict)
-        assert (
-            data["target_group_description"][target_group_name]
-            == target_group_description
-        )
+        assert "target_groups" in data
+        assert len(data["target_groups"]) == 1
+        tg_data = data["target_groups"][0]
+        assert tg_data["id"] == target_group_class().identifier
+        assert tg_data["name"] == str(target_group_class().name)
+        assert tg_data["description"] == str(target_group_class().description)
