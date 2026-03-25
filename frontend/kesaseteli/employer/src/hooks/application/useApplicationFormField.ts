@@ -103,7 +103,14 @@ const useApplicationFormField = <V extends Value>(
     clearValue: () => setValue(id, ''),
     trigger: () => trigger(id, { shouldFocus: true }),
     clearErrors: () => clearErrors(id),
-    setFocus: () => setFocus(id),
+    setFocus: () => {
+      try {
+        setFocus(id);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn(`Could not set focus to field "${id}".`, e);
+      }
+    },
   };
 };
 export default useApplicationFormField;

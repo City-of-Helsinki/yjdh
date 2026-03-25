@@ -34,8 +34,9 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
         return;
       }
 
-      // If the URL is exactly the same, don't trigger (prevents loops)
-      if (Router.asPath === url) {
+      const getPathWithoutHash = (p: string): string => p.split('#')[0];
+      // If the URL is the same (ignoring hash), don't trigger (prevents loops and internal anchors)
+      if (getPathWithoutHash(Router.asPath) === getPathWithoutHash(url)) {
         return;
       }
 
@@ -102,8 +103,13 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
         !anchor.hasAttribute('download') &&
         anchor.target !== '_blank'
       ) {
+        const isSamePage =
+          url.pathname === window.location.pathname &&
+          url.search === window.location.search;
+
         const path = url.pathname + url.search + url.hash;
-        if (Router.asPath !== path) {
+
+        if (!isSamePage && Router.asPath !== path) {
           e.preventDefault();
           void confirm({
             header: message,
