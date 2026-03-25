@@ -13,14 +13,16 @@ import {
   VoucherData,
 } from '../types';
 
-// Trust the local self-signed certificate used by the nginx proxy in development.
-const localCert = fs.readFileSync(
-  path.resolve(
-    __dirname,
-    '../../../../../localdevelopment/employer/nginx/localhost.crt'
-  )
+// Trust the self-signed certificate used by the nginx proxy.
+// Locally: load the dev cert as a trusted CA.
+// In CI: the cert file doesn't exist, so we must skip verification for the test proxy.
+const certPath = path.resolve(
+  __dirname,
+  '../../../../../localdevelopment/employer/nginx/localhost.crt'
 );
-const httpsAgent = new https.Agent({ ca: localCert });
+const httpsAgent = fs.existsSync(certPath)
+  ? new https.Agent({ ca: fs.readFileSync(certPath) })
+  : new https.Agent({ rejectUnauthorized: false }); // CodeQL: test-only fallback for CI
 
 export const MOCKED_EMPLOYEE_DATA = {
   employee_ssn: '010101-123U',

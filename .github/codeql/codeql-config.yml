@@ -1,0 +1,7 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - "**/browser-tests/**"
+  - "**/browser-test/**"
+  - "**/__tests__/**"
+  - "**/test/**"

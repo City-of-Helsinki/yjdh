@@ -274,11 +274,11 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       ...handledApplication,
       decisionText: replaceDecisionTemplatePlaceholders(
         option.template_decision_text,
-        selectedDecisionMaker.name
+        selectedDecisionMaker.name || ''
       ),
       justificationText: replaceDecisionTemplatePlaceholders(
         option.template_justification_text,
-        selectedDecisionMaker.name
+        selectedDecisionMaker.name || ''
       ),
       decisionMakerId: selectedDecisionMaker.id,
       decisionMakerName: selectedDecisionMaker.name,
@@ -307,6 +307,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     handledApplication?.decisionMakerName,
   ]);
 
+  const signerInitialized = React.useRef(false);
   React.useEffect(() => {
     if (signerOptions && signerOptions.length > 0) {
       const firstSigner = signerOptions[0];
@@ -321,8 +322,10 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
         firstSigner.name ||
         '';
       setSelectedSigner({ id: signerId, name: signerName });
-      // Persist to shared context so validation can see the signerId
-      if (signerId && handledApplication && !handledApplication.signerId) {
+      // Persist to shared context so validation can see the signerId.
+      // Only run once to avoid overwriting user changes with stale state.
+      if (signerId && handledApplication && !signerInitialized.current) {
+        signerInitialized.current = true;
         setHandledApplication({
           ...handledApplication,
           signerId,
