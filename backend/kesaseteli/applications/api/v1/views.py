@@ -24,7 +24,6 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -40,6 +39,7 @@ from applications.api.v1.serializers import (
     NonVtjYouthApplicationSerializer,
     SchoolSerializer,
     SummerVoucherConfigurationSerializer,
+    TargetGroupSerializer,
     YouthApplicationAdditionalInfoSerializer,
     YouthApplicationHandlingSerializer,
     YouthApplicationSerializer,
@@ -59,7 +59,10 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.target_groups import AbstractTargetGroup
+from applications.target_groups import (
+    AbstractTargetGroup,
+    get_target_group_data,
+)
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
@@ -123,18 +126,23 @@ class SchoolListView(ListAPIView):
         return [permission() for permission in permission_classes]
 
 
-class TargetGroupListView(APIView):
-    permission_classes = [AllowAny]
+class TargetGroupListView(ListAPIView):
+    """
+    DEPRECATED: This view is preserved for backward compatibility but is no
+    longer used by the frontend. New code should use SummerVoucherConfiguration
+    instead.
+    """
 
-    def get(self, request, format=None):
-        data = [
-            {
-                "id": cls().identifier,
-                "name": cls().name,
-            }
-            for cls in AbstractTargetGroup.__subclasses__()
-        ]
-        return Response(data)
+    permission_classes = [AllowAny]
+    serializer_class = TargetGroupSerializer
+
+    def get_queryset(self):
+        identifiers = [cls().identifier for cls in AbstractTargetGroup.__subclasses__()]
+        return get_target_group_data(identifiers)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        return Response(queryset)
 
 
 class YouthApplicationViewSet(AuditLoggingModelViewSet):
