@@ -81,6 +81,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           'phone_number',
           'required'
         );
+        await indexPageApi.expectations.targetGroupHasError('required');
         await indexPageApi.expectations.checkboxHasError(
           'termsAndConditions',
           'required'
