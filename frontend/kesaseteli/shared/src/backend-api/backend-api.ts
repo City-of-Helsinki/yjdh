@@ -30,7 +30,6 @@ export const BackendEndpoint = {
   EMPLOYMENT: '/v1/youthapplications/fetch_employee_data/',
   SCHOOLS: '/v1/schools/',
   SUMMER_VOUCHER_CONFIGURATION: '/v1/summer_voucher_configuration/',
-  TARGET_GROUPS: '/v1/target_groups/',
   ...(isRealIntegrationsEnabled() && isSuomiFiEnabled()
     ? suomiFiEndpoint
     : helsinkiProfileEndpoint),

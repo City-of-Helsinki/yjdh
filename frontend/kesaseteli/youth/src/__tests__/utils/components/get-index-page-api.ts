@@ -13,6 +13,7 @@ import {
   waitFor,
 } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+import { fakeTargetGroups } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 
 type SaveParams = {
   backendExpectation?: (application: YouthApplication) => nock.Scope;
@@ -36,6 +37,9 @@ const getIndexPageApi = (lang?: Language) => {
       async pageIsLoaded() {
         await screen.findByRole('heading', {
           name: translations.youthApplication.title,
+        });
+        await screen.findByRole('radio', {
+          name: new RegExp(fakeTargetGroups[0].name, 'i'),
         });
       },
       async inputIsPresent(key: YouthFormFields): Promise<void> {
@@ -119,6 +123,10 @@ const getIndexPageApi = (lang?: Language) => {
         expect(checkbox.parentElement).toHaveTextContent(
           translations.errors[errorType]
         );
+      },
+      async targetGroupHasError(errorType: ErrorType): Promise<void> {
+        const errorElement = await screen.findByTestId('target_group-error');
+        expect(errorElement).toHaveTextContent(translations.errors[errorType]);
       },
       async pleaseRecheckNotificationIsPresent(): Promise<void> {
         await screen.findByText(
@@ -222,6 +230,14 @@ const getIndexPageApi = (lang?: Language) => {
         await userEvent.click(checkbox);
         youthFormData[key] = Boolean(checkbox.getAttribute('value'));
       },
+      async selectTargetGroup(id: string): Promise<void> {
+        const targetGroup = fakeTargetGroups.find((tg) => tg.id === id);
+        const radioButton = await screen.findByRole('radio', {
+          name: new RegExp(targetGroup?.name ?? '', 'i'),
+        });
+        await userEvent.click(radioButton);
+        youthFormData.target_group = id;
+      },
       async clickSaveButton({
         language,
         backendExpectation,
@@ -285,6 +301,7 @@ const getIndexPageApi = (lang?: Language) => {
           'Iidenkiven P',
           'Hiidenkiven peruskoulu'
         );
+        await this.selectTargetGroup(fakeTargetGroups[0].id);
         await this.typeInput('phone_number', '+358-505-551-4995');
         await this.typeInput('email', 'aaaa@bbb.test.fi');
         await this.toggleCheckbox('termsAndConditions');
@@ -299,6 +316,7 @@ const getIndexPageApi = (lang?: Language) => {
         await this.typeInput('postcode', '00100');
         await this.toggleCheckbox('is_unlisted_school');
         await this.typeInput('unlistedSchool', 'Erikoiskoulu');
+        await this.selectTargetGroup(fakeTargetGroups[0].id);
         await this.typeInput('phone_number', '+358-505-551-4995');
         await this.typeInput('email', 'aaaa@bbb.test.fi');
         await this.toggleCheckbox('termsAndConditions');

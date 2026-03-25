@@ -38,16 +38,16 @@ const messagesToIgnore = [
 // jest's reporter does not capture and redisplay the suppressed messages.
 const createFilter =
   (original: (...data: unknown[]) => void) =>
-  (...args: unknown[]) => {
-    if (
-      args.length > 0 &&
-      isString(args[0]) &&
-      messagesToIgnore.some((msg) => (args[0] as string).includes(msg))
-    ) {
-      return;
-    }
-    original.apply(console, args);
-  };
+    (...args: unknown[]) => {
+      if (
+        args.length > 0 &&
+        isString(args[0]) &&
+        messagesToIgnore.some((msg) => (args[0] as string).includes(msg))
+      ) {
+        return;
+      }
+      original.apply(console, args);
+    };
 
 beforeAll(() => {
   console.warn = createFilter(originalWarn);
