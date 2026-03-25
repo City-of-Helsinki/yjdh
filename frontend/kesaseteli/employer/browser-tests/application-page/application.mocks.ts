@@ -1,6 +1,8 @@
 import Employment from '@frontend/shared/src/types/employment';
 import axios, { AxiosResponseHeaders } from 'axios';
+import fs from 'fs';
 import https from 'https';
+import path from 'path';
 import { RequestMock } from 'testcafe';
 
 import {
@@ -11,8 +13,14 @@ import {
   VoucherData,
 } from '../types';
 
-// Self-signed certificate is used in local development; skip verification in test proxies
-const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+// Trust the local self-signed certificate used by the nginx proxy in development.
+const localCert = fs.readFileSync(
+  path.resolve(
+    __dirname,
+    '../../../../../localdevelopment/employer/nginx/localhost.crt'
+  )
+);
+const httpsAgent = new https.Agent({ ca: localCert });
 
 export const MOCKED_EMPLOYEE_DATA = {
   employee_ssn: '010101-123U',
