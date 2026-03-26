@@ -333,12 +333,11 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
         } as Application);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     signerOptions,
     decisionProposalDraft,
-    handledApplication?.signerId,
-    handledApplication?.signerName,
+    handledApplication,
+    setHandledApplication,
   ]);
 
   if (isLoading) {
