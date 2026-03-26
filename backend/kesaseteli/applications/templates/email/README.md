@@ -1,3 +1,12 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Email templates](#email-templates)
+  - [Template file structure](#template-file-structure)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Email templates
 
 This directory contains email templates used in the Kesäseteli application.

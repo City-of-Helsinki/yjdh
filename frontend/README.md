@@ -1,3 +1,22 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Environments](#environments)
+- [Requirements](#requirements)
+  - [install node with nvm](#install-node-with-nvm)
+- [Available Scripts](#available-scripts)
+  - [`yarn dev`](#yarn-dev)
+  - [`yarn build`](#yarn-build)
+  - [`yarn ks-empl:start`](#yarn-ks-emplstart)
+  - [`yarn test`](#yarn-test)
+  - [`yarn audit`](#yarn-audit)
+    - [how to fix audit errors](#how-to-fix-audit-errors)
+- [testing in Kuva environments](#testing-in-kuva-environments)
+- [Learn More](#learn-more)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Environments
 Production environment:

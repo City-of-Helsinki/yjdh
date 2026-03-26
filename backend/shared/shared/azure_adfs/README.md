@@ -1,3 +1,13 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [YJDH Azure ADFS component](#yjdh-azure-adfs-component)
+  - [How to set up](#how-to-set-up)
+  - [Optional Django settings](#optional-django-settings)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## YJDH Azure ADFS component
 
 Azure ADFS authentication using the django library `django-auth-adfs`. More information about `django-auth-adfs` in [this guide](https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html).
