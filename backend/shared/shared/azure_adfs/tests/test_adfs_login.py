@@ -393,11 +393,13 @@ def test_adfs_callback_admin_link(
             302,
         ),
         ("/", "http://unauthorized.com/test", None, 400),
+        ("/", "https://redirect-to-me.hel.ninja/test", None, 400),
         ("/", "http://localhost:3200/test", "http://localhost:3200/test", 302),
     ],
 )
 @override_settings(
     ALLOWED_OAUTH2_REDIRECT_HOSTS=["localhost:3200"],
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_adfs_callback_routing(
     client,
