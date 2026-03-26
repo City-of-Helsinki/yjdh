@@ -886,8 +886,21 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         ]
         ordering = ["-created_at"]
 
+class YouthSummerVoucherQuerySet(models.QuerySet):
+    def select_youth_application(self):
+        return self.select_related("youth_application")
+
+
+class YouthSummerVoucherManager(models.Manager):
+    def get_queryset(self):
+        return YouthSummerVoucherQuerySet(
+            self.model, using=self._db
+        ).select_youth_application()
+
 
 class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+    objects = YouthSummerVoucherManager()
+
     _SERIAL_NUMBER_SEQUENCE_NAME = "youth_summer_voucher_serial_numbers"
     SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE = 1
 
