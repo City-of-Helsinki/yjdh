@@ -32,6 +32,7 @@
     "bf-hdlr:start": "npx lerna run --scope  @frontend/bf-handler --stream start",
     "release": "cross-env HUSKY_BYPASS=true && lerna publish",
     "husky:pre-commit": "npx lerna run --concurrency 1 --stream pre-commit",
+    "typecheck": "npx lerna run typecheck",
     "lint": "npx lerna run lint",
     "test": "npx lerna run test --stream",
     "test:debug": "npx lerna run test:debug",
