@@ -67,12 +67,20 @@ interface FormActions {
 const getErrorContent = (
   t: TFunction,
   errorData: {
-    data: Record<string, string[]>;
+    data: Record<string, unknown>;
   }
 ): React.ReactElement[] => {
   try {
-    return Object.entries(errorData).map(([key, value]) => {
+    return Object.entries(errorData.data).flatMap(([key, value]) => {
       if (key === APPLICATION_FIELD_KEYS.EMPLOYEE) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) {
+          return [
+            <React.Fragment key={key}>
+              {prettyPrintObject({ data: errorData.data })}
+            </React.Fragment>,
+          ];
+        }
+
         return Object.entries(camelcaseKeys(value)).map(
           ([emplKey, emplValue]) => (
             <a
@@ -82,19 +90,28 @@ const getErrorContent = (
               {emplValue as React.ReactNode}
             </a>
           )
-        )[0] as React.ReactElement;
+        );
       }
       if (key === 'approveTerms') {
-        return (
-          <p key={`${key}-${String(value)}`}>{t('common:error.terms.text')}</p>
-        );
+        return [
+          <p key={`${key}-${String(value)}`}>{t('common:error.terms.text')}</p>,
+        ];
+      }
+      if (Array.isArray(value)) {
+        return value.map((item, index) => (
+          <a key={`${key}-${index}`} href={`#${key}`}>
+            {String(item)}
+          </a>
+        ));
       }
       return typeof value === 'string' ? (
         <a key={key} href={`#${key}`}>
           {value}
         </a>
       ) : (
-        <>{prettyPrintObject(errorData)}</>
+        <React.Fragment key={key}>
+          {prettyPrintObject({ data: value as Record<string, string[]> })}
+        </React.Fragment>
       );
     });
   } catch (fatalError: unknown) {
@@ -145,22 +162,17 @@ const useFormActions = (
 
       const isContentTypeHTML = typeof errorDataFromResponse === 'string';
 
-      let dataForGetErrorContent: Record<string, string[]>;
+      let dataForGetErrorContent: Record<string, unknown>;
 
       if (isContentTypeHTML) {
         dataForGetErrorContent = {};
       } else {
-        const potentialErrorData = errorDataCamelCased; // Capture type as `unknown`
+        const potentialErrorData = errorDataCamelCased;
         dataForGetErrorContent =
           typeof potentialErrorData === 'object' &&
           potentialErrorData !== null &&
-          !Array.isArray(potentialErrorData) &&
-          Object.values(potentialErrorData as Record<string, unknown>).every(
-            // Explicitly cast here for Object.values
-            (value) =>
-              Array.isArray(value) && value.every((v) => typeof v === 'string')
-          )
-            ? (potentialErrorData as unknown as Record<string, string[]>)
+          !Array.isArray(potentialErrorData)
+            ? (potentialErrorData as Record<string, unknown>)
             : {};
       }
 

@@ -39,6 +39,15 @@ const csvButton = Selector(
 const handleButton = Selector('button').withText(
   fi.applications.alterations.handling.actions.handle
 );
+const reportAlterationButton = Selector('button').withText(
+  fi.applications.decision.actions.reportAlteration
+);
+const newAlterationHeading = Selector('h1').withText(
+  fi.applications.alterations.new.title
+);
+
+const getSuspensionAlterationItem = (): Selector =>
+  alterationList.find('div').withText(/keskeytynyt 24\.6\.2024/);
 
 const getCurrencyString = (value: number, decimals = 2): string =>
   value.toLocaleString('fi-FI', {
@@ -55,20 +64,15 @@ const expectHandleButtonDisabled = async (
   await t.expect((attributes.disabled !== undefined) === test).ok();
 };
 
-test('Handler creates another alteration and tries to handle it with errors', async (t: TestController) => {
-  await navigateToAlterationTestApplication(t);
+const createSuspensionAlterationIfMissing = async (
+  t: TestController
+): Promise<void> => {
+  if (await getSuspensionAlterationItem().exists) {
+    return;
+  }
 
-  // Create the new alteration
-  await t.click(
-    Selector('button').withText(
-      fi.applications.decision.actions.reportAlteration
-    )
-  );
-  await t
-    .expect(
-      Selector('h1').withText(fi.applications.alterations.new.title).visible
-    )
-    .ok();
+  await t.click(reportAlterationButton);
+  await t.expect(newAlterationHeading.visible).ok();
 
   await t.click(Selector('[for=alteration-alteration-type-suspension]'));
   await t.typeText('#alteration-end-date', suspensionForm.endDate);
@@ -101,9 +105,16 @@ test('Handler creates another alteration and tries to handle it with errors', as
         .visible
     )
     .ok();
+  await t.expect(getSuspensionAlterationItem().exists).ok();
+};
+
+test('Handler creates another alteration and tries to handle it with errors', async (t: TestController) => {
+  await navigateToAlterationTestApplication(t);
+
+  await createSuspensionAlterationIfMissing(t);
 
   // Find the list item and begin handling the alteration
-  const item = alterationList.find('div').withText(/keskeytynyt 24\.6\.2024/);
+  const item = getSuspensionAlterationItem();
   await t.click(item.find(accordionItemTitle));
   await t.click(
     item
@@ -220,11 +231,12 @@ test('Handler creates another alteration and tries to handle it with errors', as
 
 test('Handler handles the alteration from the last test properly', async (t: TestController) => {
   await navigateToAlterationTestApplication(t);
+  await createSuspensionAlterationIfMissing(t);
 
   let resultText = '';
 
   // Find the list item and begin handling the alteration
-  const item = alterationList.find('div').withText(/keskeytynyt 24\.6\.2024/);
+  const item = getSuspensionAlterationItem();
   await t.click(item.find(accordionItemTitle));
   await t.click(
     item
