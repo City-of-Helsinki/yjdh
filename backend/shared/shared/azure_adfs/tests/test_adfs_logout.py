@@ -13,7 +13,7 @@ ADFS_END_SESSION_ENDPOINT = (
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
     ADFS_LOGIN_REDIRECT_URL="http://example.com/adfs-default",
-    CORS_ALLOWED_ORIGINS=["http://localhost:3200"],
+    CORS_ALLOWED_ORIGINS=["https://redirect-to-me.hel.ninja"],
 )
 def test_adfs_logout_deep_link(
     client,
@@ -24,7 +24,7 @@ def test_adfs_logout_deep_link(
     Test that the custom logout view correctly appends the provided `next`
     parameter to the ADFS post_logout_redirect_uri.
     """
-    deep_link = "http://localhost:3200/login"
+    deep_link = "https://redirect-to-me.hel.ninja/login"
 
     with mock.patch(
         "shared.azure_adfs.views.url_has_allowed_host_and_scheme", return_value=True
@@ -41,6 +41,6 @@ def test_adfs_logout_deep_link(
     assert response.status_code == 302
     assert (
         response.url
-        == f"{ADFS_END_SESSION_ENDPOINT}?post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A3200%2Flogin"
+        == f"{ADFS_END_SESSION_ENDPOINT}?post_logout_redirect_uri=https%3A%2F%2Fredirect-to-me.hel.ninja%2Flogin"
     )
     assert "_auth_user_id" not in client.session
