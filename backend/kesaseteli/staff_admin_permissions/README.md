@@ -1,3 +1,18 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Staff Admin Permissions](#staff-admin-permissions)
+  - [Purpose](#purpose)
+  - [Management Command](#management-command)
+    - [`setup_admin_permissions`](#setup_admin_permissions)
+  - [Signals](#signals)
+    - [1. `initialize_admins_group` (`post_migrate`)](#1-initialize_admins_group-post_migrate)
+    - [2. `assign_admins_group` (`post_save` on `User`)](#2-assign_admins_group-post_save-on-user)
+  - [Security Restrictions](#security-restrictions)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Staff Admin Permissions
 
 This app provides utilities to automatically manage a configurable admin user group (default `None`) and simplify permission setup for staff users in **development environments**.

@@ -1,3 +1,31 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Development without Docker](#development-without-docker)
+  - [Installing Python requirements](#installing-python-requirements)
+  - [Database](#database)
+  - [Daily running](#daily-running)
+  - [Updating translations](#updating-translations)
+- [Keeping Python requirements up to date](#keeping-python-requirements-up-to-date)
+- [Code format](#code-format)
+- [Storages](#storages)
+- [Authentication Methods Overview](#authentication-methods-overview)
+  - [Authentication by User Interface](#authentication-by-user-interface)
+  - [Detailed Environment Logic](#detailed-environment-logic)
+    - [Youth UI](#youth-ui)
+    - [Employer UI](#employer-ui)
+    - [Handler UI](#handler-ui)
+    - [Mock Mode](#mock-mode)
+  - [Authentication Matrix](#authentication-matrix)
+- [Environment Variables](#environment-variables)
+- [Documentation](#documentation)
+  - [Summer Voucher Configuration](#summer-voucher-configuration)
+  - [Management Commands](#management-commands)
+    - [Create Summer Voucher Configuration](#create-summer-voucher-configuration)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Development without Docker
 
 Prerequisites:

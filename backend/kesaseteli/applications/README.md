@@ -1,6 +1,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents**
 
 - [Applications Module](#applications-module)
   - [Summer Voucher Configuration](#summer-voucher-configuration)
@@ -12,8 +12,12 @@
       - [1. Management Command](#1-management-command)
       - [2. Admin Interface Action](#2-admin-interface-action)
       - [3. Reinitialize Selected Templates](#3-reinitialize-selected-templates)
+    - [Validation and Preview](#validation-and-preview)
   - [School Management](#school-management)
+    - [Import Schools](#import-schools)
     - [API Endpoint](#api-endpoint)
+  - [Youth Summer Vouchers](#youth-summer-vouchers)
+    - [Resend Summer Voucher](#resend-summer-voucher)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

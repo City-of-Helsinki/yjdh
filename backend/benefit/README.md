@@ -1,3 +1,30 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Notes for developers](#notes-for-developers)
+  - [Please take NEXT_PUBLIC_MOCK_FLAG into account](#please-take-next_public_mock_flag-into-account)
+- [Development without Docker](#development-without-docker)
+  - [Installing Python requirements](#installing-python-requirements)
+  - [Database](#database)
+  - [Configure docker environment](#configure-docker-environment)
+  - [Daily running with Docker](#daily-running-with-docker)
+  - [Daily running without Docker](#daily-running-without-docker)
+  - [Updating translations](#updating-translations)
+  - [Testing and debugging](#testing-and-debugging)
+- [Keeping Python requirements up to date](#keeping-python-requirements-up-to-date)
+- [Documentation](#documentation)
+- [Scheduled jobs](#scheduled-jobs)
+- [Code format](#code-format)
+- [Storages](#storages)
+- [Sentry error monitoring](#sentry-error-monitoring)
+- [AHJO integration](#ahjo-integration)
+  - [Retrieving the access_token](#retrieving-the-access_token)
+  - [Refreshing the token](#refreshing-the-token)
+- [ClamAV integration](#clamav-integration)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Notes for developers
 
 ### Please take NEXT_PUBLIC_MOCK_FLAG into account

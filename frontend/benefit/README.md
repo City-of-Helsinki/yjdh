@@ -1,3 +1,21 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Environments](#environments)
+- [Requirements](#requirements)
+  - [Install NodeJS](#install-nodejs)
+- [Available Scripts](#available-scripts)
+  - [`yarn dev`](#yarn-dev)
+  - [`yarn build`](#yarn-build)
+  - [`yarn benefit-applicant:start`](#yarn-benefit-applicantstart)
+  - [`yarn test`](#yarn-test)
+  - [`yarn audit`](#yarn-audit)
+    - [how to fix audit errors](#how-to-fix-audit-errors)
+- [Learn More](#learn-more)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Environments
 Production environment:

@@ -1,23 +1,51 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [YJDH services](#yjdh-services)
+  - [Table of contents](#table-of-contents)
+  - [About YJDH](#about-yjdh)
+  - [Service environments (Kesäseteli)](#service-environments-kes%C3%A4seteli)
+  - [Requirements](#requirements)
+  - [Get started](#get-started)
+    - [Quick start](#quick-start)
+      - [1. Clone the repository](#1-clone-the-repository)
+      - [2. Create all local `.env` files from the examples](#2-create-all-local-env-files-from-the-examples)
+      - [3. Start the stack with Docker](#3-start-the-stack-with-docker)
+      - [4. Verify backend is running](#4-verify-backend-is-running)
+      - [5. (Optional) Create a Django admin user](#5-optional-create-a-django-admin-user)
+      - [6. (Optional) Run the test suites](#6-optional-run-the-test-suites)
+      - [Switching stacks or cleaning up](#switching-stacks-or-cleaning-up)
+    - [Stack commands](#stack-commands)
+  - [Testing](#testing)
+    - [Backend tests](#backend-tests)
+    - [Frontend tests](#frontend-tests)
+  - [Local troubleshooting](#local-troubleshooting)
+      - [502 Bad Gateway in frontend](#502-bad-gateway-in-frontend)
+      - [Login fails or CORS errors in the browser](#login-fails-or-cors-errors-in-the-browser)
+      - [Access container shell](#access-container-shell)
+  - [Publishing with Release Please & Git workflow](#publishing-with-release-please--git-workflow)
+    - [Basics](#basics)
+    - [Example workflow](#example-workflow)
+  - [Setting up git hooks](#setting-up-git-hooks)
+  - [Kesäseteli employer](#kes%C3%A4seteli-employer)
+    - [kesaseteli-employer Development with Docker](#kesaseteli-employer-development-with-docker)
+  - [Kesäseteli youth](#kes%C3%A4seteli-youth)
+    - [kesaseteli-youth development with Docker](#kesaseteli-youth-development-with-docker)
+  - [Kesäseteli handler](#kes%C3%A4seteli-handler)
+    - [kesaseteli-handler development with Docker](#kesaseteli-handler-development-with-docker)
+  - [Benefit](#benefit)
+    - [Benefit development with Docker](#benefit-development-with-docker)
+  - [Maintaining and known issues](#maintaining-and-known-issues)
+    - [Maintenance tasks (Kesäseteli)](#maintenance-tasks-kes%C3%A4seteli)
+    - [Known issues](#known-issues)
+  - [Git blame ignore refs](#git-blame-ignore-refs)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # YJDH services
 
 Yhteisöjen ja järjestöjen digitaalinen Helsinki (= YJDH).
-
-## Table of contents
-
-* [About YJDH](#about-yjdh)
-* [Service environments (Kesäseteli)](#service-environments-kesäseteli)
-* [Requirements](#requirements)
-* [Get started](#get-started)
-* [Testing](#testing)
-* [Local troubleshooting](#local-troubleshooting)
-* [Publishing with Release Please & Git workflow](#publishing-with-release-please--git-workflow)
-* [Setting up git hooks](#setting-up-git-hooks)
-* [Kesäseteli employer](#kesäseteli-employer)
-* [Kesäseteli youth](#kesäseteli-youth)
-* [Kesäseteli handler](#kesäseteli-handler)
-* [Benefit](#benefit)
-* [Maintaining and known issues](#maintaining-and-known-issues)
-* [Git blame ignore refs](#git-blame-ignore-refs)
 
 ## About YJDH
 

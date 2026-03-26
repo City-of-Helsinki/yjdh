@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/_/husky.sh"
 
+# Update TOC and re-add only staged README files, handling spaces/newlines safely
+git diff --name-only --cached -z -- 'README.md' '**/README.md' | while IFS= read -r -d '' file; do
+  yarn doctoc -u "$file"
+  git add "$file"
+done
+
 set +e
 git diff --name-only --cached | grep -e "frontend/" &> /dev/null
 RUN_FRONTEND_PRECOMMIT=$?

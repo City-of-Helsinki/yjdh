@@ -1,3 +1,21 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Voucher UI](#voucher-ui)
+- [Handler UI](#handler-ui)
+  - [Environments](#environments)
+  - [Requirements](#requirements)
+    - [install node with nvm](#install-node-with-nvm)
+  - [Available Scripts](#available-scripts)
+    - [`yarn dev`](#yarn-dev)
+    - [`yarn build`](#yarn-build)
+    - [`yarn start`](#yarn-start)
+    - [`yarn test`](#yarn-test)
+  - [Learn More](#learn-more)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Voucher UI
 
 User interface for young people to send summer voucher applications

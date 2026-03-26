@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [YTJ Client (V3)](#ytj-client-v3)
+  - [Overview](#overview)
+  - [Key Components](#key-components)
+  - [Usage](#usage)
+  - [Configuration](#configuration)
+  - [Development](#development)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # YTJ Client (V3)
 
 This module provides a pythonic interface to the [Finnish Trade Register (YTJ) Open Data API V3](https://avoindata.prh.fi/opendata-ytj-api/v3/).

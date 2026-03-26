@@ -1,3 +1,13 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [YJDH Backend Shared Component](#yjdh-backend-shared-component)
+  - [Suomi.fi authentication (suomi_fi)](#suomifi-authentication-suomi_fi)
+    - [Configuration](#configuration)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # YJDH Backend Shared Component
 
 

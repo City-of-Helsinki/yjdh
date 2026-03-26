@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [YJDH Django backend](#yjdh-django-backend)
+  - [Running tests in Docker](#running-tests-in-docker)
+  - [Authentication in YJDH](#authentication-in-yjdh)
+    - [Suomi.fi](#suomifi)
+  - [OIDC flow with Helsinki Profile](#oidc-flow-with-helsinki-profile)
+  - [Helsinki AD](#helsinki-ad)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # YJDH Django backend
 
 Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/main/README.md) about running YJDH services locally, which also runs the backend for the service under development.
