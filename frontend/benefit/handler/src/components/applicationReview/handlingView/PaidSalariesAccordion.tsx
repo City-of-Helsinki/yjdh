@@ -3,7 +3,7 @@ import {
   $DecisionCalculatorAccordionIconContainer,
 } from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion.sc';
 import { Application } from 'benefit-shared/types/application';
-import { Accordion, IconOccupation, IconCheck } from 'hds-react';
+import { Accordion, IconOccupation } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $Section} from 'shared/components/forms/section/FormSection.sc';
@@ -21,6 +21,7 @@ import UploadAttachmentButton from './UploadAttachmentButton';
 import { useApplicationReview } from '../useApplicationReview';
 import useChangeEmployerAssurance from "benefit/handler/hooks/useChangeEmployerAssurance";
 import {$CalculatorTableRow} from "benefit/handler/components/applicationReview/ApplicationReview.sc";
+import useRemoveAttachmentQuery from "benefit/handler/hooks/useRemoveAttachmentQuery";
 
 type Props = {
   data: Application;
@@ -58,6 +59,19 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
     changeEmployerAssurance(nextValue);
   };
 
+  const removeAttachment = useRemoveAttachmentQuery();
+
+  const handleDeleteAttachment = (attachmentId: string) :void => {
+    if (!attachmentId) {
+      return;
+    }
+
+    removeAttachment.mutate({
+      applicationId: data.id,
+      attachmentId: attachmentId,
+    });
+  };
+
   return (
     <$DecisionCalculatorAccordion>
       <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
@@ -88,10 +102,15 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
                   <a href={attachment.attachmentFile}>
                     {attachment.attachmentFileName}
                   </a>
+                  <button
+                    onClick={() => handleDeleteAttachment(attachment.id)}
+                  >
+                    {t('common:applications.paidSalaries.buttons.delete')}
+                  </button>
                 </div>
               ) : null
             )}
-        </$Section>
+          </$Section>
         </$CalculatorTableRow>
         <SetInstalmentToPendingButton application={data}/>
         <SetInstalmentToAcceptedButton application={data}/>

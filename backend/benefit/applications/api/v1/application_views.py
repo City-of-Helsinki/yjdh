@@ -73,6 +73,7 @@ from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
 )
+from applications.enums import AttachmentType
 from calculator.enums import InstalmentStatus
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.automatic_messages import send_application_reopened_message
@@ -287,9 +288,13 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         """
         Upload a single file as attachment.
         Validate that adding attachments is allowed in this application status
+        Allow uploading of payslips even if application is not editable
         """
         obj = self.get_object()
-        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+
+        attachment_type = request.data.get("attachment_type")
+        if (attachment_type != AttachmentType.PAYSLIP and
+            not ApplicationStatus.is_editable_status(self.request.user, obj.status)):
             return Response(
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
@@ -382,11 +387,17 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     )
     def delete_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
-        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
-            return Response(
-                {"detail": _("Operation not allowed for this application status.")},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+
+        attachment = self._get_attachment(attachment_pk)
+        if not attachment:
+            return self._attachment_not_found()
+
+        if (attachment.attachment_type != AttachmentType.PAYSLIP and
+            not ApplicationStatus.is_editable_status(self.request.user, obj.status)):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
         if instance := self._get_attachment(attachment_pk):
             audit_logging.log(
                 request.user,

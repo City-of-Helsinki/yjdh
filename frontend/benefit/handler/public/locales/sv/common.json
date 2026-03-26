@@ -776,7 +776,8 @@
       "buttons": {
         "pending": "Kesken",
         "accept": "Hyväksy",
-        "uploadAttachment": "Lisää liite"
+        "uploadAttachment": "Lisää liite",
+        "delete": "Poista liite"
       },
       "error": {
         "heading": "Työnantajan vakuutuksen asetus",
