@@ -28,6 +28,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from sentry_sdk.integrations.beam import raise_exception
 from simple_history.utils import update_change_reason
 from sql_util.aggregates import SubqueryCount
 
@@ -293,25 +294,24 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         obj = self.get_object()
 
         attachment_type = request.data.get("attachment_type")
-        if (attachment_type != AttachmentType.PAYSLIP and
-            not ApplicationStatus.is_editable_status(self.request.user, obj.status)):
-            return Response(
-                {"detail": _("Operation not allowed for this application status.")},
-                status=status.HTTP_403_FORBIDDEN,
-            )
 
+        if attachment_type != AttachmentType.PAYSLIP:
+            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+        data = {
+            "application": obj.id,
+            "attachment_file": request.data["attachment_file"],
+            "content_type": request.data["attachment_file"].content_type,
+            "attachment_type": attachment_type
+        }
         # Validate request data
-        serializer = AttachmentSerializer(
-            data={
-                "application": obj.id,
-                "attachment_file": request.data["attachment_file"],
-                "content_type": request.data["attachment_file"].content_type,
-                "attachment_type": request.data["attachment_type"],
-            }
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
+        serializer = AttachmentSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def _get_application_pks_with_instalments(self) -> List[int]:

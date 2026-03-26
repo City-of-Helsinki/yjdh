@@ -6,7 +6,7 @@ import { Application } from 'benefit-shared/types/application';
 import { Accordion, IconOccupation } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { $Section} from 'shared/components/forms/section/FormSection.sc';
+import {$Grid, $GridCell, $Section} from 'shared/components/forms/section/FormSection.sc';
 
 import {
   ATTACHMENT_TYPES
@@ -22,6 +22,7 @@ import { useApplicationReview } from '../useApplicationReview';
 import useChangeEmployerAssurance from "benefit/handler/hooks/useChangeEmployerAssurance";
 import {$CalculatorTableRow} from "benefit/handler/components/applicationReview/ApplicationReview.sc";
 import useRemoveAttachmentQuery from "benefit/handler/hooks/useRemoveAttachmentQuery";
+import useUploadAttachmentQuery from "benefit/handler/hooks/useUploadAttachmentQuery";
 
 type Props = {
   data: Application;
@@ -29,7 +30,6 @@ type Props = {
 
 const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
   const { t } = useTranslation();
-  const { handleUpload, isUploading } = useApplicationReview();
   const updateApplication = useChangeEmployerAssurance();
   const [employerAssurance, setEmployerAssurance] = React.useState(
     Boolean(data.employerAssurance)
@@ -38,6 +38,8 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
   React.useEffect(() => {
     setEmployerAssurance(Boolean(data.employerAssurance));
   }, [data.employerAssurance]);
+
+  const uploadAttachment = useUploadAttachmentQuery();
 
   const changeEmployerAssurance = (nextValue: boolean | null): void => {
     if (!data.id) {
@@ -94,30 +96,45 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
             </>
           </$Section>
         </$CalculatorTableRow>
-        <$CalculatorTableRow>
-          <$Section>
-            {data.attachments.map((attachment) =>
-              attachment.attachmentType === ATTACHMENT_TYPES.PAYSLIP ? (
-                <div key={attachment.id}>
+
+          {data.attachments.map((attachment) =>
+            attachment.attachmentType === ATTACHMENT_TYPES.PAYSLIP ? (
+              <$CalculatorTableRow>
+                <$GridCell colSpan={32}
+                           key={attachment.id}>
                   <a href={attachment.attachmentFile}>
                     {attachment.attachmentFileName}
                   </a>
+                </$GridCell>
+                <$GridCell colSpan={24}>
                   <button
                     onClick={() => handleDeleteAttachment(attachment.id)}
                   >
                     {t('common:applications.paidSalaries.buttons.delete')}
                   </button>
-                </div>
-              ) : null
-            )}
-          </$Section>
-        </$CalculatorTableRow>
-        <SetInstalmentToPendingButton application={data}/>
-        <SetInstalmentToAcceptedButton application={data}/>
-        <UploadAttachmentButton
-          onUpload={(formData) => handleUpload(data?.applicationId, formData)}
-          isUploading={isUploading}
-        />
+                </$GridCell>
+              </$CalculatorTableRow>
+            ) : null
+          )}
+        <$Grid css={{ marginTop: '16px'}}>
+          <$GridCell colSpan={32}>
+            <SetInstalmentToPendingButton application={data}/>
+          </$GridCell>
+          <$GridCell colSpan={32}>
+            <SetInstalmentToAcceptedButton application={data}/>
+          </$GridCell>
+          <$GridCell colSpan={64}>
+            <UploadAttachmentButton
+              onUpload={(formData) =>
+                uploadAttachment.mutate({
+                  applicationId: data.id,
+                  data: formData,
+                })
+              }
+              isUploading={uploadAttachment.isUploading}
+            />
+          </$GridCell>
+        </$Grid>
       </Accordion>
     </$DecisionCalculatorAccordion>
   );

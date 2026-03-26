@@ -1,4 +1,3 @@
-
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button, Dialog, IconUpload } from 'hds-react';
@@ -12,12 +11,7 @@ type Props = {
   isUploading?: boolean;
 };
 
-const ALLOWED_FILE_TYPES = [
-  'application/pdf',
-  'image/png',
-  'image/jpeg',
-] as const;
-
+const ALLOWED_FILE_TYPES = ['application/pdf', 'image/png', 'image/jpeg'] as const;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const UploadAttachmentButton: React.FC<Props> = ({
@@ -36,29 +30,21 @@ const UploadAttachmentButton: React.FC<Props> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const fileSize = file.size;
-
-    // Validate file extension
     if (!ALLOWED_FILE_TYPES.includes(file.type as typeof ALLOWED_FILE_TYPES[number])) {
       showErrorToast(
         t('common:applications.errors.fileUpload.title'),
         t('common:applications.errors.fileUpload.fileTypeError')
       );
-      if (uploadRef.current) {
-        uploadRef.current.value = '';
-      }
+      if (uploadRef.current) uploadRef.current.value = '';
       return;
     }
 
-    // Validate file size
-    if (fileSize > MAX_FILE_SIZE) {
+    if (file.size > MAX_FILE_SIZE) {
       showErrorToast(
         t('common:applications.errors.fileUpload.title'),
         t('common:applications.errors.fileUpload.fileSizeError')
       );
-      if (uploadRef.current) {
-        uploadRef.current.value = '';
-      }
+      if (uploadRef.current) uploadRef.current.value = '';
       return;
     }
 
@@ -68,11 +54,7 @@ const UploadAttachmentButton: React.FC<Props> = ({
 
     onUpload(formData);
 
-    // Reset input
-    if (uploadRef.current) {
-      uploadRef.current.value = '';
-    }
-
+    if (uploadRef.current) uploadRef.current.value = '';
     setIsDialogOpen(false);
   };
 
@@ -119,7 +101,8 @@ const UploadAttachmentButton: React.FC<Props> = ({
             iconLeft={<IconUpload />}
             style={{ marginTop: '1rem' }}
           >
-            {isUploading ? 'Ladataan...' : 'Valitse tiedosto'}
+            {isUploading ? t('common:applications.paidSalaries.uploading') :
+              t('common:applications.paidSalaries.chooseFile')}
           </Button>
         </Dialog.Content>
         <Dialog.ActionButtons>

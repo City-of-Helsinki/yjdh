@@ -773,6 +773,8 @@
     "paidSalaries": {
       "heading": "Maksetut palkat",
       "assurance": "Asiakas vakuuttaa työsuhteen toteutuneen suunnitellusti",
+      "chooseFile": "Valitse tiedosto",
+      "uploading": "Ladataan...",
       "buttons": {
         "pending": "Kesken",
         "accept": "Hyväksy",
