@@ -6,6 +6,7 @@
   ],
   "scripts": {
     "lint": "eslint --ext js,ts,tsx src",
+    "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",

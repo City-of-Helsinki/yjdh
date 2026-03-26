@@ -6,6 +6,7 @@
   ],
   "scripts": {
     "lint": "eslint --ext js,ts,tsx src browser-tests",
+    "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../.lintstagedrc.js",
     "test": "cross-env TZ=Europe/Helsinki jest",
     "test:staged": "cross-env TZ=Europe/Helsinki yarn test --watchAll=false --findRelatedTests",
