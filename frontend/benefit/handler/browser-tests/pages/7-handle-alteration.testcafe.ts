@@ -42,8 +42,17 @@ const handleButton = Selector('button').withText(
 const reportAlterationButton = Selector('button').withText(
   fi.applications.decision.actions.reportAlteration
 );
+const deleteAlterationButtonText =
+  fi.applications.decision.alterationList.item.actions.delete;
+const deleteAlterationModalTitle =
+  fi.applications.decision.alterationList.deleteModal.title;
+const deleteAlterationModalConfirm =
+  fi.applications.decision.alterationList.deleteModal.delete;
 const newAlterationHeading = Selector('h1').withText(
   fi.applications.alterations.new.title
+);
+const mainDecisionHeading = Selector('h2').withText(
+  fi.applications.decision.headings.mainHeading
 );
 
 const getSuspensionAlterationItem = (): Selector =>
@@ -71,7 +80,33 @@ const createSuspensionAlterationIfMissing = async (
     return;
   }
 
-  await t.click(reportAlterationButton);
+  const reportAlterationButtonAttributes =
+    await reportAlterationButton.attributes;
+  if (reportAlterationButtonAttributes.disabled !== undefined) {
+    const firstAlterationItem = alterationList.child(0);
+    await t.expect(firstAlterationItem.exists).ok();
+    await t.click(firstAlterationItem.find(accordionItemTitle));
+    await t.click(
+      firstAlterationItem.find('button').withText(deleteAlterationButtonText)
+    );
+    await t
+      .expect(
+        Selector('div[role="dialog"] h2').withText(deleteAlterationModalTitle)
+          .visible
+      )
+      .ok();
+    await t.click(
+      Selector('div[role="dialog"] button').withText(
+        deleteAlterationModalConfirm
+      )
+    );
+    await t.expect(mainDecisionHeading.visible).ok();
+  }
+
+  await t.click(reportAlterationButton, {
+    offsetX: 10,
+    offsetY: 10,
+  });
   await t.expect(newAlterationHeading.visible).ok();
 
   await t.click(Selector('[for=alteration-alteration-type-suspension]'));
@@ -99,12 +134,7 @@ const createSuspensionAlterationIfMissing = async (
   );
 
   await t.click(submitButton);
-  await t
-    .expect(
-      Selector('h2').withText(fi.applications.decision.headings.mainHeading)
-        .visible
-    )
-    .ok();
+  await t.expect(mainDecisionHeading.visible).ok();
   await t.expect(getSuspensionAlterationItem().exists).ok();
 };
 
