@@ -10,15 +10,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
 from applications.models import Application
-from applications.services.applications_power_bi_csv_report import (
-    ApplicationsPowerBiCsvService,
+from applications.services.applications_deminimis_csv_report import (
+    ApplicationsDeminimisCsvService,
 )
-from common.authentications import PowerBiAuthentication
+from common.authentications import DeMinimisAuthentication
 
 LOGGER = logging.getLogger(__name__)
 
 
-class ApplicationPowerBiFilter(filters.FilterSet):
+class ApplicationDeMinimisFilter(filters.FilterSet):
     decision_date = DateFromToRangeFilter(
         field_name="batch__decision_date", label="Batch decision date (range)"
     )
@@ -29,35 +29,41 @@ class ApplicationPowerBiFilter(filters.FilterSet):
 
     def filter_queryset(self, queryset):
         """
-        Custom filtering logic that ensures only applications with a batch
-        and a non-null decision_date are returned, and then applies any
-        additional filters such as decision_date range if provided.
+        Custom filtering logic that ensures only applications with 
+        a batch and a non-null decision_date
+        and benefit is granted as de minimis aid
+        and that it is not yet reported as aid are returned, 
+        and then applies any additional filters 
+        such as decision_date range if provided.
         """
         queryset = queryset.filter(
-            batch__isnull=False, batch__decision_date__isnull=False
+            batch__isnull=False,
+            batch__decision_date__isnull=False,
+            batch__de_minimis_grant_send=False,
+            calculation__granted_as_de_minimis_aid=True
         )
         return super().filter_queryset(queryset)
 
 
-class PowerBiIntegrationView(APIView):
-    authentication_classes = [PowerBiAuthentication]
+class DeMinimisIntegrationView(APIView):
+    authentication_classes = [DeMinimisAuthentication]
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
-    filterset_class = ApplicationPowerBiFilter
+    filterset_class = ApplicationDeMinimisFilter
 
     def get(self, request, *args, **kwargs) -> StreamingHttpResponse:
         # Apply the filter
-        filterset = ApplicationPowerBiFilter(
+        filterset = ApplicationDeMinimisFilter(
             request.GET,
-            queryset=Application.objects.all().prefetch_related("alteration_set"),
+            queryset=Application.objects.all(),
         )
 
         if filterset.is_valid():
             # Get the filtered queryset from the filter class
-            applications_with_batch_and_decision_date = filterset.qs
+            applications_with_not_reported_de_minimis_aid = filterset.qs
             # Generate the CSV response from the filtered queryset
             response = self._csv_response(
-                queryset=applications_with_batch_and_decision_date
+                queryset=applications_with_not_reported_de_minimis_aid
             )
             return response
         else:
@@ -68,11 +74,9 @@ class PowerBiIntegrationView(APIView):
     def _csv_response(
         self,
         queryset: QuerySet[Application],
-        prune_sensitive_data: bool = False,
     ) -> StreamingHttpResponse:
-        csv_service = ApplicationsPowerBiCsvService(
+        csv_service = ApplicationsDeminimisCsvService(
             queryset,
-            prune_sensitive_data,
         )
         response = StreamingHttpResponse(
             csv_service.get_csv_string_lines_generator(add_bom=True),
@@ -86,4 +90,4 @@ class PowerBiIntegrationView(APIView):
 
     @staticmethod
     def _filename():
-        return f"power_bi_data_{timezone.now().strftime('%Y%m%d_%H%M%S')}"
+        return f"deminimis_data_{timezone.now().strftime('%Y%m%d_%H%M%S')}"
