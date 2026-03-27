@@ -30,6 +30,9 @@ const useUpdateApplicationQuery = (
         void queryClient.invalidateQueries(
           `${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`
         );
+        void queryClient.invalidateQueries(
+          BackendEndpoint.EMPLOYER_APPLICATIONS
+        );
       },
     }
   );

@@ -12,7 +12,7 @@ import { getDashboardComponents } from '../index-page/dashboard.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 
-type UserAndApplicationData = Application & SuomiFiData;
+type UserAndApplicationData = Omit<Application, 'user'> & SuomiFiData;
 
 const fakeObjectFactory = new FakeObjectFactory();
 
@@ -172,6 +172,5 @@ export const loginAndfillApplication = async (
     await step2Form.actions.toggleAcceptTermsAndConditions();
     await wizard.actions.clickSendButton();
   }
-  return { ...application, ...suomiFiData };
+  return { ...application, ...suomiFiData } as UserAndApplicationData;
 };
-

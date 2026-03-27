@@ -43,7 +43,9 @@ const EmployerIndex: NextPage = () => {
     }))
   );
 
-  const draftApplication = applications.find((app) => app.status === 'draft');
+  const draftApplication = applications.find(
+    (app) => app.status === 'draft' && app.is_mine
+  );
 
   const organisationName: string | undefined = company?.name;
 

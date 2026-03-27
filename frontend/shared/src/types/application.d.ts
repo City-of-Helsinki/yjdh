@@ -12,6 +12,8 @@ type Application = ContactPerson & {
   submitted_at: string; // yyyy-MM-dd
   summer_vouchers: Employment[];
   language: Language;
+  user?: string;
+  is_mine?: boolean;
 };
 
 export default Application;
