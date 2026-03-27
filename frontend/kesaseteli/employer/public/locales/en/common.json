@@ -93,7 +93,9 @@
         "fetch_employment": "Load information using employee name and summer job voucher serial number",
         "fetch_employment_error_title": "Error occured!",
         "fetch_employment_error_message": "Could not fetch the info of the employee.",
-        "fetch_employment_not_found_error_message": "Employee's information was not found."
+        "fetch_employment_not_found_error_message": "Employee's information was not found.",
+        "foreign_iban_note": "It looks like you have a foreign IBAN. In that case, you also need to provide a money transaction template as an attachment in the <anchor>pay statement section</anchor>. You can download a template <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">here</lnk>.",
+        "foreign_iban_notification_label": "Notice regarding foreign IBAN"
       }
     },
     "step2": {
@@ -173,6 +175,7 @@
         "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
         "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
         "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher.",
+        "payslip_foreign_iban": "Attach here the pay statement of the youth employed with the Summer Job Voucher. If the account number is foreign, a money transaction template is also mandatory. You can download a template <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">here</lnk>.",
         "bank_account": "Fill in the account number in IBAN- format"
       },
       "errors": {
