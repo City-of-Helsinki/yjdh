@@ -5,12 +5,14 @@ import SelectionGroup from 'kesaseteli/employer/components/application/form/Sele
 import type { TextInputProps } from 'kesaseteli/employer/components/application/form/TextInput';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import { useTranslation } from 'next-i18next';
+import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
+import { Trans, useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
+import LinkText from 'shared/components/link-text/LinkText';
 import { POSTAL_CODE_REGEX } from 'shared/constants';
 import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
@@ -131,6 +133,8 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
   const { isEmployeeDataFetched, handleGetEmployeeData } =
     useFetchEmployeeData(index);
 
+  const isForeignIban = useIsForeignIban();
+
   const getId = (field: keyof Employment): TextInputProps['id'] =>
     `summer_vouchers.${index}.${field}`;
 
@@ -216,6 +220,20 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
           id={getId('payslip')}
           disabled={disableEmploymentFields}
           required
+          message={
+            isForeignIban ? (
+              <Trans
+                i18nKey="common:application.form.helpers.payslip_foreign_iban"
+                components={{
+                  // href should get overridden (https://react.i18next.com/latest/trans-component#overriding-react-component-props-v11.5.0),
+                  // but for some reason it does not. However, the setter works, when href is left as unset.
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore ts(2741) link href and text will be set / overridden with values from translation.
+                  lnk: <LinkText target="_blank" rel="noopener noreferrer" />,
+                }}
+              />
+            ) : undefined
+          }
         />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading

@@ -1,6 +1,4 @@
-import {
-  expectToGetApplicationFromBackend,
-} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import { expectToGetApplicationFromBackend } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import {
   BackendEndpoint,
   getBackendDomain,
@@ -11,11 +9,7 @@ import {
   waitForLoadingCompleted,
 } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
-import {
-  screen,
-  userEvent,
-  waitFor,
-} from 'shared/__tests__/utils/test-utils';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/application';
 import ContactPerson from 'shared/types/contact-info';
 
@@ -36,12 +30,16 @@ type Step1Api = {
     displayCompanyData: () => void;
     inputValueIsSet: (key: keyof Application, value?: string) => void;
     inputHasError: (key: keyof Application, errorText: RegExp) => Promise<void>;
+    expectForeignIbanNote: (visible: boolean) => Promise<void>;
+    payslipCustomMessageIsVisible: () => Promise<void>;
   };
   actions: StepActions & {
     typeContactPersonName: (name: string) => Promise<void>;
     typeContactPersonEmail: (email: string) => Promise<void>;
     typeStreetAddress: (streetAddress: string) => Promise<void>;
     typeContactPersonPhone: (phoneNumber: string) => Promise<void>;
+    typeIban: (iban: string) => Promise<void>;
+    typeIbanWithoutBlur: (iban: string) => Promise<void>;
   };
 };
 
@@ -59,9 +57,7 @@ export type ApplicationPageApi = {
   step2: Step2Api;
 };
 
-const expectToSaveApplication = (
-  applicationToSave: Application
-): nock.Scope =>
+const expectToSaveApplication = (applicationToSave: Application): nock.Scope =>
   nock(getBackendDomain())
     .put(
       `${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`,
@@ -171,6 +167,15 @@ const getApplicationPageApi = (
     );
   };
 
+  const typeIbanWithoutBlur = async (iban: string): Promise<void> => {
+    const input = screen.getByTestId<HTMLInputElement>('bank_account_number');
+    await userEvent.clear(input);
+    if (iban) {
+      await userEvent.type(input, iban);
+    }
+    application.bank_account_number = iban ?? '';
+  };
+
   return {
     step1: {
       expectations: {
@@ -223,6 +228,51 @@ const getApplicationPageApi = (
             ).toMatch(errorText)
           );
         },
+        expectForeignIbanNote: async (visible: boolean): Promise<void> => {
+          const query =
+            /ulkomaista tilinumeroa|foreign iban|utländskt kontonummer/i;
+          if (visible) {
+            await waitFor(
+              () => {
+                expect(screen.queryByText(query)).toBeInTheDocument();
+                const payslipLink = screen.queryByRole('link', {
+                  name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
+                });
+                expect(payslipLink).toBeInTheDocument();
+                expect(payslipLink).toHaveAttribute(
+                  'href',
+                  expect.stringMatching(/#summer_vouchers\.0\.payslip$/)
+                );
+
+                const templateLinks = screen.queryAllByRole('link', {
+                  name: /tästä|here|här/i,
+                });
+                expect(templateLinks[0]).toHaveAttribute('href');
+                expect(templateLinks[0].getAttribute('href')).not.toBe('');
+              },
+              { timeout: 2000 }
+            );
+          } else {
+            await waitFor(
+              () => {
+                expect(screen.queryByText(query)).not.toBeInTheDocument();
+              },
+              { timeout: 2000 }
+            );
+          }
+        },
+        payslipCustomMessageIsVisible: async (): Promise<void> => {
+          await waitFor(
+            () => {
+              expect(
+                screen.getByText(
+                  /(rahansiirtotodistus on pakollinen)|(money transaction template is also mandatory)|(kvitto på penningöverföring)/i
+                )
+              ).toBeInTheDocument();
+            },
+            { timeout: 2000 }
+          );
+        },
         nextButtonIsDisabled: expectNextButtonIsDisabled,
         nextButtonIsEnabled: expectNextButtonIsEnabled,
       },
@@ -251,6 +301,11 @@ const getApplicationPageApi = (
             /(yhteyshenkilön puhelinnumero)|(inputs.contact_person_phone_number)/i,
             phoneNumber
           ),
+        typeIban: async (iban: string) => {
+          await typeIbanWithoutBlur(iban);
+          return userEvent.click(document.body);
+        },
+        typeIbanWithoutBlur,
         clickPreviousButton,
         clickNextButton,
         clickNextButtonAndExpectToSaveApplication,
@@ -328,7 +383,7 @@ const getApplicationPageApi = (
             name: /(käyttöehdot)|(application.form.inputs.termsandconditions)/i,
           });
           await userEvent.click(checkbox);
-        }
+        },
       },
     },
   };

@@ -20,13 +20,14 @@ type Props = {
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  message?: React.ReactNode;
 };
 
 const validate = (
   val: FieldPathValue<ApplicationFormData, ApplicationFieldPath>
 ): boolean => !isEmpty(val);
 
-const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readOnly }) => {
+const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readOnly, message: customMessage }) => {
   const { t } = useTranslation();
 
   const {
@@ -142,7 +143,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readO
     }
   }, [getError, hasError, setError, attachmentType]);
 
-  const message = `${t(
+  const message = customMessage || `${t(
     `common:application.form.helpers.${attachmentType}`
   )} ${t('common:application.form.helpers.attachments')}`;
 

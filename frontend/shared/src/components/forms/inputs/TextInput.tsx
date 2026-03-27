@@ -16,6 +16,7 @@ import { $TextInput } from './TextInput.sc';
 export type TextInputProps<T extends FieldValues> = InputProps<T> & {
   type?: 'text' | 'decimal' | 'number' | 'textArea';
   placeholder?: string;
+  onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 } & GridCellProps;
 
 const getComponentType = <T extends FieldValues>(
@@ -44,6 +45,7 @@ const TextInput = <T extends FieldValues>({
   errorText,
   registerOptions = {},
   onChange,
+  onBlur,
   autoComplete,
   disabled,
   readOnly,
@@ -82,6 +84,12 @@ const TextInput = <T extends FieldValues>({
           void registerEvents.onChange(e);
           if (onChange) {
             onChange(e.target.value);
+          }
+        }}
+        onBlur={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          void registerEvents.onBlur(e);
+          if (onBlur) {
+            onBlur(e);
           }
         }}
         as={getComponentType(type)}

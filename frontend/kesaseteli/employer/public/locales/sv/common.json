@@ -93,7 +93,9 @@
         "fetch_employment": "Hämta uppgifter med arbetstagarens namn och sommarsedelns serienummer",
         "fetch_employment_error_title": "Fel uppstod!",
         "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter.",
-        "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte."
+        "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte.",
+        "foreign_iban_note": "Det ser ut som att du har ett utländskt kontonummer. I så fall måste du också lämna in ett kvitto på penningöverföring som bilaga i <anchor>lönespecifikationen</anchor>. Du kan ladda ner en mall <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">här</lnk>.",
+        "foreign_iban_notification_label": "Meddelande om utländskt kontonummer"
       }
     },
     "step2": {
@@ -180,6 +182,7 @@
         "attachments": "Du kan lägga till upp till 5 bilagor. Tillåtna filformat: pdf, jpg och png. Maximal storlek 10 MB",
         "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
         "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "payslip_foreign_iban": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln. Om det är ett utländskt kontonummer krävs också ett kvitto på penningöverföring. Du kan ladda ner en mall <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">här</lnk>.",
         "bank_account": "Fyll i kontonumret i IBAN-format"
       },
       "errors": {
