@@ -1594,7 +1594,7 @@
       "state_aid_max_percentage": 100,
       "calculated_benefit_amount": "11224.00",
       "override_monthly_benefit_amount": null,
-      "granted_as_de_minimis_aid": false,
+      "granted_as_de_minimis_aid": true,
       "target_group_check": false,
       "override_monthly_benefit_amount_comment": ""
     }
@@ -1942,7 +1942,7 @@
       "state_aid_max_percentage": 100,
       "calculated_benefit_amount": "11224.00",
       "override_monthly_benefit_amount": null,
-      "granted_as_de_minimis_aid": false,
+      "granted_as_de_minimis_aid": true,
       "target_group_check": false,
       "override_monthly_benefit_amount_comment": ""
     }

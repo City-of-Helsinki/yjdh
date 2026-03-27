@@ -38,6 +38,9 @@ from applications.services.application_alteration_csv_report import (
     ApplicationAlterationCsvService,
 )
 from applications.services.applications_csv_report import ApplicationsCsvService
+from applications.services.applications_deminimis_csv_report import (
+    ApplicationsDeminimisCsvService,
+)
 from applications.services.applications_power_bi_csv_report import (
     ApplicationsPowerBiCsvService,
 )
@@ -904,6 +907,8 @@ def decided_application_with_decision_date(application_with_ahjo_decision):
     )
     batch.status = ApplicationBatchStatus.COMPLETED
     batch.save()
+    application_with_ahjo_decision.calculation.granted_as_de_minimis_aid = True
+    application_with_ahjo_decision.calculation.save()
     application_with_ahjo_decision.pay_subsidy_percent = 100
     application_with_ahjo_decision.batch = batch
     application_with_ahjo_decision.save()
@@ -965,6 +970,13 @@ def application_alteration(decided_application):
         application=decided_application,
         alteration_type=ApplicationAlterationType.TERMINATION,
         handled_by=decided_application.handler,
+    )
+
+
+@pytest.fixture
+def application_deminimis_csv_service(decided_application_with_decision_date):
+    return ApplicationsDeminimisCsvService(
+        Application.objects.filter(id=decided_application_with_decision_date.id)
     )
 
 

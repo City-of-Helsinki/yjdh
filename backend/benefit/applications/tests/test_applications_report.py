@@ -475,6 +475,47 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
             application_powerbi_csv_service.get_alteration_amount(application)
         )
 
+@pytest.mark.django_db
+def test_deminimis_report_csv_output(application_deminimis_csv_service):
+    csv_lines = split_lines_at_semicolon(
+        application_deminimis_csv_service.get_csv_string()
+    )
+
+    expected_headers = [
+        '\ufeff"Hakemusnumero"',  # Ensure BOM (Byte Order Mark) is correctly handled
+        '"Työnantajan nimi"',
+        '"Työnantajan Y-tunnus"',
+        '"TOL-koodi"',
+        '"Päätöspäivä"',
+        '"HL-erä-1"',
+        '"HL-erä-2"',
+    ]
+
+    # Assert that each column header matches
+    for index, header in enumerate(expected_headers):
+        assert csv_lines[0][index] == header, (
+            f"Expected {header} but got {csv_lines[0][index]}"
+        )
+
+    applications = application_deminimis_csv_service.get_applications()
+
+    assert int(csv_lines[1][0]) == applications[0].application_number
+
+    for i, application in enumerate(applications):
+        # Index 1 corresponds to the first row of values (i.e., skipping the header row)
+        csv_row = csv_lines[i + 1]  # CSV rows start at 1 (skip header)
+
+        assert int(csv_row[0]) == application.application_number
+        assert csv_row[1] == f'"{application.company.name}"'
+        assert csv_row[2] == f'"{application.company.business_id}"'
+        assert csv_row[3] == '""'  # TOL-koodi placeholder (empty)
+        assert csv_row[4] == f'"{format_datetime(application.batch.decision_date)}"'
+        
+        instalment_1 = application_deminimis_csv_service.get_instalment_1_amount(application)
+        instalment_2 = application_deminimis_csv_service.get_instalment_2_amount(application)
+        assert csv_row[5] == ('""' if instalment_1 is None else str(instalment_1))
+        assert csv_row[6] == ('""' if instalment_2 is None else str(instalment_2))
+
 
 @pytest.mark.django_db
 def test_application_alteration_csv_output(
