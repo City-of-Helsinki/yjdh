@@ -93,3 +93,11 @@ def test_list_display_methods(youth_summer_voucher_admin):
     assert voucher.youth_application.name in link_html
     assert str(voucher.youth_application.id) in link_html
     assert "href" in link_html
+
+
+@pytest.mark.django_db
+def test_get_queryset(youth_summer_voucher_admin):
+    voucher = YouthSummerVoucherFactory()
+    request = RequestFactory().get("/")
+    qs = youth_summer_voucher_admin.get_queryset(request)
+    assert qs.filter(pk=voucher.pk).exists()
