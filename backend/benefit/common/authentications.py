@@ -42,3 +42,6 @@ class RobotBasicAuthentication(authentication.BaseAuthentication):
 
 class PowerBiAuthentication(RobotBasicAuthentication):
     credentials = settings.POWER_BI_AUTH_CREDENTIAL
+
+class DeMinimisAuthentication(RobotBasicAuthentication):
+    credentials = settings.DEMINIMIS_AUTH_CREDENTIAL

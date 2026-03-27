@@ -848,6 +848,12 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         verbose_name=_("Batch created through Ahjo integration"),
     )
 
+    de_minimis_grant_send = models.BooleanField(
+        blank=True,
+        default=False,
+        verbose_name=_("De minimis aid data has been sent"),
+    )
+
     def clean(self):
         # Deny any attempt to create more than one draft for accepted or rejected batch
         def _clean_one_draft_per_decision(self):
