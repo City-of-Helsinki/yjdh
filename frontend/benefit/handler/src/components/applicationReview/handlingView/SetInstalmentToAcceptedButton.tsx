@@ -1,9 +1,9 @@
+import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import useInstalmentStatusTransition from 'benefit/handler/hooks/useInstalmentStatusTransition';
 
 type Props = {
   application: Application;

@@ -1,23 +1,27 @@
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
-import { Application } from 'benefit-shared/types/application';
 import { Button, Dialog, IconUpload } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { useState, useRef } from 'react';
-import { showErrorToast } from 'shared/components/toast/Toast';
+import React, { useRef, useState } from 'react';
+import showErrorToast from 'shared/components/toast/Toast';
 
-type Props = {
-  application: Application;
+interface Props {
+  applicationId?: string;
   onUpload: (data: FormData) => void;
   isUploading?: boolean;
-};
+}
 
-const ALLOWED_FILE_TYPES = ['application/pdf', 'image/png', 'image/jpeg'] as const;
+const ALLOWED_FILE_TYPES = [
+  'application/pdf',
+  'image/png',
+  'image/jpeg',
+] as const;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const UploadAttachmentButton: React.FC<Props> = ({
-                                                   onUpload,
-                                                   isUploading = false,
-                                                 }) => {
+  applicationId,
+  onUpload,
+  isUploading = false,
+}) => {
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -28,11 +32,25 @@ const UploadAttachmentButton: React.FC<Props> = ({
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
+    const errorTitle = t('common:applications.errors.fileUpload.title');
     if (!file) return;
 
-    if (!ALLOWED_FILE_TYPES.includes(file.type as typeof ALLOWED_FILE_TYPES[number])) {
+    if (!applicationId) {
       showErrorToast(
-        t('common:applications.errors.fileUpload.title'),
+        errorTitle,
+        t('common:applications.errors.fileUpload.genericError')
+      );
+      if (uploadRef.current) uploadRef.current.value = '';
+      return;
+    }
+
+    if (
+      !ALLOWED_FILE_TYPES.includes(
+        file.type as typeof ALLOWED_FILE_TYPES[number]
+      )
+    ) {
+      showErrorToast(
+        errorTitle,
         t('common:applications.errors.fileUpload.fileTypeError')
       );
       if (uploadRef.current) uploadRef.current.value = '';
@@ -41,7 +59,7 @@ const UploadAttachmentButton: React.FC<Props> = ({
 
     if (file.size > MAX_FILE_SIZE) {
       showErrorToast(
-        t('common:applications.errors.fileUpload.title'),
+        errorTitle,
         t('common:applications.errors.fileUpload.fileSizeError')
       );
       if (uploadRef.current) uploadRef.current.value = '';
@@ -65,7 +83,7 @@ const UploadAttachmentButton: React.FC<Props> = ({
         variant="secondary"
         iconLeft={<IconUpload />}
         onClick={() => setIsDialogOpen(true)}
-        disabled={isUploading}
+        disabled={isUploading || !applicationId}
       >
         Lataa liite
       </Button>
@@ -74,7 +92,9 @@ const UploadAttachmentButton: React.FC<Props> = ({
         isOpen={isDialogOpen}
         close={() => setIsDialogOpen(false)}
         aria-labelledby="upload-dialog-title"
-        closeButtonLabelText={t('common:applications.paidSalaries.buttons.close')}
+        closeButtonLabelText={t(
+          'common:applications.paidSalaries.buttons.close'
+        )}
       >
         <Dialog.Header
           id="upload-dialog-title"
@@ -97,12 +117,13 @@ const UploadAttachmentButton: React.FC<Props> = ({
           <Button
             theme="coat"
             onClick={handleUploadClick}
-            disabled={isUploading}
+            disabled={isUploading || !applicationId}
             iconLeft={<IconUpload />}
             style={{ marginTop: '1rem' }}
           >
-            {isUploading ? t('common:applications.paidSalaries.uploading') :
-              t('common:applications.paidSalaries.chooseFile')}
+            {isUploading
+              ? t('common:applications.paidSalaries.uploading')
+              : t('common:applications.paidSalaries.chooseFile')}
           </Button>
         </Dialog.Content>
         <Dialog.ActionButtons>

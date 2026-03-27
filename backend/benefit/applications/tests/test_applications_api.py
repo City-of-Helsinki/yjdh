@@ -11,7 +11,6 @@ from unittest import mock
 
 import faker
 import pytest
-
 from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
@@ -20,7 +19,6 @@ from freezegun import freeze_time
 from PIL import Image
 from resilient_logger.models import ResilientLogEntry
 from rest_framework.reverse import reverse
-from rest_framework import serializers
 
 from applications.api.v1.application_views import BaseApplicationViewSet
 from applications.api.v1.serializers.application import (
@@ -72,6 +70,7 @@ from terms.models import TermsOfServiceApproval
 
 def get_detail_url(application):
     return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
+
 
 def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})

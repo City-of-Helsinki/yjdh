@@ -1,28 +1,25 @@
+import { $CalculatorTableRow } from 'benefit/handler/components/applicationReview/ApplicationReview.sc';
 import {
   $DecisionCalculatorAccordion,
   $DecisionCalculatorAccordionIconContainer,
 } from 'benefit/handler/components/applicationReview/handlingView/DecisionCalculationAccordion.sc';
+import useChangeEmployerAssurance from 'benefit/handler/hooks/useChangeEmployerAssurance';
+import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
+import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Accordion, IconOccupation } from 'hds-react';
+import { Accordion, Button, IconOccupation } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import {$Grid, $GridCell, $Section} from 'shared/components/forms/section/FormSection.sc';
-
 import {
-  ATTACHMENT_TYPES
-} from 'benefit-shared/constants';
+  $Grid,
+  $GridCell,
+  $Section,
+} from 'shared/components/forms/section/FormSection.sc';
 
-import SetInstalmentToPendingButton
-  from "./SetInstalmentToPendingButton";
-import SetInstalmentToAcceptedButton
-  from "./SetInstalmentToAcceptedButton";
-
+import SetInstalmentToAcceptedButton from './SetInstalmentToAcceptedButton';
+import SetInstalmentToPendingButton from './SetInstalmentToPendingButton';
 import UploadAttachmentButton from './UploadAttachmentButton';
-import { useApplicationReview } from '../useApplicationReview';
-import useChangeEmployerAssurance from "benefit/handler/hooks/useChangeEmployerAssurance";
-import {$CalculatorTableRow} from "benefit/handler/components/applicationReview/ApplicationReview.sc";
-import useRemoveAttachmentQuery from "benefit/handler/hooks/useRemoveAttachmentQuery";
-import useUploadAttachmentQuery from "benefit/handler/hooks/useUploadAttachmentQuery";
 
 type Props = {
   data: Application;
@@ -40,6 +37,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
   }, [data.employerAssurance]);
 
   const uploadAttachment = useUploadAttachmentQuery();
+  const isUploading = Boolean(uploadAttachment.isLoading);
 
   const changeEmployerAssurance = (nextValue: boolean | null): void => {
     if (!data.id) {
@@ -47,13 +45,14 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
     }
 
     updateApplication.mutate({
-        ...data,
-        employerAssurance: nextValue,
-    })
-  }
+      ...data,
+      employer_assurance: nextValue,
+    });
+  };
 
-  const handleEmployerAssuranceChange = () => {
+  const handleEmployerAssuranceChange = (): void => {
     if (!data.id) {
+      return;
     }
 
     const nextValue = !employerAssurance;
@@ -63,14 +62,14 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
 
   const removeAttachment = useRemoveAttachmentQuery();
 
-  const handleDeleteAttachment = (attachmentId: string) :void => {
-    if (!attachmentId) {
+  const handleDeleteAttachment = (attachmentId: string): void => {
+    if (!data.id || !attachmentId) {
       return;
     }
 
     removeAttachment.mutate({
       applicationId: data.id,
-      attachmentId: attachmentId,
+      attachmentId,
     });
   };
 
@@ -86,52 +85,57 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
       >
         <$CalculatorTableRow>
           <$Section>
-            <>
-              <div>
-                <span><input type="checkbox"
-                           checked={employerAssurance}
-                           onChange={handleEmployerAssuranceChange}/></span>
-                <span>{t('common:applications.paidSalaries.assurance')}</span>
-              </div>
-            </>
+            <div>
+              <span>
+                <input
+                  type="checkbox"
+                  checked={employerAssurance}
+                  onChange={handleEmployerAssuranceChange}
+                />
+              </span>
+              <span>{t('common:applications.paidSalaries.assurance')}</span>
+            </div>
           </$Section>
         </$CalculatorTableRow>
 
-          {data.attachments.map((attachment) =>
-            attachment.attachmentType === ATTACHMENT_TYPES.PAYSLIP ? (
-              <$CalculatorTableRow>
-                <$GridCell colSpan={32}
-                           key={attachment.id}>
-                  <a href={attachment.attachmentFile}>
-                    {attachment.attachmentFileName}
-                  </a>
-                </$GridCell>
-                <$GridCell colSpan={24}>
-                  <button
-                    onClick={() => handleDeleteAttachment(attachment.id)}
-                  >
-                    {t('common:applications.paidSalaries.buttons.delete')}
-                  </button>
-                </$GridCell>
-              </$CalculatorTableRow>
-            ) : null
-          )}
-        <$Grid css={{ marginTop: '16px'}}>
+        {data.attachments.map((attachment) =>
+          attachment.attachmentType === ATTACHMENT_TYPES.PAYSLIP ? (
+            <$CalculatorTableRow key={attachment.id}>
+              <$GridCell colSpan={32}>
+                <a href={attachment.attachmentFile}>
+                  {attachment.attachmentFileName}
+                </a>
+              </$GridCell>
+              <$GridCell colSpan={24}>
+                <Button onClick={() => handleDeleteAttachment(attachment.id)}>
+                  {t('common:applications.paidSalaries.buttons.delete')}
+                </Button>
+              </$GridCell>
+            </$CalculatorTableRow>
+          ) : null
+        )}
+
+        <$Grid css={{ marginTop: '16px' }}>
           <$GridCell colSpan={32}>
-            <SetInstalmentToPendingButton application={data}/>
+            <SetInstalmentToPendingButton application={data} />
           </$GridCell>
           <$GridCell colSpan={32}>
-            <SetInstalmentToAcceptedButton application={data}/>
+            <SetInstalmentToAcceptedButton application={data} />
           </$GridCell>
           <$GridCell colSpan={64}>
             <UploadAttachmentButton
-              onUpload={(formData) =>
+              applicationId={data.id}
+              onUpload={(formData) => {
+                if (!data.id) {
+                  return;
+                }
+
                 uploadAttachment.mutate({
                   applicationId: data.id,
                   data: formData,
-                })
-              }
-              isUploading={uploadAttachment.isUploading}
+                });
+              }}
+              isUploading={isUploading}
             />
           </$GridCell>
         </$Grid>

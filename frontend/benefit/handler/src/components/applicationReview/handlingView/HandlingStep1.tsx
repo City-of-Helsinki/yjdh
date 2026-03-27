@@ -34,10 +34,10 @@ import EmployeeView from '../employeeView/EmployeeView';
 import EmploymentView from '../employmentView/EmpoymentView';
 import ArchivedView from '../handledView/archivedView/ArchivedView';
 import HandledView from '../handledView/HandledView';
-import PaidSalariesAccordion from './PaidSalariesAccordion';
 import PaperView from '../paperView/PaperView';
 import SalaryBenefitCalculatorView from '../salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from '../useApplicationReview';
+import PaidSalariesAccordion from './PaidSalariesAccordion';
 
 type HandlingStepProps = {
   application: Application;

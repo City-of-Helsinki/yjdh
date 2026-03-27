@@ -28,7 +28,6 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from sentry_sdk.integrations.beam import raise_exception
 from simple_history.utils import update_change_reason
 from sql_util.aggregates import SubqueryCount
 
@@ -47,6 +46,7 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    AttachmentType,
 )
 from applications.models import (
     AhjoSetting,
@@ -74,7 +74,6 @@ from applications.services.generate_application_summary import (
     generate_application_summary_file,
     get_context_for_summary_context,
 )
-from applications.enums import AttachmentType
 from calculator.enums import InstalmentStatus
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.automatic_messages import send_application_reopened_message
@@ -306,7 +305,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             "application": obj.id,
             "attachment_file": request.data["attachment_file"],
             "content_type": request.data["attachment_file"].content_type,
-            "attachment_type": attachment_type
+            "attachment_type": attachment_type,
         }
         # Validate request data
         serializer = AttachmentSerializer(data=data)
@@ -392,12 +391,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if not attachment:
             return self._attachment_not_found()
 
-        if (attachment.attachment_type != AttachmentType.PAYSLIP and
-            not ApplicationStatus.is_editable_status(self.request.user, obj.status)):
-                return Response(
-                    {"detail": _("Operation not allowed for this application status.")},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
+        if (
+            attachment.attachment_type != AttachmentType.PAYSLIP
+            and not ApplicationStatus.is_editable_status(self.request.user, obj.status)
+        ):
+            return Response(
+                {"detail": _("Operation not allowed for this application status.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         if instance := self._get_attachment(attachment_pk):
             audit_logging.log(
                 request.user,
@@ -885,12 +886,12 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     @transaction.atomic
     def change_employer_assurance(self, request, pk=None) -> HttpResponse:
         application = self.get_object()
-        employer_assurance = request.data.get("employerAssurance")
+        employer_assurance = request.data.get("employer_assurance")
 
         if employer_assurance not in [True, False]:
             return Response(
                 _("Field employer_assurance is required"),
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
         application.employer_assurance = employer_assurance
         application.save()
