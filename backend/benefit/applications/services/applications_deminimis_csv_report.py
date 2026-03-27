@@ -1,11 +1,5 @@
-from datetime import datetime
-from typing import Union
-
-from django.conf import settings
 from django.utils import translation
 
-from applications.enums import ApplicationBatchStatus
-from applications.models import Application
 from applications.services.applications_csv_report import (
     ApplicationsCsvService,
     csv_default_column,
