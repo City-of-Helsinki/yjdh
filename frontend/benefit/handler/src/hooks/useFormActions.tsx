@@ -64,6 +64,63 @@ interface FormActions {
   ) => Promise<ApplicationData | void>;
 }
 
+const toStringArrayRecord = (
+  value: Record<string, unknown>
+): Record<string, string[]> =>
+  Object.fromEntries(
+    Object.entries(value).map(([entryKey, entryValue]) => [
+      entryKey,
+      Array.isArray(entryValue)
+        ? entryValue.map((item) => String(item))
+        : [String(entryValue)],
+    ])
+  );
+
+const renderEmployeeErrorLinks = (
+  value: unknown,
+  errorData: { data: Record<string, unknown> }
+): React.ReactElement[] => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return [
+      <React.Fragment key={APPLICATION_FIELD_KEYS.EMPLOYEE}>
+        {prettyPrintObject({ data: toStringArrayRecord(errorData.data) })}
+      </React.Fragment>,
+    ];
+  }
+
+  return Object.entries(camelcaseKeys(value)).map(([emplKey, emplValue]) => (
+    <a key={emplKey} href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}>
+      {emplValue as React.ReactNode}
+    </a>
+  ));
+};
+
+const renderArrayErrorLinks = (
+  key: string,
+  value: unknown[]
+): React.ReactElement[] =>
+  value.map((item) => (
+    <a key={`${key}-${String(item)}`} href={`#${key}`}>
+      {String(item)}
+    </a>
+  ));
+
+const renderGenericErrorContent = (
+  key: string,
+  value: unknown
+): React.ReactElement =>
+  typeof value === 'string' ? (
+    <a key={key} href={`#${key}`}>
+      {value}
+    </a>
+  ) : (
+    <React.Fragment key={key}>
+      {prettyPrintObject({
+        data: toStringArrayRecord(value as Record<string, unknown>),
+      })}
+    </React.Fragment>
+  );
+
 const getErrorContent = (
   t: TFunction,
   errorData: {
@@ -73,24 +130,7 @@ const getErrorContent = (
   try {
     return Object.entries(errorData.data).flatMap(([key, value]) => {
       if (key === APPLICATION_FIELD_KEYS.EMPLOYEE) {
-        if (!value || typeof value !== 'object' || Array.isArray(value)) {
-          return [
-            <React.Fragment key={key}>
-              {prettyPrintObject({ data: errorData.data })}
-            </React.Fragment>,
-          ];
-        }
-
-        return Object.entries(camelcaseKeys(value)).map(
-          ([emplKey, emplValue]) => (
-            <a
-              key={emplKey}
-              href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}
-            >
-              {emplValue as React.ReactNode}
-            </a>
-          )
-        );
+        return renderEmployeeErrorLinks(value, errorData);
       }
       if (key === 'approveTerms') {
         return [
@@ -98,21 +138,9 @@ const getErrorContent = (
         ];
       }
       if (Array.isArray(value)) {
-        return value.map((item, index) => (
-          <a key={`${key}-${index}`} href={`#${key}`}>
-            {String(item)}
-          </a>
-        ));
+        return renderArrayErrorLinks(key, value);
       }
-      return typeof value === 'string' ? (
-        <a key={key} href={`#${key}`}>
-          {value}
-        </a>
-      ) : (
-        <React.Fragment key={key}>
-          {prettyPrintObject({ data: value as Record<string, string[]> })}
-        </React.Fragment>
-      );
+      return renderGenericErrorContent(key, value);
     });
   } catch (fatalError: unknown) {
     return [<p key="fatalError">Unresolved error</p>];
