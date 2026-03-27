@@ -485,8 +485,8 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
     ]
     actions = ["resend_voucher"]
 
-    def queryset(self, request):
-        return super().queryset(request).select_related("youth_application")
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("youth_application")
 
     def masked_social_security_number(self, obj):
         """Mask social security number for display."""
@@ -706,10 +706,10 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
             return True
         return False
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         return (
             super()
-            .queryset(request)
+            .get_queryset(request)
             .select_related("application")
             .select_related("application__company")
             .select_related("youth_summer_voucher")
