@@ -110,5 +110,49 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         ).toBeInTheDocument();
       });
     });
+
+    it("Should only identify the current user's draft when multiple drafts exist", async () => {
+      const myId = 'my-user-id';
+      const myUser = { ...fakeObjectFactory.fakeUser(), id: myId };
+      const myDraft = {
+        ...fakeObjectFactory.fakeApplication(),
+        status: 'draft',
+        is_mine: true,
+      } as any;
+      const otherDraft = {
+        ...fakeObjectFactory.fakeApplication(),
+        status: 'draft',
+        is_mine: false,
+      } as any;
+      const applications = [otherDraft, myDraft]; // otherDraft is first
+
+      expectAuthorizedReply(myUser);
+      expectToGetCompanyFromBackend();
+      expectToGetApplicationsFromBackend(applications);
+
+      const spyPush = jest.fn();
+      renderPage(IndexPage, { push: spyPush });
+
+      // Wait for the dashboard to render
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /Tee uusi hakemus/i })
+        ).toBeInTheDocument();
+      });
+
+      // Click the button
+      const button = screen.getByRole('button', { name: /Tee uusi hakemus/i });
+      button.click();
+
+      // Verify it redirects to MY draft, not the first one (otherDraft)
+      await waitFor(() => {
+        expect(spyPush).toHaveBeenCalledWith(
+          expect.stringContaining(`application?id=${myDraft.id}`)
+        );
+      });
+      expect(spyPush).not.toHaveBeenCalledWith(
+        expect.stringContaining(`application?id=${otherDraft.id}`)
+      );
+    });
   });
 });

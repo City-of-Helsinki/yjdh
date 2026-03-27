@@ -346,6 +346,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         required=False,
     )
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
+    is_mine = serializers.SerializerMethodField("get_is_mine")
 
     class Meta:
         model = EmployerApplication
@@ -368,6 +369,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             "summer_vouchers",
             "language",
             "submitted_at",
+            "is_mine",
         ]
         read_only_fields = ["created_at", "modified_at", "user"]
 
@@ -401,6 +403,12 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             return hisory_entry.modified_at
         else:
             return None
+
+    def get_is_mine(self, obj):
+        request = self.context.get("request")
+        if request:
+            return obj.user == request.user
+        return False
 
     def _update_summer_vouchers(
         self, summer_vouchers_data: list, application: EmployerApplication
