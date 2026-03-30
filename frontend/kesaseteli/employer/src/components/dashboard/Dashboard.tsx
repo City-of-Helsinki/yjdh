@@ -88,8 +88,7 @@ const Dashboard = ({
     <Container>
       <Head>
         <title>{t('common:appName')}</title>
-      </Head>{' '}
-      as React.ReactElement
+      </Head>
       <$Header>
         <$Heading>{t('common:dashboard.header')}</$Heading>
       </$Header>
