@@ -11,8 +11,6 @@ class ApplicationsDeminimisCsvService(ApplicationsCsvService):
     """
     This subclass customizes the csv_columns for a de Minimis export format.
     """
-    # TODO add TOL code to the export when it is added to the DB
-    
 
     @property
     def csv_columns(self):
@@ -21,7 +19,7 @@ class ApplicationsDeminimisCsvService(ApplicationsCsvService):
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Työnantajan nimi", "company.name"),
             CsvColumn("Työnantajan Y-tunnus", "company.business_id"),
-            CsvColumn("TOL-koodi", lambda app: ""), # Placeholder for TOL code, to be implemented when available
+            csv_default_column("TOL-koodi", "company.industry_code"),
             csv_default_column("Päätöspäivä", "batch.decision_date"),
             csv_default_column(
                     "HL-erä-1", self.get_instalment_1_amount

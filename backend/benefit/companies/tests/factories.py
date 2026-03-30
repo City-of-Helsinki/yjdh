@@ -10,6 +10,20 @@ class CompanyFactory(factory.django.DjangoModelFactory):
     company_form = "oy"
     company_form_code = YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
     bank_account_number = factory.Faker("iban", locale="fi_FI")
+    industry = factory.Faker(
+        "random_element",
+        elements=[
+            "Ohjelmistot ja ohjelmointipalvelu",
+            "Talonrakentaminen",
+            "Vähittäiskauppa",
+            "Terveys- ja sosiaalipalvelut",
+            "Elintarvikkeiden valmistus",
+        ],
+    )
+    industry_code = factory.Faker(
+        "random_element",
+        elements=["62010", "41200", "47110", "86210", "10110"],
+    )
 
     street_address = factory.Faker("street_address", locale="fi_FI")
     postcode = factory.Faker("postcode", locale="fi_FI")
