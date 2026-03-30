@@ -1,10 +1,10 @@
 import json
 
 import pytest
-from django.http import HttpResponseRedirect
 from django.test import override_settings
+from django.utils.translation import gettext as _
 from rest_framework import status
-from rest_framework.exceptions import ErrorDetail
+from rest_framework.exceptions import ErrorDetail, NotAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.reverse import reverse
 
@@ -15,7 +15,6 @@ from common.tests.factories import (
     EmployerSummerVoucherFactory,
 )
 from common.tests.utils import set_company_business_id_to_client
-from common.urls import get_django_adfs_login_url
 
 # Headers to be used in requests to accept only application/json responses
 HEADERS_ACCEPT_APPLICATION_JSON = {"Accept": "application/json"}
@@ -104,15 +103,12 @@ def test_api_root_get_forbidden_to_anonymous_user(client):
     api_root_url = reverse("v1:api-root")
     response = client.get(api_root_url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert (
-        response.data
-        == {
-            "detail": ErrorDetail(
-                string="Autentikaatiotunnuksia ei annettu.",  # Default server language is Finnish
-                code="not_authenticated",
-            )
-        }
-    )
+    assert response.data == {
+        "detail": ErrorDetail(
+            string=_("Authentication credentials were not provided."),
+            code=NotAuthenticated.default_code,
+        )
+    }
     assert isinstance(response.accepted_renderer, JSONRenderer)
     assert response.wsgi_request.user.is_anonymous
 
@@ -131,7 +127,9 @@ def test_youth_application_fetch_employee_data_get_method_not_allowed_to_anonymo
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert response.data == {
         "detail": ErrorDetail(
-            string='Metodi "GET" ei ole sallittu.',  # Default server language is Finnish
+            string=_(
+                'Metodi "GET" ei ole sallittu.'
+            ),  # Default server language is Finnish
             code="method_not_allowed",
         )
     }
@@ -182,7 +180,9 @@ def test_youth_application_create_without_ssn_get_method_not_allowed_to_anonymou
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert response.data == {
         "detail": ErrorDetail(
-            string='Metodi "GET" ei ole sallittu.',  # Default server language is Finnish
+            string=_(
+                'Metodi "GET" ei ole sallittu.'
+            ),  # Default server language is Finnish
             code="method_not_allowed",
         )
     }
@@ -192,22 +192,23 @@ def test_youth_application_create_without_ssn_get_method_not_allowed_to_anonymou
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
-def test_youth_application_create_without_ssn_post_redirects_anonymous_user_to_login(
+def test_youth_application_create_without_ssn_post_unauthorized_to_anonymous_user(
     client,
 ):
     """
     Test that using POST on youth application's create_without_ssn endpoint
-    redirects an anonymous user to a login page.
+    returns unauthorized to anonymous users.
     """
     create_without_ssn_url = reverse("v1:youthapplication-create-without-ssn")
     response = client.post(
         create_without_ssn_url, data={}, headers=HEADERS_ACCEPT_APPLICATION_JSON
     )
-    assert response.status_code == status.HTTP_302_FOUND
-    assert isinstance(response, HttpResponseRedirect)
-    assert response.url == get_django_adfs_login_url(
-        redirect_url=create_without_ssn_url
-    )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.data == {
+        "detail": _("Authentication credentials were not provided."),
+        "code": NotAuthenticated.default_code,
+    }
+    assert isinstance(response.accepted_renderer, JSONRenderer)
     assert response.wsgi_request.user.is_anonymous
 
 
