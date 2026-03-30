@@ -156,7 +156,10 @@ test('Handler creates another alteration and tries to handle it with errors', as
 
   // Verify that validation fails
   await expectHandleButtonDisabled(t);
-  await t.click(csvButton);
+  await t.click(Selector('[for="is-recoverable-no"]'));
+  await t.click('#recovery-justification');
+  await t.selectText('#recovery-justification');
+  await t.pressKey('delete');
   await t.click(handleButton);
 
   await t
