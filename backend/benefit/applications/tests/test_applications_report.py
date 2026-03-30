@@ -508,7 +508,7 @@ def test_deminimis_report_csv_output(application_deminimis_csv_service):
         assert int(csv_row[0]) == application.application_number
         assert csv_row[1] == f'"{application.company.name}"'
         assert csv_row[2] == f'"{application.company.business_id}"'
-        assert csv_row[3] == '""'  # TOL-koodi placeholder (empty)
+        assert csv_row[3] == f'"{application.company.industry_code}"'  # TOL-koodi
         assert csv_row[4] == f'"{format_datetime(application.batch.decision_date)}"'
         
         instalment_1 = application_deminimis_csv_service.get_instalment_1_amount(application)

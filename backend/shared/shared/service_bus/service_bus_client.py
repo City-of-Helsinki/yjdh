@@ -86,6 +86,7 @@ class ServiceBusClient:
                 service_bus_data["LegalForm"]
             ),
             "industry": cls._get_industry(service_bus_data.get("BusinessLine", {})),
+            "industry_code": cls._get_industry_code(service_bus_data.get("BusinessLine", {})),
             "street_address": address["StreetAddress"],
             "postcode": address["PostalCode"],
             "city": address["City"],
@@ -122,6 +123,14 @@ class ServiceBusClient:
         if not business_line:
             raise ValueError("Cannot get company form data")
         return business_line.get("Description", cls.UNKNOWN_INDUSTRY)
+
+    @classmethod
+    def _get_industry_code(cls, business_line_json: dict) -> str:
+        """Returns the TOL code (e.g. '62010') from the BusinessLine data."""
+        try:
+            return business_line_json["Type"]["SecondaryCode"] or ""
+        except (KeyError, TypeError):
+            return ""
 
     @staticmethod
     def _format_search_results(search_results: list) -> list:

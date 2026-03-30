@@ -12,6 +12,18 @@ class Company(AbstractCompany):
     company_form_code = models.IntegerField(
         verbose_name=_("YTJ type code for company form")
     )
+    industry = models.CharField(
+        max_length=255,
+        verbose_name=_("industry (TOL code description)"),
+        blank=True,
+        default="",
+    )
+    industry_code = models.CharField(
+        max_length=10,
+        verbose_name=_("industry TOL code"),
+        blank=True,
+        default="",
+    )
 
     def __str__(self):
         return self.name
