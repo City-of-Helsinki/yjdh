@@ -76,6 +76,28 @@ const toStringArrayRecord = (
     ])
   );
 
+const renderErrorValue = (value: unknown): string => {
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  ) {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item)).join(', ');
+  }
+
+  if (value && typeof value === 'object') {
+    return prettyPrintObject({
+      data: toStringArrayRecord(value as Record<string, unknown>),
+    });
+  }
+
+  return '';
+};
+
 const renderEmployeeErrorLinks = (
   value: unknown,
   errorData: { data: Record<string, unknown> }
@@ -90,7 +112,7 @@ const renderEmployeeErrorLinks = (
 
   return Object.entries(camelcaseKeys(value)).map(([emplKey, emplValue]) => (
     <a key={emplKey} href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}>
-      {emplValue as React.ReactNode}
+      {renderErrorValue(emplValue)}
     </a>
   ));
 };

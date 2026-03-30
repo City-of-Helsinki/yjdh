@@ -225,7 +225,7 @@ const AlterationHandlingForm = ({
                 value={formik.values.recoveryJustification}
                 id="recovery-justification"
                 name="recoveryJustification"
-                required
+                required={formik.values.isRecoverable === false}
                 invalid={!!getErrorMessage('recoveryJustification')}
                 aria-invalid={!!getErrorMessage('recoveryJustification')}
                 errorText={getErrorMessage('recoveryJustification')}
