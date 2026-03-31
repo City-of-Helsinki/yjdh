@@ -15,7 +15,12 @@ import {
   CALCULATION_ROW_TYPES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Accordion, IconEuroSign, IconMoneyBag } from 'hds-react';
+import {
+  Accordion,
+  IconEuroSign,
+  IconMoneyBag,
+  IconOccupation,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
@@ -173,7 +178,7 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
       </$DecisionCalculatorAccordion>
       <$DecisionCalculatorAccordion>
         <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
-          <IconMoneyBag />
+          <IconOccupation />
         </$DecisionCalculatorAccordionIconContainer>
         <Accordion
           heading={t('common:applications.paidSalaries.heading')}
