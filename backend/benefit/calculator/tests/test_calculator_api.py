@@ -765,7 +765,9 @@ def test_application_calculation_instalments(
         assert instalment_2.status == InstalmentStatus.WAITING
 
         due_date = instalment_2.due_date
-        future_date = timezone.now() + relativedelta(months=6)
+        future_date = handling_application.calculation.start_date + relativedelta(
+            months=6
+        )
         assert due_date == future_date.date()
 
 

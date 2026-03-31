@@ -1910,7 +1910,8 @@
       },
       "changeInstalmentDate": {
         "heading": "Eräpäivän muutos",
-        "helperText": "Kirjoita päivämäärä muodossa PP.KK.VVVV",
+        "helperText": "Kirjoita päivämäärä muodossa PP.KK.VVVV. Päivämäärä voi olla ensimmäisen erän maksupäivän jälkeen ja ennen nykyistä maksupäivää.",
+        "label": "Uusi eräpäivä",
         "buttons": {
           "cancel": "Peruuta",
           "confirm": "Vahvista"
