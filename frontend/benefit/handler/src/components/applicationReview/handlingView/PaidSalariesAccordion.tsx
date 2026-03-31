@@ -2,6 +2,7 @@ import { $CalculatorTableRow } from 'benefit/handler/components/applicationRevie
 import useChangeEmployerAssurance from 'benefit/handler/hooks/useChangeEmployerAssurance';
 import useInstalmentStatusTransitions from 'benefit/handler/hooks/useInstalmentStatusTransition'
 import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
+import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
 import { ATTACHMENT_TYPES, INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { Button } from 'hds-react';
@@ -16,6 +17,8 @@ type Props = {
 const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
   const { t } = useTranslation();
   const { mutate: removeAttachment } = useRemoveAttachmentQuery();
+  const { mutate: uploadAttachment } = useUploadAttachmentQuery();
+  const uploadInputRef = React.useRef<HTMLInputElement | null>(null);
   const [ isEmployerAssurance, setIsEmployerAssurance ] = React.useState(Boolean(data?.employerAssurance));
   const instalmentStatusTransition = useInstalmentStatusTransitions();
   const changeEmployerAssurance = useChangeEmployerAssurance();
@@ -61,6 +64,26 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
     });
   };
 
+  const handleUploadAttachment = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { files } = event.target;
+    const file = files?.[0];
+
+    if (!file || !data.id) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('attachment_file', file);
+    formData.append('attachment_type', ATTACHMENT_TYPES.PAYSLIP);
+
+    uploadAttachment({
+      applicationId: data.id,
+      data: formData,
+    });
+  };
+
   return (
     <>
       <$Grid css={{ marginBottom: '24px' }}>
@@ -90,27 +113,29 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
           </$CalculatorTableRow>
         ) : null
       )}
-      <$Grid>
-        {data.secondInstalment?.status !== INSTALMENT_STATUSES.PENDING && (
-          <$GridCell $colSpan={32}>
-            <Button
-              key="set-pending-button"
-              onClick={handleSetPending}>
-              {t('common:applications.paidSalaries.buttons.setPending')}
-            </Button>
-          </$GridCell>
-        )}
+      {data.secondInstalment?.status !== INSTALMENT_STATUSES.PENDING && (
+        <Button css={{ marginRight: '24px' }} onClick={handleSetPending}>
+          {t('common:applications.paidSalaries.buttons.setPending')}
+        </Button>
+      )}
 
-        {data.secondInstalment?.status !== INSTALMENT_STATUSES.ACCEPTED && (
-          <$GridCell $colSpan={32}>
-            <Button
-              key="set-accepted-button"
-              onClick={handleSetAccepted}>
-              {t('common:applications.paidSalaries.buttons.setAccepted')}
-            </Button>
-          </$GridCell>
-        )}
-      </$Grid>
+      {data.secondInstalment?.status !== INSTALMENT_STATUSES.ACCEPTED && (
+        <Button css={{ marginRight: '24px' }} onClick={handleSetAccepted}>
+          {t('common:applications.paidSalaries.buttons.setAccepted')}
+        </Button>
+      )}
+      <>
+        <input
+          ref={uploadInputRef}
+          id="paid-salaries-upload"
+          type="file"
+          hidden
+          onChange={handleUploadAttachment}
+        />
+        <Button onClick={() => uploadInputRef.current?.click()}>
+          Lataa tiedosto
+        </Button>
+      </>
     </>
   );
 };

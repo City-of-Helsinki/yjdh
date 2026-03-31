@@ -291,11 +291,13 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         Validate that adding attachments is allowed in this application status
         """
         obj = self.get_object()
-        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
-            return Response(
-                {"detail": _("Operation not allowed for this application status.")},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        attachment_type = request.data.get("attachment_type")
+        if attachment_type != AttachmentType.PAYSLIP:
+            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         # Validate request data
         serializer = AttachmentSerializer(
