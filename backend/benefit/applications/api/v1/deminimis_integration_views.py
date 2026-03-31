@@ -6,10 +6,13 @@ from django.utils import timezone
 from django_filters import DateFromToRangeFilter
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from applications.models import Application
+from applications.api.v1.serializers.deminimis_callback import DeMinimisCallbackSerializer
+from applications.models import Application, ApplicationBatch
 from applications.services.applications_deminimis_csv_report import (
     ApplicationsDeminimisCsvService,
 )
@@ -91,3 +94,38 @@ class DeMinimisIntegrationView(APIView):
     @staticmethod
     def _filename():
         return f"deminimis_data_{timezone.now().strftime('%Y%m%d_%H%M%S')}"
+
+
+# The callback view is implemented in the same file for better cohesion, as it is closely related to the integration view and handles the callback from the de minimis aid reporting system.
+class DeMinimisCallbackView(APIView):
+    authentication_classes = [DeMinimisAuthentication]
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = DeMinimisCallbackSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.validated_data["status"] == "Success":
+            self._handle_successful_applications(
+                serializer.validated_data["successful_applications"]
+            )
+        if serializer.validated_data["failed_applications"]:
+            LOGGER.error(
+                f"De minimis callback reported failures for applications: "
+                f"{serializer.validated_data['failed_applications']}"
+            )
+
+        return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
+
+    def _handle_successful_applications(self, application_numbers: list):
+        batches = ApplicationBatch.objects.filter(
+            applications__application_number__in=application_numbers,
+            de_minimis_grant_send=False,
+        ).distinct()
+        updated_count = batches.update(de_minimis_grant_send=True)
+        LOGGER.info(
+            f"Marked {updated_count} batches as reported for de minimis aid "
+            f"(applications: {application_numbers})."
+        )
