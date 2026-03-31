@@ -1,13 +1,13 @@
-import { Application } from 'benefit-shared/types/application';
-import * as React from 'react';
-import { useTranslation } from 'next-i18next';
-import { ATTACHMENT_TYPES, INSTALMENT_STATUSES } from 'benefit-shared/constants';
-import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { Button } from 'hds-react';
-import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
-import useInstalmentStatusTransitions from 'benefit/handler/hooks/useInstalmentStatusTransition'
 import { $CalculatorTableRow } from 'benefit/handler/components/applicationReview/ApplicationReview.sc';
-import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
+import useChangeEmployerAssurance from 'benefit/handler/hooks/useChangeEmployerAssurance';
+import useInstalmentStatusTransitions from 'benefit/handler/hooks/useInstalmentStatusTransition'
+import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
+import { ATTACHMENT_TYPES, INSTALMENT_STATUSES } from 'benefit-shared/constants';
+import { Application } from 'benefit-shared/types/application';
+import { Button } from 'hds-react';
+import { useTranslation } from 'next-i18next';
+import * as React from 'react';
+import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 type Props = {
   data: Application;
@@ -18,7 +18,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
   const { mutate: removeAttachment } = useRemoveAttachmentQuery();
   const [ isEmployerAssurance, setIsEmployerAssurance ] = React.useState(Boolean(data?.employerAssurance));
   const instalmentStatusTransition = useInstalmentStatusTransitions();
-  const updateApplicationQuery = useUpdateApplicationQuery();
+  const changeEmployerAssurance = useChangeEmployerAssurance();
 
   React.useEffect(() => {
     setIsEmployerAssurance(Boolean(data.employerAssurance));
@@ -33,16 +33,19 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
     removeAttachment(payload);
   }
 
-  const handleEmployerAssurance = (): void => {
-    setIsEmployerAssurance(!isEmployerAssurance);
+  const handleEmployerAssuranceChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const {checked} = event.target;
+    setIsEmployerAssurance(checked);
 
-    const payload = {
-      ...data,
-      employerAssurance: !isEmployerAssurance,
+    if (data.id) {
+      changeEmployerAssurance.mutate({
+        id: data.id,
+        employerAssurance: checked,
+      });
     }
-
-    updateApplicationQuery.mutate(payload);
-  }
+  };
 
   const handleSetPending = (): void => {
     instalmentStatusTransition.mutate({
@@ -66,7 +69,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
             name="employer-assurance-checkbox"
             type="checkbox"
             checked={isEmployerAssurance}
-            onChange={() => handleEmployerAssurance()}
+            onChange={handleEmployerAssuranceChange}
           />
           {t('common:applications.paidSalaries.employerAssurance')}
         </$GridCell>

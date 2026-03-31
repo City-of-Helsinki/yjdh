@@ -898,6 +898,15 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    @action(methods=["PATCH"], detail=True, url_path="change_employer_assurance")
+    @transaction.atomic
+    def change_employer_assurance(self, request, pk) -> HttpResponse:
+        employer_assurance = request.data["employerAssurance"]
+        application = self.get_object()
+        application.employer_assurance = employer_assurance
+        application.save()
+        return Response(status=status.HTTP_200_OK)
+
     @action(methods=["PATCH"], detail=True, url_path="require_additional_information")
     @transaction.atomic
     def require_additional_information(self, request, pk) -> HttpResponse:
