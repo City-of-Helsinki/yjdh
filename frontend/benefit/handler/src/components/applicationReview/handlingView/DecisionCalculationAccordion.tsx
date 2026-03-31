@@ -28,6 +28,7 @@ import {
   $CalculatorTableRow,
 } from '../ApplicationReview.sc';
 import InstalmentAccordionSections from './InstalmentAccordionSections';
+import PaidSalariesAccordion from './PaidSalariesAccordion';
 
 type Props = {
   data: Application;
@@ -166,6 +167,27 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
           >
             <$CalculatorContainer>
               <InstalmentAccordionSections data={data} />
+            </$CalculatorContainer>
+          </$GridCell>
+        </Accordion>
+      </$DecisionCalculatorAccordion>
+      <$DecisionCalculatorAccordion>
+        <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
+          <IconMoneyBag />
+        </$DecisionCalculatorAccordionIconContainer>
+        <Accordion
+          heading={t('common:applications.paidSalaries.heading')}
+          card
+          size="s"
+        >
+          <$GridCell
+            $colSpan={11}
+            style={{
+              padding: theme.spacing.m,
+            }}
+          >
+            <$CalculatorContainer>
+              <PaidSalariesAccordion data={data}/>
             </$CalculatorContainer>
           </$GridCell>
         </Accordion>

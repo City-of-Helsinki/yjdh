@@ -139,6 +139,7 @@ export enum ATTACHMENT_TYPES {
   EMPLOYEE_CONSENT = 'employee_consent',
   FULL_APPLICATION = 'full_application',
   OTHER_ATTACHMENT = 'other_attachment',
+  PAYSLIP = 'payslip',
 }
 
 export enum APPLICATION_STATUSES {

@@ -83,6 +83,8 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.models import User
 from users.utils import get_company_from_request
 
+from applications.enums import AttachmentType
+
 log = logging.getLogger(__name__)
 
 
@@ -382,10 +384,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     )
     def delete_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
-        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
-            return Response(
-                {"detail": _("Operation not allowed for this application status.")},
-                status=status.HTTP_403_FORBIDDEN,
+        attachment = self._get_attachment(attachment_pk)
+        if not attachment:
+            return self._attachment_not_found()
+        if attachment.attachment_type != AttachmentType.PAYSLIP:
+            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
             )
         if instance := self._get_attachment(attachment_pk):
             audit_logging.log(

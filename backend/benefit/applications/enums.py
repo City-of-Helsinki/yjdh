@@ -114,6 +114,7 @@ class AttachmentType(models.TextChoices):
         "decision_text_secret_xml",
         _("non-public decision text xml attachment"),
     )
+    PAYSLIP = "payslip", _("payslip")
 
 
 class AttachmentRequirement(models.TextChoices):

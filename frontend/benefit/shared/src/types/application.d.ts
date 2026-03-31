@@ -327,6 +327,7 @@ export type Application = {
   firstInstalment?: Instalment;
   secondInstalment?: Instalment;
   talpaStatus?: TALPA_STATUSES;
+  employerAssurance?: boolean | null;
 } & Step1 &
   Step2;
 
@@ -521,6 +522,7 @@ export type ApplicationData = {
   ahjo_error?: AhjoErrorData;
   first_instalment?: InstalmentData;
   second_instalment?: InstalmentData;
+  employer_assurance?: boolean | null;
 };
 
 export type EmployeeData = {
