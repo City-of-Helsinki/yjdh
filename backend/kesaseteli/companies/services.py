@@ -136,14 +136,14 @@ def get_or_create_company_using_organization_roles(request: HttpRequest) -> Comp
         try:
             company = get_or_create_company_from_ytj_api(business_id)
         except YTJNotFoundError as e:
-            LOGGER.warning(f"YTJ API error for business_id {business_id}: {str(e)}")
-            raise NotFound(detail="Could not handle the response from YTJ API")
+            LOGGER.warning(f"YTJ API error for business_id {business_id}: {e}")
         except RequestException as e:
             LOGGER.error(f"YTJ API connection error for business_id {business_id}: {e}")
-            name = organization_roles.get("name")
-            company = get_or_create_company_with_name_and_business_id(name, business_id)
         except YTJParseError as e:
             LOGGER.error(f"YTJ API parsing error for business_id {business_id}: {e}")
+
+        # If fetching from YTJ failed, use the fallback method
+        if not company:
             name = organization_roles.get("name")
             company = get_or_create_company_with_name_and_business_id(name, business_id)
 
