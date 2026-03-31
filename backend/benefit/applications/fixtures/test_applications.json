@@ -10,7 +10,9 @@
       "postcode": "00120",
       "city": "Helsinki",
       "bank_account_number": "FI2112345600000785",
-      "company_form_code": 16
+      "company_form_code": 16,
+      "industry": "Ohjelmistot ja ohjelmointipalvelu",
+      "industry_code": "62010"
     }
   },
   {

@@ -25,7 +25,7 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoDecisionCallbackView,
 )
 from applications.api.v1.ahjo_setting_views import AhjoSettingDetailView
-from applications.api.v1.deminimis_integration_views import DeMinimisIntegrationView
+from applications.api.v1.deminimis_integration_views import DeMinimisCallbackView, DeMinimisIntegrationView
 from applications.api.v1.power_bi_integration_views import PowerBiIntegrationView
 from applications.api.v1.review_state_views import ReviewStateView
 from applications.api.v1.search_views import SearchView
@@ -124,6 +124,12 @@ urlpatterns = [
         DeMinimisIntegrationView.as_view(),
         name="deminimis_integration_url",
     ),
+    path(
+        "v1/deminimis-integration/callback/",
+        DeMinimisCallbackView.as_view(),
+        name="deminimis_callback_url",
+    ),
+
     path(
         "v1/decision-proposal-sections/",
         DecisionProposalTemplateSectionList.as_view(),

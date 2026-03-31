@@ -389,6 +389,7 @@ def test_prepare_case_records(decided_application, settings):
     assert want == got
 
 
+@pytest.mark.freeze_time("2024-06-01 12:00:00")
 @pytest.mark.django_db
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
     application = Application.objects.get(pk=decided_application.pk)

@@ -1,0 +1,16 @@
+from rest_framework import serializers
+
+
+class DeMinimisCallbackSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=["Success", "Failure"])
+    successful_applications = serializers.ListField(child=serializers.IntegerField())
+    failed_applications = serializers.ListField(child=serializers.IntegerField())
+
+    def validate(self, data):
+        if not data.get("successful_applications") and not data.get(
+            "failed_applications"
+        ):
+            raise serializers.ValidationError(
+                "Both successful_applications and failed_applications cannot be empty."
+            )
+        return data
