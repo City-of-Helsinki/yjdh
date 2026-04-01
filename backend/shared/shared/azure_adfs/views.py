@@ -6,34 +6,15 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import redirect
-
-try:
-    from django.utils.http import url_has_allowed_host_and_scheme
-except ImportError:
-    from django.utils.http import is_safe_url as url_has_allowed_host_and_scheme
 from django.utils.encoding import iri_to_uri
 from django_auth_adfs.views import OAuth2CallbackView, OAuth2LogoutView
+
+from shared.common.utils import is_safe_redirect_url
 
 LOGGER = logging.getLogger(__name__)
 
 
-class HelsinkiOAuth2ViewMixin:
-    """
-    Mixin to provide shared utility methods for ADFS views.
-    """
-
-    def _get_allowed_hosts(self):
-        """
-        Derive allowed hosts from the configured ALLOWED_OAUTH2_REDIRECT_HOSTS setting.
-        """
-        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
-        # Also include the current host to allow redirects to the same site
-        if hasattr(self, "request"):
-            allowed_hosts.append(self.request.get_host())
-        return allowed_hosts
-
-
-class HelsinkiOAuth2CallbackView(HelsinkiOAuth2ViewMixin, OAuth2CallbackView):
+class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
     """
     Custom OAuth2 Callback view that prioritizes specific landing pages
     for clients while preserving deep links for Admin/Staff.
@@ -95,38 +76,31 @@ class HelsinkiOAuth2CallbackView(HelsinkiOAuth2ViewMixin, OAuth2CallbackView):
         References:
         - This limitation is documented in: https://github.com/snok/django-auth-adfs/issues/355.
         """
-        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
         state = request.GET.get("state")
 
-        # If allowed_hosts is empty, there is nothing to do. The handler would be same
-        # as in super(). If there is no state, there is nothing to do either.
-        if allowed_hosts and state:
-            try:
-                decoded_next = base64.urlsafe_b64decode(state.encode()).decode()
-                # Check if the recovered URL is safe and authorized
-                if url_has_allowed_host_and_scheme(
-                    url=decoded_next,
-                    allowed_hosts=self._get_allowed_hosts(),
-                    require_https=request.is_secure(),
-                ):
-                    response["Location"] = iri_to_uri(decoded_next)
-                else:
-                    message = (
-                        f"ADFS callback 'state' contained an unauthorized or "
-                        f"unsafe redirect target: {decoded_next}"
-                    )
-                    LOGGER.warning(message)
-                    raise SuspiciousOperation(message)
-            except SuspiciousOperation:
-                raise
-            except (ValueError, binascii.Error):
-                # NOTE: this should have had failed already with super().get().
-                # This was likely a standard ADFS state, not our custom one.
-                LOGGER.debug(
-                    "ADFS callback 'state' parameter is not our custom base64 URL: "
-                    f"{state}"
+        # If there is no state, there is nothing to do.
+        if not state:
+            return response
+        try:
+            decoded_next = base64.urlsafe_b64decode(state.encode()).decode()
+            # Check if the recovered URL is safe and authorized
+            if is_safe_redirect_url(self.request, decoded_next):
+                response["Location"] = iri_to_uri(decoded_next)
+            else:
+                message = (
+                    f"ADFS callback 'state' contained an unauthorized or "
+                    f"unsafe redirect target: {decoded_next}"
                 )
-                return response
+                LOGGER.warning(message)
+                raise SuspiciousOperation(message)
+        except SuspiciousOperation:
+            raise
+        except (ValueError, binascii.Error):
+            # NOTE: this should have had failed already with super().get().
+            # This was likely a standard ADFS state, not our custom one.
+            LOGGER.debug(
+                f"ADFS callback 'state' parameter is not our custom base64 URL: {state}"
+            )
         return response
 
     def get(self, request):
@@ -169,7 +143,7 @@ class HelsinkiOAuth2CallbackView(HelsinkiOAuth2ViewMixin, OAuth2CallbackView):
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL_FAILURE)
 
 
-class HelsinkiOAuth2LogoutView(HelsinkiOAuth2ViewMixin, OAuth2LogoutView):
+class HelsinkiOAuth2LogoutView(OAuth2LogoutView):
     """
     Custom OAuth2 Logout view that accepts a `next` parameter to determine where
     the user should be redirected after successful ADFS logout.
@@ -188,11 +162,7 @@ class HelsinkiOAuth2LogoutView(HelsinkiOAuth2ViewMixin, OAuth2LogoutView):
 
     def _append_next_url_to_response(self, request, response):
         next_url = request.GET.get("next")
-        if next_url and url_has_allowed_host_and_scheme(
-            url=next_url,
-            allowed_hosts=self._get_allowed_hosts(),
-            require_https=request.is_secure(),
-        ):
+        if next_url and is_safe_redirect_url(self.request, next_url):
             # Append the post_logout_redirect_uri parameter for Azure AD
             url_parts = list(urlparse(response.url))
             query = parse_qs(url_parts[4])

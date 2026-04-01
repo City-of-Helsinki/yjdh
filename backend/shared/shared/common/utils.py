@@ -1,13 +1,15 @@
 import operator
 from datetime import date
 from functools import reduce
+from typing import Union
 from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.db.models import Q, QuerySet
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import resolve_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from stdnum.fi.hetu import (
     compact as compact_finnish_social_security_number,
 )
@@ -123,6 +125,44 @@ def redirect_to_login_using_request(
     from django.contrib.auth.views import redirect_to_login
 
     return redirect_to_login(path, resolved_login_url, redirect_field_name)
+
+
+def is_safe_redirect_url(
+    request: HttpRequest,
+    url: str,
+    allowed_hosts: Union[list, str, None] = None,
+    require_https: Union[bool, str, None] = None,
+) -> bool:
+    """
+    Check if the given URL is safe for redirecting.
+    - If `allowed_hosts` is a string, it's treated as a Django setting name.
+    - If `require_https` is a string, it's treated as a Django setting name.
+    """
+    if not url:
+        return False
+
+    # Fetch allowed_hosts from settings if needed
+    if isinstance(allowed_hosts, str):
+        allowed_hosts = getattr(settings, allowed_hosts, [])
+    elif allowed_hosts is None:
+        allowed_hosts = getattr(settings, "OIDC_REDIRECT_ALLOWED_HOSTS", [])
+
+    # Fetch require_https from settings if needed
+    if isinstance(require_https, str):
+        require_https = getattr(settings, require_https, request.is_secure())
+    elif require_https is None:
+        require_https = getattr(
+            settings, "OIDC_REDIRECT_REQUIRE_HTTPS", request.is_secure()
+        )
+
+    all_allowed_hosts = list(allowed_hosts)
+    all_allowed_hosts.append(request.get_host())
+
+    return url_has_allowed_host_and_scheme(
+        url=url,
+        allowed_hosts=all_allowed_hosts,
+        require_https=require_https,
+    )
 
 
 def social_security_number_birthdate(social_security_number) -> date:
