@@ -133,7 +133,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
           onChange={handleUploadAttachment}
         />
         <Button onClick={() => uploadInputRef.current?.click()}>
-          Lataa tiedosto
+          {t('common:applications.paidSalaries.buttons.upload')}
         </Button>
       </>
     </>
