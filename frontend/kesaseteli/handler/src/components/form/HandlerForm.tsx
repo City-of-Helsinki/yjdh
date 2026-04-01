@@ -2,6 +2,7 @@ import { NotificationType } from 'hds-react';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
 import Field from 'kesaseteli/handler/components/form/Field';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
+import useSummerVoucherConfigurationQuery from 'kesaseteli/handler/hooks/backend/useSummerVoucherConfigurationQuery';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
@@ -29,6 +30,9 @@ type MessageType = NotificationType | undefined;
 const HandlerForm: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+
+  const { data: configurations } = useSummerVoucherConfigurationQuery();
+
   const {
     receipt_confirmed_at,
     first_name,
@@ -41,6 +45,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     is_unlisted_school,
     phone_number,
     email,
+    target_group,
     additional_info_provided_at,
     additional_info_user_reasons,
     additional_info_description,
@@ -87,6 +92,15 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     [status]
   );
 
+  const targetGroupName = React.useMemo(() => {
+    const appYear = new Date(receipt_confirmed_at).getFullYear();
+    const config = configurations?.find((c) => c.year === appYear);
+    return (
+      config?.target_groups?.find((tg) => tg.id === target_group)?.name ??
+      target_group
+    );
+  }, [configurations, receipt_confirmed_at, target_group]);
+
   return (
     <>
       <Field
@@ -125,6 +139,13 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
       <Field
         type="email"
         value={email}
+        css={`
+          padding-bottom: ${theme.spacing.s};
+        `}
+      />
+      <Field
+        type="target_group"
+        value={targetGroupName}
         css={`
           padding-bottom: ${theme.spacing.s};
         `}
