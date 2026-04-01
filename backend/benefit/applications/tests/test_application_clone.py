@@ -54,6 +54,7 @@ application_fields = {
         "company_name",
         "de_minimis_aid",
         "de_minimis_aid_set",
+        "employer_assurance",
         "end_date",
         "handled_by_ahjo_automation",
         "official_company_city",
@@ -102,6 +103,7 @@ attachment_fields = {
         "education_contract",
         "helsinki_benefit_voucher",
         "employee_consent",
+        "payslip",
     ],
 }
 

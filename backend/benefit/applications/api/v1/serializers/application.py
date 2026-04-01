@@ -188,6 +188,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "alternative_company_street_address",
             "alternative_company_city",
             "alternative_company_postcode",
+            "employer_assurance",
             "company_department",
             "company_bank_account_number",
             "company_contact_person_first_name",
