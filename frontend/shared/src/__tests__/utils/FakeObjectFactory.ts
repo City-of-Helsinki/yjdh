@@ -110,7 +110,6 @@ class FakeObjectFactory {
   public fakeEmployment(): Required<Employment> {
     return {
       id: this.generateId(),
-      target_group: faker.random.arrayElement(EMPLOYEE_EXCEPTION_REASON),
       employee_name: faker.name.findName(),
       employee_school: faker.commerce.department(),
       employee_ssn: '111111-111C',

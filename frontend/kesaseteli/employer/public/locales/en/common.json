@@ -116,12 +116,6 @@
     },
     "form": {
       "selectionGroups": {
-        "target_group": {
-          "primary_target_group": "9th grader or TUVA grader",
-          "secondary_target_group": "Other age group",
-          "hki_18": "Second-year upper secondary school student",
-          "hki_15": "8th grader"
-        },
         "organization_type": {
           "company": "Company",
           "association": "Association",
@@ -154,7 +148,6 @@
         "contact_person_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
-        "target_group": "Grade or birth year",
         "employee_home_city": "Domicile",
         "employee_postcode": "Postal code of the workplace",
         "employee_phone_number": "Phone number",
