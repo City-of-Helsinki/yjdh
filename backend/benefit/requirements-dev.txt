@@ -51,6 +51,7 @@ packaging==25.0
     #   -c requirements.txt
     #   build
     #   pytest
+    #   wheel
 parso==0.8.5
     # via jedi
 pexpect==4.9.0
@@ -117,7 +118,7 @@ wcwidth==0.2.14
     # via prompt-toolkit
 werkzeug==3.1.6
     # via -r requirements-dev.in
-wheel==0.45.1
+wheel==0.46.3
     # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
