@@ -390,6 +390,7 @@ def test_prepare_case_records(decided_application, settings):
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time
 def test_prepare_top_level_dict(decided_application, ahjo_open_case_top_level_dict):
     application = Application.objects.get(pk=decided_application.pk)
     long_title = "a" * 512
