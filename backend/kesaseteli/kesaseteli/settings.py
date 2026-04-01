@@ -77,6 +77,7 @@ env = environ.Env(
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
     OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO=(bool, True),
+    OIDC_VERIFY_SSL=(bool, True),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     LOGOUT_REDIRECT_URL=(str, "/"),
@@ -329,12 +330,13 @@ CSRF_TRUSTED_ORIGINS = convert_to_django_4_2_csrf_trusted_origins(
 CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
-ALLOWED_OAUTH2_REDIRECT_HOSTS = env.list(
-    "ALLOWED_OAUTH2_REDIRECT_HOSTS",
+OIDC_REDIRECT_ALLOWED_HOSTS = env.list(
+    "OIDC_REDIRECT_ALLOWED_HOSTS",
     default=[
         urlparse(HANDLER_URL).netloc,
     ],
 )
+OIDC_REDIRECT_REQUIRE_HTTPS = env.bool("OIDC_REDIRECT_REQUIRE_HTTPS", default=True)
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")

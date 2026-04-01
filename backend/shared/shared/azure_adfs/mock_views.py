@@ -4,11 +4,11 @@ from urllib.parse import urljoin
 from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import redirect
-from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import View
 from factory.faker import faker
 
 from shared.common.tests.factories import UserFactory
+from shared.common.utils import is_safe_redirect_url
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,14 +41,7 @@ class MockOAuth2CallbackView(View):
         # on localhost:8000 to Handler UI on localhost:3200), we must authorize
         # the destination. Standard Django security (url_has_allowed_host_and_scheme)
         # requires an explicit allow-list of hosts to permit cross-origin jumps.
-        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
-        allowed_hosts.append(request.get_host())
-
-        if next_url and url_has_allowed_host_and_scheme(
-            url=next_url,
-            allowed_hosts=allowed_hosts,
-            require_https=request.is_secure(),
-        ):
+        if is_safe_redirect_url(request, next_url):
             redirect_url = next_url
         else:
             redirect_url = settings.ADFS_LOGIN_REDIRECT_URL
@@ -65,14 +58,7 @@ class MockOAuth2LogoutView(View):
         next_url = request.GET.get("next")
         # Standard Django security requires an explicit allow-list of hosts to permit
         # cross-origin redirects.
-        allowed_hosts = list(getattr(settings, "ALLOWED_OAUTH2_REDIRECT_HOSTS", []))
-        allowed_hosts.append(request.get_host())
-
-        if next_url and url_has_allowed_host_and_scheme(
-            url=next_url,
-            allowed_hosts=allowed_hosts,
-            require_https=request.is_secure(),
-        ):
+        if is_safe_redirect_url(request, next_url):
             redirect_url = next_url
         else:
             redirect_url = urljoin(

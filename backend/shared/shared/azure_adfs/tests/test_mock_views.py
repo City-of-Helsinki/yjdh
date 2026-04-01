@@ -99,7 +99,7 @@ def test_mock_adfs_logout_deep_link(client):
     logout_url = f"{reverse('django_auth_adfs:logout')}?next={deep_link}"
 
     with mock.patch(
-        "shared.azure_adfs.mock_views.url_has_allowed_host_and_scheme",
+        "shared.azure_adfs.mock_views.is_safe_redirect_url",
         return_value=True,
     ):
         response = client.get(logout_url)

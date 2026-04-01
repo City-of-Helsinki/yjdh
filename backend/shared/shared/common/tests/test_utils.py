@@ -11,6 +11,7 @@ from shared.common.tests.utils import (
 from shared.common.utils import (
     _ALWAYS_FALSE_Q_FILTER,
     any_of_q_filter,
+    is_safe_redirect_url,
     social_security_number_birthdate,
     validate_finnish_social_security_number,
 )
@@ -261,3 +262,41 @@ def test_invalid_create_finnish_social_security_number(
 def test_invalid_social_security_number_birthdate(test_value):
     with pytest.raises(stdnum.exceptions.ValidationError):
         social_security_number_birthdate(test_value)
+
+
+class TestIsSafeRedirectUrl:
+    def test_safe_internal_url(self, rf):
+        request = rf.get("/")
+        assert is_safe_redirect_url(request, "/safe/", allowed_hosts=[])
+
+    def test_unsafe_external_url(self, rf):
+        request = rf.get("/")
+        assert not is_safe_redirect_url(request, "http://evil.com", allowed_hosts=[])
+
+    def test_allowed_external_url(self, rf):
+        request = rf.get("/")
+        assert is_safe_redirect_url(
+            request, "http://trusted.com", allowed_hosts=["trusted.com"]
+        )
+
+    def test_setting_lookup_hosts(self, rf, settings):
+        settings.OIDC_REDIRECT_ALLOWED_HOSTS = ["trusted.com"]
+        request = rf.get("/")
+        # Should work by passing setting name
+        assert is_safe_redirect_url(
+            request, "http://trusted.com", allowed_hosts="OIDC_REDIRECT_ALLOWED_HOSTS"
+        )
+        # Should also work by default (None)
+        assert is_safe_redirect_url(request, "http://trusted.com")
+
+    def test_setting_lookup_https(self, rf, settings):
+        settings.OIDC_REDIRECT_REQUIRE_HTTPS = True
+        request = rf.get("/")  # insecure request
+        # Should be unsafe because HTTPS is required but URL is http (or request is insecure)
+        assert not is_safe_redirect_url(
+            request, "http://example.com", require_https="OIDC_REDIRECT_REQUIRE_HTTPS"
+        )
+
+    def test_default_request_host_is_allowed(self, rf):
+        request = rf.get("/", HTTP_HOST="mysite.com")
+        assert is_safe_redirect_url(request, "http://mysite.com/path", allowed_hosts=[])
