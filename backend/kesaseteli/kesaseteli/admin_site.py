@@ -44,7 +44,7 @@ class KesaseteliAdminSite(admin.AdminSite):
             return super().logout(request, extra_context)
 
         # root of admin site (e.g. /admin/)
-        next_url = reverse(f"{self.name}:index")
+        next_url = request.build_absolute_uri(reverse(f"{self.name}:index"))
         query = urlencode({REDIRECT_FIELD_NAME: next_url})
 
         return HttpResponseRedirect(f"{logout_url}?{query}")
