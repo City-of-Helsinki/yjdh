@@ -7,6 +7,8 @@ from djangosaml2.views import AssertionConsumerServiceView, MetadataView
 from saml2.md import ServiceName
 from saml2.metadata import entity_descriptor
 
+from shared.common.utils import is_safe_redirect_url
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
@@ -35,7 +37,7 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
         Intercept the validated `RelayState` and manually route the user completely
         through the eAuthorizations pipeline before allowing the final redirect.
         """
-        if relay_state:
+        if relay_state and is_safe_redirect_url(self.request, relay_state):
             self.request.session["eauth_next_url"] = relay_state
         return reverse("eauth_authentication_init")
 
