@@ -268,7 +268,7 @@ uritemplate==4.2.0
     # via
     #   -r requirements.in
     #   drf-spectacular
-urllib3==2.5.0
+urllib3==2.6.3
     # via
     #   django-auth-adfs
     #   elastic-transport
