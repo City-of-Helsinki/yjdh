@@ -32,7 +32,6 @@ export const isAxiosHeaders = (
 export type VoucherData = {
   id: string;
   summer_voucher_serial_number?: string;
-  target_group?: string;
   employee_name?: string;
   employee_ssn: string;
   employee_phone_number: string;
