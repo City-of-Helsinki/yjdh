@@ -398,7 +398,7 @@ def test_adfs_callback_admin_link(
     ],
 )
 @override_settings(
-    ALLOWED_OAUTH2_REDIRECT_HOSTS=["localhost:3200"],
+    OIDC_REDIRECT_ALLOWED_HOSTS=["localhost:3200"],
     NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_adfs_callback_routing(

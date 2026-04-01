@@ -27,7 +27,7 @@ def test_adfs_logout_deep_link(
     deep_link = "https://redirect-to-me.hel.ninja/login"
 
     with mock.patch(
-        "shared.azure_adfs.views.url_has_allowed_host_and_scheme", return_value=True
+        "shared.azure_adfs.views.is_safe_redirect_url", return_value=True
     ):
         with mock.patch("django_auth_adfs.views.provider_config") as mock_provider:
             mock_provider.build_end_session_endpoint.return_value = (

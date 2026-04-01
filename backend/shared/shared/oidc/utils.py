@@ -10,6 +10,8 @@ from django.conf import settings
 from django.http import HttpRequest
 from django.utils import timezone
 
+from shared.common.utils import is_safe_redirect_url
+
 
 def get_eauth_login_success_url(request: HttpRequest) -> str:
     """
@@ -29,7 +31,7 @@ def get_eauth_login_success_url(request: HttpRequest) -> str:
     """
     next_url = request.session.pop("eauth_next_url", None)
 
-    if next_url:
+    if next_url and is_safe_redirect_url(request, next_url):
         return next_url
 
     return settings.LOGIN_REDIRECT_URL
