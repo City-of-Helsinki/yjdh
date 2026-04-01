@@ -21,7 +21,6 @@ export type EmploymentBase = {
 
 type Employment = {
   id?: string; // undefined if new
-  target_group?: EmploymentExceptionReason;
   employee_name?: string;
   employment_postcode?: string;
   summer_voucher_serial_number: string;

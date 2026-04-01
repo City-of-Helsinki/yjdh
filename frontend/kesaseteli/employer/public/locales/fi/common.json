@@ -116,12 +116,6 @@
     },
     "form": {
       "selectionGroups": {
-        "target_group": {
-          "primary_target_group": "9. luokkalainen tai TUVA-luokkalainen",
-          "secondary_target_group": "Jokin muu ikäryhmä",
-          "hki_18": "Toisen asteen toisen vuoden opiskelija",
-          "hki_15": "8. luokkalainen"
-        },
         "organization_type": {
           "company": "Yritys",
           "association": "Yhdistys",
@@ -154,7 +148,6 @@
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
-        "target_group": "Vuosiluokka tai syntymävuosi",
         "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",
