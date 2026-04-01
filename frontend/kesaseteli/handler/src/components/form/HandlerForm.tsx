@@ -41,6 +41,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     is_unlisted_school,
     phone_number,
     email,
+    target_group,
     additional_info_provided_at,
     additional_info_user_reasons,
     additional_info_description,
@@ -125,6 +126,13 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
       <Field
         type="email"
         value={email}
+        css={`
+          padding-bottom: ${theme.spacing.s};
+        `}
+      />
+      <Field
+        type="target_group"
+        value={t(`common:target_group.${target_group}`)}
         css={`
           padding-bottom: ${theme.spacing.s};
         `}

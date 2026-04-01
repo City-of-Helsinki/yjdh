@@ -27,6 +27,7 @@ const useCreateYouthApplicationWithoutSsnQuery = (): UseMutationResult<
     non_vtj_birthdate: formData.nonVtjBirthdate,
     non_vtj_home_municipality: formData.nonVtjHomeMunicipality,
     additional_info_description: formData.additionalInfoDescription,
+    target_group: formData.targetGroup,
   });
 
   return useMutation(

@@ -42,7 +42,8 @@
     "is_unlisted_school": "(Koulua ei löytynyt listalta)",
     "phone_number": "Puhelinnumero",
     "email": "Sähköposti",
-    "additionalInfoTitle": "Lisätietohakemus",
+    "target_group": "Kohderyhmä",
+    "additionalInfoTitle": "Lisätiedot",
     "additional_info_user_reasons": "Otsikko",
     "additional_info_description": "Lisätiedot",
     "notFound": "Hakemusta ei löytynyt",
@@ -134,6 +135,7 @@
         "postcode": "Postinumero",
         "language": "Kieli",
         "nonVtjHomeMunicipality": "Kotikunta",
+        "targetGroup": "Kohderyhmä",
         "additionalInfoDescription": "Lisätiedot"
       },
       "checkNotification": {
@@ -145,6 +147,12 @@
           "fi": "Suomi",
           "sv": "Ruotsi",
           "en": "Englanti"
+        },
+        "targetGroup": {
+          "primary_target_group": "9. luokkalainen tai TUVA-luokkalainen",
+          "secondary_target_group": "Jokin muu ikäryhmä",
+          "hki_18": "Toisen asteen toisen vuoden opiskelija",
+          "hki_15": "8. luokkalainen"
         }
       }
     }
@@ -155,5 +163,11 @@
       "message": "Hakemuksen käsittelylinkki löytyy käsittelijöiden sähköpostista.",
       "processingLinkLabel": "KÄSITTELE"
     }
+  },
+  "target_group": {
+    "primary_target_group": "9. luokkalainen tai TUVA-luokkalainen",
+    "secondary_target_group": "Jokin muu ikäryhmä",
+    "hki_18": "Toisen asteen toisen vuoden opiskelija",
+    "hki_15": "8. luokkalainen"
   }
 }
