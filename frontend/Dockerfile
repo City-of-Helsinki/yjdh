@@ -23,10 +23,8 @@ ARG FOLDER
 
 # Yarn
 ENV YARN_VERSION 1.22.10
-ENV YARN_REGISTRY https://registry.npmjs.org
 RUN yarn policies set-version "$YARN_VERSION" && \
-    yarn config set ignore-engines true && \
-    yarn config set registry "$YARN_REGISTRY"
+    yarn config set ignore-engines true
 
 WORKDIR /app
 
@@ -35,19 +33,7 @@ COPY --chown=default:root package.json yarn.lock lerna.json ./
 COPY --chown=default:root $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=default:root $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=default:root shared/package.json shared/package.json
-RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked \
-        sed -i 's#https://registry.yarnpkg.com/#https://registry.npmjs.org/#g' yarn.lock && \
-        success=0 && \
-        for attempt in 1 2 3; do \
-            if YARN_CACHE_FOLDER=/app/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000; then \
-                success=1; \
-                break; \
-            fi; \
-            echo "yarn install attempt ${attempt} failed, retrying"; \
-            yarn cache clean --all || true; \
-            sleep $((attempt * 5)); \
-        done && \
-        test "$success" = "1"
+RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
 
 # ===================================
 FROM appbase AS staticbuilder
@@ -123,19 +109,7 @@ RUN rm -rf $PROJECT/$FOLDER/node_modules \
            node_modules
 
 # Install production dependencies
-RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked \
-        success=0 && \
-        for attempt in 1 2 3; do \
-            if YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --frozen-lockfile --ignore-scripts --prefer-offline; then \
-                success=1; \
-                break; \
-            fi; \
-            echo "yarn production install attempt ${attempt} failed, retrying"; \
-            yarn cache clean --all || true; \
-            sleep $((attempt * 5)); \
-        done && \
-        test "$success" = "1" && \
-        yarn cache clean --force
+RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --frozen-lockfile --ignore-scripts --prefer-offline && yarn cache clean --force
 
 # Change ownership to default:root to ensure accessibility
 RUN chown -R default:root /app
