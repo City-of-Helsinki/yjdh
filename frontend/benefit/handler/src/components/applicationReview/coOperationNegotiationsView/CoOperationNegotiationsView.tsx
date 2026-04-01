@@ -18,7 +18,11 @@ const CoOperationNegotiationsView: React.FC<ApplicationReviewViewProps> = ({
     <ReviewSection
       id={data.id}
       header={t(`${translationsBase}.headings.heading4`)}
-      action={!ACTIONLESS_STATUSES.includes(data.status) ? <span /> : null}
+      action={
+        data.status && !ACTIONLESS_STATUSES.includes(data.status) ? (
+          <span />
+        ) : null
+      }
       section="coOperationNegotiations"
     >
       <$GridCell $colSpan={12}>

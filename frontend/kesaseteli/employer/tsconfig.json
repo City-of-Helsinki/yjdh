@@ -3,10 +3,20 @@
   "compilerOptions": {
     "baseUrl": "../../",
     "paths": {
-      "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
-      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
-      "shared/*": ["shared/src/*","shared/browser-tests/*"]
-    }
+      "kesaseteli/employer/*": [
+        "kesaseteli/employer/src/*",
+        "kesaseteli/employer/browser-tests/*"
+      ],
+      "kesaseteli-shared/*": [
+        "kesaseteli/shared/src/*"
+      ],
+      "shared/*": [
+        "shared/src/*",
+        "shared/browser-tests/*"
+      ]
+    },
+    "jsx": "preserve",
+    "strict": true
   },
   "include": [
     "next-env.d.ts",

@@ -27,10 +27,48 @@ module.exports = (envPath) => {
         after: async (t) => {
           if (!process.env.TESTCAFE_SKIP_CONSOLE_LOG) {
             const { error, warn, log, info } = await t.getBrowserConsoleMessages();
-            console.log('Console logs:', JSON.stringify(log, null, 2));
-            console.info('Console infos:', JSON.stringify(info, null, 2));
-            console.warn('Console warnings:', JSON.stringify(warn, null, 2));
-            console.error('Console errors:', JSON.stringify(error, null, 2));
+            const ignoredPatterns = [
+              /Download the React DevTools/i,
+              /\[HMR\] connected/i,
+              /\[HMR\] Invalid message: .*reading 'pathname'/i,
+              /Application creation failed: please_recheck_data/i,
+              /Using ReactElement as a label is against good usability/i,
+              /Warning: Prop `%s` did not match\. Server: %s Client: %s%s id "koros_basic-/i,
+            ];
+
+            const filter = (messages) =>
+              messages.filter(
+                (msg) =>
+                  !ignoredPatterns.some((pattern) =>
+                    typeof pattern === 'string'
+                      ? msg.includes(pattern)
+                      : pattern.test(msg)
+                  )
+              );
+
+            const filteredLog = filter(log);
+            const filteredInfo = filter(info);
+            const filteredWarn = filter(warn);
+            const filteredError = filter(error);
+
+            if (filteredLog.length > 0) {
+              console.log('Console logs:', JSON.stringify(filteredLog, null, 2));
+            }
+            if (filteredInfo.length > 0) {
+              console.info('Console infos:', JSON.stringify(filteredInfo, null, 2));
+            }
+            if (filteredWarn.length > 0) {
+              console.warn(
+                'Console warnings:',
+                JSON.stringify(filteredWarn, null, 2)
+              );
+            }
+            if (filteredError.length > 0) {
+              console.error(
+                'Console errors:',
+                JSON.stringify(filteredError, null, 2)
+              );
+            }
           }
         },
       },

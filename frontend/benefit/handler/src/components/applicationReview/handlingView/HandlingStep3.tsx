@@ -1,4 +1,5 @@
 import { Application } from 'benefit-shared/types/application';
+import DOMPurify from 'dompurify';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -44,9 +45,9 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             $css={{ marginTop: 0, marginBottom: theme.spacing.xs }}
           />
           <Heading
-            header={`${application?.company?.name}, ${t(
+            header={`${application?.company?.name || ''}, ${t(
               'common:review.decisionProposal.preview.application'
-            )} ${application?.applicationNumber}`}
+            )} ${application?.applicationNumber || ''}`}
             size="l"
             as="p"
             weight="400"
@@ -66,7 +67,9 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             <div
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
-                __html: application.decisionProposalDraft.decisionText,
+                __html: DOMPurify.sanitize(
+                  application.decisionProposalDraft?.decisionText || ''
+                ),
               }}
               data-testid="decision-text-preview"
             />
@@ -86,7 +89,9 @@ const ApplicationReviewStep3: React.FC<HandlingStepProps> = ({
             <div
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
-                __html: application.decisionProposalDraft.justificationText,
+                __html: DOMPurify.sanitize(
+                  application.decisionProposalDraft?.justificationText || ''
+                ),
               }}
               data-testid="justification-text-preview"
             />

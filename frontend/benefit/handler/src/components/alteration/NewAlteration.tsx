@@ -18,11 +18,11 @@ const NewAlteration: React.FC = () => {
   const { application, isLoading, isError, t, id } = useAlterationPage();
   const router = useRouter();
 
-  if (isLoading || (!isError && !application)) {
+  if (isLoading) {
     return <PageLoadingSpinner />;
   }
 
-  if (isError || !id) {
+  if (isError || !application || !id) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
@@ -31,16 +31,17 @@ const NewAlteration: React.FC = () => {
     );
   }
 
-  const hasPendingAlteration = application.alterations.some(
-    (alteration) => alteration.state === ALTERATION_STATE.RECEIVED
-  );
+  const hasPendingAlteration =
+    application?.alterations?.some(
+      (alteration) => alteration.state === ALTERATION_STATE.RECEIVED
+    ) ?? false;
 
-  const isAccepted = application.status === APPLICATION_STATUSES.ACCEPTED;
+  const isAccepted = application?.status === APPLICATION_STATUSES.ACCEPTED;
 
   const canCreate = !hasPendingAlteration && isAccepted;
 
   const returnToApplication = (): void =>
-    void router.push(`${ROUTES.APPLICATION}?id=${application.id}`);
+    void router.push(`${ROUTES.APPLICATION}?id=${application?.id ?? ''}`);
 
   return (
     <div>

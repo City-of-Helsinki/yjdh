@@ -277,30 +277,30 @@ const getIndexPageApi = (lang?: Language) => {
       async fillTheFormWithListedSchoolAndSave(
         saveParams: SaveParams
       ): Promise<void> {
-        this.typeInput('first_name', 'Helinä');
-        this.typeInput('last_name', "O'Hara");
-        this.typeInput('social_security_number', '111111-111c');
-        this.typeInput('postcode', '00100');
+        await this.typeInput('first_name', 'Helinä');
+        await this.typeInput('last_name', "O'Hara");
+        await this.typeInput('social_security_number', '111111-111c');
+        await this.typeInput('postcode', '00100');
         await this.typeAndSelectSchoolFromDropdown(
           'Iidenkiven P',
           'Hiidenkiven peruskoulu'
         );
-        this.typeInput('phone_number', '+358-505-551-4995');
-        this.typeInput('email', 'aaaa@bbb.test.fi');
+        await this.typeInput('phone_number', '+358-505-551-4995');
+        await this.typeInput('email', 'aaaa@bbb.test.fi');
         await this.toggleCheckbox('termsAndConditions');
         await this.clickSaveButton(saveParams);
       },
       async fillTheFormWithUnlistedSchoolAndSave(
         saveParams: SaveParams
       ): Promise<void> {
-        this.typeInput('first_name', 'Helinä');
-        this.typeInput('last_name', "O'Hara");
-        this.typeInput('social_security_number', '111111-111c');
-        this.typeInput('postcode', '00100');
+        await this.typeInput('first_name', 'Helinä');
+        await this.typeInput('last_name', "O'Hara");
+        await this.typeInput('social_security_number', '111111-111c');
+        await this.typeInput('postcode', '00100');
         await this.toggleCheckbox('is_unlisted_school');
-        this.typeInput('unlistedSchool', 'Erikoiskoulu');
-        this.typeInput('phone_number', '+358-505-551-4995');
-        this.typeInput('email', 'aaaa@bbb.test.fi');
+        await this.typeInput('unlistedSchool', 'Erikoiskoulu');
+        await this.typeInput('phone_number', '+358-505-551-4995');
+        await this.typeInput('email', 'aaaa@bbb.test.fi');
         await this.toggleCheckbox('termsAndConditions');
         await this.clickSaveButton(saveParams);
       },

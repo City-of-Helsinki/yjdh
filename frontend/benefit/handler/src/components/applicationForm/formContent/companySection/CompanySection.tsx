@@ -100,31 +100,33 @@ const CompanySection: React.FC<Props> = ({
                 {t(`${translationsBase}.companyName`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.name} />
+                <WithCheckbox text={application?.company?.name ?? ''} />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyBusinessId`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.businessId} />
+                <WithCheckbox text={application?.company?.businessId ?? ''} />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyStreetAddress`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.streetAddress} />
+                <WithCheckbox
+                  text={application?.company?.streetAddress ?? ''}
+                />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyPostcode`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.postcode} />
+                <WithCheckbox text={application?.company?.postcode ?? ''} />
               </$CompanyInfoValue>
               <$CompanyInfoLabel>
                 {t(`${translationsBase}.companyCity`)}
               </$CompanyInfoLabel>
               <$CompanyInfoValue>
-                <WithCheckbox text={application?.company?.city} />
+                <WithCheckbox text={application?.company?.city ?? ''} />
               </$CompanyInfoValue>
             </$CompanyInfoWrapper>
             <$GridCell
@@ -163,6 +165,7 @@ const CompanySection: React.FC<Props> = ({
         {formik.values.useAlternativeAddress && (
           <$GridCell as={$Grid} $colSpan={12}>
             <$GridCell $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.companyDepartment.name}
                 name={fields.companyDepartment.name}
@@ -177,6 +180,7 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colStart={1} $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyStreetAddress.name}
                 name={fields.alternativeCompanyStreetAddress.name}
@@ -198,6 +202,7 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyPostcode.name}
                 name={fields.alternativeCompanyPostcode.name}
@@ -219,6 +224,7 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyCity.name}
                 name={fields.alternativeCompanyCity.name}
@@ -254,23 +260,26 @@ const CompanySection: React.FC<Props> = ({
               );
             }}
           >
-            {() => (
-              <TextInput
-                id={fields.companyBankAccountNumber.name}
-                name={fields.companyBankAccountNumber.name}
-                label={fields.companyBankAccountNumber.label}
-                invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                errorText={getErrorMessage(
-                  fields.companyBankAccountNumber.name
-                )}
-                required
-              />
-            )}
+            {
+              (() => (
+                // @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here.
+                <TextInput
+                  id={fields.companyBankAccountNumber.name}
+                  name={fields.companyBankAccountNumber.name}
+                  label={fields.companyBankAccountNumber.label}
+                  invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  aria-invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  errorText={getErrorMessage(
+                    fields.companyBankAccountNumber.name
+                  )}
+                  required
+                />
+              )) as unknown as React.ReactNode
+            }
           </InputMask>
           <$HelpText>{fields.companyBankAccountNumber.placeholder}</$HelpText>
         </$GridCell>
@@ -326,6 +335,7 @@ const CompanySection: React.FC<Props> = ({
       </FormSection>
       <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -347,6 +357,7 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonLastName.name}
             name={fields.companyContactPersonLastName.name}
@@ -368,6 +379,7 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonPhoneNumber.name}
             name={fields.companyContactPersonPhoneNumber.name}
@@ -389,6 +401,7 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonEmail.name}
             name={fields.companyContactPersonEmail.name}
@@ -519,6 +532,7 @@ const CompanySection: React.FC<Props> = ({
               margin-top: ${theme.spacing.s};
             `}
           >
+            {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
             <TextArea
               id={fields.coOperationNegotiationsDescription.name}
               name={fields.coOperationNegotiationsDescription.name}

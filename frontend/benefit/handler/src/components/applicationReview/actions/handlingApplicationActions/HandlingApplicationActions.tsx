@@ -1,4 +1,5 @@
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
+import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
@@ -52,10 +53,12 @@ const HandlingApplicationActions: React.FC<Props> = ({
     handledApplication,
   } = useHandlingApplicationActions(application);
 
-  const canBeOpenedForEdit = [
-    APPLICATION_STATUSES.HANDLING,
-    APPLICATION_STATUSES.INFO_REQUIRED,
-  ].includes(application.status);
+  const canBeOpenedForEdit =
+    application.status &&
+    [
+      APPLICATION_STATUSES.HANDLING,
+      APPLICATION_STATUSES.INFO_REQUIRED,
+    ].includes(application.status);
 
   return (
     <$Wrapper data-testid={dataTestId}>
@@ -78,10 +81,11 @@ const HandlingApplicationActions: React.FC<Props> = ({
             {t(`${translationsBase}.close`)}
           </Button>
         )}
-        {[
-          APPLICATION_STATUSES.ACCEPTED,
-          APPLICATION_STATUSES.REJECTED,
-        ].includes(application.status) &&
+        {application.status &&
+          [
+            APPLICATION_STATUSES.ACCEPTED,
+            APPLICATION_STATUSES.REJECTED,
+          ].includes(application.status) &&
           !application.batch &&
           !application.archived && (
             <Button
@@ -152,14 +156,14 @@ const HandlingApplicationActions: React.FC<Props> = ({
               handledApplication={handledApplication}
               onClose={closeDoneDialog}
               onSubmit={onDone}
-              calculationRows={application.calculation?.rows}
+              calculationRows={application.calculation?.rows || []}
             />
           }
         />
       )}
       <Sidebar
         isOpen={isMessagesDrawerVisible}
-        application={application}
+        application={application as HandlerApplication}
         onClose={toggleMessagesDrawerVisibility}
         customItemsMessages={[
           canBeOpenedForEdit ? (

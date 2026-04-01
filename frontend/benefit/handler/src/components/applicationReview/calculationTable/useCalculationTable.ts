@@ -15,7 +15,7 @@ export type BenefitRow = {
 };
 
 type Props = {
-  calculation: Calculation;
+  calculation?: Calculation;
 };
 
 type CalculationTableProps = {
@@ -52,8 +52,8 @@ const reduceTableRows = (filteredData: Row[]): BenefitRow[] => {
       tableRow.startDate = convertToUIDateFormat(row.startDate);
 
       tableRow.duration = diffMonths(
-        new Date(row.endDate),
-        new Date(row.startDate)
+        new Date(row.endDate || ''),
+        new Date(row.startDate || '')
       );
 
       tableRow.amount = formatFloatToEvenEuros(row.amount);
@@ -66,37 +66,39 @@ const reduceTableRows = (filteredData: Row[]): BenefitRow[] => {
 };
 
 const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
-  const filteredData: Row[] = calculation.rows.filter((row) =>
-    ['helsinki_benefit_monthly_eur', 'helsinki_benefit_sub_total_eur'].includes(
-      row.rowType
-    )
-  );
+  const filteredData: Row[] =
+    calculation?.rows?.filter((row) =>
+      [
+        'helsinki_benefit_monthly_eur',
+        'helsinki_benefit_sub_total_eur',
+      ].includes(row.rowType)
+    ) || [];
 
   const duration =
-    calculation?.rows?.length > 0
+    (calculation?.rows?.length ?? 0) > 0
       ? diffMonths(
-          new Date(calculation.rows.at(0).endDate),
-          new Date(calculation.rows.at(0).startDate)
+          new Date(calculation?.rows[0].endDate || ''),
+          new Date(calculation?.rows[0].startDate || '')
         )
       : 0;
 
-  const tableRows: BenefitRow[] = calculation.overrideMonthlyBenefitAmount
+  const tableRows: BenefitRow[] = calculation?.overrideMonthlyBenefitAmount
     ? [
         {
           id: 'manual-calculation',
           dates: `${convertToUIDateFormat(
-            calculation.rows.at(0).startDate
-          )} - ${convertToUIDateFormat(calculation.rows.at(0).endDate)}`,
+            calculation.rows[0].startDate
+          )} - ${convertToUIDateFormat(calculation.rows[0].endDate)}`,
           duration,
-          startDate: convertToUIDateFormat(calculation.rows.at(0).startDate),
-          endDate: convertToUIDateFormat(calculation.rows.at(0).endDate),
+          startDate: convertToUIDateFormat(calculation.rows[0].startDate),
+          endDate: convertToUIDateFormat(calculation.rows[0].endDate),
           amount: formatFloatToEvenEuros(
             String(
               parseFloat(calculation.overrideMonthlyBenefitAmount as string) *
                 duration
             )
           ),
-          amountNumber: calculation.rows.at(0).amount,
+          amountNumber: calculation.rows[0].amount,
           perMonth: `${formatFloatToEvenEuros(
             calculation.overrideMonthlyBenefitAmount
           )} / kk`,
@@ -113,7 +115,9 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
     tableRows.push({
       ...createBenefitRow(),
       id: 'table-footer',
-      dates: `${tableRows.at(0).startDate} - ${tableRows.at(-1).endDate}`,
+      dates: `${tableRows[0]?.startDate ?? ''} - ${
+        tableRows[tableRows.length - 1]?.endDate ?? ''
+      }`,
       // Summing up multiple duration periods may cause float number inaccuracies to accumulate;
       // formatting to two decimals and then casting back to a number should get rid of them
       // while also removing redundant trailing zeroes.

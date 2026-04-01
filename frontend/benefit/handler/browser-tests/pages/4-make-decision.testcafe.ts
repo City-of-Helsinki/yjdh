@@ -141,12 +141,11 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
 
   // See if the last tab is populated with the batch
   await t.click(Selector('li').withText(fi.batches.tabs.completion));
-  await t.wait(1000);
 
   await t
     .expect(
       Selector('h2').withText(`(${Number(currentCompletedBatchesCount) + 1})`)
         .exists
     )
-    .ok();
+    .ok({ timeout: 10000 });
 });

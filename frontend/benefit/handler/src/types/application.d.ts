@@ -95,7 +95,9 @@ export interface SalaryBenefitCalculatorViewProps {
   application: Application;
   isRecalculationRequired: boolean;
   setIsRecalculationRequired: (value: boolean) => void;
-  setCalculationErrors: React.Dispatch<React.SetStateAction<ErrorData>>;
+  setCalculationErrors: React.Dispatch<
+    React.SetStateAction<ErrorData | undefined | null>
+  >;
   calculationsErrors: ErrorData | undefined | null;
 }
 
@@ -166,8 +168,8 @@ export interface ApplicationForm {
   [APPLICATION_FIELD_KEYS.COMPANY_DEPARTMENT]?: string;
   [APPLICATION_FIELD_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]?: string;
   [APPLICATION_FIELD_KEYS.ORGANIZATION_TYPE]?: ORGANIZATION_TYPES | null;
-  [APPLICATION_FIELD_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]?: boolean | null;
-  [APPLICATION_FIELD_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]?: boolean | null;
+  [APPLICATION_FIELD_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]?: boolean;
+  [APPLICATION_FIELD_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]?: boolean;
   [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]?: string;
   [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]?: string;
   [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]?: string;

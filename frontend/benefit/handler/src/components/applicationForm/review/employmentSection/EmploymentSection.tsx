@@ -25,7 +25,7 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
         header={t(`${translationsBase}.headings.employment2`)}
         action={
           <EditButton
-            section={fields.employee?.jobTitle.name}
+            section={fields?.employee?.jobTitle?.name ?? ''}
             dispatchStep={dispatchStep}
           />
         }
@@ -41,7 +41,9 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             {t(`${translationsBase}.fields.workingHours.review`)}
           </$ViewFieldBold>
           <$ViewField>
-            {parseFloat(data.employee?.workingHours).toLocaleString('fi-FI')}{' '}
+            {parseFloat(
+              String(data.employee?.workingHours || 0)
+            ).toLocaleString('fi-FI')}{' '}
             {t(`${translationsBase}.fields.workingHours.reviewText`)}
           </$ViewField>
         </$GridCell>
@@ -97,7 +99,8 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             {t(`${translationsBase}.fields.paySubsidyGranted.review`)}
           </$ViewFieldBold>
           <$ViewField>
-            {TRUTHY_SUBSIDIES.has(data.paySubsidyGranted)
+            {data.paySubsidyGranted &&
+            TRUTHY_SUBSIDIES.has(data.paySubsidyGranted)
               ? t(
                   `${translationsBase}.fields.paySubsidyGranted.${camelCase(
                     data.paySubsidyGranted
@@ -124,7 +127,7 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
         header={t(`${translationsBase}.headings.employment4`)}
         action={
           <EditButton
-            section={fields.startDate.name}
+            section={fields?.startDate?.name ?? ''}
             dispatchStep={dispatchStep}
           />
         }

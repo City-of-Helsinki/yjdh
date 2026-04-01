@@ -14,7 +14,7 @@ const PageNotFound: React.FC = () => {
           i18nKey="common:404Page.pageNotFoundContent"
           components={{
             // eslint-disable-next-line react/jsx-curly-brace-presence
-            lnk: <LinkText href="/">{''}</LinkText>,
+            lnk: <LinkText href="/">link</LinkText>,
           }}
         />
       }

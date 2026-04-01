@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $Wrapper = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ export const $Wrapper = styled.div`
 
 export const $Column = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.s};
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
 `;
 
 export const $CustomNotesActions = styled.div`
@@ -18,11 +18,12 @@ export const $CustomNotesActions = styled.div`
 `;
 
 export const $Header = styled.div`
-  font-size: ${(props) => props.theme.fontSize.body.m};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.m};
   font-weight: bold;
-  padding-bottom: ${(props) => props.theme.spacing.xs3};
+  padding-bottom: ${(props: { theme: DefaultTheme }) =>
+    props.theme.spacing.xs3};
 `;
 
 export const $Text = styled.div`
-  line-height: ${(props) => props.theme.lineHeight.l};
+  line-height: ${(props: { theme: DefaultTheme }) => props.theme.lineHeight.l};
 `;

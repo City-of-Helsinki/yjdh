@@ -19,6 +19,8 @@ import {
 } from '../table/TableExtras.sc';
 import { useApplicationsHandled } from './useApplicationsHandled';
 
+const getStatusString = (s: APPLICATION_STATUSES): string => s.toString();
+
 type Props = {
   status: APPLICATION_STATUSES;
   excludeBatched?: boolean;
@@ -36,7 +38,7 @@ const ApplicationsHandled: React.FC<Props> = ({
     getHeader,
   } = useApplicationsHandled(status, excludeBatched);
 
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
   const applications = useMemo(() => list, [list]);
   const { isSuccess, mutate: createBatch } = useAddToBatchQuery();
 
@@ -45,17 +47,24 @@ const ApplicationsHandled: React.FC<Props> = ({
   }, [isSuccess]);
 
   const handleBatchChange = (): void => {
-    createBatch({ applicationIds: selectedRows, status });
+    createBatch({
+      applicationIds: selectedRows as string[],
+      status,
+    });
   };
 
   const columns = useMemo(() => {
     const cols = [
       {
-        transform: ({ id, companyName }) => (
-          <$Link href={`/application?id=${String(id)}`}>
-            {String(companyName)}
-          </$Link>
-        ),
+        transform: ({
+          id,
+          companyName,
+        }: {
+          // eslint-disable-next-line react/no-unused-prop-types
+          id: string | number;
+          // eslint-disable-next-line react/no-unused-prop-types
+          companyName: string;
+        }) => <$Link href={`/application?id=${id}`}>{companyName}</$Link>,
         headerName: getHeader('companyName'),
         key: 'companyName',
         isSortable: true,
@@ -91,7 +100,7 @@ const ApplicationsHandled: React.FC<Props> = ({
     return (
       <Container>
         <$Heading css={{ marginBottom: theme.spacing.xs }}>
-          {t(`common:applications.list.headings.${status}`)}{' '}
+          {t(`common:applications.list.headings.${String(status)}`)}{' '}
           {t(`common:applications.list.headings.decisions`)}
         </$Heading>
         <LoadingSkeleton
@@ -114,9 +123,11 @@ const ApplicationsHandled: React.FC<Props> = ({
             rows={applications}
             initialSortingColumnKey="applicationNum"
             initialSortingOrder="asc"
-            heading={`${t(`common:applications.list.headings.${status}`)} ${t(
-              `common:applications.list.headings.decisions`
-            )} (${applications.length})`}
+            heading={`${t(
+              `common:applications.list.headings.${getStatusString(status)}`
+            )} ${t(`common:applications.list.headings.decisions`)} (${
+              applications.length
+            })`}
             cols={columns}
             checkboxSelection
             selectedRows={selectedRows}

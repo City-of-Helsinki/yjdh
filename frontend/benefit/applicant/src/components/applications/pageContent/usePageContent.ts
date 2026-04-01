@@ -6,6 +6,7 @@ import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { isApplicationEditable } from 'benefit/applicant/utils/applications';
 import { getApplicationStepFromString } from 'benefit/applicant/utils/common';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { StepperProps, StepState } from 'hds-react';
@@ -30,7 +31,7 @@ type ExtendedComponentProps = {
 };
 
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
-  id && status !== 'idle' && status !== 'loading';
+  !!(id && status !== 'idle' && status !== 'loading');
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const usePageContent = (): ExtendedComponentProps => {
@@ -50,7 +51,9 @@ const usePageContent = (): ExtendedComponentProps => {
     error: existingApplicationError,
   } = useApplicationQuery(id);
 
-  const isReadOnly = !isApplicationEditable(existingApplication?.status);
+  const isReadOnly = !isApplicationEditable(
+    existingApplication?.status ?? APPLICATION_STATUSES.DRAFT
+  );
 
   useEffect(() => {
     if (isApplicationLoaded(id, existingApplicationStatus)) {
@@ -76,28 +79,28 @@ const usePageContent = (): ExtendedComponentProps => {
   }, [router, isSubmittedQueryParam]);
 
   const application: Application = existingApplication
-    ? camelcaseKeys(
+    ? (camelcaseKeys(
         {
           ...existingApplication,
           calculation: existingApplication.calculation
             ? {
                 ...existingApplication.calculation,
-                monthly_pay: String(
+                monthlyPay: String(
                   stringToFloatValue(
                     existingApplication.calculation.monthly_pay
                   )
                 ),
-                other_expenses: String(
+                otherExpenses: String(
                   stringToFloatValue(
                     existingApplication.calculation.other_expenses
                   )
                 ),
-                vacation_money: String(
+                vacationMoney: String(
                   stringToFloatValue(
                     existingApplication.calculation.vacation_money
                   )
                 ),
-                override_monthly_benefit_amount: String(
+                overrideMonthlyBenefitAmount: String(
                   stringToFloatValue(
                     existingApplication.calculation
                       .override_monthly_benefit_amount
@@ -109,7 +112,7 @@ const usePageContent = (): ExtendedComponentProps => {
         {
           deep: true,
         }
-      )
+      ) as Application)
     : APPLICATION_INITIAL_VALUES;
 
   const currentStep = getApplicationStepFromString(

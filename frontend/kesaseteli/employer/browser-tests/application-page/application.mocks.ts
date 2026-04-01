@@ -1,5 +1,8 @@
 import Employment from '@frontend/shared/src/types/employment';
 import axios, { AxiosResponseHeaders } from 'axios';
+import fs from 'fs';
+import https from 'https';
+import path from 'path';
 import { RequestMock } from 'testcafe';
 
 import {
@@ -9,6 +12,17 @@ import {
   MockResponse,
   VoucherData,
 } from '../types';
+
+// Trust the self-signed certificate used by the nginx proxy.
+// Locally: load the dev cert as a trusted CA.
+// In CI: the cert file doesn't exist, so we must skip verification for the test proxy.
+const certPath = path.resolve(
+  __dirname,
+  '../../../../../localdevelopment/employer/nginx/localhost.crt'
+);
+const httpsAgent = fs.existsSync(certPath)
+  ? new https.Agent({ ca: fs.readFileSync(certPath) })
+  : new https.Agent({ rejectUnauthorized: false }); // CodeQL: test-only fallback for CI
 
 export const MOCKED_EMPLOYEE_DATA = {
   employee_ssn: '010101-123U',
@@ -35,8 +49,10 @@ export const FULLY_MOCKED_FORM_DATA = {
  * The backend has bugs where these fields are lost in responses, so we store them
  * from requests and restore them in responses to make tests work.
  */
-const voucherFixCache = new Map<string, { serialNumber?: string; employeeName?: string }>();
-
+const voucherFixCache = new Map<
+  string,
+  { serialNumber?: string; employeeName?: string }
+>();
 
 /**
  * Converts Axios headers to TestCafe's Record<string, string> format.
@@ -63,30 +79,32 @@ const getTestCafeHeaders = (
   return result;
 };
 
-const getHandleFetchEmployeeData = (mockData: Partial<Employment>) => (req: MockRequest, res: MockResponse): void => {
-  try {
-    const body = JSON.parse(req.body.toString()) as {
-      employer_summer_voucher_id: string;
-      employee_name: string;
-    };
+const getHandleFetchEmployeeData =
+  (mockData: Partial<Employment>) =>
+  (req: MockRequest, res: MockResponse): void => {
+    try {
+      const body = JSON.parse(req.body.toString()) as {
+        employer_summer_voucher_id: string;
+        employee_name: string;
+      };
 
-    // Manual CORS headers needed because this endpoint doesn't exist on backend
-    res.headers['content-type'] = 'application/json';
-    res.headers['access-control-allow-origin'] = req.headers.origin || '*';
-    res.headers['access-control-allow-credentials'] = 'true';
-    res.statusCode = 200;
-    res.setBody({
-      ...MOCKED_EMPLOYEE_DATA,
-      employer_summer_voucher_id: body.employer_summer_voucher_id,
-      employee_name: body.employee_name,
-      ...mockData,
-    });
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('MOCK POST fetch_employee_data FAILED:', error);
-    res.statusCode = 500;
-  }
-};
+      // Manual CORS headers needed because this endpoint doesn't exist on backend
+      res.headers['content-type'] = 'application/json';
+      res.headers['access-control-allow-origin'] = req.headers.origin || '*';
+      res.headers['access-control-allow-credentials'] = 'true';
+      res.statusCode = 200;
+      res.setBody({
+        ...MOCKED_EMPLOYEE_DATA,
+        employer_summer_voucher_id: body.employer_summer_voucher_id,
+        employee_name: body.employee_name,
+        ...mockData,
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('MOCK POST fetch_employee_data FAILED:', error);
+      res.statusCode = 500;
+    }
+  };
 
 const cacheVoucherFixes = (vouchers?: VoucherData[]): void => {
   if (!vouchers) return;
@@ -112,7 +130,6 @@ const restoreVoucherData = (
     cached?.serialNumber;
   const restoredEmployeeName =
     v.employee_name || requestVoucher?.employee_name || cached?.employeeName;
-
 
   if (v.id && (restoredSerialNumber || restoredEmployeeName)) {
     voucherFixCache.set(v.id, {
@@ -143,7 +160,7 @@ const handleEmployerApplicationsPut = async (
     const response = await axios.put<{ summer_vouchers?: VoucherData[] }>(
       req.url,
       body,
-      { headers: req.headers }
+      { headers: req.headers, httpsAgent }
     );
 
     const responseBody = response.data;
@@ -174,7 +191,7 @@ const handleEmployerApplicationsGet = async (
   try {
     const response = await axios.get<{ summer_vouchers?: VoucherData[] }>(
       req.url,
-      { headers: req.headers }
+      { headers: req.headers, httpsAgent }
     );
 
     const responseBody = response.data;
@@ -198,20 +215,22 @@ const handleEmployerApplicationsGet = async (
   }
 };
 
-
-export const getFetchEmployeeDataMock: (mockData: Partial<Employment>) => RequestMock = (mockData: Partial<Employment> = MOCKED_EMPLOYEE_DATA) => RequestMock()
-  .onRequestTo({ url: /fetch_employee_data/, method: 'POST' })
-  .respond(getHandleFetchEmployeeData(mockData))
-  .onRequestTo({
-    url: /employerapplications\/[\da-f-]+\/$/,
-    method: 'PUT',
-  })
-  .respond(handleEmployerApplicationsPut)
-  .onRequestTo({
-    url: /employerapplications\/[\da-f-]+\/$/,
-    method: 'GET',
-  })
-  .respond(handleEmployerApplicationsGet);
+export const getFetchEmployeeDataMock: (
+  mockData: Partial<Employment>
+) => RequestMock = (mockData: Partial<Employment> = MOCKED_EMPLOYEE_DATA) =>
+  RequestMock()
+    .onRequestTo({ url: /fetch_employee_data/, method: 'POST' })
+    .respond(getHandleFetchEmployeeData(mockData))
+    .onRequestTo({
+      url: /employerapplications\/[\da-f-]+\/$/,
+      method: 'PUT',
+    })
+    .respond(handleEmployerApplicationsPut)
+    .onRequestTo({
+      url: /employerapplications\/[\da-f-]+\/$/,
+      method: 'GET',
+    })
+    .respond(handleEmployerApplicationsGet);
 
 export const attachmentsMock = RequestMock()
   .onRequestTo({
@@ -224,6 +243,7 @@ export const attachmentsMock = RequestMock()
         // Proxy to real backend so attachments are actually stored
         const response = await axios.post(req.url, req.body, {
           headers: req.headers,
+          httpsAgent,
         });
         res.headers = getTestCafeHeaders(
           response.headers as AxiosResponseHeaders

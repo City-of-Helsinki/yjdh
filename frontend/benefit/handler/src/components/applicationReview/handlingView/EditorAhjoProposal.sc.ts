@@ -1,11 +1,12 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $EditorWrapper = styled.div`
   position: relative;
   overflow: scroll;
   background: #fff;
   border-radius: 7px;
-  border: 1px solid ${(props) => props.theme.colors.silverDark};
+  border: 1px solid
+    ${(props: { theme: DefaultTheme }) => props.theme.colors.silverDark};
 `;
 
 const EDITOR_STYLES = `
@@ -29,7 +30,8 @@ const EDITOR_STYLES = `
 
 export const $Toolbar = styled.header`
   padding: 0 0.5em;
-  border-bottom: 1px solid ${(props) => props.theme.colors.silverDark};
+  border-bottom: 1px solid
+    ${(props: { theme: DefaultTheme }) => props.theme.colors.silverDark};
 `;
 
 export const $Content = styled.div`

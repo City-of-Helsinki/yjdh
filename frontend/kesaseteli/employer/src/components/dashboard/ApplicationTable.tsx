@@ -2,7 +2,7 @@ import { DashboardVoucher } from 'kesaseteli/employer/types/types';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 import DashboardFilterBar from './DashboardFilterBar';
 import StatusTag from './StatusTag';
@@ -10,17 +10,19 @@ import StatusTag from './StatusTag';
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin-top: ${(props) => props.theme.spacing.m};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
 
   th {
     text-align: left;
-    padding: ${(props) => props.theme.spacing.s};
-    border-bottom: 2px solid ${(props) => props.theme.colors.black};
+    padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
+    border-bottom: 2px solid
+      ${(props: { theme: DefaultTheme }) => props.theme.colors.black};
   }
 
   td {
-    padding: ${(props) => props.theme.spacing.s};
-    border-bottom: 1px solid ${(props) => props.theme.colors.black20};
+    padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
+    border-bottom: 1px solid
+      ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
   }
 `;
 
@@ -39,7 +41,10 @@ const ApplicationTable: React.FC<Props> = ({
 
   return (
     <>
-      <DashboardFilterBar showOnlyMine={showOnlyMine} onToggle={onToggleOnlyMine} />
+      <DashboardFilterBar
+        showOnlyMine={showOnlyMine}
+        onToggle={onToggleOnlyMine}
+      />
       <StyledTable>
         <thead>
           <tr>

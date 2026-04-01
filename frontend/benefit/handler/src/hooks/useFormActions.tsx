@@ -64,38 +64,105 @@ interface FormActions {
   ) => Promise<ApplicationData | void>;
 }
 
+const toStringArrayRecord = (
+  value: Record<string, unknown>
+): Record<string, string[]> =>
+  Object.fromEntries(
+    Object.entries(value).map(([entryKey, entryValue]) => [
+      entryKey,
+      Array.isArray(entryValue)
+        ? entryValue.map((item) => String(item))
+        : [String(entryValue)],
+    ])
+  );
+
+const renderErrorValue = (value: unknown): string => {
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  ) {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item)).join(', ');
+  }
+
+  if (value && typeof value === 'object') {
+    return prettyPrintObject({
+      data: toStringArrayRecord(value as Record<string, unknown>),
+    });
+  }
+
+  return '';
+};
+
+const renderEmployeeErrorLinks = (
+  value: unknown,
+  errorData: { data: Record<string, unknown> }
+): React.ReactElement[] => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return [
+      <React.Fragment key={APPLICATION_FIELD_KEYS.EMPLOYEE}>
+        {prettyPrintObject({ data: toStringArrayRecord(errorData.data) })}
+      </React.Fragment>,
+    ];
+  }
+
+  return Object.entries(camelcaseKeys(value)).map(([emplKey, emplValue]) => (
+    <a key={emplKey} href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}>
+      {renderErrorValue(emplValue)}
+    </a>
+  ));
+};
+
+const renderArrayErrorLinks = (
+  key: string,
+  value: unknown[]
+): React.ReactElement[] =>
+  value.map((item) => (
+    <a key={`${key}-${String(item)}`} href={`#${key}`}>
+      {String(item)}
+    </a>
+  ));
+
+const renderGenericErrorContent = (
+  key: string,
+  value: unknown
+): React.ReactElement =>
+  typeof value === 'string' ? (
+    <a key={key} href={`#${key}`}>
+      {value}
+    </a>
+  ) : (
+    <React.Fragment key={key}>
+      {prettyPrintObject({
+        data: toStringArrayRecord(value as Record<string, unknown>),
+      })}
+    </React.Fragment>
+  );
+
 const getErrorContent = (
   t: TFunction,
   errorData: {
-    data: Record<string, string[]>;
+    data: Record<string, unknown>;
   }
-): JSX.Element[] => {
+): React.ReactElement[] => {
   try {
-    return Object.entries(errorData).map(([key, value]) => {
+    return Object.entries(errorData.data).flatMap(([key, value]) => {
       if (key === APPLICATION_FIELD_KEYS.EMPLOYEE) {
-        return Object.entries(camelcaseKeys(value)).map(
-          ([emplKey, emplValue]) => (
-            <a
-              key={emplKey}
-              href={`#${APPLICATION_FIELD_KEYS.EMPLOYEE}.${emplKey}`}
-            >
-              {emplValue}
-            </a>
-          )
-        )[0];
+        return renderEmployeeErrorLinks(value, errorData);
       }
       if (key === 'approveTerms') {
-        return (
-          <p key={`${key}-${String(value)}`}>{t('common:error.terms.text')}</p>
-        );
+        return [
+          <p key={`${key}-${String(value)}`}>{t('common:error.terms.text')}</p>,
+        ];
       }
-      return typeof value === 'string' ? (
-        <a key={key} href={`#${key}`}>
-          {value}
-        </a>
-      ) : (
-        <>{prettyPrintObject(errorData)}</>
-      );
+      if (Array.isArray(value)) {
+        return renderArrayErrorLinks(key, value);
+      }
+      return renderGenericErrorContent(key, value);
     });
   } catch (fatalError: unknown) {
     return [<p key="fatalError">Unresolved error</p>];
@@ -140,11 +207,30 @@ const useFormActions = (
       deleteApplicationError;
 
     if (error) {
-      const errorData = camelcaseKeys(error.response?.data ?? {});
-      const isContentTypeHTML = typeof errorData === 'string';
+      const errorDataFromResponse = error.response?.data;
+      const errorDataCamelCased = camelcaseKeys(errorDataFromResponse ?? {});
+
+      const isContentTypeHTML = typeof errorDataFromResponse === 'string';
+
+      let dataForGetErrorContent: Record<string, unknown>;
+
+      if (isContentTypeHTML) {
+        dataForGetErrorContent = {};
+      } else {
+        const potentialErrorData = errorDataCamelCased;
+        dataForGetErrorContent =
+          typeof potentialErrorData === 'object' &&
+          potentialErrorData !== null &&
+          !Array.isArray(potentialErrorData)
+            ? (potentialErrorData as Record<string, unknown>)
+            : {};
+      }
+
       const errorText = isContentTypeHTML
         ? t('common:error.generic.text')
-        : getErrorContent(t, errorData);
+        : getErrorContent(t, {
+            data: dataForGetErrorContent,
+          });
 
       hdsToast({
         autoDismissTime: 20_000,
@@ -164,16 +250,17 @@ const useFormActions = (
 
   const getCalculationValuesOnPaySubsidyChange = (
     values: Partial<Application>
-  ): Calculation => ({
-    ...values.calculation,
-    monthlyPay: stringToFloatValue(values.employee.monthlyPay),
-    vacationMoney: stringToFloatValue(values.employee.vacationMoney),
-    otherExpenses: stringToFloatValue(values.employee.otherExpenses),
-    stateAidMaxPercentage: values.calculation?.stateAidMaxPercentage || null,
-    targetGroupCheck: false,
-    overrideMonthlyBenefitAmount: null,
-    overrideMonthlyBenefitAmountComment: '',
-  });
+  ): Calculation =>
+    ({
+      ...values.calculation,
+      monthlyPay: stringToFloatValue(values.employee?.monthlyPay),
+      vacationMoney: stringToFloatValue(values.employee?.vacationMoney),
+      otherExpenses: stringToFloatValue(values.employee?.otherExpenses),
+      stateAidMaxPercentage: values.calculation?.stateAidMaxPercentage ?? null,
+      targetGroupCheck: false,
+      overrideMonthlyBenefitAmount: null,
+      overrideMonthlyBenefitAmountComment: '',
+    } as Calculation);
 
   const getPayloadForCalculation = (
     values: Partial<Application>
@@ -185,13 +272,13 @@ const useFormActions = (
     ) {
       return {
         ...values.calculation,
-        monthlyPay: stringToFloatValue(values.employee.monthlyPay),
-        otherExpenses: stringToFloatValue(values.employee.otherExpenses),
-        vacationMoney: stringToFloatValue(values.employee.vacationMoney),
+        monthlyPay: stringToFloatValue(values.employee?.monthlyPay),
+        otherExpenses: stringToFloatValue(values.employee?.otherExpenses),
+        vacationMoney: stringToFloatValue(values.employee?.vacationMoney),
         overrideMonthlyBenefitAmount: stringToFloatValue(
-          values.calculation.overrideMonthlyBenefitAmount
+          values.calculation?.overrideMonthlyBenefitAmount
         ),
-      };
+      } as Calculation;
     }
     return getCalculationValuesOnPaySubsidyChange(values);
   };
@@ -203,13 +290,13 @@ const useFormActions = (
       values.paySubsidyGranted === initialApplication?.paySubsidyGranted &&
       values.apprenticeshipProgram === initialApplication?.apprenticeshipProgram
     ) {
-      return [...values.paySubsidies];
+      return [...(values.paySubsidies || [])];
     }
     return [
       PAY_SUBSIDY_GRANTED.GRANTED,
       PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-    ].includes(values.paySubsidyGranted)
-      ? [PAY_SUBSIDIES_OVERRIDE]
+    ].includes(values.paySubsidyGranted as PAY_SUBSIDY_GRANTED)
+      ? [PAY_SUBSIDIES_OVERRIDE as unknown as PaySubsidy]
       : [];
   };
 
@@ -315,11 +402,11 @@ const useFormActions = (
     const values = { ...currentValues };
     values.status = APPLICATION_STATUSES.RECEIVED;
     values.approveTerms = {
-      terms: application?.applicantTermsInEffect?.id,
+      terms: application?.applicantTermsInEffect?.id || '',
       selectedApplicantConsents:
         application?.applicantTermsInEffect?.applicantConsents.map(
           (consent) => consent.id
-        ),
+        ) || [],
     };
     const data = prepareDataForSubmission(getNormalizedValues(values));
 

@@ -1,16 +1,16 @@
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
-import { MutationFunction, useMutation, UseMutationResult } from 'react-query';
+import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import { ErrorData } from '../types/common';
 
 type Props = {
-  onSuccess: MutationFunction<void, ApplicationAlterationData>;
+  onSuccess?: (data: ApplicationAlterationData) => void | Promise<void>;
 };
 
-const useCreateApplicationQuery = ({
+const useCreateApplicationAlterationQuery = ({
   onSuccess,
 }: Props): UseMutationResult<
   ApplicationAlterationData,
@@ -35,4 +35,4 @@ const useCreateApplicationQuery = ({
   );
 };
 
-export default useCreateApplicationQuery;
+export default useCreateApplicationAlterationQuery;

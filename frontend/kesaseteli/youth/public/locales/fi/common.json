@@ -119,7 +119,9 @@
   },
   "assistive": {
     "clearChoice": "Tyhjennä valinta",
-    "clearAllChoices": "Tyhjennä kaikki valinnat"
+    "clearChoices": "Tyhjennä kaikki valinnat",
+    "clearAllChoices": "Tyhjennä kaikki valinnat",
+    "openDropdown": "Avaa pudotusvalikko"
   },
   "notificationPages": {
     "thankyou": {

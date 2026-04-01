@@ -82,7 +82,7 @@ const PageContent: React.FC = () => {
   const showMonetaryFields = ![
     APPLICATION_STATUSES.CANCELLED,
     APPLICATION_STATUSES.REJECTED,
-  ].includes(application.status);
+  ].includes(application.status as APPLICATION_STATUSES);
 
   useEffect(() => {
     if (isReadOnly) document.title = t('common:pageTitles.viewApplication');
@@ -100,14 +100,20 @@ const PageContent: React.FC = () => {
       {
         accessor: (app) => (
           <>
-            <StatusIcon status={app.status} />
-            {t(`common:applications.statuses.${app.status}`)}
+            <StatusIcon status={app.status as APPLICATION_STATUSES} />
+            {t(
+              `common:applications.statuses.${
+                app.status as APPLICATION_STATUSES
+              }`
+            )}
           </>
         ),
         key: 'status',
       },
       {
-        accessor: (app) => formatFloatToEvenEuros(app?.calculatedBenefitAmount),
+        accessor: (app) =>
+          app?.calculatedBenefitAmount &&
+          formatFloatToEvenEuros(app.calculatedBenefitAmount),
         key: 'benefitAmount',
         showIf: () => showMonetaryFields,
       },
@@ -151,36 +157,35 @@ const PageContent: React.FC = () => {
       />
     );
   }
-// Different confirmation messages for sending update (HANDLING) and sending new application
+  // Different confirmation messages for sending update (HANDLING) and sending new application
   if (isSubmittedApplication) {
     return (
       <>
-      {isResubmission ? (
-        <NotificationView
-          applicationId={application.id}
-          title={t('common:notifications.applicationReSubmitted.label')}
-          message={t('common:notifications.applicationReSubmitted.message', {
-            applicationNumber: application?.applicationNumber,
-            applicantName: getFullName(
-              application?.employee?.firstName,
-              application?.employee?.lastName
-            ),
-          })}
-        />
-        ):
-        (<NotificationView
-          applicationId={application.id}
-          title={t('common:notifications.applicationSubmitted.label')}
-          message={t('common:notifications.applicationSubmitted.message', {
-            applicationNumber: application?.applicationNumber,
-            applicantName: getFullName(
-              application?.employee?.firstName,
-              application?.employee?.lastName
-            ),
-          })}
-        />
-        )
-      }
+        {isResubmission ? (
+          <NotificationView
+            applicationId={application.id || ''}
+            title={t('common:notifications.applicationReSubmitted.label')}
+            message={t('common:notifications.applicationReSubmitted.message', {
+              applicationNumber: application?.applicationNumber,
+              applicantName: getFullName(
+                application?.employee?.firstName,
+                application?.employee?.lastName
+              ),
+            })}
+          />
+        ) : (
+          <NotificationView
+            applicationId={application.id || ''}
+            title={t('common:notifications.applicationSubmitted.label')}
+            message={t('common:notifications.applicationSubmitted.message', {
+              applicationNumber: application?.applicationNumber,
+              applicantName: getFullName(
+                application?.employee?.firstName,
+                application?.employee?.lastName
+              ),
+            })}
+          />
+        )}
 
         {router.locale === SUPPORTED_LANGUAGES.FI && (
           <Container>
@@ -194,7 +199,7 @@ const PageContent: React.FC = () => {
               </$AskemContainer>
             ) : (
               <NoCookieConsentsNotification
-                submittedApplication={application.id}
+                submittedApplication={application.id || ''}
               />
             )}
             <$Hr />
@@ -223,6 +228,7 @@ const PageContent: React.FC = () => {
 
     const passesManualDecisionMaking =
       !application?.handledByAhjoAutomation &&
+      application?.batchStatus &&
       [BATCH_STATUSES.SENT_TO_TALPA, BATCH_STATUSES.COMPLETED].includes(
         application?.batchStatus
       );
@@ -235,7 +241,7 @@ const PageContent: React.FC = () => {
               {t('common:applications.pageHeaders.edit')}
             </$PageHeading>
             <$PageHeadingApplicant>
-              {application.employee.firstName} {application.employee.lastName}
+              {application.employee?.firstName} {application.employee?.lastName}
             </$PageHeadingApplicant>
           </$HeaderItem>
           {id && application?.submittedAt && application?.applicationNumber && (
@@ -253,7 +259,7 @@ const PageContent: React.FC = () => {
                 {t('common:applications.pageHeaders.sent', {
                   applicationNumber: application.applicationNumber,
                   submittedAt: convertToUIDateAndTimeFormat(
-                    application?.submittedAt
+                    application?.modifiedAt ?? ''
                   ),
                 })}
               </$PageSubHeading>
@@ -269,7 +275,9 @@ const PageContent: React.FC = () => {
                   theme="coat"
                   onClick={() =>
                     router.push(
-                      `${ROUTES.APPLICATION_ALTERATION}?id=${application.id}`
+                      `${ROUTES.APPLICATION_ALTERATION}?id=${
+                        application.id ?? ''
+                      }`
                     )
                   }
                   disabled={hasHandledTermination}
@@ -335,7 +343,7 @@ const PageContent: React.FC = () => {
           <$PageSubHeading>
             {`${t(
               'common:applications.pageHeaders.saved'
-            )} ${convertToUIDateAndTimeFormat(application?.modifiedAt)}`}
+            )} ${convertToUIDateAndTimeFormat(application?.modifiedAt ?? '')}`}
           </$PageSubHeading>
           {(currentStep === 1 || currentStep === 2) && (
             <$PageHeadingHelperText>

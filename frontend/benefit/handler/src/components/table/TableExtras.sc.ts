@@ -58,13 +58,15 @@ type TableGridProps = {
 export const $TableGrid = styled.div<TableGridProps>`
   display: grid;
   transition: all 0.65s ease-out;
-  grid-template-rows: ${(props) => (props.animateClose ? '0fr' : '1fr')};
-  opacity: ${(props) => (props.animateClose ? '0' : '1')};
-  margin-bottom: ${(props) => (props.animateClose ? '0' : 'var(--spacing-xs)')};
+  grid-template-rows: ${(props: TableGridProps) =>
+    props.animateClose ? '0fr' : '1fr'};
+  opacity: ${(props: TableGridProps) => (props.animateClose ? '0' : '1')};
+  margin-bottom: ${(props: TableGridProps) =>
+    props.animateClose ? '0' : 'var(--spacing-xs)'};
 `;
 
 type TableWrapperProps = {
-  borderColor: string;
+  borderColor?: string;
 };
 
 export const $TableWrapper = styled.div<TableWrapperProps>`
@@ -72,11 +74,13 @@ export const $TableWrapper = styled.div<TableWrapperProps>`
   background: #fff;
   transition: 0.15s outline ease-in-out;
   outline: 1px solid
-    ${(props) => (props.borderColor ? props.borderColor : 'transparent')};
+    ${(props: TableWrapperProps) =>
+      props.borderColor ? props.borderColor : 'transparent'};
 `;
 
 export const $TableBody = styled.div<CollapsedProps>`
-  display: ${(props) => (props.$isCollapsed ? 'none' : 'block')};
+  display: ${(props: CollapsedProps) =>
+    props.$isCollapsed ? 'none' : 'block'};
 `;
 
 export const $HintText = styled.p`
@@ -105,7 +109,7 @@ type $TableFooterProps = {
 export const $TableFooter = styled.footer<$TableFooterProps>`
   display: flex;
   flex-flow: row wrap;
-  background-color: ${(props) =>
+  background-color: ${(props: $TableFooterProps) =>
     props.backgroundColor ? props.backgroundColor : '#efefef'};
   width: 100%;
   padding: var(--spacing-m);

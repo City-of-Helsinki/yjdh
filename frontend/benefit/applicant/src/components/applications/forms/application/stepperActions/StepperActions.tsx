@@ -26,7 +26,10 @@ type StepperActionsProps = {
   applicationStatus: APPLICATION_STATUSES;
 };
 
-const onClickSave = (e: MouseEvent, handleSave: () => void | false): void => {
+const onClickSave = (
+  e: MouseEvent,
+  handleSave: (() => void) | undefined
+): void => {
   if (handleSave) {
     handleSave();
   }
@@ -86,7 +89,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
             <Button
               theme="black"
               variant="secondary"
-              onClick={(e) => onClickSave(e, handleSave)}
+              onClick={(e: React.MouseEvent) => onClickSave(e, handleSave)}
               disabled={!handleSave}
             >
               {t(`${translationsBase}.saveAndContinueLater`)}

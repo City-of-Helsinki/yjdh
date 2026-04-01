@@ -1,6 +1,7 @@
 import { Button, CommonButtonProps } from 'hds-react';
 import React from 'react';
 import {
+  FieldValues,
   SubmitErrorHandler,
   SubmitHandler,
   useFormContext,
@@ -9,7 +10,7 @@ import { UseMutationResult } from 'react-query';
 import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
-type Props<FormData, BackendResponseData> = Omit<
+type Props<FormData extends FieldValues, BackendResponseData> = Omit<
   CommonButtonProps,
   'onClick' | 'onError'
 > & {

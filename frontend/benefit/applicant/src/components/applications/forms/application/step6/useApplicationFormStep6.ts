@@ -30,8 +30,8 @@ type ExtendedComponentProps = {
   cbPrefix: string;
   textLocale: string;
   checkedArray: boolean[];
-  applicantTermsInEffectUrl: string;
-  applicantTermsInEffectMd: string;
+  applicantTermsInEffectUrl?: string;
+  applicantTermsInEffectMd?: string;
 };
 
 const useApplicationFormStep6 = (
@@ -90,6 +90,7 @@ const useApplicationFormStep6 = (
       const currentApplicationData = snakecaseKeys(
         {
           ...application,
+          employee: snakecaseKeys(application.employee || {}, { deep: true }),
           approveTerms: {
             terms: application?.applicantTermsInEffect?.id,
             selectedApplicantConsents:
@@ -99,7 +100,7 @@ const useApplicationFormStep6 = (
           },
           apprenticeshipProgram: application?.apprenticeshipProgram,
           paySubsidyGranted: PAY_SUBSIDY_GRANTED.NOT_GRANTED,
-          paySubsidyPercent: null, // Has to be set to null for validation
+          paySubsidyPercent: null as PAY_SUBSIDY_GRANTED | null, // Has to be set to null for validation
           trainingCompensations: application?.apprenticeshipProgram
             ? application?.trainingCompensations
             : [],
@@ -138,8 +139,8 @@ const useApplicationFormStep6 = (
     void onDelete(application.id ?? '');
   };
 
-  const getTermsMarkdownByLanguage = (): string => {
-    if (!application.applicantTermsInEffect) return '';
+  const getTermsMarkdownByLanguage = (): string | undefined => {
+    if (!application.applicantTermsInEffect) return undefined;
     switch (locale) {
       case 'fi':
         return application.applicantTermsInEffect?.termsMdFi;
@@ -151,7 +152,7 @@ const useApplicationFormStep6 = (
         return application.applicantTermsInEffect?.termsMdEn;
 
       default:
-        return '';
+        return undefined;
     }
   };
 
@@ -165,7 +166,8 @@ const useApplicationFormStep6 = (
       return application.applicantTermsInEffect[
         `termsPdf${textLocale}` as TermsProp
       ];
-    return '';
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    return undefined;
   }, [application.applicantTermsInEffect, textLocale]);
 
   return {

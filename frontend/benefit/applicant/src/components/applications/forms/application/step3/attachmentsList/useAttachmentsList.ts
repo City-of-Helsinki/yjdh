@@ -57,21 +57,22 @@ const useAttachmentsList = (): ExtendedComponentProps => {
       );
       return;
     }
-    if (error?.response?.status >= 400) {
+    if (error?.response?.status && error.response.status >= 400) {
       const backendValidationError =
         error?.response?.data?.non_field_errors?.at(0);
       const malwareError =
-        error?.response?.data?.key?.includes('malware') || false;
+        (error?.response?.data as { key?: string })?.key?.includes('malware') ||
+        false;
       if (backendValidationError && malwareError) {
         showErrorToast(
           t(`common:error.malware.errorTitle`),
-          error?.response?.data?.non_field_errors[0],
+          backendValidationError,
           320_000
         );
       } else if (backendValidationError) {
         showErrorToast(
           t(`common:error.generic.label`),
-          `${error?.response?.data?.non_field_errors[0]}. ${t(
+          `${backendValidationError}. ${t(
             'common:error.attachments.malformed'
           )}`,
           30_000

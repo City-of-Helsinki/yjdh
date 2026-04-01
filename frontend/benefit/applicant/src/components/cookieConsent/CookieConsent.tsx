@@ -54,8 +54,8 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const { onAllConsentsGiven, onConsentsParsed, optionalCookies } =
     useCookieConsent();
 
-  const { groups } = optionalCookies;
-  const { cookies } = groups[0];
+  const { groups } = optionalCookies ?? { groups: [] };
+  const { cookies } = groups?.[0] ?? { cookies: [] };
 
   const contentSource = {
     siteName: text.title[locale],
@@ -65,7 +65,7 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
         {
           commonGroup: 'statistics',
           cookies: [
-            ...cookies,
+            ...(cookies ?? []),
             {
               id: 'rns',
               name: 'rnsbid',
@@ -94,8 +94,10 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
     language: {
       onLanguageChange,
     },
+
     onConsentsParsed,
-    onAllConsentsGiven,
+    // @ts-expect-error: Type mismatch with HDS React's internal ConsentObject.
+    onAllConsentsGiven: onAllConsentsGiven as (consents: ConsentObject) => void,
     focusTargetSelector: '#main_content',
   };
 
@@ -112,6 +114,7 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
 
   return asPage ? (
     <>
+      {/* @ts-expect-error: Type mismatch with HDS React's CookieContentSource. */}
       <CookiePage contentSource={contentSource} />
       <Container>
         <Button onClick={handleBack}>
@@ -120,6 +123,7 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
       </Container>
     </>
   ) : (
+    // @ts-expect-error: Type mismatch with HDS React's CookieContentSource.
     <CookieModal contentSource={contentSource} />
   );
 };

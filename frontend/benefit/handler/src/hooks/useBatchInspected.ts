@@ -6,6 +6,7 @@ import {
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
@@ -35,7 +36,7 @@ type Response = {
 };
 
 const useBatchInspected = (
-  setBatchCloseAnimation: React.Dispatch<React.SetStateAction<boolean>>,
+  setBatchCloseAnimation?: React.Dispatch<React.SetStateAction<boolean>>,
   numberOfApplications?: number
 ): UseMutationResult<Response, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
@@ -43,7 +44,7 @@ const useBatchInspected = (
   const queryClient = useQueryClient();
 
   const handleError = (): void => {
-    setBatchCloseAnimation(false);
+    setBatchCloseAnimation?.(false);
     showErrorToast(
       t('common:applications.list.errors.fetch.label'),
       t('common:applications.list.errors.fetch.text', {
@@ -55,16 +56,15 @@ const useBatchInspected = (
   return useMutation<Response, Error, Payload>(
     'changeBatchStatus',
     ({ id, status, form }: Payload) => {
-      const parsedDate = parse(
-        String(form.decision_date),
-        'd.M.yyyy',
-        new Date()
-      );
-      const decision_date = format(parsedDate, 'yyyy-MM-dd');
-      const formattedForm: BatchCompletionDetails = {
-        ...form,
-        decision_date,
-      };
+      const formattedForm = form
+        ? {
+            ...form,
+            decision_date: format(
+              parse(String(form.decision_date), 'd.M.yyyy', new Date()),
+              'yyyy-MM-dd'
+            ),
+          }
+        : {};
       const request = axios.patch<Response>(
         HandlerEndpoint.BATCH_STATUS_CHANGE(id),
         {
@@ -90,7 +90,7 @@ const useBatchInspected = (
             backendStatus
           )
         ) {
-          setBatchCloseAnimation(true);
+          setBatchCloseAnimation?.(true);
           setTimeout(() => {
             void queryClient.invalidateQueries('applicationsList');
           }, 700);

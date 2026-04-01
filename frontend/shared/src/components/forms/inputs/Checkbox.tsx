@@ -4,13 +4,14 @@ import React from 'react';
 import {
   Controller,
   ControllerRenderProps,
+  FieldValues,
   Path,
   useFormContext,
 } from 'react-hook-form';
 import useToggle from 'shared/hooks/useToggle';
 import InputProps from 'shared/types/input-props';
 
-const Checkbox = <T,>({
+const Checkbox = <T extends FieldValues>({
   id,
   registerOptions = {},
   onChange = noop,
@@ -41,7 +42,7 @@ const Checkbox = <T,>({
   );
 
   return (
-    <Controller
+    <Controller<T, Path<T>>
       name={id}
       control={control}
       rules={registerOptions}
@@ -49,8 +50,8 @@ const Checkbox = <T,>({
         <HdsCheckbox
           {...field}
           value={String(value)}
-          data-testid={id}
-          id={id}
+          data-testid={id as string}
+          id={id as string}
           required={required}
           errorText={errorText}
           label={

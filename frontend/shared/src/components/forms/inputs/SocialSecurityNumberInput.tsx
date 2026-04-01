@@ -1,6 +1,6 @@
 import { FinnishSSN } from 'finnish-ssn';
 import React from 'react';
-import { FieldError, get, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, get, useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { FINNISH_SSN_REGEX } from 'shared/constants';
 import InputProps from 'shared/types/input-props';
@@ -8,11 +8,11 @@ import { isString } from 'shared/utils/type-guards';
 
 import { $TextInput } from './TextInput.sc';
 
-type Props<T> = Omit<InputProps<T>, 'onChange'> & {
+type Props<T extends FieldValues> = Omit<InputProps<T>, 'onChange'> & {
   placeholder?: string;
 };
 
-const SocialSecurityNumberInput = <T,>({
+const SocialSecurityNumberInput = <T extends FieldValues>({
   id,
   initialValue,
   placeholder,

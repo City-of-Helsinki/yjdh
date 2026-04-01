@@ -14,7 +14,7 @@ import {
   $Section,
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 import {
   $ActionLeft,
@@ -38,7 +38,8 @@ export type ReviewSectionProps = {
 
 const $ReviewSection = styled($Grid)`
   hr {
-    border-color: ${({ theme }) => theme.colors.coatOfArms};
+    border-color: ${({ theme }: { theme: DefaultTheme }) =>
+      theme.colors.coatOfArms};
     opacity: 0.125;
   }
 `;
@@ -59,13 +60,15 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   const { theme, bgColor, withAction } = useReviewSection(action, withMargin);
   const { reviewState, handleUpdateReviewState } =
     React.useContext(ReviewStateContext);
-  const sectionState = reviewState[section];
+  const sectionState = section ? reviewState[section] : undefined;
 
   const router = useRouter();
   const { t } = useTranslation();
 
   const handleReviewClick = (): void => {
-    handleUpdateReviewState({ ...reviewState, [section]: !sectionState });
+    if (section) {
+      handleUpdateReviewState({ ...reviewState, [section]: !sectionState });
+    }
   };
 
   const CheckIcon: React.FC = () => {

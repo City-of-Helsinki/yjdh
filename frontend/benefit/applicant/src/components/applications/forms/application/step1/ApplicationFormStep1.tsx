@@ -3,7 +3,10 @@ import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit-shared/constants';
+import {
+  APPLICATION_FIELDS_STEP1_KEYS,
+  APPLICATION_STATUSES,
+} from 'benefit-shared/constants';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
@@ -77,6 +80,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </$SubHeader>
         </$GridCell>
         <$GridCell $colSpan={3}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -84,7 +88,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.companyContactPersonFirstName.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.companyContactPersonFirstName}
+            value={formik.values.companyContactPersonFirstName || ''}
             invalid={
               !!getErrorMessage(fields.companyContactPersonFirstName.name)
             }
@@ -98,6 +102,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonLastName.name}
             name={fields.companyContactPersonLastName.name}
@@ -105,7 +110,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.companyContactPersonLastName.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.companyContactPersonLastName}
+            value={formik.values.companyContactPersonLastName || ''}
             invalid={
               !!getErrorMessage(fields.companyContactPersonLastName.name)
             }
@@ -119,6 +124,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonPhoneNumber.name}
             name={fields.companyContactPersonPhoneNumber.name}
@@ -126,7 +132,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.companyContactPersonPhoneNumber.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={phoneToLocal(formik.values.companyContactPersonPhoneNumber)}
+            value={phoneToLocal(
+              formik.values.companyContactPersonPhoneNumber || ''
+            )}
             invalid={
               !!getErrorMessage(fields.companyContactPersonPhoneNumber.name)
             }
@@ -140,6 +148,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
+          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonEmail.name}
             name={fields.companyContactPersonEmail.name}
@@ -147,7 +156,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.companyContactPersonEmail.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.companyContactPersonEmail}
+            value={formik.values.companyContactPersonEmail || ''}
             invalid={!!getErrorMessage(fields.companyContactPersonEmail.name)}
             aria-invalid={
               !!getErrorMessage(fields.companyContactPersonEmail.name)
@@ -281,6 +290,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         {formik.values.coOperationNegotiations && (
           <$SubFieldContainer $colSpan={7}>
             <$GridCell $colSpan={8} $rowSpan={8}>
+              {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
               <TextArea
                 id={fields.coOperationNegotiationsDescription.name}
                 name={fields.coOperationNegotiationsDescription.name}
@@ -290,7 +300,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.coOperationNegotiationsDescription}
+                value={formik.values.coOperationNegotiationsDescription || ''}
                 invalid={
                   !!getErrorMessage(
                     fields.coOperationNegotiationsDescription.name
@@ -321,8 +331,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             ? handleSave
             : undefined
         }
-        handleDelete={data?.id ? handleDelete : null}
-        applicationStatus={data?.status}
+        handleDelete={data?.id ? handleDelete : undefined}
+        applicationStatus={data?.status ?? APPLICATION_STATUSES.DRAFT}
       />
     </form>
   );

@@ -162,7 +162,8 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {t(`${translationsBase}.employee.fields.monthlyPay.label`)}
                 </$ApplicationDetailLabel>
                 <$ApplicationDetailValue>
-                  {formatFloatToCurrency(data.employee?.monthlyPay)}
+                  {data.employee?.monthlyPay &&
+                    formatFloatToCurrency(data.employee.monthlyPay)}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
 
@@ -171,7 +172,8 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {t(`${translationsBase}.employee.fields.vacationMoney.label`)}
                 </$ApplicationDetailLabel>
                 <$ApplicationDetailValue>
-                  {formatFloatToCurrency(data.employee?.vacationMoney)}
+                  {data.employee?.vacationMoney &&
+                    formatFloatToCurrency(data.employee.vacationMoney)}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
               <$ApplicationDetailRow data-testid="application-field-otherExpenses">
@@ -180,7 +182,8 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 </$ApplicationDetailLabel>
 
                 <$ApplicationDetailValue>
-                  {formatFloatToCurrency(data.employee?.otherExpenses)}
+                  {data.employee?.otherExpenses &&
+                    formatFloatToCurrency(data.employee.otherExpenses)}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
             </$ApplicationDetailWrapper>

@@ -45,7 +45,7 @@ const isTabActive = (pathname: string): boolean => {
 };
 
 const getNavigationUrl = (
-  locale,
+  locale: SUPPORTED_LANGUAGES,
   navigationUriBase: string,
   route: ROUTES
 ): string => {
@@ -69,7 +69,9 @@ const useHeader = (): ExtendedComponentProps => {
   const { isNavigationVisible } = React.useContext(AppContext);
   const getLanguage = useGetLanguage();
   const navigationUriBase =
-    getLanguage() === SUPPORTED_LANGUAGES.FI ? '/' : `/${getLanguage()}`;
+    (getLanguage() as SUPPORTED_LANGUAGES) === SUPPORTED_LANGUAGES.FI
+      ? '/'
+      : `/${getLanguage()}`;
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
   const [unreadMessagesCount, setUnredMessagesCount] = useState<
     number | undefined | null
@@ -89,7 +91,7 @@ const useHeader = (): ExtendedComponentProps => {
   const hasCorrectStatus = ![
     APPLICATION_STATUSES.CANCELLED,
     APPLICATION_STATUSES.ARCHIVAL,
-  ].includes(application?.status);
+  ].includes(application?.status as APPLICATION_STATUSES);
 
   const canWriteNewMessages =
     hasCorrectStatus && !application?.archived_for_applicant;
@@ -156,12 +158,16 @@ const useHeader = (): ExtendedComponentProps => {
     () => [
       {
         label: t('common:header.navigation.home'),
-        url: getNavigationUrl(getLanguage(), navigationUriBase, ROUTES.HOME),
+        url: getNavigationUrl(
+          getLanguage() as SUPPORTED_LANGUAGES,
+          navigationUriBase,
+          ROUTES.HOME
+        ),
       },
       {
         label: t('common:header.navigation.decisions'),
         url: getNavigationUrl(
-          getLanguage(),
+          getLanguage() as SUPPORTED_LANGUAGES,
           navigationUriBase,
           ROUTES.DECISIONS
         ),

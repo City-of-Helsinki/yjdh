@@ -39,8 +39,8 @@ const ConsentActions: React.FC<UploadProps> = ({
           <UploadAttachment
             theme="black"
             variant="secondary"
-            onUpload={handleUpload}
-            isUploading={isUploading}
+            onUpload={handleUpload || (() => {})}
+            isUploading={isUploading ?? false}
             attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
             allowedFileTypes={ATTACHMENT_CONTENT_TYPES}
             maxSize={ATTACHMENT_MAX_SIZE}

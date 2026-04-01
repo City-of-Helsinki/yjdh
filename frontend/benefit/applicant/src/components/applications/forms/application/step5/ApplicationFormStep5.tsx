@@ -6,7 +6,11 @@ import {
   BackendEndpoint,
   getBackendUrl,
 } from 'benefit-shared/backend-api/backend-api';
-import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  ATTACHMENT_TYPES,
+  BENEFIT_TYPES,
+} from 'benefit-shared/constants';
 import { Button, IconPen, IconPlus, IconPrinter } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
@@ -43,7 +47,11 @@ const ApplicationFormStep5: React.FC<
     handleClose,
     translationsBase,
     isSubmit,
-  } = useApplicationFormStep5(data, setIsSubmittedApplication, setIsResubmission);
+  } = useApplicationFormStep5(
+    data,
+    setIsSubmittedApplication ?? (() => {}),
+    setIsResubmission
+  );
 
   const {
     data: clonedData,
@@ -51,7 +59,11 @@ const ApplicationFormStep5: React.FC<
     mutate: cloneApplication,
   } = useCloneApplicationMutation();
 
-  const handleCloneApplication = (): void => cloneApplication(data?.id);
+  const handleCloneApplication = (): void => {
+    if (data?.id) {
+      cloneApplication(data.id);
+    }
+  };
   const router = useRouter();
 
   useEffect(() => {
@@ -219,7 +231,7 @@ const ApplicationFormStep5: React.FC<
           handleSubmit={handleSubmit}
           handleBack={handleBack}
           handleDelete={handleDelete}
-          applicationStatus={data?.status}
+          applicationStatus={data?.status ?? APPLICATION_STATUSES.DRAFT}
         />
       )}
     </>

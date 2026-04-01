@@ -23,7 +23,7 @@ interface BatchError extends AxiosError {
   response: BatchErrorResponse;
 }
 
-const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
+const useAddToBatchQuery = (): UseMutationResult<Payload, Error, Payload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -57,12 +57,23 @@ const useAddToBatchQuery = (): UseMutationResult<Payload, Error> => {
         showSuccessToast(
           t('batches.notifications.addToBatch.success.heading'),
           t('batches.notifications.addToBatch.success.text', {
-            count: applicationIds.length,
+            count: applicationIds?.length ?? 0,
           })
         );
         void queryClient.invalidateQueries('applicationsList');
       },
-      onError: (error: BatchError) => handleError(error),
+      onError: (error: Error) => {
+        if ((error as BatchError).response?.data?.errorKey) {
+          handleError(error as BatchError);
+        } else {
+          showErrorToast(
+            t('common:applications.list.errors.fetch.label'),
+            t('common:applications.list.errors.fetch.text', {
+              status: 'error',
+            })
+          );
+        }
+      },
     }
   );
 };

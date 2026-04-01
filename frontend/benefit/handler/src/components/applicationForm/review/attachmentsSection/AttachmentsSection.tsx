@@ -1,6 +1,9 @@
 import AttachmentsListView from 'benefit/handler/components/attachmentsListView/AttachmentsListView';
 import { ReviewChildProps } from 'benefit/handler/types/common';
-import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
+import {
+  ATTACHMENT_TYPES,
+  PAY_SUBSIDY_GRANTED,
+} from 'benefit-shared/constants';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -44,7 +47,11 @@ const AttachmentsSection: React.FC<ReviewChildProps> = ({
       <$GridCell $colStart={1} $colSpan={6}>
         <AttachmentsListView
           type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-          title={t(paySubsidyTitle(data.paySubsidyGranted))}
+          title={t(
+            paySubsidyTitle(
+              data.paySubsidyGranted || PAY_SUBSIDY_GRANTED.NOT_GRANTED
+            )
+          )}
           attachments={data.attachments || []}
         />
       </$GridCell>

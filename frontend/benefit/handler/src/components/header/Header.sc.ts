@@ -1,6 +1,6 @@
 import BaseHeader from 'shared/components/header/Header';
 import { respondAbovePx } from 'shared/styles/mediaQueries';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $BaseHeader = styled(BaseHeader)`
   z-index: 100;
@@ -46,19 +46,21 @@ export const $ToggleButton = styled.button`
 
 type $HeaderNotifierProps = {
   $enabled: boolean;
+  theme: DefaultTheme;
 };
 export const $HeaderNotifier = styled.div<$HeaderNotifierProps>`
   position: relative;
-  opacity: ${(props) => (props.$enabled ? 1 : 0.25)};
-  pointer-events: ${(props) => (props.$enabled ? 'auto' : 'none')};
+  opacity: ${(props: $HeaderNotifierProps) => (props.$enabled ? 1 : 0.25)};
+  pointer-events: ${(props: $HeaderNotifierProps) =>
+    props.$enabled ? 'auto' : 'none'};
   ${$ToggleButton} {
     cursor: pointer;
-    background: ${(props) =>
+    background: ${(props: $HeaderNotifierProps) =>
       props.$enabled ? props.theme.colors.coatOfArmsDark : 'transparent'};
 
     &:hover,
     &:active {
-      background: ${(props) =>
+      background: ${(props: $HeaderNotifierProps) =>
         props.$enabled ? props.theme.colors.coatOfArms : 'transparent'};
     }
 
@@ -70,13 +72,14 @@ export const $HeaderNotifier = styled.div<$HeaderNotifierProps>`
 
 type $BoxProps = {
   $open: boolean;
+  theme: DefaultTheme;
 };
 
 export const $Box = styled.div<$BoxProps>`
   position: absolute;
   top: 50px;
   z-index: 99999;
-  visibility: ${(props) => (props.$open ? 'visible' : 'hidden')};
+  visibility: ${(props: $BoxProps) => (props.$open ? 'visible' : 'hidden')};
   background: white;
   color: black;
   border-radius: 5px;
@@ -122,7 +125,7 @@ export const $Box = styled.div<$BoxProps>`
   h2 {
     margin: 1rem 1rem 0.75rem;
     font-size: 1.25rem;
-    color: ${(props) => props.theme.colors.coatOfArms};
+    color: ${(props: { theme: DefaultTheme }) => props.theme.colors.coatOfArms};
     user-select: none;
   }
 
@@ -133,14 +136,17 @@ export const $Box = styled.div<$BoxProps>`
     font-size: 0.95rem;
 
     li {
-      border-bottom: 1px solid ${(props) => props.theme.colors.black20};
+      border-bottom: 1px solid
+        ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
 
       &:nth-child(even) {
-        background: ${(props) => props.theme.colors.black5};
+        background: ${(props: { theme: DefaultTheme }) =>
+          props.theme.colors.black5};
       }
 
       &:first-child {
-        border-top: 1px solid ${(props) => props.theme.colors.black20};
+        border-top: 1px solid
+          ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
       }
 
       &:last-child {
@@ -152,7 +158,8 @@ export const $Box = styled.div<$BoxProps>`
   }
   &:hover {
     > ul > li:hover {
-      background: ${(props) => props.theme.colors.black10};
+      background: ${(props: { theme: DefaultTheme }) =>
+        props.theme.colors.black10};
     }
   }
 `;
@@ -176,7 +183,8 @@ export const $ApplicationWithMessages = styled.button`
     hyphens: auto;
     max-width: 130px;
     &:hover {
-      background: ${(props) => props.theme.colors.black10};
+      background: ${(props: { theme: DefaultTheme }) =>
+        props.theme.colors.black10};
     }
 
     &:first-child {

@@ -3,10 +3,19 @@
   "compilerOptions": {
     "baseUrl": "../../",
     "paths": {
-      "kesaseteli/youth/*": ["kesaseteli/youth/src/*","kesaseteli/youth/browser-tests/*"],
-      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
-      "shared/*": ["shared/src/*","shared/browser-tests/*"]
-    }
+      "kesaseteli/youth/*": [
+        "kesaseteli/youth/src/*",
+        "kesaseteli/youth/browser-tests/*"
+      ],
+      "kesaseteli-shared/*": [
+        "kesaseteli/shared/src/*"
+      ],
+      "shared/*": [
+        "shared/src/*",
+        "shared/browser-tests/*"
+      ]
+    },
+    "strict": true
   },
   "include": [
     "next-env.d.ts",

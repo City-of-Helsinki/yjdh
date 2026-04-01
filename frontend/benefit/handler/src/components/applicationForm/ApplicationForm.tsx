@@ -1,6 +1,7 @@
 import { ROUTES } from 'benefit/handler/constants';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
+import { Application } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   Button,
@@ -110,8 +111,9 @@ const ApplicationForm: React.FC = () => {
       </$SpinnerContainer>
     );
   }
-  const isApplicationReadOnly =
-    application.handler && application?.handler.id !== user?.id;
+  const isApplicationReadOnly = !!(
+    application.handler && application?.handler.id !== user?.id
+  );
 
   return (
     <$ApplicationModify>
@@ -171,7 +173,7 @@ const ApplicationForm: React.FC = () => {
               formik={formik}
               fields={fields}
               handleSave={handleSave}
-              handleQuietSave={isFormActionNew ? handleQuietSave : null}
+              handleQuietSave={isFormActionNew ? handleQuietSave : undefined}
               showDeminimisSection={showDeminimisSection}
               minEndDate={minEndDate}
               maxEndDate={maxEndDate}
@@ -184,9 +186,9 @@ const ApplicationForm: React.FC = () => {
             />
             {isFormActionEdit && (
               <ActionBarEdit
-                id={id}
+                id={id ?? undefined}
                 fields={fields}
-                initialApplication={initialApplication}
+                initialApplication={initialApplication as Application}
                 formik={formik}
                 handleSave={handleSave}
                 handleValidation={handleValidation}
@@ -194,7 +196,7 @@ const ApplicationForm: React.FC = () => {
             )}
             {isFormActionNew && (
               <ActionBarNew
-                id={id}
+                id={id ?? undefined}
                 handleSave={handleSave}
                 handleSaveDraft={handleSaveDraft}
                 handleDelete={handleDelete}
@@ -210,7 +212,7 @@ const ApplicationForm: React.FC = () => {
               dispatchStep={dispatchStep}
             />
             <ActionBarNew
-              id={id}
+              id={id ?? undefined}
               handleSubmit={handleSubmit}
               handleSaveDraft={handleSaveDraft}
               handleDelete={handleDelete}

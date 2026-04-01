@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { Application } from 'benefit/handler/types/application';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import {
@@ -40,7 +39,7 @@ const useDecisionProposalDraftMutation = (
         void queryClient.invalidateQueries('applications');
         void queryClient.invalidateQueries('application');
       },
-      onError: (error: AxiosError<Error, Record<string, string[]>>) => {
+      onError: (error: Error & { response?: { data?: unknown } }) => {
         const errorData = camelcaseKeys(error.response?.data ?? {});
         const isContentTypeHTML = typeof errorData === 'string';
         hdsToast({

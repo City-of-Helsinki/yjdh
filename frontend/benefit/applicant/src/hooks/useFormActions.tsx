@@ -65,6 +65,34 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
   const { t } = useTranslation();
 
+  const renderErrorText = React.useCallback(
+    (
+      errorData: Record<string, unknown> | string
+    ): string | React.ReactElement | (string | React.ReactElement)[] => {
+      if (typeof errorData === 'string') {
+        return t('common:error.generic.text');
+      }
+      return Object.entries(errorData)
+        .map(([key, value]) => {
+          if (typeof value === 'string') {
+            return (
+              <a key={key} href={`#${key}`}>
+                {value}
+              </a>
+            );
+          }
+          return prettyPrintObject({
+            data: (value as Record<string, string[]>) || {},
+          });
+        })
+        .filter(
+          (item): item is string | React.ReactElement =>
+            typeof item === 'string' || React.isValidElement(item)
+        );
+    },
+    [t]
+  );
+
   useEffect(() => {
     const error =
       updateApplicationError ||
@@ -72,23 +100,14 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       deleteApplicationError;
 
     if (error) {
-      const errorData = camelcaseKeys(error.response?.data ?? {});
-      const isContentTypeHTML = typeof errorData === 'string';
+      const errorData = camelcaseKeys(error.response?.data ?? {}) as
+        | Record<string, unknown>
+        | string;
       hdsToast({
         autoDismissTime: 0,
         type: 'error',
         labelText: t('common:error.generic.label'),
-        text: isContentTypeHTML
-          ? t('common:error.generic.text')
-          : Object.entries(errorData).map(([key, value]) =>
-              typeof value === 'string' ? (
-                <a key={key} href={`#${key}`}>
-                  {value}
-                </a>
-              ) : (
-                prettyPrintObject({ data: value })
-              )
-            ),
+        text: renderErrorText(errorData),
       });
     }
   }, [
@@ -96,6 +115,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     updateApplicationError,
     createApplicationError,
     deleteApplicationError,
+    renderErrorText,
   ]);
 
   const { deMinimisAids } = useContext(DeMinimisContext);
@@ -153,7 +173,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
 
     // Use context on first step, otherwise pass data from backend
     const deMinimisAidData =
-      currentStep === 1 ? deMinimisAids : deMinimisAidSet;
+      currentStep === 1 ? deMinimisAids : deMinimisAidSet || [];
 
     return {
       ...application,

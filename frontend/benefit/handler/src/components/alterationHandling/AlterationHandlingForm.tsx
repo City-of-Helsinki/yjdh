@@ -16,6 +16,7 @@ import { $CustomNotesActions } from 'benefit/handler/components/applicationRevie
 import Sidebar from 'benefit/handler/components/sidebar/Sidebar';
 import { DEFAULT_MINIMUM_RECOVERY_AMOUNT } from 'benefit/handler/constants';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
+import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import {
   Application,
   ApplicationAlteration,
@@ -83,7 +84,12 @@ const AlterationHandlingForm = ({
   const handleAlterationCsvDownload = (): void => {
     setIsCSVDownloadDone(true);
   };
-  const { navigateBack } = useRouterNavigation(null, null, null, true);
+  const { navigateBack } = useRouterNavigation(
+    undefined,
+    undefined,
+    undefined,
+    true
+  );
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -147,7 +153,7 @@ const AlterationHandlingForm = ({
                 required
                 errorText={
                   isCalculationOutOfDate
-                    ? null
+                    ? undefined
                     : getErrorMessage('isRecoverable')
                 }
                 tooltipText={t(
@@ -207,6 +213,7 @@ const AlterationHandlingForm = ({
         >
           <$Grid>
             <$GridCell $colSpan={8}>
+              {/* @ts-expect-error TS2740: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
               <TextArea
                 label={
                   formik.values.isRecoverable
@@ -218,7 +225,7 @@ const AlterationHandlingForm = ({
                 value={formik.values.recoveryJustification}
                 id="recovery-justification"
                 name="recoveryJustification"
-                required
+                required={formik.values.isRecoverable === false}
                 invalid={!!getErrorMessage('recoveryJustification')}
                 aria-invalid={!!getErrorMessage('recoveryJustification')}
                 errorText={getErrorMessage('recoveryJustification')}
@@ -318,7 +325,7 @@ const AlterationHandlingForm = ({
       <Sidebar
         isOpen={isMessagesDrawerVisible}
         messagesReadOnly
-        application={application}
+        application={application as HandlerApplication}
         onClose={() => toggleMessagesDrawerVisibility(false)}
         customItemsNotes={[
           <$CustomNotesActions key="showToHandlerOnly">

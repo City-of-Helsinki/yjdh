@@ -138,10 +138,11 @@ const useApplicationReview = (): ExtendedComponentProps => {
     deep: true,
   });
 
-  const isApplicationReadOnly =
+  const isApplicationReadOnly = Boolean(
     application.handler &&
-    application?.handler.id !== user?.id &&
-    application?.status === APPLICATION_STATUSES.HANDLING;
+      application?.handler.id !== user?.id &&
+      application?.status === APPLICATION_STATUSES.HANDLING
+  );
 
   useEffect(() => {
     if (shouldShowUpdatedToast && application?.applicationNumber) {
@@ -151,10 +152,10 @@ const useApplicationReview = (): ExtendedComponentProps => {
           applicationNumber: application.applicationNumber,
         })
       );
-      window.history.replaceState(
+      globalThis.history.replaceState(
         null,
         '',
-        `${window.location.pathname}?id=${application.id}`
+        `${globalThis.location.pathname}?id=${application.id || ''}`
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

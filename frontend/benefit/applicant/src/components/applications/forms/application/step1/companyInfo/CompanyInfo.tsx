@@ -187,6 +187,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               `}
             >
               <$GridCell $colSpan={4}>
+                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.companyDepartment.name}
                   name={fields.companyDepartment.name}
@@ -203,6 +204,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 />
               </$GridCell>
               <$GridCell $colStart={1} $colSpan={4}>
+                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.alternativeCompanyStreetAddress.name}
                   name={fields.alternativeCompanyStreetAddress.name}
@@ -230,6 +232,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 />
               </$GridCell>
               <$GridCell $colSpan={2}>
+                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.alternativeCompanyPostcode.name}
                   name={fields.alternativeCompanyPostcode.name}
@@ -251,6 +254,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 />
               </$GridCell>
               <$GridCell $colSpan={4}>
+                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.alternativeCompanyCity.name}
                   name={fields.alternativeCompanyCity.name}
@@ -292,26 +296,30 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               );
             }}
           >
-            {() => (
-              <TextInput
-                id={fields.companyBankAccountNumber.name}
-                name={fields.companyBankAccountNumber.name}
-                label={fields.companyBankAccountNumber.label}
-                invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.companyBankAccountNumber.name)
-                }
-                errorText={getErrorMessage(
-                  fields.companyBankAccountNumber.name
-                )}
-                required
-                helperText={t(
-                  `${translationsBase}.fields.companyBankAccountNumber.placeholder`
-                )}
-              />
-            )}
+            {
+              ((props: Record<string, unknown>) => (
+                // @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740.
+                <TextInput
+                  {...props}
+                  id={fields.companyBankAccountNumber.name}
+                  name={fields.companyBankAccountNumber.name}
+                  label={fields.companyBankAccountNumber.label}
+                  invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  aria-invalid={
+                    !!getErrorMessage(fields.companyBankAccountNumber.name)
+                  }
+                  errorText={getErrorMessage(
+                    fields.companyBankAccountNumber.name
+                  )}
+                  required
+                  helperText={t(
+                    `${translationsBase}.fields.companyBankAccountNumber.placeholder`
+                  )}
+                />
+              )) as unknown as React.ReactNode
+            }
           </InputMask>
         </$GridCell>
         {data.organizationType.toLowerCase() ===

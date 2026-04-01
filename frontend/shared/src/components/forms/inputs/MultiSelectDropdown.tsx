@@ -1,7 +1,7 @@
 import { Combobox, Select } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import {
   $GridCell,
@@ -13,7 +13,7 @@ type Option = {
   name: string;
 };
 
-type Props<T, O extends Option> = InputProps<T, O[]> &
+type Props<T extends FieldValues, O extends Option> = InputProps<T, O[]> &
   GridCellProps & {
     type?: 'select' | 'combobox';
     multiselect?: boolean;
@@ -21,9 +21,8 @@ type Props<T, O extends Option> = InputProps<T, O[]> &
     options: O[];
   };
 
-const MultiSelectDropdown = <T, O extends Option>({
+const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
   type = 'select',
-  multiselect,
   id,
   registerOptions = {},
   initialValue,
@@ -39,42 +38,50 @@ const MultiSelectDropdown = <T, O extends Option>({
   const { t } = useTranslation();
   const { control } = useFormContext<T>();
   const required = Boolean(registerOptions.required);
-  const DropdownInput = React.useMemo(
-    () => (type === 'select' ? Select : Combobox),
-    [type]
-  );
+  const inputId = String(id);
+
+  const sharedProps = {
+    multiselect: true as const,
+    id: inputId,
+    required,
+    label,
+    defaultValue: initialValue,
+    placeholder,
+    selectedItemRemoveButtonAriaLabel: t('common:assistive.clearChoice'),
+    clearButtonAriaLabel: t('common:assistive.clearChoices'),
+    optionLabelField: optionLabelField as string,
+    options,
+    disabled,
+    invalid: Boolean(errorText),
+    'aria-invalid': Boolean(errorText),
+  };
 
   return (
     <$GridCell {...$gridCellProps}>
       <Controller
         name={id}
-        data-testid={id}
+        data-testid={inputId}
         control={control}
         rules={registerOptions}
-        render={({ field: { ref, value, ...field } }) => (
-          <DropdownInput<O>
-            {...field}
-            multiselect
-            value={value as O[]}
-            id={id}
-            required={required}
-            label={label}
-            defaultValue={initialValue}
-            placeholder={placeholder}
-            selectedItemRemoveButtonAriaLabel={t(
-              'common:assistive.clearChoice'
-            )}
-            clearButtonAriaLabel={t('common:assistive.clearChoices')}
-            optionLabelField={optionLabelField as string}
-            options={options}
-            disabled={disabled}
-            invalid={Boolean(errorText)}
-            aria-invalid={Boolean(errorText)}
-          />
-        )}
+        render={({ field: { ref, value, ...field } }) =>
+          type === 'combobox' ? (
+            <Combobox<O>
+              {...field}
+              {...sharedProps}
+              value={value as O[]}
+              toggleButtonAriaLabel={t('common:assistive.openDropdown')}
+            />
+          ) : (
+            <Select<O>
+              {...field}
+              {...sharedProps}
+              value={value as O[]}
+            />
+          )
+        }
       />
       {errorText && (
-        <FieldErrorMessage data-testid={`${id as string}-error`}>
+        <FieldErrorMessage data-testid={`${inputId}-error`}>
           {errorText}
         </FieldErrorMessage>
       )}

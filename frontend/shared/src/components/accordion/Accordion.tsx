@@ -37,7 +37,7 @@ const Accordion: React.FC<AccordionProps> = (props: AccordionProps) => {
         <$HeadingContainer
           role="button"
           tabIndex={0}
-          onKeyPress={(e) => {
+          onKeyPress={(e: React.KeyboardEvent<HTMLElement>) => {
             if (e.key === 'Enter' || e.key === ' ') {
               buttonProps.onClick();
             }

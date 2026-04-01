@@ -21,6 +21,6 @@ export const getErrorText = (
   return !!error && (getIn(touched, name) || isSubmitted)
     ? isString(error)
       ? t(error)
-      : t(error.key || '', error)
+      : (t(error.key || '', error) as string)
     : '';
 };

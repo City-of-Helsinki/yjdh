@@ -66,6 +66,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
   return (
     <$GridCell {...gridCellprops}>
       <Button
+        loadingText={t(`common:handlerApplication.saving`)}
         theme="coat"
         data-testid="accept-button"
         iconLeft={icon.accept}

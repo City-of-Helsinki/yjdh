@@ -1,22 +1,23 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export const $DecisionCalculatorAccordion = styled.div`
   position: relative;
 
   &:not(:last-child) {
-    margin-bottom: ${(props) => props.theme.spacing.xs};
+    margin-bottom: ${(props: { theme: DefaultTheme }) =>
+      props.theme.spacing.xs};
   }
 
   div[role='heading'] > div[role='button'] > span.label {
-    padding-left: ${(props) => props.theme.spacing.xl};
+    padding-left: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
   }
 `;
 
 export const $DecisionCalculatorAccordionIconContainer = styled.div`
   position: absolute;
-  left: ${(props) => props.theme.spacing.xs};
-  top: ${(props) => props.theme.spacing.s};
+  left: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
+  top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
   pointer-events: none;
   z-index: 1;
   padding: 2px 0;
@@ -30,6 +31,7 @@ export const $CalculatorContainer = styled.div`
 
 export const $Section = styled.div`
   &.subtotal {
-    background-color: ${(props) => props.theme.colors.coatOfArmsLight};
+    background-color: ${(props: { theme: DefaultTheme }) =>
+      props.theme.colors.coatOfArmsLight};
   }
 `;

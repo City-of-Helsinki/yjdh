@@ -1,28 +1,23 @@
 import { useTranslation } from 'next-i18next';
-import {
-  FieldError,
-  get,
-  RegisterOptions,
-  useFormContext,
-} from 'react-hook-form';
+import { FieldValues, get, RegisterOptions, useFormContext } from 'react-hook-form';
 import Id from 'shared/types/id';
 
-type InputProps<T> = {
+type InputProps<T extends FieldValues> = {
   id: Id<T>;
   errorText?: string;
   label: string;
   registerOptions?: RegisterOptions<T, Id<T>>;
 };
 
-const useRegisterInput = <T>(
+const useRegisterInput = <T extends FieldValues>(
   formKey: 'youthApplication' | 'additionalInfo'
 ): ((id: Id<T>, registerOptions?: RegisterOptions<T>) => InputProps<T>) => {
   const { t } = useTranslation();
   const { formState } = useFormContext<T>();
 
   const getErrorText = (id: Id<T>): string | undefined => {
-    const error = get(formState.errors, id) as FieldError | undefined;
-    const errorType = error?.type;
+    const error = get(formState.errors, id);
+    const errorType: string | undefined = error?.type;
     return errorType ? t(`common:errors.${errorType}`) : undefined;
   };
   return (id, registerOptions) => ({

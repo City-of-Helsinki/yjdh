@@ -17,6 +17,7 @@ const SalaryBenefitManualCalculatorView: React.FC<
   return (
     <>
       <$GridCell $colStart={1} $colSpan={2}>
+        {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
         <TextInput
           id={overrideMonthlyBenefitAmount?.name}
           name={overrideMonthlyBenefitAmount?.name}
@@ -38,6 +39,7 @@ const SalaryBenefitManualCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={6}>
+        {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
         <TextArea
           id={overrideMonthlyBenefitAmountComment?.name}
           name={overrideMonthlyBenefitAmountComment?.name}

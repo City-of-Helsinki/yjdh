@@ -3,14 +3,14 @@ import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
 
 const YouthApplication: React.FC = () => {
   const { t } = useTranslation();
 
-  const methods = useForm<YouthFormData>({
+  const methods: UseFormReturn<YouthFormData> = useForm<YouthFormData>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
