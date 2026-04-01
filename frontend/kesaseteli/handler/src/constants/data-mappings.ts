@@ -15,4 +15,5 @@ export const BACKEND_TO_FRONTEND_FIELD: BackendToFrontendField = {
   non_vtj_birthdate: 'nonVtjBirthdate',
   non_vtj_home_municipality: 'nonVtjHomeMunicipality',
   additional_info_description: 'additionalInfoDescription',
+  target_group: 'targetGroup',
 };
