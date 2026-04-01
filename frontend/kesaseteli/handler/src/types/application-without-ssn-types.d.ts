@@ -17,6 +17,7 @@ export type ApplicationWithoutSsn = {
   nonVtjBirthdate: string;
   nonVtjHomeMunicipality?: string;
   additionalInfoDescription: string;
+  targetGroup: string;
 };
 
 export type BackendApplicationWithoutSsn = {
@@ -30,6 +31,7 @@ export type BackendApplicationWithoutSsn = {
   non_vtj_birthdate: ApplicationWithoutSsn['nonVtjBirthdate'];
   non_vtj_home_municipality?: ApplicationWithoutSsn['nonVtjHomeMunicipality'];
   additional_info_description: ApplicationWithoutSsn['additionalInfoDescription'];
+  target_group: ApplicationWithoutSsn['targetGroup'];
 };
 
 type BackendField = keyof BackendApplicationWithoutSsn;
