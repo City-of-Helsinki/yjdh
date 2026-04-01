@@ -291,7 +291,11 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         Validate that adding attachments is allowed in this application status
         """
         obj = self.get_object()
-        attachment_type = request.data.get("attachment_type")
+        try:
+            attachment_type = request.data.get("attachment_type")
+        except KeyError:
+            attachment_type = None
+
         if attachment_type != AttachmentType.PAYSLIP:
             if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
                 return Response(
