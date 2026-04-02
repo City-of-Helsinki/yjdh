@@ -13,7 +13,7 @@ import {
   waitForBackendRequestsToComplete,
   waitForLoadingCompleted,
 } from 'shared/__tests__/utils/component.utils';
-import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 type NotificationType =
@@ -42,7 +42,7 @@ const getAdditionalInfoPageApi = (
           {
             name: translations.additionalInfo.title,
           },
-          { timeout: 5000 }
+          { timeout: 3000 }
         );
       },
       async notificationIsPresent(type: NotificationType) {
@@ -52,24 +52,26 @@ const getAdditionalInfoPageApi = (
           {
             name: translations.additionalInfo.notification[type],
           },
-          { timeout: 5000 }
+          { timeout: 3000 }
         );
       },
       async exceptionTypeDropDownHasError(errorText: RegExp) {
-        const elem = await screen.findByTestId(
-          'additional_info_user_reasons-error'
-        );
-        expect(elem).toHaveTextContent(errorText);
+        const dropdownToggle = await screen.findByRole('button', {
+          name: regexp(translations.additionalInfo.form.reasons),
+        });
+        await waitFor(() => expect(dropdownToggle).toBeInvalid());
+        await screen.findByText(errorText);
       },
       async textInputHasError(
         key: keyof AdditionalInfoFormData,
         errorText: RegExp
       ) {
-        const input = await screen.findByTestId(key as string);
-        expect(input).toBeInvalid();
-        expect(
-          input.parentElement?.parentElement?.parentElement
-        ).toHaveTextContent(errorText);
+        const input = await screen.findByRole('textbox', {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          name: regexp((translations.additionalInfo.form as any)[key]),
+        });
+        await waitFor(() => expect(input).toBeInvalid());
+        await screen.findByText(errorText);
       },
     },
     actions: {
@@ -122,7 +124,7 @@ const getAdditionalInfoPageApi = (
           });
         }
         await userEvent.click(
-          screen.getByRole('button', {
+          await screen.findByRole('button', {
             name: translations.additionalInfo.form.sendButton,
           })
         );

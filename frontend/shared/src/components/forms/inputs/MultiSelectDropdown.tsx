@@ -2,12 +2,14 @@ import { Combobox, Select } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
-import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
 import InputProps from 'shared/types/input-props';
+
+import { $DropdownWrapper } from './Dropdown.sc';
+import FieldErrorMessage from '../fields/fieldErrorMessage/FieldErrorMessage';
 
 type Option = {
   name: string;
@@ -54,37 +56,40 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
     disabled,
     invalid: Boolean(errorText),
     'aria-invalid': Boolean(errorText),
+    errorText,
   };
 
   return (
     <$GridCell {...$gridCellProps}>
-      <Controller
-        name={id}
-        data-testid={inputId}
-        control={control}
-        rules={registerOptions}
-        render={({ field: { ref, value, ...field } }) =>
-          type === 'combobox' ? (
-            <Combobox<O>
-              {...field}
-              {...sharedProps}
-              value={value as O[]}
-              toggleButtonAriaLabel={t('common:assistive.openDropdown')}
-            />
-          ) : (
-            <Select<O>
-              {...field}
-              {...sharedProps}
-              value={value as O[]}
-            />
-          )
-        }
-      />
-      {errorText && (
-        <FieldErrorMessage data-testid={`${inputId}-error`}>
-          {errorText}
-        </FieldErrorMessage>
-      )}
+      <$DropdownWrapper errorText={errorText}>
+        <Controller
+          name={id}
+          data-testid={inputId}
+          control={control}
+          rules={registerOptions}
+          render={({ field: { ref, value, ...field } }) =>
+            type === 'combobox' ? (
+              <Combobox<O>
+                {...field}
+                {...sharedProps}
+                value={value as O[]}
+                toggleButtonAriaLabel={t('common:assistive.openDropdown')}
+              />
+            ) : (
+              <Select<O>
+                {...field}
+                {...sharedProps}
+                value={value as O[]}
+              />
+            )
+          }
+        />
+        {errorText && (
+          <FieldErrorMessage data-testid={`${inputId}-error`}>
+            {errorText}
+          </FieldErrorMessage>
+        )}
+      </$DropdownWrapper>
     </$GridCell>
   );
 };

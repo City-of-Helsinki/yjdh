@@ -35,7 +35,7 @@ export const waitFor = (
 ): Promise<void> => {
   // Overwrite default options
   const mergedOptions = {
-    timeout: JEST_TIMEOUT / 2,
+    timeout: 5_000,
     ...options,
   };
   return _waitFor(callback, mergedOptions);

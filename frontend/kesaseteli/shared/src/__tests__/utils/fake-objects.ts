@@ -44,6 +44,7 @@ export const fakeSchools: string[] = [
   'Haagan peruskoulu',
   'Helsingin normaalilyseo',
   'Helsingin yhteislyseo',
+  'Hiidenkiven peruskoulu',
   'Kannelmäen peruskoulu',
   'Käpylän peruskoulu',
   'Malmin peruskoulu',
@@ -52,22 +53,37 @@ export const fakeSchools: string[] = [
   'Töölön yhteiskoulu',
 ];
 
+/**
+ * Sample target groups used for testing and development.
+ * Note: These are representative samples and do not necessarily match the production API's identifiers.
+ */
 export const fakeTargetGroups: {
   id: string;
   name: string;
   description: string;
 }[] = [
-    {
-      id: 'primary_target_group',
-      name: '9. luokkalainen',
-      description: '9th graders: 16 years old, MUST live in Helsinki.',
-    },
-    {
-      id: 'secondary_target_group',
-      name: '10. luokkalainen',
-      description: '10th graders: 17 years old, MUST live in Helsinki.',
-    },
-  ];
+  {
+    id: 'target_group_1',
+    name: 'Sample Target Group 1 - 9th Graders',
+    description: 'Sample description for 9th graders (16 years old).',
+  },
+  {
+    id: 'target_group_2',
+    name: 'Sample Target Group 2 - Other Groups',
+    description: 'Sample description for other target groups (17 years old).',
+  },
+  {
+    id: 'target_group_3',
+    name: 'Sample Target Group 3 - 8th Graders',
+    description: 'Sample description for 8th graders (15 years old).',
+  },
+  {
+    id: 'target_group_4',
+    name: 'Sample Target Group 4 - Post-Secondary',
+    description:
+      'Sample description for post-secondary students (18 years old).',
+  },
+];
 
 const ninethGraderYear = new Date().getFullYear() - 16;
 const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
@@ -121,15 +137,13 @@ export const fakeYouthTargetGroupAge = (): TargetGroupData => {
   };
 };
 
-const AGE_TO_TARGET_GROUP: Record<number, string> = {
-  16: 'primary_target_group',
-  17: 'secondary_target_group',
-};
-
 const targetGroupForSSN = (ssn: string): string => {
-  const { dateOfBirth } = FinnishSSN.parse(ssn);
-  const age = new Date().getFullYear() - dateOfBirth.getFullYear();
-  return AGE_TO_TARGET_GROUP[age] ?? fakeTargetGroups[0].id;
+  const { ageInYears } = FinnishSSN.parse(ssn);
+  const index = TARGET_GROUP_AGES.indexOf(ageInYears);
+  return (
+    (index >= 0 ? fakeTargetGroups[index]?.id : null) ??
+    faker.random.arrayElement(fakeTargetGroups).id
+  );
 };
 
 export const fakeYouthApplication = (

@@ -1,4 +1,3 @@
-import { Checkbox as HdsCheckbox } from 'hds-react';
 import noop from 'lodash/noop';
 import React from 'react';
 import {
@@ -10,6 +9,8 @@ import {
 } from 'react-hook-form';
 import useToggle from 'shared/hooks/useToggle';
 import InputProps from 'shared/types/input-props';
+
+import { $Checkbox } from './Checkbox.sc';
 
 const Checkbox = <T extends FieldValues>({
   id,
@@ -47,7 +48,7 @@ const Checkbox = <T extends FieldValues>({
       control={control}
       rules={registerOptions}
       render={({ field: { value, ...field } }) => (
-        <HdsCheckbox
+        <$Checkbox
           {...field}
           value={String(value)}
           data-testid={id as string}
@@ -60,7 +61,9 @@ const Checkbox = <T extends FieldValues>({
               {required ? ' *' : ''}
             </>
           }
-          onChange={(event) => handleChange(field, event)}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            handleChange(field, event)
+          }
           checked={selectedValue}
         />
       )}

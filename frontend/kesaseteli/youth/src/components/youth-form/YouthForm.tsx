@@ -42,7 +42,7 @@ const YouthForm: React.FC = () => {
                 // this helps debugging when react tests fail
                 if (process.env.NODE_ENV === 'test') {
                   // eslint-disable-next-line no-console
-                  console.log('invalid form', errors);
+                  console.log('invalid form fields:', Object.keys(errors));
                 }
               }}
             >
