@@ -18,7 +18,7 @@ type Props<T extends Attachment> = {
   attachmentType: string;
   allowedFileTypes?: readonly string[];
   maxSize?: number;
-  message?: string | false;
+  message?: React.ReactNode | false;
   errorMessage?: string | false;
   attachments?: T[];
   onUpload: (data: FormData) => void | Promise<void>;
@@ -64,7 +64,7 @@ const AttachmentsList = <T extends Attachment>({
       <$Heading>
         {title} {required && ' *'}
       </$Heading>
-      {files && files.length > 0 ? (
+      {files && files.length > 0 && (
         <>
           {files.map((file) => (
             <AttachmentItem
@@ -81,9 +81,8 @@ const AttachmentsList = <T extends Attachment>({
             />
           ))}
         </>
-      ) : (
-        message && <$Message>{message}</$Message>
       )}
+      {message && <$Message>{message}</$Message>}
       <UploadAttachment
         buttonRef={buttonRef}
         name={name}

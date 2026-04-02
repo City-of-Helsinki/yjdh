@@ -15,9 +15,14 @@ import ApplicationFormData from 'shared/types/application-form-data';
 
 export type IbanInputProps = {
   id: ApplicationFieldPath;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
 } & GridCellProps;
 
-const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
+const IbanInput: React.FC<IbanInputProps> = ({
+  id,
+  onBlur,
+  ...$gridCellProps
+}) => {
   const { t } = useTranslation();
 
   const { getValue, getErrorText: getDefaultErrorText } =
@@ -61,6 +66,7 @@ const IbanInput: React.FC<IbanInputProps> = ({ id, ...$gridCellProps }) => {
         newState.value = friendlyFormatIBAN(newState.value ?? undefined)?.trim() ?? '';
         return newState;
       }}
+      onBlur={onBlur}
     >
       {
         (() => (

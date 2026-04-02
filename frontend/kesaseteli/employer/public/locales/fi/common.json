@@ -93,7 +93,9 @@
         "fetch_employment": "Hae tiedot työntekijän nimen ja kesäsetelin sarjanumeron avulla",
         "fetch_employment_error_title": "Sattui virhe!",
         "fetch_employment_error_message": "Ei pystytty hakemaan työntekijän tietoja.",
-        "fetch_employment_not_found_error_message": "Työntekijän tietoja ei löytynyt."
+        "fetch_employment_not_found_error_message": "Työntekijän tietoja ei löytynyt.",
+        "foreign_iban_note": "Näyttää siltä, että käytät ulkomaista tilinumeroa. Siinä tapauksessa sinun on toimitettava myös rahansiirtotodistus liitteenä <anchor>palkkatodistus-kohdassa</anchor>. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
+        "foreign_iban_notification_label": "Huomioitavaa ulkomaisesta tilinumerosta"
       }
     },
     "step2": {
@@ -180,6 +182,7 @@
         "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
         "employment_contract": "Liitä tähän Kesäsetelillä palkatun nuoren työsopimus.",
         "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus.",
+        "payslip_foreign_iban": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus. Jos kyseessä on ulkomainen tilinumero, myös rahansiirtotodistus on pakollinen. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
         "bank_account": "Syötä IBAN-muodossa"
       },
       "errors": {
