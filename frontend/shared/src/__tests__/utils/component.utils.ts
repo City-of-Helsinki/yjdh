@@ -23,9 +23,12 @@ export const waitForBackendRequestsToComplete = async (): Promise<void> => {
     // eslint-disable-next-line no-console
     console.log('pending nocks', nock.pendingMocks());
     // eslint-disable-next-line testing-library/prefer-find-by
-    await waitFor(() => {
-      expect(nock.isDone()).toBeTruthy();
-    });
+    await waitFor(
+      () => {
+        expect(nock.isDone()).toBeTruthy();
+      },
+      { timeout: 500 }
+    );
     // eslint-disable-next-line no-console
     console.log('no more pending nocks');
   }

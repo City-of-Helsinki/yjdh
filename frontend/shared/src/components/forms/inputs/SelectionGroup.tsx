@@ -9,7 +9,6 @@ import {
 import InputProps from 'shared/types/input-props';
 
 import { $SelectionGroup } from './SelectionGroup.sc';
-import FieldErrorMessage from '../fields/fieldErrorMessage/FieldErrorMessage';
 
 type Props<T extends FieldValues> = Omit<InputProps<T>, 'label'> & {
   label?: string;
@@ -47,7 +46,7 @@ const SelectionGroup = <T extends FieldValues>({
             id={inputId}
             data-testid={inputId}
             direction={direction}
-            errorText={undefined}
+            errorText={errorText}
             label={label}
             disabled={disabled}
             required={Boolean(label && registerOptions?.required)}
@@ -72,11 +71,6 @@ const SelectionGroup = <T extends FieldValues>({
           </$SelectionGroup>
         )}
       />
-      {errorText && (
-        <FieldErrorMessage data-testid={`${inputId}-error`}>
-          {errorText}
-        </FieldErrorMessage>
-      )}
     </$GridCell>
   );
 };

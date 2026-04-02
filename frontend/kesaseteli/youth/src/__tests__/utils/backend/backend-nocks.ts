@@ -27,16 +27,19 @@ beforeEach(() => {
 
 afterEach(async () => {
   // avoid situation where some request is still pending but test is completed
-  await waitForBackendRequestsToComplete();
-  // Check that all nocks are used: https://michaelheap.com/nock-all-mocks-used/
-  if (!nock.isDone()) {
-    throw new Error(
-      `Not all nock interceptors were used: ${JSON.stringify(
-        nock.pendingMocks()
-      )}`
-    );
+  try {
+    await waitForBackendRequestsToComplete();
+    // Check that all nocks are used: https://michaelheap.com/nock-all-mocks-used/
+    if (!nock.isDone()) {
+      throw new Error(
+        `Not all nock interceptors were used: ${JSON.stringify(
+          nock.pendingMocks()
+        )}`
+      );
+    }
+  } finally {
+    nock.cleanAll();
   }
-  nock.cleanAll();
 });
 nock.disableNetConnect();
 
@@ -57,6 +60,7 @@ export const expectToGetSummerVoucherConfigurationFromBackend = (
   ]
 ): nock.Scope =>
   nock(getBackendDomain())
+    .persist()
     .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
     .reply(200, configuration, { 'Access-Control-Allow-Origin': '*' });
 

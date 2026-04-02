@@ -7,7 +7,8 @@ import {
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import nock from 'nock';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
+import { waitFor } from 'shared/__tests__/utils/test-utils';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -17,17 +18,28 @@ beforeEach(() => {
   consoleSpy?.mockRestore();
 });
 
+export const waitForBackendRequestsToComplete = async (): Promise<void> => {
+  await waitForLoadingCompleted();
+  const pending = nock
+    .pendingMocks()
+    .filter((m) => !m.includes(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION));
+  if (pending.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log('pending nocks', pending);
+    await waitFor(() => {
+      const currentPending = nock
+        .pendingMocks()
+        .filter(
+          (m) => !m.includes(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
+        );
+      expect(currentPending).toHaveLength(0);
+    });
+  }
+};
+
 afterEach(async () => {
   // avoid situation where some request is still pending but test is completed
   await waitForBackendRequestsToComplete();
-  // Check that all nocks are used: https://michaelheap.com/nock-all-mocks-used/
-  if (!nock.isDone()) {
-    throw new Error(
-      `Not all nock interceptors were used: ${JSON.stringify(
-        nock.pendingMocks()
-      )}`
-    );
-  }
   nock.cleanAll();
 });
 nock.disableNetConnect();

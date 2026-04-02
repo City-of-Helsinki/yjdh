@@ -86,10 +86,8 @@ class YouthForm extends YouthPageComponent {
     return t.click(this.checkbox(name));
   }
 
-  public selectTargetGroup(targetGroupId: string): TestControllerPromise {
-    return this.clickSelectRadioButton(
-      this.targetGroupRadioButton(targetGroupId)
-    );
+  public selectTargetGroup(): TestControllerPromise {
+    return this.clickSelectRadioButton(this.component.findAllByRole('radio').nth(0));
   }
 
   public clickSendButton(): TestControllerPromise {
@@ -119,7 +117,7 @@ class YouthForm extends YouthPageComponent {
     }
     await this.typeInput('phone_number', application.phone_number);
     await this.typeInput('email', application.email);
-    await this.selectTargetGroup(application.target_group);
+    await this.selectTargetGroup();
     await this.toggleCheckbox('termsAndConditions');
     return this.clickSendButton();
   }

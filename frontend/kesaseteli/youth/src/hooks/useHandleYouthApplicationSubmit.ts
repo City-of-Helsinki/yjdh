@@ -45,14 +45,16 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
   const gdprFormValues = useGdprMaskedFormValues<YouthFormData>();
   const is_unlisted_school = getValues('is_unlisted_school');
 
-  if (
-    formState.isDirty &&
-    !formState.isSubmitted &&
-    submitError?.type === 'please_recheck_data'
-  ) {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    setSubmitError(undefined);
-  }
+  React.useEffect(() => {
+    if (
+      formState.isDirty &&
+      !formState.isSubmitted &&
+      submitError?.type === 'please_recheck_data'
+    ) {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      setSubmitError(undefined);
+    }
+  }, [formState.isDirty, formState.isSubmitted, submitError?.type]);
 
   return {
     handleSaveSuccess: (application: CreatedYouthApplication): void => {
