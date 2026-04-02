@@ -1051,6 +1051,7 @@
     "paidSalaries": {
       "heading": "Maksetut palkat",
       "employerAssurance": "Asiakas vakuuttaa työsuhteen toteutuneen suunnitellusti",
+      "payslipHeading": "Tositteet maksetuista palkoista",
       "buttons": {
         "delete": "Poista",
         "setPending": "Kesken",

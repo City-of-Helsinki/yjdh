@@ -97,6 +97,11 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
           {t('common:applications.paidSalaries.employerAssurance')}
         </$GridCell>
       </$Grid>
+      <$Grid css={{ marginBottom: '24px' }}>
+        <$GridCell $colSpan={32}>
+          <h2>{t('common:applications.paidSalaries.payslipHeading')}</h2>
+        </$GridCell>
+      </$Grid>
       {data.attachments.map((attachment) =>
         attachment.attachmentType === ATTACHMENT_TYPES.PAYSLIP ? (
           <$CalculatorTableRow key={attachment.id}>

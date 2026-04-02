@@ -1,8 +1,10 @@
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
+import { ROUTES } from '../../constants';
 import {
   $Column,
   $Wrapper,
@@ -35,13 +37,19 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
   setIsInstalmentChangeDateDialogShown
 }) => {
   const { t } = useTranslation();
-
+  const router = useRouter();
   const selectedApplication = list.find((app) => app.id === selectedRows[0]);
   const selectedInstalment =
     list.find(
       (app: ApplicationListItemData) =>
         app.id === String(selectedApplication?.id)
     )?.secondInstalment || null;
+
+  const handleOpenApplication = (): void => {
+    if (selectedApplication?.id) {
+      void router.push(`${ROUTES.APPLICATION}?id=${selectedApplication.id}`);
+    }
+  };
 
   const handleStatusChange = (status: INSTALMENT_STATUSES): void => {
     changeInstalmentStatus({
@@ -80,7 +88,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               <InstalmentButton
                 isLoading={isLoading}
                 isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => handleStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
+                onClick={handleOpenApplication}
               >
                 {t(`${translationsBase}.actions.confirmInstalment`)}
               </InstalmentButton>
@@ -94,13 +102,12 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               <InstalmentButton
                 isLoading={isLoading}
                 isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => handleStatusChange(INSTALMENT_STATUSES.PENDING) }>
+                onClick={() => handleStatusChange(INSTALMENT_STATUSES.PENDING)}
+              >
                 {t(`${translationsBase}.actions.pending`)}
               </InstalmentButton>
             </>
           )}
-
-
 
           {/* Error in Talpa Buttons */}
           {selectedInstalment.status === INSTALMENT_STATUSES.ERROR_IN_TALPA && (
@@ -122,9 +129,9 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
             </>
           )}
 
-          {[
-            INSTALMENT_STATUSES.ACCEPTED,
-          ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
+          {[INSTALMENT_STATUSES.ACCEPTED].includes(
+            selectedInstalment?.status as INSTALMENT_STATUSES
+          ) && (
             <>
               <InstalmentButton
                 isLoading={isLoading}
@@ -144,9 +151,9 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
           )}
 
           {/* Return Button for Accepted/Cancelled Statuses */}
-          {[
-            INSTALMENT_STATUSES.CANCELLED,
-          ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
+          {[INSTALMENT_STATUSES.CANCELLED].includes(
+            selectedInstalment?.status as INSTALMENT_STATUSES
+          ) && (
             <InstalmentButton
               isLoading={isLoading}
               isLoadingStatusChange={isLoadingStatusChange}
@@ -156,9 +163,9 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
             </InstalmentButton>
           )}
 
-          {[
-            INSTALMENT_STATUSES.PENDING
-          ].includes(selectedInstalment?.status as INSTALMENT_STATUSES) && (
+          {[INSTALMENT_STATUSES.PENDING].includes(
+            selectedInstalment?.status as INSTALMENT_STATUSES
+          ) && (
             <>
               <InstalmentButton
                 isLoading={isLoading}
@@ -176,8 +183,6 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               </InstalmentButton>
             </>
           )}
-
-
         </$Column>
       </$Wrapper>
     </$TableFooter>
