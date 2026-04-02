@@ -1,4 +1,5 @@
 import SchoolSelection from 'kesaseteli/youth/components/youth-form/SchoolSelection';
+import TargetGroupSelection from 'kesaseteli/youth/components/youth-form/TargetGroupSelection';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
@@ -53,6 +54,7 @@ const YouthFormFields: React.FC = () => {
         autoComplete="off"
       />
       <SchoolSelection />
+      <TargetGroupSelection />
       <TextInput<YouthFormData>
         {...register('phone_number', {
           required: true,

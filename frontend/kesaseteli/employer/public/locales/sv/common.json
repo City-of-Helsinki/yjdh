@@ -116,12 +116,6 @@
     },
     "form": {
       "selectionGroups": {
-        "target_group": {
-          "primary_target_group": "Niondeklassist eller TUVAklassist",
-          "secondary_target_group": "Annan åldersgrupp",
-          "hki_18": "Andra stadiets andra årets studerande",
-          "hki_15": "Åttandeklassist"
-        },
         "organization_type": {
           "company": "Företag",
           "association": "Förening",
@@ -154,7 +148,6 @@
         "contact_person_phone_number": "Telefonnummer",
         "employee_name": "Arbetstagarens namn",
         "employee_ssn": "Personnummer",
-        "target_group": "Årsklass eller födelseår",
         "employee_home_city": "Hemort",
         "employee_postcode": "Post nummer",
         "employee_phone_number": "Telefonnummer",

@@ -14,6 +14,7 @@ type YouthApplication = {
   email: string;
   language: Language;
   request_additional_information?: boolean;
+  target_group: string;
 };
 
 export default YouthApplication;

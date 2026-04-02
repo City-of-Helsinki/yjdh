@@ -4,7 +4,12 @@ import pytest
 from django.core.management import call_command
 
 from applications.models import SummerVoucherConfiguration
-from applications.target_groups import get_target_group_choices
+from applications.target_groups import (
+    EighthGraderTargetGroup,
+    get_target_group_choices,
+    NinthGraderTargetGroup,
+    UpperSecondarySecondYearTargetGroup,
+)
 
 
 @pytest.mark.django_db
@@ -104,13 +109,25 @@ def test_create_summervoucher_configuration_numeric_defaults_are_from_settings(
     [
         (["all"], [choice[0] for choice in get_target_group_choices()]),
         (
-            ["hki_15", "all", "hki_18"],
+            [
+                EighthGraderTargetGroup.identifier,
+                "all",
+                UpperSecondarySecondYearTargetGroup.identifier,
+            ],
             [choice[0] for choice in get_target_group_choices()],
         ),
-        (["primary_target_group"], ["primary_target_group"]),
+        ([NinthGraderTargetGroup.identifier], [NinthGraderTargetGroup.identifier]),
         (
-            ["hki_15", "primary_target_group", "hki_18"],
-            ["hki_15", "primary_target_group", "hki_18"],
+            [
+                EighthGraderTargetGroup.identifier,
+                NinthGraderTargetGroup.identifier,
+                UpperSecondarySecondYearTargetGroup.identifier,
+            ],
+            [
+                EighthGraderTargetGroup.identifier,
+                NinthGraderTargetGroup.identifier,
+                UpperSecondarySecondYearTargetGroup.identifier,
+            ],
         ),
     ],
 )

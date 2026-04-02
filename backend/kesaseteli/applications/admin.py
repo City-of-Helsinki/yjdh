@@ -467,7 +467,7 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
         "modified_at",
     ]
     list_filter = [
-        "target_group",
+        "youth_application__target_group",
         "created_at",
         "modified_at",
     ]
@@ -485,8 +485,8 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
     ]
     actions = ["resend_voucher"]
 
-    def queryset(self, request):
-        return super().queryset(request).select_related("youth_application")
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("youth_application")
 
     def masked_social_security_number(self, obj):
         """Mask social security number for display."""
@@ -612,7 +612,7 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
         "modified_at",
     ]
     list_filter = [
-        "youth_summer_voucher__target_group",
+        "youth_summer_voucher__youth_application__target_group",
         ("youth_summer_voucher_id", admin.EmptyFieldListFilter),
         ("_obsolete_unclean_serial_number", admin.EmptyFieldListFilter),
         "created_at",
@@ -706,10 +706,10 @@ class EmployerSummerVoucherAdmin(admin.ModelAdmin):
             return True
         return False
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         return (
             super()
-            .queryset(request)
+            .get_queryset(request)
             .select_related("application")
             .select_related("application__company")
             .select_related("youth_summer_voucher")

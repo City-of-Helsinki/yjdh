@@ -36,6 +36,8 @@ from typing import List, Tuple, TYPE_CHECKING
 
 from django.utils.translation import gettext_lazy as _
 
+from common.utils import get_age
+
 if TYPE_CHECKING:
     from applications.models import YouthApplication
 
@@ -63,12 +65,6 @@ class AbstractTargetGroup(ABC):
         the user in the admin panel.
         """
 
-    @abstractmethod
-    def is_valid(self, application: "YouthApplication") -> bool:
-        """
-        Check if the given application belongs to this target group.
-        """
-
     def get_age_by_year(self, application: "YouthApplication") -> int:
         """
         Calculate the age of the applicant. Note that this is not the exact age,
@@ -77,8 +73,33 @@ class AbstractTargetGroup(ABC):
         birthdate = application.birthdate
         if not birthdate:
             return 0
-        current_year = application.created_at.year
-        return current_year - birthdate.year
+        return get_age(birthdate, application.created_at.year)
+
+    def is_age_valid(self, age: int) -> bool:
+        """
+        Check if the given age is valid for this target group.
+        Subclasses can override this to support ranges or other rules.
+        """
+        return False
+
+    def is_valid(self, application: "YouthApplication") -> bool:
+        """
+        Check if the given application belongs to this target group.
+        """
+        return (
+            self.is_age_valid(self.get_age_by_year(application))
+            and application.is_helsinkian
+        )
+
+
+def get_target_group_class_by_age(age: int) -> type[AbstractTargetGroup] | None:
+    """
+    Returns the target group class that matches the given age.
+    """
+    for subclass in AbstractTargetGroup.__subclasses__():
+        if subclass().is_age_valid(age):
+            return subclass
+    return None
 
 
 def get_target_group_choices() -> List[Tuple[str, str]]:
@@ -96,12 +117,8 @@ class EighthGraderTargetGroup(AbstractTargetGroup):
     identifier = "hki_15"
     description = _("8th graders: 15 years old, MUST live in Helsinki.")
 
-    def is_valid(self, application: "YouthApplication") -> bool:
-        """
-        8th graders: 15 years old, MUST live in Helsinki.
-        """
-        # 15 years old and lives in Helsinki
-        return self.get_age_by_year(application) == 15 and application.is_helsinkian
+    def is_age_valid(self, age: int) -> bool:
+        return age == 15
 
 
 class NinthGraderTargetGroup(AbstractTargetGroup):
@@ -109,12 +126,8 @@ class NinthGraderTargetGroup(AbstractTargetGroup):
     identifier = "primary_target_group"
     description = _("9th graders: 16 years old, MUST live in Helsinki.")
 
-    def is_valid(self, application: "YouthApplication") -> bool:
-        """
-        9th graders: 16 years old, MUST live in Helsinki.
-        """
-        # 16 years old and lives in Helsinki
-        return self.get_age_by_year(application) == 16 and application.is_helsinkian
+    def is_age_valid(self, age: int) -> bool:
+        return age == 16
 
 
 class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
@@ -122,16 +135,8 @@ class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
     identifier = "secondary_target_group"
     description = _("Upper secondary 1st year: 17 years old, MUST live in Helsinki.")
 
-    def is_valid(self, application: "YouthApplication") -> bool:
-        """
-        Upper secondary 1st year: 17 years old, MUST live in Helsinki.
-
-        (NOTE: Earlier, also the school attendance in helsinkian school has been enough.
-        School attendance in Helsinki for non-residents requires manual check,
-        so is_valid returns False here).
-        """
-        # 17 years old and lives in Helsinki
-        return self.get_age_by_year(application) == 17 and application.is_helsinkian
+    def is_age_valid(self, age: int) -> bool:
+        return age == 17
 
 
 class UpperSecondarySecondYearTargetGroup(AbstractTargetGroup):
@@ -139,12 +144,8 @@ class UpperSecondarySecondYearTargetGroup(AbstractTargetGroup):
     identifier = "hki_18"
     description = _("Upper secondary 2nd year: 18 years old, MUST live in Helsinki.")
 
-    def is_valid(self, application: "YouthApplication") -> bool:
-        """
-        Upper secondary 2nd year: 18 years old, MUST live in Helsinki.
-        """
-        # 18 years old and lives in Helsinki
-        return self.get_age_by_year(application) == 18 and application.is_helsinkian
+    def is_age_valid(self, age: int) -> bool:
+        return age == 18
 
 
 def get_target_group_class(identifier: str) -> type[AbstractTargetGroup] | None:
@@ -155,3 +156,26 @@ def get_target_group_class(identifier: str) -> type[AbstractTargetGroup] | None:
         if cls().identifier == identifier:
             return cls
     return None
+
+
+def get_target_group_data(identifiers: List[str]) -> List[dict]:
+    """
+    Returns a list of structured data (id, name, description) for the
+    given list of target group identifiers.
+    """
+    target_groups = []
+    for identifier in identifiers:
+        target_group_cls = get_target_group_class(identifier)
+        if target_group_cls:
+            target_group = target_group_cls()
+            target_groups.append(
+                {
+                    "id": target_group.identifier,
+                    "name": str(target_group.name),
+                    "description": str(target_group.description),
+                }
+            )
+    return target_groups
+
+
+

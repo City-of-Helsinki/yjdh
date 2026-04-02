@@ -53,7 +53,8 @@
     "is_unlisted_school": "(Koulua ei löytynyt listalta)",
     "phone_number": "Puhelinnumero",
     "email": "Sähköposti",
-    "additionalInfoTitle": "Lisätietohakemus",
+    "target_group": "Kohderyhmä",
+    "additionalInfoTitle": "Lisätiedot",
     "additional_info_user_reasons": "Otsikko",
     "additional_info_description": "Lisätiedot",
     "notFound": "Hakemusta ei löytynyt",
@@ -145,6 +146,7 @@
         "postcode": "Postinumero",
         "language": "Kieli",
         "nonVtjHomeMunicipality": "Kotikunta",
+        "targetGroup": "Kohderyhmä",
         "additionalInfoDescription": "Lisätiedot"
       },
       "checkNotification": {

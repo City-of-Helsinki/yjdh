@@ -15,6 +15,7 @@ from applications.enums import (
     YouthApplicationStatus,
 )
 from applications.models import YouthApplication
+from applications.target_groups import NinthGraderTargetGroup
 from applications.tests.data.mock_vtj import mock_vtj_person_id_query_not_found_content
 from common.urls import (
     get_create_without_ssn_url,
@@ -39,6 +40,7 @@ VALID_TEST_DATA = {
     "non_vtj_birthdate": "2012-12-31",
     "non_vtj_home_municipality": "Kirkkonummi",
     "additional_info_description": "Testilisätiedot",
+    "target_group": NinthGraderTargetGroup.identifier,
 }
 
 EXPECTED_PROCESSING_EMAIL_BODY_TEMPLATE = """
@@ -63,6 +65,7 @@ REQUIRED_FIELDS = [
     "language",
     "non_vtj_birthdate",
     "additional_info_description",
+    "target_group",
 ]
 
 OPTIONAL_FIELDS = [
@@ -123,6 +126,7 @@ def test_valid_post(staff_client):
     assert app.non_vtj_birthdate == date(2012, 12, 31)
     assert app.non_vtj_home_municipality == "Kirkkonummi"
     assert app.additional_info_description == "Testilisätiedot"
+    assert app.target_group == NinthGraderTargetGroup.identifier
 
     # Check the fields that should remain the same regardless of input data
     assert app.social_security_number == ""
@@ -166,6 +170,7 @@ def test_valid_post_with_extra_fields(staff_client):
             "non_vtj_birthdate": "2022-02-28",
             "non_vtj_home_municipality": "Vantaa",
             "additional_info_description": "Lisätietoja käsittelijöille",
+            "target_group": NinthGraderTargetGroup.identifier,
             # Extra fields
             "social_security_number": "111111-111C",
             "encrypted_original_vtj_json": mock_vtj_person_id_query_not_found_content(),
@@ -199,6 +204,7 @@ def test_valid_post_with_extra_fields(staff_client):
     assert app.non_vtj_birthdate == date(2022, 2, 28)
     assert app.non_vtj_home_municipality == "Vantaa"
     assert app.additional_info_description == "Lisätietoja käsittelijöille"
+    assert app.target_group == NinthGraderTargetGroup.identifier
 
     # Check the fields that should remain the same regardless of input data
     assert app.social_security_number == ""

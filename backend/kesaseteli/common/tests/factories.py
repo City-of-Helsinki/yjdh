@@ -27,14 +27,17 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.target_groups import get_target_group_choices
+from applications.target_groups import (
+    get_target_group_class_by_age,
+    NinthGraderTargetGroup,
+)
 from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
-    mock_vtj_person_id_query_not_found_content,
 )
 from common.tests.faker import get_faker
 from common.tests.mixins import SaveAfterPostGenerationMixin
 from common.tests.utils import get_random_social_security_number_for_year
+from common.utils import get_age
 from companies.models import Company
 from shared.common.tests.factories import (
     DuplicateAllowingUserFactory,
@@ -406,18 +409,43 @@ def determine_target_group_social_security_number(youth_application):
     )
 
 
+# The (target group) identifier might not match to applicant's age,
+# but that might also be a real marginal case in real usage, because a youth
+# can self decide the target group in the youth application. In that case
+# additional information is requested from the applicant.
+FALLBACK_TARGET_GROUP_IDENTIFIER: str = NinthGraderTargetGroup.identifier
+
+
 @factory.django.mute_signals(post_save)
 class AbstractYouthApplicationFactory(
     SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
 ):
+    class Params:
+        # We define birthdate in Params so it can be used for other factory
+        # attributes (like target_group) but is NOT passed to the model constructor.
+        # This is necessary because:
+        # 1. factory_boy's Resolver ('o') doesn't have access to model properties.
+        # 2. YouthApplication.birthdate is a read-only property and would
+        #    raise AttributeError if factory_boy tried to set it during creation.
+        @factory.lazy_attribute
+        def birthdate(self):
+            try:
+                return YouthApplication.resolve_birthdate(
+                    self.social_security_number, self.non_vtj_birthdate
+                )
+            except Exception:
+                # Handle cases where SSN is invalid (masked, short, etc.)
+                return self.non_vtj_birthdate
+
     creator = (
         None  # For most cases there's no creator, only non-VTJ applications have one
     )
-    created_at = timezone.now()
+    created_at = factory.LazyFunction(timezone.now)
     modified_at = factory.LazyAttribute(determine_modified_at)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
+    non_vtj_birthdate = None
     school = factory.LazyAttribute(determine_school)
     is_unlisted_school = factory.LazyAttribute(determine_is_unlisted_school)
     email = factory.Faker("email")
@@ -436,8 +464,23 @@ class AbstractYouthApplicationFactory(
     additional_info_description = factory.LazyAttribute(
         determine_additional_info_description
     )
-    encrypted_original_vtj_json = mock_vtj_person_id_query_not_found_content()
-    encrypted_handler_vtj_json = mock_vtj_person_id_query_not_found_content()
+
+    @factory.lazy_attribute
+    def target_group(self):
+        try:
+            year = self.created_at.year
+            if not self.birthdate:
+                return FALLBACK_TARGET_GROUP_IDENTIFIER
+
+            age = get_age(self.birthdate, year)
+            calculated_class = get_target_group_class_by_age(age)
+            return (
+                calculated_class.identifier
+                if calculated_class
+                else FALLBACK_TARGET_GROUP_IDENTIFIER
+            )
+        except Exception:
+            return FALLBACK_TARGET_GROUP_IDENTIFIER
 
     youth_summer_voucher = factory.Maybe(
         "_is_accepted",
@@ -507,10 +550,10 @@ class AbstractNonVtjYouthApplicationFactory(AbstractYouthApplicationFactory):
     # All non-VTJ youth applications are created into a state from whence they can
     # directly be approved/rejected. Thus, all their timestamps should be set to
     # the same value i.e. the time of creation:
-    created_at = timezone.now()
-    modified_at = timezone.now()
-    receipt_confirmed_at = timezone.now()
-    additional_info_provided_at = timezone.now()
+    created_at = factory.LazyFunction(timezone.now)
+    modified_at = factory.LazyFunction(timezone.now)
+    receipt_confirmed_at = factory.LazyFunction(timezone.now)
+    additional_info_provided_at = factory.LazyFunction(timezone.now)
 
     # Fields that always have the same values in all non-VTJ youth applications:
     is_unlisted_school = True
@@ -660,10 +703,6 @@ class YouthSummerVoucherFactory(
     # - This does not generate a gapless sequence
     summer_voucher_serial_number = factory.Faker(
         "pyint", min_value=1, max_value=(2**63) - 1
-    )
-    target_group = factory.Faker(
-        "random_element",
-        elements=[id for id, _ in get_target_group_choices()],
     )
 
     class Meta:

@@ -41,65 +41,47 @@ const getRandomSubArray = <T>(
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
-  'Apollon yhteiskoulu',
-  'Arabian peruskoulu',
-  'Aurinkolahden peruskoulu',
-  'Botby grundskola',
-  'Elias-koulu',
-  'Grundskolan Norsen',
   'Haagan peruskoulu',
-  'Helsingin Juutalainen yhteiskoulu',
-  'Helsingin Kristillinen koulu',
-  'Helsingin Saksalainen koulu',
-  'Helsingin Suomalainen Yhteiskoulu',
-  'Helsingin Uusi Yhteiskoulu',
   'Helsingin normaalilyseo',
-  'Helsingin ranskalais-suomalainen koulu',
   'Helsingin yhteislyseo',
-  'Helsingin yliopiston Viikin normaalikoulu',
-  'Herttoniemen yhteiskoulu',
-  'Hiidenkiven peruskoulu',
-  'Hoplaxskolan',
-  'Itäkeskuksen peruskoulu',
-  'Jätkäsaaren peruskoulu',
-  'Kalasataman peruskoulu',
-  'Kankarepuiston peruskoulu',
   'Kannelmäen peruskoulu',
-  'Karviaistien koulu',
-  'Kruununhaan yläasteen koulu',
-  'Kruunuvuorenrannan peruskoulu',
-  'Kulosaaren yhteiskoulu',
   'Käpylän peruskoulu',
-  'Laajasalon peruskoulu',
-  'Latokartanon peruskoulu',
-  'Lauttasaaren yhteiskoulu',
-  'Maatullin peruskoulu',
   'Malmin peruskoulu',
-  'Meilahden yläasteen koulu',
-  'Merilahden peruskoulu',
-  'Munkkiniemen yhteiskoulu',
   'Myllypuron peruskoulu',
-  'Oulunkylän yhteiskoulu',
-  'Pasilan peruskoulu',
-  'Pitäjänmäen peruskoulu',
   'Pohjois-Haagan yhteiskoulu',
-  'Porolahden peruskoulu',
-  'Puistolan peruskoulu',
-  'Puistopolun peruskoulu',
-  'Pukinmäenkaaren peruskoulu',
-  'Ressun peruskoulu',
-  'Sakarinmäen peruskoulu',
-  'Solakallion koulu',
-  'Sophie Mannerheimin koulu',
-  'Suomalais-venäläinen koulu',
-  'Taivallahden peruskoulu',
-  'Toivolan koulu',
-  'Torpparinmäen peruskoulu',
   'Töölön yhteiskoulu',
-  'Vartiokylän yläasteen koulu',
-  'Vesalan peruskoulu',
-  'Vuoniityn peruskoulu',
-  'Zacharias Topeliusskolan',
+];
+
+/**
+ * Sample target groups used for testing and development.
+ * Note: These are representative samples and do not necessarily match the production API's identifiers.
+ */
+export const fakeTargetGroups: {
+  id: string;
+  name: string;
+  description: string;
+}[] = [
+  {
+    id: 'target_group_1',
+    name: 'Sample Target Group 1 (9th Graders)',
+    description: 'Sample description for 9th graders (16 years old).',
+  },
+  {
+    id: 'target_group_2',
+    name: 'Sample Target Group 2 (Other Groups)',
+    description: 'Sample description for other target groups (17 years old).',
+  },
+  {
+    id: 'target_group_3',
+    name: 'Sample Target Group 3 (8th Graders)',
+    description: 'Sample description for 8th graders (15 years old).',
+  },
+  {
+    id: 'target_group_4',
+    name: 'Sample Target Group 4 (Post-Secondary)',
+    description:
+      'Sample description for post-secondary students (18 years old).',
+  },
 ];
 
 const ninethGraderYear = new Date().getFullYear() - 16;
@@ -154,6 +136,15 @@ export const fakeYouthTargetGroupAge = (): TargetGroupData => {
   };
 };
 
+const targetGroupForSSN = (ssn: string): string => {
+  const { ageInYears } = FinnishSSN.parse(ssn);
+  const index = TARGET_GROUP_AGES.indexOf(ageInYears);
+  return (
+    (index >= 0 ? fakeTargetGroups[index]?.id : null) ??
+    faker.random.arrayElement(fakeTargetGroups).id
+  );
+};
+
 export const fakeYouthApplication = (
   override?: DeepPartial<YouthApplication>
 ): YouthApplication => {
@@ -161,10 +152,13 @@ export const fakeYouthApplication = (
     is_unlisted_school: faker.datatype.boolean(),
     ...override,
   };
+  const social_security_number =
+    (override?.social_security_number as string | undefined) ??
+    fakeYouthTargetGroupAgeSSN();
   return {
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
-    social_security_number: fakeYouthTargetGroupAgeSSN(),
+    social_security_number,
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
     school: is_unlisted_school
       ? faker.commerce.department()
@@ -173,6 +167,7 @@ export const fakeYouthApplication = (
     phone_number: faker.phone.phoneNumber('+358#########'),
     email: faker.internet.email(),
     language: DEFAULT_LANGUAGE,
+    target_group: targetGroupForSSN(social_security_number),
     ...override,
   };
 };

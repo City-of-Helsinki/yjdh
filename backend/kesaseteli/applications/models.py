@@ -298,6 +298,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         help_text=_("VTJ JSON used for accepting/rejecting by human or machine"),
         validators=[validate_optional_json],
     )
+    target_group = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("target group"),
+        choices=get_target_group_choices(),
+    )
     status = models.CharField(
         max_length=64,
         verbose_name=_("status"),
@@ -603,14 +609,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @transaction.atomic  # Needed for django-sequences serial number handling
     def create_youth_summer_voucher(self) -> "YouthSummerVoucher":
-        from applications.services import TargetGroupValidationService
-
-        target_group = TargetGroupValidationService.get_associated_target_group(self)
-
         return YouthSummerVoucher.objects.create(
             youth_application=self,
             summer_voucher_serial_number=YouthSummerVoucher.get_next_serial_number(),
-            target_group=target_group or "",
         )
 
     @property
@@ -723,34 +724,29 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             )
         return self.is_rejected
 
+    @staticmethod
+    def resolve_birthdate(
+        social_security_number: str, non_vtj_birthdate: Optional[date]
+    ) -> Optional[date]:
+        """
+        Resolve the applicant's birthdate using the social security number or a
+        fallback birthdate field.
+        """
+        return (
+            social_security_number_birthdate(social_security_number)
+            if social_security_number
+            else non_vtj_birthdate
+        )
+
     @property
     def birthdate(self) -> date:
         """
         Applicant's birthdate based on their social security number, or on
         their provided birthdate through other means as a fallback.
         """
-        return (
-            social_security_number_birthdate(self.social_security_number)
-            if self.has_social_security_number
-            else self.non_vtj_birthdate
+        return self.resolve_birthdate(
+            self.social_security_number, self.non_vtj_birthdate
         )
-
-    @property
-    def is_9th_grader_age(self) -> bool:
-        """
-        If applicant's age correct for a ninth grader ("9.
-
-        luokkalainen" in Finnish)?
-        """
-        return (self.created_at.year - self.birthdate.year) == 16  # e.g. 2022 - 2006
-
-    @property
-    def is_upper_secondary_education_1st_year_student_age(self) -> bool:
-        """
-        If applicant's age correct for an upper secondary education first year
-        student ("Toisen asteen ensimmäisen vuoden opiskelija" in Finnish)?
-        """
-        return (self.created_at.year - self.birthdate.year) == 17  # e.g. 2022 - 2005
 
     @property
     def is_social_security_number_valid_according_to_vtj(self) -> bool:
@@ -890,8 +886,21 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         ]
         ordering = ["-created_at"]
 
+class YouthSummerVoucherQuerySet(models.QuerySet):
+    def select_youth_application(self):
+        return self.select_related("youth_application")
+
+
+class YouthSummerVoucherManager(models.Manager):
+    def get_queryset(self):
+        return YouthSummerVoucherQuerySet(
+            self.model, using=self._db
+        ).select_youth_application()
+
 
 class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+    objects = YouthSummerVoucherManager()
+
     _SERIAL_NUMBER_SEQUENCE_NAME = "youth_summer_voucher_serial_numbers"
     SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE = 1
 
@@ -906,13 +915,13 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         validators=[MinValueValidator(1)],
         verbose_name=_("summer voucher id"),
     )
-    target_group = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("summer voucher target group"),
-        help_text=_("Summer voucher's target group type"),
-        choices=get_target_group_choices(),
-    )
+
+    @property
+    def target_group(self):
+        return self.youth_application.target_group
+
+    def get_target_group_display(self):
+        return self.youth_application.get_target_group_display()
 
     @staticmethod
     def get_next_serial_number() -> int:
