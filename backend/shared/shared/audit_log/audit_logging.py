@@ -1,4 +1,5 @@
 import logging
+from collections import namedtuple
 from datetime import datetime, timezone
 from typing import Callable, Optional, Union
 
@@ -21,6 +22,9 @@ from shared.audit_log.mappings import DJANGO_BACKEND_MAPPING
 from shared.audit_log.models import AuditLogEntry
 
 User = get_user_model()
+
+# Type for caller-supplied field change without django-simple-history package
+FieldChange = namedtuple("FieldChange", ["field", "old", "new"])
 
 
 def _now() -> datetime:
@@ -92,12 +96,8 @@ def log(
         },
     }
 
-    if (
-        operation == Operation.UPDATE
-        and not additional_information
-        and hasattr(target, "history")
-    ):
-        _add_changes(target, message)
+    if operation == Operation.UPDATE and not additional_information:
+        _add_changes_if_available(target, message)
 
     # Use resilient logger if configured
     if getattr(settings, "RESILIENT_LOGGER", None):
@@ -119,24 +119,33 @@ def log(
         )
 
 
-def _add_changes(target: Union[Model, ModelBase], message: dict) -> None:
-    # Model is using django-simple-history
-    latest_record = target.history.latest()
-    previous_record = latest_record.prev_record
+def _add_changes_if_available(target: Union[Model, ModelBase], message: dict) -> None:
+    """
+    Add the target's field changes to the message, if available through
+    "audit_field_changes" (caller supplied field changes) or "history"
+    attribute (django-simple-history's HistoricalRecords) of target object.
+    """
+    changes = []
+    if hasattr(target, "audit_field_changes"):
+        # Caller has supplied field changes in audit_field_changes attribute.
+        # This is an alternative for tracking changes without django-simple-history.
+        # Consume audit field changes so they don't linger as possibly stale data.
+        changes = target.audit_field_changes
+        delattr(target, "audit_field_changes")
+    elif hasattr(target, "history"):
+        # Model is using django-simple-history
+        latest_record = target.history.latest()
+        if previous_record := latest_record.prev_record:
+            delta = latest_record.diff_against(previous_record)
+            changes = delta.changes
 
-    if previous_record:
-        delta = latest_record.diff_against(previous_record)
-
-        changes_list = []
-        for change in delta.changes:
-            if _is_sensitive_field(change.field):
-                continue
-            changes_list.append(
-                f"{change.field} changed from {change.old} to {change.new}"
-            )
-
-        if changes_list:
-            message["audit_event"]["target"]["changes"] = changes_list
+    changes_list = [
+        f"{change.field} changed from {change.old} to {change.new}"
+        for change in changes
+        if not _is_sensitive_field(change.field)
+    ]
+    if changes_list:
+        message["audit_event"]["target"]["changes"] = changes_list
 
 
 def _is_sensitive_field(change_field: str) -> bool:

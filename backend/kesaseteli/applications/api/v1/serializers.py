@@ -313,7 +313,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         help_text=_("Status of the application, visible to the applicant"),
         required=False,
     )
-    submitted_at = serializers.SerializerMethodField("get_submitted_at")
+    is_mine = serializers.SerializerMethodField("get_is_mine")
 
     class Meta:
         model = EmployerApplication
@@ -336,8 +336,9 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             "summer_vouchers",
             "language",
             "submitted_at",
+            "is_mine",
         ]
-        read_only_fields = ["created_at", "modified_at", "user"]
+        read_only_fields = ["created_at", "modified_at", "submitted_at", "user"]
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -345,6 +346,13 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         summer_vouchers_data = validated_data.pop("summer_vouchers", []) or []
         if request and request.method == "PUT":
             self._update_summer_vouchers(summer_vouchers_data, instance)
+
+        new_status = validated_data.get("status")
+        if (
+            new_status == EmployerApplicationStatus.SUBMITTED
+            and instance.status == EmployerApplicationStatus.DRAFT
+        ):
+            validated_data["submitted_at"] = timezone.now()
 
         return super().update(instance, validated_data)
 
@@ -358,17 +366,11 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
-    def get_submitted_at(self, obj):
-        if (
-            hisory_entry := obj.history.filter(
-                status=EmployerApplicationStatus.SUBMITTED
-            )
-            .order_by("modified_at")
-            .first()
-        ):
-            return hisory_entry.modified_at
-        else:
-            return None
+    def get_is_mine(self, obj):
+        request = self.context.get("request")
+        if request:
+            return obj.user == request.user
+        return False
 
     def _update_summer_vouchers(
         self, summer_vouchers_data: list, application: EmployerApplication
