@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.14.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.13.0...benefit-backend-v2.14.0) (2026-04-05)
+
+
+### Features
+
+* **backend:** Test for deminimis csv creation ([bac2986](https://github.com/City-of-Helsinki/yjdh/commit/bac29864298bd04bca95944f8703ccc7285ea383))
+* **benefit:** De minimis report interface and report generation ([6d8575a](https://github.com/City-of-Helsinki/yjdh/commit/6d8575a472783f7671051a54885d56521a05e249))
+* **benefit:** Deminimis callback integration test ([6f0cefb](https://github.com/City-of-Helsinki/yjdh/commit/6f0cefb849c8d1cc23446d5a85e10b17a5a59abc))
+* **benefit:** Deminimis integration callback ([7714a78](https://github.com/City-of-Helsinki/yjdh/commit/7714a78e8114e5d2849947186abd023ac1702769))
+* **benefit:** Industry (tol code) to company info ([4e8c607](https://github.com/City-of-Helsinki/yjdh/commit/4e8c607a7350e510b571b4cad7cd87c323eb92e7))
+
+
+### Dependencies
+
+* Bump ecdsa from 0.19.1 to 0.19.2 in /backend/benefit ([1e6add5](https://github.com/City-of-Helsinki/yjdh/commit/1e6add50d692bfe060e6842e7ba6996f6584050e))
+* Bump pip from 25.3 to 26.0.1 ([91601d9](https://github.com/City-of-Helsinki/yjdh/commit/91601d9ccb8965ee5598dcace933ac06fdb11f7c))
+* Bump pygments from 2.19.2 to 2.20.0 ([a86f8d0](https://github.com/City-of-Helsinki/yjdh/commit/a86f8d0a6698afc063275be50dcd02e7c418fc5e))
+* Bump requests from 2.32.5 to 2.33.1 ([6dbd23f](https://github.com/City-of-Helsinki/yjdh/commit/6dbd23fb3b626085d0f492791b53bf26c9dd5121))
+* Bump urllib3 from 2.5.0 to 2.6.3 ([0b306d6](https://github.com/City-of-Helsinki/yjdh/commit/0b306d6747c7d0c1a901999119092ee8beac6ed9))
+* Bump werkzeug from 3.1.3 to 3.1.6 ([0dd0d13](https://github.com/City-of-Helsinki/yjdh/commit/0dd0d1333ee983904fbaa2e93117fe909bfcdf02))
+* Bump wheel from 0.45.1 to 0.46.3 ([d3bc808](https://github.com/City-of-Helsinki/yjdh/commit/d3bc80836ac16b40a1577891defffd4c71be2b4a))
+
 ## [2.13.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.12.4...benefit-backend-v2.13.0) (2026-03-18)
 
 
