@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.20.0...benefit-applicant-v4.0.0) (2026-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **main:** upgrade Next.js from 14 to 15
+
+### Features
+
+* **main:** Upgrade to Next.js 15 ([#3810](https://github.com/City-of-Helsinki/yjdh/issues/3810)) ([4ee66b2](https://github.com/City-of-Helsinki/yjdh/commit/4ee66b2cad3183adcee5917ee04838e0aa723107))
+
 ## [3.20.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.19.0...benefit-applicant-v3.20.0) (2026-03-19)
 
 
