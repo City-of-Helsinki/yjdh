@@ -258,3 +258,24 @@ def test_not_acceptable_response_to_anonymous_user_requesting_html_from_endpoint
     }
     assert isinstance(response.accepted_renderer, JSONRenderer)
     assert response.wsgi_request.user.is_anonymous
+
+
+@pytest.mark.django_db
+def test_employer_application_list_post_forbidden_to_anonymous_user(
+    client,
+):
+    """
+    Test that using POST on employer application list endpoint
+    returns forbidden to anonymous users.
+    """
+    response = client.post(reverse("v1:employerapplication-list"), data={})
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.data == {
+        "detail": ErrorDetail(
+            string=_("Authentication credentials were not provided."),
+            code=NotAuthenticated.default_code,
+        )
+    }
+    assert isinstance(response.accepted_renderer, JSONRenderer)
+    assert response.wsgi_request.user.is_anonymous

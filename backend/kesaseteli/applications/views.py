@@ -7,6 +7,7 @@ from typing import List, Union
 
 import xlsx_streaming
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import F, OuterRef, QuerySet, Subquery, Window
 from django.db.models.functions import RowNumber
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
@@ -16,6 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import ModelViewSet
 from xlsxwriter import Workbook
 from xlsxwriter.worksheet import Format, Worksheet
 
@@ -28,9 +30,9 @@ from applications.exporters.excel_exporter import (
     get_xlsx_filename,
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
+from applications.services import AuditAccessLogService
 from common.decorators import enforce_handler_view_adfs_login
 from common.urls import handler_create_application_without_ssn_url
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class EmployerApplicationExcelDownloadView(TemplateView):
@@ -56,7 +58,7 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         ).order_by("-modified_at")
         base_queryset = EmployerSummerVoucher.objects
         if filter_pks:
-            base_queryset.filter(pk__in=filter_pks)
+            base_queryset = base_queryset.filter(pk__in=filter_pks)
         return (
             base_queryset.select_related(
                 "application", "application__company", "application__user"
@@ -78,19 +80,32 @@ class EmployerApplicationExcelDownloadView(TemplateView):
     @enforce_handler_view_adfs_login
     def get(self, request, *args, **kwargs):
         columns = request.GET.get("columns", ExcelColumns.REPORTING.value)
+        download_type = request.GET.get("download")
         if columns not in ExcelColumns.values:
             raise ValueError(
                 f"Invalid columns {columns} for Excel download, "
                 f"acceptable values are {ExcelColumns.values}"
             )
-
-        if request.GET.get("download") == "unhandled":
+        # Manually log access because of mass access to sensitive information:
+        AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+            actor=request.user,
+            actor_email=request.user.email,
+            content_type=ContentType.objects.get_for_model(EmployerSummerVoucher),
+            additional_data={
+                "method": f"{self.__class__.__name__}.get",
+                "parameters": {
+                    "columns": columns,
+                    "download": download_type,
+                },
+            },
+        )
+        if download_type == "unhandled":
             return self.export_and_download_unhandled_applications(columns)
-        elif request.GET.get("download") == "annual":
+        elif download_type == "annual":
             return self.export_and_download_annual_applications(
                 columns, year=date.today().year
             )
-        elif request.GET.get("download") == "annual-previous":
+        elif download_type == "annual-previous":
             return self.export_and_download_annual_applications(
                 columns, year=date.today().year - 1
             )
@@ -194,7 +209,7 @@ class EmployerApplicationExcelDownloadView(TemplateView):
         return self.get_xlsx_response(queryset, columns)
 
 
-class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
+class YouthApplicationExcelExportViewSet(ModelViewSet):
     permission_classes = [AllowAny]  # Permissions are handled per function
     serializer_class = YouthApplicationExcelExportSerializer
 
@@ -261,28 +276,31 @@ class YouthApplicationExcelExportViewSet(AuditLoggingModelViewSet):
     def list(
         self, request, *args, **kwargs
     ) -> Union[HttpResponse, HttpResponseRedirect, StreamingHttpResponse]:
-        with self.record_action(
-            additional_information=f"{self.__class__.__name__}.list"
-        ):
-            queryset = self.get_queryset()
-            if not queryset.exists():
-                return HttpResponse(_("Hakemuksia ei löytynyt."))
+        # Manually log access because of mass access to sensitive information:
+        AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+            actor=request.user,
+            actor_email=request.user.email,
+            content_type=ContentType.objects.get_for_model(YouthApplication),
+            additional_data={"method": f"{self.__class__.__name__}.list"},
+        )
 
-            response = StreamingHttpResponse(
-                xlsx_streaming.stream_queryset_as_xlsx(
-                    qs=queryset,
-                    xlsx_template=self.xlsx_template(queryset),
-                    serializer=self.serializer,
-                    batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
-                ),
-                content_type=(
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                ),
-            )
-            response["Content-Disposition"] = (
-                f"attachment; filename={self.xlsx_filename}"
-            )
-            return response
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            return HttpResponse(_("Hakemuksia ei löytynyt."))
+
+        response = StreamingHttpResponse(
+            xlsx_streaming.stream_queryset_as_xlsx(
+                qs=queryset,
+                xlsx_template=self.xlsx_template(queryset),
+                serializer=self.serializer,
+                batch_size=settings.EXCEL_DOWNLOAD_BATCH_SIZE,
+            ),
+            content_type=(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ),
+        )
+        response["Content-Disposition"] = f"attachment; filename={self.xlsx_filename}"
+        return response
 
     @property
     def worksheet_name(self) -> str:

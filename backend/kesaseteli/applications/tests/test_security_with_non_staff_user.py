@@ -1,7 +1,9 @@
 from unittest import mock
 
 import pytest
+from auditlog.models import LogEntry
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.test import Client, override_settings
 from freezegun import freeze_time
 from rest_framework import status
@@ -24,7 +26,6 @@ from common.tests.factories import (
 )
 from common.tests.utils import set_company_business_id_to_client
 from common.urls import handler_403_url
-from shared.audit_log.models import AuditLogEntry
 from shared.common.tests.conftest import force_login_user
 from shared.common.tests.factories import UserFactory
 
@@ -1338,7 +1339,7 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
         youth_summer_voucher__summer_voucher_serial_number=123,
     )
     url = reverse("v1:youthapplication-fetch-employee-data")
-    audit_log_entries_before = AuditLogEntry.objects.count()
+    log_entry_count_before = LogEntry.objects.count()
     response = user_client.post(
         url,
         data={
@@ -1347,20 +1348,25 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
             "summer_voucher_serial_number": 123,
         },
     )
-    assert AuditLogEntry.objects.count() == audit_log_entries_before + 1
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"]["role"] == "USER"
-    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["id"] == str(youth_application.id)
-    assert audit_event["target"]["type"] == "YouthApplication"
-    assert audit_event["additional_information"] == (
-        "YouthApplicationViewSet.fetch_employee_data called with "
-        f'employer_summer_voucher_id="{employer_summer_voucher.id}", '
-        'employee_name="Peter Doe" and summer_voucher_serial_number=123 '
-        "(POST used with CSRF as a GET). Found 1 match."
+    assert LogEntry.objects.count() == log_entry_count_before + 1
+    audit_event = LogEntry.objects.first()
+    assert audit_event.actor_id == response.wsgi_request.user.pk
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.ACCESS
+    assert audit_event.object_pk == str(youth_application.id)
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        YouthApplication
     )
+    assert audit_event.additional_data == {
+        "is_sent": False,
+        "request_path": url,
+        "method": "YouthApplicationViewSet.fetch_employee_data",
+        "parameters": {
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "Peter Doe",
+            "summer_voucher_serial_number": 123,
+        },
+    }
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -1370,7 +1376,7 @@ def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_c
         application=EmployerApplicationFactory()
     )
     url = reverse("v1:youthapplication-fetch-employee-data")
-    audit_log_entries_before = AuditLogEntry.objects.count()
+    log_entry_count_before = LogEntry.objects.count()
     response = user_client.post(
         url,
         data={
@@ -1379,20 +1385,25 @@ def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_c
             "summer_voucher_serial_number": 123456789,
         },
     )
-    assert AuditLogEntry.objects.count() == audit_log_entries_before + 1
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"]["role"] == "USER"
-    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "YouthApplication"
-    assert audit_event["additional_information"] == (
-        "YouthApplicationViewSet.fetch_employee_data called with "
-        f'employer_summer_voucher_id="{employer_summer_voucher.id}", '
-        'employee_name="Teppo Testaaja" and summer_voucher_serial_number=123456789 '
-        "(POST used with CSRF as a GET). Found no matches."
+    assert LogEntry.objects.count() == log_entry_count_before + 1
+    audit_event = LogEntry.objects.first()
+    assert audit_event.actor_id == response.wsgi_request.user.pk
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.ACCESS
+    assert audit_event.object_pk == ""
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        YouthApplication
     )
+    assert audit_event.additional_data == {
+        "is_sent": False,
+        "request_path": url,
+        "method": "YouthApplicationViewSet.fetch_employee_data",
+        "parameters": {
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "Teppo Testaaja",
+            "summer_voucher_serial_number": 123456789,
+        },
+    }
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)

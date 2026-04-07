@@ -5,7 +5,9 @@ import tempfile
 import uuid
 
 import pytest
+from auditlog.models import LogEntry
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from PIL import Image
 from rest_framework.reverse import reverse
 
@@ -52,6 +54,10 @@ def _upload_file(
 @pytest.mark.django_db
 @pytest.mark.parametrize("extension", ["pdf", "jpg"])
 def test_attachment_upload(request, api_client, summer_voucher, extension):
+    """
+    Test that uploading an attachment to an employer summer voucher works.
+    """
+    assert not summer_voucher.attachments.exists()
     response = _upload_file(
         request,
         api_client,
@@ -63,6 +69,49 @@ def test_attachment_upload(request, api_client, summer_voucher, extension):
     assert len(summer_voucher.attachments.all()) == 1
     attachment = summer_voucher.attachments.all().first()
     assert attachment.attachment_file.name.endswith(f".{extension}")
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "extension, expected_content_type",
+    [
+        ("pdf", "application/pdf"),
+        ("jpg", "image/jpeg"),
+    ],
+)
+def test_attachment_upload_writes_audit_log(
+    request, api_client, summer_voucher, extension, expected_content_type
+):
+    """
+    Test that uploading an attachment to an employer summer voucher
+    writes an audit log entry.
+    """
+    response = _upload_file(
+        request,
+        api_client,
+        summer_voucher,
+        extension,
+        AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+
+    audit_event = LogEntry.objects.first()
+    assert audit_event.action == LogEntry.Action.CREATE
+    assert audit_event.object_pk == response.data["id"]
+    assert audit_event.content_type == ContentType.objects.get_for_model(Attachment)
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.changes["attachment_file"] == [
+        "None",
+        response.data["attachment_file_name"],
+    ]
+    assert audit_event.changes["content_type"] == [
+        "None",
+        response.data["content_type"],
+    ]
+    assert audit_event.changes["attachment_type"] == [
+        "None",
+        response.data["attachment_type"],
+    ]
 
 
 @pytest.mark.django_db
@@ -185,6 +234,9 @@ def test_get_attachment_with_invalid_uuid(
     "attachment_type", [attachment_type for attachment_type in AttachmentType.values]
 )
 def test_delete_attachment(request, api_client, summer_voucher, attachment_type):
+    """
+    Test that deleting an attachment from an employer summer voucher works.
+    """
     _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
     attachment = Attachment.objects.first()
     attachment_delete_url = handle_attachment_url(summer_voucher, attachment.pk)
@@ -192,6 +244,35 @@ def test_delete_attachment(request, api_client, summer_voucher, attachment_type)
     response = api_client.delete(attachment_delete_url)
 
     assert response.status_code == 204
+
+    with pytest.raises(Attachment.DoesNotExist):
+        attachment.refresh_from_db()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "attachment_type",
+    [attachment_type for attachment_type in AttachmentType.values],
+)
+def test_delete_attachment_writes_audit_log(
+    request, api_client, summer_voucher, attachment_type
+):
+    """
+    Test that deleting an attachment from an employer summer voucher
+    writes an audit log entry.
+    """
+    _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
+    attachment = Attachment.objects.first()
+    attachment_delete_url = handle_attachment_url(summer_voucher, attachment.pk)
+
+    response = api_client.delete(attachment_delete_url)
+
+    audit_event = LogEntry.objects.first()
+    assert audit_event.action == LogEntry.Action.DELETE
+    assert audit_event.object_pk == str(attachment.id)
+    assert audit_event.content_type == ContentType.objects.get_for_model(Attachment)
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
 
 
 @pytest.mark.django_db

@@ -10,8 +10,10 @@ from urllib.parse import urlparse
 
 import factory.random
 import pytest
+from auditlog.models import LogEntry
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.template import Context, Template
 from django.test import override_settings
@@ -71,7 +73,6 @@ from common.urls import (
     RedirectTo,
     reverse_youth_application_action,
 )
-from shared.audit_log.models import AuditLogEntry
 from shared.common.lang_test_utils import (
     assert_email_body_language,
     assert_email_subject_language,
@@ -358,7 +359,6 @@ def test_youth_applications_not_allowed_methods(
     http_method,
     action,
 ):
-    old_audit_log_entry_count = AuditLogEntry.objects.count()
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
     client_http_method_func = getattr(client_fixture, http_method)
@@ -370,9 +370,10 @@ def test_youth_applications_not_allowed_methods(
     else:
         endpoint_url = reverse_youth_application_action(action, pk=youth_application.pk)
 
+    log_entry_count_before_method_call = LogEntry.objects.count()
     response = client_http_method_func(endpoint_url)
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert AuditLogEntry.objects.count() == old_audit_log_entry_count
+    assert LogEntry.objects.count() == log_entry_count_before_method_call
 
 
 @pytest.mark.django_db
@@ -1341,11 +1342,12 @@ def test_youth_application_post_valid_audit_log(api_client):
     assert "id" in response.data
     assert response.data["id"]
     assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["id"] == str(response.data["id"])
-    assert audit_event["target"]["type"] == "YouthApplication"
+    audit_event = LogEntry.objects.first()
+    assert audit_event.action == LogEntry.Action.CREATE
+    assert audit_event.object_pk == response.data["id"]
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        YouthApplication
+    )
 
 
 @pytest.mark.django_db
@@ -2209,6 +2211,7 @@ def test_youth_applications_accept_acceptable(
     old_modified_at = acceptable_youth_application.modified_at
     old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
     assert not acceptable_youth_application.has_youth_summer_voucher
+    log_entry_count_before_accepting = LogEntry.objects.count()
     response = client_fixture.patch(
         reverse_youth_application_action("accept", acceptable_youth_application.pk),
         data=json.dumps(get_test_handling_data()),
@@ -2230,31 +2233,45 @@ def test_youth_applications_accept_acceptable(
             acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
             == YouthSummerVoucher.get_last_used_serial_number()
         )
-        audit_event = AuditLogEntry.objects.first().message["audit_event"]
-        assert audit_event["status"] == "SUCCESS"
-        assert audit_event["operation"] == "UPDATE"
-        assert audit_event["target"]["id"] == str(acceptable_youth_application.pk)
-        assert audit_event["target"]["type"] == "YouthApplication"
-        assert audit_event["additional_information"] == "accept"
+        youth_voucher_audit_event, youth_app_audit_event = LogEntry.objects.all()[:2]
+        # Created the youth summer voucher:
+        assert youth_voucher_audit_event.action == LogEntry.Action.CREATE
+        assert youth_voucher_audit_event.object_pk == str(
+            acceptable_youth_application.youth_summer_voucher.pk
+        )
+        assert (
+            youth_voucher_audit_event.content_type
+            == ContentType.objects.get_for_model(YouthSummerVoucher)
+        )
+        # Updated the youth application to accepted status:
+        assert youth_app_audit_event.action == LogEntry.Action.UPDATE
+        assert youth_app_audit_event.object_pk == str(acceptable_youth_application.pk)
+        assert youth_app_audit_event.content_type == ContentType.objects.get_for_model(
+            YouthApplication
+        )
+        assert youth_app_audit_event.changes["status"] == [
+            str(old_status),
+            str(YouthApplicationStatus.ACCEPTED),
+        ]
         handler = response.wsgi_request.user
         assert handler is not None
         if handler == AnonymousUser():
             assert HandlerPermission.allow_empty_handler()
             assert handler.pk is None
             assert acceptable_youth_application.handler is None
-            assert audit_event["actor"]["role"] == "ANONYMOUS"
-            assert audit_event["actor"]["user_id"] == ""
+            assert youth_voucher_audit_event.actor_id is None
+            assert youth_app_audit_event.actor_id is None
         else:
             assert handler.pk is not None
             assert acceptable_youth_application.handler == handler
-            assert audit_event["actor"]["role"] == "USER"
-            assert audit_event["actor"]["user_id"] == str(handler.pk)
+            assert youth_voucher_audit_event.actor_id == handler.pk
+            assert youth_app_audit_event.actor_id == handler.pk
     else:
         assert acceptable_youth_application.status == old_status
         assert acceptable_youth_application.modified_at == old_modified_at
         assert not acceptable_youth_application.has_youth_summer_voucher
         assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count
-        assert not AuditLogEntry.objects.exists()
+        assert LogEntry.objects.count() == log_entry_count_before_accepting
 
     if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
@@ -2345,6 +2362,7 @@ def test_youth_applications_handle_handled(
     assert handled_youth_application.is_handled
     old_status = handled_youth_application.status
     old_modified_at = handled_youth_application.modified_at
+    log_entry_count_before_handling = LogEntry.objects.count()
     response = client_fixture.patch(
         reverse_youth_application_action(handling_action, handled_youth_application.pk),
         data=json.dumps(get_test_handling_data()),
@@ -2355,7 +2373,7 @@ def test_youth_applications_handle_handled(
     handled_youth_application.refresh_from_db()
     assert handled_youth_application.status == old_status
     assert handled_youth_application.modified_at == old_modified_at
-    assert not AuditLogEntry.objects.exists()
+    assert LogEntry.objects.count() == log_entry_count_before_handling
 
     if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
@@ -2397,6 +2415,7 @@ def test_youth_applications_reject_rejectable(
     old_status = rejectable_youth_application.status
     old_modified_at = rejectable_youth_application.modified_at
     assert not rejectable_youth_application.has_youth_summer_voucher
+    log_entry_count_before_rejecting = LogEntry.objects.count()
     response = client_fixture.patch(
         reverse_youth_application_action("reject", rejectable_youth_application.pk),
         data=json.dumps(get_test_handling_data()),
@@ -2412,29 +2431,31 @@ def test_youth_applications_reject_rejectable(
         assert rejectable_youth_application.encrypted_handler_vtj_json == json.dumps(
             get_test_handling_data()["encrypted_handler_vtj_json"]
         )
-        audit_event = AuditLogEntry.objects.first().message["audit_event"]
-        assert audit_event["status"] == "SUCCESS"
-        assert audit_event["operation"] == "UPDATE"
-        assert audit_event["target"]["id"] == str(rejectable_youth_application.pk)
-        assert audit_event["target"]["type"] == "YouthApplication"
-        assert audit_event["additional_information"] == "reject"
+        audit_event = LogEntry.objects.first()
+        assert audit_event.action == LogEntry.Action.UPDATE
+        assert audit_event.object_pk == str(rejectable_youth_application.pk)
+        assert audit_event.content_type == ContentType.objects.get_for_model(
+            YouthApplication
+        )
+        assert audit_event.changes["status"] == [
+            str(old_status),
+            str(YouthApplicationStatus.REJECTED),
+        ]
         handler = response.wsgi_request.user
         assert handler is not None
         if handler == AnonymousUser():
             assert HandlerPermission.allow_empty_handler()
             assert handler.pk is None
             assert rejectable_youth_application.handler is None
-            assert audit_event["actor"]["role"] == "ANONYMOUS"
-            assert audit_event["actor"]["user_id"] == ""
+            assert audit_event.actor_id is None
         else:
             assert handler.pk is not None
             assert rejectable_youth_application.handler == handler
-            assert audit_event["actor"]["role"] == "USER"
-            assert audit_event["actor"]["user_id"] == str(handler.pk)
+            assert audit_event.actor_id == handler.pk
     else:
         assert rejectable_youth_application.status == old_status
         assert rejectable_youth_application.modified_at == old_modified_at
-        assert not AuditLogEntry.objects.exists()
+        assert LogEntry.objects.count() == log_entry_count_before_rejecting
 
     if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
