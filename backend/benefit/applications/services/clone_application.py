@@ -128,7 +128,7 @@ def _clone_handler_data(application_base, cloned_application):
     cloned_application.additional_pay_subsidy_percent = (
         application_base.additional_pay_subsidy_percent
     )
-
+    cloned_application.employer_assurance = application_base.employer_assurance
     temp_image = Image.new("RGB", (1, 1), 0xFFFFFF)
     temp_image_io = BytesIO()
     temp_image.save(
