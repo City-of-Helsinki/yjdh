@@ -23,6 +23,10 @@ To add a new target group:
 3. Implement the `is_valid` method with specific business logic.
 4. The system will automatically pick up the new class via `__subclasses__()`.
 
+Yearly configuration rows are built from these catalog entries when creating
+`SummerVoucherConfiguration`. The subclass definitions are the source of truth
+and year configuration rows then define which groups are active for a given year.
+
 WARNING:
 The `identifier` defined in target group subclasses is stored directly in the database
 (specifically in `YouthSummerVoucher` and `EmployerSummerVoucher` tables).
@@ -43,6 +47,24 @@ if TYPE_CHECKING:
 
 
 class AbstractTargetGroup(ABC):
+    """
+    Base contract for youth target groups used in eligibility rules.
+
+    Concrete subclasses define one target-group entry point by providing:
+
+    - a stable ``identifier`` persisted in the database
+    - localized ``name`` and ``description`` values for UI presentation
+    - age eligibility rules through :meth:`is_age_valid`
+
+    All subclasses are discovered from
+    :func:`AbstractTargetGroup.__subclasses__` so configuration and UI layers can
+    present all supported target groups dynamically.
+
+    :ivar identifier: Stable target-group key used by persisted values.
+    :ivar name: Localized target-group label.
+    :ivar description: Localized target-group details for forms and tooling.
+    """
+
     @property
     @abstractmethod
     def name(self) -> str:
@@ -69,6 +91,15 @@ class AbstractTargetGroup(ABC):
         """
         Calculate the age of the applicant. Note that this is not the exact age,
         as only the year of birth and the year of application are used.
+
+        :param application: The youth application used to read `birthdate` and
+            `created_at`.
+        :return: Age estimate based on year-level precision. Returns ``0`` if the
+            application has no birthdate.
+
+        Example:
+            >>> get_target_group_class_by_age(16).__name__
+            'NinthGraderTargetGroup'
         """
         birthdate = application.birthdate
         if not birthdate:
@@ -79,6 +110,11 @@ class AbstractTargetGroup(ABC):
         """
         Check if the given age is valid for this target group.
         Subclasses can override this to support ranges or other rules.
+
+        :param age: Applicant age used by the active target-group rule.
+        :return: ``True`` when the age is valid for this group, ``False``
+            otherwise. The base implementation returns ``False`` to make overrides
+            explicit in concrete target groups.
         """
         return False
 
@@ -95,6 +131,16 @@ class AbstractTargetGroup(ABC):
 def get_target_group_class_by_age(age: int) -> type[AbstractTargetGroup] | None:
     """
     Returns the target group class that matches the given age.
+
+    :param age: Applicant age to resolve into a target group.
+    :return: A target group class if one subclass accepts the age, otherwise
+        ``None``.
+
+    Example:
+        >>> get_target_group_class_by_age(16).__name__
+        'NinthGraderTargetGroup'
+        >>> get_target_group_class_by_age(99)
+        None
     """
     for subclass in AbstractTargetGroup.__subclasses__():
         if subclass().is_age_valid(age):
@@ -106,6 +152,16 @@ def get_target_group_choices() -> List[Tuple[str, str]]:
     """
     Returns a list of tuples for ChoiceField options containing subclass identifiers.
     e.g. [('primary_target_group', '9th grader'), ...]
+
+    Returns all the currently available target groups based on the subclasses.
+
+    :return: List of ``(identifier, localized name)`` pairs for all registered
+        ``AbstractTargetGroup`` subclasses.
+
+    Example:
+        >>> get_target_group_choices()[:2]
+        [('hki_15', '8. luokkalainen'), ('primary_target_group', '9. luokkalainen')]
+
     """
     return [
         (cls().identifier, cls().name) for cls in AbstractTargetGroup.__subclasses__()
@@ -151,6 +207,18 @@ class UpperSecondarySecondYearTargetGroup(AbstractTargetGroup):
 def get_target_group_class(identifier: str) -> type[AbstractTargetGroup] | None:
     """
     Returns the target group class associated with the given identifier.
+
+    :param identifier: Target-group identifier string to resolve.
+    :return: The matching target group class, or ``None`` if the identifier is
+        not registered.
+
+    Example:
+        >>> get_target_group_class("primary_target_group")
+        <class 'applications.target_groups.NinthGraderTargetGroup'>
+        >>> get_target_group_class("unknown_identifier") is None
+        True
+
+    Unknown identifiers return ``None`` rather than raising.
     """
     for cls in AbstractTargetGroup.__subclasses__():
         if cls().identifier == identifier:
@@ -162,6 +230,25 @@ def get_target_group_data(identifiers: List[str]) -> List[dict]:
     """
     Returns a list of structured data (id, name, description) for the
     given list of target group identifiers.
+
+    :param identifiers: A list of target-group identifier strings.
+    :return: A list of dictionaries with keys ``id``, ``name``, and
+        ``description``.
+
+    Example:
+        >>> get_target_group_data(["primary_target_group", "unknown"])
+        [
+            {
+                "id": "primary_target_group",
+                "name": "9. luokkalainen",
+                "description": "9th graders: 16 years old, MUST live in Helsinki.",
+            }
+        ]
+        >>> get_target_group_data(["unknown"])
+        []
+
+    Identifiers that are not registered in :class:`AbstractTargetGroup` subclasses
+    are ignored and do not appear in the output.
     """
     target_groups = []
     for identifier in identifiers:
