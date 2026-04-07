@@ -43,6 +43,8 @@ defusedxml==0.7.1
 django==5.2.13
     # via
     #   -r requirements.in
+    #   django-auditlog
+    #   django-auditlog-extra
     #   django-auth-adfs
     #   django-cors-headers
     #   django-extensions
@@ -56,6 +58,12 @@ django==5.2.13
     #   djangosaml2
     #   mozilla-django-oidc
     #   yjdh-backend-shared
+django-auditlog==3.4.1
+    # via
+    #   -r requirements.in
+    #   django-auditlog-extra
+django-auditlog-extra @ https://github.com/City-of-Helsinki/django-auditlog-extra/archive/24978fc884355e8d210016dac2e58b8c7d4b701a.zip
+    # via -r requirements.in
 django-auth-adfs==1.16.0
     # via
     #   -r requirements.in
@@ -149,7 +157,9 @@ pyopenssl==24.2.1
 pysaml2==7.5.4
     # via djangosaml2
 python-dateutil==2.9.0.post0
-    # via pysaml2
+    # via
+    #   django-auditlog
+    #   pysaml2
 python-stdnum==2.2
     # via
     #   -r requirements.in
