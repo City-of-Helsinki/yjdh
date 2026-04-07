@@ -1,7 +1,9 @@
 import logging
 from typing import TYPE_CHECKING
 
+from auditlog.models import LogEntry
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
@@ -13,10 +15,14 @@ from applications.models import EmailTemplate, School, SummerVoucherConfiguratio
 from common.utils import send_mail_with_error_logging
 
 if TYPE_CHECKING:
+    from django.contrib.contenttypes.models import ContentType
+
     from applications.models import YouthApplication
 
 
 LOGGER = logging.getLogger(__name__)
+
+User = get_user_model()
 
 
 class TargetGroupValidationService:
@@ -211,3 +217,51 @@ class SchoolService:
                 else:
                     existing_count += 1
         return created_count, existing_count
+
+
+class AuditAccessLogService:
+    """
+    Service for creating ACCESS audit log entries with additional_data.
+    """
+
+    @staticmethod
+    def create_access_log_entry_with_no_related_object_instance(
+        *,
+        actor: User,
+        actor_email: str,
+        content_type: "ContentType",
+        additional_data: dict,
+    ) -> LogEntry:
+        """
+        Create an ACCESS audit log entry with no related object instance,
+        but with additional data.
+        """
+        return LogEntry.objects.create(
+            action=LogEntry.Action.ACCESS,
+            actor=actor,
+            actor_email=actor_email,
+            content_type=content_type,
+            additional_data=additional_data,
+        )
+
+    @staticmethod
+    def create_access_log_entry_with_related_object_and_additional_data(
+        *,
+        accessed_instance,
+        actor: User,
+        actor_email: str,
+        additional_data: dict,
+    ) -> LogEntry:
+        """
+        Create an ACCESS audit log entry with related object instance and
+        additional data into which "is_sent" and "request_path" info
+        can be set later.
+        """
+        return LogEntry.objects.log_create(
+            accessed_instance,
+            force_log=True,
+            action=LogEntry.Action.ACCESS,
+            actor=actor,
+            actor_email=actor_email,
+            additional_data=additional_data,
+        )

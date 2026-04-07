@@ -6,6 +6,8 @@ from typing import List
 
 import openpyxl
 import pytest
+from auditlog.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.http import StreamingHttpResponse
 from django.shortcuts import reverse
 from django.test import override_settings
@@ -57,7 +59,7 @@ from common.tests.factories import (
 )
 from common.urls import handler_403_url
 from common.utils import getattr_nested
-from shared.audit_log.models import AuditLogEntry
+from shared.common.tests.utils import utc_datetime
 
 
 def excel_download_url():
@@ -157,67 +159,70 @@ def test_youth_excel_download_no_youth_applications(staff_client):
 
 @pytest.mark.django_db
 def test_youth_excel_download_writes_audit_log(staff_client, youth_application):
-    old_audit_log_entry_count = AuditLogEntry.objects.count()
-    response = staff_client.get(youth_excel_download_url())
+    old_audit_log_entry_count = LogEntry.objects.count()
+    frozen_datetime = utc_datetime(2025, 10, 15)
+    with freeze_time(frozen_datetime):
+        response = staff_client.get(youth_excel_download_url())
 
-    assert AuditLogEntry.objects.count() == old_audit_log_entry_count + 1
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"]["role"] == "USER"
-    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["operation"] == "READ"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "YouthApplication"
-    assert (
-        audit_event["additional_information"]
-        == "YouthApplicationExcelExportViewSet.list"
+    assert LogEntry.objects.count() == old_audit_log_entry_count + 1
+    audit_event = LogEntry.objects.filter(
+        action=LogEntry.Action.ACCESS,
+        timestamp=frozen_datetime,
+    ).first()
+    assert audit_event.actor_id == response.wsgi_request.user.pk
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.ACCESS
+    assert audit_event.object_pk == ""
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        YouthApplication
     )
+    assert audit_event.additional_data == {
+        "is_sent": False,
+        "request_path": youth_excel_download_url(),
+        "method": "YouthApplicationExcelExportViewSet.list",
+    }
+    assert audit_event.timestamp == frozen_datetime
 
 
 @pytest.mark.django_db
-@pytest.mark.xfail(reason="Audit log writing should be added to this endpoint")
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "download_url,expected_audit_log_additional_information",
-    [
-        (
-            f"{excel_download_url()}?download=unhandled",
-            "EmployerApplicationExcelDownloadView.get unhandled",
-        ),
-        (
-            f"{excel_download_url()}?download=annual",
-            "EmployerApplicationExcelDownloadView.get annual",
-        ),
-    ],
-)
-def test_excel_download_writes_audit_log(
-    staff_client, download_url, expected_audit_log_additional_information
-):
+@pytest.mark.parametrize("columns", ExcelColumns.values)
+@pytest.mark.parametrize("download_type", ["unhandled", "annual", "annual-previous"])
+def test_excel_download_writes_audit_log(staff_client, columns, download_type):
     """
     Test that audit log is written when downloading employer summer voucher
     Excel files.
-
-    NOTE:
-        Tested values MAY NEED UPDATING when audit logging is added to the endpoint!
     """
     create_test_employer_summer_vouchers(year=2021)
+    download_url = f"{excel_download_url()}?download={download_type}&columns={columns}"
 
-    old_audit_log_entry_count = AuditLogEntry.objects.count()
-    with freeze_time(datetime(2021, 12, 31)):
+    old_audit_log_entry_count = LogEntry.objects.count()
+    frozen_datetime = utc_datetime(2021, 12, 31)
+    with freeze_time(frozen_datetime):
         response = staff_client.get(download_url)
 
-    assert AuditLogEntry.objects.count() == old_audit_log_entry_count + 1
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"]["role"] == "USER"
-    assert audit_event["actor"]["user_id"] == str(response.wsgi_request.user.pk)
-    assert audit_event["status"] == "SUCCESS"
-    assert audit_event["operation"] == "READ"
-    assert audit_event["target"]["id"] == ""
-    assert audit_event["target"]["type"] == "EmployerSummerVoucher"
-    assert (
-        audit_event["additional_information"]
-        == expected_audit_log_additional_information
+    assert LogEntry.objects.count() == old_audit_log_entry_count + 1
+    audit_event = LogEntry.objects.filter(
+        action=LogEntry.Action.ACCESS,
+        timestamp=frozen_datetime,
+    ).first()
+    assert audit_event.action == LogEntry.Action.ACCESS
+    assert audit_event.object_pk == ""  # Not a single object, but a list
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        EmployerSummerVoucher
     )
+    assert audit_event.additional_data == {
+        "is_sent": False,
+        "request_path": excel_download_url(),
+        "method": "EmployerApplicationExcelDownloadView.get",
+        "parameters": {
+            "columns": columns,
+            "download": download_type,
+        },
+    }
+    assert audit_event.timestamp == frozen_datetime
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
 
 
 @pytest.mark.django_db

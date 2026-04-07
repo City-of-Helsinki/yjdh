@@ -1,4 +1,6 @@
 import pytest
+from auditlog.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
 from freezegun import freeze_time
 from rest_framework.reverse import reverse
@@ -14,7 +16,6 @@ from common.tests.factories import (
     EmployerSummerVoucherFactory,
     YouthSummerVoucherFactory,
 )
-from shared.audit_log.models import AuditLogEntry
 
 
 def get_list_url():
@@ -288,7 +289,7 @@ def test_application_delete_other_user_not_allowed(api_client, application):
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_create_writes_audit_log(api_client, user, company):
+def test_application_create_writes_audit_log(api_client, company):
     response = api_client.post(
         get_list_url(),
         {},
@@ -296,26 +297,22 @@ def test_application_create_writes_audit_log(api_client, user, company):
 
     assert response.status_code == 201
 
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"] == {
-        "ip_address": "127.0.0.1",
-        "role": "USER",
-        "user_id": str(user.pk),
-        "provider": "",
-    }
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"] == {
-        "id": response.data["id"],
-        "type": "EmployerApplication",
-    }
-    assert audit_event["status"] == "SUCCESS"
+    audit_event = LogEntry.objects.first()
+    assert audit_event.remote_addr == "127.0.0.1"
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.CREATE
+    assert audit_event.object_pk == response.data["id"]
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        EmployerApplication
+    )
 
 
 @pytest.mark.django_db
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_update_writes_audit_log(api_client, user, application):
+def test_application_update_writes_audit_log(api_client, application):
     application.invoicer_name = "test1"
     application.save()
 
@@ -329,70 +326,36 @@ def test_application_update_writes_audit_log(api_client, user, application):
     assert response.status_code == 200
     assert response.data["invoicer_name"] == "test2"
 
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"] == {
-        "ip_address": "127.0.0.1",
-        "role": "USER",
-        "user_id": str(user.pk),
-        "provider": "",
-    }
-    assert audit_event["operation"] == "UPDATE"
-    assert audit_event["target"] == {
-        "id": response.data["id"],
-        "type": "EmployerApplication",
-        "changes": ["invoicer_name changed from test1 to test2"],
-    }
-    assert audit_event["status"] == "SUCCESS"
+    audit_event = LogEntry.objects.first()
+    assert audit_event.remote_addr == "127.0.0.1"
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.UPDATE
+    assert audit_event.object_pk == response.data["id"]
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        EmployerApplication
+    )
+    assert audit_event.changes == {"invoicer_name": ["test1", "test2"]}
 
 
 @pytest.mark.django_db
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_delete_writes_audit_log(api_client, user, application):
+def test_application_delete_writes_audit_log(api_client, application):
     response = api_client.delete(get_detail_url(application))
 
     assert response.status_code == 204
 
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"] == {
-        "ip_address": "127.0.0.1",
-        "role": "USER",
-        "user_id": str(user.pk),
-        "provider": "",
-    }
-    assert audit_event["operation"] == "DELETE"
-    assert audit_event["target"] == {
-        "id": str(application.id),
-        "type": "EmployerApplication",
-    }
-    assert audit_event["status"] == "SUCCESS"
-
-
-@pytest.mark.django_db
-@override_settings(
-    AUDIT_LOG_ORIGIN="TEST_SERVICE",
-)
-def test_application_create_writes_audit_log_if_not_authenticated(
-    unauthenticated_api_client,
-):
-    response = unauthenticated_api_client.post(
-        get_list_url(),
-        {},
+    audit_event = LogEntry.objects.first()
+    assert audit_event.remote_addr == "127.0.0.1"
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.actor_email == response.wsgi_request.user.email
+    assert audit_event.action == LogEntry.Action.DELETE
+    assert audit_event.object_pk == str(application.id)
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        EmployerApplication
     )
-
-    assert response.status_code == 403
-
-    audit_event = AuditLogEntry.objects.first().message["audit_event"]
-    assert audit_event["actor"] == {
-        "ip_address": "127.0.0.1",
-        "role": "ANONYMOUS",
-        "user_id": "",
-        "provider": "",
-    }
-    assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["type"] == "EmployerApplication"
-    assert audit_event["status"] == "FORBIDDEN"
 
 
 @pytest.mark.django_db

@@ -3,6 +3,7 @@ import uuid
 from functools import cached_property
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -24,6 +25,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -59,6 +61,7 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
+from applications.services import AuditAccessLogService
 from applications.target_groups import (
     AbstractTargetGroup,
     get_target_group_data,
@@ -66,7 +69,6 @@ from applications.target_groups import (
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
-from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
@@ -145,7 +147,7 @@ class TargetGroupListView(ListAPIView):
         return Response(queryset)
 
 
-class YouthApplicationViewSet(AuditLoggingModelViewSet):
+class YouthApplicationViewSet(ModelViewSet):
     permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
@@ -164,12 +166,15 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @action(methods=["get"], detail=True)
     def status(self, request, *args, **kwargs) -> HttpResponse:
-        with self.record_action(additional_information="status"):
-            serializer = YouthApplicationStatusSerializer(
-                self.get_object(),
-                context=self.get_serializer_context(),
-            )
-            return Response(serializer.data)
+        # Not audit logging anything here as this is open to everyone,
+        # also to anonymous users. The returned data is relatively
+        # innocuous and only accessible if the youth application's
+        # random generated UUID v4 ID is known.
+        serializer = YouthApplicationStatusSerializer(
+            self.get_object(),
+            context=self.get_serializer_context(),
+        )
+        return Response(serializer.data)
 
     @transaction.atomic
     @enforce_handler_view_adfs_login
@@ -279,43 +284,49 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         else:
             youth_application = youth_summer_voucher.youth_application
 
-        if not youth_application or not is_last_name_fuzzy_match_in_full_name(
+        found_match = youth_application and is_last_name_fuzzy_match_in_full_name(
             last_name=youth_application.last_name, full_name=employee_name
-        ):
-            with self.record_action(
-                target=YouthApplication,
-                additional_information=(
-                    "YouthApplicationViewSet.fetch_employee_data called with "
-                    f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
-                    f'employee_name="{employee_name}" and '
-                    f"summer_voucher_serial_number={voucher_number} "
-                    "(POST used with CSRF as a GET). Found no matches."
-                ),
-            ):
-                return Response(status=status.HTTP_404_NOT_FOUND)
+        )
 
-        with self.record_action(
-            target=youth_application,
-            additional_information=(
-                "YouthApplicationViewSet.fetch_employee_data called with "
-                f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
-                f'employee_name="{employee_name}" and '
-                f"summer_voucher_serial_number={voucher_number} "
-                "(POST used with CSRF as a GET). Found 1 match."
-            ),
-        ):
-            return Response(
-                data={
-                    "employer_summer_voucher_id": str(employer_summer_voucher_id),
-                    "employee_name": youth_application.name,
-                    "employee_ssn": youth_application.social_security_number,
-                    "employee_phone_number": youth_application.phone_number,
-                    "employee_home_city": youth_application.home_municipality,
-                    "employee_postcode": youth_application.postcode,
-                    "employee_school": youth_application.school,
-                },
-                status=status.HTTP_200_OK,
+        additional_data_for_access_audit_log = {
+            "method": f"{self.__class__.__name__}.fetch_employee_data",
+            "parameters": {
+                "employer_summer_voucher_id": str(employer_summer_voucher_id),
+                "employee_name": employee_name,
+                "summer_voucher_serial_number": voucher_number,
+            },
+        }
+
+        if not found_match:
+            # Manually log access because of access to sensitive information:
+            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+                actor=request.user,
+                actor_email=request.user.email,
+                content_type=ContentType.objects.get_for_model(YouthApplication),
+                additional_data=additional_data_for_access_audit_log,
             )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Manually log access because of access to sensitive information:
+        AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
+            accessed_instance=youth_application,
+            actor=request.user,
+            actor_email=request.user.email,
+            additional_data=additional_data_for_access_audit_log,
+        )
+
+        return Response(
+            data={
+                "employer_summer_voucher_id": str(employer_summer_voucher_id),
+                "employee_name": youth_application.name,
+                "employee_ssn": youth_application.social_security_number,
+                "employee_phone_number": youth_application.phone_number,
+                "employee_home_city": youth_application.home_municipality,
+                "employee_postcode": youth_application.postcode,
+                "employee_school": youth_application.school,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     @transaction.atomic
     @action(methods=["patch"], detail=True)
@@ -360,8 +371,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                         _("Failed to send youth summer voucher email"),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     )
-            with self.record_action(additional_information="accept"):
-                return HttpResponse(status=status.HTTP_200_OK)
+            return HttpResponse(status=status.HTTP_200_OK)
         else:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
@@ -396,8 +406,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if not youth_application.is_rejected and youth_application.reject(
             handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
         ):
-            with self.record_action(additional_information="reject"):
-                return HttpResponse(status=status.HTTP_200_OK)
+            return HttpResponse(status=status.HTTP_200_OK)
         else:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
@@ -737,7 +746,7 @@ class EmployerApplicationFilter(filters.FilterSet):
         }
 
 
-class EmployerApplicationViewSet(AuditLoggingModelViewSet):
+class EmployerApplicationViewSet(ModelViewSet):
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
     permission_classes = [IsAuthenticated, EmployerApplicationPermission]
@@ -803,7 +812,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
+class EmployerSummerVoucherViewSet(ModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
     serializer_class = EmployerSummerVoucherSerializer
     permission_classes = [

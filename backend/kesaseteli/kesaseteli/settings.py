@@ -259,6 +259,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_auth_adfs",
     "sequences.apps.SequencesConfig",
+    "auditlog",
+    "auditlog_extra",
     # shared apps
     "shared.audit_log",
     "shared.oidc",
@@ -267,6 +269,7 @@ INSTALLED_APPS = [
     "companies",
     "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
     "django.contrib.postgres",
+    "kesaseteli",  # MUST BE LAST for AUDIT LOGGING enforcement! See app's apps.py
 ]
 
 if NEXT_PUBLIC_ENABLE_SUOMIFI:
@@ -284,6 +287,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "auditlog_extra.middleware.AuditlogMiddleware",
 ]
 
 if NEXT_PUBLIC_ENABLE_SUOMIFI:
@@ -748,3 +752,6 @@ SUMMER_VOUCHER_DEFAULT_TARGET_GROUPS = [
 SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE = 350
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_COMPENSATION = 500
 SUMMER_VOUCHER_DEFAULT_MIN_WORK_HOURS = 60
+
+# Load auditlog settings
+from kesaseteli.auditlog_settings import *  # noqa: E402, F403
