@@ -64,6 +64,7 @@ application_fields = {
         "pay_subsidy_percent",
         "start_date",
         "use_alternative_address",
+        "employer_assurance",
     ],
     "not_copied": [
         "ahjo_case_guid",
@@ -102,6 +103,7 @@ attachment_fields = {
         "education_contract",
         "helsinki_benefit_voucher",
         "employee_consent",
+        "payslip",
     ],
 }
 
@@ -254,6 +256,7 @@ def _set_up_decided_application():
         handler=UserFactory(is_staff=True, is_active=True, is_superuser=True),
         talpa_status=ApplicationTalpaStatus.SUCCESSFULLY_SENT_TO_TALPA,
         use_alternative_address=True,
+        employer_assurance=False,
     )
     application.official_company_street_address = application.company.street_address
     application.calculation.monthly_pay = application.employee.monthly_pay
