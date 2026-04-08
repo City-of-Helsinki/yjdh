@@ -1,0 +1,43 @@
+# Git hooks (Husky)
+
+This directory holds **Husky** hook scripts. After you run `yarn husky` from the repository root, Git’s `core.hooksPath` points here so these run on `git commit` (and related events).
+
+## Files
+
+| Path | Role |
+|------|------|
+| `pre-commit` | Runs checks before a commit is created. |
+| `commit-msg` | Runs checks on the commit message file. |
+| `scripts/` | Shell helpers invoked from `pre-commit` (doctoc, frontend Lerna). |
+
+The generated directory `_/` is created by Husky and is not committed.
+It contains small shims Git executes first.
+
+## `pre-commit` hook runs the following checks:
+
+1. **`pre-commit run --hook-stage pre-commit`** runs the [pre-commit](https://pre-commit.com/) CLI reads [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) and runs hooks such as Ruff, trailing-whitespace / end-of-file-fixer, YAML/TOML checks, large-file checks, and ShellCheck.
+
+2. **`cd` to the repository root** since the next helper scripts need that working directory so `git add` paths and `cd frontend` resolve correctly.
+
+3. **`scripts/doctoc-staged-readmes.sh`**  for staged `README.md` (and matching pathspecs), runs `yarn doctoc` and re-stages those files.
+
+4. **`scripts/run-frontend-lerna-pre-commit.sh`** runs `yarn husky:pre-commit` in `frontend/` if any staged path is under `frontend/`, which uses Lerna to run each workspace package’s `pre-commit` script (typically lint-staged: Prettier, ESLint, typecheck, staged tests).
+
+## `commit-msg` hook
+
+Runs **`pre-commit run --hook-stage commit-msg`** (e.g. commitlint from the YAML config) and **`yarn commitlint`** for Conventional Commits.
+
+## Setup
+
+From the repo root (after [Requirements](../README.md#requirements) are satisfied):
+
+```bash
+yarn install
+yarn husky
+```
+
+Root `yarn install` is required so `husky`, `doctoc`, and `@commitlint/cli` from the root `package.json` are available to the hooks.
+
+## Skipping hooks
+
+Use **`git commit --no-verify`** to skip hooks for a single commit when needed.

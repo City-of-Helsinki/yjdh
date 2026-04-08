@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
+
+pre-commit run --hook-stage commit-msg --commit-msg-filename "$1"
 
 yarn commitlint --edit "$1"
