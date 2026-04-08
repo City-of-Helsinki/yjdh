@@ -1,8 +1,10 @@
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
+import { ROUTES } from '../../constants';
 import {
   $Column,
   $Wrapper,
@@ -35,6 +37,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
   setIsInstalmentChangeDateDialogShown
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const selectedApplication = list.find((app) => app.id === selectedRows[0]);
   const selectedInstalment =
@@ -42,6 +45,12 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
       (app: ApplicationListItemData) =>
         app.id === String(selectedApplication?.id)
     )?.secondInstalment || null;
+
+  const handleOpenApplication = (): void => {
+    if (selectedApplication?.id) {
+      void router.push(`${ROUTES.APPLICATION}?id=${selectedApplication.id}`);
+    }
+  };
 
   const handleStatusChange = (status: INSTALMENT_STATUSES): void => {
     if (selectedInstalment?.id) {
@@ -82,7 +91,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
               <InstalmentButton
                 isLoading={isLoading}
                 isLoadingStatusChange={isLoadingStatusChange}
-                onClick={() => handleStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
+                onClick={handleOpenApplication}
               >
                 {t(`${translationsBase}.actions.confirmInstalment`)}
               </InstalmentButton>
