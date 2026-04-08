@@ -15,7 +15,7 @@ It contains small shims Git executes first.
 
 ## `pre-commit` hook runs the following checks:
 
-1. **`pre-commit run --hook-stage pre-commit`** runs the [pre-commit](https://pre-commit.com/) CLI reads [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) and runs hooks such as Ruff, trailing-whitespace / end-of-file-fixer, YAML/TOML checks, large-file checks, and ShellCheck.
+1. **`pre-commit run --hook-stage pre-commit`** invokes the [pre-commit](https://pre-commit.com/) CLI, which reads [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) and runs hooks such as Ruff, trailing-whitespace / end-of-file-fixer, YAML/TOML checks, large-file checks, and ShellCheck.
 
 2. **`cd` to the repository root** since the next helper scripts need that working directory so `git add` paths and `cd frontend` resolve correctly.
 
@@ -25,7 +25,7 @@ It contains small shims Git executes first.
 
 ## `commit-msg` hook
 
-Runs **`pre-commit run --hook-stage commit-msg`** (e.g. commitlint from the YAML config) and **`yarn commitlint`** for Conventional Commits.
+Runs **`pre-commit run --hook-stage commit-msg`**, which executes **commitlint** (Conventional Commits, using `commitlint.config.mjs`).
 
 ## Setup
 
@@ -36,7 +36,7 @@ yarn install
 yarn husky
 ```
 
-Root `yarn install` is required so `husky`, `doctoc`, and `@commitlint/cli` from the root `package.json` are available to the hooks.
+Root `yarn install` is required so `husky`, `doctoc`, and other root `package.json` dependencies used by the hooks are on `PATH`.
 
 ## Skipping hooks
 

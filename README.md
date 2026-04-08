@@ -294,11 +294,11 @@ For example, a commit may run:
 * Ruff and other checks from `.pre-commit-config.yaml` (lint, format, whitespace, YAML/TOML, large files, ShellCheck)
 * [doctoc](https://github.com/thlorenz/doctoc) on staged `README.md` files
 * Lerna-driven frontend `pre-commit` scripts for frontend (e.g. lint-staged, ESLint, typecheck)
-* Commit message checks (commitlint / pre-commit commit-msg hooks)
+* Conventional commit message checks
 
 See more in [`.husky/README.md`](.husky/README.md).
 
-After cloning, install root Node dependencies (for Husky, doctoc, Commitlint) and wire Git to use Husky:
+After cloning, install root Node dependencies (for Husky, doctoc, etc.) and wire Git to use Husky:
 
 ```bash
 yarn install

@@ -1,7 +1,5 @@
 {
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
     "cross-env": "^7.0.3",
     "doctoc": "^2.1.0",
     "husky": "^9.1.7"

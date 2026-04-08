@@ -25,7 +25,9 @@ repos:
     hooks:
       - id: commitlint
         stages: [commit-msg, manual]
-        additional_dependencies: ["@commitlint/config-conventional"]
+        additional_dependencies:
+          - "@commitlint/cli@19.8.1"
+          - "@commitlint/config-conventional@19.8.1"
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0
     hooks:
