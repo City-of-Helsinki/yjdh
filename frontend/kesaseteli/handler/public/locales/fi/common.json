@@ -147,6 +147,8 @@
         "language": "Kieli",
         "nonVtjHomeMunicipality": "Kotikunta",
         "targetGroup": "Kohderyhmä",
+        "targetGroupsLoading": "Ladataan kohtaa luokka / koulutusaste...",
+        "targetGroupsError": "Luokkaa / koulutusastetta ei pystytty lataamaan. Hakemuksen täyttäminen ei ole tällä hetkellä mahdollista.",
         "additionalInfoDescription": "Lisätiedot"
       },
       "checkNotification": {
