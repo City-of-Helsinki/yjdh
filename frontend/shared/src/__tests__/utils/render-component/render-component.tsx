@@ -22,8 +22,8 @@ const renderComponent =
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const renderResult = render(
       <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
-        <QueryClientProvider client={queryClient} {...({} as any)}>
-          <ThemeProvider theme={theme} {...({} as any)}>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
             {Element}
           </ThemeProvider>
           <HiddenLoadingIndicator />

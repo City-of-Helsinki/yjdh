@@ -20,7 +20,7 @@ export const $StepContainer = styled.div<$StepContainerProps>`
   flex-direction: column;
   position: relative;
   z-index: 1;
-  cursor: ${({ isActive }) => (isActive ? 'pointer' : 'auto')};
+  cursor: ${({ isActive }: $StepContainerProps) => (isActive ? 'pointer' : 'auto')};
 `;
 
 export const $StepCircle = styled.div<Props>`
@@ -28,29 +28,32 @@ export const $StepCircle = styled.div<Props>`
   width: 36px;
   border-radius: 50%;
   border: 4px solid
-    ${({ isActive, theme }) => getActiveColor(isActive || false, theme)};
+    ${({ isActive, theme }: { theme: DefaultTheme } & Props) =>
+      getActiveColor(isActive || false, theme)};
   text-align: center;
-  color: ${({ isActive, theme }) => getActiveColor(isActive || false, theme)};
+  color: ${({ isActive, theme }: { theme: DefaultTheme } & Props) =>
+    getActiveColor(isActive || false, theme)};
   font-weight: 600;
   position: relative;
   line-height: 36px;
-  font-size: ${(props) => props.theme.fontSize.body.m};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.m};
 `;
 
 export const $StepTitle = styled.p<Props>`
   text-align: center;
   position: absolute;
   bottom: -40px;
-  color: ${({ isActive, theme }) => getActiveColor(isActive || false, theme)};
-  font-size: ${(props) => props.theme.fontSize.body.m};
-  font-weight: ${(props) => (props.isActive ? 600 : 500)};
+  color: ${({ isActive, theme }: { theme: DefaultTheme } & Props) =>
+    getActiveColor(isActive || false, theme)};
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.m};
+  font-weight: ${(props: Props) => (props.isActive ? 600 : 500)};
 `;
 
 export const $Divider = styled.div<Props>`
   width: 100%;
   height: 4px;
   margin: 4px;
-  background: ${({ isActive, theme }) =>
+  background: ${({ isActive, theme }: { theme: DefaultTheme } & Props) =>
     getActiveColor(isActive || false, theme)};
   flex: 1;
 `;

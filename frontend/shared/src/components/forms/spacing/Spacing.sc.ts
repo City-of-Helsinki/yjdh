@@ -6,5 +6,6 @@ export interface SpacingProps {
 
 export const $Content = styled.div<SpacingProps>`
   width: 100%;
-  height: ${(props) => props.theme.spacing[props.size]};
+  height: ${(props: { theme: DefaultTheme } & SpacingProps) =>
+    props.theme.spacing[props.size]};
 `;

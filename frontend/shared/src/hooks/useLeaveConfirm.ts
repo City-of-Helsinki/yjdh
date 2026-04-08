@@ -11,6 +11,8 @@ export const setLeaveConfirmBypassed = (bypassed: boolean): void => {
   leaveConfirmStore.isBypassed = bypassed;
 };
 
+const getPathWithoutHash = (p: string): string => p.split('#')[0];
+
 const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
   const { confirm } = useConfirm();
   const { t } = useTranslation();
@@ -24,17 +26,15 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
   }, []);
 
   useEffect(() => {
-    const handleRouteChange = (url: string): void => {
+    const shouldBypass = (): boolean =>
+      !unsavedChanges || isConfirmedRef.current || leaveConfirmStore.isBypassed;
+
+    const handleRouteChange = async (url: string): Promise<void> => {
       // If we've already confirmed OR there are no changes OR bypassed, let them through
-      if (
-        !unsavedChanges ||
-        isConfirmedRef.current ||
-        leaveConfirmStore.isBypassed
-      ) {
+      if (shouldBypass()) {
         return;
       }
 
-      const getPathWithoutHash = (p: string): string => p.split('#')[0];
       // If the URL is the same (ignoring hash), don't trigger (prevents loops and internal anchors)
       if (getPathWithoutHash(Router.asPath) === getPathWithoutHash(url)) {
         return;
@@ -44,21 +44,20 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
       Router.events.emit('routeChangeError');
 
       // 2. Open the custom confirmation modal
-      void confirm({
+      const isConfirmed = await confirm({
         header: message,
         submitButtonLabel: t('common:dialog.confirm'),
         submitButtonVariant: 'danger',
         content: t('common:application.buttons.leave_confirmation_description'),
-      }).then((isConfirmed) => {
-        if (isConfirmed) {
-          // 3. User said YES: set the flag and manually push the route
-          isConfirmedRef.current = true;
-          Router.push(url).catch(() => {
-            isConfirmedRef.current = false;
-          });
-        }
-        return null;
       });
+
+      if (isConfirmed) {
+        // 3. User said YES: set the flag and manually push the route
+        isConfirmedRef.current = true;
+        Router.push(url).catch(() => {
+          isConfirmedRef.current = false;
+        });
+      }
 
       // 4. Throw the actual error to cancel the initial 'routeChangeStart'
       // eslint-disable-next-line @typescript-eslint/no-throw-literal
@@ -79,12 +78,8 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
       return null;
     };
 
-    const handleGlobalClick = (e: MouseEvent): void => {
-      if (
-        !unsavedChanges ||
-        isConfirmedRef.current ||
-        leaveConfirmStore.isBypassed
-      ) {
+    const handleGlobalClick = async (e: MouseEvent): Promise<void> => {
+      if (shouldBypass()) {
         return;
       }
 
@@ -111,34 +106,37 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
 
         if (!isSamePage && Router.asPath !== path) {
           e.preventDefault();
-          void confirm({
+          const isConfirmed = await confirm({
             header: message,
             submitButtonLabel: t('common:application.buttons.discard'),
             submitButtonVariant: 'danger',
             content: t(
               'common:application.buttons.leave_confirmation_description'
             ),
-          }).then((isConfirmed) => {
-            if (isConfirmed) {
-              isConfirmedRef.current = true;
-              Router.push(path).catch(() => {
-                isConfirmedRef.current = false;
-              });
-            }
-            return null;
           });
+
+          if (isConfirmed) {
+            isConfirmedRef.current = true;
+            Router.push(path).catch(() => {
+              isConfirmedRef.current = false;
+            });
+          }
         }
       }
     };
 
+    const handleGlobalClickWrapper = (e: MouseEvent): void => {
+      void handleGlobalClick(e);
+    };
+
     // Subscriptions
     window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('click', handleGlobalClick, true);
+    window.addEventListener('click', handleGlobalClickWrapper, true);
     Router.events.on('routeChangeStart', handleRouteChange);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('click', handleGlobalClick, true);
+      window.removeEventListener('click', handleGlobalClickWrapper, true);
       Router.events.off('routeChangeStart', handleRouteChange);
       // Reset the ref on unmount
       isConfirmedRef.current = false;

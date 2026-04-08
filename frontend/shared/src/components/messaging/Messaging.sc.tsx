@@ -1,5 +1,5 @@
 import { MessageVariant } from 'shared/types/messages';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 interface MessageProps {
   isPrimary?: boolean;
@@ -22,20 +22,20 @@ export const $MessagesList = styled.div<MessageListProps>`
   height: 0;
   flex-grow: 1;
   overflow-y: auto;
-  margin-top: ${(props) =>
+  margin-top: ${(props: { theme: DefaultTheme } & MessageListProps) =>
     props.variant === 'note' ? props.theme.spacing.m : 0};
-  background-color: ${(props) =>
+  background-color: ${(props: { theme: DefaultTheme } & MessageListProps) =>
     props.variant === 'note' ? props.theme.colors.silverLight : ''};
-  padding: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs};
 `;
 
 export const $Meta = styled.div<MetaProps>`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: ${({ theme }) => theme.spacing.s};
-  flex-flow: ${(props) => (props.wrapAsColumn ? 'column' : 'row')};
-  text-align: ${(props) => (props.alignRight ? 'right' : 'left')};
+  margin-top: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.s};
+  flex-flow: ${(props: MetaProps) => (props.wrapAsColumn ? 'column' : 'row')};
+  text-align: ${(props: MetaProps) => (props.alignRight ? 'right' : 'left')};
 `;
 
 export const $Sender = styled.span`
@@ -43,13 +43,13 @@ export const $Sender = styled.span`
 `;
 
 export const $Date = styled.span`
-  font-size: ${({ theme }) => theme.fontSize.body.s};
-  color: ${({ theme }) => theme.colors.black50};
+  font-size: ${({ theme }: { theme: DefaultTheme }) => theme.fontSize.body.s};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.black50};
 `;
 
 export const $SeenByUser = styled.span`
-  font-size: ${({ theme }) => theme.fontSize.body.s};
-  color: ${({ theme }) => theme.colors.black50};
+  font-size: ${({ theme }: { theme: DefaultTheme }) => theme.fontSize.body.s};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.black50};
 `;
 
 export const $MessageContainer = styled.div`
@@ -59,22 +59,23 @@ export const $MessageContainer = styled.div`
 `;
 
 export const $Message = styled.div<MessageProps>`
-  padding: ${({ theme }) => theme.spacing.xs};
-  background: ${(props) =>
+  padding: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs};
+  background: ${(props: { theme: DefaultTheme } & MessageProps) =>
     props.isPrimary
       ? props.theme.colors.coatOfArmsLight
       : props.theme.colors.black5};
-  background: ${(props) => props.variant === 'note' && 'none'};
-  border-radius: ${(props) => props.variant !== 'note' && '10px'};
-  margin-top: ${(props) => props.variant !== 'note' && props.theme.spacing.s};
-  color: ${(props) => props.theme.colors.black90};
+  background: ${(props: MessageProps) => props.variant === 'note' && 'none'};
+  border-radius: ${(props: MessageProps) => props.variant !== 'note' && '10px'};
+  margin-top: ${(props: { theme: DefaultTheme } & MessageProps) =>
+    props.variant !== 'note' && props.theme.spacing.s};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black90};
   white-space: pre-line;
-  margin-left: ${(props) => (props.alignRight ? 'auto' : '0')};
+  margin-left: ${(props: MessageProps) => (props.alignRight ? 'auto' : '0')};
 `;
 
 export const $Actions = styled.div`
-  padding: 0 ${({ theme }) => theme.spacing.s};
-  margin: ${({ theme }) => theme.spacing.xs} 0;
+  padding: 0 ${({ theme }: { theme: DefaultTheme }) => theme.spacing.s};
+  margin: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs} 0;
 `;
 
 export const $Notification = styled.div`
@@ -82,22 +83,24 @@ export const $Notification = styled.div`
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
-  padding: ${({ theme }) => theme.spacing.xs2};
-  margin-top: ${({ theme }) => theme.spacing.xs};
-  font-size: ${({ theme }) => theme.fontSize.body.s};
-  background-color: ${(props) => props.theme.colors.alert};
+  padding: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs2};
+  margin-top: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs};
+  font-size: ${({ theme }: { theme: DefaultTheme }) => theme.fontSize.body.s};
+  background-color: ${(props: { theme: DefaultTheme }) =>
+    props.theme.colors.alert};
 `;
 
 export const $FormActions = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: ${(props) => props.theme.spacing.s};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
 `;
 
 export const $Hr = styled.hr`
   border: none;
-  border-top: 1px solid ${(props) => props.theme.colors.black20};
+  border-top: 1px solid
+    ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
   margin: 0;
   width: 100%;
 `;
@@ -108,14 +111,14 @@ export const $Empty = styled.div`
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  color: ${(props) => props.theme.colors.black20};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
   p {
-    color: ${(props) => props.theme.colors.black50};
-    font-size: ${({ theme }) => theme.fontSize.body.l};
-    margin-top: ${({ theme }) => theme.spacing.xs2};
+    color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black50};
+    font-size: ${({ theme }: { theme: DefaultTheme }) => theme.fontSize.body.l};
+    margin-top: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs2};
   }
   svg {
-    width: ${({ theme }) => theme.spacing.xl5};
-    height: ${({ theme }) => theme.spacing.xl5};
+    width: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xl5};
+    height: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xl5};
   }
 `;

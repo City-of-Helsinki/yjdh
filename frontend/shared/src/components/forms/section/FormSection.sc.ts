@@ -41,7 +41,7 @@ export type GridCellProps = {
 export const $Section = styled.section<FormSectionProps>`
   display: flex;
   flex-direction: column;
-  padding-bottom: ${(props) =>
+  padding-bottom: ${(props: { theme: DefaultTheme } & FormSectionProps) =>
     props.paddingBottom ? props.theme.spacing.l : ''};
   position: relative;
 `;
@@ -53,42 +53,55 @@ type $SubHeaderProps = {
 export const $SubHeader = styled.h3<$SubHeaderProps>`
   margin-top: 0;
   margin-bottom: 1em;
-  font-size: ${(props) => props.theme.fontSize.heading.xxs};
-  font-weight: ${(props) => (props.weight ? props.weight : '600')};
+  font-size: ${(props: { theme: DefaultTheme }) =>
+    props.theme.fontSize.heading.xxs};
+  font-weight: ${(props: $SubHeaderProps) =>
+    props.weight ? props.weight : '600'};
 `;
 
 export const $Grid = styled.div.attrs<
   GridProps,
   Omit<GridProps, 'gap'> & { columnGap: SpacingValue; rowGap: SpacingValue }
->((props) => ({
+>((props: { theme: DefaultTheme } & GridProps) => ({
   ...props,
   rowGap: props.rowGap || props.gap || props.theme.spacing.m,
   columnGap: props.columnGap || props.gap || props.theme.spacing.s,
 }))<GridProps>`
   position: relative;
   display: grid;
-  grid-template-columns: repeat(${(props) => props.columns ?? 12}, 1fr);
-  gap: ${(props) => props.rowGap} ${(props) => props.columnGap};
-  align-items: ${(props) => props.alignItems ?? 'initial'};
-  justify-items: ${(props) => props.justifyItems ?? 'initial'};
+  grid-template-columns: repeat(
+    ${(props: GridProps) => props.columns ?? 12},
+    1fr
+  );
+  gap: ${(props: { columnGap: SpacingValue; rowGap: SpacingValue }) =>
+    `${props.rowGap} ${props.columnGap}`};
+  align-items: ${(props: GridProps) => props.alignItems ?? 'initial'};
+  justify-items: ${(props: GridProps) => props.justifyItems ?? 'initial'};
 
-  ${({ bgColor, bgHorizontalPadding, bgVerticalPadding, gap, theme }) =>
+  ${({
+    bgColor,
+    bgHorizontalPadding,
+    bgVerticalPadding,
+    gap,
+    theme,
+  }: { theme: DefaultTheme } & GridProps) =>
     bgColor &&
     `
     &::before {
       content: '';
       position: absolute;
-      top: calc(-1 * ${bgVerticalPadding ? gap : '0px'});
-      left: calc(-1 * ${bgHorizontalPadding ? gap : '0px'});
-      right: calc(-1 * ${bgHorizontalPadding ? gap : '0px'});
-      bottom: calc(-1 * ${bgVerticalPadding ? gap : '0px'});
+      top: calc(-1 * ${String(bgVerticalPadding ? (gap ?? '0px') : '0px')});
+      left: calc(-1 * ${String(bgHorizontalPadding ? (gap ?? '0px') : '0px')});
+      right: calc(-1 * ${String(bgHorizontalPadding ? (gap ?? '0px') : '0px')});
+      bottom: calc(-1 * ${String(bgVerticalPadding ? (gap ?? '0px') : '0px')});
       background-color: ${
         typeof bgColor === 'boolean' ? theme.colors.black5 : bgColor
       };
     }
   `}
 
-  @media (max-width: ${(props) => props.theme.breakpoints.m}) {
+  @media (max-width: ${(props: { theme: DefaultTheme }) =>
+      props.theme.breakpoints.m}) {
     & {
       display: flex;
       flex-direction: column;
@@ -98,11 +111,11 @@ export const $Grid = styled.div.attrs<
 
 export const $GridCell = styled.div<GridCellProps>`
   position: relative;
-  grid-column: ${(props) => props.$colStart ?? 'auto'} / span
-    ${(props) => props.$colSpan ?? 1};
-  grid-row: auto / span ${(props) => props.$rowSpan ?? 1};
-  align-self: ${(props) => props.alignSelf ?? 'initial'};
-  justify-self: ${(props) => props.justifySelf ?? 'initial'};
+  grid-column: ${(props: GridCellProps) => props.$colStart ?? 'auto'} / span
+    ${(props: GridCellProps) => props.$colSpan ?? 1};
+  grid-row: auto / span ${(props: GridCellProps) => props.$rowSpan ?? 1};
+  align-self: ${(props: GridCellProps) => props.alignSelf ?? 'initial'};
+  justify-self: ${(props: GridCellProps) => props.justifySelf ?? 'initial'};
 
   ${respondBelow('sm')`
     &:empty {
@@ -118,7 +131,8 @@ export const $Action = styled.div`
 
 export const $Hr = styled.hr`
   border: none;
-  border-top: 1px solid ${(props) => props.theme.colors.black20};
-  margin-top: ${(props) => props.theme.spacing.xl};
+  border-top: 1px solid
+    ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
   width: 100%;
 `;

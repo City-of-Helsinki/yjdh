@@ -15,11 +15,13 @@ export type HeadingProps = {
 };
 
 export const $Header = styled.h1<HeadingProps>`
-  ${(props) =>
+  ${(props: { theme: DefaultTheme } & HeadingProps) =>
     // eslint-disable-next-line unicorn/explicit-length-check
     props.size ? `font-size: ${props.theme.fontSize.heading[props.size]};` : ''}
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing.s};
-  font-weight: ${(props) => (props.weight ? props.weight : '500')};
+  gap: ${(props: { theme: DefaultTheme } & HeadingProps) =>
+    props.theme.spacing.s};
+  font-weight: ${(props: { theme: DefaultTheme } & HeadingProps) =>
+    props.weight ? props.weight : '500'};
 `;
