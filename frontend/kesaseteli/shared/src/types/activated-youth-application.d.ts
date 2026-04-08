@@ -4,7 +4,7 @@ import VtjData from './vtj-data';
 
 type ActivatedYouthApplication = CreatedYouthApplication &
   Partial<AdditionalInfoApplication> & {
-    receipt_confirmed_at: string;
+    receipt_confirmed_at: string | null;
     additional_info_provided_at?: string;
     encrypted_handler_vtj_json: VtjData;
   };
