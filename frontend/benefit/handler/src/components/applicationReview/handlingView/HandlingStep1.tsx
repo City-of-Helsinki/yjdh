@@ -153,6 +153,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
           application={application}
           actions={[
             <Button
+              key="action-key"
               theme="black"
               variant={canCreate ? 'secondary' : 'primary'}
               onClick={() =>
