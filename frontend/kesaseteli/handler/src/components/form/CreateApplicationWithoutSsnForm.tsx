@@ -25,7 +25,11 @@ const CreateApplicationWithoutSsnForm: React.FC = () => {
   const { t } = useTranslation();
 
   const submitQuery = useCreateYouthApplicationWithoutSsnQuery();
-  const { data: configurations } = useSummerVoucherConfigurationQuery();
+  const {
+    data: configurations,
+    isLoading: isLoadingConfigurations,
+    isError: isErrorConfigurations,
+  } = useSummerVoucherConfigurationQuery();
   const { handleSaveSuccess, handleErrorResponse, submitError } =
     useHandleApplicationWithoutSsnSubmit();
 
@@ -53,15 +57,32 @@ const CreateApplicationWithoutSsnForm: React.FC = () => {
         values={LANGUAGES_IN_PRIORITY_ORDER}
         $colSpan={2}
       />
-      <SelectionGroup
-        id="targetGroup"
-        validation={{ required: true }}
-        values={targetGroups?.map((tg) => tg.id) ?? []}
-        getValueText={(id) =>
-          targetGroups?.find((tg) => tg.id === id)?.name ?? ''
-        }
-        $colSpan={2}
-      />
+      {isLoadingConfigurations ? (
+        <$GridCell $colSpan={2}>
+          {t('common:applicationWithoutSsn.form.inputs.targetGroupsLoading')}
+        </$GridCell>
+      ) : isErrorConfigurations ||
+        !targetGroups ||
+        targetGroups.length === 0 ? (
+        <$GridCell $colSpan={2}>
+          <$Notification
+            label={t(
+              'common:applicationWithoutSsn.form.inputs.targetGroupsError'
+            )}
+            type="error"
+          />
+        </$GridCell>
+      ) : (
+        <SelectionGroup
+          id="targetGroup"
+          validation={{ required: true }}
+          values={targetGroups.map((tg) => tg.id)}
+          getValueText={(id) =>
+            targetGroups.find((tg) => tg.id === id)?.name ?? ''
+          }
+          $colSpan={2}
+        />
+      )}
       <TextInput
         id="firstName"
         validation={{ required: true, pattern: NAMES_REGEX, maxLength: 128 }}
