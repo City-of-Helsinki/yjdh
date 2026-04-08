@@ -20,7 +20,7 @@ import { ThemeProvider } from 'styled-components';
 type Props = AppProps & {
   header?: React.ReactNode;
   footer?: React.ReactNode;
-  layout?: React.ComponentType<React.PropsWithChildren<any>>;
+  layout?: React.ComponentType<React.PropsWithChildren<unknown>>;
   title?: string;
 };
 

@@ -7,7 +7,7 @@ describe('matomo', () => {
   });
 
   afterEach(() => {
-    delete (window as any)._paq;
+    delete (window as Partial<Window>)._paq;
   });
 
   describe('initMatomo', () => {
@@ -100,7 +100,7 @@ describe('matomo', () => {
     });
 
     it('should not push if _paq is not defined', () => {
-      delete (window as any)._paq;
+      delete (window as Partial<Window>)._paq;
       expect(() => trackPageView()).not.toThrow();
     });
   });
@@ -126,12 +126,12 @@ describe('matomo', () => {
 
     it('should filter out undefined optional params', () => {
       window._paq = [];
-      trackEvent('Category', 'Action', undefined, undefined);
+      trackEvent('Category', 'Action');
       expect(window._paq).toContainEqual(['trackEvent', 'Category', 'Action']);
     });
 
     it('should not push if _paq is not defined', () => {
-      delete (window as any)._paq;
+      delete (window as Partial<Window>)._paq;
       expect(() => trackEvent('Cat', 'Act')).not.toThrow();
     });
   });

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 type DrawerProps = {
   stickyBarInUse?: boolean;
@@ -17,8 +17,8 @@ export const $Drawer = styled.aside<DrawerProps>`
   bottom: 0;
   width: 520px;
   margin-right: -520px;
-  height: calc(100vh - ${(props) => (props.stickyBarInUse ? '80' : '0')}px);
-  background-color: ${({ theme }) => theme.colors.white};
+  height: calc(100vh - ${(props: DrawerProps) => (props.stickyBarInUse ? '80' : '0')}px);
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.white};
   z-index: 100;
   box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);
   display: flex;
@@ -37,8 +37,8 @@ export const $Close = styled.div`
   justify-content: center;
   align-items: center;
   position: fixed;
-  background-color: ${({ theme }) => theme.colors.white};
-  padding: 0 ${({ theme }) => theme.spacing.s};
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.white};
+  padding: 0 ${({ theme }: { theme: DefaultTheme }) => theme.spacing.s};
   right: 0px;
   animation: animate-open 0.3s ease-in-out forwards;
 
@@ -47,22 +47,26 @@ export const $Close = styled.div`
 `;
 
 export const $Top = styled.div`
-  margin: ${({ theme }) => theme.spacing.l} 0 ${({ theme }) => theme.spacing.l};
+  margin: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.l} 0 ${({
+  theme,
+}: {
+  theme: DefaultTheme;
+}) => theme.spacing.l};
 `;
 
 export const $Title = styled.h3`
-  color: ${({ theme }) => theme.colors.coatOfArms};
-  padding-left: ${({ theme }) => theme.spacing.m};
-  padding-right: ${({ theme }) => theme.spacing.xl3};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.coatOfArms};
+  padding-left: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
+  padding-right: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xl3};
   padding-top: 0;
-  margin-bottom: ${({ theme }) => theme.spacing.m};
+  margin-bottom: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
   margin: 0;
 `;
 
 export const $CloseBtnWrapper = styled.div`
   position: absolute;
   right: 0;
-  top: ${({ theme }) => theme.spacing.s};
+  top: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.s};
 `;
 
 export const $Body = styled.div`
@@ -78,8 +82,8 @@ export const $Body = styled.div`
 `;
 
 export const $Bottom = styled.div`
-  padding: 0 ${({ theme }) => theme.spacing.m};
-  background-color: ${({ theme }) => theme.colors.black5};
-  padding-top: ${({ theme }) => theme.spacing.m};
-  padding-bottom: ${({ theme }) => theme.spacing.m};
+  padding: 0 ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.black5};
+  padding-top: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
+  padding-bottom: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
 `;

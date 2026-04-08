@@ -138,6 +138,7 @@ const Header: React.FC<HeaderProps> = ({
           {login && !login?.isAuthenticated && !hideLogin && (
             <HdsHeader.ActionBarButton
               label={login.loginLabel}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               onClick={() => handleLogin()}
               icon={<IconSignin />}
@@ -151,7 +152,9 @@ const Header: React.FC<HeaderProps> = ({
             <HdsHeader.ActionBarItem
               id="sign-out"
               icon={<IconUser />}
-              aria-label={`${login.userAriaLabelPrefix} ${login.userName}`}
+              aria-label={`${login.userAriaLabelPrefix ?? ''} ${
+                login.userName ?? ''
+              }`}
               label={login.userName}
               fixedRightPosition
             >

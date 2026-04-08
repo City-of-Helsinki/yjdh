@@ -1,6 +1,6 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
 import theme from 'shared/styles/theme';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 export type ContainerProps = { backgroundColor?: string };
 
@@ -9,8 +9,9 @@ const gridTemplateColumns = `grid-template-columns: 1fr minmax(auto,
 
 export const $Container = styled.div<ContainerProps>`
   display: grid;
-  background-color: ${(props) => props.backgroundColor || ''};
-  grid-template-columns: ${(props) => props.theme.spacing.xs2} 1fr ${(props) =>
+  background-color: ${(props: ContainerProps) => props.backgroundColor || ''};
+  grid-template-columns: ${(props: { theme: DefaultTheme }) =>
+      props.theme.spacing.xs2} 1fr ${(props: { theme: DefaultTheme }) =>
       props.theme.spacing.xs2};
 
   ${respondAbove('md')(gridTemplateColumns)}
@@ -21,5 +22,5 @@ export const $Container = styled.div<ContainerProps>`
 `;
 
 export const $Inner = styled.div`
-  padding: ${(props) => props.theme.spacing.xs};
+  padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
 `;

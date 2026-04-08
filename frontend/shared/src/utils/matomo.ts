@@ -34,14 +34,13 @@ export function initMatomo(config: MatomoConfig): void {
   window._paq.push(
     ['setTrackerUrl', `${u}${phpTrackerFile}`],
     ['setSiteId', siteId]
-  );
-
-  window._paq.push(['trackPageView'], ['enableLinkTracking']);
+    , ['trackPageView'], ['enableLinkTracking']);
 
   const script = document.createElement('script');
   script.type = 'text/javascript';
   script.async = true;
   script.defer = true;
+  // eslint-disable-next-line scanjs-rules/assign_to_src
   script.src = `${u}${jsTrackerFile}`;
 
   const firstScript = document.querySelectorAll('script')[0];

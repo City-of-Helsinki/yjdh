@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import Router from 'next/router';
-import useLeaveConfirm from '../useLeaveConfirm';
+
 import useConfirm from '../useConfirm';
+import useLeaveConfirm from '../useLeaveConfirm';
 
 jest.mock('next/router', () => ({
   __esModule: true,
@@ -29,6 +30,14 @@ jest.mock('../useConfirm', () => ({
 
 describe('useLeaveConfirm', () => {
   const confirmMock = jest.fn();
+  const mockRouter = Router as unknown as {
+    asPath: string;
+    events: {
+      on: jest.Mock;
+      off: jest.Mock;
+      emit: jest.Mock;
+    };
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -40,13 +49,13 @@ describe('useLeaveConfirm', () => {
 
   describe('handleRouteChange', () => {
     it('should not trigger confirmation on same-page hash change', () => {
-      (Router as any).asPath = '/application?id=123';
+      mockRouter.asPath = '/application?id=123';
       renderHook(() => useLeaveConfirm(true, 'message'));
 
-      const onCall = (Router.events.on as jest.Mock).mock.calls.find(
-        (call) => call[0] === 'routeChangeStart'
+      const onCall = mockRouter.events.on.mock.calls.find(
+        (call: [string, unknown]) => call[0] === 'routeChangeStart'
       );
-      const handleRouteChange = onCall[1];
+      const handleRouteChange = onCall[1] as (url: string) => void;
 
       handleRouteChange('/application?id=123#field');
 
@@ -54,17 +63,17 @@ describe('useLeaveConfirm', () => {
     });
 
     it('should trigger confirmation on different page navigation', () => {
-      (Router as any).asPath = '/application?id=123';
+      mockRouter.asPath = '/application?id=123';
       renderHook(() => useLeaveConfirm(true, 'message'));
 
-      const onCall = (Router.events.on as jest.Mock).mock.calls.find(
-        (call) => call[0] === 'routeChangeStart'
+      const onCall = mockRouter.events.on.mock.calls.find(
+        (call: [string, unknown]) => call[0] === 'routeChangeStart'
       );
-      const handleRouteChange = onCall[1];
+      const handleRouteChange = onCall[1] as (url: string) => void;
 
       try {
         handleRouteChange('/other-page');
-      } catch (e) {
+      } catch {
         // It throws 'Abort route change'
       }
 
@@ -76,23 +85,28 @@ describe('useLeaveConfirm', () => {
     const originalLocation = window.location;
 
     beforeAll(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      delete window.location;
-      window.location = {
+      delete (window as { location?: Location }).location;
+      // eslint-disable-next-line scanjs-rules/assign_to_location
+      // @ts-ignore
+      (window as { location: Location }).location = {
+        ...originalLocation,
         pathname: '/application',
         search: '?id=123',
         origin: 'http://localhost',
         href: 'http://localhost/application?id=123',
-      } as any;
+      } as Location;
     });
 
     afterAll(() => {
+      // eslint-disable-next-line scanjs-rules/assign_to_location
       // @ts-ignore
-      window.location = originalLocation;
+      (window as { location: Location }).location = originalLocation;
     });
 
     it('should not trigger confirmation on internal anchor click', () => {
-      (Router as any).asPath = '/application?id=123';
+      mockRouter.asPath = '/application?id=123';
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
       renderHook(() => useLeaveConfirm(true, 'message'));
       const clickCall = addEventListenerSpy.mock.calls.find(
@@ -101,6 +115,7 @@ describe('useLeaveConfirm', () => {
       const handleGlobalClick = clickCall?.[1] as (e: MouseEvent) => void;
 
       const anchor = document.createElement('a');
+      // eslint-disable-next-line scanjs-rules/assign_to_href
       anchor.href = 'http://localhost/application?id=123#field';
 
       const event = {
@@ -111,13 +126,14 @@ describe('useLeaveConfirm', () => {
       handleGlobalClick(event);
 
       expect(confirmMock).not.toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(event.preventDefault).not.toHaveBeenCalled();
 
       addEventListenerSpy.mockRestore();
     });
 
     it('should trigger confirmation on external-like internal link (different page)', () => {
-      (Router as any).asPath = '/application?id=123';
+      mockRouter.asPath = '/application?id=123';
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
       renderHook(() => useLeaveConfirm(true, 'message'));
       const clickCall = addEventListenerSpy.mock.calls.find(
@@ -126,6 +142,7 @@ describe('useLeaveConfirm', () => {
       const handleGlobalClick = clickCall?.[1] as (e: MouseEvent) => void;
 
       const anchor = document.createElement('a');
+      // eslint-disable-next-line scanjs-rules/assign_to_href
       anchor.href = 'http://localhost/other-page';
 
       const event = {
@@ -136,6 +153,7 @@ describe('useLeaveConfirm', () => {
       handleGlobalClick(event);
 
       expect(confirmMock).toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(event.preventDefault).toHaveBeenCalled();
 
       addEventListenerSpy.mockRestore();

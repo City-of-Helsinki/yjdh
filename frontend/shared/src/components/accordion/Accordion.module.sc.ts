@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { AccordionProps } from './accordion.d';
 
 export const $Accordion = styled.div<AccordionProps>`
-  ${(props) =>
+  ${(props: AccordionProps) =>
     !props.card
       ? `
     border-bottom: 1px solid var(--color-black-60)`
       : ''}
-  ${(props) =>
+  ${(props: AccordionProps) =>
     props.card
       ? `
     background-color: var(--color-black-60);
@@ -16,12 +16,12 @@ export const $Accordion = styled.div<AccordionProps>`
     padding-right: var(--spacing-m);
     `
       : ''};
-  ${(props) => (props.border ? `border: 2px solid var(--color-black-60)` : '')};
+  ${(props: AccordionProps) => (props.border ? `border: 2px solid var(--color-black-60)` : '')};
 `;
 
 export const $AccordionHeader = styled.div<AccordionProps>`
   position: relative;
-  background-color: ${(props) => props.headerBackgroundColor};
+  background-color: ${(props: AccordionProps) => props.headerBackgroundColor};
   color: var(--color-black-90);
   font-size: var(--fontsize-heading-m);
   font-weight: bold;
