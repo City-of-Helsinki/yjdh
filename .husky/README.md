@@ -1,5 +1,16 @@
 # Git hooks (Husky)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Files](#files)
+- [`pre-commit` hook runs the following checks:](#pre-commit-hook-runs-the-following-checks)
+- [`commit-msg` hook](#commit-msg-hook)
+- [Setup](#setup)
+- [Skipping hooks](#skipping-hooks)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 This directory holds **Husky** hook scripts. After you run `yarn husky` from the repository root, Git’s `core.hooksPath` points here so these run on `git commit` (and related events).
 
 ## Files
