@@ -15,6 +15,7 @@ type YouthApplication = {
   language: Language;
   request_additional_information?: boolean;
   target_group: string;
+  created_at?: string;
 };
 
 export default YouthApplication;

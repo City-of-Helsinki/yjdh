@@ -50,6 +50,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     additional_info_user_reasons,
     additional_info_description,
     status,
+    created_at,
   } = application;
 
   const waitingForUserAction = (
@@ -93,13 +94,15 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
   );
 
   const targetGroupName = React.useMemo(() => {
-    const appYear = new Date(receipt_confirmed_at).getFullYear();
+    const appYear = new Date(
+      receipt_confirmed_at || created_at || new Date()
+    ).getFullYear();
     const config = configurations?.find((c) => c.year === appYear);
     return (
       config?.target_groups?.find((tg) => tg.id === target_group)?.name ??
       target_group
     );
-  }, [configurations, receipt_confirmed_at, target_group]);
+  }, [configurations, receipt_confirmed_at, created_at, target_group]);
 
   return (
     <>

@@ -26,7 +26,7 @@ export const DATE_FORMATS = {
 
 const locales: Record<Language, Locale> = { fi, sv, en };
 
-type AnyDate = string | Date | number | undefined;
+type AnyDate = string | Date | number | undefined | null;
 
 export const isValidDate = (date?: string | number | Date | null): boolean =>
   date ? isValid(new Date(date)) : false;
