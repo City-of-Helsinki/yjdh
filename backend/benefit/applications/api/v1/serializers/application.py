@@ -213,6 +213,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "benefit_type",
             "start_date",
             "end_date",
+            "employer_assurance",
             "de_minimis_aid",
             "de_minimis_aid_set",
             "modified_at",
