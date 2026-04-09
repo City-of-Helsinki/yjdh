@@ -146,9 +146,10 @@ def getattr_nested(obj, attrs: list):
         returns obj.company.business_id if company exists, else returns ""
     """
     attr = attrs.pop(0)
-    value = getattr(obj, attr, "")
-    if not value:
+    value = getattr(obj, attr, None)
+    if value is None or value == "":
         return ""
+
 
     if attrs:
         return getattr_nested(value, attrs)
