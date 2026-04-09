@@ -28,7 +28,7 @@
     "hds-design-tokens": "^3.11.0",
     "hds-react": "^3.11.0",
     "lodash": "^4.17.21",
-    "next": "15.1.9",
+    "next": "15.2.9",
     "next-i18next": "^15.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
