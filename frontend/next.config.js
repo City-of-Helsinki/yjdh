@@ -52,7 +52,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     eslint: {
       ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
     },
-    transpilePackages: ['@frontend'],
+    transpilePackages: ['@frontend', 'pdfjs-dist'],
     webpack: (config) => {
       config.resolve.fallback = {
         fs: false,
