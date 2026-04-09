@@ -110,6 +110,7 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
     LOGIN_REDIRECT_URL="http://example.com/success",
     NEXT_PUBLIC_MOCK_FLAG=False,
     OIDC_REDIRECT_ALLOWED_HOSTS=["example.com"],
+    OIDC_REDIRECT_REQUIRE_HTTPS=False,
 )
 def test_eauth_callback_view(requests_mock, user_client, user):
     token_info = {

@@ -3,6 +3,7 @@ from datetime import date
 import pytest
 import stdnum.exceptions
 from django.db.models import Q
+from django.test import override_settings
 
 from shared.common.tests.utils import (
     create_finnish_social_security_number,
@@ -265,22 +266,27 @@ def test_invalid_social_security_number_birthdate(test_value):
 
 
 class TestIsSafeRedirectUrl:
+    @override_settings(OIDC_REDIRECT_REQUIRE_HTTPS=True)
     def test_safe_internal_url(self, rf):
         request = rf.get("/")
         assert is_safe_redirect_url(request, "/safe/", allowed_hosts=[])
 
+    @override_settings(OIDC_REDIRECT_REQUIRE_HTTPS=False)
     def test_unsafe_external_url(self, rf):
         request = rf.get("/")
         assert not is_safe_redirect_url(request, "http://evil.com", allowed_hosts=[])
 
+    @override_settings(OIDC_REDIRECT_REQUIRE_HTTPS=False)
     def test_allowed_external_url(self, rf):
         request = rf.get("/")
         assert is_safe_redirect_url(
             request, "http://trusted.com", allowed_hosts=["trusted.com"]
         )
 
-    def test_setting_lookup_hosts(self, rf, settings):
-        settings.OIDC_REDIRECT_ALLOWED_HOSTS = ["trusted.com"]
+    @override_settings(
+        OIDC_REDIRECT_ALLOWED_HOSTS=["trusted.com"], OIDC_REDIRECT_REQUIRE_HTTPS=False
+    )
+    def test_setting_lookup_hosts(self, rf):
         request = rf.get("/")
         # Should work by passing setting name
         assert is_safe_redirect_url(
@@ -289,14 +295,15 @@ class TestIsSafeRedirectUrl:
         # Should also work by default (None)
         assert is_safe_redirect_url(request, "http://trusted.com")
 
-    def test_setting_lookup_https(self, rf, settings):
-        settings.OIDC_REDIRECT_REQUIRE_HTTPS = True
+    @override_settings(OIDC_REDIRECT_REQUIRE_HTTPS=True)
+    def test_setting_lookup_https(self, rf):
         request = rf.get("/")  # insecure request
         # Should be unsafe because HTTPS is required but URL is http (or request is insecure)
         assert not is_safe_redirect_url(
             request, "http://example.com", require_https="OIDC_REDIRECT_REQUIRE_HTTPS"
         )
 
+    @override_settings(OIDC_REDIRECT_REQUIRE_HTTPS=False)
     def test_default_request_host_is_allowed(self, rf):
         request = rf.get("/", HTTP_HOST="mysite.com")
         assert is_safe_redirect_url(request, "http://mysite.com/path", allowed_hosts=[])
