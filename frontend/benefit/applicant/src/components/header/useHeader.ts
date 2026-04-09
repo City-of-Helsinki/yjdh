@@ -99,11 +99,7 @@ const useHeader = (): ExtendedComponentProps => {
     hasCorrectStatus && !application?.archived_for_applicant;
 
   useEffect(() => {
-    if (application?.unread_messages_count) {
-      setUnredMessagesCount(application?.unread_messages_count);
-    } else {
-      setUnredMessagesCount(null);
-    }
+    setUnredMessagesCount(application?.unread_messages_count || null);
   }, [application]);
 
   useEffect(() => {
@@ -144,7 +140,7 @@ const useHeader = (): ExtendedComponentProps => {
 
   const handleLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
     // Persist the language preference in the backend session.
-    // Skip the call when unauthenticated to avoid spamming sentry with 403.
+    // Skip the call when unauthenticated to avoid spamming Sentry with 403.
     if (isAuthenticated) {
       void axios.get(BackendEndpoint.USER_OPTIONS, {
         params: { lang: newLanguage },

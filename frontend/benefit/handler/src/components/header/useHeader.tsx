@@ -43,7 +43,7 @@ const useHeader = (): ExtendedComponentProps => {
         params: { lang: SUPPORTED_LANGUAGES.FI },
       });
     }
-  }, [isAuthenticated]);
+  }, [axios, isAuthenticated]);
 
   const { data: alterationData, isLoading: isAlterationListLoading } =
     useApplicationAlterationsQuery();
