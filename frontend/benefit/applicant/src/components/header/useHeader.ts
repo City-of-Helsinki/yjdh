@@ -8,6 +8,7 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useMemo, useState } from 'react';
+import AuthContext from 'shared/auth/AuthContext';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useGetLanguage from 'shared/hooks/useGetLanguage';
 import isServerSide from 'shared/server/is-server-side';
@@ -66,6 +67,7 @@ const useHeader = (): ExtendedComponentProps => {
   const id = router?.query?.id?.toString() ?? '';
   const openDrawer = Boolean(router?.query?.openDrawer);
   const { axios } = useBackendAPI();
+  const { isAuthenticated } = React.useContext(AuthContext);
   const { isNavigationVisible } = React.useContext(AppContext);
   const getLanguage = useGetLanguage();
   const navigationUriBase =
@@ -141,10 +143,15 @@ const useHeader = (): ExtendedComponentProps => {
   }, [status, setHasMessenger]);
 
   const handleLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
-    void axios.get(BackendEndpoint.USER_OPTIONS, {
-      params: { lang: newLanguage },
-    });
+    // Persist the language preference in the backend session.
+    // Skip the call when unauthenticated to avoid spamming sentry with 403.
+    if (isAuthenticated) {
+      void axios.get(BackendEndpoint.USER_OPTIONS, {
+        params: { lang: newLanguage },
+      });
+    }
 
+    // Switch the Next.js client-side locale immediately, regardless of auth state.
     void router.push({ pathname, query }, asPath, {
       locale: newLanguage,
     });
