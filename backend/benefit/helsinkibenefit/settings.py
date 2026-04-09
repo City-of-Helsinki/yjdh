@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 
 import environ
 import sentry_sdk
@@ -108,6 +109,8 @@ env = environ.Env(
     LOGOUT_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    OIDC_REDIRECT_ALLOWED_HOSTS=(list, []),
+    OIDC_REDIRECT_REQUIRE_HTTPS=(bool, True),
     EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
     EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
@@ -573,6 +576,12 @@ AUTH_ADFS = {
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
+
+OIDC_REDIRECT_ALLOWED_HOSTS = env.list(
+    "OIDC_REDIRECT_ALLOWED_HOSTS",
+    default=[urlparse(ADFS_LOGIN_REDIRECT_URL).netloc],
+)
+OIDC_REDIRECT_REQUIRE_HTTPS = env.bool("OIDC_REDIRECT_REQUIRE_HTTPS", default=True)
 # Authentication settings end
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
