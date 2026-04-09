@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/_/husky.sh"
 
-yarn commitlint --edit "$1"
+(cd "$(git rev-parse --show-toplevel)/frontend" && yarn commitlint --edit "$(git rev-parse --show-toplevel)/$1")
