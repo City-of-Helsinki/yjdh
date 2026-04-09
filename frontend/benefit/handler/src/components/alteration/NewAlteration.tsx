@@ -7,7 +7,7 @@ import {
   ALTERATION_STATE,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Container from 'shared/components/container/Container';
@@ -69,7 +69,7 @@ const NewAlteration: React.FC = () => {
               {t('common:applications.alterations.new.error.notYetAccepted')}
             </p>
           )}
-          <Button theme="coat" onClick={returnToApplication}>
+          <Button theme={ButtonPresetTheme.Coat} onClick={returnToApplication}>
             {t(
               `common:applications.alterations.new.actions.returnToApplication`
             )}

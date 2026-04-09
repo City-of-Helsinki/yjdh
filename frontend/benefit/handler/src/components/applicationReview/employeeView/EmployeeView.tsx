@@ -6,7 +6,12 @@ import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSectio
 import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
-import { Button, IconSearch } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconSearch,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -75,9 +80,9 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       <$GridCell $colSpan={6} $colStart={1}>
         <Button
           onClick={openSearchPage(String(data.applicationNumber))}
-          theme="black"
-          variant="secondary"
-          iconLeft={<IconSearch />}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+          iconStart={<IconSearch />}
         >
           {t('common:review.actions.searchPriorApplications')}
         </Button>

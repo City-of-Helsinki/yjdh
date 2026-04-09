@@ -4,6 +4,8 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   IconArrowUndo,
   IconInfoCircle,
   IconLock,
@@ -66,18 +68,26 @@ const HandlingApplicationActions: React.FC<Props> = ({
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <Button
             onClick={onDoneConfirmation}
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             disabled={isDisabledDoneButton}
           >
             {t(`${translationsBase}.done`)}
           </Button>
         )}
         {application.status === APPLICATION_STATUSES.HANDLING ? (
-          <Button onClick={onSaveAndClose} theme="black" variant="secondary">
+          <Button
+            onClick={onSaveAndClose}
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
+          >
             {t(`${translationsBase}.saveAndContinue`)}
           </Button>
         ) : (
-          <Button onClick={onSaveAndClose} theme="black" variant="secondary">
+          <Button
+            onClick={onSaveAndClose}
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
+          >
             {t(`${translationsBase}.close`)}
           </Button>
         )}
@@ -90,18 +100,18 @@ const HandlingApplicationActions: React.FC<Props> = ({
           !application.archived && (
             <Button
               onClick={onBackToHandling}
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconArrowUndo />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconArrowUndo />}
             >
               {t(`${translationsBase}.backToHandling`)}
             </Button>
           )}
         <Button
           onClick={toggleMessagesDrawerVisibility}
-          theme="black"
-          variant="secondary"
-          iconLeft={<IconPen />}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+          iconStart={<IconPen />}
         >
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
@@ -112,9 +122,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
           <$Column>
             <Button
               onClick={openDialog}
-              theme="black"
-              variant="supplementary"
-              iconLeft={<IconTrash />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconTrash />}
             >
               {t(`${translationsBase}.cancel`)}
             </Button>

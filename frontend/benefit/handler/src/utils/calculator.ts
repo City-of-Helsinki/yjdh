@@ -36,7 +36,7 @@ export const extractCalculatorRows = (
 // eslint-disable-next-line unicorn/prefer-set-has
 const SUBTOTAL_CALCULATION_ROW_TYPES = [
   CALCULATION_ROW_TYPES.HELSINKI_BENEFIT_MONTHLY_EUR,
-  CALCULATION_ROW_TYPES.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+  CALCULATION_ROW_TYPES.HELSINKI_BENEFIT_SUB_TOTAL_EUR,
 ];
 
 export const groupCalculatorRows = (rows: Row[]): Row[][] => {
@@ -61,9 +61,10 @@ export const groupCalculatorRows = (rows: Row[]): Row[][] => {
       // Select all other rows that don't fall into the above groups into combined groups
       end += 1;
       while (
-        rows[end]
-        && rows[end]?.rowType !== CALCULATION_ROW_TYPES.DESCRIPTION
-        && !SUBTOTAL_CALCULATION_ROW_TYPES.includes(rows[end]?.rowType)) {
+        rows[end] &&
+        rows[end]?.rowType !== CALCULATION_ROW_TYPES.DESCRIPTION &&
+        !SUBTOTAL_CALCULATION_ROW_TYPES.includes(rows[end]?.rowType)
+      ) {
         end += 1;
       }
       sections.push(rows.slice(start, end));
@@ -72,4 +73,4 @@ export const groupCalculatorRows = (rows: Row[]): Row[][] => {
   }
 
   return sections;
-}
+};

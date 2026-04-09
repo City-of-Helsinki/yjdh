@@ -3,7 +3,7 @@ import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application, ApplicationData } from 'benefit-shared/types/application';
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {
@@ -67,14 +67,14 @@ const ReceivedApplicationActions: React.FC<Props> = ({
       <$GridCell>
         <Button
           onClick={() => navigateBack()}
-          theme="black"
-          variant="secondary"
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
         >
           {t(`${translationsBase}.close`)}
         </Button>
       </$GridCell>
       <$GridCell $colSpan={2}>
-        <Button onClick={handleStatusChange} theme="coat">
+        <Button onClick={handleStatusChange} theme={ButtonPresetTheme.Coat}>
           {t(`${translationsBase}.handle`)}
         </Button>
       </$GridCell>
