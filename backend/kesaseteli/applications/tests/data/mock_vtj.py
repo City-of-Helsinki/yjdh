@@ -167,3 +167,121 @@ def mock_vtj_person_id_query_found_content(
             },
         }
     )
+
+
+def mock_vtj_person_id_query_restricted_content(
+    first_name: str, last_name: str, social_security_number: str
+) -> str:
+    """
+    Mock VTJ person's ID query's result content when data is restricted
+    due to a non-disclosure of personal data (turvakielto).
+    """
+    return json.dumps(
+        {
+            "@xmlns": "http://xml.vrk.fi/schema/vtjkysely",
+            "@xmlns:vtj": "http://xml.vrk.fi/schema/vtj/henkilotiedot/1",
+            "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "@sanomatunnus": "PERUSSANOMA 1",
+            "@tietojenPoimintaaika": "20260212112821",
+            "@versio": "1.0",
+            "@xsi:schemaLocation": "http://xml.vrk.fi/schema/vtjkysely PERUSSANOMA 1.xsd",
+            "Asiakasinfo": {
+                "InfoS": "12.02.2026 11:28",
+                "InfoR": "12.02.2026 11:28",
+                "InfoE": "12.02.2026 11:28",
+            },
+            "Paluukoodi": {"@koodi": "0000", "#text": "Haku onnistui"},
+            "Hakuperusteet": {
+                "Henkilotunnus": {
+                    "@hakuperustePaluukoodi": "1",
+                    "@hakuperusteTekstiE": "Found",
+                    "@hakuperusteTekstiR": "Hittades",
+                    "@hakuperusteTekstiS": "Löytyi",
+                    "#text": social_security_number,
+                }
+            },
+            "Henkilo": {
+                "Henkilotunnus": {
+                    "@voimassaolokoodi": "1",
+                    "#text": social_security_number,
+                },
+                "NykyinenSukunimi": {"Sukunimi": last_name},
+                "NykyisetEtunimet": {"Etunimet": first_name},
+                "VakinainenKotimainenLahiosoite": {
+                    "LahiosoiteS": None,
+                    "LahiosoiteR": None,
+                    "Postinumero": None,
+                    "PostitoimipaikkaS": None,
+                    "PostitoimipaikkaR": None,
+                    "AsuminenAlkupvm": None,
+                    "AsuminenLoppupvm": None,
+                },
+                "VakinainenAsuinpaikka": {"Asuinpaikantunnus": None},
+                "VakinainenUlkomainenLahiosoite": {
+                    "UlkomainenLahiosoite": None,
+                    "UlkomainenPaikkakuntaJaValtioS": None,
+                    "UlkomainenPaikkakuntaJaValtioR": None,
+                    "UlkomainenPaikkakuntaJaValtioSelvakielinen": None,
+                    "Valtiokoodi3": None,
+                    "AsuminenAlkupvm": None,
+                    "AsuminenLoppupvm": None,
+                },
+                "TilapainenKotimainenLahiosoite": {
+                    "LahiosoiteS": None,
+                    "LahiosoiteR": None,
+                    "Postinumero": None,
+                    "PostitoimipaikkaS": None,
+                    "PostitoimipaikkaR": None,
+                    "AsuminenAlkupvm": None,
+                    "AsuminenLoppupvm": None,
+                },
+                "TilapainenUlkomainenLahiosoite": {
+                    "UlkomainenLahiosoite": None,
+                    "UlkomainenPaikkakuntaJaValtioS": None,
+                    "UlkomainenPaikkakuntaJaValtioR": None,
+                    "UlkomainenPaikkakuntaJaValtioSelvakielinen": None,
+                    "Valtiokoodi3": None,
+                    "AsuminenAlkupvm": None,
+                    "AsuminenLoppupvm": None,
+                },
+                "KotimainenPostiosoite": {
+                    "PostiosoiteS": None,
+                    "PostiosoiteR": None,
+                    "Postinumero": None,
+                    "PostitoimipaikkaS": None,
+                    "PostitoimipaikkaR": None,
+                    "PostiosoiteAlkupvm": None,
+                    "PostiosoiteLoppupvm": None,
+                },
+                "UlkomainenPostiosoite": {
+                    "UlkomainenLahiosoite": None,
+                    "UlkomainenPaikkakunta": None,
+                    "Valtiokoodi3": None,
+                    "ValtioS": None,
+                    "ValtioR": None,
+                    "ValtioSelvakielinen": None,
+                    "PostiosoiteAlkupvm": None,
+                    "PostiosoiteLoppupvm": None,
+                },
+                "Kotikunta": {
+                    "Kuntanumero": None,
+                    "KuntaS": None,
+                    "KuntaR": None,
+                    "KuntasuhdeAlkupvm": None,
+                },
+                "Kuolintiedot": {"Kuollut": None, "Kuolinpvm": None},
+                "Kuolleeksijulistamistiedot": {"Kuolleeksijulistamispvm": None},
+                "Aidinkieli": {
+                    "Kielikoodi": "fi",
+                    "KieliS": "suomi",
+                    "KieliR": "finska",
+                    "KieliSelvakielinen": None,
+                },
+                "Sukupuoli": {
+                    "Sukupuolikoodi": "1",
+                    "SukupuoliS": "Mies",
+                    "SukupuoliR": "Man",
+                },
+            },
+        }
+    )

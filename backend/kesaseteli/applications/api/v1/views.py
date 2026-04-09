@@ -191,7 +191,12 @@ class YouthApplicationViewSet(ModelViewSet):
                     end_user=VTJClient.get_end_user(request)
                 )
             )
-            youth_application.save(update_fields=["encrypted_handler_vtj_json"])
+            youth_application._update_is_vtj_data_restricted(
+                youth_application.encrypted_handler_vtj_json
+            )
+            youth_application.save(
+                update_fields=["encrypted_handler_vtj_json", "is_vtj_data_restricted"]
+            )
         return super().retrieve(request, *args, **kwargs)
 
     @action(methods=["get"], detail=True)
@@ -532,10 +537,14 @@ class YouthApplicationViewSet(ModelViewSet):
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.encrypted_original_vtj_json
             )
+            youth_application._update_is_vtj_data_restricted(
+                youth_application.encrypted_original_vtj_json
+            )
             youth_application.save(
                 update_fields=[
                     "encrypted_original_vtj_json",
                     "encrypted_handler_vtj_json",
+                    "is_vtj_data_restricted",
                 ]
             )
 
