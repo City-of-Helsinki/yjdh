@@ -2,6 +2,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   Button,
+  ButtonVariant,
   IconAlertCircleFill,
   IconArrowLeft,
   IconArrowRight,
@@ -76,8 +77,8 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           {handleBack && (
             <Button
               theme="black"
-              variant="secondary"
-              iconLeft={<IconArrowLeft />}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconArrowLeft />}
               onClick={handleBack}
             >
               {t(`${translationsBase}.back`)}
@@ -88,7 +89,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           <$SaveAction>
             <Button
               theme="black"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={(e: React.MouseEvent) => onClickSave(e, handleSave)}
               disabled={!handleSave}
             >
@@ -108,7 +109,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           <Button
             theme="coat"
             disabled={disabledNext}
-            iconRight={!lastStep ? <IconArrowRight /> : null}
+            iconEnd={!lastStep ? <IconArrowRight /> : null}
             onClick={handleSubmit}
             data-testid="nextButton"
           >
@@ -121,8 +122,8 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           <$GridCell $colSpan={10} $colStart={2} justifySelf="center">
             <Button
               theme="black"
-              variant="supplementary"
-              iconLeft={<IconCross />}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconCross />}
               onClick={() => setIsConfirmationModalOpen(true)}
               data-testid="deleteButton"
             >

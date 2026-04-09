@@ -7,7 +7,7 @@ import { ROUTES, SUBMITTED_STATUSES } from 'benefit/applicant/constants';
 import ApplicationListContext from 'benefit/applicant/context/ApplicationListContext';
 import { Trans, useTranslation } from 'benefit/applicant/i18n';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Button, IconArrowLeft, Notification } from 'hds-react';
+import { Button, ButtonVariant, IconArrowLeft, Notification } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useTheme } from 'styled-components';
@@ -72,10 +72,10 @@ const DecisionsApplicationList = (): JSX.Element => {
           </$NoDecisionsText>
           <$ButtonContainer>
             <Button
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={() => router.push(ROUTES.HOME)}
               theme="black"
-              iconLeft={<IconArrowLeft />}
+              iconStart={<IconArrowLeft />}
             >
               {t('common:utility.back')}
             </Button>

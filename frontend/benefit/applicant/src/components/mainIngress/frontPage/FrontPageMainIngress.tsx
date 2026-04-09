@@ -2,7 +2,7 @@ import { $ActionContainer } from 'benefit/applicant/components/mainIngress/front
 import { useFrontPageMainIngress } from 'benefit/applicant/components/mainIngress/frontPage/useFrontPageMainIngress';
 import MainIngress from 'benefit/applicant/components/mainIngress/MainIngress';
 import useCloneApplicationMutation from 'benefit/applicant/hooks/useCloneApplicationMutation';
-import { Button, IconCopy, IconPlus } from 'hds-react';
+import { Button, ButtonVariant, IconCopy, IconPlus } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -39,7 +39,7 @@ const FrontPageMainIngress: React.FC = () => {
       <$ActionContainer>
         <Button
           data-testid="newApplicationButton"
-          iconLeft={<IconPlus />}
+          iconStart={<IconPlus />}
           onClick={handleNewApplicationClick}
           theme="coat"
         >
@@ -48,8 +48,8 @@ const FrontPageMainIngress: React.FC = () => {
         <hr />
         <Button
           theme="coat"
-          variant="secondary"
-          iconLeft={<IconCopy />}
+          variant={ButtonVariant.Secondary}
+          iconStart={<IconCopy />}
           // @ts-expect-error - cloneApplication expects 2 arguments
           onClick={() => cloneApplication()}
           aria-labelledby="clone-application-button-helper"

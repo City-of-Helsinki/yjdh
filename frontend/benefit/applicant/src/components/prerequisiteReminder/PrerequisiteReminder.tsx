@@ -5,7 +5,7 @@ import {
   $Link,
   $PrerequisiteCard,
 } from 'benefit/applicant/components/prerequisiteReminder/PrerequisiteReminder.sc';
-import { Button, IconDownload } from 'hds-react';
+import { Button, ButtonVariant, IconDownload } from 'hds-react';
 import { NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -25,13 +25,13 @@ const PrerequisiteReminder: NextPage = () => {
           <$DownloadButtonContainer>
             <Button
               theme="black"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={() =>
                 openFileInNewTab(
                   t('common:prerequisiteReminder.downloadButton.href')
                 )
               }
-              iconLeft={<IconDownload />}
+              iconStart={<IconDownload />}
             >
               {t('common:prerequisiteReminder.downloadButton.label', '')}
             </Button>

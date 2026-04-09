@@ -159,7 +159,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               onSubmit(e)
             }
-            iconLeft={<IconPlusCircle />}
+            iconStart={<IconPlusCircle />}
             fullWidth
           >
             {t(`${translationsBase}.deMinimisAidsAdd`)}
