@@ -1,7 +1,13 @@
 import { ROUTES } from 'benefit/handler/constants';
 import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
 import { ReviewState } from 'benefit/handler/types/application';
-import { Button, IconPen } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconPen,
+  IconSize,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -76,7 +82,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
       return (
         <$CheckIconFill
           aria-label="application-action"
-          size="m"
+          size={IconSize.Medium}
           onClick={handleReviewClick}
         />
       );
@@ -84,7 +90,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     return (
       <$CheckIcon
         aria-label="application-action"
-        size="m"
+        size={IconSize.Medium}
         onClick={handleReviewClick}
       />
     );
@@ -109,9 +115,9 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
       {id && withAction && (
         <$EditButtonContainer>
           <Button
-            theme="black"
-            variant="supplementary"
-            iconLeft={<IconPen />}
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Supplementary}
+            iconStart={<IconPen />}
             onClick={() =>
               router.push(`${String(ROUTES.APPLICATION_FORM_EDIT)}?id=${id}`)
             }

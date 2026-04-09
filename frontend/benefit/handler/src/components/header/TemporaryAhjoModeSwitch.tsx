@@ -1,5 +1,5 @@
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React from 'react';
 import {
   removeLocalStorageItem,
@@ -28,10 +28,10 @@ const TemporaryAhjoModeSwitch: React.FC = () => {
   const isNewAhjoMode = useDetermineAhjoMode();
   return (
     <Button
-      iconRight={null}
+      iconEnd={null}
       onClick={() => toggleNewAhjoMode(isNewAhjoMode)}
-      theme="coat"
-      variant="supplementary"
+      theme={ButtonPresetTheme.Coat}
+      variant={ButtonVariant.Supplementary}
       size="small"
     >
       Ahjo-integraatio

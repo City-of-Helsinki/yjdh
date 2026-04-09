@@ -7,6 +7,8 @@ import {
 import { FormikProps } from 'formik';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   Dialog,
   IconArrowRight,
   IconSaveDiskette,
@@ -60,13 +62,13 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
           <$ButtonContainer>
             {handleValidation && (
               <Button
-                theme="coat"
+                theme={ButtonPresetTheme.Coat}
                 onClick={() =>
                   handleValidation().then((isValid: boolean) =>
                     isValid ? setIsConfirmationModalOpen(true) : null
                   )
                 }
-                iconRight={
+                iconEnd={
                   isFormActionNew ? <IconArrowRight /> : <IconSaveDiskette />
                 }
                 data-testid="nextButton"
@@ -77,8 +79,8 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
             {isFormActionEdit && (
               <Button
                 css={{ marginLeft: 'var(--spacing-s)' }}
-                theme="black"
-                variant="secondary"
+                theme={ButtonPresetTheme.Black}
+                variant={ButtonVariant.Secondary}
                 onClick={() => {
                   const alert =
                     formik.dirty &&
@@ -149,8 +151,8 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
               </Dialog.Content>
               <Dialog.ActionButtons>
                 <Button
-                  theme="coat"
-                  variant="primary"
+                  theme={ButtonPresetTheme.Coat}
+                  variant={ButtonVariant.Primary}
                   disabled={
                     !formik.values.changeReason ||
                     formik.values.changeReason === ''
@@ -161,8 +163,8 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
                   {t(`${translationsBase}.save`)}
                 </Button>
                 <Button
-                  theme="black"
-                  variant="secondary"
+                  theme={ButtonPresetTheme.Black}
+                  variant={ButtonVariant.Secondary}
                   onClick={() => setIsConfirmationModalOpen(false)}
                   data-testid="confirm-cancel"
                 >

@@ -1,7 +1,14 @@
 import useRequireAdditionalInformation from 'benefit/handler/hooks/useRequireAdditionalInformation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button, IconLock, IconPen } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonSize,
+  ButtonVariant,
+  IconLock,
+  IconPen,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 
@@ -34,10 +41,10 @@ const EditAction: React.FC<Props> = ({ application }) => {
           onClick={() =>
             updateApplicationStatus(APPLICATION_STATUSES.INFO_REQUIRED)
           }
-          theme="black"
-          variant="secondary"
-          size="small"
-          iconLeft={<IconPen />}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Small}
+          iconStart={<IconPen />}
           loadingText={t(`${translationsBase}.handlingToInfoRequired`)}
           isLoading={isUpdatingApplication}
         >
@@ -47,10 +54,10 @@ const EditAction: React.FC<Props> = ({ application }) => {
       {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
         <Button
           onClick={() => updateApplicationStatus(APPLICATION_STATUSES.HANDLING)}
-          theme="black"
-          variant="secondary"
-          size="small"
-          iconLeft={<IconLock />}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Small}
+          iconStart={<IconLock />}
           loadingText={t(`${translationsBase}.infoRequiredToHandling`)}
           isLoading={isUpdatingApplication}
         >

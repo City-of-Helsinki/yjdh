@@ -17,6 +17,8 @@ import {
 import { FormikProps } from 'formik';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   DateInput,
   IconMinusCircle,
   IconPlusCircle,
@@ -293,9 +295,9 @@ const TrainingCompensationsList: React.FC<TrainingCompensationsListProps> = ({
           <$GridCell $colStart={9} $colSpan={3}>
             <Button
               onClick={() => removeTrainingCompensation(item.id)}
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconMinusCircle />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconMinusCircle />}
               style={{ background: 'white' }}
             >
               {t(`${translationsBase}.remove`)}
@@ -440,9 +442,9 @@ const TrainingCompensationInputSection: React.FC<
       <$GridCell $colStart={9} $colSpan={3}>
         <Button
           onClick={addNewTrainingCompensation}
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           disabled={isDisabledAddTrainingCompensationButton}
-          iconLeft={<IconPlusCircle />}
+          iconStart={<IconPlusCircle />}
           style={{ marginTop: 'var(--spacing-m)' }}
         >
           {t(`${translationsBase}.add`)}
@@ -760,7 +762,7 @@ const SalaryBenefitCalculatorView: React.FC<
 
         <Button
           onClick={handleSubmit}
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           data-testid="run-calculation"
           style={{ marginRight: 'var(--spacing-xs)' }}
         >
@@ -769,8 +771,8 @@ const SalaryBenefitCalculatorView: React.FC<
 
         <Button
           onClick={() => setIsResetConfirmOpen(true)}
-          theme="coat"
-          variant="secondary"
+          theme={ButtonPresetTheme.Coat}
+          variant={ButtonVariant.Secondary}
         >
           {t(`${translationsBase}.clear`)}
         </Button>

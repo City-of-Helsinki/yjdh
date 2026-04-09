@@ -1,9 +1,10 @@
 import { ROUTES } from 'benefit/handler/constants';
 import {
   Button,
+  ButtonPresetTheme,
   IconCross,
   RadioButton,
-  SearchInput,
+  Search,
   SelectionGroup,
   StatusLabel,
 } from 'hds-react';
@@ -127,7 +128,7 @@ const ApplicationsArchive: React.FC = () => {
       <>
         <$SearchInputArea>
           {!applicationNum && (
-            <SearchInput
+            <Search
               helperText={t(
                 'common:search.fields.searchInput.keyword.helperText'
               )}
@@ -135,8 +136,8 @@ const ApplicationsArchive: React.FC = () => {
               placeholder={t(
                 'common:search.fields.searchInput.keyword.placeholder'
               )}
-              onChange={(value) => setSearchString(value)}
-              onSubmit={(value) => onSearch(value)}
+              onChange={(value) => setSearchString(value.target.value)}
+              onSend={(value) => onSearch(value)}
               css="margin-bottom: var(--spacing-m);"
             />
           )}
@@ -239,7 +240,7 @@ const ApplicationsArchive: React.FC = () => {
         (searchResults?.matches || []).length >= 30 && (
           <Button
             style={{ marginTop: 'var(--spacing-m)' }}
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             onClick={() => {
               setLoadAll(true);
               setDisplayLoadAll(false);

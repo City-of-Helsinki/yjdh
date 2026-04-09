@@ -3,7 +3,7 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, IconSize } from 'hds-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -53,9 +53,9 @@ const NotificationView: React.FC<Props> = ({ data }) => {
         <$Grid>
           <$GridCell $colSpan={2}>
             {translationKey !== 'error' ? (
-              <$IconCheckCircle size="xl" />
+              <$IconCheckCircle size={IconSize.ExtraLarge} />
             ) : (
-              <$IconAlertCircle size="xl" />
+              <$IconAlertCircle size={IconSize.ExtraLarge} />
             )}
           </$GridCell>
           <$GridCell $colSpan={10}>
@@ -88,7 +88,7 @@ const NotificationView: React.FC<Props> = ({ data }) => {
           {isNewAhjoMode && (
             <$GridCell $colSpan={10} $colStart={3}>
               <$ActionsContainer>
-                <Button theme="coat" onClick={handleGoHome}>
+                <Button theme={ButtonPresetTheme.Coat} onClick={handleGoHome}>
                   {t('common:utility.home')}
                 </Button>
                 {/* <Button
@@ -115,12 +115,15 @@ const NotificationView: React.FC<Props> = ({ data }) => {
               ].includes(data?.status as APPLICATION_STATUSES) && (
                 <$GridCell $colSpan={10} $colStart={3}>
                   <$ActionsContainer>
-                    <Button theme="coat" onClick={handleGoHome}>
+                    <Button
+                      theme={ButtonPresetTheme.Coat}
+                      onClick={handleGoHome}
+                    >
                       {t('common:utility.home')}
                     </Button>
                     <Button
-                      variant="secondary"
-                      theme="coat"
+                      variant={ButtonVariant.Secondary}
+                      theme={ButtonPresetTheme.Coat}
                       onClick={handleStartAhjo}
                     >
                       {t(`${translationsBase}.ahjoButton.label`)}
