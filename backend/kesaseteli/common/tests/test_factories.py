@@ -9,6 +9,7 @@ from applications.enums import (
     YouthApplicationStatus,
 )
 from applications.models import YouthApplication
+from applications.services import VTJService
 from applications.tests.conftest import *  # noqa
 from common.tests.factories import (
     AcceptableNonVtjYouthApplicationFactory,
@@ -215,14 +216,14 @@ def test_youth_application_factory(  # noqa: C901
             vtj_test_case = youth_application.vtj_test_case
 
             if vtj_test_case == VtjTestCase.NO_ANSWER:
-                with pytest.raises(ReadTimeout):
-                    youth_application.encrypted_original_vtj_json = (
-                        youth_application.fetch_vtj_json(end_user="")
-                    )
+                    with pytest.raises(ReadTimeout):
+                        youth_application.encrypted_original_vtj_json = (
+                            VTJService.fetch_vtj_json(youth_application, end_user="")
+                        )
             else:
-                youth_application.encrypted_original_vtj_json = (
-                    youth_application.fetch_vtj_json(end_user="")
-                )
+                    youth_application.encrypted_original_vtj_json = (
+                        VTJService.fetch_vtj_json(youth_application, end_user="")
+                    )
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.encrypted_original_vtj_json
             )

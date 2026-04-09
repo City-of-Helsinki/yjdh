@@ -1,5 +1,6 @@
+import json
 import logging
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from auditlog.models import LogEntry
 import jsonpath_ng
@@ -10,10 +11,26 @@ from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 
 import applications.target_groups
-from applications.enums import APPLICATION_LANGUAGE_CHOICES, EmailTemplateType
+from applications.enums import (
+    APPLICATION_LANGUAGE_CHOICES,
+    EmailTemplateType,
+    VtjTestCase,
+)
 from applications.mock_context_service import MockContextService
-from applications.models import EmailTemplate, School, SummerVoucherConfiguration
-from common.utils import send_mail_with_error_logging
+from applications.models import (
+    EmailTemplate,
+    School,
+    SummerVoucherConfiguration,
+    YouthApplication,
+)
+from applications.tests.data.mock_vtj import (
+    mock_vtj_person_id_query_found_content,
+    mock_vtj_person_id_query_not_found_content,
+    mock_vtj_person_id_query_restricted_content,
+)
+from common.utils import are_same_texts, send_mail_with_error_logging
+from requests import ReadTimeout
+from shared.vtj.vtj_client import VTJClient
 
 if TYPE_CHECKING:
     from django.contrib.contenttypes.models import ContentType
@@ -265,15 +282,149 @@ class AuditAccessLogService:
             actor=actor,
             actor_email=actor_email,
             additional_data=additional_data,
+        )
+
+
 class VTJService:
-    @staticmethod
-    def _is_search_successful(vtj_json_dict: dict) -> bool:
-        """Check if the VTJ query return code indicates success."""
+    """
+    Service for interacting with the Finnish Population Information System (VTJ)
+    and processing its responses.
+    """
+
+    @classmethod
+    def get_vtj_test_case(cls, last_name: str) -> str:
+        """Find the matching VTJ test case based on last name."""
+        for test_case in VtjTestCase.values:
+            if are_same_texts(last_name, test_case):
+                return test_case
+        return ""
+
+    @classmethod
+    def is_vtj_test_case(cls, first_name: str, last_name: str) -> bool:
+        """Check if first and last name match a VTJ test case."""
+        return are_same_texts(first_name, VtjTestCase.first_name()) and bool(
+            cls.get_vtj_test_case(last_name)
+        )
+
+    @classmethod
+    def get_mocked_json_for_test_case(
+        cls,
+        vtj_test_case: str,
+        first_name: str,
+        last_name: str,
+        social_security_number: str,
+    ) -> Optional[str]:
+        """Generate mocked VTJ JSON based on a specific test case."""
+        if vtj_test_case == VtjTestCase.NOT_FOUND.value:
+            return mock_vtj_person_id_query_not_found_content()
+        elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
+            return None
+        elif vtj_test_case == VtjTestCase.RESTRICTED.value:
+            return mock_vtj_person_id_query_restricted_content(
+                first_name=first_name,
+                last_name=last_name,
+                social_security_number=social_security_number,
+            )
+
+        return mock_vtj_person_id_query_found_content(
+            first_name=first_name,
+            last_name=(
+                "VTJ-palvelun palauttama eri sukunimi"
+                if vtj_test_case == VtjTestCase.WRONG_LAST_NAME.value
+                else last_name
+            ),
+            social_security_number=social_security_number,
+            is_alive=vtj_test_case != VtjTestCase.DEAD.value,
+            is_home_municipality_helsinki=(
+                vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI.value
+            ),
+        )
+
+    @classmethod
+    def fetch_vtj_json(
+        cls, application: "YouthApplication", end_user: str
+    ) -> Optional[str]:
+        """Retrieve VTJ JSON for an application, either from VTJ or via mocks."""
+        if settings.NEXT_PUBLIC_DISABLE_VTJ:
+            return None
+
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            test_case = cls.get_vtj_test_case(application.last_name)
+            if cls.is_vtj_test_case(application.first_name, application.last_name):
+                if test_case == VtjTestCase.NO_ANSWER.value:
+                    raise ReadTimeout()
+                return cls.get_mocked_json_for_test_case(
+                    vtj_test_case=test_case,
+                    first_name=application.first_name,
+                    last_name=application.last_name,
+                    social_security_number=application.social_security_number,
+                )
+            return mock_vtj_person_id_query_not_found_content()
+
+        return json.dumps(
+            VTJClient().get_personal_info(application.social_security_number, end_user)
+        )
+
+    @classmethod
+    def is_response_restricted(cls, vtj_json_dict: dict) -> bool:
+        """
+        Detect if the VTJ response indicates a non-disclosure of personal data
+        (turvakielto).
+        """
+        if not vtj_json_dict or not isinstance(vtj_json_dict, dict):
+            return False
+
+        return (
+            cls._is_search_successful(vtj_json_dict)
+            and cls._is_person_found(vtj_json_dict)
+            and cls._has_restricted_residency_data(vtj_json_dict)
+        )
+
+    @classmethod
+    def is_ssn_valid(cls, vtj_json_dict: dict, ssn: str) -> bool:
+        """Check if the SSN is valid according to the VTJ response."""
+        from common.utils import are_same_text_lists
+
+        values = cls._vtj_values(
+            vtj_json_dict, "$.Henkilo.Henkilotunnus.['@voimassaolokoodi', '#text']"
+        )
+        return are_same_text_lists(values, ["1", ssn])
+
+    @classmethod
+    def is_dead(cls, vtj_json_dict: dict) -> bool:
+        """Check if the person is dead according to the VTJ response."""
+        is_dead_flag = "1" in cls._vtj_values(
+            vtj_json_dict, "$.Henkilo.Kuolintiedot.Kuollut"
+        )
+        death_date_values = cls._vtj_values(
+            vtj_json_dict, "$.Henkilo.Kuolintiedot.Kuolinpvm"
+        )
+        has_death_date = len(death_date_values) > 0 and set(death_date_values) != {None}
+        return is_dead_flag or has_death_date
+
+    @classmethod
+    def get_last_name(cls, vtj_json_dict: dict) -> str:
+        """Extract the current last name from the VTJ response."""
+        values = cls._vtj_values(vtj_json_dict, "$.Henkilo.NykyinenSukunimi.Sukunimi")
+        return (values[0] if values else "") or ""
+
+    @classmethod
+    def get_home_municipality(cls, vtj_json_dict: dict) -> str:
+        """Extract the home municipality name from the VTJ response."""
+        values = cls._vtj_values(vtj_json_dict, "$.Henkilo.Kotikunta.KuntaS")
+        return (values[0] if values else "") or ""
+
+    @classmethod
+    def _is_search_successful(cls, vtj_json_dict: dict) -> bool:
+        """Check if the top-level VTJ query return code indicates success."""
         return vtj_json_dict.get("Paluukoodi", {}).get("@koodi") == "0000"
 
-    @staticmethod
-    def _is_person_found(vtj_json_dict: dict) -> bool:
-        """Check if the search basis return code indicates the person was found."""
+    @classmethod
+    def _is_person_found(cls, vtj_json_dict: dict) -> bool:
+        """
+        Check if the specific search basis return code indicates the person was
+        found
+        ."""
         return (
             vtj_json_dict.get("Hakuperusteet", {})
             .get("Henkilotunnus", {})
@@ -281,47 +432,22 @@ class VTJService:
             == "1"
         )
 
-    @staticmethod
-    def _has_restricted_residency_data(vtj_json_dict: dict) -> bool:
-        """
-        Check if key residency fields are null, which indicates restricted data
-        for a found person.
-        """
-
-        # Using jsonpath_ng for consistency with models.py logic
-        def get_value(expression):
-            matches = jsonpath_ng.parse(expression).find(vtj_json_dict)
-            return matches[0].value if matches else None
-
-        kuntanumero = get_value("$.Henkilo.Kotikunta.Kuntanumero")
-        lahiosoite_s = get_value("$.Henkilo.VakinainenKotimainenLahiosoite.LahiosoiteS")
-
-        return kuntanumero is None and lahiosoite_s is None
-
-    @staticmethod
-    def is_response_restricted(vtj_json_dict: dict) -> bool:
-        """
-        Detect if the VTJ response indicates that the personal data is restricted
-        due to a non-disclosure of personal data (turvakielto).
-
-        Example of a restricted response structure::
-
-            {
-                "Paluukoodi": {"@koodi": "0000"},
-                "Hakuperusteet": {
-                    "Henkilotunnus": {"@hakuperustePaluukoodi": "1", ...}
-                },
-                "Henkilo": {
-                    "Kotikunta": {"Kuntanumero": None, "KuntaS": None, ...},
-                    "VakinainenKotimainenLahiosoite": {"LahiosoiteS": None, ...}
-                }
-            }
-        """
-        if not vtj_json_dict or not isinstance(vtj_json_dict, dict):
-            return False
-
-        return (
-            VTJService._is_search_successful(vtj_json_dict)
-            and VTJService._is_person_found(vtj_json_dict)
-            and VTJService._has_restricted_residency_data(vtj_json_dict)
+    @classmethod
+    def _has_restricted_residency_data(cls, vtj_json_dict: dict) -> bool:
+        """Check if key residency fields are null (indicates turvakielto)."""
+        hometown_values = cls._vtj_values(
+            vtj_json_dict, "$.Henkilo.Kotikunta.Kuntanumero"
         )
+        address_values = cls._vtj_values(
+            vtj_json_dict, "$.Henkilo.VakinainenKotimainenLahiosoite.LahiosoiteS"
+        )
+
+        return hometown_values == [None] and address_values == [None]
+
+    @classmethod
+    def _vtj_values(cls, vtj_json_dict: dict, expression: str) -> list:
+        """Internal helper to find values in VTJ JSON using JSONPath."""
+        if not vtj_json_dict:
+            return []
+        matches = jsonpath_ng.parse(expression).find(vtj_json_dict)
+        return [match.value for match in matches]

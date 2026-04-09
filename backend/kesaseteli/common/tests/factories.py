@@ -378,11 +378,13 @@ def determine_additional_info_description(youth_application):
 
 
 def determine_vtj_json_for_vtj_test_case(youth_application):
+    from applications.services import VTJService
+
     vtj_test_case = youth_application.last_name
     if vtj_test_case not in VtjTestCase.values:
         raise ValueError(f"Invalid VtjTestCase value {vtj_test_case}")
 
-    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
+    return VTJService.get_mocked_json_for_test_case(
         vtj_test_case=vtj_test_case,
         first_name=youth_application.first_name,
         last_name=youth_application.last_name,

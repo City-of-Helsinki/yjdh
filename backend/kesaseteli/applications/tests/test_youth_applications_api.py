@@ -585,7 +585,7 @@ def test_youth_applications_detail_update_encrypted_handler_vtj_json(
     old_encrypted_handler_vtj_json = youth_application.encrypted_handler_vtj_json
 
     with mock.patch(
-        "applications.models.YouthApplication.fetch_vtj_json",
+        "applications.services.VTJService.fetch_vtj_json",
         return_value='{"test": "override"}',
     ) as mock_fetch_vtj_json:
         response = api_client.get(get_detail_url(pk=youth_application.pk))
@@ -642,11 +642,13 @@ def test_youth_applications_detail_fetch_vtj_json_end_user(
     youth_application = AwaitingManualProcessingYouthApplicationFactory.create()
 
     with mock.patch(
-        "applications.models.YouthApplication.fetch_vtj_json",
+        "applications.services.VTJService.fetch_vtj_json",
         return_value='{"test": "override"}',
     ) as mock_fetch_vtj_json:
         api_client.get(get_detail_url(pk=youth_application.pk))
-        mock_fetch_vtj_json.assert_called_once_with(end_user=expected_end_user)
+        mock_fetch_vtj_json.assert_called_once_with(
+            youth_application, end_user=expected_end_user
+        )
 
 
 @override_settings(
@@ -658,12 +660,14 @@ def test_youth_application_post_fetch_vtj_json_empty_end_user(api_client):
     youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     with mock.patch(
-        "applications.models.YouthApplication.fetch_vtj_json",
+        "applications.services.VTJService.fetch_vtj_json",
         return_value=youth_application.encrypted_original_vtj_json,
     ) as mock_fetch_vtj_json:
         response = api_client.post(get_list_url(), data)
         assert response.status_code == status.HTTP_201_CREATED
-        mock_fetch_vtj_json.assert_called_once_with(end_user="")
+        # Note: application is not created yet in the post test, so it will be the newly created instance.
+        # We can use mock.ANY or capture it if needed, but the first arg is the application.
+        mock_fetch_vtj_json.assert_called_once_with(mock.ANY, end_user="")
 
 
 @pytest.mark.django_db
@@ -1476,7 +1480,7 @@ def test_youth_application_activation_email_sending(
     data = YouthApplicationSerializer(youth_application).data
     start_mail_count = len(mail.outbox)
     with mock.patch(
-        "applications.models.YouthApplication.fetch_vtj_json",
+        "applications.services.VTJService.fetch_vtj_json",
         return_value=youth_application.encrypted_original_vtj_json,
     ) as mock_fetch_vtj_json:
         api_client.post(reverse("v1:youthapplication-list"), data)
@@ -1506,7 +1510,7 @@ def test_youth_application_additional_info_request_email_sending(api_client, lan
     data = YouthApplicationSerializer(youth_application).data
     start_mail_count = len(mail.outbox)
     with mock.patch(
-        "applications.models.YouthApplication.fetch_vtj_json",
+        "applications.services.VTJService.fetch_vtj_json",
         return_value=youth_application.encrypted_original_vtj_json,
     ) as mock_fetch_vtj_json:
         api_client.post(reverse("v1:youthapplication-list"), data)

@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import quote, urljoin
 
-import jsonpath_ng
 import sequences
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
@@ -44,7 +43,6 @@ from applications.validators import validate_template_syntax
 from common.permissions import HandlerPermission
 from common.urls import handler_youth_application_processing_url
 from common.utils import (
-    are_same_text_lists,
     are_same_texts,
     html_to_text,
     validate_optional_finnish_social_security_number,
@@ -359,76 +357,17 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def is_vtj_test_case(self) -> bool:
-        return (
-            are_same_texts(self.first_name, VtjTestCase.first_name())
-            and self.vtj_test_case
-        )
+        from applications.services import VTJService
+
+        return VTJService.is_vtj_test_case(self.first_name, self.last_name)
 
     @property
     def vtj_test_case(self) -> str:
-        """
-        If last name is found in VtjTestCase.values then return it, otherwise
-        return "".
-        """
-        for vtj_test_case in VtjTestCase.values:
-            if are_same_texts(self.last_name, vtj_test_case):
-                return vtj_test_case
-        return ""
+        from applications.services import VTJService
 
-    @staticmethod
-    def get_mocked_vtj_json_for_vtj_test_case(
-        vtj_test_case, first_name, last_name, social_security_number
-    ):
-        if vtj_test_case == VtjTestCase.NOT_FOUND.value:
-            return mock_vtj_person_id_query_not_found_content()
-        elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
-            return None
-        elif vtj_test_case == VtjTestCase.RESTRICTED.value:
-            return mock_vtj_person_id_query_restricted_content(
-                first_name=first_name,
-                last_name=last_name,
-                social_security_number=social_security_number,
-            )
-        else:
-            return mock_vtj_person_id_query_found_content(
-                first_name=first_name,
-                last_name=(
-                    "VTJ-palvelun palauttama eri sukunimi"
-                    if vtj_test_case == VtjTestCase.WRONG_LAST_NAME.value
-                    else last_name
-                ),
-                social_security_number=social_security_number,
-                is_alive=vtj_test_case != VtjTestCase.DEAD.value,
-                is_home_municipality_helsinki=(
-                    vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI.value
-                ),
-            )
+        return VTJService.get_vtj_test_case(self.last_name)
 
-    def fetch_vtj_json(self, end_user: str):
-        if settings.NEXT_PUBLIC_DISABLE_VTJ:
-            # Not fetching data because VTJ integration is disabled and not mocked
-            return None
-        elif settings.NEXT_PUBLIC_MOCK_FLAG:
-            # VTJ integration enabled and mocked
-            if self.is_vtj_test_case:
-                if self.vtj_test_case == VtjTestCase.NO_ANSWER.value:
-                    raise ReadTimeout()
-                else:
-                    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
-                        vtj_test_case=self.vtj_test_case,
-                        first_name=self.first_name,
-                        last_name=self.last_name,
-                        social_security_number=self.social_security_number,
-                    )
-            else:
-                return mock_vtj_person_id_query_not_found_content()
-        else:
-            # VTJ integration is enabled and not mocked
-            return json.dumps(
-                VTJClient().get_personal_info(self.social_security_number, end_user)
-            )
-
-    def _update_is_vtj_data_restricted(self, vtj_json: str):
+    def update_vtj_restriction_status(self, vtj_json: str):
         """
         Update is_vtj_data_restricted field based on given VTJ JSON.
         """
@@ -442,17 +381,6 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self.is_vtj_data_restricted = VTJService.is_response_restricted(
                 vtj_json_dict
             )
-
-    def _vtj_values(self, jsonpath_expression) -> list:
-        try:
-            vtj_json = json.loads(self.encrypted_original_vtj_json)
-        except (json.decoder.JSONDecodeError, TypeError):
-            return []
-
-        return [
-            match.value
-            for match in jsonpath_ng.parse(jsonpath_expression).find(vtj_json)
-        ]
 
     def handler_processing_url(self):
         return handler_youth_application_processing_url(self.pk)
@@ -781,27 +709,33 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def vtj_json(self) -> Optional[dict]:
+        """
+        Return the decrypted VTJ JSON data as a dictionary.
+        """
+        vtj_json = self.encrypted_handler_vtj_json or self.encrypted_original_vtj_json
+        try:
+            return json.loads(vtj_json)
+        except (json.decoder.JSONDecodeError, TypeError):
+            return None
+
+    @property
     def is_social_security_number_valid_according_to_vtj(self) -> bool:
-        # TODO: Move to VTJService
-        return are_same_text_lists(
-            self._vtj_values("$.Henkilo.Henkilotunnus.['@voimassaolokoodi', '#text']"),
-            ["1", self.social_security_number],
-        )
+        from applications.services import VTJService
+
+        return VTJService.is_ssn_valid(self.vtj_json, self.social_security_number)
 
     @property
     def is_applicant_dead_according_to_vtj(self) -> bool:
-        # TODO: Move to VTJService
-        return "1" in self._vtj_values("$.Henkilo.Kuolintiedot.Kuollut") or (
-            len(self._vtj_values("$.Henkilo.Kuolintiedot.Kuolinpvm")) > 0
-            and set(self._vtj_values("$.Henkilo.Kuolintiedot.Kuolinpvm")) != {None}
-        )
+        from applications.services import VTJService
+
+        return VTJService.is_dead(self.vtj_json)
 
     @property
     def vtj_last_name(self) -> Optional[str]:
-        # TODO: Move to VTJService
-        if vtj_last_names := self._vtj_values("$.Henkilo.NykyinenSukunimi.Sukunimi"):
-            return vtj_last_names[0] or ""
-        return ""
+        from applications.services import VTJService
+
+        return VTJService.get_last_name(self.vtj_json)
 
     @property
     def attends_helsinkian_school(self) -> bool:
@@ -809,10 +743,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def vtj_home_municipality(self) -> Optional[str]:
-        # TODO: Move to VTJService
-        if vtj_home_municipality := self._vtj_values("$.Henkilo.Kotikunta.KuntaS"):
-            return vtj_home_municipality[0] or ""
-        return ""
+        from applications.services import VTJService
+
+        return VTJService.get_home_municipality(self.vtj_json)
 
     @property
     def home_municipality(self) -> Optional[str]:

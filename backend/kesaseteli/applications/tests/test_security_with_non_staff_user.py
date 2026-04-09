@@ -898,7 +898,7 @@ def test_youth_application_list_valid_post(user_client):
     )
 
     with mock.patch(
-        "applications.models.YouthApplication.fetch_vtj_json",
+        "applications.services.VTJService.fetch_vtj_json",
         return_value=mock_vtj_data,
     ) as mock_fetch_vtj_json:
         response = user_client.post(list_url, data=post_data)
