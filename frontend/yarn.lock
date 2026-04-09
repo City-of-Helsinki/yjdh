@@ -1496,7 +1496,7 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@babel/runtime@^7.27.6", "@babel/runtime@^7.28.6":
+"@babel/runtime@^7.26.10", "@babel/runtime@^7.27.6", "@babel/runtime@^7.28.6":
   version "7.29.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.2.tgz#9a6e2d05f4b6692e1801cd4fb176ad823930ed5e"
   integrity sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==
@@ -10466,6 +10466,11 @@ hds-core@3.11.0:
   resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-3.11.0.tgz#27d357da72752a402d97aa7904b3491be09e3225"
   integrity sha512-405+8VHW4N3/y5ESWGOv6vUIbgp/DCYjQVpdVLsWg6RowrUwNk9VvU6N2ZpEP8HM3ujJYu/bcIQ6zzwvAOFMCA==
 
+hds-core@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-5.0.0.tgz#3937375efddf715002c3c109ab508b61b2cefdba"
+  integrity sha512-pzx9gsg1zH6U8hmRrdGybw9NjKaJ5XjIf8hbr9cw320QxwkklvDgDYgad4U9B/TdX8cM16k1IZWyd/ellO5hEQ==
+
 hds-design-tokens@^3.11.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-3.11.0.tgz#b232d0e223e62b4f2db29bed4d96c64c70668e7b"
@@ -10504,6 +10509,40 @@ hds-react@^3.11.0:
     react-popper "2.2.5"
     react-use-measure "2.0.1"
     react-virtual "2.10.4"
+    uuid "^9.0.0"
+    yup "^1.0.2"
+
+hds-react@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-5.0.0.tgz#5501958c8409738c481546b1fbc070b33a5f785a"
+  integrity sha512-MM9SLA5mlQVvbxrmTmkG+0NoBW7QArX+FttNdauptD8Qj+fAW5gOVpA9Ay2fKbMq643t7DAGWdYtCWy/n/N7tw==
+  dependencies:
+    "@apollo/client" "^3.10.1"
+    "@babel/runtime" "^7.26.10"
+    "@emotion/styled-base" "^11.0.0"
+    "@hookform/resolvers" "^2.9.11"
+    "@juggle/resize-observer" "3.2.0"
+    "@popperjs/core" "2.11.5"
+    "@react-aria/visually-hidden" "3.8.16"
+    "@react-spring/web" "9.3.0"
+    "@types/cookie" "^0.4.1"
+    "@typescript-eslint/parser" "^6.19.0"
+    await-to-js "^3.0.0"
+    cookie "^0.4.1"
+    crc-32 "1.2.0"
+    date-fns "2.16.1"
+    graphql "^16.8.1"
+    hds-core "5.0.0"
+    jwt-decode "^3.1.2"
+    kashe "1.0.4"
+    lodash "^4.17.21"
+    memoize-one "5.2.1"
+    oidc-client-ts "^2.4.1"
+    postcss "^8.4.21"
+    react-hook-form "^7.43.3"
+    react-merge-refs "1.1.0"
+    react-popper "2.2.5"
+    react-use-measure "2.0.1"
     uuid "^9.0.0"
     yup "^1.0.2"
 

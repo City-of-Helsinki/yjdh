@@ -1,6 +1,6 @@
 import { $NoApplicationsContainer } from 'benefit/applicant/components/applications/Applications.sc';
 import { ROUTES } from 'benefit/applicant/constants';
-import { Button, IconDocument, IconPlus } from 'hds-react';
+import { Button, IconDocument, IconPlus, IconSize } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -11,11 +11,11 @@ const NoApplications = (): JSX.Element => {
 
   return (
     <$NoApplicationsContainer>
-      <IconDocument size="xl" />
+      <IconDocument size={IconSize.ExtraLarge} />
       <h2>{t('common:applications.list.noApplications')}</h2>
       <Button
         onClick={() => router.push(ROUTES.APPLICATION_FORM)}
-        iconLeft={<IconPlus />}
+        iconStart={<IconPlus />}
         theme="coat"
       >
         {t('common:mainIngress.frontPage.newApplicationBtnText')}

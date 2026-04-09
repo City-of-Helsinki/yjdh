@@ -1,7 +1,7 @@
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-import { Button } from 'hds-react';
+import { Button, ButtonVariant } from 'hds-react';
 import url from 'pdfjs-dist/build/pdf.worker';
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -55,7 +55,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ file, scale }) => {
             <Button
               disabled={currentPage === 1}
               theme="black"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={handleBack}
             >
               {t('common:pdfViewer.previous')}
@@ -70,7 +70,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ file, scale }) => {
             <Button
               disabled={currentPage === pagesCount}
               theme="black"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={handleNext}
             >
               {t('common:pdfViewer.next')}

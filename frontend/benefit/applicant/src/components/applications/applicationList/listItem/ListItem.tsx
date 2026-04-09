@@ -3,7 +3,7 @@ import { Loading } from 'benefit/applicant/types/common';
 import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { Button, IconSpeechbubbleText } from 'hds-react';
+import { Button, ButtonVariant, IconSpeechbubbleText } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -118,10 +118,10 @@ const ListItem: React.FC<ListItemProps> = (props) => {
               data-testid="application-edit-button"
               variant={
                 status === APPLICATION_STATUSES.INFO_REQUIRED
-                  ? 'primary'
-                  : 'secondary'
+                  ? ButtonVariant.Primary
+                  : ButtonVariant.Secondary
               }
-              iconLeft={ActionIcon && <ActionIcon />}
+              iconStart={ActionIcon && <ActionIcon />}
               theme={
                 status === APPLICATION_STATUSES.INFO_REQUIRED ? 'coat' : 'black'
               }

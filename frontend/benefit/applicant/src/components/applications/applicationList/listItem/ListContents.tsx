@@ -68,7 +68,7 @@ const ListContents = ({
             <$Heading>{headingText}</$Heading>
             <$OrderByContainer>
               {(orderByOptions?.length ?? 0) > 1 && (
-                <Select<OptionType>
+                <Select
                   id={`application-list-${status.join('-')}-order-by`}
                   options={orderByOptions || []}
                   defaultValue={orderBy}
