@@ -15,16 +15,31 @@ from shared.ytj.ytj_client import YTJClient
 LOGGER = logging.getLogger(__name__)
 
 
-def get_or_create_company_using_company_data(
-    company_data: dict, ytj_data: dict
-) -> Company:
+COMPANY_SAFE_DEFAULTS = {
+    "company_form": "",
+    "industry": "",
+    "street_address": "",
+    "postcode": "",
+    "city": "",
+}
+
+
+def get_or_create_company_using_company_data(company_data: dict) -> Company:
     """
     Get or create a company instance using a dict of the company data and
     attach the ytj_data json for the instance.
     """
+    # Use business_id as the primary lookup key to avoid duplicates if other
+    # fields (like address) have changed in YTJ.
+    business_id = company_data.pop("business_id")
+    ytj_data = company_data.pop("ytj_json", {})
+
+    defaults = COMPANY_SAFE_DEFAULTS | {"name": "", "ytj_json": ytj_data} | company_data
+
     company, created = Company.objects.get_or_create(
-        **company_data, defaults={"ytj_json": ytj_data}
+        business_id=business_id, defaults=defaults
     )
+
     if created:
         LOGGER.info(
             f"Created company {company.name} ({company.business_id}) using YTJ data"
@@ -43,7 +58,8 @@ def get_or_create_company_from_ytj_api(business_id: str) -> Company:
     ytj_data = ytj_client.get_company_info_with_business_id(business_id)
     company_data = ytj_client.get_company_data_from_ytj_data(ytj_data)
 
-    return get_or_create_company_using_company_data(company_data, ytj_data)
+    company_data["ytj_json"] = ytj_data
+    return get_or_create_company_using_company_data(company_data)
 
 
 def get_or_create_company_with_name_and_business_id(
@@ -61,6 +77,7 @@ def get_or_create_company_with_name_and_business_id(
     company, _ = Company.objects.get_or_create(
         name=name,
         business_id=business_id,
+        defaults=COMPANY_SAFE_DEFAULTS,
     )
     return company
 
