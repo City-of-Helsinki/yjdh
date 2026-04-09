@@ -122,6 +122,13 @@ FIELDS = [
     ExcelField(_("Kotipostinumero"), "%s", ["employee_postcode"], 15, "#DCEDF8"),
     ExcelField(_("Puhelin"), "%s", ["employee_phone_number"], 30, "#DCEDF8"),
     ExcelField(_("Kotikaupunki"), "%s", ["employee_home_city"], 30, "#DCEDF8"),
+    ExcelField(
+        _("VTJ-tietojen luovutuskielto (ts. turvakielto)"),
+        "%s",
+        ["is_vtj_data_restricted"],
+        30,
+        "#DCEDF8",
+    ),
     ExcelField("", "", [], 5, "#7F7F7F"),
     ExcelField(
         _("Työnantaja muoto"),
