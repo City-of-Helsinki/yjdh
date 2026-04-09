@@ -2,6 +2,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from auditlog.models import LogEntry
+import jsonpath_ng
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.template import Context, Template
@@ -264,4 +265,63 @@ class AuditAccessLogService:
             actor=actor,
             actor_email=actor_email,
             additional_data=additional_data,
+class VTJService:
+    @staticmethod
+    def _is_search_successful(vtj_json_dict: dict) -> bool:
+        """Check if the VTJ query return code indicates success."""
+        return vtj_json_dict.get("Paluukoodi", {}).get("@koodi") == "0000"
+
+    @staticmethod
+    def _is_person_found(vtj_json_dict: dict) -> bool:
+        """Check if the search basis return code indicates the person was found."""
+        return (
+            vtj_json_dict.get("Hakuperusteet", {})
+            .get("Henkilotunnus", {})
+            .get("@hakuperustePaluukoodi")
+            == "1"
+        )
+
+    @staticmethod
+    def _has_restricted_residency_data(vtj_json_dict: dict) -> bool:
+        """
+        Check if key residency fields are null, which indicates restricted data
+        for a found person.
+        """
+
+        # Using jsonpath_ng for consistency with models.py logic
+        def get_value(expression):
+            matches = jsonpath_ng.parse(expression).find(vtj_json_dict)
+            return matches[0].value if matches else None
+
+        kuntanumero = get_value("$.Henkilo.Kotikunta.Kuntanumero")
+        lahiosoite_s = get_value("$.Henkilo.VakinainenKotimainenLahiosoite.LahiosoiteS")
+
+        return kuntanumero is None and lahiosoite_s is None
+
+    @staticmethod
+    def is_response_restricted(vtj_json_dict: dict) -> bool:
+        """
+        Detect if the VTJ response indicates that the personal data is restricted
+        due to a non-disclosure of personal data (turvakielto).
+
+        Example of a restricted response structure::
+
+            {
+                "Paluukoodi": {"@koodi": "0000"},
+                "Hakuperusteet": {
+                    "Henkilotunnus": {"@hakuperustePaluukoodi": "1", ...}
+                },
+                "Henkilo": {
+                    "Kotikunta": {"Kuntanumero": None, "KuntaS": None, ...},
+                    "VakinainenKotimainenLahiosoite": {"LahiosoiteS": None, ...}
+                }
+            }
+        """
+        if not vtj_json_dict or not isinstance(vtj_json_dict, dict):
+            return False
+
+        return (
+            VTJService._is_search_successful(vtj_json_dict)
+            and VTJService._is_person_found(vtj_json_dict)
+            and VTJService._has_restricted_residency_data(vtj_json_dict)
         )

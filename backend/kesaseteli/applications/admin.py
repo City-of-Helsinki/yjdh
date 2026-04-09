@@ -381,6 +381,7 @@ class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
         "status",
         "school",
         "is_valid_school",
+        "is_vtj_data_restricted",
         "created_at",
         "modified_at",
     ]
@@ -389,6 +390,7 @@ class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
         "modified_at",
         "target_group",
         "status",
+        "is_vtj_data_restricted",
         IsValidSchoolFilter,
         SchoolFilter,
     ]

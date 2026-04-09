@@ -226,6 +226,7 @@ class VtjTestCase(models.TextChoices):
     NO_ANSWER = "Ei vastaa", _("Ei vastaa")
     HOME_MUNICIPALITY_HELSINKI = "Kotikunta Helsinki", _("Kotikunta Helsinki")
     HOME_MUNICIPALITY_UTSJOKI = "Kotikunta Utsjoki", _("Kotikunta Utsjoki")
+    RESTRICTED = "Turvakielto", _("Turvakielto")
 
     @staticmethod
     def first_name():
