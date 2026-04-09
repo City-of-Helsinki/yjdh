@@ -206,6 +206,7 @@ def get_read_only_fields() -> List[str]:
         "additional_info_provided_at",
         "non_vtj_birthdate",
         "non_vtj_home_municipality",
+        "is_vtj_data_restricted",
     ]
 
 

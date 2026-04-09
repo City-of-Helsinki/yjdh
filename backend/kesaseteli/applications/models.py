@@ -38,6 +38,7 @@ from applications.target_groups import get_target_group_choices
 from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
+    mock_vtj_person_id_query_restricted_content,
 )
 from applications.validators import validate_template_syntax
 from common.permissions import HandlerPermission
@@ -344,6 +345,16 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         max_length=4096,
         verbose_name=_("additional info description"),
     )
+    is_vtj_data_restricted = models.BooleanField(
+        default=False,
+        verbose_name=_("is vtj data restricted"),
+        help_text=_(
+            "The Population Information System (VTJ) has restricted data disclosure "
+            "(a non-disclosure of personal data / turvakielto). This prevents "
+            "automatic retrieval of municipality and address data, requiring manual "
+            "application processing."
+        ),
+    )
     objects = YouthApplicationQuerySet.as_manager()
 
     @property
@@ -372,6 +383,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             return mock_vtj_person_id_query_not_found_content()
         elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
             return None
+        elif vtj_test_case == VtjTestCase.RESTRICTED.value:
+            return mock_vtj_person_id_query_restricted_content(
+                first_name=first_name,
+                last_name=last_name,
+                social_security_number=social_security_number,
+            )
         else:
             return mock_vtj_person_id_query_found_content(
                 first_name=first_name,
@@ -409,6 +426,21 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             # VTJ integration is enabled and not mocked
             return json.dumps(
                 VTJClient().get_personal_info(self.social_security_number, end_user)
+            )
+
+    def _update_is_vtj_data_restricted(self, vtj_json: str):
+        """
+        Update is_vtj_data_restricted field based on given VTJ JSON.
+        """
+        from applications.services import VTJService
+
+        try:
+            vtj_json_dict = json.loads(vtj_json)
+        except (json.decoder.JSONDecodeError, TypeError):
+            self.is_vtj_data_restricted = False
+        else:
+            self.is_vtj_data_restricted = VTJService.is_response_restricted(
+                vtj_json_dict
             )
 
     def _vtj_values(self, jsonpath_expression) -> list:
@@ -750,6 +782,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def is_social_security_number_valid_according_to_vtj(self) -> bool:
+        # TODO: Move to VTJService
         return are_same_text_lists(
             self._vtj_values("$.Henkilo.Henkilotunnus.['@voimassaolokoodi', '#text']"),
             ["1", self.social_security_number],
@@ -757,6 +790,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def is_applicant_dead_according_to_vtj(self) -> bool:
+        # TODO: Move to VTJService
         return "1" in self._vtj_values("$.Henkilo.Kuolintiedot.Kuollut") or (
             len(self._vtj_values("$.Henkilo.Kuolintiedot.Kuolinpvm")) > 0
             and set(self._vtj_values("$.Henkilo.Kuolintiedot.Kuolinpvm")) != {None}
@@ -764,8 +798,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def vtj_last_name(self) -> Optional[str]:
+        # TODO: Move to VTJService
         if vtj_last_names := self._vtj_values("$.Henkilo.NykyinenSukunimi.Sukunimi"):
-            return vtj_last_names[0]
+            return vtj_last_names[0] or ""
         return ""
 
     @property
@@ -774,8 +809,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def vtj_home_municipality(self) -> Optional[str]:
+        # TODO: Move to VTJService
         if vtj_home_municipality := self._vtj_values("$.Henkilo.Kotikunta.KuntaS"):
-            return vtj_home_municipality[0]
+            return vtj_home_municipality[0] or ""
         return ""
 
     @property
@@ -830,6 +866,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             or not self.is_social_security_number_valid_according_to_vtj
             or not self.is_last_name_as_in_vtj
             or not self.is_applicant_in_target_group
+            or self.is_vtj_data_restricted
         )
 
     @property
@@ -1342,6 +1379,14 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
             self.youth_summer_voucher.youth_application.postcode
             if self.youth_summer_voucher
             else ""
+        )
+
+    @property
+    def is_vtj_data_restricted(self) -> bool:
+        return (
+            self.youth_summer_voucher.youth_application.is_vtj_data_restricted
+            if self.youth_summer_voucher
+            else False
         )
 
     employment_postcode = models.CharField(
