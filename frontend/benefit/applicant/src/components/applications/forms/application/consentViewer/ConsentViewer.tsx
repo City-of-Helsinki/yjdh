@@ -1,6 +1,6 @@
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { TermsProp, TextProp } from 'benefit-shared/types/application';
-import { Link } from 'hds-react';
+import { Link, LinkSize } from 'hds-react';
 import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -21,7 +21,7 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
             style={{ color: theme.colors.black }}
             external
             openInExternalDomainAriaLabel="Opens a different website"
-            size="M"
+            size={LinkSize.Medium}
             openInNewTab
             href={
               data.applicantTermsApproval?.terms?.[

@@ -1,104 +1,67 @@
-import {
-  ASKEM_HOSTNAME,
-  ROUTES,
-  SUPPORTED_LANGUAGES,
-} from 'benefit/applicant/constants';
+import { ROUTES } from 'benefit/applicant/constants';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { Button, Container, CookieModal, CookiePage } from 'hds-react';
+import {
+  Button,
+  Container,
+  CookieBanner,
+  CookieConsentContextProps,
+  CookieConsentContextProvider,
+  CookieSettingsPage,
+} from 'hds-react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import React from 'react';
-import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useCookieConsent from 'shared/hooks/useCookieConsent';
+import { MAIN_CONTENT_ID } from 'shared/constants';
+import siteSettings from '../../../public/assets/siteSettings.json';
+
+declare global {
+  var _paq: Array<Array<string | number | boolean>> | undefined;
+}
+
+const COOKIE_CONSENT_GROUP = {
+  Essential: 'essential',
+  Shared: 'shared',
+  Statistics: 'statistics',
+  Tunnistamo: 'tunnistamo',
+};
 
 const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const locale = useLocale();
   const router = useRouter();
-  const { axios } = useBackendAPI();
-  const { pathname, asPath, query } = router;
   const { t } = useTranslation();
   const submittedApplication = useSearchParams().get('submittedApplication');
 
-  const onLanguageChange = (newLanguage: SUPPORTED_LANGUAGES): void => {
-    void axios.get(BackendEndpoint.USER_OPTIONS, {
-      params: { lang: newLanguage },
-    });
+  const getCookieConsentSettings = (locale = 'fi') => {
+    const cookieConsentProps: Partial<CookieConsentContextProps> = {
+      onChange: (changeEvent) => {
+        const { acceptedGroups } = changeEvent;
 
-    void router.push({ pathname, query }, asPath, {
-      locale: newLanguage,
-    });
-  };
+        const hasStatisticsConsent = acceptedGroups.includes(
+          COOKIE_CONSENT_GROUP.Statistics
+        );
 
-  type CookieTexts = {
-    title: { fi: string; sv: string; en: string };
-    askemDescription: { fi: string; sv: string; en: string };
-  };
+        if (hasStatisticsConsent) {
+          //  start tracking
+          if (globalThis._paq) {
+            globalThis._paq.push(['setConsentGiven']);
+            globalThis._paq.push(['setCookieConsentGiven']);
+          }
+        } else {
+          // tell matomo to forget consent
+          if (globalThis._paq) {
+            globalThis._paq.push(['forgetConsentGiven']);
+          }
+        }
+      },
+      siteSettings: siteSettings,
+      options: {
+        focusTargetSelector: `#${MAIN_CONTENT_ID}`,
+        language: locale,
+      },
+    };
 
-  const text: CookieTexts = {
-    title: {
-      fi: 'Helsinki-lisä',
-      sv: 'Helsingforstillägg',
-      en: 'Helsinki benefit',
-    },
-    askemDescription: {
-      fi: 'Askem-reaktionappien toimintaan liittyvä tietue.',
-      sv: 'En post relaterad till driften av reaktionsknappen Askem.',
-      en: 'A record related to the operation of the Askem react buttons.',
-    },
-  };
-
-  const askemDescription = text.askemDescription[locale];
-
-  const { onAllConsentsGiven, onConsentsParsed, optionalCookies } =
-    useCookieConsent();
-
-  const { groups } = optionalCookies ?? { groups: [] };
-  const { cookies } = groups?.[0] ?? { cookies: [] };
-
-  const contentSource = {
-    siteName: text.title[locale],
-    currentLanguage: locale,
-    optionalCookies: {
-      groups: [
-        {
-          commonGroup: 'statistics',
-          cookies: [
-            ...(cookies ?? []),
-            {
-              id: 'rns',
-              name: 'rnsbid',
-              hostName: ASKEM_HOSTNAME,
-              description: askemDescription,
-              expiration: '-',
-            },
-            {
-              id: 'rnsbid_ts',
-              name: 'rnsbid_ts',
-              hostName: ASKEM_HOSTNAME,
-              description: askemDescription,
-              expiration: '-',
-            },
-            {
-              id: 'rns_reaction',
-              name: 'rns_reaction_*',
-              hostName: ASKEM_HOSTNAME,
-              description: askemDescription,
-              expiration: '-',
-            },
-          ],
-        },
-      ],
-    },
-    language: {
-      onLanguageChange,
-    },
-
-    onConsentsParsed,
-    // @ts-expect-error: Type mismatch with HDS React's internal ConsentObject.
-    onAllConsentsGiven: onAllConsentsGiven as (consents: ConsentObject) => void,
-    focusTargetSelector: '#main_content',
+    return cookieConsentProps;
   };
 
   const handleBack = (): void => {
@@ -112,19 +75,19 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
     }
   };
 
-  return asPage ? (
-    <>
-      {/* @ts-expect-error: Type mismatch with HDS React's CookieContentSource. */}
-      <CookiePage contentSource={contentSource} />
-      <Container>
-        <Button onClick={handleBack}>
-          {t('common:applications.actions.back')}
-        </Button>
-      </Container>
-    </>
-  ) : (
-    // @ts-expect-error: Type mismatch with HDS React's CookieContentSource.
-    <CookieModal contentSource={contentSource} />
+  return (
+    <CookieConsentContextProvider {...getCookieConsentSettings(locale)}>
+      {asPage ? (
+        <>
+          <CookieSettingsPage />
+          <Button onClick={handleBack}>
+            {t('common:applications.actions.back')}
+          </Button>
+        </>
+      ) : (
+        <CookieBanner />
+      )}
+    </CookieConsentContextProvider>
   );
 };
 

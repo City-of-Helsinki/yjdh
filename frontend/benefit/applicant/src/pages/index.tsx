@@ -6,7 +6,7 @@ import FrontPageMainIngress from 'benefit/applicant/components/mainIngress/front
 import PrerequisiteReminder from 'benefit/applicant/components/prerequisiteReminder/PrerequisiteReminder';
 import AppContext from 'benefit/applicant/context/AppContext';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Button, IconArrowRight } from 'hds-react';
+import { Button, ButtonVariant, IconArrowRight } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -104,9 +104,9 @@ const ApplicantIndex: NextPage = () => {
                 <$ListActionButtonContainer>
                   <Button
                     onClick={() => router.push(ROUTES.DECISIONS)}
-                    variant="secondary"
+                    variant={ButtonVariant.Secondary}
                     theme="black"
-                    iconRight={<IconArrowRight />}
+                    iconEnd={<IconArrowRight />}
                   >
                     {t('common:applications.list.navigateToDecisions')}
                   </Button>

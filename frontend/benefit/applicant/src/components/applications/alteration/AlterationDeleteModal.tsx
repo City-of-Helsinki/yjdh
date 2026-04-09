@@ -1,7 +1,13 @@
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
 import { ApplicationAlteration } from 'benefit-shared/types/application';
-import { Button, Dialog, IconInfoCircle, IconTrash } from 'hds-react';
+import {
+  Button,
+  ButtonVariant,
+  Dialog,
+  IconInfoCircle,
+  IconTrash,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import React from 'react';
 import Modal from 'shared/components/modal/Modal';
@@ -57,7 +63,7 @@ const AlterationDeleteModal = ({
           <Dialog.ActionButtons>
             <Button
               theme="coat"
-              iconLeft={<IconTrash />}
+              iconStart={<IconTrash />}
               onClick={onDelete}
               disabled={isDeleting}
               isLoading={isDeleting}
@@ -69,7 +75,7 @@ const AlterationDeleteModal = ({
             </Button>
             <Button
               theme="coat"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               disabled={isDeleting}
               onClick={onClose}
             >

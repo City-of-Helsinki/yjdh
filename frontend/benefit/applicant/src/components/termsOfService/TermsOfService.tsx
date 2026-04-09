@@ -1,5 +1,5 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
-import { Button } from 'hds-react';
+import { Button, ButtonVariant } from 'hds-react';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import Container from 'shared/components/container/Container';
@@ -103,7 +103,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
             >
               <Button
                 theme="black"
-                variant="secondary"
+                variant={ButtonVariant.Secondary}
                 onClick={() => openFileInNewTab(termsInEffectUrl)}
               >
                 {t('common:applications.actions.openTermsAsPDF')}
@@ -117,7 +117,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
         <$GridCell $colSpan={7} css={{ display: 'flex' }}>
           <Button
             theme="coat"
-            variant="primary"
+            variant={ButtonVariant.Primary}
             onClick={() =>
               user?.termsOfServiceApprovalNeeded
                 ? mutate(user, {
@@ -129,7 +129,11 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
           >
             {t('common:applications.actions.continueToService')}
           </Button>
-          <Button theme="black" variant="secondary" onClick={logout}>
+          <Button
+            theme="black"
+            variant={ButtonVariant.Secondary}
+            onClick={logout}
+          >
             {t('common:applications.actions.pauseAndExit')}
           </Button>
         </$GridCell>

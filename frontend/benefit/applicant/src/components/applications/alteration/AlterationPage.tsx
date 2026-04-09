@@ -20,7 +20,12 @@ import {
   ALTERATION_TYPE,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { Button, IconArrowLeft, LoadingSpinner } from 'hds-react';
+import {
+  Button,
+  ButtonVariant,
+  IconArrowLeft,
+  LoadingSpinner,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Container from 'shared/components/container/Container';
@@ -71,8 +76,8 @@ const AlterationPage = (): JSX.Element => {
       <$BackButtonContainer>
         <Button
           theme="black"
-          variant="supplementary"
-          iconLeft={<IconArrowLeft />}
+          variant={ButtonVariant.Supplementary}
+          iconStart={<IconArrowLeft />}
           onClick={returnToApplication}
           size="small"
         >
