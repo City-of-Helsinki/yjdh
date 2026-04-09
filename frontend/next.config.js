@@ -4,6 +4,8 @@ const { withSentryConfig } = require('@sentry/nextjs');
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const pc = require('picocolors');
 const packageJson = require('./package.json');
+const fs = require('fs');
+const path = require('path');
 
 const trueEnv = ['true', '1', 'yes'];
 
@@ -52,7 +54,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     eslint: {
       ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
     },
-    transpilePackages: ['@frontend', 'pdfjs-dist'],
+    transpilePackages: ['@frontend'],
     webpack: (config) => {
       config.resolve.fallback = {
         fs: false,
@@ -74,14 +76,18 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       });
 
       if (appName && appName === 'benefit/applicant') {
-        // unshift so this rule runs before webpack's built-in .mjs ESM handling
-        config.module.rules.unshift({
-          test: /pdfjs-dist\/build\/pdf\.worker\.min\.mjs$/,
-          type: 'asset/resource',
-          generator: {
-            filename: 'static/chunks/[name].[hash][ext]',
-          },
-        });
+        // Copy pdfjs worker to public/ so it can be served as a static file,
+        // avoiding Next.js ESM external resolution issues entirely.
+        try {
+          const pdfjsPkg = require.resolve('pdfjs-dist/package.json');
+          const workerSrc = path.join(path.dirname(pdfjsPkg), 'build', 'pdf.worker.min.mjs');
+          const publicDir = path.join(process.cwd(), 'public');
+          const workerDest = path.join(publicDir, 'pdf.worker.min.mjs');
+          fs.mkdirSync(publicDir, { recursive: true });
+          fs.copyFileSync(workerSrc, workerDest);
+        } catch (e) {
+          console.warn('Could not copy pdfjs worker to public/:', e.message);
+        }
       }
 
       // Enable file watching using polling if WATCHPACK_POLLING is enabled.
