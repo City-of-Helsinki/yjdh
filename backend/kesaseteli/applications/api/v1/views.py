@@ -61,7 +61,7 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.services import AuditAccessLogService
+from applications.services import AuditAccessLogService, VTJService
 from applications.target_groups import (
     AbstractTargetGroup,
     get_target_group_data,
@@ -186,14 +186,16 @@ class YouthApplicationViewSet(ModelViewSet):
             youth_application.has_social_security_number
             and not youth_application.is_handled
         ):
-            youth_application.encrypted_handler_vtj_json = (
-                youth_application.fetch_vtj_json(
-                    end_user=VTJClient.get_end_user(request)
-                )
+            # Fetch VTJ data and update encrypted_handler_vtj_json
+            youth_application.encrypted_handler_vtj_json = VTJService.fetch_vtj_json(
+                youth_application, end_user=VTJClient.get_end_user(request)
             )
-            youth_application._update_is_vtj_data_restricted(
+
+            # Update VTJ data restriction status
+            youth_application.update_vtj_restriction_status(
                 youth_application.encrypted_handler_vtj_json
             )
+
             youth_application.save(
                 update_fields=["encrypted_handler_vtj_json", "is_vtj_data_restricted"]
             )
@@ -531,13 +533,13 @@ class YouthApplicationViewSet(ModelViewSet):
             youth_application = serializer.instance
 
             # Fetch the VTJ JSON data and save it
-            youth_application.encrypted_original_vtj_json = (
-                youth_application.fetch_vtj_json(end_user="")
+            youth_application.encrypted_original_vtj_json = VTJService.fetch_vtj_json(
+                youth_application, end_user=""
             )
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.encrypted_original_vtj_json
             )
-            youth_application._update_is_vtj_data_restricted(
+            youth_application.update_vtj_restriction_status(
                 youth_application.encrypted_original_vtj_json
             )
             youth_application.save(
