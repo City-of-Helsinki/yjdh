@@ -15,7 +15,12 @@ import {
   ApplicationAlterationData,
 } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, IconAlertCircleFill } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconAlertCircleFill,
+} from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -144,13 +149,17 @@ const AlterationFormContainer: React.FC<Props> = ({
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || (isSubmitted && !formik.isValid)}
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             isLoading={isSubmitting}
             loadingText={t(`common:utility.submitting`)}
           >
             {t(`common:applications.alterations.new.actions.submit`)}
           </Button>
-          <Button theme="black" variant="secondary" onClick={onCancel}>
+          <Button
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
+            onClick={onCancel}
+          >
             {t(`common:applications.alterations.new.actions.cancel`)}
           </Button>
           {isSubmitted && !formik.isValid && (

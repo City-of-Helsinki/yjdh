@@ -238,8 +238,11 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
               applicationStatus
             )}`
           )}
-          {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
-            dateForAdditionalInformationNeededBy(additionalInformationNeededBy)}
+          {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED
+            ? dateForAdditionalInformationNeededBy(
+                additionalInformationNeededBy
+              )
+            : ''}
         </Tag>
       </$TagWrapper>
     ),

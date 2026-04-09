@@ -67,12 +67,16 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
     status,
   }: TableTransforms): JSX.Element => (
     <$TagWrapper $colors={getTagStyleForStatus(status)}>
-      <Tag>
-        {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
-        {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
-        {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
-        {status === APPLICATION_STATUSES.ARCHIVAL && <IconHistory />}
-
+      <Tag
+        iconStart={
+          <>
+            {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
+            {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
+            {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
+            {status === APPLICATION_STATUSES.ARCHIVAL && <IconHistory />}
+          </>
+        }
+      >
         {t(
           `common:applications.list.columns.applicationStatuses.${String(
             status

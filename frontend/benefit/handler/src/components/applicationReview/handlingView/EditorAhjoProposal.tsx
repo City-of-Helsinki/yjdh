@@ -5,7 +5,15 @@ import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { EditorContent, useEditor } from '@tiptap/react';
 import AppContext from 'benefit/handler/context/AppContext';
-import { Button, IconArrowRedo, IconArrowUndo, IconTextTool } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonSize,
+  ButtonVariant,
+  IconArrowRedo,
+  IconArrowUndo,
+  IconTextTool,
+} from 'hds-react';
 import React, { useEffect } from 'react';
 
 import { $Content, $EditorWrapper, $Toolbar } from './EditorAhjoProposal.sc';
@@ -57,10 +65,10 @@ const EditorAhjoProposal: React.FC<EditorProps> = ({
     <$EditorWrapper>
       <$Toolbar>
         <Button
-          size="small"
-          theme="black"
-          iconRight={null}
-          variant="supplementary"
+          size={ButtonSize.Small}
+          theme={ButtonPresetTheme.Black}
+          iconEnd={null}
+          variant={ButtonVariant.Supplementary}
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -72,20 +80,20 @@ const EditorAhjoProposal: React.FC<EditorProps> = ({
         </Button>
 
         <Button
-          iconRight={null}
-          size="small"
-          theme="black"
-          variant="supplementary"
+          iconEnd={null}
+          size={ButtonSize.Small}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Supplementary}
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
         >
           <IconArrowUndo />
         </Button>
         <Button
-          iconRight={null}
-          size="small"
-          theme="black"
-          variant="supplementary"
+          iconEnd={null}
+          size={ButtonSize.Small}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Supplementary}
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
         >

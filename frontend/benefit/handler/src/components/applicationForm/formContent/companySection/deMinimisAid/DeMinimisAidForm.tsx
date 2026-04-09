@@ -5,7 +5,13 @@ import {
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
-import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  DateInput,
+  IconPlusCircle,
+  TextInput,
+} from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React, { useCallback, useEffect } from 'react';
 import {
@@ -153,10 +159,10 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
         `}
       >
         <Button
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           disabled={validateDeMinimisRow()}
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleSubmit(e)}
-          iconLeft={<IconPlusCircle />}
+          iconStart={<IconPlusCircle />}
           fullWidth
         >
           {t(`${translationsBase}.deMinimisAidsAdd`)}
