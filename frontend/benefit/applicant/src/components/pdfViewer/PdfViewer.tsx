@@ -2,6 +2,8 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 import { Button } from 'hds-react';
+// eslint-disable-next-line import/extensions
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs';
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import {
@@ -13,10 +15,7 @@ import { useTheme } from 'styled-components';
 import { $ActionsWrapper, $ViewerWrapper } from './PdfViewer.sc';
 import { usePdfViewer } from './usePdfViewer';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = String(workerUrl);
 
 type PdfViewerProps = {
   file: string;

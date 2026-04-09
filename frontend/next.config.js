@@ -74,7 +74,8 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       });
 
       if (appName && appName === 'benefit/applicant') {
-        config.module.rules.push({
+        // unshift so this rule runs before webpack's built-in .mjs ESM handling
+        config.module.rules.unshift({
           test: /pdfjs-dist\/build\/pdf\.worker\.min\.mjs$/,
           type: 'asset/resource',
           generator: {
