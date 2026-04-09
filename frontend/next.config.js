@@ -75,7 +75,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
 
       if (appName && appName === 'benefit/applicant') {
         config.module.rules.push({
-          test: /pdfjs-dist\/build\/pdf\.worker\.js$/,
+          test: /pdfjs-dist\/build\/pdf\.worker\.min\.mjs$/,
           type: 'asset/resource',
           generator: {
             filename: 'static/chunks/[name].[hash][ext]',
