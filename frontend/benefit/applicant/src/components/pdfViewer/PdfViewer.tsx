@@ -1,8 +1,7 @@
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 import { Button } from 'hds-react';
-import url from 'pdfjs-dist/build/pdf.worker';
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import {
@@ -14,7 +13,10 @@ import { useTheme } from 'styled-components';
 import { $ActionsWrapper, $ViewerWrapper } from './PdfViewer.sc';
 import { usePdfViewer } from './usePdfViewer';
 
-pdfjs.GlobalWorkerOptions.workerSrc = String(url);
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 type PdfViewerProps = {
   file: string;
