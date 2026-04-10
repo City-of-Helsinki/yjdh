@@ -27,7 +27,14 @@ const validate = (
   val: FieldPathValue<ApplicationFormData, ApplicationFieldPath>
 ): boolean => !isEmpty(val);
 
-const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readOnly, message: customMessage }) => {
+const AttachmentInput: React.FC<Props> = ({
+  index,
+  id,
+  required,
+  disabled,
+  readOnly,
+  message: customMessage,
+}) => {
   const { t } = useTranslation();
 
   const {
@@ -148,7 +155,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required, disabled, readO
   )} ${t('common:application.form.helpers.attachments')}`;
 
   if (disabled || readOnly) {
-    return <div>{message}</div>
+    return <div>{message}</div>;
   }
   if (applicationQuery.isSuccess) {
     return (

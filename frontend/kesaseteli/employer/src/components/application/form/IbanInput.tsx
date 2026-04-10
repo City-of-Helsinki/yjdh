@@ -46,7 +46,8 @@ const IbanInput: React.FC<IbanInputProps> = ({
     if (!valid) {
       setErrorText(
         t(
-          `common:application.form.errors.${ValidationErrorsIBAN[errorCodes[0]]
+          `common:application.form.errors.${
+            ValidationErrorsIBAN[errorCodes[0]]
           }`
         )
       );
@@ -63,7 +64,8 @@ const IbanInput: React.FC<IbanInputProps> = ({
       value={getValue()}
       beforeMaskedValueChange={(newState) => {
         // eslint-disable-next-line no-param-reassign
-        newState.value = friendlyFormatIBAN(newState.value ?? undefined)?.trim() ?? '';
+        newState.value =
+          friendlyFormatIBAN(newState.value ?? undefined)?.trim() ?? '';
         return newState;
       }}
       onBlur={onBlur}
@@ -72,7 +74,7 @@ const IbanInput: React.FC<IbanInputProps> = ({
         (() => (
           <TextInputBase<ApplicationFormData>
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore  
+            // @ts-ignore
             registerOptions={{
               required: true,
               maxLength: 34,

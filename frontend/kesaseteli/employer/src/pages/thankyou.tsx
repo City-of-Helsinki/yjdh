@@ -1,4 +1,4 @@
-import { Button, IconCheckCircleFill } from 'hds-react';
+import { Button, ButtonVariant, IconCheckCircleFill } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
@@ -116,12 +116,12 @@ const ThankYouPage: NextPage = () => {
           <ButtonContainer>
             <Button
               onClick={createNewApplicationClick}
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               isLoading={createApplicationQuery.isLoading}
             >
               {t('common:thankyouPage.add_another')}
             </Button>
-            <Button onClick={returnToDashboard} variant="primary">
+            <Button onClick={returnToDashboard} variant={ButtonVariant.Primary}>
               {t('common:thankyouPage.return_to_dashboard')}
             </Button>
           </ButtonContainer>
