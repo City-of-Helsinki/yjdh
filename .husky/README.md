@@ -19,20 +19,18 @@ This directory holds **Husky** hook scripts. After you run `yarn husky` from the
 |------|------|
 | `pre-commit` | Runs checks before a commit is created. |
 | `commit-msg` | Runs checks on the commit message file. |
-| `scripts/` | Shell helpers invoked from `pre-commit` (doctoc, frontend Lerna). |
+| `scripts/` | Shell helpers invoked from `pre-commit` (frontend Lerna). |
 
 The generated directory `_/` is created by Husky and is not committed.
 It contains small shims Git executes first.
 
 ## `pre-commit` hook runs the following checks:
 
-1. **`pre-commit run --hook-stage pre-commit`** invokes the [pre-commit](https://pre-commit.com/) CLI, which reads [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) and runs hooks such as Ruff, trailing-whitespace / end-of-file-fixer, YAML/TOML checks, large-file checks, and ShellCheck.
+1. **`pre-commit run --hook-stage pre-commit`** invokes the [pre-commit](https://pre-commit.com/) CLI, which reads [`.pre-commit-config.yaml`](../.pre-commit-config.yaml) and runs hooks such as Ruff, trailing-whitespace / end-of-file-fixer, YAML/TOML checks, large-file checks, ShellCheck, and doctoc for README files.
 
-2. **`cd` to the repository root** since the next helper scripts need that working directory so `git add` paths and `cd frontend` resolve correctly.
+2. **`cd` to the repository root** since the helper script needs that working directory so `git add` paths and `cd frontend` resolve correctly.
 
-3. **`scripts/doctoc-staged-readmes.sh`**  for staged `README.md` (and matching pathspecs), runs `yarn doctoc` and re-stages those files.
-
-4. **`scripts/run-frontend-lerna-pre-commit.sh`** runs `yarn husky:pre-commit` in `frontend/` if any staged path is under `frontend/`, which uses Lerna to run each workspace package’s `pre-commit` script (typically lint-staged: Prettier, ESLint, typecheck, staged tests).
+3. **`scripts/run-frontend-lerna-pre-commit.sh`** runs `yarn husky:pre-commit` in `frontend/` if any staged path is under `frontend/`, which uses Lerna to run each workspace package’s `pre-commit` script such as Prettier, ESLint, typecheck, and staged tests.
 
 ## `commit-msg` hook
 

@@ -5,10 +5,9 @@ set -e
 # Python pre-commit (see .pre-commit-config.yaml). Helper scripts live in .husky/scripts/.
 pre-commit run --hook-stage pre-commit
 
-# Doctoc and Lerna pre-commit scripts assume they are in the  repo root
+# Lerna pre-commit script assumes it is run from the repo root
 # so change directory to the repo root
 # Fail loudly in Git if we can't change directory to the repo root
 # for whatever reason
 cd "$(dirname "$0")/.." || exit 1
-./.husky/scripts/doctoc-staged-readmes.sh
 ./.husky/scripts/run-frontend-lerna-pre-commit.sh

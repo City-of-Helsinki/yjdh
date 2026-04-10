@@ -32,3 +32,8 @@ repos:
     rev: v0.11.0
     hooks:
       - id: shellcheck
+  - repo: https://github.com/thlorenz/doctoc
+    rev: v2.2.0
+    hooks:
+      - id: doctoc
+        files: '(^|/)(README|readme)\.md$'
