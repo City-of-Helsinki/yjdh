@@ -61,8 +61,9 @@ enforce_handler_view_adfs_login = partial(
     permit_view_if_permissions_or_redirect(
         permission_classes=[HandlerPermission],
         login_url=reverse_lazy("django_auth_adfs:login"),
-        redirect_only_if_func=lambda r: is_request_user_unauthenticated(r)
-        and not is_api_request(r),
+        redirect_only_if_func=lambda r: (
+            is_request_user_unauthenticated(r) and not is_api_request(r)
+        ),
         run_before_redirect_func=set_use_original_redirect_url_into_session,
         forbidden_response_func=forbidden_handler_view_response,
     )

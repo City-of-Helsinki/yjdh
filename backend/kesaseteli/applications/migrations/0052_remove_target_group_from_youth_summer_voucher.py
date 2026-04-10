@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0051_populate_youth_application_target_group'),
+        ("applications", "0051_populate_youth_application_target_group"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='historicalyouthsummervoucher',
-            name='target_group',
+            model_name="historicalyouthsummervoucher",
+            name="target_group",
         ),
         migrations.RemoveField(
-            model_name='youthsummervoucher',
-            name='target_group',
+            model_name="youthsummervoucher",
+            name="target_group",
         ),
     ]

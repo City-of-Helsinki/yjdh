@@ -51,6 +51,7 @@ def test_get_or_create_company_via_organization_roles_fallback_uses_defaults(
 
     assert Company.objects.count() == 1
 
+
 @pytest.mark.django_db
 def test_get_or_create_company_via_ytj_data_uses_defaults():
     """
@@ -77,5 +78,3 @@ def test_get_or_create_company_via_ytj_data_uses_defaults():
     assert company.postcode == ""
     assert company.city == ""
     assert company.ytj_json == ytj_data
-
-
