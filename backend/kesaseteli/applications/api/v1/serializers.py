@@ -727,6 +727,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "additional_info_provided_at",
             "non_vtj_birthdate",
             "non_vtj_home_municipality",
+            "is_vtj_data_restricted",
         ] + vtj_data_fields
         fields = read_only_fields + [
             "first_name",
