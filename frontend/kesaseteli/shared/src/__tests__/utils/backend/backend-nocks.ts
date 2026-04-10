@@ -8,7 +8,6 @@ import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import type Application from 'shared/types/application';
 import type Company from 'shared/types/company';
-import type DraftApplication from 'shared/types/draft-application';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
