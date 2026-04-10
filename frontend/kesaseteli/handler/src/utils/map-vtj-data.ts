@@ -22,9 +22,9 @@ type VtjInfo = {
 const addressIsValid = (address?: VtjAddress | null): boolean =>
   address
     ? isWithinInterval(new Date(), {
-        startDate: address.AsuminenAlkupvm ?? undefined,
-        endDate: address.AsuminenLoppupvm ?? undefined,
-      })
+      startDate: address.AsuminenAlkupvm ?? undefined,
+      endDate: address.AsuminenLoppupvm ?? undefined,
+    })
     : false;
 
 export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
@@ -36,9 +36,8 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const notFound =
     vtjData.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
   const providedAt = vtjData.Asiakasinfo?.InfoS ?? '';
-  const fullName = `${vtjData.Henkilo?.NykyisetEtunimet?.Etunimet ?? ''} ${
-    vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi ?? ''
-  }`.trim();
+  const fullName = `${vtjData.Henkilo?.NykyisetEtunimet?.Etunimet ?? ''} ${vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi ?? ''
+    }`.trim();
   const differentLastName =
     vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi?.toLowerCase() !==
     last_name.toLowerCase();
@@ -65,10 +64,16 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const outsideHelsinki = PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
   const differentPostCode = Postinumero !== postcode;
 
-  const { dateOfBirth } = FinnishSSN.parse(
-    vtjData.Henkilo?.Henkilotunnus?.['#text'] ?? ''
-  );
-  const age = new Date().getFullYear() - dateOfBirth.getFullYear();
+  let dateOfBirth = undefined;
+  try {
+    dateOfBirth = FinnishSSN.parse(
+      vtjData.Henkilo?.Henkilotunnus?.['#text'] ?? ''
+    ).dateOfBirth;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('Could not parse date of birth from VTJ data');
+  }
+  const age = dateOfBirth ? new Date().getFullYear() - dateOfBirth.getFullYear() : 0;
   const notInTargetAgeGroup = !TARGET_GROUP_AGES.includes(age);
 
   const isDead = vtjData.Henkilo?.Kuolintiedot?.Kuollut === '1';

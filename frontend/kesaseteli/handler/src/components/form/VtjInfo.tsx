@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Notification } from 'shared/components/notification/Notification.sc';
+import { DefaultTheme } from 'styled-components';
 
 type Props = {
   application: ActivatedYouthApplication;
@@ -20,6 +21,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
     social_security_number,
     last_name,
     postcode,
+    is_vtj_data_restricted,
   } = application;
 
   if (!social_security_number) {
@@ -56,6 +58,16 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
 
   return (
     <span data-testid="vtj-info">
+      {is_vtj_data_restricted && (
+        <$Notification
+          label={t('common:handlerApplication.vtjInfo.dataRestricted')}
+          type="info"
+          css={`
+            margin-bottom: ${({ theme }: { theme: DefaultTheme }) =>
+              theme.spacing.m};
+          `}
+        />
+      )}
       {!notFound && (
         <$Notification
           label={t(`common:handlerApplication.vtjInfo.title`)}
