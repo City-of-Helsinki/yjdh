@@ -63,6 +63,7 @@ def test_field_configuration(employer_summer_voucher_admin):
     assert "masked_employee_ssn" in config_readonly
     assert "employee_ssn" not in config_readonly
 
+
 @pytest.mark.django_db
 def test_get_queryset(employer_summer_voucher_admin):
     voucher = EmployerSummerVoucherFactory()

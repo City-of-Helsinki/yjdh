@@ -886,6 +886,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         ]
         ordering = ["-created_at"]
 
+
 class YouthSummerVoucherQuerySet(models.QuerySet):
     def select_youth_application(self):
         return self.select_related("youth_application")

@@ -263,6 +263,3 @@ def get_target_group_data(identifiers: List[str]) -> List[dict]:
                 }
             )
     return target_groups
-
-
-

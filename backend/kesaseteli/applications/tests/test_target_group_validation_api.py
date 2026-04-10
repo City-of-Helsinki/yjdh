@@ -25,7 +25,9 @@ from common.urls import get_create_without_ssn_url, get_list_url
         "primary_target_group_suffix",
     ],
 )
-def test_youth_application_creation_invalid_target_group(api_client, invalid_target_group):
+def test_youth_application_creation_invalid_target_group(
+    api_client, invalid_target_group
+):
     """
     Test that creating a youth application with an invalid target group returns 400 Bad Request.
     """
@@ -51,7 +53,9 @@ def test_youth_application_creation_invalid_target_group(api_client, invalid_tar
         "999",
     ],
 )
-def test_non_vtj_youth_application_creation_invalid_target_group(staff_client, invalid_target_group):
+def test_non_vtj_youth_application_creation_invalid_target_group(
+    staff_client, invalid_target_group
+):
     """
     Test that creating a non-VTJ youth application with an invalid target group returns 400 Bad Request.
     """
