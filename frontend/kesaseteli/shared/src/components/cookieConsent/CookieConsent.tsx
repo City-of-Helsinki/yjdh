@@ -1,19 +1,19 @@
-import useLocale from 'shared/hooks/useLocale';
+import { CookieModal, CookiePage } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { CookieModal, CookiePage } from 'hds-react';
-import useCookieConsent from 'shared/hooks/useCookieConsent';
 import { MAIN_CONTENT_ID } from 'shared/constants';
+import useCookieConsent from 'shared/hooks/useCookieConsent';
+import useLocale from 'shared/hooks/useLocale';
 
 type CookieConsentProps = {
   asPage?: boolean;
   siteName: string;
 };
 
-const CookieConsent: React.FC<CookieConsentProps> = ({
+const CookieConsent = ({
   asPage = false,
   siteName,
-}) => {
+}: CookieConsentProps): React.ReactElement => {
   const locale = useLocale();
   const router = useRouter();
   const { pathname, asPath, query } = router;
@@ -51,9 +51,9 @@ const CookieConsent: React.FC<CookieConsentProps> = ({
   );
 
   return asPage ? (
-    <CookiePage contentSource={contentSource as any} />
+    <CookiePage contentSource={contentSource} />
   ) : (
-    <CookieModal contentSource={contentSource as any} />
+    <CookieModal contentSource={contentSource} />
   );
 };
 

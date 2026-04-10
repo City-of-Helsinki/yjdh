@@ -5,12 +5,12 @@ const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED;
 type OptionalCookies = ContentSource['optionalCookies'];
 
 type UseCookieConsentHook = () => {
-  onAllConsentsGiven: (consents: { matomo: boolean }) => void;
-  onConsentsParsed: (consents: { matomo: boolean }) => void;
+  onAllConsentsGiven: (consents: Record<string, boolean>) => void;
+  onConsentsParsed: (consents: Record<string, boolean>) => void;
   optionalCookies: OptionalCookies;
 };
 
-const onAllConsentsGiven = (consents: { matomo: boolean }): void => {
+const onAllConsentsGiven = (consents: Record<string, boolean>): void => {
   if (MATOMO_ENABLED === 'true' && consents.matomo) {
     //  start tracking
     // eslint-disable-next-line no-underscore-dangle
@@ -20,7 +20,7 @@ const onAllConsentsGiven = (consents: { matomo: boolean }): void => {
   }
 };
 
-const onConsentsParsed = (consents: { matomo: boolean }): void => {
+const onConsentsParsed = (consents: Record<string, boolean>): void => {
   if (MATOMO_ENABLED === 'true') {
     if (consents.matomo === undefined) {
       // tell matomo to wait for consent:
