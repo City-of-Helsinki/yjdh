@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
@@ -162,8 +162,8 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
         <Button
           onClick={handleGetEmployeeData}
           disabled={!isFetchEmployeeDataEnabled || isEmployeeDataFetched}
-          variant="primary"
-          theme="black"
+          variant={ButtonVariant.Primary}
+          theme={ButtonPresetTheme.Black}
         >
           {t('common:application.step1.employment_section.fetch_employment')}
         </Button>

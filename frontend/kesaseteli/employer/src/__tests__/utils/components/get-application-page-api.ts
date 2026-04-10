@@ -1,6 +1,4 @@
-import {
-  expectToGetApplicationFromBackend,
-} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import { expectToGetApplicationFromBackend } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import {
   BackendEndpoint,
   getBackendDomain,
@@ -11,11 +9,7 @@ import {
   waitForLoadingCompleted,
 } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
-import {
-  screen,
-  userEvent,
-  waitFor,
-} from 'shared/__tests__/utils/test-utils';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/application';
 import ContactPerson from 'shared/types/contact-info';
 
@@ -59,9 +53,7 @@ export type ApplicationPageApi = {
   step2: Step2Api;
 };
 
-const expectToSaveApplication = (
-  applicationToSave: Application
-): nock.Scope =>
+const expectToSaveApplication = (applicationToSave: Application): nock.Scope =>
   nock(getBackendDomain())
     .put(
       `${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`,
@@ -328,7 +320,7 @@ const getApplicationPageApi = (
             name: /(käyttöehdot)|(application.form.inputs.termsandconditions)/i,
           });
           await userEvent.click(checkbox);
-        }
+        },
       },
     },
   };

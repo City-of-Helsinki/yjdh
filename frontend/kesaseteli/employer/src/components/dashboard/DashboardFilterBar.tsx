@@ -1,4 +1,4 @@
-import { ToggleButton } from 'hds-react';
+import { ToggleButton, Tooltip } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
@@ -28,9 +28,15 @@ const DashboardFilterBar: React.FC<Props> = ({ showOnlyMine, onToggle }) => {
         variant="inline"
         checked={showOnlyMine}
         onChange={onToggle}
-        tooltipLabel={t('common:dashboard.filterBar.tooltipLabel')}
-        tooltipText={t('common:dashboard.filterBar.tooltipText')}
-        tooltipButtonLabel={t('common:dashboard.filterBar.tooltipButtonLabel')}
+        tooltip={
+          <Tooltip
+            id="application-table-filter-mine-tooltip"
+            label={t('common:dashboard.filterBar.tooltipLabel')}
+            buttonLabel={t('common:dashboard.filterBar.tooltipButtonLabel')}
+          >
+            {t('common:dashboard.filterBar.tooltipText')}
+          </Tooltip>
+        }
       />
     </$FilterBar>
   );
