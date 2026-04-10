@@ -154,8 +154,7 @@ export const fakeYouthApplication = (
     ...override,
   };
   const social_security_number =
-    (override?.social_security_number as string | undefined) ??
-    fakeYouthTargetGroupAgeSSN();
+    override?.social_security_number ?? fakeYouthTargetGroupAgeSSN();
   return {
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
