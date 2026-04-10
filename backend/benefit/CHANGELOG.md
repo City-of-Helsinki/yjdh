@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.14.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.14.0...benefit-backend-v2.14.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* Add support for new shared OIDC login ([39b45fb](https://github.com/City-of-Helsinki/yjdh/commit/39b45fbd3cae360d4d622cc6bafe5d8069f9a8ed))
+
 ## [2.14.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.13.0...benefit-backend-v2.14.0) (2026-04-07)
 
 
