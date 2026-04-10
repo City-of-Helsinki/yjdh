@@ -7,6 +7,7 @@ type ActivatedYouthApplication = CreatedYouthApplication &
     receipt_confirmed_at: string | null;
     additional_info_provided_at?: string;
     encrypted_handler_vtj_json: VtjData;
+    is_vtj_data_restricted?: boolean;
   };
 
 export default ActivatedYouthApplication;

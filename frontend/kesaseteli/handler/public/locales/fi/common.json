@@ -72,7 +72,8 @@
       "name": "Nimi",
       "ssn": "Henkilötunnus",
       "address": "Osoite",
-      "showRawData": "Näytä kaikki raakadata"
+      "showRawData": "Näytä kaikki raakadata",
+      "dataRestricted": "Hakijalla on turvakielto VTJ:ssä. Kaikkia tietoja ei ole saatavilla."
     },
     "vtjException": {
       "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella: {{ social_security_number }}!",
