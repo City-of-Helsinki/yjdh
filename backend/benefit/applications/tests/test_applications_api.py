@@ -11,7 +11,6 @@ from unittest import mock
 
 import faker
 import pytest
-
 from dateutil.relativedelta import relativedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
@@ -20,7 +19,6 @@ from freezegun import freeze_time
 from PIL import Image
 from resilient_logger.models import ResilientLogEntry
 from rest_framework.reverse import reverse
-from rest_framework import serializers
 
 from applications.api.v1.application_views import BaseApplicationViewSet
 from applications.api.v1.serializers.application import (
@@ -72,6 +70,7 @@ from terms.models import TermsOfServiceApproval
 
 def get_detail_url(application):
     return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
+
 
 def get_handler_detail_url(application):
     return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
@@ -2590,7 +2589,7 @@ def test_notify_applications_one_application(mock_send_notification_mail):
         due_date=target_date + relativedelta(months=6),
     )
 
-    count = notify_applications(days_to_notify)
+    (count, apps) = notify_applications(days_to_notify)
 
     # _send_notification_mail must have been called exactly once, with the
     # matching application
@@ -2598,7 +2597,7 @@ def test_notify_applications_one_application(mock_send_notification_mail):
 
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 1
-
+    assert apps[0] == app.application_number
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -2627,7 +2626,7 @@ def test_notify_applications_no_applications(mock_send_notification_mail):
         due_date=date.today() + relativedelta(months=6),
     )
 
-    count = notify_applications(days_to_notify)
+    (count, apps) = notify_applications(days_to_notify)
 
     # _send_notification_mail must not have been called
     # matching application
@@ -2636,7 +2635,7 @@ def test_notify_applications_no_applications(mock_send_notification_mail):
 
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 0
-
+    assert apps == []
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -2656,12 +2655,14 @@ def test_notify_applications_matching_unmatching(mock_send_notification_mail):
     days_to_notify = 150
     target_date = date.today() - relativedelta(days=150)
 
+    apps = []
     for _ in range(5):
         app = DecidedApplicationFactory(
             application_origin=ApplicationOrigin.APPLICANT,
             status=ApplicationStatus.ACCEPTED,
             start_date=target_date,
         )
+        apps.append(app)
         Instalment.objects.create(
             calculation=app.calculation,
             amount=1000,
@@ -2683,12 +2684,13 @@ def test_notify_applications_matching_unmatching(mock_send_notification_mail):
             due_date=target_date + relativedelta(months=6),
         )
 
-    count = notify_applications(days_to_notify)
+    (count, notified_applications) = notify_applications(days_to_notify)
 
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 5
     assert mock_send_notification_mail.call_count == 5
-
+    for app in apps:
+        assert app.application_number in notified_applications
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -2915,12 +2917,14 @@ def test_request_payslip_command_output_message(capsys):
     target_date = date.today() - relativedelta(days=days_to_notify)
 
     # Create 2 matching applications
+    apps = []
     for _ in range(2):
         app = DecidedApplicationFactory(
             application_origin=ApplicationOrigin.APPLICANT,
             status=ApplicationStatus.ACCEPTED,
             start_date=target_date,
         )
+        apps.append(app)
         Instalment.objects.create(
             calculation=app.calculation,
             amount=1000,
@@ -2936,6 +2940,8 @@ def test_request_payslip_command_output_message(capsys):
     captured = capsys.readouterr()
     expected_message = "Notified users of 2 applications about benefit checkpoint"
     assert expected_message in captured.out
+    for app in apps:
+        assert str(app.application_number) in captured.out
 
 
 def _create_random_applications():
