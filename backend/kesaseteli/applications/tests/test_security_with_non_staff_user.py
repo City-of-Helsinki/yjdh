@@ -1237,90 +1237,119 @@ def test_youth_application_additional_info_valid_post(user_client):
     }
 
 
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.django_db
-def test_youth_application_fetch_employee_data(user_client):
+@pytest.fixture
+def employee_fetch_data():
     employer_summer_voucher = EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory()
     )
-    AcceptedYouthApplicationFactory(
+    ya1 = AcceptedYouthApplicationFactory(
         first_name="John",
         last_name="Doe",
-        youth_summer_voucher__summer_voucher_serial_number=123,
-        social_security_number="111111-111C",
         phone_number="123456789",
         postcode="00100",
         school="Test school",
-        encrypted_original_vtj_json=mock_vtj_person_id_query_found_content(
-            first_name="John",
-            last_name="Doe",
-            social_security_number="111111-111C",
-            is_alive=True,
-            is_home_municipality_helsinki=True,
-        ),
     )
-    AcceptedYouthApplicationFactory(
-        last_name="Wrong last name",
-        youth_summer_voucher__summer_voucher_serial_number=456,
-    )
-    AcceptedYouthApplicationFactory(
+    ya2 = AcceptedYouthApplicationFactory(
+        first_name="Mary",
         last_name="Doe",
-        youth_summer_voucher__summer_voucher_serial_number=789,
     )
+    ya_wrong = AcceptedYouthApplicationFactory(
+        first_name="Wrong",
+        last_name="Voucher",
+    )
+    return {
+        "voucher": employer_summer_voucher,
+        "ya1": ya1,
+        "ya2": ya2,
+        "ya_wrong": ya_wrong,
+    }
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+@pytest.mark.parametrize("ya_key", ["ya1", "ya2"])
+def test_fetch_employee_data_success(user_client, employee_fetch_data, ya_key):
+    voucher = employee_fetch_data["voucher"]
+    ya = employee_fetch_data[ya_key]
+
     url = reverse("v1:youthapplication-fetch-employee-data")
-    for employee_name in ["Doe", "John Doe", "Doe John", "Mary Doe", "Doe Mary"]:
-        response = user_client.post(
-            url,
-            data={
-                "employer_summer_voucher_id": str(employer_summer_voucher.id),
-                "employee_name": employee_name,
-                "summer_voucher_serial_number": 123,
-            },
-        )
-        assert response.status_code == status.HTTP_200_OK
-        assert response.data == {
-            "employer_summer_voucher_id": str(employer_summer_voucher.id),
-            "employee_name": "John Doe",
-            "employee_ssn": "111111-111C",
-            "employee_phone_number": "123456789",
-            "employee_home_city": "Helsinki",
-            "employee_postcode": "00100",
-            "employee_school": "Test school",
-        }
-    for employee_name in ["Wrong name", "Doette", "Johndoe", "Doejohn", "John-Doe"]:
-        response = user_client.post(
-            url,
-            data={
-                "employer_summer_voucher_id": str(employer_summer_voucher.id),
-                "employee_name": employee_name,
-                "summer_voucher_serial_number": 123,
-            },
-        )
-        assert response.status_code == status.HTTP_404_NOT_FOUND
     response = user_client.post(
         url,
         data={
-            "employer_summer_voucher_id": str(employer_summer_voucher.id),
-            "employee_name": "John Doe",
-            "summer_voucher_serial_number": 456,
-        },
-    )
-    assert response.status_code == status.HTTP_404_NOT_FOUND
-    response = user_client.post(
-        url,
-        data={
-            "employer_summer_voucher_id": str(employer_summer_voucher.id),
-            "employee_name": "Mary Doe",
-            "summer_voucher_serial_number": 789,
+            "employer_summer_voucher_id": str(voucher.id),
+            "summer_voucher_serial_number": ya.youth_summer_voucher.summer_voucher_serial_number,
+            "employee_birth_date": str(ya.birthdate),
         },
     )
     assert response.status_code == status.HTTP_200_OK
+    assert response.data == {
+        "employer_summer_voucher_id": str(voucher.id),
+        "employee_name": ya.name,
+        "employee_birth_date": str(ya.birthdate),
+        "employee_phone_number": ya.phone_number,
+        "employee_home_city": ya.home_municipality,
+        "employee_postcode": ya.postcode,
+        "employee_school": ya.school,
+    }
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        pytest.param("wrong_birth_date", id="wrong_birth_date"),
+        pytest.param("wrong_serial", id="wrong_serial"),
+    ],
+)
+def test_fetch_employee_data_not_found(user_client, employee_fetch_data, scenario):
+    voucher = employee_fetch_data["voucher"]
+    ya1 = employee_fetch_data["ya1"]
+    ya_wrong = employee_fetch_data["ya_wrong"]
+
+    data = {
+        "employer_summer_voucher_id": str(voucher.id),
+        "summer_voucher_serial_number": ya1.youth_summer_voucher.summer_voucher_serial_number,
+        "employee_birth_date": str(ya1.birthdate),
+    }
+
+    if scenario == "wrong_birth_date":
+        data["employee_birth_date"] = "1900-01-01"
+    else:  # "wrong_serial"
+        data["summer_voucher_serial_number"] = (
+            ya_wrong.youth_summer_voucher.summer_voucher_serial_number
+        )
+
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    response = user_client.post(url, data=data)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "voucher_id_case, birth_date_case",
+    [
+        pytest.param("valid", "invalid", id="invalid_birth_date_format"),
+        pytest.param("invalid", "valid", id="invalid_voucher_uuid_format"),
+    ],
+)
+def test_fetch_employee_data_bad_request(
+    user_client, employee_fetch_data, voucher_id_case, birth_date_case
+):
+    voucher = employee_fetch_data["voucher"]
+    ya1 = employee_fetch_data["ya1"]
+
+    voucher_id = str(voucher.id) if voucher_id_case == "valid" else "not-a-valid-uuid"
+    birth_date = str(ya1.birthdate) if birth_date_case == "valid" else "not-a-date"
+
+    url = reverse("v1:youthapplication-fetch-employee-data")
     response = user_client.post(
         url,
         data={
-            "employer_summer_voucher_id": "not a valid UUID",
-            "employee_name": "Mary Doe",
-            "summer_voucher_serial_number": 789,
+            "employer_summer_voucher_id": voucher_id,
+            "summer_voucher_serial_number": ya1.youth_summer_voucher.summer_voucher_serial_number,
+            "employee_birth_date": birth_date,
         },
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -1343,8 +1372,8 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
         url,
         data={
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
-            "employee_name": "Peter Doe",
             "summer_voucher_serial_number": 123,
+            "employee_birth_date": str(youth_application.birthdate),
         },
     )
     assert AuditLogEntry.objects.count() == audit_log_entries_before + 1
@@ -1358,7 +1387,8 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
     assert audit_event["additional_information"] == (
         "YouthApplicationViewSet.fetch_employee_data called with "
         f'employer_summer_voucher_id="{employer_summer_voucher.id}", '
-        'employee_name="Peter Doe" and summer_voucher_serial_number=123 '
+        f'employee_birth_date="{youth_application.birthdate}" '
+        "and summer_voucher_serial_number=123 "
         "(POST used with CSRF as a GET). Found 1 match."
     )
 
@@ -1375,8 +1405,8 @@ def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_c
         url,
         data={
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
-            "employee_name": "Teppo Testaaja",
             "summer_voucher_serial_number": 123456789,
+            "employee_birth_date": "1990-01-01",
         },
     )
     assert AuditLogEntry.objects.count() == audit_log_entries_before + 1
@@ -1390,7 +1420,8 @@ def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_c
     assert audit_event["additional_information"] == (
         "YouthApplicationViewSet.fetch_employee_data called with "
         f'employer_summer_voucher_id="{employer_summer_voucher.id}", '
-        'employee_name="Teppo Testaaja" and summer_voucher_serial_number=123456789 '
+        'employee_birth_date="1990-01-01" '
+        "and summer_voucher_serial_number=123456789 "
         "(POST used with CSRF as a GET). Found no matches."
     )
 

@@ -250,7 +250,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def fetch_employee_data(self, request, *args, **kwargs) -> HttpResponse:
         """
         Fetch employee data to a particular EmployerSummerVoucher using the
-        employee's name and their YouthSummerVoucher's
+        employee's birth date and their YouthSummerVoucher's
         summer_voucher_serial_number.
         """
         if not request.user.is_authenticated:
@@ -259,8 +259,12 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             employer_summer_voucher_id = uuid.UUID(
                 request.data.get("employer_summer_voucher_id", "")
             )
-            employee_name = str(request.data.get("employee_name", "")).strip()
             voucher_number = int(request.data.get("summer_voucher_serial_number", ""))
+            employee_birth_date = str(
+                request.data.get("employee_birth_date", "")
+            ).strip()
+            # Validate birth date format (YYYY-MM-DD)
+            timezone.datetime.strptime(employee_birth_date, "%Y-%m-%d")
         except (KeyError, ValueError, TypeError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -279,15 +283,16 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         else:
             youth_application = youth_summer_voucher.youth_application
 
-        if not youth_application or not is_last_name_fuzzy_match_in_full_name(
-            last_name=youth_application.last_name, full_name=employee_name
+        if (
+            not youth_application
+            or str(youth_application.birthdate) != employee_birth_date
         ):
             with self.record_action(
                 target=YouthApplication,
                 additional_information=(
                     "YouthApplicationViewSet.fetch_employee_data called with "
                     f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
-                    f'employee_name="{employee_name}" and '
+                    f'employee_birth_date="{employee_birth_date}" and '
                     f"summer_voucher_serial_number={voucher_number} "
                     "(POST used with CSRF as a GET). Found no matches."
                 ),
@@ -299,16 +304,17 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             additional_information=(
                 "YouthApplicationViewSet.fetch_employee_data called with "
                 f'employer_summer_voucher_id="{employer_summer_voucher_id}", '
-                f'employee_name="{employee_name}" and '
+                f'employee_birth_date="{employee_birth_date}" and '
                 f"summer_voucher_serial_number={voucher_number} "
                 "(POST used with CSRF as a GET). Found 1 match."
             ),
         ):
+
             return Response(
                 data={
                     "employer_summer_voucher_id": str(employer_summer_voucher_id),
                     "employee_name": youth_application.name,
-                    "employee_ssn": youth_application.social_security_number,
+                    "employee_birth_date": str(youth_application.birthdate),
                     "employee_phone_number": youth_application.phone_number,
                     "employee_home_city": youth_application.home_municipality,
                     "employee_postcode": youth_application.postcode,

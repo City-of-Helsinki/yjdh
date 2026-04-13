@@ -1,3 +1,5 @@
+from django.utils.formats import date_format
+from django.utils.dateparse import parse_date
 import logging
 from itertools import chain
 
@@ -371,6 +373,8 @@ class YouthApplicationAdmin(admin.ModelAdmin):
         "id",
         "first_name",
         "last_name",
+        "target_group_display",
+        "birthdate",
         "masked_social_security_number",
         "status",
         "school",
@@ -381,6 +385,7 @@ class YouthApplicationAdmin(admin.ModelAdmin):
     list_filter = [
         "created_at",
         "modified_at",
+        "target_group",
         "status",
         IsValidSchoolFilter,
         SchoolFilter,
@@ -417,6 +422,21 @@ class YouthApplicationAdmin(admin.ModelAdmin):
     # currently in school list.
     is_valid_school.short_description = _("is in current school list")
 
+    def target_group_display(self, obj):
+        return obj.get_target_group_display()
+
+    target_group_display.short_description = _("target group")
+
+    def birthdate(self, obj):
+        return obj.birthdate
+
+    birthdate.short_description = _("birthdate")
+
+    def birthdate_display(self, obj):
+        return date_format(obj.birthdate, format="DATE_FORMAT", use_l10n=True)
+
+    birthdate_display.short_description = _("birthdate")
+
     def masked_social_security_number(self, obj):
         """Mask social security number for display."""
         return mask_social_security_number(obj.social_security_number)
@@ -425,8 +445,11 @@ class YouthApplicationAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         """Make contact info fields readonly."""
+        çustom_readonly_fields = [
+            self.birthdate_display,
+        ]
         if obj:
-            return [
+            return çustom_readonly_fields + [
                 f.name
                 for f in self.model._meta.fields
                 if f.name not in self.exclude and f.name not in self.contact_info_fields
@@ -458,7 +481,8 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "summer_voucher_serial_number",
-        "target_group",
+        "target_group_display",
+        "birthdate",
         "youth_application_link",
         "masked_social_security_number",
         "youth_application__email",
@@ -487,6 +511,16 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("youth_application")
+
+    def target_group_display(self, obj):
+        return obj.get_target_group_display()
+
+    target_group_display.short_description = _("target group")
+
+    def birthdate(self, obj):
+        return obj.youth_application.birthdate
+
+    birthdate.short_description = _("birthdate")
 
     def masked_social_security_number(self, obj):
         """Mask social security number for display."""

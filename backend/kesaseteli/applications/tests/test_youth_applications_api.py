@@ -2769,40 +2769,39 @@ def test_youth_applications_set_partial_additional_info(
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
-@pytest.mark.parametrize("last_name", ["Peter", "Åberg"])
-@pytest.mark.parametrize("employee_name", ["Ann López", "Marika Ääninen"])
-def test_youth_application_fetch_employee_data_uses_fuzzy_match(
-    user_client, last_name, employee_name
-):
+def test_youth_application_fetch_employee_data_matching(user_client):
     """
-    Test that fetch_employee_data endpoint calls is_last_name_fuzzy_match_in_full_name
-    function with the youth application's last_name and employer summer voucher's
-    employee name, and that the function's return value changes the returned status code.
+    Test that fetch_employee_data endpoint matches using only birth date
+    and summer voucher serial number.
+    Also tests that the employee_name is correctly returned in the response.
     """
-    employer_summer_voucher = EmployerSummerVoucherFactory(
-        youth_summer_voucher__youth_application__last_name=last_name,
-    )
+    employer_summer_voucher = EmployerSummerVoucherFactory()
+    youth_application = employer_summer_voucher.youth_summer_voucher.youth_application
     serial_number = (
         employer_summer_voucher.youth_summer_voucher.summer_voucher_serial_number
     )
     url = reverse("v1:youthapplication-fetch-employee-data")
     data = {
         "employer_summer_voucher_id": str(employer_summer_voucher.id),
-        "employee_name": employee_name,
         "summer_voucher_serial_number": serial_number,
+        "employee_birth_date": str(youth_application.birthdate),
     }
-    mock_path = "applications.api.v1.views.is_last_name_fuzzy_match_in_full_name"
 
-    with mock.patch(mock_path, return_value=True) as mock_fuzzy_match_true:
-        response = user_client.post(url, data)
-        mock_fuzzy_match_true.assert_called_once_with(
-            last_name=last_name, full_name=employee_name
-        )
-        assert response.status_code == status.HTTP_200_OK
+    response = user_client.post(url, data)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["employee_name"] == youth_application.name
+    assert response.data["employee_birth_date"] == str(youth_application.birthdate)
+    assert "employee_ssn" not in response.data
 
-    with mock.patch(mock_path, return_value=False) as mock_fuzzy_match_false:
-        response = user_client.post(url, data)
-        mock_fuzzy_match_false.assert_called_once_with(
-            last_name=last_name, full_name=employee_name
-        )
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+    # Test failure with wrong birth date
+    data_wrong_birthdate = data.copy()
+    data_wrong_birthdate["employee_birth_date"] = "1900-01-01"
+    response = user_client.post(url, data_wrong_birthdate)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    # Test failure with wrong serial number
+    data_wrong_serial = data.copy()
+    data_wrong_serial["summer_voucher_serial_number"] = 999999
+    response = user_client.post(url, data_wrong_serial)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+

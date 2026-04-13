@@ -1308,6 +1308,14 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def employee_birth_date(self) -> Optional[date]:
+        return (
+            self.youth_summer_voucher.youth_application.birthdate
+            if self.youth_summer_voucher
+            else None
+        )
+
+    @property
     def employee_home_city(self) -> str:
         return (
             self.youth_summer_voucher.youth_application.home_municipality

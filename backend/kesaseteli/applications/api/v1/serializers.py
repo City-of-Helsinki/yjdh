@@ -241,6 +241,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "employee_name",
             "employee_school",
             "employee_ssn",
+            "employee_birth_date",
             "employee_phone_number",
             "employee_home_city",
             "employee_postcode",
@@ -259,6 +260,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "employee_name",
             "employee_school",
             "employee_ssn",
+            "employee_birth_date",
             "employee_home_city",
             "employee_postcode",
         ]
