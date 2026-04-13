@@ -13,7 +13,9 @@ import { $DateInput } from './DateInput.sc';
 
 type Props<T extends FieldValues> = Omit<InputProps<T>, 'onChange'> &
   Required<{ onChange: InputProps<T>['onChange'] }> &
-  GridCellProps;
+  GridCellProps & {
+    initialYear?: number;
+  };
 
 /**
  * NOTE: Since the HDS DateInput has a compatibility issue with React-hook-forms,
@@ -39,6 +41,7 @@ const DateInput = <T extends FieldValues>({
   label,
   disabled = false,
   readOnly = false,
+  initialYear,
   ...$gridCellProps
 }: Props<T>): React.ReactElement<T> => {
   const locale = useLocale();
@@ -60,6 +63,7 @@ const DateInput = <T extends FieldValues>({
     // onBlur(event) {},
   });
 
+
   return (
     <$GridCell {...$gridCellProps}>
       <$DateInput
@@ -69,7 +73,7 @@ const DateInput = <T extends FieldValues>({
         data-testid={id}
         name={id}
         required={Boolean(registerOptions?.required)}
-        initialMonth={new Date()}
+        initialYear={initialYear}
         value={initialValue}
         language={locale}
         // for some reason date picker causes error "Warning: An update to ForwardRef inside a test was not wrapped in act" in tests.

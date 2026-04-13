@@ -146,10 +146,10 @@ const useApplicationApi = <T = Application>(
     const formDataVoucher = draftApplication.summer_vouchers?.[employmentIndex];
     getEmploymentQuery.mutate(
       {
-        employee_name: formDataVoucher?.employee_name ?? '',
         summer_voucher_serial_number:
           formDataVoucher?.summer_voucher_serial_number ?? '',
         employer_summer_voucher_id: formDataVoucher?.id ?? '',
+        employee_birth_date: formDataVoucher?.employee_birth_date ?? '',
       },
       {
         onSuccess: (data) => {

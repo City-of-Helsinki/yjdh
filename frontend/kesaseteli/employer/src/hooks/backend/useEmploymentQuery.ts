@@ -5,8 +5,8 @@ import { EmploymentBase } from 'shared/types/employment';
 
 type EmploymentArgs = {
   employer_summer_voucher_id: string;
-  employee_name: string;
   summer_voucher_serial_number: string;
+  employee_birth_date: string;
 };
 
 type EmploymentData = EmploymentBase & { employer_summer_voucher_id: string };
@@ -21,22 +21,22 @@ const useEmploymentQuery = (): UseMutationResult<
     `${BackendEndpoint.EMPLOYMENT}`,
     ({
       employer_summer_voucher_id,
-      employee_name,
       summer_voucher_serial_number,
+      employee_birth_date,
     }: EmploymentArgs) =>
-      (
-        !employer_summer_voucher_id ||
-        !employee_name ||
-        !summer_voucher_serial_number
-      )
+      !employer_summer_voucher_id ||
+      !summer_voucher_serial_number ||
+      !employee_birth_date
         ? Promise.reject(
-            new Error('Missing employeeName, voucherId or voucherSerialNumber')
+            new Error(
+              'Missing voucherId, voucherSerialNumber or birthDate'
+            )
           )
         : handleResponse<EmploymentData>(
             axios.post(`${BackendEndpoint.EMPLOYMENT}`, {
               employer_summer_voucher_id,
-              employee_name,
               summer_voucher_serial_number,
+              employee_birth_date,
             })
           )
   );

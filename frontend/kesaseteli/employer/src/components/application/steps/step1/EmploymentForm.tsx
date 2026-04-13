@@ -42,9 +42,9 @@ const useFetchEmployeeDataButtonState = (
     if (!formDataVoucher) return;
     const integerStringRegex = /^\s*\d+\s*$/; // Allow leading and trailing whitespace
     setIsFetchEmployeeDataEnabled(
-      (formDataVoucher.employee_name?.length ?? 0) > 0 &&
-        typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
-        integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
+      typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
+      integerStringRegex.test(formDataVoucher.summer_voucher_serial_number) &&
+      (formDataVoucher.employee_birth_date?.length ?? 0) > 0
     );
   }, [getValues, index]);
 
@@ -76,21 +76,17 @@ const useFetchEmployeeData = (
   const [isEmployeeDataFetched, setIsEmployeeDataFetched] =
     useState<boolean>(false);
 
-  const [employeeSsn, employeePhoneNumber, employmentPostcode] = useWatch({
+  const [employeeBirthDate] = useWatch({
     control,
-    name: [
-      `summer_vouchers.${index}.employee_ssn`,
-      `summer_vouchers.${index}.employee_phone_number`,
-      `summer_vouchers.${index}.employment_postcode`,
-    ],
+    name: [`summer_vouchers.${index}.employee_birth_date`],
   });
 
-  // Set fetched state when SSN, phone number or postcode is populated
+  // Set fetched state when birth date is populated
   useEffect(() => {
-    if (employeeSsn || employeePhoneNumber || employmentPostcode) {
+    if (employeeBirthDate) {
       setIsEmployeeDataFetched(true);
     }
-  }, [employeeSsn, employeePhoneNumber, employmentPostcode]);
+  }, [employeeBirthDate]);
 
   const handleGetEmployeeData = useCallback((): void => {
     const currentValues = getValues();
@@ -104,7 +100,6 @@ const useFetchEmployeeData = (
     const performFetch = (appData: Application | DraftApplication): void => {
       void fetchEmployment(appData, index, (app) => {
         handleReset(app);
-        setIsEmployeeDataFetched(true);
       });
     };
 
@@ -149,19 +144,28 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
         tooltip={t('common:application.step1.employment_section.tooltip')}
       >
         <TextInput
-          id={getId('employee_name')}
-          validation={{ required: true, maxLength: 256 }}
-          onChange={enableFetchEmployeeDataButton}
-          autoComplete="off"
-          readOnly={isEmployeeDataFetched}
-        />
-        <TextInput
           id={getId('summer_voucher_serial_number')}
           validation={{ required: true, maxLength: 64 }}
           onChange={enableFetchEmployeeDataButton}
           autoComplete="off"
           readOnly={isEmployeeDataFetched}
         />
+        <DateInput
+          id={getId('employee_birth_date')}
+          validation={{ required: true }}
+          initialYear={new Date().getFullYear() - 15}
+          readOnly={isEmployeeDataFetched}
+        />
+        {isEmployeeDataFetched && (
+          <TextInput
+            id={getId('employee_name')}
+            validation={{ required: true, maxLength: 256 }}
+            autoComplete="off"
+            readOnly
+            /* NOTE: employee_name is fetched from the backend and shown here for 
+               confirmation, but it's not used as a search criteria anymore. */
+          />
+        )}
 
         <Button
           onClick={handleGetEmployeeData}
@@ -174,17 +178,6 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
       </FormSection>
       <FormSectionDivider $colSpan={2} />
       <FormSection columns={2} withoutDivider>
-        <TextInput
-          id={getId('employee_ssn')}
-          validation={{
-            required: true,
-            maxLength: 32,
-          }}
-          autoComplete="off"
-          disabled={disableEmploymentFields}
-          readOnly={isEmployeeDataFetched}
-        />
-
         <TextInput
           id={getId('employee_phone_number')}
           validation={{ required: true, maxLength: 64 }}
