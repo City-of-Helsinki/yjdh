@@ -33,14 +33,17 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        number_of_notified_applications = notify_applications(options["notify"])
+        (number_of_notified_applications, application_numbers) = notify_applications(
+            options["notify"]
+        )
+        application_number_strings = ", ".join(str(x) for x in application_numbers)
         self.stdout.write(
             f"Notified users of {number_of_notified_applications} applications about"
-            " benefit checkpoint"
+            + f" benefit checkpoint: {application_number_strings}"
         )
 
 
-def notify_applications(days_to_notify: int) -> int:
+def notify_applications(days_to_notify: int) -> tuple[int, list[int]]:
     """Query applications that are close to the benefit checkpoint date
     and not have any alterations. Send a notification to the applicant.
     Returns the number of notified applications."""
@@ -54,6 +57,7 @@ def notify_applications(days_to_notify: int) -> int:
     )
 
     sent_mail_count = 0
+    application_numbers = []
     for application in applications_to_notify:
         # Change the instalment status to REQUESTED
         instalment_2_qs = Instalment.objects.filter(
@@ -68,8 +72,9 @@ def notify_applications(days_to_notify: int) -> int:
                 instalment_2 = instalment_2_qs[0]
                 instalment_2.status = InstalmentStatus.REQUESTED
                 instalment_2.save()
+                application_numbers.append(application.application_number)
 
-    return sent_mail_count
+    return sent_mail_count, application_numbers
 
 
 def get_benefit_notice_email_notification_subject():
