@@ -82,6 +82,16 @@ test('Open form and create a decision proposal', async (t: TestController) => {
   await t.click(Selector('label').withText(fi.review.fields.support));
   await t.click(handleButton);
 
+  const firstSignerRadio = Selector('[id^="radio-signer-"]')
+    .filterVisible()
+    .nth(0);
+  await t.expect(firstSignerRadio.exists).ok();
+  const firstSignerRadioId = await firstSignerRadio.getAttribute(
+    'id'
+  );
+  await t.click(Selector(`label[for="${firstSignerRadioId}"]`));
+  await t.expect(firstSignerRadio.checked).ok();
+
   const firstDecisionMakerRadio = Selector('[id^="radio-decision-maker-"]')
     .filterVisible()
     .nth(0);
