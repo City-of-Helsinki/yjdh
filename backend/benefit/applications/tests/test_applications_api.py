@@ -599,6 +599,71 @@ def test_application_post_success(api_client, application):
 
 
 @pytest.mark.django_db
+@pytest.mark.freeze_time("2021-06-04")
+def test_application_post_company_with_industry_code_not_refreshed(
+    api_client, application
+):
+    """
+    When a new application is created and the company already has an industry_code,
+    the service bus should NOT be called to refresh it.
+    """
+    company = application.company
+    company.industry_code = "62010"
+    company.save()
+
+    data = ApplicantApplicationSerializer(application).data
+    application.delete()
+    del data["id"]
+
+    with mock.patch(
+        "applications.api.v1.serializers.application.get_or_create_organisation_with_business_id"
+    ) as mock_refresh:
+        response = api_client.post(reverse("v1:applicant-application-list"), data)
+
+    assert response.status_code == 201
+    mock_refresh.assert_not_called()
+    company.refresh_from_db()
+    assert company.industry_code == "62010"
+
+
+@pytest.mark.django_db
+@pytest.mark.freeze_time("2021-06-04")
+def test_application_post_company_without_industry_code_triggers_refresh(
+    api_client, application
+):
+    """
+    When a new application is created and the company is missing the industry_code,
+    the service bus should be called and the company's industry/industry_code updated.
+    """
+    company = application.company
+    company.industry_code = ""
+    company.industry = ""
+    company.save()
+
+    data = ApplicantApplicationSerializer(application).data
+    application.delete()
+    del data["id"]
+
+    refreshed_company = CompanyFactory.build(
+        business_id=company.business_id,
+        industry_code="62010",
+        industry="Ohjelmistot",
+    )
+
+    with mock.patch(
+        "applications.api.v1.serializers.application.get_or_create_organisation_with_business_id",
+        return_value=refreshed_company,
+    ) as mock_refresh:
+        response = api_client.post(reverse("v1:applicant-application-list"), data)
+
+    assert response.status_code == 201
+    mock_refresh.assert_called_once_with(company.business_id)
+    company.refresh_from_db()
+    assert company.industry_code == "62010"
+    assert company.industry == "Ohjelmistot"
+
+
+@pytest.mark.django_db
 def test_application_post_unfinished(api_client, application):
     """
     Create a new application with partial information

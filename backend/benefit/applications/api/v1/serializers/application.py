@@ -1,3 +1,5 @@
+import logging
+
 from datetime import date, timedelta
 from typing import Dict, List, Union
 
@@ -79,6 +81,7 @@ from common.utils import (
 )
 from companies.api.v1.serializers import CompanySearchSerializer, CompanySerializer
 from companies.models import Company
+from companies.services import get_or_create_organisation_with_business_id
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 from terms.api.v1.serializers import (
@@ -90,6 +93,8 @@ from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
 from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
+
+log = logging.getLogger(__name__)
 
 
 def _get_instalment(application, instalment_number):
@@ -1319,6 +1324,9 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         de_minimis_data = validated_data.pop("de_minimis_aid_set")
         employee_data = validated_data.pop("employee", None)
         validated_data["company"] = self.get_company_for_new_application(validated_data)
+        company = validated_data["company"]
+        if not company.industry_code:
+            self._refresh_company_industry(company)
         validated_data["company_form_code"] = validated_data[
             "company"
         ].company_form_code
@@ -1402,6 +1410,24 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 "",
                 Operation.CREATE,
                 de_minimis,
+            )
+
+    @staticmethod
+    def _refresh_company_industry(company: Company) -> None:
+        """
+        If the company is missing the industry_code (TOL-code), fetch the latest
+        data from the service bus and update the company's industry and industry_code.
+        """
+        try:
+            refreshed = get_or_create_organisation_with_business_id(
+                company.business_id
+            )
+            company.industry_code = refreshed.industry_code
+            company.industry = refreshed.industry
+            company.save(update_fields=["industry_code", "industry"])
+        except Exception:
+            log.warning(
+                "Could not refresh industry_code for company %s", company.business_id
             )
 
     def get_logged_in_user(self):
