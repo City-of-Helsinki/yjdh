@@ -1314,6 +1314,14 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
         )
 
     @property
+    def employee_birthdate(self):
+        return (
+            self.youth_summer_voucher.youth_application.birthdate
+            if self.youth_summer_voucher
+            else None
+        )
+
+    @property
     def employee_home_city(self) -> str:
         return (
             self.youth_summer_voucher.youth_application.home_municipality

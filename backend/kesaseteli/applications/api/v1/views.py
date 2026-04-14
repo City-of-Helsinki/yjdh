@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_protect
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import MultiPartParser
@@ -320,6 +320,7 @@ class YouthApplicationViewSet(ModelViewSet):
                 "employer_summer_voucher_id": str(employer_summer_voucher_id),
                 "employee_name": youth_application.name,
                 "employee_ssn": youth_application.social_security_number,
+                "employee_birthdate": youth_application.birthdate,
                 "employee_phone_number": youth_application.phone_number,
                 "employee_home_city": youth_application.home_municipality,
                 "employee_postcode": youth_application.postcode,
@@ -769,8 +770,14 @@ class EmployerApplicationViewSet(ModelViewSet):
 
         user_company = get_user_company(self.request)
 
+        if user_company:
+            return queryset.filter(
+                company=user_company,
+                status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
+            )
+
         return queryset.filter(
-            company=user_company,
+            user=self.request.user,
             status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
@@ -794,8 +801,12 @@ class EmployerApplicationViewSet(ModelViewSet):
         instance = self.get_object()
         if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
             raise ValidationError("Only DRAFT applications can be updated")
-        if request.user != instance.user:
-            raise PermissionDenied("Only application creator can update it")
+
+        user_company = get_user_company(request)
+        if instance.user != request.user and instance.company != user_company:
+            raise PermissionDenied(
+                "Only application creator or company members can update it"
+            )
 
         return super().update(request, *args, **kwargs)
 
@@ -806,8 +817,12 @@ class EmployerApplicationViewSet(ModelViewSet):
         instance = self.get_object()
         if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
             raise ValidationError("Only DRAFT applications can be deleted")
-        if request.user != instance.user:
-            raise PermissionDenied("Only application creator can delete it")
+
+        user_company = get_user_company(request)
+        if instance.user != request.user and instance.company != user_company:
+            raise PermissionDenied(
+                "Only application creator or company members can delete it"
+            )
 
         return super().destroy(request, *args, **kwargs)
 
@@ -876,8 +891,19 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             raise ValidationError(
                 "Attachments can be uploaded only for DRAFT applications"
             )
-        if obj.application.user != request.user:
-            raise PermissionDenied("Only application creator can post attachment to it")
+
+        try:
+            user_company = get_user_company(request)
+        except NotFound:
+            user_company = None
+
+        if (
+            obj.application.user != request.user
+            and obj.application.company != user_company
+        ):
+            raise PermissionDenied(
+                "Only application creator or company members can post attachment to it"
+            )
 
         # Validate request data
         serializer = AttachmentSerializer(
@@ -923,15 +949,31 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             """
             Delete a single attachment as file.
             """
-            if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
-                raise ValidationError(
-                    "Attachments can be deleted only for DRAFT applications"
-                )
-            if obj.application.user != request.user:
+            # 1. Visibility Check (404 Not Found):
+            # Unauthorized users from different companies are already filtered out
+            # by get_queryset() and will receive a 404 from self.get_object() above.
+
+            # 2. Identity Check (403 Permission Denied):
+            # Deny if the user is NEITHER the application creator NOR a member of the
+            # same company. This check remains critical for Staff/Handlers who pass the
+            # get_queryset visibility.
+            try:
+                user_company = get_user_company(request)
+            except NotFound:
+                user_company = None
+
+            if (
+                obj.application.user != request.user
+                and obj.application.company != user_company
+            ):
                 raise PermissionDenied(
-                    "Only application creator can delete attachment from it"
+                    "Only application creator or company members can delete attachment from it"  # noqa: E501
                 )
 
+            # 3. Status Check (403 Permission Denied):
+            # Deny if the application is NOT in a modifiable state (must be DRAFT or
+            # requested for info). Consolidates both identity and status under 403 for
+            # consistent security testing.
             if (
                 obj.application.status
                 not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES

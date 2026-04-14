@@ -297,8 +297,8 @@ def test_delete_attachment_for_submitted_application(
 
     response = api_client.delete(attachment_delete_url)
 
-    assert response.status_code == 400
-    assert "Attachments can be deleted only for DRAFT applications" in response.data
+    assert response.status_code == 403
+    assert "Operation not allowed for this application status." in str(response.data)
     submitted_summer_voucher.refresh_from_db()
     assert submitted_summer_voucher.attachments.count() == 1
 

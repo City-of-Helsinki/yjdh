@@ -30,12 +30,14 @@ def has_employer_application_permission(
     """
     Allow access only to DRAFT status employer applications of the user's company.
     """
-    return (
-        request.user.is_staff
-        or request.user.is_superuser
-        or (
-            employer_application.company == get_user_company(request)
-            and employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
+    user_company = get_user_company(request)
+    return bool(
+        user_company
+        and employer_application.company == user_company
+        and (
+            request.user.is_staff
+            or request.user.is_superuser
+            or employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
         )
     )
 
