@@ -23,7 +23,7 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
   if (applicationQuery.isSuccess) {
     const {
       employee_name,
-      employee_ssn,
+      employee_birthdate,
       employment_contract,
       payslip,
       employment_start_date,
@@ -35,11 +35,19 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
     return (
       <>
         <FormSectionHeading
-          header={`${employee_name ?? ''} ${employee_ssn ?? ''}`}
+          header={employee_name ?? ''}
           size="s"
           as="h3"
           data-testid={`employee-heading-${index}`}
         />
+
+        <EmploymentFieldSummary fieldName="employee_birthdate" index={index}>
+          {t(
+            'common:application.form.inputs.employee_birthdate'
+          )}
+          : {convertToUIDateFormat(employee_birthdate)}
+        </EmploymentFieldSummary>
+
         <EmploymentFieldSummary
           fieldName="employee_phone_number"
           index={index}
@@ -82,8 +90,7 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
         >
           {getLabel(t, 'hired_without_voucher_assessment')}:{' '}
           {t(
-            `common:application.form.selectionGroups.hired_without_voucher_assessment.${
-              hired_without_voucher_assessment ?? ''
+            `common:application.form.selectionGroups.hired_without_voucher_assessment.${hired_without_voucher_assessment ?? ''
             }`
           )}
         </EmploymentFieldSummary>

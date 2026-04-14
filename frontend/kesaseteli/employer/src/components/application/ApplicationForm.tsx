@@ -1,4 +1,5 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import usePersistFormValuesEffect from 'kesaseteli/employer/hooks/application/usePersistFormValuesEffect';
 import useResetApplicationFormValuesEffect from 'kesaseteli/employer/hooks/application/useResetApplicationFormValuesEffect';
 import useSaveCurrentStepEffect from 'kesaseteli/employer/hooks/wizard/useSaveCurrentStepEffect';
 import { useTranslation } from 'next-i18next';
@@ -35,6 +36,7 @@ const ApplicationForm: React.FC<Props> = ({ title, step, children }: Props) => {
   );
 
   useResetApplicationFormValuesEffect(methods);
+  usePersistFormValuesEffect(methods);
 
   useSaveCurrentStepEffect(step);
 

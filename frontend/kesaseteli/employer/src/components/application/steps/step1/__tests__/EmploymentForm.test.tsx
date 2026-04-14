@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import EmploymentForm from '../EmploymentForm';
@@ -25,6 +26,7 @@ const renderWithProviders = (index: number, initialValues?: any) => {
       defaultValues: {
         summer_vouchers: [initialValues],
       },
+      mode: 'onBlur',
     });
     return (
       <BackendAPIProvider baseURL={getBackendDomain()}>
@@ -57,10 +59,6 @@ describe('EmploymentForm', () => {
       summer_voucher_serial_number: '123',
     });
 
-    // The SSN field should be disabled
-    expect(
-      screen.getByLabelText(/common:application.form.inputs.employee_ssn/i)
-    ).toBeDisabled();
     // The phone number field should be disabled
     expect(
       screen.getByLabelText(
@@ -69,33 +67,83 @@ describe('EmploymentForm', () => {
     ).toBeDisabled();
   });
 
-  it('activates the second part of the form when employee_ssn is present', () => {
+  it('activates the second part of the form and shows birthdate when employee_birthdate is present', () => {
     renderWithProviders(0, {
       employee_name: 'Test',
       summer_voucher_serial_number: '123',
-      employee_ssn: '010101-123A',
+      employee_birthdate: '2000-01-01',
     });
 
-    expect(
-      screen.getByLabelText(/common:application.form.inputs.employee_ssn/i)
-    ).not.toBeDisabled();
     expect(
       screen.getByLabelText(
         /common:application.form.inputs.employee_phone_number/i
       )
     ).not.toBeDisabled();
+
+    const birthdateInput = screen.getByLabelText(
+      /common:application.form.inputs.employee_birthdate/i
+    );
+    expect(birthdateInput).toHaveValue('1.1.2000');
+    expect(birthdateInput).toHaveAttribute('readOnly');
   });
 
-  it('activates the second part of the form when employee_phone_number is present (even if SSN is missing)', () => {
+  describe('employment_postcode', () => {
+    it.each(['00100', '01200', '20100', '33100'])(
+      'preserves leading zeros and accepts valid postcode "%s"',
+      async (postcode) => {
+        renderWithProviders(0, {
+          employee_name: 'Test',
+          summer_voucher_serial_number: '123',
+          employee_birthdate: '2000-01-01',
+        });
+
+        const input = screen.getByLabelText(
+          /common:application.form.inputs.employment_postcode/i
+        );
+        await userEvent.clear(input);
+        await userEvent.type(input, postcode);
+        input.blur();
+
+        expect(input).toHaveValue(postcode);
+        await waitFor(() => {
+          expect(
+            screen.queryByText(/common:application.form.errors.pattern/i)
+          ).not.toBeInTheDocument();
+          expect(
+            screen.queryByText(/common:application.form.errors.maxLength/i)
+          ).not.toBeInTheDocument();
+        });
+      }
+    );
+
+    it('shows error for too long postcode "123456"', async () => {
+      renderWithProviders(0, {
+        employee_name: 'Test',
+        summer_voucher_serial_number: '123',
+        employee_birthdate: '2000-01-01',
+      });
+
+      const input = screen.getByLabelText(
+        /common:application.form.inputs.employment_postcode/i
+      );
+      await userEvent.clear(input);
+      await userEvent.type(input, '123456');
+      input.blur();
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/common:application.form.errors.maxLength/i)
+        ).toBeInTheDocument();
+      });
+    });
+  });
+
+  it('activates the second part of the form when employee_phone_number is present', () => {
     renderWithProviders(0, {
       employee_name: 'Test',
       summer_voucher_serial_number: '123',
       employee_phone_number: '0401234567',
     });
-
-    expect(
-      screen.getByLabelText(/common:application.form.inputs.employee_ssn/i)
-    ).not.toBeDisabled();
     expect(
       screen.getByLabelText(
         /common:application.form.inputs.employee_phone_number/i
@@ -108,16 +156,12 @@ describe('EmploymentForm', () => {
     ).not.toBeDisabled();
   });
 
-  it('activates the second part of the form when employment_postcode is present (even if SSN is missing)', () => {
+  it('activates the second part of the form when employment_postcode is present', () => {
     renderWithProviders(0, {
       employee_name: 'Test',
       summer_voucher_serial_number: '123',
       employment_postcode: '00100',
     });
-
-    expect(
-      screen.getByLabelText(/common:application.form.inputs.employee_ssn/i)
-    ).not.toBeDisabled();
     expect(
       screen.getByLabelText(
         /common:application.form.inputs.employee_phone_number/i

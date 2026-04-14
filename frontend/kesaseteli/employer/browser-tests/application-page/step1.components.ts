@@ -9,6 +9,8 @@ import ContactInfo from '@frontend/shared/src/types/contact-info';
 import { friendlyFormatIBAN } from 'ibantools';
 import TestController, { Selector } from 'testcafe';
 
+import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
+
 const formSelector = () => Selector('form#employer-application-form');
 
 export const getStep1Components = (t: TestController) => {
@@ -102,9 +104,9 @@ export const getStep1Components = (t: TestController) => {
         name: /hae tiedot työntekijän nimen ja kesäsetelin sarjanumeron avulla/i,
       });
     },
-    ssnInput() {
+    birthdateInput() {
       return withinForm().findByRole('textbox', {
-        name: /^henkilötunnus/i,
+        name: /^syntymäaika/i,
       });
     },
     phoneNumberInput() {
@@ -113,7 +115,7 @@ export const getStep1Components = (t: TestController) => {
       });
     },
     employmentPostcodeInput() {
-      return withinForm().findByRole('spinbutton', {
+      return withinForm().findByRole('textbox', {
         name: /^työn suorituspaikan postinumero/i,
       });
     },
@@ -167,12 +169,12 @@ export const getStep1Components = (t: TestController) => {
     },
     async isEmploymentFieldsEnabled() {
       await t
-        .expect(selectors.ssnInput().hasAttribute('disabled'))
+        .expect(selectors.birthdateInput().hasAttribute('disabled'))
         .notOk(await getErrorMessage(t));
     },
-    async isSsnFieldReadOnly() {
+    async isBirthdateFieldReadOnly() {
       await t
-        .expect(selectors.ssnInput().hasAttribute('readonly'))
+        .expect(selectors.birthdateInput().hasAttribute('readonly'))
         .ok(await getErrorMessage(t));
     },
     async isFulFilledWith({
@@ -185,7 +187,7 @@ export const getStep1Components = (t: TestController) => {
       await t.expect(formSelector().exists).ok(await getErrorMessage(t));
       await t
         .expect(selectors.contactPersonNameInput().value)
-        .eql(contact_person_name, await getErrorMessage(t));
+        .eql(contact_person_name?.trim(), await getErrorMessage(t));
       await t
         .expect(selectors.contactPersonEmailInput().value)
         .eql(contact_person_email, await getErrorMessage(t));
@@ -203,17 +205,27 @@ export const getStep1Components = (t: TestController) => {
         .eql(contact_person_phone_number, await getErrorMessage(t));
     },
     async isEmploymentFulfilledWith({
-      employee_ssn,
+      employee_birthdate,
       employee_phone_number,
+      employee_name,
     }: {
-      employee_ssn?: string;
+      employee_birthdate?: string;
       employee_phone_number?: string;
+      employee_name?: string;
     }) {
       await t.expect(formSelector().exists).ok(await getErrorMessage(t));
-      if (employee_ssn) {
+      if (employee_name) {
         await t
-          .expect(selectors.ssnInput().value)
-          .eql(employee_ssn, await getErrorMessage(t));
+          .expect(selectors.employeeNameInput().value)
+          .eql(employee_name, await getErrorMessage(t));
+      }
+      if (employee_birthdate) {
+        await t
+          .expect(selectors.birthdateInput().value)
+          .eql(
+            convertToUIDateFormat(employee_birthdate),
+            await getErrorMessage(t)
+          );
       }
       if (employee_phone_number) {
         await t
@@ -330,14 +342,6 @@ export const getStep1Components = (t: TestController) => {
     },
     async clickFetchEmployeeDataButton() {
       await t.click(selectors.fetchEmployeeDataButton());
-    },
-    fillSsn(ssn: string) {
-      return fillInput(
-        t,
-        'summer_vouchers.0.employee_ssn',
-        selectors.ssnInput(),
-        ssn
-      );
     },
     fillPhoneNumber(phone: string) {
       return fillInput(

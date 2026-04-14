@@ -150,6 +150,7 @@
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
+        "employee_birthdate": "Syntymäaika",
         "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",

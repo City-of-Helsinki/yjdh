@@ -150,6 +150,7 @@
         "contact_person_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
+        "employee_birthdate": "Date of birth",
         "employee_home_city": "Domicile",
         "employee_postcode": "Postal code of the workplace",
         "employee_phone_number": "Phone number",

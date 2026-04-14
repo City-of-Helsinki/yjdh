@@ -13,6 +13,7 @@ export type EmployeeHiredWithoutVoucherAssessment =
 export type EmploymentBase = {
   employee_name?: string;
   employee_ssn?: string;
+  employee_birthdate?: string;
   employee_phone_number?: string;
   employee_home_city?: string;
   employee_postcode?: string;

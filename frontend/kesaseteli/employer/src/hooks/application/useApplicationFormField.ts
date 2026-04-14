@@ -73,7 +73,7 @@ const useApplicationFormField = <V extends Value>(
       }
       return value as V;
     },
-    setValue: (value: V) => setValue(id, value),
+    setValue: (value: V) => setValue(id, value, { shouldDirty: true, shouldTouch: true }),
     watch: () => watch(id) as V,
     getError,
     hasError: () => Boolean(getError()),
@@ -99,7 +99,7 @@ const useApplicationFormField = <V extends Value>(
       }
     },
     setError: (error: ErrorOption) => setErrorF(id, error),
-    clearValue: () => setValue(id, ''),
+    clearValue: () => setValue(id, '', { shouldDirty: true, shouldTouch: true }),
     trigger: () => trigger(id, { shouldFocus: true }),
     clearErrors: () => clearErrors(id),
     setFocus: () => {
