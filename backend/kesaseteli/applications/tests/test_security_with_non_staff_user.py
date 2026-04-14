@@ -1,3 +1,4 @@
+from datetime import date
 from unittest import mock
 
 import pytest
@@ -377,126 +378,138 @@ def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "client_type, context_type, owner_type, app_company_type, expected_status",
+    [
+        pytest.param(
+            "user1", "company1", "user1", "company1", 204, id="creator_own_context"
+        ),  # Creator in own company
+        pytest.param(
+            "user2", "company1", "user1", "company1", 204, id="colleague_same_context"
+        ),  # Colleague in same company
+        pytest.param(
+            "user1", "company2", "user1", "company1", 404, id="creator_wrong_context"
+        ),  # Same user but wrong company context
+        pytest.param(
+            "user1", "company1", "user2", "company2", 404, id="other_company_access"
+        ),  # Targeting other company's application
+        pytest.param(
+            "staff", "none", "user1", "company1", 403, id="staff_access"
+        ),  # Staff/Handler (No company)
+    ],
+)
 @pytest.mark.django_db
-def test_employer_summer_voucher_handle_attachment_delete_draft():
+def test_employer_summer_voucher_handle_attachment_delete_draft(
+    staff_client,
+    client_type,
+    context_type,
+    owner_type,
+    app_company_type,
+    expected_status,
+):
     """
     Test that the employer summer voucher's handle attachment endpoint can be
     used to delete draft employer applications' attachments but only those that
-    are the user's and use the user's company.
+    are the user's or use the user's company.
     """
-    application_status = EmployerApplicationStatus.DRAFT
     user1, user2 = UserFactory.create_batch(size=2)
-    user1_client = force_login_user(user1)
-    user2_client = force_login_user(user2)
-
     company1, company2 = CompanyFactory.create_batch(size=2)
 
-    user1_company1_attachment = create_attachment(user1, company1, application_status)
-    user1_company2_attachment = create_attachment(user1, company2, application_status)
-    user2_company1_attachment = create_attachment(user2, company1, application_status)
-    user2_company2_attachment = create_attachment(user2, company2, application_status)
+    # Map types to objects
+    users = {"user1": user1, "user2": user2, "staff": None}
+    companies = {"company1": company1, "company2": company2, "none": None}
 
-    def del_attachment(client: Client, attachment: Attachment):
-        return client.delete(
-            reverse(
-                "v1:employersummervoucher-handle-attachment",
-                kwargs={
-                    "pk": attachment.summer_voucher.id,
-                    "attachment_pk": attachment.id,
-                },
-            )
+    client_user = users[client_type]
+    client_company = companies[context_type]
+    app_owner = users[owner_type]
+    app_company = companies[app_company_type]
+
+    # Setup application and attachment
+    attachment = create_attachment(
+        app_owner, app_company, EmployerApplicationStatus.DRAFT
+    )
+
+    # Setup client
+    if client_type == "staff":
+        client = staff_client
+    else:
+        client = force_login_user(client_user)
+        if client_company:
+            set_company_business_id_to_client(client_company, client)
+
+    response = client.delete(
+        reverse(
+            "v1:employersummervoucher-handle-attachment",
+            kwargs={
+                "pk": attachment.summer_voucher.id,
+                "attachment_pk": attachment.id,
+            },
         )
+    )
 
-    # Seen but unallowed deletions (=403), and not seen cases (=404):
-    set_company_business_id_to_client(company1, user1_client)
-    assert del_attachment(user1_client, user1_company2_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company1_attachment).status_code == 403
-    assert del_attachment(user1_client, user2_company2_attachment).status_code == 404
-
-    set_company_business_id_to_client(company1, user2_client)
-    assert del_attachment(user2_client, user1_company1_attachment).status_code == 403
-    assert del_attachment(user2_client, user1_company2_attachment).status_code == 404
-    assert del_attachment(user2_client, user2_company2_attachment).status_code == 404
-
-    set_company_business_id_to_client(company2, user1_client)
-    assert del_attachment(user1_client, user1_company1_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company1_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company2_attachment).status_code == 403
-
-    set_company_business_id_to_client(company2, user2_client)
-    assert del_attachment(user2_client, user1_company1_attachment).status_code == 404
-    assert del_attachment(user2_client, user1_company2_attachment).status_code == 403
-    assert del_attachment(user2_client, user2_company1_attachment).status_code == 404
-
-    # Allowed deletions
-    set_company_business_id_to_client(company1, user1_client)
-    assert del_attachment(user1_client, user1_company1_attachment).status_code == 204
-
-    set_company_business_id_to_client(company1, user2_client)
-    assert del_attachment(user2_client, user2_company1_attachment).status_code == 204
-
-    set_company_business_id_to_client(company2, user1_client)
-    assert del_attachment(user1_client, user1_company2_attachment).status_code == 204
-
-    set_company_business_id_to_client(company2, user2_client)
-    assert del_attachment(user2_client, user2_company2_attachment).status_code == 204
+    assert response.status_code == expected_status
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "client_type, context_type, owner_type, app_company_type, expected_status",
+    [
+        pytest.param(
+            "user1", "company1", "user1", "company1", 403, id="own_submitted"
+        ),  # Own app (Blocked by SUBMITTED status)
+        pytest.param(
+            "user2", "company1", "user1", "company1", 403, id="colleague_submitted"
+        ),  # Colleague's app (Blocked by SUBMITTED status)
+        pytest.param(
+            "user1", "company2", "user1", "company1", 404, id="wrong_context_submitted"
+        ),  # Wrong company context
+        pytest.param(
+            "user1", "company1", "user2", "company2", 404, id="other_company_submitted"
+        ),  # Other company context
+    ],
+)
 @pytest.mark.django_db
-def test_employer_summer_voucher_handle_attachment_delete_submitted():
+def test_employer_summer_voucher_handle_attachment_delete_submitted(
+    client_type, context_type, owner_type, app_company_type, expected_status
+):
     """
     Test that the employer summer voucher's handle attachment endpoint can not
     be used to delete submitted employer applications' attachments at all, not
     the user's and the user's company's nor anyone else's.
     """
-    application_status = EmployerApplicationStatus.SUBMITTED
     user1, user2 = UserFactory.create_batch(size=2)
-    user1_client = force_login_user(user1)
-    user2_client = force_login_user(user2)
-
     company1, company2 = CompanyFactory.create_batch(size=2)
 
-    user1_company1_attachment = create_attachment(user1, company1, application_status)
-    user1_company2_attachment = create_attachment(user1, company2, application_status)
-    user2_company1_attachment = create_attachment(user2, company1, application_status)
-    user2_company2_attachment = create_attachment(user2, company2, application_status)
+    # Map types to objects
+    users = {"user1": user1, "user2": user2}
+    companies = {"company1": company1, "company2": company2}
 
-    def del_attachment(client: Client, attachment: Attachment):
-        return client.delete(
-            reverse(
-                "v1:employersummervoucher-handle-attachment",
-                kwargs={
-                    "pk": attachment.summer_voucher.id,
-                    "attachment_pk": attachment.id,
-                },
-            )
+    client_user = users[client_type]
+    client_company = companies[context_type]
+    app_owner = users[owner_type]
+    app_company = companies[app_company_type]
+
+    # Setup application and attachment
+    attachment = create_attachment(
+        app_owner, app_company, EmployerApplicationStatus.SUBMITTED
+    )
+
+    # Setup client
+    client = force_login_user(client_user)
+    if client_company:
+        set_company_business_id_to_client(client_company, client)
+
+    response = client.delete(
+        reverse(
+            "v1:employersummervoucher-handle-attachment",
+            kwargs={
+                "pk": attachment.summer_voucher.id,
+                "attachment_pk": attachment.id,
+            },
         )
+    )
 
-    # The status code 400s are the ones that match the user's company:
-    set_company_business_id_to_client(company1, user1_client)
-    assert del_attachment(user1_client, user1_company1_attachment).status_code == 400
-    assert del_attachment(user1_client, user1_company2_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company1_attachment).status_code == 400
-    assert del_attachment(user1_client, user2_company2_attachment).status_code == 404
-
-    set_company_business_id_to_client(company1, user2_client)
-    assert del_attachment(user2_client, user1_company1_attachment).status_code == 400
-    assert del_attachment(user2_client, user1_company2_attachment).status_code == 404
-    assert del_attachment(user2_client, user2_company1_attachment).status_code == 400
-    assert del_attachment(user2_client, user2_company2_attachment).status_code == 404
-
-    set_company_business_id_to_client(company2, user1_client)
-    assert del_attachment(user1_client, user1_company1_attachment).status_code == 404
-    assert del_attachment(user1_client, user1_company2_attachment).status_code == 400
-    assert del_attachment(user1_client, user2_company1_attachment).status_code == 404
-    assert del_attachment(user1_client, user2_company2_attachment).status_code == 400
-
-    set_company_business_id_to_client(company2, user2_client)
-    assert del_attachment(user2_client, user1_company1_attachment).status_code == 404
-    assert del_attachment(user2_client, user1_company2_attachment).status_code == 400
-    assert del_attachment(user2_client, user2_company1_attachment).status_code == 404
-    assert del_attachment(user2_client, user2_company2_attachment).status_code == 400
+    assert response.status_code == expected_status
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -1283,6 +1296,7 @@ def test_youth_application_fetch_employee_data(user_client):
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "John Doe",
             "employee_ssn": "111111-111C",
+            "employee_birthdate": date(1911, 11, 11),
             "employee_phone_number": "123456789",
             "employee_home_city": "Helsinki",
             "employee_postcode": "00100",

@@ -174,6 +174,9 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
     data["summer_vouchers"][0]["summer_voucher_serial_number"] = str(
         new_youth_summer_voucher.summer_voucher_serial_number
     )
+    data["summer_vouchers"][0]["employee_name"] = (
+        new_youth_summer_voucher.youth_application.name
+    )
 
     response = api_client.put(
         get_detail_url(application),

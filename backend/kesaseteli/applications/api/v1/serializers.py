@@ -17,6 +17,7 @@ from applications.enums import (
     AttachmentType,
     EmployerApplicationStatus,
     get_supported_languages,
+    YouthApplicationStatus,
 )
 from applications.models import (
     Attachment,
@@ -25,11 +26,13 @@ from applications.models import (
     School,
     SummerVoucherConfiguration,
     YouthApplication,
+    YouthSummerVoucher,
 )
 from applications.target_groups import (
     get_target_group_choices,
     get_target_group_data,
 )
+from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
@@ -232,6 +235,11 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         allow_blank=True,
         required=False,
     )
+    employee_name = serializers.CharField(
+        max_length=256,
+        allow_blank=True,
+        required=False,
+    )
 
     class Meta:
         model = EmployerSummerVoucher
@@ -241,6 +249,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "employee_name",
             "employee_school",
             "employee_ssn",
+            "employee_birthdate",
             "employee_phone_number",
             "employee_home_city",
             "employee_postcode",
@@ -256,17 +265,18 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "ordering",
-            "employee_name",
             "employee_school",
             "employee_ssn",
+            "employee_birthdate",
             "employee_home_city",
             "employee_postcode",
         ]
         list_serializer_class = EmployerSummerVoucherListSerializer
 
     def _validate_non_draft_required_fields(self, data):
+        parent = self.parent
         status = (
-            self.parent.parent.initial_data.get("status") if self.parent.parent else ""
+            parent.parent.initial_data.get("status") if parent and parent.parent else ""
         )
 
         if not status or status == EmployerApplicationStatus.DRAFT:
@@ -288,7 +298,114 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
     def validate(self, data):
         data = super().validate(data)
         self._validate_non_draft_required_fields(data)
+        self._validate_summer_voucher_serial_number(data)
+
         return data
+
+    def _validate_summer_voucher_serial_number(self, data):
+        serial_number = data.get("summer_voucher_serial_number")
+        if not serial_number:
+            return
+
+        try:
+            youth_summer_voucher = YouthSummerVoucher.objects.get(
+                summer_voucher_serial_number=int(serial_number)
+            )
+        except (ValueError, TypeError, YouthSummerVoucher.DoesNotExist):
+            return
+
+        # 1. Name validation
+        user_provided_name = data.get("employee_name")
+        if not user_provided_name:
+            raise serializers.ValidationError(
+                {
+                    "employee_name": _(
+                        "Employee name is required when providing a serial number"
+                    )
+                }
+            )
+
+        youth_application = youth_summer_voucher.youth_application
+        if not is_last_name_fuzzy_match_in_full_name(
+            last_name=youth_application.last_name, full_name=user_provided_name
+        ):
+            raise serializers.ValidationError(
+                {
+                    "employee_name": _(
+                        "Provided employee name does not match the voucher owner"
+                    )
+                }
+            )
+
+        # 2. Usage validation
+        #
+        # Each YouthSummerVoucher (identified by its serial number) represents a
+        # unique work contract for a single student. Therefore, it must have a
+        # strict 1-1 relationship with an EmployerApplication.
+        #
+        # A voucher can only be attached to at most ONE EmployerApplication
+        # system-wide. This block ensures that:
+        # 1. A voucher already in a SUBMITTED/ACCEPTED application cannot be reused.
+        # 2. A voucher already in a DRAFT application (even of the same company or user)
+        #    cannot be added to a second draft.
+        #
+        # Hijacking is prevented by making the serial number effectively unique
+        # across all active and draft applications.
+        application = None
+        if self.instance:
+            application = getattr(self.instance, "application", None)
+
+        if not application:
+            application = self.context.get("application")
+
+        if not application:
+            # Try to get it from the root serializer (EmployerApplicationSerializer)
+            # This is often needed during nested validation
+            root = getattr(self, "root", None)
+            if root and hasattr(root, "instance") and root.instance:
+                application = root.instance
+
+        # Check if this voucher is already linked to ANY other application in the DB.
+        # We exclude the current application to allow idempotent updates.
+        used_in_other = EmployerSummerVoucher.objects.filter(
+            youth_summer_voucher=youth_summer_voucher,
+        )
+
+        if application and hasattr(application, "id"):
+            # Match by ID to be safe across different object instances
+            used_in_other = used_in_other.exclude(application_id=application.id)
+
+        # 3. Status validation
+        # Only accepted youth applications can have their vouchers attached.
+        if youth_application.status != YouthApplicationStatus.ACCEPTED:
+            raise serializers.ValidationError(
+                {
+                    "summer_voucher_serial_number": _(
+                        f"This voucher is not yet valid for attachment "
+                        f"(Youth application status: {youth_application.status}). "
+                        "Status must be 'accepted'."
+                    )
+                }
+            )
+
+        if used_in_other.exists():
+            conflicting_app_id = used_in_other.first().application_id
+            request = self.context.get("request")
+            user = getattr(request, "user", "Unknown") if request else "Unknown"
+            LOGGER.warning(
+                "[SECURITY ISSUE] Suspicious voucher usage detected. Voucher serial "
+                f"{youth_summer_voucher.summer_voucher_serial_number} "
+                f"is already linked to application {conflicting_app_id}. "
+                f"Attempted by user {user} (ID: {getattr(user, 'id', 'N/A')}) "
+                f"for application {getattr(application, 'id', 'new draft')}."
+            )
+            raise serializers.ValidationError(
+                {
+                    "summer_voucher_serial_number": _(
+                        "This voucher has already been used in another application"
+                    )
+                }
+            )
 
     REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS = [
         "summer_voucher_serial_number",
@@ -376,7 +493,10 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         self, summer_vouchers_data: list, application: EmployerApplication
     ) -> None:
         serializer = EmployerSummerVoucherSerializer(
-            application.summer_vouchers.all(), data=summer_vouchers_data, many=True
+            application.summer_vouchers.all(),
+            data=summer_vouchers_data,
+            many=True,
+            context={**self.context, "application": application},
         )
 
         if not serializer.is_valid():
@@ -388,6 +508,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             )
 
         for idx, summer_voucher_item in enumerate(serializer.validated_data):
+            summer_voucher_item.pop("employee_name", None)
             summer_voucher_item["application_id"] = application.pk
             summer_voucher_item["ordering"] = (
                 idx  # use the ordering defined in the JSON sent by the client
