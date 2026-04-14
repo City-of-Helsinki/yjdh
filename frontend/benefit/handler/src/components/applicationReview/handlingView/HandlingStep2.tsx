@@ -29,12 +29,68 @@ type HandlingStepProps = {
 const replaceDecisionTemplatePlaceholders = (
   text: string,
   role: string
-): string => {
-  let replacedText = '';
+): string => text.replace(/@role/gi, role);
 
-  replacedText = text.replace(/@role/gi, role);
+type SignerSectionProps = {
+  signerOptions: AhjoSigner[] | undefined;
+  selectedSigner: AhjoSigner | null;
+  setSelectedSigner: React.Dispatch<React.SetStateAction<AhjoSigner | null>>;
+  handledApplication: HandledAplication | null;
+  setHandledApplication: (application: HandledAplication | null) => void;
+  translationBase: string;
+};
 
-  return replacedText;
+const SignerSection: React.FC<SignerSectionProps> = ({
+  signerOptions,
+  selectedSigner,
+  setSelectedSigner,
+  handledApplication,
+  setHandledApplication,
+  translationBase,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <$ReviewGrid bgColor={theme.colors.silverLight}>
+      <$GridCell $colSpan={12}>
+        <Heading
+          $css={{ marginTop: 0 }}
+          header={t(`${translationBase}.signer.title`)}
+          as="h3"
+        />
+      </$GridCell>
+      <$GridCell $colSpan={12}>
+        <SelectionGroup
+          label={t(`${translationBase}.signer.fields.signer.label`)}
+          tooltipText={t(
+            `${translationBase}.signer.fields.signer.tooltipText`
+          )}
+        >
+          {signerOptions?.map((option, index) => (
+            <$RadioButton
+              key={`radio-signer-${option.id}`}
+              id={`radio-signer-${index}`}
+              value={option.id}
+              label={option.name}
+              checked={selectedSigner?.id === option?.id}
+              onChange={() => {
+                setSelectedSigner({
+                  id: option.id,
+                  name: option.name,
+                });
+                if (handledApplication) {
+                  setHandledApplication({
+                    ...handledApplication,
+                    signerId: option.id,
+                    signerName: option.name,
+                  });
+                }
+              }}
+            />
+          ))}
+        </SelectionGroup>
+      </$GridCell>
+    </$ReviewGrid>
+  );
 };
 
 type DecisionMakerSectionProps = {
@@ -372,7 +428,14 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       <$ReviewGrid bgColor={theme.colors.silverLight}>
         <CalculationReview application={application} />
       </$ReviewGrid>
-
+      <SignerSection
+        signerOptions={signerOptions}
+        selectedSigner={selectedSigner}
+        setSelectedSigner={setSelectedSigner}
+        handledApplication={handledApplication}
+        setHandledApplication={setHandledApplication}
+        translationBase={translationBase}
+      />
       <DecisionMakerSection
         decisionMakerOptions={decisionMakerOptions}
         selectedDecisionMaker={selectedDecisionMaker}
