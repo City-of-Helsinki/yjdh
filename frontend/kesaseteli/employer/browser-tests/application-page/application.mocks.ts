@@ -25,11 +25,11 @@ const httpsAgent = fs.existsSync(certPath)
   : new https.Agent({ rejectUnauthorized: false }); // CodeQL: test-only fallback for CI
 
 export const MOCKED_EMPLOYEE_DATA = {
-  employee_ssn: '010101-123U',
   employee_phone_number: '040 1234567',
   employee_home_city: 'Helsinki',
   employee_postcode: '00100', // using string for postcode to preserve padding
   employee_school: 'Testikoulu',
+  employee_birthdate: '2000-01-01',
 } as unknown as Partial<Employment>;
 
 export const FULLY_MOCKED_FORM_DATA = {

@@ -96,7 +96,6 @@ const CreateApplicationWithoutSsnForm: React.FC = () => {
       <DateInput id="nonVtjBirthdate" validation={{ required: true }} />
       <TextInput
         id="postcode"
-        type="number"
         validation={{
           required: true,
           pattern: POSTAL_CODE_REGEX,

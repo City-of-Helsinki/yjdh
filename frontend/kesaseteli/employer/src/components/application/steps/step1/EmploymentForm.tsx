@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import { Button, TextInput as HdsTextInput } from 'hds-react';
 import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
@@ -13,12 +13,14 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import LinkText from 'shared/components/link-text/LinkText';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { POSTAL_CODE_REGEX } from 'shared/constants';
 import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 import Employment from 'shared/types/employment';
 import { getFormApplication } from 'shared/utils/application.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
 /**
@@ -43,8 +45,8 @@ const useFetchEmployeeDataButtonState = (
     const integerStringRegex = /^\s*\d+\s*$/; // Allow leading and trailing whitespace
     setIsFetchEmployeeDataEnabled(
       (formDataVoucher.employee_name?.length ?? 0) > 0 &&
-        typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
-        integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
+      typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
+      integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
     );
   }, [getValues, index]);
 
@@ -76,21 +78,29 @@ const useFetchEmployeeData = (
   const [isEmployeeDataFetched, setIsEmployeeDataFetched] =
     useState<boolean>(false);
 
-  const [employeeSsn, employeePhoneNumber, employmentPostcode] = useWatch({
+  const [employeePhoneNumber, employmentPostcode, employeeBirthdate] = useWatch({
     control,
     name: [
-      `summer_vouchers.${index}.employee_ssn`,
       `summer_vouchers.${index}.employee_phone_number`,
       `summer_vouchers.${index}.employment_postcode`,
+      `summer_vouchers.${index}.employee_birthdate`,
     ],
   });
 
-  // Set fetched state when SSN, phone number or postcode is populated
+  // Set fetched state when phone number, postcode or birthdate is populated
   useEffect(() => {
-    if (employeeSsn || employeePhoneNumber || employmentPostcode) {
+    if (
+      employeePhoneNumber ||
+      employmentPostcode ||
+      employeeBirthdate
+    ) {
       setIsEmployeeDataFetched(true);
     }
-  }, [employeeSsn, employeePhoneNumber, employmentPostcode]);
+  }, [
+    employeePhoneNumber,
+    employmentPostcode,
+    employeeBirthdate,
+  ]);
 
   const handleGetEmployeeData = useCallback((): void => {
     const currentValues = getValues();
@@ -98,11 +108,18 @@ const useFetchEmployeeData = (
 
     const handleReset = (app: Application): void => {
       // Don't reset the fetched state during form reset
-      reset(getFormApplication(app));
+      reset(getFormApplication(app), { keepDirty: true });
     };
 
-    const performFetch = (appData: Application | DraftApplication): void => {
-      void fetchEmployment(appData, index, (app) => {
+    const performFetch = (appData: DraftApplication | Application): void => {
+      const currentValues = getValues();
+      // Ensure the voucher we are processing has the ID from the server (if it was just created)
+      const serverVoucherId = appData.summer_vouchers?.[index]?.id;
+      if (serverVoucherId) {
+        currentValues.summer_vouchers[index].id = serverVoucherId;
+      }
+
+      void fetchEmployment(currentValues, index, (app) => {
         handleReset(app);
         setIsEmployeeDataFetched(true);
       });
@@ -137,6 +154,11 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
 
   const getId = (field: keyof Employment): TextInputProps['id'] =>
     `summer_vouchers.${index}.${field}`;
+
+  const [employeeBirthdate] = useWatch({
+    control: useFormContext<Application>().control,
+    name: [`summer_vouchers.${index}.employee_birthdate`],
+  });
 
   const disableEmploymentFields = !isEmployeeDataFetched;
 
@@ -174,16 +196,19 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
       </FormSection>
       <FormSectionDivider $colSpan={2} />
       <FormSection columns={2} withoutDivider>
-        <TextInput
-          id={getId('employee_ssn')}
-          validation={{
-            required: true,
-            maxLength: 32,
-          }}
-          autoComplete="off"
-          disabled={disableEmploymentFields}
-          readOnly={isEmployeeDataFetched}
-        />
+        <$GridCell>
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore: HDS types are overly strict in this environment, bypassing for read-only field */}
+          <HdsTextInput
+            id="employee_birthdate_readonly"
+            name="employee_birthdate_readonly"
+            label={t('common:application.form.inputs.employee_birthdate')}
+            value={convertToUIDateFormat(employeeBirthdate)}
+            readOnly
+            disabled={disableEmploymentFields}
+            onChange={() => undefined}
+          />
+        </$GridCell>
 
         <TextInput
           id={getId('employee_phone_number')}
@@ -193,11 +218,10 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
         />
         <TextInput
           id={getId('employment_postcode')}
-          type="number"
           validation={{
             required: true,
             pattern: POSTAL_CODE_REGEX,
-            maxLength: 256,
+            maxLength: 5,
           }}
           disabled={disableEmploymentFields}
         />

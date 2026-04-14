@@ -5,6 +5,7 @@ import Application from '@frontend/shared/src/types/application';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 
+import TestController from 'testcafe';
 import { getStep1Components } from '../application-page/step1.components';
 import { getStep2Components } from '../application-page/step2.components';
 import { getWizardComponents } from '../application-page/wizard.components';
@@ -22,25 +23,25 @@ export const fillEmployerDetails = async (
 ): Promise<void> => {
   const step1 = getStep1Components(t);
   const step1Form = await step1.form();
-  const {
-    contact_person_name,
-    contact_person_email,
-    street_address,
-    bank_account_number,
-    contact_person_phone_number,
-  } = application;
 
-  await step1Form.actions.fillContactPersonName(contact_person_name);
-  await step1Form.actions.fillContactPersonEmail(contact_person_email);
-  await step1Form.actions.fillContactPersonPhone(contact_person_phone_number);
-  await step1Form.actions.fillStreetAddress(street_address);
-  await step1Form.actions.fillBankAccountNumber(bank_account_number);
+  const contactPersonName = application.contact_person_name;
+  await step1Form.actions.fillContactPersonName(contactPersonName);
+  await step1Form.actions.fillContactPersonEmail(
+    application.contact_person_email
+  );
+  await step1Form.actions.fillContactPersonPhone(
+    application.contact_person_phone_number
+  );
+  await step1Form.actions.fillStreetAddress(application.street_address);
+  await step1Form.actions.fillBankAccountNumber(
+    application.bank_account_number
+  );
 };
 
 export const fillEmploymentDetails = async (
   t: TestController,
   application: Application,
-  expectedPreFill?: Partial<Employment>
+  _expectedPreFill?: Partial<Employment>
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<void> => {
   const step1 = getStep1Components(t);
@@ -48,22 +49,18 @@ export const fillEmploymentDetails = async (
   const { summer_vouchers } = application;
 
   if (summer_vouchers.length > 0) {
-    const employment = summer_vouchers[0];
-
-    await step1Form.actions.fillEmployeeName(employment.employee_name ?? '');
+    const voucher = summer_vouchers[0];
+    await step1Form.actions.fillEmployeeName(voucher.employee_name ?? '');
     await step1Form.actions.fillSerialNumber(
-      employment.summer_voucher_serial_number ?? ''
+      voucher.summer_voucher_serial_number ?? ''
     );
     await step1Form.actions.clickFetchEmployeeDataButton();
     await step1Form.expectations.isEmploymentFieldsEnabled();
-    await step1Form.expectations.isSsnFieldReadOnly();
+    await step1Form.expectations.isBirthdateFieldReadOnly();
 
-    if (expectedPreFill) {
-      await step1Form.expectations.isEmploymentFulfilledWith(expectedPreFill);
-    }
+    await step1Form.expectations.isEmploymentFulfilledWith(voucher);
 
     const {
-      employee_ssn,
       employee_phone_number,
       employment_postcode,
       employment_start_date,
@@ -72,11 +69,7 @@ export const fillEmploymentDetails = async (
       employment_description,
       employment_salary_paid,
       hired_without_voucher_assessment,
-    } = employment;
-
-    if (!expectedPreFill?.employee_ssn) {
-      await step1Form.actions.fillSsn(employee_ssn ?? '');
-    }
+    } = voucher;
     await step1Form.actions.fillPhoneNumber(employee_phone_number ?? '');
     await step1Form.actions.fillEmploymentPostcode(
       String(employment_postcode ?? '')
@@ -151,9 +144,8 @@ export const loginAndfillApplication = async (
 
   if (toStep >= 1) {
     if (isRealIntegrationsEnabled()) {
-      const companyTable = await getStep1Components(t).companyTable(
-        application.company
-      );
+      const step1 = getStep1Components(t);
+      const companyTable = await step1.companyTable(application.company);
       await companyTable.expectations.isCompanyDataPresent();
     }
     await fillStep1Form(t, application, expectedPreFill);

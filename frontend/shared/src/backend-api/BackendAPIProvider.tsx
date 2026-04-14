@@ -29,6 +29,7 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
       ...headers,
     },
     withCredentials: true,
+    timeout: 10 * 1000, // 10 seconds
   };
 
   // Force http adapter in test environment for nock compatibility

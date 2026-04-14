@@ -156,9 +156,11 @@ export const getSummaryComponents = async (t: TestController) => {
         const header = selectors.employmentHeading();
         await t
           .expect(header.textContent)
-          .contains(employment.employee_name ?? '', await getErrorMessage(t))
-          .expect(header.textContent)
-          .contains(employment.employee_ssn ?? '', await getErrorMessage(t));
+          .contains(employment.employee_name ?? '', await getErrorMessage(t));
+        await expectEmploymentFieldhasValue(
+          'employee_birthdate',
+          convertToUIDateFormat(employment.employee_birthdate)
+        );
         await expectEmploymentFieldhasValue('employee_phone_number');
         await expectEmploymentFieldhasValue('employment_postcode');
         await expectAttachments('employment_contract');

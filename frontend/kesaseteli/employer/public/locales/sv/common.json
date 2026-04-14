@@ -150,6 +150,7 @@
         "contact_person_phone_number": "Telefonnummer",
         "employee_name": "Arbetstagarens namn",
         "employee_ssn": "Personnummer",
+        "employee_birthdate": "Födelsedatum",
         "employee_home_city": "Hemort",
         "employee_postcode": "Post nummer",
         "employee_phone_number": "Telefonnummer",
