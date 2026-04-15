@@ -172,7 +172,7 @@ class HelsinkiBenefitCalculator:
 
     def _calculate_instalment_amounts(
         self, total_benefit_amount: decimal.Decimal
-    ) -> list[tuple[int, decimal.Decimal, datetime.datetime]]:
+    ) -> list[tuple[int, decimal.Decimal, datetime.datetime, InstalmentStatus]]:
         """Calculate the number of instalments and their amounts based on the total benefit.
         Returns a list of tuples containing (instalment_number, amount, due_date).
         If the total benefit is less or equal to the instalment threshold, a single instalment is created.
@@ -203,7 +203,7 @@ class HelsinkiBenefitCalculator:
             (
                 2,
                 second_instalment_amount,
-                timezone.now() + relativedelta(months=6),
+                self.calculation.start_date + relativedelta(months=6),
                 InstalmentStatus.WAITING,
             ),
         ]
@@ -255,6 +255,9 @@ class HelsinkiBenefitCalculator:
         return row
 
     def create_rows(self):
+        """
+        This method is intentionally left empty.
+        """
         pass
 
 

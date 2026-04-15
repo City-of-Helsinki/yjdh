@@ -77,7 +77,7 @@ def test_talpa_csv_output(
             due_date = timezone.now().date()
             if i == 1:
                 status = InstalmentStatus.WAITING
-                due_date = timezone.now() + relativedelta(months=6)
+                due_date = application.calculation.start_date + relativedelta(months=6)
 
             Instalment.objects.create(
                 calculation=application.calculation,
