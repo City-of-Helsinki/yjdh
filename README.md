@@ -298,7 +298,7 @@ For example, a commit may run:
 
 See more in [`.husky/README.md`](.husky/README.md).
 
-After cloning, install root Node dependencies (for Husky, doctoc, etc.) and wire Git to use Husky:
+After cloning, install root Node dependencies (for Husky, etc.) and wire Git to use Husky:
 
 ```bash
 yarn install

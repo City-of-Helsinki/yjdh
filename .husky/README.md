@@ -45,7 +45,7 @@ yarn install
 yarn husky
 ```
 
-Root `yarn install` is required so `husky`, `doctoc`, and other root `package.json` dependencies used by the hooks are on `PATH`.
+Root `yarn install` is required so `husky` and other root `package.json` dependencies used by the hooks are on `PATH`.
 
 ## Skipping hooks
 
