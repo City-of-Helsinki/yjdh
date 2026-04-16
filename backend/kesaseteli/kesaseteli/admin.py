@@ -1,3 +1,4 @@
+from auditlog_extra.mixins import AuditlogAdminViewAccessLogMixin
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
@@ -23,7 +24,7 @@ class EmailFilter(admin.SimpleListFilter):
         return queryset
 
 
-class KesaseteliUserAdmin(UserAdmin):
+class KesaseteliUserAdmin(AuditlogAdminViewAccessLogMixin, UserAdmin):
     list_display = list(UserAdmin.list_display) + ["date_joined"]
     list_filter = ["date_joined", EmailFilter] + list(UserAdmin.list_filter)
     date_hierarchy = "date_joined"
@@ -35,7 +36,7 @@ class UserInline(admin.StackedInline):
     autocomplete_fields = ("user",)
 
 
-class KesaseteliGroupAdmin(GroupAdmin):
+class KesaseteliGroupAdmin(AuditlogAdminViewAccessLogMixin, GroupAdmin):
     list_display = ("name", "get_user_count")
     inlines = (UserInline,)
 
