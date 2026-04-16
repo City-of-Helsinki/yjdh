@@ -1,6 +1,7 @@
 import logging
 from itertools import chain
 
+from auditlog_extra.mixins import AuditlogAdminViewAccessLogMixin
 from django import forms
 from django.apps import apps
 from django.conf import settings
@@ -59,7 +60,9 @@ class TargetGroupFilter(admin.SimpleListFilter):
         return queryset
 
 
-class SummerVoucherConfigurationAdmin(admin.ModelAdmin):
+class SummerVoucherConfigurationAdmin(
+    AuditlogAdminViewAccessLogMixin, admin.ModelAdmin
+):
     form = SummerVoucherConfigurationAdminForm
     list_display = [
         "year",
@@ -106,7 +109,7 @@ class SummerVoucherConfigurationAdmin(admin.ModelAdmin):
         }
 
 
-class SchoolAdmin(admin.ModelAdmin):
+class SchoolAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = [
         "name",
         "created_at",
@@ -187,7 +190,7 @@ class SchoolAdmin(admin.ModelAdmin):
         return render(request, "admin/applications/school/import_form.html", context)
 
 
-class EmailTemplateAdmin(admin.ModelAdmin):
+class EmailTemplateAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = ["type", "language", "subject", "modified_at"]
     list_filter = ["type", "language"]
     search_fields = ["subject", "html_body", "text_body"]
@@ -366,7 +369,7 @@ class IsValidSchoolFilter(admin.SimpleListFilter):
         return queryset
 
 
-class YouthApplicationAdmin(admin.ModelAdmin):
+class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = [
         "id",
         "first_name",
@@ -454,7 +457,7 @@ class YouthApplicationAdmin(admin.ModelAdmin):
         return False
 
 
-class YouthSummerVoucherAdmin(admin.ModelAdmin):
+class YouthSummerVoucherAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = [
         "id",
         "summer_voucher_serial_number",
@@ -541,7 +544,7 @@ class YouthSummerVoucherAdmin(admin.ModelAdmin):
             )
 
 
-class EmployerApplicationAdmin(admin.ModelAdmin):
+class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = [
         "id",
         "company__name",
@@ -600,7 +603,7 @@ class EmployerApplicationAdmin(admin.ModelAdmin):
         )
 
 
-class EmployerSummerVoucherAdmin(admin.ModelAdmin):
+class EmployerSummerVoucherAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = [
         "id",
         "youth_summer_voucher_id",

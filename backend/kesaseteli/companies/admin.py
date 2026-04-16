@@ -1,10 +1,11 @@
+from auditlog_extra.mixins import AuditlogAdminViewAccessLogMixin
 from django.apps import apps
 from django.contrib import admin
 
 from companies.models import Company
 
 
-class CompanyAdmin(admin.ModelAdmin):
+class CompanyAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
     list_display = [
         "name",
         "business_id",
