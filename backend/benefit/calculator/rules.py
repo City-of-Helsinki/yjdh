@@ -256,7 +256,8 @@ class HelsinkiBenefitCalculator:
 
     def create_rows(self):
         """
-        This method is intentionally left empty.
+        This method is intentionally empty to preserve compatibility
+        with DummyBenefitCalculator.
         """
         pass
 
