@@ -1,6 +1,11 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
-export const $DropdownWrapper = styled.div<{ errorText?: string }>`
-  ${(props) =>
+type $DropdownWrapperProps = {
+  errorText?: string;
+  theme: DefaultTheme;
+};
+
+export const $DropdownWrapper = styled.div<$DropdownWrapperProps>`
+  ${(props: $DropdownWrapperProps) =>
     !props.errorText ? `margin-bottom: ${props.theme.spacing.m};` : ''}
 `;

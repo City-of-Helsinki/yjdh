@@ -85,11 +85,9 @@ describe('useLeaveConfirm', () => {
     const originalLocation = window.location;
 
     beforeAll(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       delete (window as { location?: Location }).location;
+
       // eslint-disable-next-line scanjs-rules/assign_to_location
-      // @ts-ignore
       (window as { location: Location }).location = {
         ...originalLocation,
         pathname: '/application',
@@ -101,7 +99,6 @@ describe('useLeaveConfirm', () => {
 
     afterAll(() => {
       // eslint-disable-next-line scanjs-rules/assign_to_location
-      // @ts-ignore
       (window as { location: Location }).location = originalLocation;
     });
 

@@ -10,7 +10,6 @@ import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_TYPES,
 } from '../../constants/attachment-constants';
-import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
 import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
 import { AttachmentType, KesaseteliAttachment } from '../../types/attachment';
@@ -113,17 +112,14 @@ class FakeObjectFactory {
       employee_name: faker.name.findName(),
       employee_school: faker.commerce.department(),
       employee_ssn: '111111-111C',
+      employee_birthdate: '2000-01-01',
       employee_phone_number: faker.phone.phoneNumber(),
       // for example dots are not allowed in city name, so let's remove them (St. Louis -> St Louis)
       employee_home_city: faker.address
         .cityName()
         .replace(/[^ A-Za-zÄÅÖäåö-]/g, ''),
-      employee_postcode: faker.datatype
-        .number({ min: 10_000, max: 99_999 })
-        .toString(),
-      employment_postcode: faker.datatype
-        .number({ min: 10_000, max: 99_999 })
-        .toString(),
+      employee_postcode: faker.address.zipCode('#####'),
+      employment_postcode: faker.address.zipCode('#####'),
       employment_start_date: convertToBackendDateFormat(faker.date.past()),
       employment_end_date: convertToBackendDateFormat(faker.date.future()),
       employment_work_hours: faker.datatype.number({

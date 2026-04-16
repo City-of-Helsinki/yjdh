@@ -30,10 +30,7 @@ export const fillInput = async <T>(
     }
   }
 
-  await t
-    .click(inputSelector)
-    .pressKey('ctrl+a delete')
-    .typeText(inputSelector, value ?? '');
+  await t.typeText(inputSelector, value ?? '', { replace: true });
 };
 
 /**

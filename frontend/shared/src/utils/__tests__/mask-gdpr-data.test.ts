@@ -18,7 +18,7 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
       social_security_number: FinnishSSN.createWithAge(
         faker.datatype.number({ min: 16, max: 17 })
       ),
-      postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
+      postcode: faker.address.zipCode('#####'),
       unlistedSchool: faker.commerce.department(),
       is_unlisted_school: true,
       phone_number: faker.phone.phoneNumber('+358#########'),
