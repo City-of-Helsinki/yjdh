@@ -160,7 +160,7 @@ export const fakeYouthApplication = (
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
     social_security_number,
-    postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
+    postcode: faker.address.zipCode('#####'),
     school: is_unlisted_school
       ? faker.commerce.department()
       : faker.random.arrayElement(fakeSchools),
@@ -209,7 +209,7 @@ export const fakeValidVtjAddress = (
   merge(
     {
       LahiosoiteS: faker.address.streetAddress(),
-      Postinumero: String(faker.datatype.number(99_999)),
+      Postinumero: faker.helpers.replaceSymbols('#####'),
       PostitoimipaikkaS: faker.address.cityName(),
       AsuminenAlkupvm: convertDateFormat(faker.date.past(), DATE_FORMATS.VTJ),
       AsuminenLoppupvm: convertDateFormat(
@@ -302,8 +302,8 @@ export const fakeActivatedYouthApplication = (
       additional_info_provided_at:
         override?.status === 'additional_information_provided'
           ? convertToBackendDateFormat(
-            override?.additional_info_provided_at ?? faker.date.past()
-          )
+              override?.additional_info_provided_at ?? faker.date.past()
+            )
           : undefined,
       encrypted_handler_vtj_json: fakeVtjData(application),
     },

@@ -8,8 +8,8 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import InputProps from 'shared/types/input-props';
 
-import { $DropdownWrapper } from './Dropdown.sc';
 import FieldErrorMessage from '../fields/fieldErrorMessage/FieldErrorMessage';
+import { $DropdownWrapper } from './Dropdown.sc';
 
 type Option = {
   name: string;
@@ -76,11 +76,7 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
                 toggleButtonAriaLabel={t('common:assistive.openDropdown')}
               />
             ) : (
-              <Select<O>
-                {...field}
-                {...sharedProps}
-                value={value as O[]}
-              />
+              <Select<O> {...field} {...sharedProps} value={value as O[]} />
             )
           }
         />

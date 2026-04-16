@@ -7,7 +7,6 @@ import {
 import * as router from 'next/router';
 import { NextRouter } from 'next/router';
 import React from 'react';
-import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 
 const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -35,7 +34,7 @@ export const waitFor = (
 ): Promise<void> => {
   // Overwrite default options
   const mergedOptions = {
-    timeout: 5_000,
+    timeout: 5000,
     ...options,
   };
   return _waitFor(callback, mergedOptions);

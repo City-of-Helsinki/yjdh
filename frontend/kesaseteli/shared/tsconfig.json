@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "baseUrl": "../../",
     "paths": {
       "kesaseteli-shared/*": [
@@ -12,6 +13,9 @@
         "shared/browser-tests/*"
       ]
     }
-  }
-}
+  },
+  "include": [
+    "src",
+    "../../shared/src/types/styled-components.d.ts"
+  ]
 }
