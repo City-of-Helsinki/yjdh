@@ -209,7 +209,7 @@ export const fakeValidVtjAddress = (
   merge(
     {
       LahiosoiteS: faker.address.streetAddress(),
-      Postinumero: faker.helpers.replaceSymbols('#####'),
+      Postinumero: faker.address.zipCode('#####'),
       PostitoimipaikkaS: faker.address.cityName(),
       AsuminenAlkupvm: convertDateFormat(faker.date.past(), DATE_FORMATS.VTJ),
       AsuminenLoppupvm: convertDateFormat(
