@@ -5,10 +5,8 @@ from rest_framework import status
 from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
 )
-from applications.api.v1.views import EmployerApplicationViewSet
 from applications.enums import EmployerApplicationStatus, YouthApplicationStatus
 from applications.models import (
-    EmployerApplication,
     EmployerSummerVoucher,
     YouthSummerVoucher,
 )

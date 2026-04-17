@@ -720,12 +720,16 @@ class EmployerApplicationFilter(filters.FilterSet):
     def qs(self):
         """
         Queryset property overridden to apply only_mine filter by default
-        when not provided or empty.
+        when not provided or empty, BUT only if the user has no company.
+        If the user has a company, they see all company applications by default.
         """
         parent_qs = super().qs
 
-        # Apply only_mine filter by default when not provided or empty
+        # Apply only_mine filter by default when not provided or empty,
+        # but only if the user has no company context.
         if self.data.get("only_mine") in (None, ""):
+            if get_user_company(self.request):
+                return parent_qs
             return self._filter_by_user(parent_qs)
 
         return parent_qs
