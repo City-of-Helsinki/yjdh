@@ -1,6 +1,7 @@
 from typing import Optional
 
 from django.http import HttpRequest
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import BasePermission
 
 from applications.enums import EmployerApplicationStatus
@@ -19,7 +20,10 @@ ALLOWED_APPLICATION_UPDATE_STATUSES = [
 
 
 def get_user_company(request: HttpRequest) -> Optional[Company]:
-    user_company = get_or_create_company_using_organization_roles(request)
+    try:
+        user_company = get_or_create_company_using_organization_roles(request)
+    except NotFound:
+        user_company = None
 
     return user_company
 

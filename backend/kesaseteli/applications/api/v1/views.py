@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_protect
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import MultiPartParser
@@ -892,10 +892,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
                 "Attachments can be uploaded only for DRAFT applications"
             )
 
-        try:
-            user_company = get_user_company(request)
-        except NotFound:
-            user_company = None
+        user_company = get_user_company(request)
 
         if (
             obj.application.user != request.user
@@ -957,10 +954,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             # Deny if the user is NEITHER the application creator NOR a member of the
             # same company. This check remains critical for Staff/Handlers who pass the
             # get_queryset visibility.
-            try:
-                user_company = get_user_company(request)
-            except NotFound:
-                user_company = None
+            user_company = get_user_company(request)
 
             if (
                 obj.application.user != request.user
