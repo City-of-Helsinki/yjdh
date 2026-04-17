@@ -1,4 +1,4 @@
-import { Combobox, Select } from 'hds-react';
+import { Select } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';

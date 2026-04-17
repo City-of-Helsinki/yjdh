@@ -3,17 +3,18 @@ import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Button,
-  Container,
   CookieBanner,
-  CookieConsentContextProps,
   CookieConsentContextProvider,
   CookieSettingsPage,
 } from 'hds-react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
-import siteSettings from '../../../public/assets/siteSettings.json';
+import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
+import {
+  getCookieConsentSiteSettings,
+} from 'shared/utils/cookieConsentSettings';
 
 declare global {
   var _paq: Array<Array<string | number | boolean>> | undefined;
@@ -32,37 +33,22 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const { t } = useTranslation();
   const submittedApplication = useSearchParams().get('submittedApplication');
 
-  const getCookieConsentSettings = (locale = 'fi') => {
-    const cookieConsentProps: Partial<CookieConsentContextProps> = {
-      onChange: (changeEvent) => {
-        const { acceptedGroups } = changeEvent;
+  const siteSettings = useMemo(
+    () =>
+      getCookieConsentSiteSettings({
+        siteName: t('common:cookieConsent.siteName'),
+        app: 'benefit',
+      }),
+    [t]
+  );
 
-        const hasStatisticsConsent = acceptedGroups.includes(
-          COOKIE_CONSENT_GROUP.Statistics
-        );
-
-        if (hasStatisticsConsent) {
-          //  start tracking
-          if (globalThis._paq) {
-            globalThis._paq.push(['setConsentGiven']);
-            globalThis._paq.push(['setCookieConsentGiven']);
-          }
-        } else {
-          // tell matomo to forget consent
-          if (globalThis._paq) {
-            globalThis._paq.push(['forgetConsentGiven']);
-          }
-        }
-      },
-      siteSettings: siteSettings,
-      options: {
-        focusTargetSelector: `#${MAIN_CONTENT_ID}`,
-        language: locale,
-      },
-    };
-
-    return cookieConsentProps;
-  };
+  const cookieConsentParams = useCookieConsentParams({
+    siteSettings,
+    options: { 
+      focusTargetSelector: `#${MAIN_CONTENT_ID}`,
+      language: locale 
+    },
+  });
 
   const handleBack = (): void => {
     if (submittedApplication) {
@@ -76,7 +62,7 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   };
 
   return (
-    <CookieConsentContextProvider {...getCookieConsentSettings(locale)}>
+    <CookieConsentContextProvider {...cookieConsentParams}>
       {asPage ? (
         <>
           <CookieSettingsPage />
