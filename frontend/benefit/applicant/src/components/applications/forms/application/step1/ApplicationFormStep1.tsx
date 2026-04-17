@@ -168,20 +168,22 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         <$GridCell $colSpan={3}>
           <Select
             defaultValue={getDefaultLanguage()}
-            helper={getErrorMessage(fields.applicantLanguage.name)}
             optionLabelField="label"
-            label={fields.applicantLanguage.label}
-            onChange={(language: Option) =>
-              formik.setFieldValue(
+            texts={{
+              error: getErrorMessage(fields.applicantLanguage.name),
+              label: fields.applicantLanguage.label,
+              placeholder: t('common:select'),
+            }}
+            onChange={(language: Option[]) => formik.setFieldValue(
                 fields.applicantLanguage.name,
-                language.value
+                language[0]?.value
               )
             }
             options={languageOptions}
             id={fields.applicantLanguage.name}
-            placeholder={t('common:select')}
             invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
+            value={[formik.values.applicantLanguage].filter(Boolean)}
             required
           />
         </$GridCell>
