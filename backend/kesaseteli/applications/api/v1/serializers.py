@@ -303,19 +303,52 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         return data
 
     def _validate_summer_voucher_serial_number(self, data):
+        """
+        Validate the summer voucher serial number and its usage.
+
+        Orchestrates fetching the voucher, validating the employee name match,
+        checking usage across applications, and verifying the youth application
+        status.
+
+        :raises ValidationError: if any validation step fails.
+        """
         serial_number = data.get("summer_voucher_serial_number")
         if not serial_number:
             return
 
+        voucher = self._get_youth_summer_voucher(serial_number)
+        if not voucher:
+            return
+
+        user_provided_name = data.get("employee_name")
+        self._validate_voucher_employee_name(voucher, user_provided_name)
+        self._validate_voucher_status(voucher.youth_application)
+        self._validate_voucher_usage(
+            voucher, application=self._get_application_context()
+        )
+
+    def _get_youth_summer_voucher(
+        self, serial_number: str
+    ) -> Optional[YouthSummerVoucher]:
+        """
+        Safely fetch the YouthSummerVoucher by serial number.
+        """
         try:
-            youth_summer_voucher = YouthSummerVoucher.objects.get(
+            return YouthSummerVoucher.objects.get(
                 summer_voucher_serial_number=int(serial_number)
             )
         except (ValueError, TypeError, YouthSummerVoucher.DoesNotExist):
-            return
+            return None
 
-        # 1. Name validation
-        user_provided_name = data.get("employee_name")
+    def _validate_voucher_employee_name(
+        self, voucher: YouthSummerVoucher, user_provided_name: str
+    ) -> None:
+        """
+        Validate that the provided employee name matches the voucher owner.
+
+        :raises ValidationError: if employee_name is missing or does not match
+            voucher owner.
+        """
         if not user_provided_name:
             raise serializers.ValidationError(
                 {
@@ -325,7 +358,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
                 }
             )
 
-        youth_application = youth_summer_voucher.youth_application
+        youth_application = voucher.youth_application
         if not is_last_name_fuzzy_match_in_full_name(
             last_name=youth_application.last_name, full_name=user_provided_name
         ):
@@ -337,46 +370,12 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
                 }
             )
 
-        # 2. Usage validation
-        #
-        # Each YouthSummerVoucher (identified by its serial number) represents a
-        # unique work contract for a single student. Therefore, it must have a
-        # strict 1-1 relationship with an EmployerApplication.
-        #
-        # A voucher can only be attached to at most ONE EmployerApplication
-        # system-wide. This block ensures that:
-        # 1. A voucher already in a SUBMITTED/ACCEPTED application cannot be reused.
-        # 2. A voucher already in a DRAFT application (even of the same company or user)
-        #    cannot be added to a second draft.
-        #
-        # Hijacking is prevented by making the serial number effectively unique
-        # across all active and draft applications.
-        application = None
-        if self.instance:
-            application = getattr(self.instance, "application", None)
+    def _validate_voucher_status(self, youth_application: YouthApplication) -> None:
+        """
+        Ensure the youth application is in the ACCEPTED status.
 
-        if not application:
-            application = self.context.get("application")
-
-        if not application:
-            # Try to get it from the root serializer (EmployerApplicationSerializer)
-            # This is often needed during nested validation
-            root = getattr(self, "root", None)
-            if root and hasattr(root, "instance") and root.instance:
-                application = root.instance
-
-        # Check if this voucher is already linked to ANY other application in the DB.
-        # We exclude the current application to allow idempotent updates.
-        used_in_other = EmployerSummerVoucher.objects.filter(
-            youth_summer_voucher=youth_summer_voucher,
-        )
-
-        if application and hasattr(application, "id"):
-            # Match by ID to be safe across different object instances
-            used_in_other = used_in_other.exclude(application_id=application.id)
-
-        # 3. Status validation
-        # Only accepted youth applications can have their vouchers attached.
+        :raises ValidationError: if the youth application is not in ACCEPTED status.
+        """
         if youth_application.status != YouthApplicationStatus.ACCEPTED:
             raise serializers.ValidationError(
                 {
@@ -388,13 +387,52 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
                 }
             )
 
+    def _get_application_context(self) -> Optional[EmployerApplication]:
+        """
+        Attempt to find the EmployerApplication instance from the serializer
+        context or hierarchy.
+        """
+        application = None
+        if self.instance:
+            application = getattr(self.instance, "application", None)
+
+        if not application:
+            application = self.context.get("application")
+
+        if not application:
+            # Try to get it from the root serializer (EmployerApplicationSerializer)
+            root = getattr(self, "root", None)
+            if root and hasattr(root, "instance") and root.instance:
+                application = root.instance
+
+        return application
+
+    def _validate_voucher_usage(
+        self, voucher: YouthSummerVoucher, application: Optional[EmployerApplication]
+    ) -> None:
+        """
+        Ensure the voucher is not already used in another application.
+
+        :raises ValidationError: if the voucher is already linked to another
+            application.
+        """
+        # Check if this voucher is already linked to ANY other application in the DB.
+        # We exclude the current application to allow idempotent updates.
+        used_in_other = EmployerSummerVoucher.objects.filter(
+            youth_summer_voucher=voucher,
+        )
+
+        if application and hasattr(application, "id"):
+            # Match by ID to be safe across different object instances
+            used_in_other = used_in_other.exclude(application_id=application.id)
+
         if used_in_other.exists():
             conflicting_app_id = used_in_other.first().application_id
             request = self.context.get("request")
             user = getattr(request, "user", "Unknown") if request else "Unknown"
             LOGGER.warning(
                 "[SECURITY ISSUE] Suspicious voucher usage detected. Voucher serial "
-                f"{youth_summer_voucher.summer_voucher_serial_number} "
+                f"{voucher.summer_voucher_serial_number} "
                 f"is already linked to application {conflicting_app_id}. "
                 f"Attempted by user {user} (ID: {getattr(user, 'id', 'N/A')}) "
                 f"for application {getattr(application, 'id', 'new draft')}."

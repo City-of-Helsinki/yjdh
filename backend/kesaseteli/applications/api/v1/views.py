@@ -716,24 +716,6 @@ class EmployerApplicationFilter(filters.FilterSet):
             return self._filter_by_user(queryset)
         return queryset
 
-    @property
-    def qs(self):
-        """
-        Queryset property overridden to apply only_mine filter by default
-        when not provided or empty, BUT only if the user has no company.
-        If the user has a company, they see all company applications by default.
-        """
-        parent_qs = super().qs
-
-        # Apply only_mine filter by default when not provided or empty,
-        # but only if the user has no company context.
-        if self.data.get("only_mine") in (None, ""):
-            if get_user_company(self.request):
-                return parent_qs
-            return self._filter_by_user(parent_qs)
-
-        return parent_qs
-
     class Meta:
         model = EmployerApplication
         _timestamp_field_lookups = [
@@ -769,9 +751,17 @@ class EmployerApplicationViewSet(ModelViewSet):
         )
 
         user = self.request.user
+
         if user.is_anonymous:
             return queryset.none()
 
+        if user.is_staff or user.is_superuser:
+            return queryset
+
+        # Ensure that visibility is strictly tied to the organization the user
+        # currently represents. If the user does not represent an organization
+        # (e.g., lost permissions), they should not see any applications,
+        # even if they were the creator of some.
         user_company = get_user_company(self.request)
 
         if user_company:
@@ -780,10 +770,13 @@ class EmployerApplicationViewSet(ModelViewSet):
                 status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
             )
 
-        return queryset.filter(
-            user=self.request.user,
-            status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
+        # User is not staff, superuser or company user (not representing any company)
+        # Should not be able to see any applications
+        LOGGER.warning(
+            f"User {user.id} is not staff, superuser or company user "
+            "(not representing any company)."
         )
+        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         """
@@ -806,11 +799,12 @@ class EmployerApplicationViewSet(ModelViewSet):
         if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
             raise ValidationError("Only DRAFT applications can be updated")
 
+        # Ensure that visibility and modification are strictly tied to the
+        # organization the user currently represents. Even the original creator
+        # must have an active organization association to update the application.
         user_company = get_user_company(request)
-        if instance.user != request.user and instance.company != user_company:
-            raise PermissionDenied(
-                "Only application creator or company members can update it"
-            )
+        if not user_company or instance.company != user_company:
+            raise PermissionDenied("Only company members can update it")
 
         return super().update(request, *args, **kwargs)
 
@@ -822,11 +816,12 @@ class EmployerApplicationViewSet(ModelViewSet):
         if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
             raise ValidationError("Only DRAFT applications can be deleted")
 
+        # Ensure that visibility and modification are strictly tied to the
+        # organization the user currently represents. Even the original creator
+        # must have an active organization association to delete the application.
         user_company = get_user_company(request)
-        if instance.user != request.user and instance.company != user_company:
-            raise PermissionDenied(
-                "Only application creator or company members can delete it"
-            )
+        if not user_company or instance.company != user_company:
+            raise PermissionDenied("Only company members can delete it")
 
         return super().destroy(request, *args, **kwargs)
 
@@ -859,10 +854,15 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
 
         user_company = get_user_company(self.request)
 
-        return queryset.filter(
-            application__company=user_company,
-            application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
-        )
+        if user_company:
+            return queryset.filter(
+                application__company=user_company,
+                application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
+            )
+
+        # If the user does not represent an organization (e.g. lost permissions),
+        # they should not see any summer vouchers.
+        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -896,15 +896,12 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
                 "Attachments can be uploaded only for DRAFT applications"
             )
 
+        # Ensure that visibility and modification are strictly tied to the
+        # organization the user currently represents. Even the original creator
+        # must have an active organization association to post an attachment.
         user_company = get_user_company(request)
-
-        if (
-            obj.application.user != request.user
-            and obj.application.company != user_company
-        ):
-            raise PermissionDenied(
-                "Only application creator or company members can post attachment to it"
-            )
+        if not user_company or obj.application.company != user_company:
+            raise PermissionDenied("Only company members can post attachment to it")
 
         # Validate request data
         serializer = AttachmentSerializer(
@@ -955,17 +952,13 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             # by get_queryset() and will receive a 404 from self.get_object() above.
 
             # 2. Identity Check (403 Permission Denied):
-            # Deny if the user is NEITHER the application creator NOR a member of the
-            # same company. This check remains critical for Staff/Handlers who pass the
-            # get_queryset visibility.
+            # Deny if the user is not representing the organization associated
+            # with the application. This ensures that even the original creator
+            # cannot delete attachments if they no longer represent the company.
             user_company = get_user_company(request)
-
-            if (
-                obj.application.user != request.user
-                and obj.application.company != user_company
-            ):
+            if not user_company or obj.application.company != user_company:
                 raise PermissionDenied(
-                    "Only application creator or company members can delete attachment from it"  # noqa: E501
+                    "Only company members can delete attachment from it"  # noqa: E501
                 )
 
             # 3. Status Check (403 Permission Denied):
