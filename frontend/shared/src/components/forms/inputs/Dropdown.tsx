@@ -1,4 +1,4 @@
-import { Combobox, Select } from 'hds-react';
+import { Select } from 'hds-react';
 import React from 'react';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
@@ -18,9 +18,7 @@ type Props<T extends FieldValues, O extends Option> = InputProps<T, O> &
     multiselect?: boolean;
     optionLabelField: keyof O;
     options: O[];
-    toggleButtonAriaLabel?: string;
   };
-
 const Dropdown = <T extends FieldValues, O extends Option>({
   type = 'select',
   multiselect,
@@ -34,7 +32,6 @@ const Dropdown = <T extends FieldValues, O extends Option>({
   placeholder,
   errorText,
   onChange,
-  toggleButtonAriaLabel,
   ...$gridCellProps
 }: Props<T, O>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
@@ -63,18 +60,9 @@ const Dropdown = <T extends FieldValues, O extends Option>({
         rules={registerOptions}
         render={({ field: { ref, value, ...field } }) =>
           type === 'combobox' ? (
-            <Combobox<O>
-              {...field}
-              {...sharedProps}
-              value={value as O}
-              toggleButtonAriaLabel={toggleButtonAriaLabel || ''}
-            />
+            <Select {...field} {...sharedProps} value={value as O} />
           ) : (
-            <Select<O>
-              {...field}
-              {...sharedProps}
-              value={value as O}
-            />
+            <Select {...field} {...sharedProps} value={value as O} />
           )
         }
       />

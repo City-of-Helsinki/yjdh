@@ -8,7 +8,7 @@ const $LinkButton = styled(Button)`
     align-items: normal;
     padding: 0;
     position: relative;
-    left: ${(props) => (props.iconLeft ? '-10px' : '-5px')};
+    left: ${(props) => (props.iconStart ? '-10px' : '-5px')};
   }
   & > span {
     padding: 0;
@@ -19,6 +19,6 @@ const $LinkButton = styled(Button)`
   &:hover {
     text-decoration: underline;
   }
-  ${(props) => (props.iconLeft ? alignCenterSvg : '')}
+  ${(props) => (props.iconStart ? alignCenterSvg : '')}
 `;
 export default $LinkButton;

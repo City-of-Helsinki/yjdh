@@ -1,4 +1,4 @@
-const randomCompareFn = () : number => 0.5 - Math.random();
+const randomCompareFn = (): number => 0.5 - Math.random();
 
 export const selectRandomValuesFromArray = <T>(
   array: Array<T>,
@@ -11,6 +11,3 @@ export const selectRandomValuesFromArray = <T>(
 
 export const selectRandomValueFromArray = <T>(array: Array<T>): T =>
   selectRandomValuesFromArray(array, 1)[0];
-
-
-

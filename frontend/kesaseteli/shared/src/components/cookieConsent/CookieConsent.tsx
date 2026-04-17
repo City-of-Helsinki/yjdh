@@ -1,60 +1,56 @@
 import useLocale from 'shared/hooks/useLocale';
-import { useRouter } from 'next/router';
-import React from 'react';
-import { CookieModal, CookiePage } from 'hds-react';
-import useCookieConsent from 'shared/hooks/useCookieConsent';
+import React, { useMemo } from 'react';
+import { CookieBanner, CookieConsentContextProvider, CookieSettingsPage } from 'hds-react';
+import {
+  LocalizedSiteName,
+  OptionalGroups,
+  RequiredGroups,
+  getCookieConsentSiteSettings,
+} from 'shared/utils/cookieConsentSettings';
+import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 
 type CookieConsentProps = {
   asPage?: boolean;
-  siteName: string;
+  siteName: string | Partial<LocalizedSiteName>;
+  requiredGroups?: RequiredGroups;
+  optionalGroups?: OptionalGroups;
 };
 
 const CookieConsent: React.FC<CookieConsentProps> = ({
   asPage = false,
   siteName,
+  requiredGroups,
+  optionalGroups,
 }) => {
   const locale = useLocale();
-  const router = useRouter();
-  const { pathname, asPath, query } = router;
 
-  const onLanguageChange = React.useCallback(
-    (newLanguage: string): void => {
-      void router.push({ pathname, query }, asPath, {
-        locale: newLanguage,
-      });
-    },
-    [router, pathname, query, asPath]
+  const siteSettings = useMemo(
+    () =>
+      getCookieConsentSiteSettings({
+        siteName,
+        app: 'kesaseteli',
+        requiredGroups,
+        optionalGroups,
+      }),
+    [siteName, requiredGroups, optionalGroups]
   );
 
-  const { onAllConsentsGiven, onConsentsParsed, optionalCookies } =
-    useCookieConsent();
+  const cookieConsentParams =
+    useCookieConsentParams({
+      siteSettings,
+      options: { 
+        focusTargetSelector: `#${MAIN_CONTENT_ID}`,
+        language: locale 
+      },
+      
+    });
 
-  const contentSource = React.useMemo(
-    () => ({
-      siteName,
-      currentLanguage: locale,
-      optionalCookies,
-      language: { onLanguageChange },
-      onConsentsParsed,
-      onAllConsentsGiven,
-      focusTargetSelector: `#${MAIN_CONTENT_ID}`,
-    }),
-    [
-      siteName,
-      locale,
-      optionalCookies,
-      onLanguageChange,
-      onConsentsParsed,
-      onAllConsentsGiven,
-    ]
-  );
-
-  return asPage ? (
-    <CookiePage contentSource={contentSource as any} />
+  return <CookieConsentContextProvider {...cookieConsentParams}>{ asPage ? (
+    <CookieSettingsPage  />
   ) : (
-    <CookieModal contentSource={contentSource as any} />
-  );
+    <CookieBanner />
+  )}</CookieConsentContextProvider>;
 };
 
 export default CookieConsent;
