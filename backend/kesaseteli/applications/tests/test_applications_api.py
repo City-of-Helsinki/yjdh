@@ -553,14 +553,23 @@ def test_application_create_double(api_client, company):
 def test_applications_list_only_finds_own_application(
     api_client, application, company, user
 ):
-    EmployerApplicationFactory()
-    EmployerApplicationFactory(company=company)
-    EmployerApplicationFactory(user=user)
+    EmployerApplicationFactory()  # Not seen (different company)
+    app2 = EmployerApplicationFactory(company=company)  # Seen (same company, diff user)
+    EmployerApplicationFactory(user=user)  # Not seen (same user, diff company)
 
     assert EmployerApplication.objects.count() == 4
 
+    # Default: finds all company applications (own + colleague's)
     response = api_client.get(get_list_url())
+    assert response.status_code == 200
+    assert len(response.data) == 2
+    assert {str(app["id"]) for app in response.data} == {
+        str(application.id),
+        str(app2.id),
+    }
 
+    # With only_mine=true: finds only own applications in current company
+    response = api_client.get(get_list_url() + "?only_mine=true")
     assert response.status_code == 200
     assert len(response.data) == 1
     assert str(response.data[0]["id"]) == str(application.id)
@@ -576,11 +585,20 @@ def test_application_get_only_finds_own_application(
 
     assert EmployerApplication.objects.count() == 4
 
-    applications_404 = [app1, app2, app3]
-    for app in applications_404:
-        response = api_client.get(get_detail_url(app))
-        assert response.status_code == 404
+    # app1 is random company -> 404
+    response = api_client.get(get_detail_url(app1))
+    assert response.status_code == 404
 
+    # app2 is colleague's application in same company -> 200
+    response = api_client.get(get_detail_url(app2))
+    assert response.status_code == 200
+
+    # app3 is own application in random company -> 404
+    # (because queryset is filtered by the session's company)
+    response = api_client.get(get_detail_url(app3))
+    assert response.status_code == 404
+
+    # original application -> 200
     response = api_client.get(get_detail_url(application))
     assert response.status_code == 200
     assert str(response.data["id"]) == str(application.id)

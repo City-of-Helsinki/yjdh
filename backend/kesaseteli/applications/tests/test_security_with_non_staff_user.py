@@ -77,8 +77,7 @@ def test_employer_application_list_viewable_statuses(
 ):
     """
     Test that the employer application list endpoint returns draft and
-    submitted employer applications but only those that are the user's and use
-    the user's company by default.
+    submitted employer applications but only those that use the user's company.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -91,19 +90,30 @@ def test_employer_application_list_viewable_statuses(
     user2_company1_attachment = create_attachment(user2, company1, application_status)
     user2_company2_attachment = create_attachment(user2, company2, application_status)
 
-    for user, client, company, attachment in [
-        (user1, user1_client, company1, user1_company1_attachment),
-        (user1, user1_client, company2, user1_company2_attachment),
-        (user2, user2_client, company1, user2_company1_attachment),
-        (user2, user2_client, company2, user2_company2_attachment),
+    company1_application_ids = {
+        str(user1_company1_attachment.summer_voucher.application.id),
+        str(user2_company1_attachment.summer_voucher.application.id),
+    }
+    company2_application_ids = {
+        str(user1_company2_attachment.summer_voucher.application.id),
+        str(user2_company2_attachment.summer_voucher.application.id),
+    }
+    for client, company, expected_application_ids in [
+        (user1_client, company1, company1_application_ids),
+        (user1_client, company2, company2_application_ids),
+        (user2_client, company1, company1_application_ids),
+        (user2_client, company2, company2_application_ids),
     ]:
         set_company_business_id_to_client(company, client)
         response = client.get(reverse("v1:employerapplication-list"))
         assert response.status_code == status.HTTP_200_OK
-        assert len(response.data) == 1
-        assert response.data[0]["id"] == str(attachment.summer_voucher.application.id)
-        assert response.data[0]["user"] == user.id
-        assert response.data[0]["company"]["id"] == str(company.id)
+        # In the company-wide visibility model, the user should see all applications
+        # belonging to the company they currently represent.
+        # Here we expect 2 applications for the company:
+        # 1. The one created by the current user
+        # 2. The one created by the other user for the same company
+        assert len(response.data) == 2
+        assert {x["id"] for x in response.data} == expected_application_ids
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -177,8 +187,7 @@ def test_employer_application_detail_viewable_statuses(
 ):
     """
     Test that the employer application detail endpoint returns draft and
-    submitted employer applications but only those that are the user's and use
-    the user's company.
+    submitted employer applications but only those that use the user's company.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -197,15 +206,16 @@ def test_employer_application_detail_viewable_statuses(
             reverse("v1:employerapplication-detail", kwargs={"pk": application.id})
         )
 
-    # The status code 200s are the ones that match both the user and the company:
+    # In the company-wide visibility model, colleagues are able to see each other's
+    # applications within the same company context.
     set_company_business_id_to_client(company1, user1_client)
     assert get_app(user1_client, user1_company1_attachment).status_code == 200
     assert get_app(user1_client, user1_company2_attachment).status_code == 404
-    assert get_app(user1_client, user2_company1_attachment).status_code == 404
+    assert get_app(user1_client, user2_company1_attachment).status_code == 200
     assert get_app(user1_client, user2_company2_attachment).status_code == 404
 
     set_company_business_id_to_client(company1, user2_client)
-    assert get_app(user2_client, user1_company1_attachment).status_code == 404
+    assert get_app(user2_client, user1_company1_attachment).status_code == 200
     assert get_app(user2_client, user1_company2_attachment).status_code == 404
     assert get_app(user2_client, user2_company1_attachment).status_code == 200
     assert get_app(user2_client, user2_company2_attachment).status_code == 404
@@ -214,11 +224,11 @@ def test_employer_application_detail_viewable_statuses(
     assert get_app(user1_client, user1_company1_attachment).status_code == 404
     assert get_app(user1_client, user1_company2_attachment).status_code == 200
     assert get_app(user1_client, user2_company1_attachment).status_code == 404
-    assert get_app(user1_client, user2_company2_attachment).status_code == 404
+    assert get_app(user1_client, user2_company2_attachment).status_code == 200
 
     set_company_business_id_to_client(company2, user2_client)
     assert get_app(user2_client, user1_company1_attachment).status_code == 404
-    assert get_app(user2_client, user1_company2_attachment).status_code == 404
+    assert get_app(user2_client, user1_company2_attachment).status_code == 200
     assert get_app(user2_client, user2_company1_attachment).status_code == 404
     assert get_app(user2_client, user2_company2_attachment).status_code == 200
 
@@ -1428,3 +1438,53 @@ def test_youth_application_fetch_employee_data_unallowed_methods(user_client):
     assert user_client.get(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert user_client.patch(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert user_client.put(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+@pytest.mark.django_db
+def test_employer_application_list_no_company_lost_permission(api_client):
+    """
+    Test that applications are NOT returned if the user has no company association,
+    even if they are the creator of the applications. This covers the case where
+    a user might have lost the permission to represent the company.
+    """
+    user = UserFactory()
+    # Create an application for this user
+    EmployerApplicationFactory(user=user)
+
+    api_client = force_login_user(user)
+
+    # Mock get_user_company to return None (simulating lost permission or no association)
+    with mock.patch("applications.api.v1.views.get_user_company", return_value=None):
+        response = api_client.get(reverse("v1:employerapplication-list"))
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data) == 0
+
+
+@pytest.mark.django_db
+def test_employer_application_modification_no_company_lost_permission(api_client):
+    """
+    Test that applications CANNOT be modified or deleted if the user has no company
+    association, even if they are the original creator of the applications.
+    """
+    user = UserFactory()
+    # Create a draft application for this user
+    application = EmployerApplicationFactory(
+        user=user, status=EmployerApplicationStatus.DRAFT
+    )
+
+    api_client = force_login_user(user)
+
+    # Mock get_user_company to return None (simulating lost permission)
+    with mock.patch("applications.api.v1.views.get_user_company", return_value=None):
+        url = reverse("v1:employerapplication-detail", kwargs={"pk": application.id})
+
+        # 1. Try to Update
+        response = api_client.put(
+            url, {"status": EmployerApplicationStatus.DRAFT}, format="json"
+        )
+        # should fail with 404 Not Found (because it's filtered out from queryset)
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+        # 2. Try to Delete
+        response = api_client.delete(url)
+        assert response.status_code == status.HTTP_404_NOT_FOUND

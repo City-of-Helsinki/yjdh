@@ -32,17 +32,22 @@ def has_employer_application_permission(
     request: HttpRequest, employer_application: EmployerApplication
 ) -> bool:
     """
-    Allow access only to DRAFT status employer applications of the user's company.
+    Allow access to employer applications.
+    - Staff and superusers have full access.
+    - Standard users must belong to the same company as the application.
+    - For standard users, only DRAFT and SUBMITTED applications are viewable.
     """
+    if request.user.is_staff or request.user.is_superuser:
+        return True
+
+    # It is important to check the company permission, because
+    # at some point user might also lose the company permission.
+    # User should not be able to access applications of companies they don't belong to.
     user_company = get_user_company(request)
     return bool(
         user_company
         and employer_application.company == user_company
-        and (
-            request.user.is_staff
-            or request.user.is_superuser
-            or employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
-        )
+        and employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
     )
 
 
