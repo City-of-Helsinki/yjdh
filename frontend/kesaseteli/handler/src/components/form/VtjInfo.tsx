@@ -23,7 +23,9 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   } = application;
 
   if (!social_security_number) {
-    return <VtjErrorNotification reason="missingSsn" type="error" />;
+    return (
+      <VtjErrorNotification reason="missingSsn" type="error" size="large" />
+    );
   }
 
   if (!vtjData || !('Henkilo' in vtjData)) {
@@ -31,6 +33,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
       <VtjErrorNotification
         reason="notFound"
         type="error"
+        size="large"
         params={{ social_security_number }}
       />
     );
@@ -96,6 +99,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
         <VtjErrorNotification
           reason="notFound"
           type="error"
+          size="large"
           params={{ social_security_number }}
         />
       )}
