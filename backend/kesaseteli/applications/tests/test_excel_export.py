@@ -32,6 +32,7 @@ from applications.exporters.excel_exporter import (
     get_exportable_fields,
     get_reporting_columns,
     get_talpa_columns,
+    handle_special_cases,
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
     INVOICER_EMAIL_FIELD_TITLE,
     INVOICER_NAME_FIELD_TITLE,
@@ -359,7 +360,13 @@ def test_excel_view_download_content(  # noqa: C901
                 assert output_column.value == excel_field.value
             else:
                 values_tuple = tuple(
-                    getattr_nested(voucher, attr_str.split("__"))
+                    handle_special_cases(
+                        getattr_nested(voucher, attr_str.split("__")),
+                        attr_str,
+                        voucher,
+                        excel_field,
+                        response.wsgi_request,
+                    )
                     for attr_str in excel_field.model_fields
                 )
                 assert output_column.value == excel_field.value % values_tuple, (
