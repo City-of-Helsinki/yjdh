@@ -1,4 +1,4 @@
-import { IconCheck } from 'hds-react';
+import { IconCheck, IconSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import theme from 'shared/styles/theme';
@@ -45,7 +45,7 @@ const Message: React.FC<MessageProps> = ({
         {seenByApplicant && (
           <$SeenByUser>
             {t('common:messenger.seenByUser')}{' '}
-            <IconCheck size="xs" color={theme.colors.tram} />
+            <IconCheck size={IconSize.ExtraSmall} color={theme.colors.tram} />
           </$SeenByUser>
         )}
       </$Meta>
