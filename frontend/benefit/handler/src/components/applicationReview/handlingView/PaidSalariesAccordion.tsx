@@ -130,13 +130,19 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
           </$CalculatorTableRow>
         ) : null
       )}
-      {data.secondInstalment?.status !== INSTALMENT_STATUSES.PENDING && (
+      {(data.secondInstalment?.status === INSTALMENT_STATUSES.REQUESTED ||
+        data.secondInstalment?.status === INSTALMENT_STATUSES.RESPONDED ||
+        data.secondInstalment?.status === INSTALMENT_STATUSES.WAITING) && (
         <Button css={{ marginRight: '24px' }} onClick={handleSetPending}>
           {t('common:applications.paidSalaries.buttons.setPending')}
         </Button>
       )}
 
-      {data.secondInstalment?.status !== INSTALMENT_STATUSES.ACCEPTED && (
+      {(data.secondInstalment?.status === INSTALMENT_STATUSES.WAITING ||
+        data.secondInstalment?.status === INSTALMENT_STATUSES.ERROR_IN_TALPA ||
+        data.secondInstalment?.status === INSTALMENT_STATUSES.REQUESTED ||
+        data.secondInstalment?.status === INSTALMENT_STATUSES.RESPONDED ||
+        data.secondInstalment?.status === INSTALMENT_STATUSES.PENDING) && (
         <Button css={{ marginRight: '24px' }} onClick={handleSetAccepted}>
           {t('common:applications.paidSalaries.buttons.setAccepted')}
         </Button>
