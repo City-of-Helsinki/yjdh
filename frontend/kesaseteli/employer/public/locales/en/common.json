@@ -145,7 +145,7 @@
         "job_type": "Main category of work tasks",
         "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
-        "street_address": "Company street address",
+        "street_address": "Company address",
         "bank_account_number": "Account number",
         "contact_person_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
@@ -170,7 +170,11 @@
         "summer_vouchers": "Summer vouchers",
         "termsAndConditions": "I have read and accept the <a>terms of service</a>."
       },
+      "placeholders": {
+        "street_address": "Example Street A 1, 00100 Helsinki"
+      },
       "helpers": {
+        "street_address": "Enter street address, postcode and city",
         "date": "Use format D.M.YYYY",
         "format": "Use format",
         "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
