@@ -373,6 +373,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         """
         from applications.services import VTJService
 
+        if vtj_json is None:
+            return
+
         try:
             vtj_json_dict = json.loads(vtj_json)
         except (json.decoder.JSONDecodeError, TypeError):

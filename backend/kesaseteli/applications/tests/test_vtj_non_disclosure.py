@@ -85,3 +85,12 @@ class TestVTJNonDisclosure:
             app = YouthApplication.objects.get(pk=response.data["id"])
             assert app.is_vtj_data_restricted is True
             assert app.need_additional_info is True
+
+    def test_update_vtj_restriction_status_preserves_state_on_none(self):
+        app = YouthApplicationFactory.build(is_vtj_data_restricted=True)
+        app.update_vtj_restriction_status(None)
+        assert app.is_vtj_data_restricted is True
+
+        app.is_vtj_data_restricted = False
+        app.update_vtj_restriction_status(None)
+        assert app.is_vtj_data_restricted is False
