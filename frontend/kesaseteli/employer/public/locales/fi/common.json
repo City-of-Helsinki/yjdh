@@ -145,7 +145,7 @@
         "job_type": "Työtehtävien pääluokka",
         "contact_person_name": "Yhteyshenkilön nimi",
         "contact_person_email": "Yhteyshenkilön sähköposti",
-        "street_address": "Työpaikan lähiosoite",
+        "street_address": "Yrityksen osoite",
         "bank_account_number": "Tilinumero",
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
@@ -170,7 +170,11 @@
         "summer_vouchers": "Kesäsetelit",
         "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne."
       },
+      "placeholders": {
+        "street_address": "Esimerkkikatu A 1, 00100 Helsinki"
+      },
       "helpers": {
+        "street_address": "Syötä katuosoite, postinumero ja -toimipaikka",
         "date": "Käytä muotoa P.K.VVVV",
         "format": "Käytä muotoa",
         "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",

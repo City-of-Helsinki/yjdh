@@ -49,6 +49,7 @@ const TextInput = <T extends FieldValues>({
   autoComplete,
   disabled,
   readOnly,
+  helperText,
   ...rest
 }: TextInputProps<T>): React.ReactElement<T> => {
   const { $colSpan, $rowSpan, $colStart, alignSelf, justifySelf } = rest;
@@ -86,7 +87,9 @@ const TextInput = <T extends FieldValues>({
             onChange(e.target.value);
           }
         }}
-        onBlur={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        onBlur={(
+          e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+        ) => {
           void registerEvents.onBlur(e);
           if (onBlur) {
             onBlur(e);
@@ -104,7 +107,7 @@ const TextInput = <T extends FieldValues>({
             ? String(registerOptions.maxLength)
             : undefined
         }
-        helperText={lengthIndicator}
+        helperText={helperText ?? lengthIndicator}
         defaultValue={initialValue}
         onWheel={preventScrolling}
         errorText={errorText}

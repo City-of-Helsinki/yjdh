@@ -49,6 +49,16 @@ const TextInput: React.FC<TextInputProps> = ({
     return text;
   };
 
+  const label = t(`common:application.form.inputs.${fieldName}`);
+  const placeholder =
+    t(`common:application.form.placeholders.${fieldName}`, {
+      defaultValue: '',
+    }) || undefined;
+  const helperText =
+    t(`common:application.form.helpers.${fieldName}`, {
+      defaultValue: '',
+    }) || undefined;
+
   return (
     <TextInputBase<ApplicationFormData>
       registerOptions={{ ...validation }}
@@ -56,7 +66,9 @@ const TextInput: React.FC<TextInputProps> = ({
       id={id}
       initialValue={getValue()}
       errorText={errorText()}
-      label={t(`common:application.form.inputs.${fieldName}`)}
+      label={label}
+      placeholder={placeholder}
+      helperText={helperText}
       {...$gridCellProps}
     />
   );

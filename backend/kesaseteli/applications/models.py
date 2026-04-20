@@ -1175,10 +1175,17 @@ class EmployerApplication(TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("timestamp when employer application was submitted"),
     )
+    # Historically street address, but now meant to be a full postal address.
+    # Production database may contain both types, or since this is a free text,
+    # it may contain anything.
     street_address = models.CharField(
         max_length=256,
         blank=True,
-        verbose_name=_("invoicer work address"),
+        verbose_name=_("company postal address"),
+        help_text=_(
+            "Enter the whole company postal address including street address, postcode "
+            "and city."
+        ),
     )
     bank_account_number = IBANField(
         verbose_name=_("bank account number"),

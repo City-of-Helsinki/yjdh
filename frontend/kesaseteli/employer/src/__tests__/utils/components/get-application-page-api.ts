@@ -292,7 +292,7 @@ const getApplicationPageApi = (
         typeStreetAddress: (streetAddress: string) =>
           typeInput(
             'street_address',
-            /(työpaikan lähiosoite)|(inputs.street_address)/i,
+            /(yrityksen osoite)|(inputs.street_address)/i,
             streetAddress
           ),
         typeContactPersonPhone: (phoneNumber: string) =>

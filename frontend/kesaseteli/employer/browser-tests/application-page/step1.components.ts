@@ -81,7 +81,7 @@ export const getStep1Components = (t: TestController) => {
     },
     streetAddessInput() {
       return withinForm().findByRole('textbox', {
-        name: /^työpaikan lähiosoite/i,
+        name: /^yrityksen osoite/i,
       });
     },
     bankAccountNumberInput() {

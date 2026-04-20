@@ -13,6 +13,7 @@ type InputProps<T, V = string> = {
   disabled?: boolean;
   autoComplete?: AutoComplete;
   readOnly?: boolean;
+  helperText?: string;
 };
 
 export default InputProps;
