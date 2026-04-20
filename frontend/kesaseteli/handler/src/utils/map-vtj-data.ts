@@ -22,9 +22,9 @@ type VtjInfo = {
 const addressIsValid = (address?: VtjAddress | null): boolean =>
   address
     ? isWithinInterval(new Date(), {
-      startDate: address.AsuminenAlkupvm ?? undefined,
-      endDate: address.AsuminenLoppupvm ?? undefined,
-    })
+        startDate: address.AsuminenAlkupvm ?? undefined,
+        endDate: address.AsuminenLoppupvm ?? undefined,
+      })
     : false;
 
 export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
@@ -32,12 +32,14 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
     encrypted_handler_vtj_json: vtjData,
     last_name,
     postcode,
+    is_vtj_data_restricted,
   } = application;
   const notFound =
     vtjData.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
   const providedAt = vtjData.Asiakasinfo?.InfoS ?? '';
-  const fullName = `${vtjData.Henkilo?.NykyisetEtunimet?.Etunimet ?? ''} ${vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi ?? ''
-    }`.trim();
+  const fullName = `${vtjData.Henkilo?.NykyisetEtunimet?.Etunimet ?? ''} ${
+    vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi ?? ''
+  }`.trim();
   const differentLastName =
     vtjData.Henkilo?.NykyinenSukunimi?.Sukunimi?.toLowerCase() !==
     last_name.toLowerCase();
@@ -54,15 +56,20 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   )
     ? vtjData.Henkilo?.TilapainenKotimainenLahiosoite
     : undefined;
-  const addressNotFound = !permanentAddress && !temporaryAddress;
+  const addressNotFound =
+    !is_vtj_data_restricted && !permanentAddress && !temporaryAddress;
 
   const { LahiosoiteS, Postinumero, PostitoimipaikkaS } =
     permanentAddress ?? temporaryAddress ?? {};
-  const fullAddress = !addressNotFound
-    ? `${LahiosoiteS ?? ''} ${Postinumero ?? ''} ${PostitoimipaikkaS ?? ''}`
-    : '-';
-  const outsideHelsinki = PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
-  const differentPostCode = Postinumero !== postcode;
+  const fullAddress =
+    !is_vtj_data_restricted && !addressNotFound
+      ? `${LahiosoiteS ?? ''} ${Postinumero ?? ''} ${
+          PostitoimipaikkaS ?? ''
+        }`.trim()
+      : '-';
+  const outsideHelsinki =
+    !is_vtj_data_restricted && PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
+  const differentPostCode = !is_vtj_data_restricted && Postinumero !== postcode;
 
   let dateOfBirth = undefined;
   try {
@@ -73,7 +80,9 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
     // eslint-disable-next-line no-console
     console.warn('Could not parse date of birth from VTJ data');
   }
-  const age = dateOfBirth ? new Date().getFullYear() - dateOfBirth.getFullYear() : 0;
+  const age = dateOfBirth
+    ? new Date().getFullYear() - dateOfBirth.getFullYear()
+    : 0;
   const notInTargetAgeGroup = !TARGET_GROUP_AGES.includes(age);
 
   const isDead = vtjData.Henkilo?.Kuolintiedot?.Kuollut === '1';
