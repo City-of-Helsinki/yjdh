@@ -58,8 +58,6 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
 
   const isDisabled =
     isLoading ||
-    // Social security number requires VTJ data for processing
-    (social_security_number && vtjDataNotFound) ||
     // Missing social security number requires birthdate for processing
     (!social_security_number && !non_vtj_birthdate);
 

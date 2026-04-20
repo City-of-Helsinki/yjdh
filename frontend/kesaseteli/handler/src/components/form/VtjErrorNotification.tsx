@@ -8,16 +8,22 @@ import $VtjException from './VtjErrorNotification.sc';
 type Props = {
   reason: VtjExceptionType;
   type?: NotificationProps['type'];
+  size?: NotificationProps['size'];
   params?: Record<string, string | number>;
 };
-const VtjErrorNotification: React.FC<Props> = ({ reason, type, params }) => {
+const VtjErrorNotification: React.FC<Props> = ({
+  reason,
+  type = 'alert',
+  size = 'small',
+  params,
+}) => {
   const { t } = useTranslation();
   return (
     <$VtjException
       data-testid={`vtj-exception-${reason}`}
       label=" "
-      type={type ?? 'alert'}
-      size="small"
+      type={type}
+      size={size}
     >
       {t(`common:handlerApplication.vtjException.${reason}`, params)}
     </$VtjException>

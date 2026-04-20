@@ -203,7 +203,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       }
     });
 
-    it(`shows error when vtjData is not found and disables action buttons`, async () => {
+    it(`shows error when vtjData is not found and enables action buttons`, async () => {
       const social_security_number = fakeYouthTargetGroupAgeSSN();
       const application = fakeActivatedYouthApplication({
         social_security_number,
@@ -222,6 +222,23 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       await indexPageApi.expectations.vtjErrorMessageIsPresent('notFound', {
         social_security_number,
       });
+      await indexPageApi.expectations.actionButtonsArePresent();
+      indexPageApi.expectations.actionButtonsAreEnabled();
+    });
+
+    it(`disables action buttons when both SSN and non-VTJ birthdate are missing`, async () => {
+      const application = fakeActivatedYouthApplication({
+        social_security_number: undefined,
+        non_vtj_birthdate: undefined,
+        status: 'awaiting_manual_processing',
+      });
+      expectToGetYouthApplication(application);
+      renderPage(HandlerIndex, {
+        query: { id: application.id },
+      });
+      const indexPageApi = await getIndexPageApi(application);
+      await indexPageApi.expectations.pageIsLoaded();
+
       await indexPageApi.expectations.actionButtonsArePresent();
       indexPageApi.expectations.actionButtonsAreDisabled();
     });
