@@ -73,7 +73,9 @@ def clone_application_based_on_other(
         official_company_city=application_base.official_company_city,
         official_company_postcode=application_base.official_company_postcode,
         use_alternative_address=application_base.use_alternative_address,
-        employer_assurance = application_base.employer_assurance,
+        employer_assurance=(
+            application_base.employer_assurance if clone_all_data else None
+        ),
     )
 
     company.save()
