@@ -26,7 +26,7 @@ type Props = {
 
 const NotificationPage: React.FC<Props> = ({
   type,
-  size = 'large',
+  size = NotificationSize.Large,
   title,
   message,
   goToFrontPageText,
