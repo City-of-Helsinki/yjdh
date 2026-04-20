@@ -389,7 +389,13 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         attachment = self._get_attachment(attachment_pk)
 
         if not attachment:
-            self._attachment_not_found()
+            return self._attachment_not_found()
+
+        if attachment.attachment_type == AttachmentType.PAYSLIP and not request.user.is_handler():
+            return Response(
+                {"detail": _("Operation not allowed for this application status.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         if attachment.attachment_type != AttachmentType.PAYSLIP:
             if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
