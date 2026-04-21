@@ -267,5 +267,13 @@
       "rejected": "Hylätty",
       "deleted_by_customer": "Poistettu"
     }
+  },
+  "noOrganisationPage": {
+    "title": "Ei valtuutusta",
+    "header": "Ei valtuutusta asioida organisaation puolesta",
+    "content": "Sinulla ei ole valtuuksia edustaa mitään organisaatiota Kesäseteli-palvelussa. Jotta voit käsitellä hakemuksia, sinulla on oltava voimassa oleva valtuutus edustaa työnantajaa.",
+    "instructions": "Pyydä organisaatiotasi myöntämään sinulle tarvittavat valtuudet Suomi.fi-palvelussa.",
+    "linkText": "Lue lisää valtuuksista <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\" target=\"_blank\">täältä</lnk>.",
+    "loginButton": "Kirjaudu uudelleen sisään"
   }
 }
