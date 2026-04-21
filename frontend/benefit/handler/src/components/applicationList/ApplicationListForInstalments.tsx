@@ -329,7 +329,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               {/* @ts-expect-error -- HDS DateInput types are overly strict with TS 5.9 */}
               <DateInput
                 id="instalment-change-date-dateinput"
-                label="Viimeinen työpäivä"
+                label={t('common:instalments.dialog.changeInstalmentDate.label')}
                 helperText={t(
                   'common:instalments.dialog.changeInstalmentDate.helperText'
                 )}
