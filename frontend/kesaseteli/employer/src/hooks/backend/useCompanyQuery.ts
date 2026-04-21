@@ -9,7 +9,6 @@ const useCompanyQuery = (): UseQueryResult<Company> =>
     // Company name is supplemental — don't redirect to /500 or /login if it fails.
     // The dashboard renders fine without it; organisationName will be undefined.
     onError: useErrorHandler({
-      onAuthError: () => {},
       onServerError: () => {},
     }),
   });

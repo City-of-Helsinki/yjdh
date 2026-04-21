@@ -6,7 +6,8 @@ import Application from 'shared/types/application';
 
 const useApplicationsQuery = <T = Application[]>(
   onlyMine?: boolean,
-  select?: (applications: Application[]) => T
+  select?: (applications: Application[]) => T,
+  onError?: (error: Error | unknown) => void
 ): UseQueryResult<T> => {
   const { axios, handleResponse } = useBackendAPI();
 
@@ -26,7 +27,7 @@ const useApplicationsQuery = <T = Application[]>(
         : undefined,
       staleTime: Infinity,
       retryDelay: 3000,
-      onError: useErrorHandler(),
+      onError: onError ?? useErrorHandler(),
     }
   );
 };
