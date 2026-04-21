@@ -1,27 +1,16 @@
-import axios from 'axios';
 import NumberTag from 'benefit/handler/components/header/NumberTag';
 import { ROUTES, SUPPORTED_LANGUAGES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationAlterationsQuery from 'benefit/handler/hooks/useApplicationAlterationsQuery';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
-import {
-  BackendEndpoint,
-  getBackendDomain,
-} from 'benefit-shared/backend-api/backend-api';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
+import AuthContext from 'shared/auth/AuthContext';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { NavigationItem, OptionType } from 'shared/types/common';
 import { getLanguageOptions } from 'shared/utils/common';
-
-const setLanguageToFinnish = (): void => {
-  const optionsEndpoint = `${getBackendDomain()}/${
-    BackendEndpoint.USER_OPTIONS
-  }`;
-  void axios.get(optionsEndpoint, {
-    params: { lang: SUPPORTED_LANGUAGES.FI },
-  });
-};
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -38,13 +27,23 @@ const useHeader = (): ExtendedComponentProps => {
   const router = useRouter();
   const { isNavigationVisible } = React.useContext(AppContext);
   const isNewAhjoMode = useDetermineAhjoMode();
+  const { axios } = useBackendAPI();
+  const { isAuthenticated } = React.useContext(AuthContext);
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
     [t]
   );
 
-  useEffect(setLanguageToFinnish, []);
+  useEffect(() => {
+    // The handler UI is currently Finnish-only so it's set here.
+    // Only when authenticated so there is no 403 error.
+    if (isAuthenticated) {
+      void axios.get(BackendEndpoint.USER_OPTIONS, {
+        params: { lang: SUPPORTED_LANGUAGES.FI },
+      });
+    }
+  }, [axios, isAuthenticated]);
 
   const { data: alterationData, isLoading: isAlterationListLoading } =
     useApplicationAlterationsQuery();
