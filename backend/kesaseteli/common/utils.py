@@ -150,7 +150,6 @@ def getattr_nested(obj, attrs: list):
     if value is None or value == "":
         return ""
 
-
     if attrs:
         return getattr_nested(value, attrs)
     else:
