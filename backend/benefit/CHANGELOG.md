@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.15.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.14.1...benefit-backend-v2.15.0) (2026-04-22)
+
+
+### Features
+
+* **benefit:** Ensure tol-code is set for new appl ([bf236fc](https://github.com/City-of-Helsinki/yjdh/commit/bf236fc5401af9365524d33a294de12bd2d70a2d))
+
+
+### Bug Fixes
+
+* **benefit:** Application numbers to email log ([870aa3a](https://github.com/City-of-Helsinki/yjdh/commit/870aa3a88a5f1aa4112fce24a53c5499ffe4dd14))
+* **benefit:** Due date of second instalment ([c50abcf](https://github.com/City-of-Helsinki/yjdh/commit/c50abcfe73208a921a051b1059b9a00bc260816a))
+* **benefit:** Fixes to comments and fixtures ([9c50019](https://github.com/City-of-Helsinki/yjdh/commit/9c500198bba7c60390c0b1e855a81ab9e0c79bf8))
+
+
+### Dependencies
+
+* Bump authlib from 1.6.9 to 1.6.11 in /backend/benefit ([43c55b8](https://github.com/City-of-Helsinki/yjdh/commit/43c55b82ce3a35097a5073d869e583ccc43d7d28))
+* Bump django from 5.2.12 to 5.2.13 in /backend/benefit ([a841422](https://github.com/City-of-Helsinki/yjdh/commit/a8414229ae8c8172f9e49d877bfcc4badfa93744))
+* Bump lxml from 6.0.2 to 6.1.0 in /backend/benefit ([3f30cce](https://github.com/City-of-Helsinki/yjdh/commit/3f30cce9a87d4d8a616b1cdacd3f59c18ad1d997))
+* Bump pillow from 12.1.1 to 12.2.0 in /backend/benefit ([3ffbdac](https://github.com/City-of-Helsinki/yjdh/commit/3ffbdac6c1113af4420616bb8ccaf8d27e32c620))
+
 ## [2.14.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.14.0...benefit-backend-v2.14.1) (2026-04-10)
 
 
