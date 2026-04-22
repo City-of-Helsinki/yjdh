@@ -1,55 +1,148 @@
-import Router from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { useEffect, useRef } from 'react';
+import Router from 'next/router';
+import { useEffect, useRef, useCallback } from 'react';
 import useConfirm from 'shared/hooks/useConfirm';
 
-export const leaveConfirmStore = {
-  isBypassed: false,
-};
+import {
+  leaveConfirmStore,
+  shouldBlockNavigation,
+  getAnchorPath,
+} from './useLeaveConfirm.utils';
 
-export const setLeaveConfirmBypassed = (bypassed: boolean): void => {
-  leaveConfirmStore.isBypassed = bypassed;
-};
+export {
+  leaveConfirmStore,
+  setLeaveConfirmBypassed,
+} from './useLeaveConfirm.utils';
 
-const getPathWithoutHash = (p: string): string => p.split('#')[0];
-
-const shouldBypass = (
-  unsavedChanges: boolean,
-  isConfirmed: boolean
-): boolean => !unsavedChanges || isConfirmed || leaveConfirmStore.isBypassed;
-
-const isInternalLink = (anchor: HTMLAnchorElement): boolean => {
-  const url = new URL(anchor.href, window.location.href);
-  const isInternal = url.origin === window.location.origin;
-  const isDownload = anchor.hasAttribute('download');
-  const isBlank = anchor.target === '_blank';
-  return isInternal && !isDownload && !isBlank;
+/**
+ * Dependencies required by the leave confirmation service methods.
+ */
+type HandlerDeps = {
+  unsavedChanges: boolean;
+  message: string;
+  isConfirmedRef: { current: boolean };
+  confirm: (payload: any) => Promise<boolean>;
+  t: (key: string) => string;
 };
 
 /**
- * Checks if the given URL is a system-forced redirect that should bypass the leave confirmation modal.
- * Special parameters that trigger a bypass:
- * - sessionExpired=true: Set when the user's session has timed out.
- * - error=true: Set when a critical server error occurs during an initial user data fetch.
- * - /500: The generic server error page.
+ * Service class that maps the internal leave confirmation handlers.
+ * This class groups the event-related logic for better organization and readability.
  */
-const isBypassUrl = (url: string): boolean => {
-  try {
-    const urlObj = new URL(url, window.location.origin);
-    return (
-      urlObj.searchParams.get('sessionExpired') === 'true' ||
-      urlObj.searchParams.get('error') === 'true' ||
-      urlObj.pathname.endsWith('/500')
-    );
-  } catch {
-    return (
-      url.includes('sessionExpired=true') ||
-      url.includes('error=true') ||
-      url.includes('/500')
-    );
+class LeaveConfirmService {
+  /**
+   * Updates state and triggers navigation after user confirmation.
+   */
+  static handleConfirmAction(
+    pathOrUrl: string,
+    isConfirmedRef: { current: boolean }
+  ): void {
+    // eslint-disable-next-line no-param-reassign
+    isConfirmedRef.current = true;
+    void Router.push(pathOrUrl).catch(() => {
+      // eslint-disable-next-line no-param-reassign
+      isConfirmedRef.current = false;
+    });
   }
-};
 
+  /**
+   * Orchestrates the confirmation dialog and resulting navigation.
+   */
+  static async showConfirm(
+    url: string,
+    confirmLabel: string,
+    deps: HandlerDeps
+  ): Promise<void> {
+    const isConfirmed = await deps.confirm({
+      header: deps.message,
+      submitButtonLabel: confirmLabel,
+      submitButtonVariant: 'danger',
+      content: deps.t(
+        'common:application.buttons.leave_confirmation_description'
+      ),
+    });
+
+    if (isConfirmed) {
+      this.handleConfirmAction(url, deps.isConfirmedRef);
+    }
+  }
+
+  /**
+   * Logic for Next.js route change interception.
+   */
+  static handleRouteChange(url: string, deps: HandlerDeps): void {
+    const { unsavedChanges, isConfirmedRef, t } = deps;
+    if (
+      !shouldBlockNavigation({
+        targetUrl: url,
+        unsavedChanges,
+        isConfirmed: isConfirmedRef.current,
+        globalBypass: leaveConfirmStore.isBypassed,
+      })
+    ) {
+      return;
+    }
+
+    Router.events.emit('routeChangeError');
+    void this.showConfirm(url, t('common:dialog.confirm'), deps);
+
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    throw 'Abort route change. Please ignore this error.';
+  }
+
+  /**
+   * Logic for browser native beforeunload interception.
+   */
+  static handleBeforeUnload(
+    e: BeforeUnloadEvent,
+    deps: HandlerDeps
+  ): string | null {
+    const { unsavedChanges, isConfirmedRef, message } = deps;
+    if (
+      !shouldBlockNavigation({
+        targetUrl: '',
+        unsavedChanges,
+        isConfirmed: isConfirmedRef.current,
+        globalBypass: leaveConfirmStore.isBypassed,
+      })
+    ) {
+      return null;
+    }
+    e.preventDefault();
+    // eslint-disable-next-line no-return-assign, no-param-reassign
+    return (e.returnValue = message);
+  }
+
+  /**
+   * Logic for catching direct internal anchor link clicks.
+   */
+  static handleGlobalClick(e: MouseEvent, deps: HandlerDeps): void {
+    const { unsavedChanges, isConfirmedRef, t } = deps;
+    const path = getAnchorPath(e);
+    if (
+      !path ||
+      !shouldBlockNavigation({
+        targetUrl: path,
+        unsavedChanges,
+        isConfirmed: isConfirmedRef.current,
+        globalBypass: leaveConfirmStore.isBypassed,
+      })
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+    void this.showConfirm(path, t('common:application.buttons.discard'), deps);
+  }
+}
+
+/**
+ * Hook to show a confirmation dialog when the user tries to leave a page with unsaved changes.
+ * Handles Next.js route changes, browser back/forward buttons, and direct link clicks.
+ *
+ * @param unsavedChanges - Boolean flag indicating if there are unsaved changes.
+ * @param message - The message to display in the confirmation dialog (header).
+ */
 const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
   const { confirm } = useConfirm();
   const { t } = useTranslation();
@@ -62,111 +155,50 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
     leaveConfirmStore.isBypassed = false;
   }, []);
 
-  const handleConfirmAction = (pathOrUrl: string): void => {
-    isConfirmedRef.current = true;
-    void Router.push(pathOrUrl).catch(() => {
-      isConfirmedRef.current = false;
-    });
+  // Map hook state to dependency object for the service class
+  const deps: HandlerDeps = {
+    unsavedChanges,
+    message,
+    isConfirmedRef,
+    confirm: confirm as (payload: any) => Promise<boolean>,
+    t,
   };
 
-  const onConfirmRouteChange = (url: string): void => {
-    void confirm({
-      header: message,
-      submitButtonLabel: t('common:dialog.confirm'),
-      submitButtonVariant: 'danger',
-      content: t('common:application.buttons.leave_confirmation_description'),
-    }).then((isConfirmed) => {
-      if (isConfirmed) {
-        handleConfirmAction(url);
-      }
-      return null;
-    });
-  };
+  /**
+   * The following handlers are mapped to the LeaveConfirmService static methods.
+   * This removes the implementation details from the hook's lifecycle.
+   */
 
-  const handleRouteChange = (url: string): void => {
-    if (
-      shouldBypass(unsavedChanges, isConfirmedRef.current) ||
-      isBypassUrl(url)
-    ) {
-      return;
-    }
+  const routeHandler = useCallback(
+    (url: string) => LeaveConfirmService.handleRouteChange(url, deps),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [unsavedChanges, message, confirm, t]
+  );
 
-    if (getPathWithoutHash(Router.asPath) === getPathWithoutHash(url)) {
-      return;
-    }
+  const unloadHandler = useCallback(
+    (e: BeforeUnloadEvent) => LeaveConfirmService.handleBeforeUnload(e, deps),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [unsavedChanges, message]
+  );
 
-    Router.events.emit('routeChangeError');
-    onConfirmRouteChange(url);
-
-    // eslint-disable-next-line @typescript-eslint/no-throw-literal
-    throw 'Abort route change. Please ignore this error.';
-  };
-
-  const handleBeforeUnload = (e: BeforeUnloadEvent): string | null => {
-    if (shouldBypass(unsavedChanges, isConfirmedRef.current)) {
-      return null;
-    }
-    e.preventDefault();
-    // eslint-disable-next-line no-return-assign, no-param-reassign
-    return (e.returnValue = message);
-  };
-
-  const onConfirmGlobalClick = (path: string): void => {
-    void confirm({
-      header: message,
-      submitButtonLabel: t('common:application.buttons.discard'),
-      submitButtonVariant: 'danger',
-      content: t('common:application.buttons.leave_confirmation_description'),
-    }).then((isConfirmed) => {
-      if (isConfirmed) {
-        handleConfirmAction(path);
-      }
-      return null;
-    });
-  };
-
-  const handleGlobalClick = (e: MouseEvent): void => {
-    if (shouldBypass(unsavedChanges, isConfirmedRef.current)) {
-      return;
-    }
-
-    const anchor = (e.target as HTMLElement).closest('a');
-    if (!anchor || !anchor.href || !isInternalLink(anchor)) {
-      return;
-    }
-
-    const url = new URL(anchor.href, window.location.href);
-    const path = url.pathname + url.search + url.hash;
-
-    if (isBypassUrl(path)) {
-      return;
-    }
-
-    const isSamePage =
-      url.pathname === window.location.pathname &&
-      url.search === window.location.search;
-
-    if (isSamePage || Router.asPath === path) {
-      return;
-    }
-
-    e.preventDefault();
-    onConfirmGlobalClick(path);
-  };
+  const clickHandler = useCallback(
+    (e: MouseEvent) => LeaveConfirmService.handleGlobalClick(e, deps),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [unsavedChanges, message, confirm, t]
+  );
 
   useEffect(() => {
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('click', handleGlobalClick, true);
-    Router.events.on('routeChangeStart', handleRouteChange);
+    window.addEventListener('beforeunload', unloadHandler);
+    window.addEventListener('click', clickHandler, true);
+    Router.events.on('routeChangeStart', routeHandler);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('click', handleGlobalClick, true);
-      Router.events.off('routeChangeStart', handleRouteChange);
+      window.removeEventListener('beforeunload', unloadHandler);
+      window.removeEventListener('click', clickHandler, true);
+      Router.events.off('routeChangeStart', routeHandler);
       isConfirmedRef.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unsavedChanges, message, confirm, t]);
+  }, [unloadHandler, clickHandler, routeHandler]);
 };
 
 export default useLeaveConfirm;
