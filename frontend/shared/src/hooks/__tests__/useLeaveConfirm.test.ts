@@ -79,6 +79,20 @@ describe('useLeaveConfirm', () => {
 
       expect(confirmMock).toHaveBeenCalled();
     });
+
+    it('should not trigger confirmation when navigating to session expired page', () => {
+      mockRouter.asPath = '/application?id=123';
+      renderHook(() => useLeaveConfirm(true, 'message'));
+
+      const onCall = mockRouter.events.on.mock.calls.find(
+        (call: [string, unknown]) => call[0] === 'routeChangeStart'
+      );
+      const handleRouteChange = onCall[1] as (url: string) => void;
+
+      handleRouteChange('/login?sessionExpired=true');
+
+      expect(confirmMock).not.toHaveBeenCalled();
+    });
   });
 
   describe('handleGlobalClick', () => {
