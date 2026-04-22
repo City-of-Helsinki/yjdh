@@ -29,3 +29,6 @@ b16a7329fc75c71353e0cfa5701a39047bd85ddd
 
 # style(kesaseteli): apply order-by-type = false
 7255990d4800d34b53811bfddd840906aad1b385
+
+# style(kesaseteli): apply ruff format
+11d8e540980e5d8d25e66b0a7a0bbde145bde97b
