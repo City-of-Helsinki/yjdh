@@ -274,6 +274,6 @@
     "content": "You do not have the authorization to represent any organization in the Summer Job Voucher service. To process applications, you must have a valid authorization to act on behalf of the employer.",
     "instructions": "Request your organization to grant you the necessary authorizations in the Suomi.fi service.",
     "linkText": "Read more about authorizations <lnk href=\"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/\" target=\"_blank\">here</lnk>.",
-    "loginButton": "Sign in again"
+    "logoutButton": "Logout"
   }
 }

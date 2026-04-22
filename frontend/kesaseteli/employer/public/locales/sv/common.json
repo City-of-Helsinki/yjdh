@@ -274,6 +274,6 @@
     "content": "Du har inte behörighet att företräda någon organisation i tjänsten Sommarsedeln. För att kunna hantera ansökningar måste du ha en giltig fullmakt att företräda arbetsgivaren.",
     "instructions": "Be din organisation bevilja dig nödvändiga fullmakter i tjänsten Suomi.fi.",
     "linkText": "Läs mer om fullmakter <lnk href=\"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/\" target=\"_blank\">här</lnk>.",
-    "loginButton": "Logga in på nytt"
+    "logoutButton": "Logga ut"
   }
 }
