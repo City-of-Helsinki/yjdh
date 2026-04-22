@@ -10,6 +10,7 @@ const useCompanyQuery = (): UseQueryResult<Company> =>
     // The dashboard renders fine without it; organisationName will be undefined.
     onError: useErrorHandler({
       onServerError: () => {},
+      onAuthError: () => {},
     }),
   });
 

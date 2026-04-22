@@ -2,10 +2,10 @@ import Step1EmployerAndEmployment from 'kesaseteli/employer/components/applicati
 import Step2Summary from 'kesaseteli/employer/components/application/steps/step2/Step2Summary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
+import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import { GetStaticProps, NextPage } from 'next';
 import * as React from 'react';
 import ApplicationWizard from 'shared/components/application-wizard/ApplicationWizard';
-import withAuth from 'shared/components/hocs/withAuth';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useGoToPage from 'shared/hooks/useGoToPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -39,4 +39,4 @@ const ApplicationPage: NextPage = () => {
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
 
-export default withAuth(ApplicationPage);
+export default withEmployerAuth(ApplicationPage);

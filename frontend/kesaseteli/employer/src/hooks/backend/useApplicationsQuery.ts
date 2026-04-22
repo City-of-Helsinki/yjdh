@@ -10,6 +10,7 @@ const useApplicationsQuery = <T = Application[]>(
   onError?: (error: Error | unknown) => void
 ): UseQueryResult<T> => {
   const { axios, handleResponse } = useBackendAPI();
+  const defaultErrorHandler = useErrorHandler();
 
   return useQuery(
     [BackendEndpoint.EMPLOYER_APPLICATIONS, { onlyMine }],
@@ -27,7 +28,7 @@ const useApplicationsQuery = <T = Application[]>(
         : undefined,
       staleTime: Infinity,
       retryDelay: 3000,
-      onError: onError ?? useErrorHandler(),
+      onError: onError ?? defaultErrorHandler,
     }
   );
 };

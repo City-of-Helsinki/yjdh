@@ -1,6 +1,7 @@
 import { Button, IconCheckCircleFill } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
+import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
 import { GetStaticProps, NextPage } from 'next';
@@ -9,7 +10,6 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
-import withAuth from 'shared/components/hocs/withAuth';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
@@ -97,7 +97,7 @@ const ThankYouPage: NextPage = () => {
           </title>
         </Head>
         <$Notification
-          label={t(`common:thankyouPage.thankyouMessageLabel`)}
+          label={t('common:thankyouPage.thankyouMessageLabel')}
           type="success"
           size="large"
         >
@@ -135,4 +135,4 @@ const ThankYouPage: NextPage = () => {
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
 
-export default withAuth(ThankYouPage);
+export default withEmployerAuth(ThankYouPage);

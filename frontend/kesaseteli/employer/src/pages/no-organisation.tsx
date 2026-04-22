@@ -1,5 +1,5 @@
-import { Button, IconSignin } from 'hds-react';
-import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
+import { Button, IconSignout } from 'hds-react';
+import useLogout from 'kesaseteli/employer/hooks/backend/useLogout';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { Trans, useTranslation } from 'next-i18next';
@@ -11,7 +11,11 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 
 const NoOrganisation: NextPage = () => {
   const { t } = useTranslation();
-  const login = useLogin();
+  const logout = useLogout();
+
+  const onLogout = (): void => {
+    void logout();
+  };
 
   return (
     <Container>
@@ -40,8 +44,8 @@ const NoOrganisation: NextPage = () => {
           />
         </p>
       </$Notification>
-      <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
-        {t('common:noOrganisationPage.loginButton')}
+      <Button theme="coat" iconLeft={<IconSignout />} onClick={onLogout}>
+        {t('common:noOrganisationPage.logoutButton')}
       </Button>
     </Container>
   );
