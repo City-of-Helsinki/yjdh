@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.20.0...benefit-applicant-v4.0.0) (2026-04-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **main:** upgrade Next.js from 14 to 15
+
+### Features
+
+* **main:** Upgrade to Next.js 15 ([#3810](https://github.com/City-of-Helsinki/yjdh/issues/3810)) ([4ee66b2](https://github.com/City-of-Helsinki/yjdh/commit/4ee66b2cad3183adcee5917ee04838e0aa723107))
+
+
+### Bug Fixes
+
+* 403 errors on language change HL-1777 ([#3985](https://github.com/City-of-Helsinki/yjdh/issues/3985)) ([4b6b982](https://github.com/City-of-Helsinki/yjdh/commit/4b6b982f991e715e4c514ecba7f2f66255b87675))
+* **deps:** Fix pdfjs worker import for Next.js webpack compatibility ([1985f72](https://github.com/City-of-Helsinki/yjdh/commit/1985f7241cb61f6a76a4d0a309b69a4f64590bf8))
+* **deps:** Serve pdfjs worker as static file to avoid ESM import issues ([c10208f](https://github.com/City-of-Helsinki/yjdh/commit/c10208f1ecb7ca78336dad0749aff6df0073c494))
+* **deps:** Upgrade pdfjs-dist and react-pdf to fix CVE security alert ([7ec5d1d](https://github.com/City-of-Helsinki/yjdh/commit/7ec5d1db84e99eb3c332a0c47f800a30b3e75936))
+
 ## [3.20.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.19.0...benefit-applicant-v3.20.0) (2026-03-19)
 
 
