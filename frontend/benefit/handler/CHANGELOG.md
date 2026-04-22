@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.0.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.0.0...benefit-handler-v5.0.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* 403 errors on language change HL-1777 ([#3985](https://github.com/City-of-Helsinki/yjdh/issues/3985)) ([4b6b982](https://github.com/City-of-Helsinki/yjdh/commit/4b6b982f991e715e4c514ecba7f2f66255b87675))
+* **benefit:** Due date changing label fixed ([265952c](https://github.com/City-of-Helsinki/yjdh/commit/265952c3a19ee4551f2b1ea49d840052afa96c08))
+* **benefit:** Fix test for reintroduced signer section ([5871045](https://github.com/City-of-Helsinki/yjdh/commit/5871045bbda527809cc88c595717e33da7e6fe84))
+* **benefit:** Reintroduce signer section ([6dabbce](https://github.com/City-of-Helsinki/yjdh/commit/6dabbce8fc308eacba519d310a8c0a0d53a8bc49))
+
 ## [5.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v4.14.0...benefit-handler-v5.0.0) (2026-04-10)
 
 
