@@ -2,13 +2,14 @@ import json
 import logging
 from typing import Optional, TYPE_CHECKING
 
-from auditlog.models import LogEntry
 import jsonpath_ng
+from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
+from requests import ReadTimeout
 
 import applications.target_groups
 from applications.enums import (
@@ -29,7 +30,6 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_restricted_content,
 )
 from common.utils import are_same_texts, send_mail_with_error_logging
-from requests import ReadTimeout
 from shared.vtj.vtj_client import VTJClient
 
 if TYPE_CHECKING:

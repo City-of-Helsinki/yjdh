@@ -19,7 +19,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
-from requests.exceptions import ReadTimeout
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
@@ -30,15 +29,9 @@ from applications.enums import (
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     JobType,
-    VtjTestCase,
     YouthApplicationStatus,
 )
 from applications.target_groups import get_target_group_choices
-from applications.tests.data.mock_vtj import (
-    mock_vtj_person_id_query_found_content,
-    mock_vtj_person_id_query_not_found_content,
-    mock_vtj_person_id_query_restricted_content,
-)
 from applications.validators import validate_template_syntax
 from common.permissions import HandlerPermission
 from common.urls import handler_youth_application_processing_url
@@ -58,7 +51,6 @@ from shared.common.validators import (
 )
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
-from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
 
