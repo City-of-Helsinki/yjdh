@@ -1,3 +1,4 @@
+from auditlog.admin import LogEntry, LogEntryAdmin
 from auditlog_extra.mixins import AuditlogAdminViewAccessLogMixin
 from django.contrib import admin
 from django.contrib.auth import get_user_model
@@ -46,6 +47,21 @@ class KesaseteliGroupAdmin(AuditlogAdminViewAccessLogMixin, GroupAdmin):
     get_user_count.short_description = _("User count")
 
 
+class KesaseteliLogEntryAdmin(LogEntryAdmin):
+    _extra_detail_list_fields = ["additional_data", "content_type"]
+    _extra_detail_fields = _extra_detail_list_fields + [
+        "object_pk",
+        "remote_addr",
+        "actor_email",
+        "serialized_data",
+    ]
+    list_display = LogEntryAdmin.list_display + _extra_detail_list_fields
+    readonly_fields = LogEntryAdmin.readonly_fields + _extra_detail_fields
+    fieldsets = LogEntryAdmin.fieldsets + [
+        (_("Extra details"), {"fields": _extra_detail_fields})
+    ]
+
+
 if admin.site.is_registered(User):
     admin.site.unregister(User)
 admin.site.register(User, KesaseteliUserAdmin)
@@ -53,3 +69,7 @@ admin.site.register(User, KesaseteliUserAdmin)
 if admin.site.is_registered(Group):
     admin.site.unregister(Group)
 admin.site.register(Group, KesaseteliGroupAdmin)
+
+if admin.site.is_registered(LogEntry):
+    admin.site.unregister(LogEntry)
+admin.site.register(LogEntry, KesaseteliLogEntryAdmin)
