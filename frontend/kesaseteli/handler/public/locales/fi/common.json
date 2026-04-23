@@ -122,7 +122,7 @@
     "form": {
       "title": "Kesäsetelin tiedot",
       "info": "Täytäthän kaikki tiedot mahdollisimman paikkansapitävästi",
-      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia julkaisuun",
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia",
       "sendButton": "Lähetä tiedot",
       "usageInfo": "Käytä tätä lomaketta vain, jos henkilöllä ei ole pysyvää suomalaista henkilötunnusta!",
       "emailCheckAlert": "Tarkista ennen lähettämistä, että sähköpostiosoite on oikein! Jos se on väärin, niin kesäseteli ei välity henkilölle!",
