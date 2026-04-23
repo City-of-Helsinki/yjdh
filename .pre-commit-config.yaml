@@ -25,16 +25,15 @@ repos:
     hooks:
       - id: commitlint
         stages: [commit-msg, manual]
-        additional_dependencies: ["@commitlint/config-conventional"]
+        additional_dependencies:
+          - "@commitlint/cli@19.8.1"
+          - "@commitlint/config-conventional@19.8.1"
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0
     hooks:
       - id: shellcheck
-  - repo: local
+  - repo: https://github.com/thlorenz/doctoc
+    rev: v2.2.0
     hooks:
-    - id: lint-staged
-      name: (Frontend) Run lint-staged with lerna
-      entry: "./.husky/pre-commit"
-      language: system
-      types: [file]
-      require_serial: true
+      - id: doctoc
+        files: '(^|/)(README|readme)\.md$'

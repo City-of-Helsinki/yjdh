@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
+# Fail fast: stop on the first command that exits non-zero so the commit is blocked.
+set -e
 
-yarn commitlint --edit "$1"
+pre-commit run --hook-stage commit-msg --commit-msg-filename "$1"

@@ -3,7 +3,6 @@
 **Table of Contents**
 
 - [YJDH services](#yjdh-services)
-  - [Table of contents](#table-of-contents)
   - [About YJDH](#about-yjdh)
   - [Service environments (Kesäseteli)](#service-environments-kes%C3%A4seteli)
   - [Requirements](#requirements)
@@ -102,6 +101,7 @@ Before starting, ensure you have the following installed:
 * Docker Compose@^2.20.0 (or higher)
 * NodeJS `>=22.13.1 <23.11.0`
 * Yarn@^1.22
+* [pre-commit](https://pre-commit.com/) `>=4.5.1`
 
 Verify your installations:
 
@@ -110,6 +110,7 @@ docker --version
 docker compose version
 node --version
 yarn --version
+pre-commit --version
 ```
 
 Ensure Docker Desktop (or the Docker service on Linux) is running before proceeding.
@@ -286,13 +287,27 @@ More information in [Confluence](https://helsinkisolutionoffice.atlassian.net/wi
 
 ## Setting up git hooks
 
-Git hooks are run with [pre-commit](https://pre-commit.com/). Pre-commit also runs the frontend hooks that were run with husky and lerna.
+[Husky](https://github.com/typicode/husky) wires Git to run scripts in [`.husky/`](.husky/README.md) when you commit. Those scripts invoke the [pre-commit](https://pre-commit.com/) CLI (see [`.pre-commit-config.yaml`](.pre-commit-config.yaml)) and a few repo-specific steps.
 
-1. Install [Pre-commit](https://pre-commit.com/)
-2. Install packages from `package.json`
-3. Run `pre-commit install`
+For example, a commit may run:
 
-Git hooks can be disabled temporarily with `--no-verify` when committing.
+* Ruff and other checks from `.pre-commit-config.yaml` (lint, format, whitespace, YAML/TOML, large files, ShellCheck)
+* [doctoc](https://github.com/thlorenz/doctoc) on staged `README.md` files
+* Lerna-driven frontend `pre-commit` scripts for frontend (e.g. lint-staged, ESLint, typecheck)
+* Conventional commit message checks
+
+See more in [`.husky/README.md`](.husky/README.md).
+
+After cloning, install root Node dependencies (for Husky, etc.) and wire Git to use Husky:
+
+```bash
+yarn install
+yarn husky
+```
+
+Note: you don't need to run `pre-commit install`, Husky calls `pre-commit run` directly.
+
+Git hooks can be disabled temporarily with `git commit --no-verify`.
 
 ## Kesäseteli employer
 

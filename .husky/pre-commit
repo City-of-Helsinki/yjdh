@@ -1,17 +1,13 @@
-#!/usr/bin/env bash
-. "$(dirname "$0")/_/husky.sh"
-
-# Update TOC and re-add only staged README files, handling spaces/newlines safely
-git diff --name-only --cached -z -- 'README.md' '**/README.md' | while IFS= read -r -d '' file; do
-  yarn doctoc -u "$file"
-  git add "$file"
-done
-
-set +e
-git diff --name-only --cached | grep -e "frontend/" &> /dev/null
-RUN_FRONTEND_PRECOMMIT=$?
+#!/usr/bin/env sh
+# Fail fast: stop on the first command that exits non-zero so the commit is blocked.
 set -e
 
-if [ "$RUN_FRONTEND_PRECOMMIT" = "0" ]; then
-    cd frontend && yarn husky:pre-commit
-fi
+# Python pre-commit (see .pre-commit-config.yaml). Helper scripts live in .husky/scripts/.
+pre-commit run --hook-stage pre-commit
+
+# Lerna pre-commit script assumes it is run from the repo root
+# so change directory to the repo root
+# Fail loudly in Git if we can't change directory to the repo root
+# for whatever reason
+cd "$(dirname "$0")/.." || exit 1
+./.husky/scripts/run-frontend-lerna-pre-commit.sh
