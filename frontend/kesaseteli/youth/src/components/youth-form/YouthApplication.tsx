@@ -1,4 +1,5 @@
 import YouthForm from 'kesaseteli/youth/components/youth-form/YouthForm';
+import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
@@ -9,6 +10,7 @@ import Heading from 'shared/components/forms/heading/Heading';
 
 const YouthApplication: React.FC = () => {
   const { t } = useTranslation();
+  const { currentConfiguration } = useCurrentYearSummerVoucherConfig();
 
   const methods: UseFormReturn<YouthFormData> = useForm<YouthFormData>({
     mode: 'onBlur',
@@ -22,7 +24,11 @@ const YouthApplication: React.FC = () => {
         <title>{t(`common:appName`)}</title>
       </Head>
       <Heading size="l" header={t('common:youthApplication.title')} as="h2" />
-      <p>{t('common:youthApplication.paragraph_1')}</p>
+      <p>
+        {t('common:youthApplication.paragraph_1', {
+          value: currentConfiguration?.voucher_value_in_euros,
+        })}
+      </p>
       <FormProvider {...methods}>
         <YouthForm />
       </FormProvider>

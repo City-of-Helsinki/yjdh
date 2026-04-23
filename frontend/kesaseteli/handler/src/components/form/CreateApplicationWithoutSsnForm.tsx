@@ -4,7 +4,7 @@ import SubmitErrorSummary from 'kesaseteli/handler/components/form/SubmitErrorSu
 import TextInput from 'kesaseteli/handler/components/form/TextInput';
 import useHandleApplicationWithoutSsnSubmit from 'kesaseteli/handler/hooks/application/useHandleApplicationWithoutSsnSubmit';
 import useCreateYouthApplicationWithoutSsnQuery from 'kesaseteli/handler/hooks/backend/useCreateYouthApplicationWithoutSsnQuery';
-import useSummerVoucherConfigurationQuery from 'kesaseteli/handler/hooks/backend/useSummerVoucherConfigurationQuery';
+import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
@@ -25,18 +25,16 @@ const CreateApplicationWithoutSsnForm: React.FC = () => {
   const { t } = useTranslation();
 
   const submitQuery = useCreateYouthApplicationWithoutSsnQuery();
+
   const {
-    data: configurations,
-    isLoading: isLoadingConfigurations,
-    isError: isErrorConfigurations,
-  } = useSummerVoucherConfigurationQuery();
+    query: {
+      isLoading: isLoadingConfigurations,
+      isError: isErrorConfigurations,
+    },
+    currentConfiguration,
+  } = useCurrentYearSummerVoucherConfig();
   const { handleSaveSuccess, handleErrorResponse, submitError } =
     useHandleApplicationWithoutSsnSubmit();
-
-  const currentYear = new Date().getFullYear();
-  const currentConfiguration = configurations?.find(
-    (c) => c.year === currentYear
-  );
   const targetGroups = currentConfiguration?.target_groups;
 
   return (

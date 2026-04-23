@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeActivatedYouthApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import React from 'react';
+
 import ActionButtons from '../ActionButtons';
 
 describe('ActionButtons', () => {

@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/get-handler-translations-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
+
 import VtjErrorNotification from '../VtjErrorNotification';
 
 describe('VtjErrorNotification', () => {

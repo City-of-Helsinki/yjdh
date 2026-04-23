@@ -38,7 +38,7 @@ const getIndexPageApi = (lang?: Language) => {
           screen.findByRole('heading', {
             name: translations.youthApplication.title,
           }),
-          screen.findByRole('radio'),
+          screen.findAllByRole('radio'),
         ]);
       },
       async inputIsPresent(key: YouthFormFields): Promise<void> {

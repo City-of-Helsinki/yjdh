@@ -1,5 +1,5 @@
-import useSummerVoucherConfigurationQuery from 'kesaseteli/youth/hooks/backend/useSummerVoucherConfigurationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -9,15 +9,9 @@ const TargetGroupSelection: React.FC = () => {
   const { t } = useTranslation();
   const register = useRegisterInput<YouthFormData>('youthApplication');
   const {
-    data: configurations,
-    isLoading,
-    isError,
-  } = useSummerVoucherConfigurationQuery();
-
-  const currentYear = new Date().getFullYear();
-  const currentConfiguration = configurations?.find(
-    (c) => c.year === currentYear
-  );
+    query: { isLoading, isError },
+    currentConfiguration,
+  } = useCurrentYearSummerVoucherConfig();
   const targetGroups = currentConfiguration?.target_groups;
 
   if (isLoading) {
