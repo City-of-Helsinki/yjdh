@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.16.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.15.0...benefit-backend-v2.16.0) (2026-04-23)
+
+
+### Features
+
+* Support admin AD login, update django-helusers ([aa4b667](https://github.com/City-of-Helsinki/yjdh/commit/aa4b667c729a073f2861c885084f8856237412ef))
+
+
+### Dependencies
+
+* Bump django-logger-extra ([4295cb4](https://github.com/City-of-Helsinki/yjdh/commit/4295cb4bbdc5f0cb8f6737250703b6f5e21992b0))
+
 ## [2.15.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.14.1...benefit-backend-v2.15.0) (2026-04-22)
 
 
