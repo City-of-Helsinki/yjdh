@@ -1,5 +1,6 @@
 import { axe } from 'jest-axe';
 import {
+  expectToGetSummerVoucherConfigurationFromBackend,
   expectToGetYouthApplicationStatus,
   expectToGetYouthApplicationStatusErrorFromBackend,
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
@@ -65,6 +66,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   describe(`when application status is "additional_information_requested"`, () => {
     it('shows additional info form', async () => {
+      expectToGetSummerVoucherConfigurationFromBackend();
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
@@ -112,6 +114,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   }
   describe(`when submitting form`, () => {
     it(`shows errors if empty values`, async () => {
+      expectToGetSummerVoucherConfigurationFromBackend();
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
@@ -134,6 +137,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       it(
         `with default language`,
         async () => {
+          expectToGetSummerVoucherConfigurationFromBackend();
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
             status: 'additional_information_requested',
           });
@@ -162,6 +166,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       it(
         `with changed language`,
         async () => {
+          expectToGetSummerVoucherConfigurationFromBackend();
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
             status: 'additional_information_requested',
           });

@@ -2,13 +2,13 @@ import { NotificationType } from 'hds-react';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
 import Field from 'kesaseteli/handler/components/form/Field';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
-import useSummerVoucherConfigurationQuery from 'kesaseteli/handler/hooks/backend/useSummerVoucherConfigurationQuery';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION,
 } from 'kesaseteli-shared/constants/youth-application-status';
 import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
+import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -31,7 +31,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const { data: configurations } = useSummerVoucherConfigurationQuery();
+  const { currentConfiguration } = useCurrentYearSummerVoucherConfig();
 
   const {
     receipt_confirmed_at,
@@ -50,7 +50,6 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     additional_info_user_reasons,
     additional_info_description,
     status,
-    created_at,
   } = application;
 
   const waitingForUserAction = (
@@ -93,16 +92,12 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     [status]
   );
 
-  const targetGroupName = React.useMemo(() => {
-    const appYear = new Date(
-      receipt_confirmed_at || created_at || new Date()
-    ).getFullYear();
-    const config = configurations?.find((c) => c.year === appYear);
-    return (
-      config?.target_groups?.find((tg) => tg.id === target_group)?.name ??
-      target_group
-    );
-  }, [configurations, receipt_confirmed_at, created_at, target_group]);
+  const targetGroupName = React.useMemo(
+    () =>
+      currentConfiguration?.target_groups?.find((tg) => tg.id === target_group)
+        ?.name ?? target_group,
+    [currentConfiguration, target_group]
+  );
 
   return (
     <>

@@ -1,6 +1,7 @@
 import useCreateAdditionalInfoQuery from 'kesaseteli/youth/hooks/backend/useCreateAdditionalInfoQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
+import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonOption from 'kesaseteli-shared/types/additional-info-reason-option';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
@@ -31,6 +32,8 @@ const AdditionalInfoForm: React.FC<Props> = ({ applicationId }) => {
       })),
     [t]
   );
+
+  const { currentConfiguration } = useCurrentYearSummerVoucherConfig();
   const theme = useTheme();
   return (
     <>
@@ -42,7 +45,11 @@ const AdditionalInfoForm: React.FC<Props> = ({ applicationId }) => {
         {t(`common:additionalInfo.notification.confirmedDescription`)}
       </$Notification>
       <Heading size="l" header={t('common:additionalInfo.title')} as="h2" />
-      <p>{t('common:additionalInfo.paragraph_1')}</p>
+      <p>
+        {t('common:additionalInfo.paragraph_1', {
+          value: currentConfiguration?.voucher_value_in_euros ?? 'x',
+        })}
+      </p>
       <$Hr />
       <form data-testid="additional-info-form">
         <FormSection columns={1} css={{ paddingTop: theme.spacing.l }}>

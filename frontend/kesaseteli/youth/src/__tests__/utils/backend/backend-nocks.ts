@@ -60,7 +60,6 @@ export const expectToGetSummerVoucherConfigurationFromBackend = (
   ]
 ): nock.Scope =>
   nock(getBackendDomain())
-    .persist()
     .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
     .reply(200, configuration, { 'Access-Control-Allow-Origin': '*' });
 
