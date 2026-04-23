@@ -71,12 +71,12 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
     !is_vtj_data_restricted && PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
   const differentPostCode = !is_vtj_data_restricted && Postinumero !== postcode;
 
-  let dateOfBirth = undefined;
+  let dateOfBirth;
   try {
     dateOfBirth = FinnishSSN.parse(
       vtjData.Henkilo?.Henkilotunnus?.['#text'] ?? ''
     ).dateOfBirth;
-  } catch (e) {
+  } catch (error) {
     // eslint-disable-next-line no-console
     console.warn('Could not parse date of birth from VTJ data');
   }

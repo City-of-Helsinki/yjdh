@@ -2,7 +2,6 @@ import { NotificationType } from 'hds-react';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
 import Field from 'kesaseteli/handler/components/form/Field';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
-import useSummerVoucherConfigurationQuery from 'kesaseteli/handler/hooks/backend/useSummerVoucherConfigurationQuery';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
@@ -20,6 +19,7 @@ import {
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
+import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 
 type Props = {
   application: ActivatedYouthApplication;
