@@ -60,7 +60,7 @@ const getAdditionalInfoPageApi = (
           name: regexp(translations.additionalInfo.form.reasons),
         });
         await waitFor(() => expect(dropdownToggle).toBeInvalid());
-        await screen.findByText(errorText);
+        await screen.findAllByText(errorText);
       },
       async textInputHasError(
         key: keyof AdditionalInfoFormData,
@@ -71,7 +71,7 @@ const getAdditionalInfoPageApi = (
           name: regexp((translations.additionalInfo.form as any)[key]),
         });
         await waitFor(() => expect(input).toBeInvalid());
-        await screen.findByText(errorText);
+        await screen.findAllByText(errorText);
       },
     },
     actions: {

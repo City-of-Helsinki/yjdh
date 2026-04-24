@@ -1,8 +1,8 @@
+import { fakeTargetGroups } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import { fakeTargetGroups } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import nock from 'nock';
 
 const expectToGetSummerVoucherConfiguration = (): nock.Scope =>

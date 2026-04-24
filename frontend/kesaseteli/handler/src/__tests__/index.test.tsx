@@ -3,6 +3,7 @@ import {
   expectToGetYouthApplication,
   expectToGetYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
+import expectToGetSummerVoucherConfiguration from 'kesaseteli/handler/__tests__/utils/backend/expectToGetSummerVoucherConfiguration';
 import getIndexPageApi from 'kesaseteli/handler/__tests__/utils/components/get-index-page-api';
 import renderPage from 'kesaseteli/handler/__tests__/utils/components/render-page';
 import VTJ_EXCEPTIONS from 'kesaseteli/handler/constants/vtj-exceptions';
@@ -28,7 +29,6 @@ import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
-import expectToGetSummerVoucherConfiguration from 'kesaseteli/handler/__tests__/utils/backend/expectToGetSummerVoucherConfiguration';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
