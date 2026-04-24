@@ -18,6 +18,8 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 
 import { ROUTES, SUBMITTED_STATUSES } from '../constants';
 import FrontPageProvider from '../context/FrontPageProvider';
+import SecondInstalmentList from "benefit/applicant/components/applications/applicationList/SecondInstalmentList";
+import {INSTALMENT_STATUSES} from "benefit-shared/constants";
 
 const ApplicantIndex: NextPage = () => {
   const { t } = useTranslation();
@@ -94,6 +96,13 @@ const ApplicantIndex: NextPage = () => {
               ]}
               initialItems={4}
               onListLengthChanged={onDraftChange}
+            />
+            <SecondInstalmentList
+              heading={t('common:applications.list.instalment.requested')}
+              status={SUBMITTED_STATUSES}
+              secondInstalmentStatus={INSTALMENT_STATUSES.REQUESTED}
+              isArchived={false}
+              onListLengthChanged={onSubmittedChange}
             />
             <ApplicationList
               heading={t('common:applications.list.submitted.heading')}

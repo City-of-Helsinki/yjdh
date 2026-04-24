@@ -261,6 +261,11 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         """  # noqa: E501
         context = self.get_serializer_context()
         qs = self._get_simplified_queryset(request, context)
+
+        instalment_status_filter = request.query_params.get("2nd_instalment_status")
+        if instalment_status_filter:
+            qs = qs.filter(calculation__instalments__status=instalment_status_filter)
+
         serializer = self.serializer_class(qs, many=True, context=context)
         data = serializer.data
 
