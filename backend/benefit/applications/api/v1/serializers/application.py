@@ -1256,6 +1256,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             if req[1] == AttachmentRequirement.REQUIRED
         ]
         valid_attachment_types = {req[0] for req in attachment_requirements}
+
+        """
+        Handle the case when the applicant gives payslips when
+        creating a new application.
+        """
+        valid_attachment_types.add(AttachmentType.PAYSLIP)
         attachments_with_invalid_type = []
 
         for attachment in (
