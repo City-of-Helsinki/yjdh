@@ -230,22 +230,23 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     (
       applicationStatus: APPLICATION_STATUSES,
       additionalInformationNeededBy: string | Date
-    ): JSX.Element => (
-      <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
-        <Tag>
-          {t(
-            `common:applications.list.columns.applicationStatuses.${String(
-              applicationStatus
-            )}`
-          )}
-          {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED
-            ? dateForAdditionalInformationNeededBy(
-                additionalInformationNeededBy
-              )
-            : ''}
-        </Tag>
-      </$TagWrapper>
-    ),
+    ): JSX.Element => {
+      const label = t(
+        `common:applications.list.columns.applicationStatuses.${String(
+          applicationStatus
+        )}`
+      );
+      const additionalInformationLabel =
+        applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED
+          ? dateForAdditionalInformationNeededBy(additionalInformationNeededBy)
+          : '';
+
+      return (
+        <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
+          <Tag>{`${label}${additionalInformationLabel}`}</Tag>
+        </$TagWrapper>
+      );
+    },
     [t]
   );
 

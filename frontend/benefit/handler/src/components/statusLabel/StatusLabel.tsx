@@ -10,11 +10,11 @@ const StatusLabel: React.FC<{
 }> = ({ status, archived }) => {
   const { t } = useTranslation();
   return (
-    <$StatusLabel status={status}>
-      {t(`common:status.${status}`)}
-      {archived &&
-        ` / ${t('common:header.navigation.archive').toLocaleLowerCase()}`}
-    </$StatusLabel>
+    <$StatusLabel status={status}>{`${t(`common:status.${status}`)}${
+      archived
+        ? ` / ${t('common:header.navigation.archive').toLocaleLowerCase()}`
+        : ''
+    }`}</$StatusLabel>
   );
 };
 
