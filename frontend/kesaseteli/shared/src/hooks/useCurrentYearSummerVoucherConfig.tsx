@@ -1,6 +1,14 @@
+import { UseQueryResult } from 'react-query';
+
+import SummerVoucherConfiguration from '../types/summer-voucher-configuration';
 import useSummerVoucherConfigurationQuery from './useSummerVoucherConfigurationQuery';
 
-export function useCurrentYearSummerVoucherConfig() {
+// eslint-disable-next-line import/prefer-default-export
+export function useCurrentYearSummerVoucherConfig(): {
+  query: UseQueryResult<SummerVoucherConfiguration[]>;
+  currentConfiguration: SummerVoucherConfiguration | undefined;
+  currentYear: number;
+} {
   const query = useSummerVoucherConfigurationQuery();
 
   const currentYear = new Date().getFullYear();

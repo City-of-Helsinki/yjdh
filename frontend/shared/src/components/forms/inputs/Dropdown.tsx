@@ -1,5 +1,5 @@
 import { Select } from 'hds-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import {
   $GridCell,
@@ -14,6 +14,13 @@ type Option = {
   name: string;
 };
 
+type SelectTexts = NonNullable<React.ComponentProps<typeof Select>['texts']>;
+
+export type HdsOption = {
+  label: string;
+  value: string;
+};
+
 type Props<T extends FieldValues, O extends Option> = InputProps<T, O> &
   GridCellProps & {
     type?: 'select' | 'combobox';
@@ -22,8 +29,6 @@ type Props<T extends FieldValues, O extends Option> = InputProps<T, O> &
     options: O[];
   };
 const Dropdown = <T extends FieldValues, O extends Option>({
-  type = 'select',
-  multiselect,
   id,
   registerOptions = {},
   initialValue,
@@ -34,24 +39,60 @@ const Dropdown = <T extends FieldValues, O extends Option>({
   placeholder,
   errorText,
   onChange,
+  filter,
+  filterLabel,
+  filterPlaceholder,
   ...$gridCellProps
 }: Props<T, O>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
   const required = Boolean(registerOptions.required);
   const inputId = String(id);
+  // HDS Select takes string options, but the form still stores O.
+  const getOptionValue = (option: O): string =>
+    String(option[optionLabelField]);
+  // Translate between app domain objects and the string-only HDS option shape.
+  const hdsOptions: HdsOption[] = options.map((option) => {
+    const value = getOptionValue(option);
+    return { label: value, value };
+  });
+  const selectedValue = initialValue ? getOptionValue(initialValue) : undefined;
 
-  const sharedProps = {
+  const handleChange = (
+    selectedOptions: HdsOption[] | undefined,
+    controllerOnChange: (value: O | null) => void
+  ): void => {
+    const newSelectedValue = selectedOptions?.[0]?.value;
+    const nextValue =
+      options.find((option) => getOptionValue(option) === newSelectedValue) ??
+      null;
+    controllerOnChange(nextValue);
+    onChange?.(nextValue ?? undefined);
+  };
+
+  const texts = useMemo(() => {
+    const baseTexts: Partial<SelectTexts> = {
+      label: label || '',
+      placeholder,
+    };
+    if (filterLabel) {
+      baseTexts.filterLabel = filterLabel;
+    }
+    if (filterPlaceholder) {
+      baseTexts.filterPlaceholder = filterPlaceholder;
+    }
+    return baseTexts;
+  }, [label, placeholder, filterLabel, filterPlaceholder]);
+
+  const sharedSelectProps = {
+    'data-testid': inputId,
     id: inputId,
     required,
-    label: label || '',
-    defaultValue: initialValue,
-    placeholder,
-    optionLabelField: optionLabelField as string,
-    options,
+    texts,
+    defaultValue: selectedValue,
+    options: hdsOptions,
     disabled,
     invalid: Boolean(errorText),
-    'aria-invalid': Boolean(errorText),
-    errorText,
+    filter,
   };
 
   return (
@@ -62,14 +103,24 @@ const Dropdown = <T extends FieldValues, O extends Option>({
           data-testid={inputId}
           control={control}
           rules={registerOptions}
-          render={({ field: { ref, value, ...field } }) =>
-            type === 'combobox' ? (
-              // @ts-expect-error - This component will be fixed in a separate commit
-              <Combobox<O> {...field} {...sharedProps} value={value as O} />
-            ) : (
-              <Select {...field} {...sharedProps} value={value as O} />
-            )
-          }
+          render={({
+            field: { ref, value, onChange: controllerOnChange, ...field },
+          }) => {
+            const currentSelectedValue = value
+              ? getOptionValue(value as O)
+              : undefined;
+
+            return (
+              <Select
+                {...field}
+                {...sharedSelectProps}
+                value={currentSelectedValue}
+                onChange={(selectedOptions: HdsOption[]) =>
+                  handleChange(selectedOptions, controllerOnChange)
+                }
+              />
+            );
+          }}
         />
         {errorText && (
           <FieldErrorMessage data-testid={`${inputId}-error`}>
