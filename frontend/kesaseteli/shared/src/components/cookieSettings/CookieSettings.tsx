@@ -1,7 +1,11 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import * as React from 'react';
-import { LocalizedSiteName, OptionalGroups, RequiredGroups } from 'kesaseteli-shared/utils/cookie-consent-settings';
+import {
+  LocalizedSiteName,
+  OptionalGroups,
+  RequiredGroups,
+} from 'shared/utils/cookieConsentSettings';
 import Container from 'shared/components/container/Container';
 
 const CookieConsent = dynamic(
