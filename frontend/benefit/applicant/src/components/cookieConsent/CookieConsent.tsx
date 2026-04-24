@@ -12,20 +12,11 @@ import { useRouter } from 'next/router';
 import React, { useMemo } from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
-import {
-  getCookieConsentSiteSettings,
-} from 'shared/utils/cookieConsentSettings';
+import { getCookieConsentSiteSettings } from 'shared/utils/cookieConsentSettings';
 
 declare global {
   var _paq: Array<Array<string | number | boolean>> | undefined;
 }
-
-const COOKIE_CONSENT_GROUP = {
-  Essential: 'essential',
-  Shared: 'shared',
-  Statistics: 'statistics',
-  Tunnistamo: 'tunnistamo',
-};
 
 const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const locale = useLocale();
@@ -44,9 +35,9 @@ const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
 
   const cookieConsentParams = useCookieConsentParams({
     siteSettings,
-    options: { 
+    options: {
       focusTargetSelector: `#${MAIN_CONTENT_ID}`,
-      language: locale 
+      language: locale,
     },
   });
 
