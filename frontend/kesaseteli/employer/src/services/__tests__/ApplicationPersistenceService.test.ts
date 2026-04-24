@@ -1,11 +1,9 @@
 /* eslint-disable scanjs-rules/identifier_sessionStorage */
 import Application from 'shared/types/application';
-import Employment from 'shared/types/employment';
 
 import ApplicationPersistenceService from '../ApplicationPersistenceService';
 
 const EMPLOYER_DATA_KEY = 'kesaseteli_employer_data';
-const SUPPLEMENT_PREFIX = 'kesaseteli_voucher_supplement_';
 
 describe('ApplicationPersistenceService', () => {
   const mockEmployerData: Partial<Application> = {
@@ -14,10 +12,6 @@ describe('ApplicationPersistenceService', () => {
     contact_person_phone_number: '0401234567',
     street_address: 'Testikatu 1',
     bank_account_number: 'FI1234567890',
-  };
-
-  const mockVoucherSupplement: Partial<Employment> = {
-    employee_ssn: '010101-0101',
   };
 
   beforeEach(() => {
@@ -71,60 +65,13 @@ describe('ApplicationPersistenceService', () => {
     });
   });
 
-  describe('storeVoucherSupplement and getVoucherSupplement', () => {
-    it('should store and retrieve voucher supplement', () => {
-      const voucherId = 'test-voucher-id';
-      ApplicationPersistenceService.storeVoucherSupplement(
-        voucherId,
-        mockVoucherSupplement
-      );
-      const retrievedData =
-        ApplicationPersistenceService.getVoucherSupplement(voucherId);
-      expect(retrievedData).toEqual(mockVoucherSupplement);
-    });
-
-    it('should store supplement in obfuscated (Base64) format', () => {
-      const voucherId = 'test-voucher-id';
-      ApplicationPersistenceService.storeVoucherSupplement(
-        voucherId,
-        mockVoucherSupplement
-      );
-      const storedRaw = sessionStorage.getItem(
-        `${SUPPLEMENT_PREFIX}${voucherId}`
-      );
-
-      const decoded = atob(storedRaw || '');
-      expect(JSON.parse(decoded)).toEqual(mockVoucherSupplement);
-    });
-
-    it('should return null if no voucher supplement is stored', () => {
-      expect(
-        ApplicationPersistenceService.getVoucherSupplement('non-existent')
-      ).toBeNull();
-    });
-  });
-
   describe('clearAll', () => {
     it('should clear all persisted data', () => {
       ApplicationPersistenceService.storeEmployerData(mockEmployerData);
-      ApplicationPersistenceService.storeVoucherSupplement(
-        'v1',
-        mockVoucherSupplement
-      );
-      ApplicationPersistenceService.storeVoucherSupplement(
-        'v2',
-        mockVoucherSupplement
-      );
 
       ApplicationPersistenceService.clearAll();
 
       expect(ApplicationPersistenceService.getEmployerData()).toBeNull();
-      expect(
-        ApplicationPersistenceService.getVoucherSupplement('v1')
-      ).toBeNull();
-      expect(
-        ApplicationPersistenceService.getVoucherSupplement('v2')
-      ).toBeNull();
     });
 
     it('should only clear application-related data from sessionStorage', () => {

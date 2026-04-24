@@ -45,8 +45,8 @@ const useFetchEmployeeDataButtonState = (
     const integerStringRegex = /^\s*\d+\s*$/; // Allow leading and trailing whitespace
     setIsFetchEmployeeDataEnabled(
       (formDataVoucher.employee_name?.length ?? 0) > 0 &&
-      typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
-      integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
+        typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
+        integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
     );
   }, [getValues, index]);
 
@@ -70,7 +70,7 @@ const useFetchEmployeeData = (
   isEmployeeDataFetched: boolean;
   handleGetEmployeeData: () => void;
 } => {
-  const { getValues, reset, control } = useFormContext<Application>();
+  const { getValues, setValue, control } = useFormContext<Application>();
   const { fetchEmployment, updateApplication } = useApplicationApi();
 
   // Use dedicated state instead of deriving from form values
@@ -78,38 +78,27 @@ const useFetchEmployeeData = (
   const [isEmployeeDataFetched, setIsEmployeeDataFetched] =
     useState<boolean>(false);
 
-  const [employeePhoneNumber, employmentPostcode, employeeBirthdate] = useWatch({
-    control,
-    name: [
-      `summer_vouchers.${index}.employee_phone_number`,
-      `summer_vouchers.${index}.employment_postcode`,
-      `summer_vouchers.${index}.employee_birthdate`,
-    ],
-  });
+  const [employeePhoneNumber, employmentPostcode, employeeBirthdate] = useWatch(
+    {
+      control,
+      name: [
+        `summer_vouchers.${index}.employee_phone_number`,
+        `summer_vouchers.${index}.employment_postcode`,
+        `summer_vouchers.${index}.employee_birthdate`,
+      ],
+    }
+  );
 
   // Set fetched state when phone number, postcode or birthdate is populated
   useEffect(() => {
-    if (
-      employeePhoneNumber ||
-      employmentPostcode ||
-      employeeBirthdate
-    ) {
+    if (employeePhoneNumber || employmentPostcode || employeeBirthdate) {
       setIsEmployeeDataFetched(true);
     }
-  }, [
-    employeePhoneNumber,
-    employmentPostcode,
-    employeeBirthdate,
-  ]);
+  }, [employeePhoneNumber, employmentPostcode, employeeBirthdate]);
 
   const handleGetEmployeeData = useCallback((): void => {
     const currentValues = getValues();
     const voucher = currentValues.summer_vouchers[index];
-
-    const handleReset = (app: Application): void => {
-      // Don't reset the fetched state during form reset
-      reset(getFormApplication(app), { keepDirty: true });
-    };
 
     const performFetch = (appData: DraftApplication | Application): void => {
       const currentValues = getValues();
@@ -120,7 +109,13 @@ const useFetchEmployeeData = (
       }
 
       void fetchEmployment(currentValues, index, (app) => {
-        handleReset(app);
+        const updatedVoucher = app.summer_vouchers[index];
+        if (updatedVoucher) {
+          setValue(`summer_vouchers.${index}`, updatedVoucher, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+        }
         setIsEmployeeDataFetched(true);
       });
     };
@@ -130,7 +125,7 @@ const useFetchEmployeeData = (
     } else {
       updateApplication(currentValues, (app) => performFetch(app));
     }
-  }, [getValues, fetchEmployment, index, reset, updateApplication]);
+  }, [getValues, fetchEmployment, index, setValue, updateApplication]);
 
   return {
     isEmployeeDataFetched,

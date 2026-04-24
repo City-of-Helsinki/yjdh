@@ -217,22 +217,6 @@ const useApplicationApi = <T = Application>(
       { ...draftApplication, status: 'draft' },
       {
         onSuccess: (updatedApplication) => {
-          (updatedApplication.summer_vouchers ?? []).forEach(
-            (voucher, index) => {
-              const formVoucher = draftApplication.summer_vouchers?.[index];
-              if (voucher.id && formVoucher) {
-                ApplicationPersistenceService.storeVoucherSupplement(
-                  voucher.id,
-                  {
-                    employment_start_date: formVoucher.employment_start_date,
-                    employment_end_date: formVoucher.employment_end_date,
-                    hired_without_voucher_assessment:
-                      formVoucher.hired_without_voucher_assessment,
-                  }
-                );
-              }
-            }
-          );
           void onSuccess(updatedApplication);
         },
         onError: handleUpdateError,

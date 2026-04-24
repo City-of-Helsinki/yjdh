@@ -24,15 +24,6 @@ const createEmptyVoucher = (): Employment => ({
 const ensureVoucherExists = (vouchers: Employment[]): Employment[] =>
   vouchers.length > 0 ? vouchers : [createEmptyVoucher()];
 
-const mergeVoucherSupplements = (vouchers: Employment[]): Employment[] =>
-  vouchers.map((voucher) => {
-    const supplement = ApplicationPersistenceService.getVoucherSupplement(
-      // For new vouchers (no ID), we use the serial number as the key if available
-      voucher.id || voucher.summer_voucher_serial_number
-    );
-    return supplement ? { ...voucher, ...supplement } : voucher;
-  });
-
 const mergeEmployerData = (application: Application): void => {
   const employerData = ApplicationPersistenceService.getEmployerData();
   if (!employerData) return;
@@ -91,7 +82,7 @@ const useResetApplicationFormValuesEffect = ({
     const currentValues = getValues();
     const application = getFormApplication(applicationQuery.data);
     const vouchers = ensureVoucherExists(application.summer_vouchers ?? []);
-    application.summer_vouchers = mergeVoucherSupplements(vouchers);
+    application.summer_vouchers = vouchers;
 
     // Clever Fix: Because search inputs and date fields are often NOT immediately
     // persisted to the backend (read-only or draft state), we manually preserve
