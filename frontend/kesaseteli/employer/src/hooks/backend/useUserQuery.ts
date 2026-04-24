@@ -21,6 +21,14 @@ const useUserQuery = <T = User>({
     enabled: !!enabled && !isRouting,
     onError: useErrorHandler({
       onServerError: () => goToPage('/login?error=true'),
+      onAuthError: () => {
+        if (
+          !window.location.pathname.includes('/login') &&
+          !window.location.pathname.includes('/no-organisation')
+        ) {
+          goToPage('/login?sessionExpired=true');
+        }
+      },
     }),
     select,
     refetchInterval,

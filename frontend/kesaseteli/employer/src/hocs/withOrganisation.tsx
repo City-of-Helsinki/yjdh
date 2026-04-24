@@ -1,6 +1,7 @@
 import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import { useRouter } from 'next/router';
 import useAuth from 'shared/hooks/useAuth';
 import useGoToPage from 'shared/hooks/useGoToPage';
 import { isError } from 'shared/utils/type-guards';
@@ -16,6 +17,7 @@ const withOrganisation = <P extends JSX.IntrinsicAttributes>(
     const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
     const goToPage = useGoToPage();
 
+    const router = useRouter();
     const {
       data: company,
       isLoading: isCompanyLoading,
@@ -35,7 +37,8 @@ const withOrganisation = <P extends JSX.IntrinsicAttributes>(
       if (
         isAuthenticated &&
         !isCompanyLoading &&
-        (isNoOrganisation || isAuthError)
+        (isNoOrganisation || isAuthError) &&
+        router.pathname !== '/no-organisation'
       ) {
         void goToPage('/no-organisation');
       }
@@ -45,6 +48,7 @@ const withOrganisation = <P extends JSX.IntrinsicAttributes>(
       isNoOrganisation,
       isAuthError,
       goToPage,
+      router.pathname,
     ]);
 
     // Show loading spinner while determining status

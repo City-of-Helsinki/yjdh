@@ -32,7 +32,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     await waitFor(
       () =>
         expect(spyPush).toHaveBeenCalledWith(
-          `${DEFAULT_LANGUAGE}/login`,
+          `/${DEFAULT_LANGUAGE}/login`,
           undefined,
           {
             shallow: false,
@@ -52,7 +52,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       await waitFor(
         () =>
           expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/500`,
+            `/${DEFAULT_LANGUAGE}/500`,
             undefined,
             { shallow: false }
           ),
