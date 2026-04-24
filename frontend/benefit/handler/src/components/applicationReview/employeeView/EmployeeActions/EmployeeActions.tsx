@@ -3,7 +3,6 @@ import { UploadProps } from 'benefit/handler/types/application';
 import {
   Button,
   ButtonPresetTheme,
-  ButtonTheme,
   ButtonVariant,
   IconEuroSign,
 } from 'hds-react';
