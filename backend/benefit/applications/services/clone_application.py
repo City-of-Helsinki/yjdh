@@ -73,6 +73,9 @@ def clone_application_based_on_other(
         official_company_city=application_base.official_company_city,
         official_company_postcode=application_base.official_company_postcode,
         use_alternative_address=application_base.use_alternative_address,
+        employer_assurance=(
+            application_base.employer_assurance if clone_all_data else None
+        ),
     )
 
     company.save()
@@ -158,6 +161,7 @@ def _clone_handler_data(application_base, cloned_application):
             AttachmentType.FULL_APPLICATION,
             AttachmentType.OTHER_ATTACHMENT,
             AttachmentType.PDF_SUMMARY,
+            AttachmentType.PAYSLIP,
         ]
     ):
         Attachment.objects.create(

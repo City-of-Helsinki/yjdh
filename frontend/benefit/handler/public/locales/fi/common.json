@@ -149,6 +149,10 @@
       "label": "Odottamaton virhe",
       "text": "Ole hyvä ja kokeile myöhemmin uudestaan."
     },
+    "employerAssurance": {
+      "label": "Virhe työnantajan vakuutuksen muuttamisessa",
+      "text": "Ole hyvä ja kokeile myöhemmin uudestaan."
+    },
     "attachments": {
       "title": "Tapahtui virhe",
       "tooBig": "Liite on liian suuri.",
@@ -1046,6 +1050,17 @@
           "returnToApplication": "Palaa hakemukseen",
           "returnToAlterationList": "Palaa muutosilmoituksiin"
         }
+      }
+    },
+    "paidSalaries": {
+      "heading": "Maksetut palkat",
+      "employerAssurance": "Asiakas vakuuttaa työsuhteen toteutuneen suunnitellusti",
+      "payslipHeading": "Tositteet maksetuista palkoista",
+      "buttons": {
+        "delete": "Poista",
+        "setPending": "Kesken",
+        "setAccepted": "Hyväksytty",
+        "upload": "Liitä tiedosto"
       }
     }
   },

@@ -82,6 +82,7 @@ from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.models import User
 from users.utils import get_company_from_request
+from applications.enums import AttachmentType
 
 log = logging.getLogger(__name__)
 
@@ -289,11 +290,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         Validate that adding attachments is allowed in this application status
         """
         obj = self.get_object()
-        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
-            return Response(
-                {"detail": _("Operation not allowed for this application status.")},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+
+        attachment_type = request.data.get("attachment_type")
+        if attachment_type != AttachmentType.PAYSLIP:
+            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         # Validate request data
         serializer = AttachmentSerializer(
@@ -382,12 +386,24 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     )
     def delete_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
-        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+        attachment = self._get_attachment(attachment_pk)
+
+        if not attachment:
+            return self._attachment_not_found()
+
+        if attachment.attachment_type == AttachmentType.PAYSLIP and not request.user.is_handler():
             return Response(
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        if instance := self._get_attachment(attachment_pk):
+
+        if attachment.attachment_type != AttachmentType.PAYSLIP:
+            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+        if instance := attachment:
             audit_logging.log(
                 request.user,
                 "",
@@ -891,6 +907,23 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             {"id": cloned_application.id},
             status=status.HTTP_201_CREATED,
         )
+
+
+    @action(methods=["PATCH"], detail=True, url_path="change_employer_assurance")
+    @transaction.atomic
+    def change_employer_assurance(self, request, pk) -> HttpResponse:
+        try:
+            employer_assurance = request.data["employerAssurance"]
+        except KeyError:
+            return Response(
+                {"detail": "employerAssurance is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        application = self.get_object()
+        application.employer_assurance = employer_assurance
+        application.save()
+        return Response(status=status.HTTP_200_OK)
+
 
     @action(methods=["PATCH"], detail=True, url_path="require_additional_information")
     @transaction.atomic

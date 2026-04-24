@@ -3009,6 +3009,50 @@ def test_request_payslip_command_output_message(capsys):
         assert str(app.application_number) in captured.out
 
 
+@pytest.mark.django_db
+def test_change_employer_assurance_wrong_key(handler_api_client):
+    application = ApplicationFactory(
+        status=ApplicationStatus.ACCEPTED,
+        employer_assurance=False,
+    )
+    response = handler_api_client.patch(
+        reverse(
+            "v1:handler-application-change-employer-assurance",
+            kwargs={"pk": application.id},
+        ),
+        {"illegal_key": 'true'},
+    )
+    assert response.status_code == 400
+    assert application.employer_assurance == False
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "assurance,expected_assurance",
+    [
+        (False, True),
+        (True, False),
+    ],
+)
+def test_change_employer_assurance(handler_api_client, assurance, expected_assurance):
+    application = ApplicationFactory(
+        status=ApplicationStatus.ACCEPTED,
+        employer_assurance=assurance,
+    )
+    response = handler_api_client.patch(
+        reverse(
+            "v1:handler-application-change-employer-assurance",
+            kwargs={"pk": application.id},
+        ),
+        {"employerAssurance": expected_assurance},
+    )
+
+    application.refresh_from_db()
+
+    assert response.status_code == 200
+    assert application.employer_assurance == expected_assurance
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [

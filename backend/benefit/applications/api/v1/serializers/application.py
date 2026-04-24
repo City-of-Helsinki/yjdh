@@ -213,6 +213,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "benefit_type",
             "start_date",
             "end_date",
+            "employer_assurance",
             "de_minimis_aid",
             "de_minimis_aid_set",
             "modified_at",
@@ -1255,6 +1256,12 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             if req[1] == AttachmentRequirement.REQUIRED
         ]
         valid_attachment_types = {req[0] for req in attachment_requirements}
+
+        """
+        Handle the case when the applicant gives payslips when
+        creating a new application.
+        """
+        valid_attachment_types.add(AttachmentType.PAYSLIP)
         attachments_with_invalid_type = []
 
         for attachment in (
