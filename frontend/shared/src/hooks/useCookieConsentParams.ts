@@ -18,13 +18,13 @@ const onChange = (changeEvent: CookieConsentChangeEvent): void => {
 
   if (MATOMO_ENABLED === 'true') {
     if (hasStatisticsConsent) {
-      //  start tracking
+      // Start Matomo only after statistics consent is granted.
       if (window._paq) {
         window._paq.push(['setConsentGiven']);
         window._paq.push(['setCookieConsentGiven']);
       }
     } else {
-      // tell matomo to forget consent
+      // Tell Matomo to forget consent when statistics consent is removed.
       if (window._paq) {
         window._paq.push(['forgetConsentGiven']);
       }

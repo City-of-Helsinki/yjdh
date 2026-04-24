@@ -61,6 +61,7 @@ const getCurrentPageHostName = (app: CookieConsentApp): string => {
     return window.location.hostname;
   }
 
+  // SSR cannot read window.location, so use the app's canonical host here.
   return DEFAULT_COOKIE_HOST_NAME_BY_APP[app];
 };
 
