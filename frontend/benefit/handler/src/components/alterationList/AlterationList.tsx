@@ -5,7 +5,7 @@ import {
 } from 'benefit/handler/components/alterationList/AlterationList.sc';
 import { ROUTES } from 'benefit/handler/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
-import { IconArrowRight, Table } from 'hds-react';
+import { ButtonPresetTheme, IconArrowRight, Table } from 'hds-react';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -91,8 +91,8 @@ const AlterationList: React.FC<Props> = ({ isLoading, list }) => {
         <div>
           <LinkButton
             style={{ display: 'flex', alignItems: 'center' }}
-            theme="coat"
-            iconRight={<IconArrowRight />}
+            theme={ButtonPresetTheme.Coat}
+            iconEnd={<IconArrowRight />}
             onClick={() =>
               router.push(
                 `${ROUTES.HANDLE_ALTERATION}/?applicationId=${String(

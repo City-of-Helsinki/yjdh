@@ -15,7 +15,7 @@ import {
   DecisionDetailList,
 } from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
-import { Button, IconPlus } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, IconPlus } from 'hds-react';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -153,8 +153,10 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
           application={application}
           actions={[
             <Button
-              theme="black"
-              variant={canCreate ? 'secondary' : 'primary'}
+              theme={ButtonPresetTheme.Black}
+              variant={
+                canCreate ? ButtonVariant.Secondary : ButtonVariant.Primary
+              }
               onClick={() =>
                 router.push(
                   `${ROUTES.NEW_ALTERATION}?applicationId=${
@@ -162,7 +164,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
                   }`
                 )
               }
-              iconLeft={<IconPlus />}
+              iconStart={<IconPlus />}
               disabled={!canCreate}
               aria-disabled={!canCreate}
             >

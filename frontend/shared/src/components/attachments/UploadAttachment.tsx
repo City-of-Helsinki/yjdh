@@ -1,4 +1,4 @@
-import { Button, ButtonTheme } from 'hds-react';
+import { Button, ButtonProps, ButtonVariant } from 'hds-react';
 import * as React from 'react';
 
 import { useUploadAttachment } from './useUploadAttachment';
@@ -15,9 +15,9 @@ export interface UploadAttachmentProps {
   errorTitle: string;
   errorFileSizeText: string;
   errorFileTypeText: string;
-  theme: ButtonTheme;
+  theme: ButtonProps['theme'];
   icon?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: ButtonProps['variant'];
   name?: string;
   buttonRef?: React.Ref<HTMLButtonElement>;
 }
@@ -56,10 +56,10 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         id={name}
         theme={theme}
         onClick={handleUploadClick}
-        variant={variant}
+        variant={variant as ButtonVariant}
         isLoading={isUploading}
         loadingText={loadingText}
-        iconLeft={icon}
+        iconStart={icon}
         ref={buttonRef}
         aria-label={ariaUploadText}
       >

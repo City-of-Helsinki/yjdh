@@ -1,5 +1,5 @@
 import { StepActionType } from 'benefit/handler/hooks/useSteps';
-import { Button, IconPen } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { focusAndScroll } from 'shared/utils/dom.utils';
@@ -19,10 +19,10 @@ const EditButton: React.FC<Props> = ({ section, dispatchStep }) => {
   const { t } = useTranslation();
   return (
     <Button
-      theme="black"
+      theme={ButtonPresetTheme.Black}
       onClick={() => handleClick()}
-      variant="supplementary"
-      iconLeft={<IconPen />}
+      variant={ButtonVariant.Supplementary}
+      iconStart={<IconPen />}
     >
       {t(`common:applications.actions.edit`)}
     </Button>

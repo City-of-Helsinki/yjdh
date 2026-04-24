@@ -15,7 +15,12 @@ import {
   CALCULATION_ROW_TYPES,
 } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Accordion, IconEuroSign, IconMoneyBag } from 'hds-react';
+import {
+  Accordion,
+  AccordionSize,
+  IconEuroSign,
+  IconMoneyBag,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
@@ -54,7 +59,7 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
         <Accordion
           heading={t('common:applications.decision.calculation')}
           card
-          size="s"
+          size={AccordionSize.Small}
         >
           <$GridCell
             $colSpan={11}
@@ -156,7 +161,7 @@ const DecisionCalculationAccordion: React.FC<Props> = ({ data }) => {
         <Accordion
           heading={t('common:applications.decision.instalments')}
           card
-          size="s"
+          size={AccordionSize.Small}
         >
           <$GridCell
             $colSpan={11}

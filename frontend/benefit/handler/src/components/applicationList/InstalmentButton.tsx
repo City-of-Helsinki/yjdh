@@ -1,9 +1,5 @@
-import { 
-    Button, 
-    IconCheck, 
-  } from 'hds-react';
-import React from "react";
-
+import { Button, ButtonPresetTheme, IconCheck } from 'hds-react';
+import React from 'react';
 
 interface InstalmentButtonProps {
   isLoading: boolean;
@@ -11,21 +7,21 @@ interface InstalmentButtonProps {
   onClick: () => void;
   children: React.ReactNode;
 }
-  
+
 const InstalmentButton: React.FC<InstalmentButtonProps> = ({
   isLoading,
   isLoadingStatusChange,
   onClick,
-  children 
+  children,
 }) => (
-    <Button
-      disabled={isLoading || isLoadingStatusChange}
-      theme="coat"
-      iconLeft={<IconCheck />}
-      onClick={onClick}
-    >
-      {children}
-    </Button>
-  );
+  <Button
+    disabled={isLoading || isLoadingStatusChange}
+    theme={ButtonPresetTheme.Coat}
+    iconStart={<IconCheck />}
+    onClick={onClick}
+  >
+    {children}
+  </Button>
+);
 
 export default InstalmentButton;

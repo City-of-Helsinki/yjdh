@@ -1,7 +1,7 @@
 import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
 import { MAX_DEMINIMIS_AID_TOTAL_AMOUNT } from 'benefit/applicant/constants';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
-import { Button, IconTrash } from 'hds-react';
+import { Button, ButtonVariant, IconTrash } from 'hds-react';
 import React from 'react';
 import {
   $Grid,
@@ -67,9 +67,9 @@ const DeMinimisAidsList: React.FC = () => {
                 size="small"
                 data-testid={`deminimis-remove-${i}`}
                 onClick={() => handleRemove(i)}
-                variant="supplementary"
+                variant={ButtonVariant.Supplementary}
                 theme="black"
-                iconLeft={<IconTrash />}
+                iconStart={<IconTrash />}
                 fullWidth
               >
                 {t(`${translationsBase}.deMinimisAidsRemove`)}

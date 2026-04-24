@@ -19,7 +19,15 @@ import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import { AlterationAccordionItemProps } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, IconCross, IconInfoCircle, IconTrash } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonTheme,
+  ButtonVariant,
+  IconCross,
+  IconInfoCircle,
+  IconTrash,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -368,8 +376,8 @@ AlterationAccordionItemProps): JSX.Element => {
         <$ActionContainer>
           {alteration.state === ALTERATION_STATE.RECEIVED && (
             <Button
-              theme="coat"
-              variant="primary"
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Primary}
               onClick={() =>
                 router.push(
                   `${ROUTES.HANDLE_ALTERATION}/?applicationId=${alteration.application}&alterationId=${alteration.id}`
@@ -383,16 +391,16 @@ AlterationAccordionItemProps): JSX.Element => {
           )}
           {alteration.state === ALTERATION_STATE.HANDLED && (
             <AlterationCsvButton
-              theme="black"
+              theme={ButtonPresetTheme.Black as unknown as ButtonTheme}
               alteration={alteration}
               secondary
             />
           )}
           {(deletable || cancellable) && (
             <Button
-              theme="black"
-              variant="supplementary"
-              iconLeft={deletable ? <IconTrash /> : <IconCross />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Supplementary}
+              iconStart={deletable ? <IconTrash /> : <IconCross />}
               onClick={() => setIsDeleteModalOpen(true)}
             >
               {deletable

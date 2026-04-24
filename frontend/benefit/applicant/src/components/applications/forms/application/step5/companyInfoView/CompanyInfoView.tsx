@@ -2,7 +2,7 @@ import SummarySection from 'benefit/applicant/components/summarySection/SummaryS
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
 import { formatIBAN } from 'benefit-shared/utils/common';
-import { Button, IconPen } from 'hds-react';
+import { Button, ButtonVariant, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -44,8 +44,8 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             <Button
               theme="black"
               onClick={() => handleStepChange(1)}
-              variant="supplementary"
-              iconLeft={<IconPen />}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconPen />}
             >
               {t(`common:applications.actions.edit`)}
             </Button>

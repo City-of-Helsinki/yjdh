@@ -6,6 +6,7 @@ import {
   Logo,
   logoFi,
   logoFiDark,
+  LogoSize,
   logoSv,
   logoSvDark,
 } from 'hds-react';
@@ -17,6 +18,7 @@ import { NavigationItem, OptionType, ThemeOption } from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
 import { useHeader } from './useHeader';
+import { useRouter } from 'next/router';
 
 const mainTheme = theme;
 
@@ -62,6 +64,9 @@ const Header: React.FC<HeaderProps> = ({
   title,
   titleUrl,
 }) => {
+  const router = useRouter();
+  const { locale } = router;
+
   const { closeMenu, handleLogin, handleLogout, logoLang, t, toggleMenu } =
     useHeader(login);
 
@@ -112,6 +117,7 @@ const Header: React.FC<HeaderProps> = ({
       <HdsHeader
         theme={theme}
         onDidChangeLanguage={onLanguageChange}
+        defaultLanguage={locale}
         languages={languageOptions}
       >
         <HdsHeader.SkipLink
@@ -126,7 +132,7 @@ const Header: React.FC<HeaderProps> = ({
           logo={
             <Logo
               alt="Helsinki"
-              size="large"
+              size={LogoSize.Large}
               src={logoSrcFromLanguageAndTheme()}
             />
           }
@@ -161,7 +167,7 @@ const Header: React.FC<HeaderProps> = ({
               <HdsHeader.ActionBarSubItem
                 label={login.logoutLabel}
                 onClick={handleLogout}
-                iconRight={<IconSignout />}
+                iconStart={<IconSignout />}
               />
             </HdsHeader.ActionBarItem>
           )}
