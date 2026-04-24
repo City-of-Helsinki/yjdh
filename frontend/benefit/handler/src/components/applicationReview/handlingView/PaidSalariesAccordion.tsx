@@ -101,6 +101,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
       <$Grid css={{ marginBottom: '24px' }}>
         <$GridCell $colSpan={10}>
           <input
+            aria-label="employer-assurance-checkbox"
             name="employer-assurance-checkbox"
             type="checkbox"
             checked={isEmployerAssurance}
@@ -151,6 +152,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
         <input
           ref={uploadInputRef}
           id="paid-salaries-upload"
+          data-testid="paid-salaries-upload"
           type="file"
           hidden
           onChange={handleUploadAttachment}
