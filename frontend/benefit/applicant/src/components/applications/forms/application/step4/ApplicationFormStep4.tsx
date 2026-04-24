@@ -131,7 +131,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                     <$GridCell $colSpan={8} data-testid="employee_consent">
                       <UploadAttachment
                         theme="black"
-                        variant="secondary"
+                        variant={ButtonVariant.Secondary}
                         onUpload={handleUploadAttachment}
                         isUploading={isUploading}
                         attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
