@@ -94,6 +94,10 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
       applicationId: data.id,
       data: formData,
     });
+
+    if (uploadInputRef.current) {
+      uploadInputRef.current.value = '';
+    }
   };
 
   return (
