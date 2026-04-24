@@ -59,7 +59,7 @@ const SelectionGroup = <T extends FieldValues>({
                 data-testid={`${inputId}-${val}`}
                 label={getValueText(val)}
                 value={val}
-                onChange={(event) => {
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   controllerOnChange(event.target.value);
                   onChange(event.target.value);
                 }}
