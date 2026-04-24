@@ -1,4 +1,5 @@
 import { RegisterOptions } from 'react-hook-form';
+import { HdsOption } from 'shared/components/forms/inputs/Dropdown';
 import AutoComplete from 'shared/types/auto-complete';
 import Id from 'shared/types/id';
 
@@ -14,6 +15,9 @@ type InputProps<T, V = string> = {
   autoComplete?: AutoComplete;
   readOnly?: boolean;
   helperText?: string;
+  filter?: (option: HdsOption, inputValue: string) => boolean;
+  filterLabel?: string;
+  filterPlaceholder?: string;
 };
 
 export default InputProps;
