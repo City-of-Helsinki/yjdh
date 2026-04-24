@@ -2,10 +2,8 @@
 
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
 import Application from 'shared/types/application';
-import Employment from 'shared/types/employment';
 
 const EMPLOYER_DATA_KEY = 'kesaseteli_employer_data';
-const SUPPLEMENT_PREFIX = 'kesaseteli_voucher_supplement_';
 
 /**
  * Service for managing application form data persistence in sessionStorage.
@@ -84,55 +82,12 @@ class ApplicationPersistenceService {
   }
 
   /**
-   * Stores supplemental data for a specific employment voucher in sessionStorage.
-   * Data is obfuscated before storage.
-   * @param voucherId The unique ID of the voucher (employment).
-   * @param data Partial employment data to persist.
-   */
-  public static storeVoucherSupplement(
-    voucherId: string,
-    data: Partial<Employment>
-  ): void {
-    if (typeof sessionStorage === 'undefined') return;
-    const encodedData = ApplicationPersistenceService.encode(
-      JSON.stringify(data)
-    );
-    sessionStorage.setItem(`${SUPPLEMENT_PREFIX}${voucherId}`, encodedData);
-  }
-
-  /**
-   * Retrieves supplemental data for a specific employment voucher from sessionStorage.
-   * Data is de-obfuscated after retrieval.
-   * @param voucherId The unique ID of the voucher (employment).
-   * @returns The stored partial employment data, or null if none exists.
-   */
-  public static getVoucherSupplement(
-    voucherId: string
-  ): Partial<Employment> | null {
-    if (typeof sessionStorage === 'undefined') return null;
-    const encodedData = sessionStorage.getItem(
-      `${SUPPLEMENT_PREFIX}${voucherId}`
-    );
-    if (!encodedData) return null;
-
-    try {
-      const decodedData = ApplicationPersistenceService.decode(encodedData);
-      return JSON.parse(decodedData) as Partial<Employment>;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
    * Clears all persisted application data from sessionStorage.
    * Called on logout, successful submission, or when starting a fresh application.
    */
   public static clearAll(): void {
     if (typeof sessionStorage === 'undefined') return;
     sessionStorage.removeItem(EMPLOYER_DATA_KEY);
-    Object.keys(sessionStorage)
-      .filter((key) => key.startsWith(SUPPLEMENT_PREFIX))
-      .forEach((key) => sessionStorage.removeItem(key));
   }
 }
 

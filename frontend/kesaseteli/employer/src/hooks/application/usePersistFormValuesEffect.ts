@@ -18,25 +18,6 @@ const usePersistFormValuesEffect = ({
 
     // Persist Employer fields (Step 1)
     ApplicationPersistenceService.storeEmployerData(values);
-
-    // Persist Voucher fields (especially search fields and manual inputs)
-    // IMPORTANT: We sanitize the voucher to exclude derived fields (birthdate, SSN, etc.)
-    // to prevent "zombie" results from leaking across search attempts.
-    (values.summer_vouchers ?? []).forEach((voucher) => {
-      const {
-        employee_birthdate,
-        employee_ssn,
-        employee_school,
-        employee_home_city,
-        ...safeVoucher
-      } = voucher;
-
-      // Use serial number or ID as key to ensure we can retrieve it correctly
-      const key = safeVoucher.id || safeVoucher.summer_voucher_serial_number;
-      if (key) {
-        ApplicationPersistenceService.storeVoucherSupplement(key, safeVoucher);
-      }
-    });
   }, [values, isDirty]);
 };
 
