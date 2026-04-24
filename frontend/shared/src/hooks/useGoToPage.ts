@@ -9,15 +9,23 @@ const useGoToPage = (): GoToPageFunction => {
   const locale = useLocale();
   const isAlreadyRouting = useIsRouting();
   return React.useCallback(
-    (pagePath, operation = 'push'): void => {
-      // if already routing, or we're trying to route to same path (including query params), do nothing
-      if (isAlreadyRouting || pagePath === router.asPath) {
-        return;
-      }
-      const path = `${locale}${pagePath || '/'}`;
-      // use shallow route when we are already on the same path (ignoring query params)
-      const shallow = pagePath === router.pathname;
-      void router[operation](path, undefined, { shallow });
+    (pagePath = '/', operation = 'push'): void => {
+      if (isAlreadyRouting) return;
+
+      // Ensure the path starts with a slash for consistent comparison and routing
+      const normalizedPath = pagePath.startsWith('/')
+        ? pagePath
+        : `/${pagePath}`;
+
+      // Guard: Don't route if we are already on the same path (including query params)
+      if (normalizedPath === router.asPath) return;
+
+      // Use shallow routing if only query parameters change (base path is the same)
+      const isSamePage = normalizedPath.split('?')[0] === router.pathname;
+
+      void router[operation](`/${locale}${normalizedPath}`, undefined, {
+        shallow: isSamePage,
+      });
     },
     [locale, router, isAlreadyRouting]
   );

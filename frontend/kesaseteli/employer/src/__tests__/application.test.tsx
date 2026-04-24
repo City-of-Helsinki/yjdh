@@ -38,7 +38,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       renderPage(ApplicationPage, { push: spyPush });
       await waitFor(() =>
         expect(spyPush).toHaveBeenCalledWith(
-          `${DEFAULT_LANGUAGE}/login?sessionExpired=true`,
+          `/${DEFAULT_LANGUAGE}/login?sessionExpired=true`,
           undefined,
           { shallow: false }
         )
@@ -55,7 +55,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         });
         await waitFor(() =>
           expect(spyReplace).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/`,
+            `/${DEFAULT_LANGUAGE}/`,
             undefined,
             { shallow: false }
           )
@@ -72,7 +72,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           locale,
         });
         await waitFor(() =>
-          expect(spyReplace).toHaveBeenCalledWith(`${locale}/`, undefined, {
+          expect(spyReplace).toHaveBeenCalledWith(`/${locale}/`, undefined, {
             shallow: false,
           })
         );
@@ -86,7 +86,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           renderPage(ApplicationPage, { query: { id }, push: spyPush });
           await waitFor(() => {
             expect(spyPush).toHaveBeenCalledWith(
-              `${DEFAULT_LANGUAGE}/500`,
+              `/${DEFAULT_LANGUAGE}/500`,
               undefined,
               { shallow: false }
             );
@@ -209,32 +209,40 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           SLOW_JEST_TIMEOUT
         );
 
-        it('can traverse between wizard steps', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, { query: { id } });
-          const applicationPage = getApplicationPageApi(application);
-          await applicationPage.step1.expectations.stepIsLoaded();
-          await applicationPage.step1.actions.clickNextButton();
-          await applicationPage.step2.expectations.stepIsLoaded();
-          await applicationPage.step2.actions.clickPreviousButton();
-          await applicationPage.step1.expectations.stepIsLoaded();
-        }, SLOW_JEST_TIMEOUT);
+        it(
+          'can traverse between wizard steps',
+          async () => {
+            expectAuthorizedReply();
+            expectToGetApplicationFromBackend(application);
+            renderPage(ApplicationPage, { query: { id } });
+            const applicationPage = getApplicationPageApi(application);
+            await applicationPage.step1.expectations.stepIsLoaded();
+            await applicationPage.step1.actions.clickNextButton();
+            await applicationPage.step2.expectations.stepIsLoaded();
+            await applicationPage.step2.actions.clickPreviousButton();
+            await applicationPage.step1.expectations.stepIsLoaded();
+          },
+          SLOW_JEST_TIMEOUT
+        );
 
-        it('saves application when next button is clicked in step 2', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, { query: { id } });
-          const applicationPage = getApplicationPageApi(application);
-          await applicationPage.step1.expectations.stepIsLoaded();
-          await applicationPage.step1.actions.clickNextButton();
-          await applicationPage.step2.expectations.stepIsLoaded();
+        it(
+          'saves application when next button is clicked in step 2',
+          async () => {
+            expectAuthorizedReply();
+            expectToGetApplicationFromBackend(application);
+            renderPage(ApplicationPage, { query: { id } });
+            const applicationPage = getApplicationPageApi(application);
+            await applicationPage.step1.expectations.stepIsLoaded();
+            await applicationPage.step1.actions.clickNextButton();
+            await applicationPage.step2.expectations.stepIsLoaded();
 
-          await applicationPage.step2.actions.toggleTermsAndConditions();
-          applicationPage.step2.expectations.nextButtonIsEnabled();
+            await applicationPage.step2.actions.toggleTermsAndConditions();
+            applicationPage.step2.expectations.nextButtonIsEnabled();
 
-          await applicationPage.step2.actions.clickNextButtonAndExpectToSaveApplication();
-        }, SLOW_JEST_TIMEOUT);
+            await applicationPage.step2.actions.clickNextButtonAndExpectToSaveApplication();
+          },
+          SLOW_JEST_TIMEOUT
+        );
       });
     });
   });
