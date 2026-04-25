@@ -1,5 +1,38 @@
 # Changelog
 
+## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.5.0...kesaseteli-handler-v2.0.0) (2026-04-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **main:** upgrade Next.js from 14 to 15
+
+### Features
+
+* **ks,backend,frontend:** Use .env.kesaseteli-&lt;app&gt; files ([246be9b](https://github.com/City-of-Helsinki/yjdh/commit/246be9bbfeebc2119238adbaca0d6eff07c27bac))
+* **ks,employer:** Replace ssn with birthdate and other misc fixes ([fa50e73](https://github.com/City-of-Helsinki/yjdh/commit/fa50e733c4653c3a0b9bfbc1566356f538a1debf))
+* **ks,handler:** Add header with login and logout features ([11be4d7](https://github.com/City-of-Helsinki/yjdh/commit/11be4d7ec41326c6253f42bce72a1dfbdb2bdb96))
+* **ks,handler:** Add target group field to anonymous youth form ([0d81504](https://github.com/City-of-Helsinki/yjdh/commit/0d81504165d0289790706c4eef32be5bfae19228))
+* **ks,handler:** Handler can handle applications with invalid SSN ([324e295](https://github.com/City-of-Helsinki/yjdh/commit/324e29573a3dcb05dce33896fc199dd893d7b101))
+* **ks,handler:** Notify about VTJ -data-restriction in Handlers UI ([f9f8304](https://github.com/City-of-Helsinki/yjdh/commit/f9f8304360bb348131c76fe646b479f0efdb3f3a))
+* **main:** Upgrade to Next.js 15 ([#3810](https://github.com/City-of-Helsinki/yjdh/issues/3810)) ([4ee66b2](https://github.com/City-of-Helsinki/yjdh/commit/4ee66b2cad3183adcee5917ee04838e0aa723107))
+
+
+### Bug Fixes
+
+* **frontend,all:** Fix use of env vars in /frontend/next.config.js ([2094a07](https://github.com/City-of-Helsinki/yjdh/commit/2094a077c86b575721cf106258494fededcbaad7))
+* **ks,handler:** Fetch summer voucher configuration with proper date ([9e2daf8](https://github.com/City-of-Helsinki/yjdh/commit/9e2daf85adf419de3fc4f1d5630dc7b906763916))
+* **ks,handler:** Vtj data restricted should block other notifications ([c05f6aa](https://github.com/City-of-Helsinki/yjdh/commit/c05f6aa96b487c5da12f0a8b83d2ace3f7c1876a))
+* **ks,shared:** Update axios for consistency and fix Nock test setup ([dec1979](https://github.com/City-of-Helsinki/yjdh/commit/dec19798c171cc6bcfbe3866f24d74525c9f1692))
+* **ks:** Adfs logout handling ([240d21f](https://github.com/City-of-Helsinki/yjdh/commit/240d21ff78ed3a206dfa27bde130c6c8bbb83d83))
+* **ks:** Remove unnecessary "julkaisuun" word from form legends ([906c102](https://github.com/City-of-Helsinki/yjdh/commit/906c102bd910c0a83565b8fb1f6d9023d65328e5))
+* Suomi-fi custom redirect should validate redirect URL ([836e2b5](https://github.com/City-of-Helsinki/yjdh/commit/836e2b594df59722f046ffb0dc4bfd09ace7a518))
+
+
+### Dependencies
+
+* Update axios versions ([#3907](https://github.com/City-of-Helsinki/yjdh/issues/3907)) ([ea68ee2](https://github.com/City-of-Helsinki/yjdh/commit/ea68ee2d060637682659fd42d0df67f7cd9bfad8))
+
 ## [1.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v1.4.1...kesaseteli-handler-v1.5.0) (2025-12-30)
 
 
