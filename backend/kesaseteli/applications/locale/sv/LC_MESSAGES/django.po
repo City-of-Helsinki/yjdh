@@ -764,9 +764,9 @@ msgstr ""
 "förutsätter en högre lön. Dessutom betalar arbetsgivaren normala "
 "arbetsgivaravgifter, semesterersättning och möjliga andra tillägg."
 
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
+msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/nuorelle/"
 msgstr ""
-"https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/"
+"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/"
 
 msgid "Lue lisää"
 msgstr "Läs mer"
@@ -792,18 +792,18 @@ msgstr ""
 msgid "Muut käyttöehdot voit lukea täältä:"
 msgstr "Anda användarvillkor kan läsas här:"
 
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
+msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
 msgstr ""
-"https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/at-arbetsgivaren/"
+"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/at-arbetsgivaren/"
 
 msgid "Helsinki"
 msgstr "Helsingfors"
 
-msgid "https://nuorten.helsinki/kesaseteli/"
-msgstr "https://nuorten.helsinki/sommarsedeln/"
+msgid "https://nuorten.hel.fi/kesaseteli/"
+msgstr "https://nuorten.hel.fi/sommarsedeln/"
 
-msgid "nuorten.helsinki/kesaseteli/"
-msgstr "nuorten.helsinki/sommarsedeln/"
+msgid "nuorten.hel.fi/kesaseteli/"
+msgstr "nuorten.hel.fi/sommarsedeln/"
 
 msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""

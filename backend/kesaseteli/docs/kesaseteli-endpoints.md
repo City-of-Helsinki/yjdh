@@ -30,7 +30,6 @@ Youths use this UI to make a summer voucher application.
     * 🛜 DNS alias: https://nuortenkesaseteli.stage.hel.ninja/
 * **PROD:** https://kesaseteli-youth-ui-prod.apps.platta.hel.fi
     * 🛜 DNS alias: https://nuortenkesaseteli.hel.fi
-    * Redirect from: https://nuorten.helsinki/kesaseteli/kesasetelihakemus
 
 
 ### City employee frontend
@@ -77,9 +76,9 @@ Current redirect URI configuration for ADFS:
 - ✅ 🛜 https://kesaseteli.api.hel.fi/oauth2/callback
 - ✅ https://yjdh-kesaseteli-api-prod.apps.platta.hel.fi/oauth2/callback
 - ✅ https://yjdh-kesaseteli-api-test.agw.arodevtest.hel.fi/oauth2/callback
-- ✅ http://localhost:8000/oauth2/callback 
+- ✅ http://localhost:8000/oauth2/callback
     - **NOTE: There could be another port configured for local development too, e.g. 8080 or 8081.**
-- ⛔️ https://yjdh-kesaseteli-api-dev.agw.arodevtest.hel.fi/oauth2/callback 
+- ⛔️ https://yjdh-kesaseteli-api-dev.agw.arodevtest.hel.fi/oauth2/callback
     - **WARNING: No such domain.**
 
 What there should be in ADFS redirect URI configuration (status on 2026-01-26):
@@ -88,7 +87,7 @@ What there should be in ADFS redirect URI configuration (status on 2026-01-26):
 - ✅ 🛜 https://kesaseteli.api.hel.fi/oauth2/callback
 - ✅ https://yjdh-kesaseteli-api-prod.apps.platta.hel.fi/oauth2/callback
 - ✅ https://yjdh-kesaseteli-api-test.agw.arodevtest.hel.fi/oauth2/callback
-- ✅ http://localhost:8000/oauth2/callback 
+- ✅ http://localhost:8000/oauth2/callback
 - 🆕 http://localhost:8080/oauth2/callback
 - 🆕 http://localhost:8081/oauth2/callback
 - 🆕 https://yjdh-kesaseteli-api-dev.agw.arodevtest.hel.fi/oauth2/callback

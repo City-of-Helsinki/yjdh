@@ -601,7 +601,7 @@ SAML_CONFIG = {
                 ],
                 "information_url": [
                     {
-                        "text": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/",
+                        "text": "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/",
                         "lang": "fi",
                     },
                     {
