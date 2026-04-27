@@ -110,9 +110,13 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
     const step1Form = await step1Components.form();
     await step1Form.expectations.isFulFilledWith(application);
 
-    // Verify employment details are EMPTY for the new application
+    // Verify employment details are EMPTY for the new application to ensure no data leakage
     await t.expect(step1Form.selectors.employeeNameInput().value).eql('');
     await t.expect(step1Form.selectors.serialNumberInput().value).eql('');
+    await t.expect(step1Form.selectors.phoneNumberInput().value).eql('');
+    await t.expect(step1Form.selectors.employmentPostcodeInput().value).eql('');
+    await t.expect(step1Form.selectors.startDateInput().value).eql('');
+    await t.expect(step1Form.selectors.endDateInput().value).eql('');
   }
 );
 
@@ -222,5 +226,127 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
     const dashboard = getDashboardComponents(t);
     await dashboard.expectations.isLoaded();
     await urlUtils.expectations.urlChangedToLandingPage();
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'fetches employment data and ensures API does not overwrite user input',
+  async (t: TestController) => {
+    // 1. Start application and fill it normally using standard actions
+    // This ensures all fields (including attachments) are correctly filled
+    const { company, ...application } = await loginAndfillApplication(
+      t,
+      1,
+      FULLY_MOCKED_FORM_DATA
+    );
+
+    const step1Form = await step1Components.form();
+    const wizard = await getWizardComponents(t);
+
+    // MOVE BACK TO STEP 1 to modify data
+    await wizard.actions.clickGoToPreviousStepButton();
+    await step1Form.expectations.isPresent();
+
+    // 2. Type "dirty" data into some fields
+    const typedPhoneNumber = '0501234567';
+    await step1Form.actions.fillPhoneNumber(typedPhoneNumber);
+
+    // 3. Save and continue to verify that modified data is preserved
+    await wizard.actions.clickSaveAndContinueButton();
+
+    // 4. Verify Submission Integrity on Step 2 (Summary)
+    const step2 = getStep2Components(t);
+    const summary = await step2.summaryComponent();
+
+    await summary.expectations.isFulFilledWith({
+      ...application,
+      summer_vouchers: [
+        {
+          ...application.summer_vouchers[0],
+          employee_phone_number: typedPhoneNumber,
+        },
+      ],
+    } as any);
+  }
+);
+
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  attachmentsMock
+)(
+  'verifies data integrity and fetch behavior across all form sections',
+  async (t: TestController) => {
+    // 1. Login and start new application using the helper
+    // setting toStep = 1 fills the form and moves to Step 2
+    const application = await loginAndfillApplication(
+      t,
+      1,
+      FULLY_MOCKED_FORM_DATA
+    );
+
+    const step1Form = await step1Components.form();
+    const wizard = await getWizardComponents(t);
+
+    // Navigate back to Step 1 to verify data and re-fetch
+    await wizard.actions.clickGoToPreviousStepButton();
+    await step1Form.expectations.isPresent();
+
+    // 2. Verify fields are ENABLED as they were already filled in loginAndfillApplication
+    await t
+      .expect(step1Form.selectors.phoneNumberInput().hasAttribute('disabled'))
+      .notOk(await getErrorMessage(t));
+
+    // 3. Fill employer data (Step 1 section 1)
+    const typedContactPersonName = 'Original Contact Name';
+    await step1Form.actions.fillContactPersonName(typedContactPersonName);
+
+    // 4. Fill name and serial to enable fetch
+    await step1Form.actions.fillEmployeeName(
+      FULLY_MOCKED_FORM_DATA.employee_name as string
+    );
+    await step1Form.actions.fillSerialNumber(
+      FULLY_MOCKED_FORM_DATA.summer_voucher_serial_number as string
+    );
+
+    // 5. Fetch data
+    await step1Form.actions.clickFetchEmployeeDataButton();
+
+    // 6. Verify fields are now ENABLED and POPULATED
+    await t
+      .expect(step1Form.selectors.phoneNumberInput().hasAttribute('disabled'))
+      .notOk(await getErrorMessage(t));
+    await t
+      .expect(step1Form.selectors.birthdateInput().value)
+      .eql(
+        convertToUIDateFormat(FULLY_MOCKED_FORM_DATA.employee_birthdate),
+        await getErrorMessage(t)
+      );
+
+    // 7. Verify employer data was NOT overwritten by fetch
+    await t
+      .expect(step1Form.selectors.contactPersonNameInput().value)
+      .eql(typedContactPersonName, await getErrorMessage(t));
+
+    // 8. Modify a fetched field (Dirty Data)
+    const dirtyPhoneNumber = '0509998877';
+    await step1Form.actions.fillPhoneNumber(dirtyPhoneNumber);
+
+    // 9. Save and continue
+    await wizard.actions.clickSaveAndContinueButton();
+
+    // 10. Verify on Summary page (Step 2)
+    const step2 = getStep2Components(t);
+    const summary = await step2.summaryComponent();
+    await summary.expectations.isFulFilledWith({
+      ...application,
+      contact_person_name: typedContactPersonName,
+      summer_vouchers: [
+        {
+          ...application.summer_vouchers[0],
+          employee_name: FULLY_MOCKED_FORM_DATA.employee_name,
+          employee_phone_number: dirtyPhoneNumber,
+        },
+      ],
+    } as any);
   }
 );

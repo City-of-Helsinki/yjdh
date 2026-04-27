@@ -126,7 +126,10 @@ const useApplicationApi = <T = Application>(
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? [])];
     if (summer_vouchers.length > index) {
-      summer_vouchers[index] = { ...summer_vouchers[index], ...employment };
+      summer_vouchers[index] = {
+        ...summer_vouchers[index],
+        ...employment,
+      };
     }
 
     return updateApplicationQuery.mutate(
