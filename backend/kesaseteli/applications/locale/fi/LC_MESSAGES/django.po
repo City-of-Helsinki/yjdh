@@ -738,7 +738,7 @@ msgid ""
 "normaalit työnantajamaksut, lomakorvauksen ja mahdolliset lisät."
 msgstr ""
 
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
+msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/nuorelle/"
 msgstr ""
 
 msgid "Lue lisää"
@@ -759,16 +759,16 @@ msgstr ""
 msgid "Muut käyttöehdot voit lukea täältä:"
 msgstr ""
 
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
+msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
 msgstr ""
 
 msgid "Helsinki"
 msgstr ""
 
-msgid "https://nuorten.helsinki/kesaseteli/"
+msgid "https://nuorten.hel.fi/kesaseteli/"
 msgstr ""
 
-msgid "nuorten.helsinki/kesaseteli/"
+msgid "nuorten.hel.fi/kesaseteli/"
 msgstr ""
 
 msgid "Ei uusia käsittelemättömiä hakemuksia."

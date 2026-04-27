@@ -767,9 +767,9 @@ msgstr ""
 "employer pays normal employer’s contributions, holiday compensation and if "
 "needed evening etc supplements."
 
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
+msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/nuorelle/"
 msgstr ""
-"https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-"
+"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/for-"
 "summer-job-seekers/"
 
 msgid "Lue lisää"
@@ -796,19 +796,19 @@ msgstr ""
 msgid "Muut käyttöehdot voit lukea täältä:"
 msgstr "Other terms of use can be read here:"
 
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
+msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
 msgstr ""
-"https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-"
+"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/for-"
 "employers/"
 
 msgid "Helsinki"
 msgstr "Helsinki"
 
-msgid "https://nuorten.helsinki/kesaseteli/"
-msgstr "https://nuorten.helsinki/studies-and-work/the-summer-job-voucher/"
+msgid "https://nuorten.hel.fi/kesaseteli/"
+msgstr "https://nuorten.hel.fi/studies-and-work/the-summer-job-voucher/"
 
-msgid "nuorten.helsinki/kesaseteli/"
-msgstr "nuorten.helsinki/studies-and-work/the-summer-job-voucher/"
+msgid "nuorten.hel.fi/kesaseteli/"
+msgstr "nuorten.hel.fi/studies-and-work/the-summer-job-voucher/"
 
 msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""
