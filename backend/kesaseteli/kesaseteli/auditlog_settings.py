@@ -41,7 +41,15 @@ AUDITLOG_INCLUDE_TRACKING_MODELS = (
     "applications.employersummervoucher",
     "applications.school",
     "applications.summervoucherconfiguration",
-    "applications.youthapplication",
+    {
+        "model": "applications.youthapplication",
+        "exclude_fields": [
+            # Remove VTJ JSON fields that don't bring much value to
+            # audit logging and contain a lot of personal data:
+            "encrypted_handler_vtj_json",
+            "encrypted_original_vtj_json",
+        ],
+    },
     "applications.youthsummervoucher",
     "auth.group",
     "auth.group_permissions",
