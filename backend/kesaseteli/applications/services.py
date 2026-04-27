@@ -29,7 +29,7 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_not_found_content,
     mock_vtj_person_id_query_restricted_content,
 )
-from common.utils import are_same_texts, send_mail_with_error_logging
+from common.utils import are_same_texts, html_to_text, send_mail_with_error_logging
 from shared.vtj.vtj_client import VTJClient
 
 if TYPE_CHECKING:
@@ -76,10 +76,12 @@ class TargetGroupValidationService:
 
 class EmailTemplateService:
     @staticmethod
-    def reinitialize_from_file(template: EmailTemplate) -> bool:
+    def get_template_lines_from_file(template: EmailTemplate) -> list[str] | None:
         """
-        Reinitialize the EmailTemplate using Django's template loading system.
-        Avoids manual file IO by accessing the template source directly.
+        Get the lines of the template file corresponding to the given EmailTemplate.
+
+        :return List of lines of the template file corresponding to the given
+        EmailTemplate if the file is found and is valid, otherwise None.
         """
         template_path = f"email/{template.type}_email_{template.language}.html"
 
@@ -91,7 +93,7 @@ class EmailTemplateService:
             LOGGER.warning(
                 f"Template source not found or inaccessible: {template_path}"
             )
-            return False
+            return None
 
         lines = content.splitlines()
         if len(lines) < 3:
@@ -99,6 +101,42 @@ class EmailTemplateService:
                 f"Template file {template_path} is missing required lines "
                 "(Subject + Body)"
             )
+            return None
+
+        return lines
+
+    @staticmethod
+    def is_template_up_to_date(template: EmailTemplate) -> bool:
+        """
+        Check if the EmailTemplate content matches the corresponding template file.
+
+        :return: True if the content does match, False if it does not or the input file
+        is missing or invalid.
+        """
+        lines = EmailTemplateService.get_template_lines_from_file(template)
+        if lines is None:
+            return False
+
+        expected_subject = lines[0].strip()
+        expected_html_body_lines = lines[2:]
+        expected_text_body = html_to_text("\n".join(expected_html_body_lines))
+
+        return (
+            template.subject == expected_subject
+            and template.html_body.splitlines() == expected_html_body_lines
+            and template.text_body == expected_text_body
+        )
+
+    @staticmethod
+    def reinitialize_from_file(template: EmailTemplate) -> bool:
+        """
+        Reinitialize the EmailTemplate using Django's template loading system.
+        Avoids manual file IO by accessing the template source directly.
+
+        :return True if successful, False if input file is missing or invalid.
+        """
+        lines = EmailTemplateService.get_template_lines_from_file(template)
+        if lines is None:
             return False
 
         # Parse: Line 0 = Subject, Line 1 = Empty Separator, Line 2+ = Body
