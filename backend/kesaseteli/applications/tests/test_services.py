@@ -82,3 +82,212 @@ def test_ensure_templates_exist(mock_reinitialize):
     assert count == expected_count
     assert EmailTemplate.objects.count() == expected_count
     assert mock_reinitialize.call_count == expected_count
+
+
+@mock.patch("applications.services.get_template")
+class TestGetTemplateLinesFromFile:
+    """
+    Tests for EmailTemplateService.get_template_lines_from_file.
+    """
+
+    def _mock_template(
+        self, template_type=EmailTemplateType.PROCESSING.value, language="fi"
+    ):
+        # Create a mock EmailTemplate object:
+        return mock.Mock(
+            spec=EmailTemplate,
+            type=template_type,
+            language=language,
+            subject="Old Subject",
+            html_body="Old HTML body",
+            text_body="Old text body",
+        )
+
+    def test_returns_none_when_file_not_found(self, mock_get_template):
+        mock_get_template.side_effect = TemplateDoesNotExist("not found")
+
+        assert (
+            EmailTemplateService.get_template_lines_from_file(self._mock_template())
+            is None
+        )
+
+    def test_returns_none_when_source_attribute_missing(self, mock_get_template):
+        mock_django_template = mock.Mock()
+        del mock_django_template.template.source  # Simulate missing source attribute
+        mock_get_template.return_value = mock_django_template
+
+        with pytest.raises(AttributeError):
+            _ = mock_django_template.template.source
+
+        assert (
+            EmailTemplateService.get_template_lines_from_file(self._mock_template())
+            is None
+        )
+
+    @pytest.mark.parametrize(
+        "template_source", ["", "Subject", "Subject\n", "Subject\n\n"]
+    )
+    def test_returns_none_when_file_has_fewer_than_3_lines(
+        self, mock_get_template, template_source
+    ):
+        mock_django_template = mock.Mock()
+        mock_django_template.template.source = template_source
+        mock_get_template.return_value = mock_django_template
+
+        assert (
+            EmailTemplateService.get_template_lines_from_file(self._mock_template())
+            is None
+        )
+
+    def test_returns_all_lines_for_minimal_valid_file(self, mock_get_template):
+        # Exactly 3 lines: subject, separator, one body line
+        mock_django_template = mock.Mock()
+        mock_django_template.template.source = "Subject\n\n<p>Body</p>"
+        mock_get_template.return_value = mock_django_template
+
+        assert EmailTemplateService.get_template_lines_from_file(
+            self._mock_template()
+        ) == ["Subject", "", "<p>Body</p>"]
+
+    def test_returns_all_lines_for_multiline_body(self, mock_get_template):
+        mock_django_template = mock.Mock()
+        mock_django_template.template.source = (
+            "Subject\n\n<p>Line 1</p>\n<p>Line 2</p>\n<p>Line 3</p>"
+        )
+        mock_get_template.return_value = mock_django_template
+
+        assert EmailTemplateService.get_template_lines_from_file(
+            self._mock_template()
+        ) == [
+            "Subject",
+            "",
+            "<p>Line 1</p>",
+            "<p>Line 2</p>",
+            "<p>Line 3</p>",
+        ]
+
+    def test_uses_correct_path_from_type_and_language(self, mock_get_template):
+        mock_django_template = mock.Mock()
+        mock_django_template.template.source = "Subject\n\n<p>Body</p>"
+        mock_get_template.return_value = mock_django_template
+
+        EmailTemplateService.get_template_lines_from_file(
+            self._mock_template(
+                template_type=EmailTemplateType.ACTIVATION.value, language="sv"
+            )
+        )
+
+        mock_get_template.assert_called_once_with("email/activation_email_sv.html")
+
+
+@mock.patch("applications.services.EmailTemplateService.get_template_lines_from_file")
+class TestIsTemplateUpToDate:
+    """
+    Tests for EmailTemplateService.is_template_up_to_date.
+    """
+
+    def test_returns_false_when_lines_is_none(self, mock_get_template_lines_from_file):
+        """
+        Test that EmailTemplateService.is_template_up_to_date returns False when
+        EmailTemplateService.get_template_lines_from_file returns None.
+        """
+        mock_get_template_lines_from_file.return_value = None
+        assert (
+            EmailTemplateService.is_template_up_to_date(mock.Mock(spec=EmailTemplate))
+            is False
+        )
+
+    def test_returns_true_when_all_fields_match(
+        self, mock_get_template_lines_from_file
+    ):
+        mock_get_template_lines_from_file.return_value = [
+            "Subject",
+            "",
+            "<p>Hello world</p>",
+        ]
+
+        template = mock.Mock(spec=EmailTemplate)
+        template.subject = "Subject"
+        template.html_body = "<p>Hello world</p>"
+        template.text_body = "Hello world"
+
+        assert EmailTemplateService.is_template_up_to_date(template) is True
+
+    def test_returns_false_when_subject_differs(
+        self, mock_get_template_lines_from_file
+    ):
+        mock_get_template_lines_from_file.return_value = [
+            "Subject",
+            "",
+            "<p>Hello world</p>",
+        ]
+
+        template = mock.Mock(spec=EmailTemplate)
+        template.subject = "Different Subject"
+        template.html_body = "<p>Hello world</p>"
+        template.text_body = "Hello world"
+
+        assert EmailTemplateService.is_template_up_to_date(template) is False
+
+    def test_returns_false_when_only_html_body_differs(
+        self, mock_get_template_lines_from_file
+    ):
+        mock_get_template_lines_from_file.return_value = [
+            "Subject",
+            "",
+            "<p>Content from file</p>",
+        ]
+
+        template = mock.Mock(spec=EmailTemplate)
+        template.subject = "Subject"
+        template.html_body = "<p>Different content</p>"
+        template.text_body = "Content from file"
+
+        assert EmailTemplateService.is_template_up_to_date(template) is False
+
+    def test_returns_false_when_only_text_body_differs(
+        self, mock_get_template_lines_from_file
+    ):
+        mock_get_template_lines_from_file.return_value = [
+            "Subject",
+            "",
+            "<p>Hello world</p>",
+        ]
+
+        template = mock.Mock(spec=EmailTemplate)
+        template.subject = "Subject"
+        template.html_body = "<p>Hello world</p>"
+        template.text_body = "Different text body"
+
+        assert EmailTemplateService.is_template_up_to_date(template) is False
+
+    def test_strips_leading_trailing_whitespace_from_file_subject(
+        self, mock_get_template_lines_from_file
+    ):
+        mock_get_template_lines_from_file.return_value = [
+            "  Subject  ",
+            "",
+            "<p>Hello world</p>",
+        ]
+
+        template = mock.Mock(spec=EmailTemplate)
+        template.subject = "Subject"  # already stripped, should still match
+        template.html_body = "<p>Hello world</p>"
+        template.text_body = "Hello world"
+
+        assert EmailTemplateService.is_template_up_to_date(template) is True
+
+    def test_handles_multiline_html_body(self, mock_get_template_lines_from_file):
+        mock_get_template_lines_from_file.return_value = [
+            "Subject",
+            "",
+            "<p>First paragraph</p>",
+            "<p>Second paragraph</p>",
+        ]
+
+        template = mock.Mock(spec=EmailTemplate)
+        template.subject = "Subject"
+        template.html_body = "<p>First paragraph</p>\n<p>Second paragraph</p>"
+        template.text_body = "First paragraph\nSecond paragraph"
+
+        assert EmailTemplateService.is_template_up_to_date(template) is True

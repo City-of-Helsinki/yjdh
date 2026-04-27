@@ -192,17 +192,24 @@ class SchoolAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
 
 
 class EmailTemplateAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
-    list_display = ["type", "language", "subject", "modified_at"]
+    list_display = ["type", "language", "subject", "modified_at", "is_up_to_date"]
     list_filter = ["type", "language"]
     search_fields = ["subject", "html_body", "text_body"]
     readonly_fields = [
         "text_body",
         "created_at",
         "modified_at",
+        "is_up_to_date",
     ]
     actions = ["reinitialize_from_file", "send_to_me"]
     change_list_template = "admin/applications/emailtemplate/change_list.html"
     change_form_template = "admin/applications/emailtemplate/change_form.html"
+
+    def is_up_to_date(self, obj: EmailTemplate):
+        return EmailTemplateService.is_template_up_to_date(obj)
+
+    is_up_to_date.boolean = True  # i.e. True/False icon
+    is_up_to_date.short_description = _("Is up to date with source file?")
 
     def get_urls(self):
         urls = super().get_urls()
