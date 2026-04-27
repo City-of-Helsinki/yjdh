@@ -19,7 +19,6 @@ import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/empl
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 import Employment from 'shared/types/employment';
-import { getFormApplication } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 

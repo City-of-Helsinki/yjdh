@@ -35,6 +35,7 @@ export const MOCKED_EMPLOYEE_DATA = {
 export const FULLY_MOCKED_FORM_DATA = {
   ...MOCKED_EMPLOYEE_DATA,
   employee_name: 'Iines Insinööri',
+  summer_voucher_serial_number: '123456',
   employment_postcode: '00100', // using string for postcode to preserve padding
   employment_start_date: '2026-06-01',
   employment_end_date: '2026-08-31',
@@ -138,9 +139,24 @@ const restoreVoucherData = (
     });
   }
 
+  const employeeFields = [
+    'employee_phone_number',
+    'employee_home_city',
+    'employee_postcode',
+    'employee_school',
+    'employee_birthdate',
+  ] as const;
+
+  const updatedFields: Pick<Employment, typeof employeeFields[number]> = {};
+
+  employeeFields.forEach((key) => {
+    updatedFields[key] =
+      v[key] || requestVoucher?.[key] || MOCKED_EMPLOYEE_DATA[key] || '';
+  });
+
   return {
     ...v,
-    ...MOCKED_EMPLOYEE_DATA,
+    ...updatedFields,
     summer_voucher_serial_number: restoredSerialNumber || '',
     employee_name: restoredEmployeeName,
   };
