@@ -29,8 +29,12 @@ const withOrganisation = <P extends JSX.IntrinsicAttributes>(
       isError(err) &&
       (err.message.includes('403') || err.message.includes('Forbidden'));
 
+    const isNotFound = (err: unknown): boolean =>
+      isError(err) &&
+      (err.message.includes('404') || err.message.includes('Not Found'));
+
     const isNoOrganisation = isCompanySuccess && !company?.name;
-    const isAuthError = isForbidden(companyError);
+    const isAuthError = isForbidden(companyError) || isNotFound(companyError);
 
     React.useEffect(() => {
       // Redirect to no-organisation only if authenticated but unauthorized for organizations

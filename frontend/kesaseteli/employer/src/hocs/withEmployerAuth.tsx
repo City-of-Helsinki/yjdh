@@ -1,3 +1,5 @@
+import React from 'react';
+import { useRouter } from 'next/router';
 import withAuth from 'shared/components/hocs/withAuth';
 import withOrganisation from './withOrganisation';
 
@@ -7,6 +9,15 @@ import withOrganisation from './withOrganisation';
  */
 const withEmployerAuth = <P extends JSX.IntrinsicAttributes>(
   WrappedComponent: React.FC<P>
-): React.FC<P> => withAuth(withOrganisation(WrappedComponent));
+): React.FC<P> => {
+  const AuthenticatedComponent = withAuth(withOrganisation(WrappedComponent));
+  return function Wrapped(props: P) {
+    const { pathname } = useRouter();
+    if (pathname === '/login' || pathname === '/no-organisation') {
+      return <WrappedComponent {...props} />;
+    }
+    return <AuthenticatedComponent {...props} />;
+  };
+};
 
 export default withEmployerAuth;

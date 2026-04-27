@@ -36,6 +36,19 @@ describe('withOrganisation', () => {
     expect(mockGoToPage).toHaveBeenCalledWith('/no-organisation');
   });
 
+  it('should redirect to /no-organisation when user gets 404 Not Found and is NOT on /no-organisation', () => {
+    const mockError = new Error('404 Not Found');
+    (useCompanyQuery as jest.Mock).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isSuccess: false,
+      error: mockError,
+    });
+    renderComponent(<WrappedComponent />, { pathname: '/' });
+
+    expect(mockGoToPage).toHaveBeenCalledWith('/no-organisation');
+  });
+
   it('should NOT redirect to /no-organisation when user gets 403 Forbidden and is ALREADY on /no-organisation', () => {
     // This test reproduces the fix for the infinite loop issue.
     // Without the fix, the component would keep calling goToPage('/no-organisation')
