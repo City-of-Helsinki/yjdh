@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import {
   QueryKey,
@@ -17,14 +18,15 @@ const useUserQuery = <T = User>({
 }: UseQueryOptions<T> = {}): UseQueryResult<T> => {
   const isRouting = useIsRouting();
   const goToPage = useGoToPage();
+  const router = useRouter();
   return useQuery(BackendEndpoint.USER as QueryKey, {
     enabled: !!enabled && !isRouting,
     onError: useErrorHandler({
       onServerError: () => goToPage('/login?error=true'),
       onAuthError: () => {
         if (
-          !window.location.pathname.includes('/login') &&
-          !window.location.pathname.includes('/no-organisation')
+          router.pathname !== '/login' &&
+          router.pathname !== '/no-organisation'
         ) {
           goToPage('/login?sessionExpired=true');
         }
