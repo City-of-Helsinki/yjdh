@@ -55,7 +55,6 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
       summer_vouchers: application.summer_vouchers.map((voucher) => ({
         ...voucher,
         employee_name: masked(voucher.employee_name),
-        employee_ssn: masked(voucher.employee_ssn),
         employee_phone_number: masked(voucher.employee_phone_number),
       })),
     });

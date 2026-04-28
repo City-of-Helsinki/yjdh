@@ -33,7 +33,6 @@ export type VoucherData = {
   id: string;
   summer_voucher_serial_number?: string;
   employee_name?: string;
-  employee_ssn: string;
   employee_birthdate?: string;
   employee_phone_number: string;
   employee_home_city: string;
