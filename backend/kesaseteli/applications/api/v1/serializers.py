@@ -248,7 +248,6 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "summer_voucher_serial_number",
             "employee_name",
             "employee_school",
-            "employee_ssn",
             "employee_birthdate",
             "employee_phone_number",
             "employee_home_city",
@@ -266,7 +265,6 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "ordering",
             "employee_school",
-            "employee_ssn",
             "employee_birthdate",
             "employee_home_city",
             "employee_postcode",

@@ -326,7 +326,6 @@ class YouthApplicationViewSet(ModelViewSet):
             data={
                 "employer_summer_voucher_id": str(employer_summer_voucher_id),
                 "employee_name": youth_application.name,
-                "employee_ssn": youth_application.social_security_number,
                 "employee_birthdate": youth_application.birthdate,
                 "employee_phone_number": youth_application.phone_number,
                 "employee_home_city": youth_application.home_municipality,

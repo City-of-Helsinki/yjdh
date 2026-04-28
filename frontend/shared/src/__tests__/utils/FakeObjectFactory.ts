@@ -111,7 +111,6 @@ class FakeObjectFactory {
       id: this.generateId(),
       employee_name: faker.name.findName(),
       employee_school: faker.commerce.department(),
-      employee_ssn: '111111-111C',
       employee_birthdate: '2000-01-01',
       employee_phone_number: faker.phone.phoneNumber(),
       // for example dots are not allowed in city name, so let's remove them (St. Louis -> St Louis)
