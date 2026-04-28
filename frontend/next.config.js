@@ -19,6 +19,21 @@ if (process.cwd().indexOf('/app/') === 0) {
   appName = process.cwd().split('/frontend/').pop();
 }
 
+// Copy pdfjs worker to public/ at config-load time so Turbopack can serve it as a static file.
+// This must be at module level — the webpack() callback is never called by Turbopack.
+if (appName && appName === 'benefit/applicant') {
+  try {
+    const pdfjsPkg = require.resolve('pdfjs-dist/package.json');
+    const workerSrc = path.join(path.dirname(pdfjsPkg), 'build', 'pdf.worker.min.mjs');
+    const publicDir = path.join(process.cwd(), 'public');
+    const workerDest = path.join(publicDir, 'pdf.worker.min.mjs');
+    fs.mkdirSync(publicDir, { recursive: true });
+    fs.copyFileSync(workerSrc, workerDest);
+  } catch (e) {
+    console.warn('Could not copy pdfjs worker to public/:', e.message);
+  }
+}
+
 const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
   const NEXTJS_IGNORE_ESLINT = trueEnv.includes(process.env?.NEXTJS_IGNORE_ESLINT ?? 'false');
   const NEXTJS_IGNORE_TYPECHECK = trueEnv.includes(process.env?.NEXTJS_IGNORE_TYPECHECK ?? 'false');
@@ -74,21 +89,6 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
         test: /\.test.tsx$/,
         loader: 'ignore-loader',
       });
-
-      if (appName && appName === 'benefit/applicant') {
-        // Copy pdfjs worker to public/ so it can be served as a static file,
-        // avoiding Next.js ESM external resolution issues entirely.
-        try {
-          const pdfjsPkg = require.resolve('pdfjs-dist/package.json');
-          const workerSrc = path.join(path.dirname(pdfjsPkg), 'build', 'pdf.worker.min.mjs');
-          const publicDir = path.join(process.cwd(), 'public');
-          const workerDest = path.join(publicDir, 'pdf.worker.min.mjs');
-          fs.mkdirSync(publicDir, { recursive: true });
-          fs.copyFileSync(workerSrc, workerDest);
-        } catch (e) {
-          console.warn('Could not copy pdfjs worker to public/:', e.message);
-        }
-      }
 
       // Enable file watching using polling if WATCHPACK_POLLING is enabled.
       // This makes hot reload work in Docker on e.g. Windows using data on
