@@ -16,6 +16,7 @@ import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 import { EmploymentBase } from 'shared/types/employment';
+import { getFormApplication } from 'shared/utils/application.utils';
 
 export type ApplicationApi<T> = {
   applicationId?: string;
@@ -112,7 +113,7 @@ const useApplicationApi = <T = Application>(
         status: 'draft',
         summer_vouchers,
       });
-      onSuccess(result);
+      onSuccess(getFormApplication(result));
     } catch (error) {
       handleUpdateError(error);
     }
@@ -135,7 +136,7 @@ const useApplicationApi = <T = Application>(
     return updateApplicationQuery.mutate(
       { ...draftApplication, status: 'draft', summer_vouchers },
       {
-        onSuccess: (data) => onSuccess(data),
+        onSuccess: (data) => onSuccess(getFormApplication(data)),
         onError: handleUpdateError,
       }
     );
@@ -212,37 +213,52 @@ const useApplicationApi = <T = Application>(
     );
   };
 
-  const updateApplication: ApplicationApi<T>['updateApplication'] = (
+  const handleMutationSuccess =
+    (onSuccess: () => void | Promise<void>) => () => {
+      clearLocalStorage(`application-${applicationId}`);
+      ApplicationPersistenceService.clearAll();
+      void queryClient.invalidateQueries(BackendEndpoint.EMPLOYER_APPLICATIONS);
+      return onSuccess();
+    };
+
+  const mutateApplication = (
     draftApplication: DraftApplication,
-    onSuccess = noop
-  ) =>
-    updateApplicationQuery.mutate(
-      { ...draftApplication, status: 'draft' },
+    status: Application['status'],
+    onMutationSuccess: (data: Application) => void | Promise<void>
+  ): void => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { termsAndConditions, ...applicationData } =
+      draftApplication as DraftApplication & { termsAndConditions?: boolean };
+    return updateApplicationQuery.mutate(
       {
-        onSuccess: (updatedApplication) => {
-          void onSuccess(updatedApplication);
-        },
+        ...applicationQuery.data,
+        ...applicationData,
+        id: applicationId as string,
+        status,
+      },
+      {
+        onSuccess: onMutationSuccess,
         onError: handleUpdateError,
       }
     );
+  };
 
-  const sendApplication: ApplicationApi<T>['sendApplication'] = (
-    completeApplication: Application,
+  const updateApplication: ApplicationApi<T>['updateApplication'] = (
+    draftApplication,
     onSuccess = noop
   ) =>
-    updateApplicationQuery.mutate(
-      { ...completeApplication, status: 'submitted' },
-      {
-        onSuccess: () => {
-          clearLocalStorage(`application-${completeApplication.id}`);
-          ApplicationPersistenceService.clearAll();
-          void queryClient.invalidateQueries(
-            BackendEndpoint.EMPLOYER_APPLICATIONS
-          );
-          return onSuccess();
-        },
-        onError: handleUpdateError,
-      }
+    mutateApplication(draftApplication, 'draft', (updatedApplication) => {
+      void onSuccess(getFormApplication(updatedApplication));
+    });
+
+  const sendApplication: ApplicationApi<T>['sendApplication'] = (
+    completeApplication,
+    onSuccess = noop
+  ) =>
+    mutateApplication(
+      completeApplication,
+      'submitted',
+      handleMutationSuccess(onSuccess)
     );
 
   const deleteApplication: ApplicationApi<T>['deleteApplication'] = (
@@ -250,14 +266,7 @@ const useApplicationApi = <T = Application>(
   ) => {
     if (applicationId) {
       return deleteApplicationQuery.mutate(applicationId, {
-        onSuccess: () => {
-          clearLocalStorage(`application-${applicationId}`);
-          ApplicationPersistenceService.clearAll();
-          void queryClient.invalidateQueries(
-            BackendEndpoint.EMPLOYER_APPLICATIONS
-          );
-          return onSuccess();
-        },
+        onSuccess: handleMutationSuccess(onSuccess),
         onError,
       });
     }

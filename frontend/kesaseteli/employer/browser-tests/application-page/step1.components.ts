@@ -6,10 +6,9 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import Company from '@frontend/shared/src/types/company';
 import ContactInfo from '@frontend/shared/src/types/contact-info';
+import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { friendlyFormatIBAN } from 'ibantools';
 import TestController, { Selector } from 'testcafe';
-
-import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 
 const formSelector = () => Selector('form#employer-application-form');
 

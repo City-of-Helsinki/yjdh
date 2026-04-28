@@ -1,7 +1,7 @@
 import { Button, IconCheckCircleFill } from 'hds-react';
+import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
-import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
 import { GetStaticProps, NextPage } from 'next';

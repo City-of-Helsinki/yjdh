@@ -59,7 +59,9 @@ const EmployerForm: React.FC = () => {
                 i18nKey="common:application.step1.employment_section.foreign_iban_note"
                 components={{
                   anchor: (
-                    <LinkText href="#summer_vouchers.0.payslip">{null}</LinkText>
+                    <LinkText href="#summer_vouchers.0.payslip">
+                      {null}
+                    </LinkText>
                   ),
                   lnk: (
                     <a target="_blank" rel="noopener noreferrer">

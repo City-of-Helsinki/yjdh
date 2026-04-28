@@ -1,14 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import EmploymentForm from '../EmploymentForm';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ThemeProvider } from 'styled-components';
-import theme from 'shared/styles/theme';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
-import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
+import theme from 'shared/styles/theme';
+import Application from 'shared/types/application';
+import Employment from 'shared/types/employment';
+import { ThemeProvider } from 'styled-components';
+
+import EmploymentForm from '../EmploymentForm';
 
 jest.mock('next-i18next', () => ({
   useTranslation: () => ({
@@ -19,12 +22,15 @@ jest.mock('next-i18next', () => ({
 
 jest.mock('kesaseteli/employer/hooks/application/useApplicationApi');
 
-const renderWithProviders = (index: number, initialValues?: any) => {
+const renderWithProviders = (
+  index: number,
+  initialValues?: Partial<Employment>
+): ReturnType<typeof render> => {
   const queryClient = new QueryClient();
-  const Component = () => {
-    const methods = useForm({
+  const Component: React.FC = () => {
+    const methods = useForm<Application>({
       defaultValues: {
-        summer_vouchers: [initialValues],
+        summer_vouchers: [initialValues as Employment],
       },
       mode: 'onBlur',
     });
@@ -78,7 +84,7 @@ describe('EmploymentForm', () => {
       screen.getByLabelText(
         /common:application.form.inputs.employee_phone_number/i
       )
-    ).not.toBeDisabled();
+    ).toBeEnabled();
 
     const birthdateInput = screen.getByLabelText(
       /common:application.form.inputs.employee_birthdate/i
@@ -109,8 +115,10 @@ describe('EmploymentForm', () => {
           expect(
             screen.queryByText(/common:application.form.errors.pattern/i)
           ).not.toBeInTheDocument();
+        });
+        await waitFor(() => {
           expect(
-            screen.queryByText(/common:application.form.errors.maxLength/i)
+            screen.queryByText(/common:application.form.errors.maxlength/i)
           ).not.toBeInTheDocument();
         });
       }
@@ -132,7 +140,7 @@ describe('EmploymentForm', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/common:application.form.errors.maxLength/i)
+          screen.getByText(/common:application.form.errors.maxlength/i)
         ).toBeInTheDocument();
       });
     });
@@ -148,12 +156,12 @@ describe('EmploymentForm', () => {
       screen.getByLabelText(
         /common:application.form.inputs.employee_phone_number/i
       )
-    ).not.toBeDisabled();
+    ).toBeEnabled();
     expect(
       screen.getByLabelText(
         /common:application.form.inputs.employment_postcode/i
       )
-    ).not.toBeDisabled();
+    ).toBeEnabled();
   });
 
   it('activates the second part of the form when employment_postcode is present', () => {
@@ -166,11 +174,11 @@ describe('EmploymentForm', () => {
       screen.getByLabelText(
         /common:application.form.inputs.employee_phone_number/i
       )
-    ).not.toBeDisabled();
+    ).toBeEnabled();
     expect(
       screen.getByLabelText(
         /common:application.form.inputs.employment_postcode/i
       )
-    ).not.toBeDisabled();
+    ).toBeEnabled();
   });
 });

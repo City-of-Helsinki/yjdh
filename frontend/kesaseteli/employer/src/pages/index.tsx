@@ -1,7 +1,7 @@
 import Dashboard from 'kesaseteli/employer/components/dashboard/Dashboard';
+import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
-import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import { DashboardVoucher } from 'kesaseteli/employer/types/types';
 import { GetStaticProps, NextPage } from 'next';
 import React from 'react';

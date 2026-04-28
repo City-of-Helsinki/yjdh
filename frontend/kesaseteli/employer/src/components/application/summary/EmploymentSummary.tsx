@@ -42,10 +42,8 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
         />
 
         <EmploymentFieldSummary fieldName="employee_birthdate" index={index}>
-          {t(
-            'common:application.form.inputs.employee_birthdate'
-          )}
-          : {convertToUIDateFormat(employee_birthdate)}
+          {t('common:application.form.inputs.employee_birthdate')}:{' '}
+          {convertToUIDateFormat(employee_birthdate)}
         </EmploymentFieldSummary>
 
         <EmploymentFieldSummary
@@ -90,7 +88,8 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
         >
           {getLabel(t, 'hired_without_voucher_assessment')}:{' '}
           {t(
-            `common:application.form.selectionGroups.hired_without_voucher_assessment.${hired_without_voucher_assessment ?? ''
+            `common:application.form.selectionGroups.hired_without_voucher_assessment.${
+              hired_without_voucher_assessment ?? ''
             }`
           )}
         </EmploymentFieldSummary>

@@ -232,44 +232,31 @@ const getApplicationPageApi = (
           const query =
             /ulkomaista tilinumeroa|foreign iban|utländskt kontonummer/i;
           if (visible) {
-            await waitFor(
-              () => {
-                expect(screen.queryByText(query)).toBeInTheDocument();
-                const payslipLink = screen.queryByRole('link', {
-                  name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
-                });
-                expect(payslipLink).toBeInTheDocument();
-                expect(payslipLink).toHaveAttribute(
-                  'href',
-                  expect.stringMatching(/#summer_vouchers\.0\.payslip$/)
-                );
-
-                const templateLinks = screen.queryAllByRole('link', {
-                  name: /tästä|here|här/i,
-                });
-                expect(templateLinks[0]).toHaveAttribute('href');
-                expect(templateLinks[0].getAttribute('href')).not.toBe('');
-              },
-              { timeout: 2000 }
+            await screen.findByText(query, undefined, { timeout: 2000 });
+            const payslipLink = screen.getByRole('link', {
+              name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
+            });
+            expect(payslipLink).toHaveAttribute(
+              'href',
+              expect.stringMatching(/#summer_vouchers\.0\.payslip$/)
             );
+
+            const templateLinks = screen.getAllByRole('link', {
+              name: /tästä|here|här/i,
+            });
+            expect(templateLinks[0]).toHaveAttribute('href');
+            expect(templateLinks[0].getAttribute('href')).not.toBe('');
           } else {
             await waitFor(
-              () => {
-                expect(screen.queryByText(query)).not.toBeInTheDocument();
-              },
+              () => expect(screen.queryByText(query)).not.toBeInTheDocument(),
               { timeout: 2000 }
             );
           }
         },
         payslipCustomMessageIsVisible: async (): Promise<void> => {
-          await waitFor(
-            () => {
-              expect(
-                screen.getByText(
-                  /(rahansiirtotodistus on pakollinen)|(money transaction template is also mandatory)|(kvitto på penningöverföring)/i
-                )
-              ).toBeInTheDocument();
-            },
+          await screen.findByText(
+            /(rahansiirtotodistus on pakollinen)|(money transaction template is also mandatory)|(kvitto på penningöverföring)/i,
+            undefined,
             { timeout: 2000 }
           );
         },
@@ -352,7 +339,6 @@ const getApplicationPageApi = (
           return [put, get];
         },
         clickNextButtonAndExpectToSaveApplication: async (): Promise<void> => {
-          // This actually submits now
           await waitForLoadingCompleted();
           await waitFor(() => {
             expect(
@@ -365,10 +351,6 @@ const getApplicationPageApi = (
             ...application,
             status: 'submitted',
           });
-          // After submit, we normally expect invalidation or redirect, not necessarily a get
-          // But based on useApplicationApi logic, it invalidates queries.
-          // The current test logic expects [put, get].
-          // Let's assume we still want to match the previous pattern but with status: submitted.
           await userEvent.click(
             screen.getByRole('button', {
               name: /(lähetä hakemus)|(application.buttons.last)/i,
@@ -379,10 +361,11 @@ const getApplicationPageApi = (
           });
         },
         toggleTermsAndConditions: async (): Promise<void> => {
-          const checkbox = screen.getByRole('checkbox', {
-            name: /(käyttöehdot)|(application.form.inputs.termsandconditions)/i,
-          });
+          const checkbox = screen.getByLabelText(
+            /(käyttöehdot)|(application.form.inputs.termsandconditions)/i
+          );
           await userEvent.click(checkbox);
+          await waitFor(() => expect(checkbox).toBeChecked());
         },
       },
     },
