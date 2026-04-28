@@ -12,6 +12,7 @@ from applications.views import (
 from common.views import healthz, readiness
 from companies.api.v1.views import GetCompanyView
 from shared.suomi_fi.views import (
+    HelsinkiSaml2LogoutView,
     SuomiFiAssertionConsumerServiceView,
     SuomiFiMetadataView,
 )
@@ -63,14 +64,21 @@ if settings.NEXT_PUBLIC_ENABLE_SUOMIFI:
         path(
             "saml2/acs/",
             SuomiFiAssertionConsumerServiceView.as_view(),
-            name="suomifi_saml2_acs",
+            name="saml2_acs",
         )
     )
     urlpatterns.append(
         path(
             "saml2/metadata/",
             SuomiFiMetadataView.as_view(),
-            name="suomifi_saml2_metadata",
+            name="saml2_metadata",
+        )
+    )
+    urlpatterns.append(
+        path(
+            "saml2/logout/",
+            HelsinkiSaml2LogoutView.as_view(),
+            name="saml2_logout",
         )
     )
     urlpatterns.append(path("saml2/", include("djangosaml2.urls")))

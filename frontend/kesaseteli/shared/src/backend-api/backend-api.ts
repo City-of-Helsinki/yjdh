@@ -53,3 +53,6 @@ export const getYouthApplicationStatusQueryKey = (id: string): string =>
 
 export const getAdditionalInfoQueryKey = (id: string): string =>
   `${getYouthApplicationQueryKey(id)}additional_info/`;
+
+export const getLogoutRedirectUrl = (locale?: string): string =>
+  new URL(locale ?? '', window.location.origin).toString();

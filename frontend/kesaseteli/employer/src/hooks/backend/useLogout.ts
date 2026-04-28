@@ -2,6 +2,7 @@ import ApplicationPersistenceService from 'kesaseteli/employer/services/Applicat
 import {
   BackendEndpoint,
   getBackendUrl,
+  getLogoutRedirectUrl,
   REDIRECT_FIELD_NAME,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
@@ -13,14 +14,13 @@ const useLogout = (): ((logoutRedirectPath?: string) => Promise<boolean>) => {
     async (logoutRedirectPath?: string) => {
       ApplicationPersistenceService.clearAll();
       const logoutUrl = getBackendUrl(BackendEndpoint.LOGOUT);
-      if (logoutRedirectPath) {
-        return router.push(
-          `${logoutUrl}?${REDIRECT_FIELD_NAME}=${encodeURIComponent(
-            logoutRedirectPath
-          )}`
-        );
-      }
-      return router.push(logoutUrl);
+      const redirectPath =
+        logoutRedirectPath || getLogoutRedirectUrl(router.locale);
+      return router.push(
+        `${logoutUrl}?${REDIRECT_FIELD_NAME}=${encodeURIComponent(
+          redirectPath
+        )}`
+      );
     },
     [router]
   );

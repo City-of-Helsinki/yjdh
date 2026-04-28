@@ -1,13 +1,22 @@
 from django.conf import settings
-from django.http import HttpRequest, HttpResponse
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from djangosaml2.views import AssertionConsumerServiceView, MetadataView
+from djangosaml2.views import (
+    AssertionConsumerServiceView,
+    LogoutInitView,
+    MetadataView,
+)
 from saml2.md import ServiceName
 from saml2.metadata import entity_descriptor
 
 from shared.common.utils import is_safe_redirect_url
+
+# "RelayState" is a standard SAML parameter name and no constant is exported
+# for it in djangosaml2 or pysaml2.
+RELAY_STATE_PARAM = "RelayState"
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -40,6 +49,49 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
         if relay_state and is_safe_redirect_url(self.request, relay_state):
             self.request.session["eauth_next_url"] = relay_state
         return reverse("eauth_authentication_init")
+
+    def handle_acs_failure(self, request, exception=None, status=403, **kwargs):
+        """
+        Redirect back to the RelayState if it exists and is safe, instead of showing
+        the default error page. This handles cases like user cancelling the
+        authentication at Suomi.fi.
+
+        NOTE: "RelayState" is a standard SAML parameter name.
+        """
+        relay_state = request.POST.get(RELAY_STATE_PARAM) or request.GET.get(
+            RELAY_STATE_PARAM
+        )
+        if relay_state and is_safe_redirect_url(request, relay_state):
+            return HttpResponseRedirect(relay_state)
+
+        return super().handle_acs_failure(request, exception, status, **kwargs)
+
+
+class HelsinkiSaml2LogoutView(LogoutInitView):
+    """
+    SAML2 logout view that supports 'next' parameter.
+    """
+
+    def get(self, request, *args, **kwargs):
+        # Capture 'next' parameter so it can be used on failure.
+        # RELAY_STATE_PARAM is also checked as a fallback for standard SAML logout.
+        self.next_path = (
+            request.GET.get(REDIRECT_FIELD_NAME)
+            or request.GET.get(RELAY_STATE_PARAM)
+            or request.POST.get(RELAY_STATE_PARAM)
+        )
+        return super().get(request, *args, **kwargs)
+
+    def handle_unsupported_slo_exception(self, request, exception, *args, **kwargs):
+        if (
+            hasattr(self, "next_path")
+            and self.next_path
+            and is_safe_redirect_url(request, self.next_path)
+        ):
+            return HttpResponseRedirect(self.next_path)
+        return super().handle_unsupported_slo_exception(
+            request, exception, *args, **kwargs
+        )
 
 
 class SuomiFiMetadataView(MetadataView):

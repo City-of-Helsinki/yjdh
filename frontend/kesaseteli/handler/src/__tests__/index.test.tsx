@@ -55,7 +55,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     renderPage(HandlerIndex, { push: spyPush, query: { id: '123-abc' } });
     await waitFor(() =>
       expect(spyPush).toHaveBeenCalledWith(
-        `${DEFAULT_LANGUAGE}/500`,
+        `/${DEFAULT_LANGUAGE}/500`,
         undefined,
         { shallow: false }
       )
@@ -541,7 +541,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         await indexPageApi.actions.clickConfirmButton(operationType, 500);
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/500`,
+            `/${DEFAULT_LANGUAGE}/500`,
             undefined,
             { shallow: false }
           )
