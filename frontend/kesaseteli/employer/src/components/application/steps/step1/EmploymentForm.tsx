@@ -10,10 +10,10 @@ import { Trans, useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import LinkText from 'shared/components/link-text/LinkText';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { POSTAL_CODE_REGEX } from 'shared/constants';
 import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
@@ -100,14 +100,14 @@ const useFetchEmployeeData = (
     const voucher = currentValues.summer_vouchers[index];
 
     const performFetch = (appData: DraftApplication | Application): void => {
-      const currentValues = getValues();
+      const values = getValues();
       // Ensure the voucher we are processing has the ID from the server (if it was just created)
       const serverVoucherId = appData.summer_vouchers?.[index]?.id;
       if (serverVoucherId) {
-        currentValues.summer_vouchers[index].id = serverVoucherId;
+        values.summer_vouchers[index].id = serverVoucherId;
       }
 
-      void fetchEmployment(currentValues, index, (app) => {
+      void fetchEmployment(values, index, (app) => {
         const updatedVoucher = app.summer_vouchers[index];
         if (updatedVoucher) {
           setValue(`summer_vouchers.${index}`, updatedVoucher, {
@@ -200,7 +200,7 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
             value={convertToUIDateFormat(employeeBirthdate)}
             readOnly
             disabled={disableEmploymentFields}
-            onChange={() => undefined}
+            onChange={() => {}}
           />
         </$GridCell>
 

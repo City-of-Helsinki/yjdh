@@ -4,8 +4,8 @@ import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integr
 import Application from '@frontend/shared/src/types/application';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
-
 import TestController from 'testcafe';
+
 import { getStep1Components } from '../application-page/step1.components';
 import { getStep2Components } from '../application-page/step2.components';
 import { getWizardComponents } from '../application-page/wizard.components';
@@ -41,11 +41,12 @@ export const fillEmployerDetails = async (
 export const fillEmploymentDetails = async (
   t: TestController,
   application: Application,
-  _expectedPreFill?: Partial<Employment>
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  expectedPreFill?: Partial<Employment>
 ): Promise<void> => {
   const step1 = getStep1Components(t);
   const step1Form = await step1.form();
+
   const { summer_vouchers } = application;
 
   if (summer_vouchers.length > 0) {

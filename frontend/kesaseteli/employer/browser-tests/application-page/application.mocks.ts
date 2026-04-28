@@ -17,6 +17,7 @@ import {
 // Locally: load the dev cert as a trusted CA.
 // In CI: the cert file doesn't exist, so we must skip verification for the test proxy.
 const certPath = path.resolve(
+  // eslint-disable-next-line unicorn/prefer-module
   __dirname,
   '../../../../../localdevelopment/employer/nginx/localhost.crt'
 );

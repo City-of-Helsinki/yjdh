@@ -1,8 +1,8 @@
 import Step1EmployerAndEmployment from 'kesaseteli/employer/components/application/steps/step1/Step1EmployerAndEmployment';
 import Step2Summary from 'kesaseteli/employer/components/application/steps/step2/Step2Summary';
+import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
-import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import { GetStaticProps, NextPage } from 'next';
 import * as React from 'react';
 import ApplicationWizard from 'shared/components/application-wizard/ApplicationWizard';

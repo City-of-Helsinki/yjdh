@@ -1,16 +1,17 @@
-import React from 'react';
+import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
-import withOrganisation from '../withOrganisation';
+import React from 'react';
 import useAuth from 'shared/hooks/useAuth';
 import useGoToPage from 'shared/hooks/useGoToPage';
-import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
+
+import withOrganisation from '../withOrganisation';
 
 jest.mock('shared/hooks/useAuth', () => jest.fn());
 jest.mock('shared/hooks/useGoToPage', () => jest.fn());
 jest.mock('kesaseteli/employer/hooks/backend/useCompanyQuery', () => jest.fn());
 
 describe('withOrganisation', () => {
-  const MockComponent = () => <div>Mock Component</div>;
+  const MockComponent = (): JSX.Element => <div>Mock Component</div>;
   const WrappedComponent = withOrganisation(MockComponent);
   const mockGoToPage = jest.fn();
 

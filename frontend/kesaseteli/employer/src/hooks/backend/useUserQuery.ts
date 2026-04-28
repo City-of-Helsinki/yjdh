@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { useRouter } from 'next/router';
 import {
   QueryKey,
   useQuery,

@@ -118,12 +118,12 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         ...fakeObjectFactory.fakeApplication(),
         status: 'draft',
         is_mine: true,
-      } as any;
+      } as any; // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const otherDraft = {
         ...fakeObjectFactory.fakeApplication(),
         status: 'draft',
         is_mine: false,
-      } as any;
+      } as any; // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const applications = [otherDraft, myDraft]; // otherDraft is first
 
       expectAuthorizedReply(myUser);
@@ -136,12 +136,12 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       // Wait for the dashboard to render
       await waitFor(() => {
         expect(
-          screen.getByRole('button', { name: /Tee uusi hakemus/i })
+          screen.getByRole('button', { name: /tee uusi hakemus/i })
         ).toBeInTheDocument();
       });
 
       // Click the button
-      const button = screen.getByRole('button', { name: /Tee uusi hakemus/i });
+      const button = screen.getByRole('button', { name: /tee uusi hakemus/i });
       button.click();
 
       // Verify it redirects to MY draft, not the first one (otherDraft)

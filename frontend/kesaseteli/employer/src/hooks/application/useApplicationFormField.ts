@@ -73,7 +73,8 @@ const useApplicationFormField = <V extends Value>(
       }
       return value as V;
     },
-    setValue: (value: V) => setValue(id, value, { shouldDirty: true, shouldTouch: true }),
+    setValue: (value: V) =>
+      setValue(id, value, { shouldDirty: true, shouldTouch: true }),
     watch: () => watch(id) as V,
     getError,
     hasError: () => Boolean(getError()),
@@ -99,15 +100,16 @@ const useApplicationFormField = <V extends Value>(
       }
     },
     setError: (error: ErrorOption) => setErrorF(id, error),
-    clearValue: () => setValue(id, '', { shouldDirty: true, shouldTouch: true }),
+    clearValue: () =>
+      setValue(id, '', { shouldDirty: true, shouldTouch: true }),
     trigger: () => trigger(id, { shouldFocus: true }),
     clearErrors: () => clearErrors(id),
     setFocus: () => {
       try {
         setFocus(id);
-      } catch (e) {
+      } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(`Could not set focus to field "${id}".`, e);
+        console.warn(`Could not set focus to field "${id}".`, error);
       }
     },
   };
