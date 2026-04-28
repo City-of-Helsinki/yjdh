@@ -41,7 +41,11 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     await headerApi.actions.clickLogoutButton(user);
     await waitFor(() =>
       expect(spyRouterPush).toHaveBeenCalledWith(
-        `${getBackendUrl('/oidc/logout/')}`
+        expect.stringMatching(
+          new RegExp(
+            `^${getBackendUrl('/oidc/logout/')}\\?next=https?%3A%2F%2F`
+          )
+        )
       )
     );
     await waitFor(() =>
