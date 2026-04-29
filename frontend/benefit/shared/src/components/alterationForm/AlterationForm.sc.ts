@@ -1,8 +1,9 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
+import { ThemeProps } from 'shared/styles/theme';
 import styled from 'styled-components';
 
 export const $Section = styled.section`
-  margin-bottom: ${(props) => props.theme.spacing.xl};
+  margin-bottom: ${(props: ThemeProps) => props.theme.spacing.xl};
 `;
 
 export const $SaveActionFormErrorText = styled.div`
@@ -12,10 +13,10 @@ export const $SaveActionFormErrorText = styled.div`
 
   display: flex;
   align-items: center;
-  color: ${(props) => props.theme.colors.error};
+  color: ${(props: ThemeProps) => props.theme.colors.error};
   svg {
     width: 48px;
-    fill: ${(props) => props.theme.colors.error};
+    fill: ${(props: ThemeProps) => props.theme.colors.error};
   }
 `;
 

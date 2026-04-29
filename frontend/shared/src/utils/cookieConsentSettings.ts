@@ -1,12 +1,101 @@
-import { CookieConsentContextProps } from 'hds-react';
-
 type SupportedLanguage = 'fi' | 'sv' | 'en';
+
+// Duplicate literal constants
+const MATOMO_DESCRIPTION: Record<SupportedLanguage, string> = {
+  fi: 'Matomo-tilastointijarjestelman evaste.',
+  sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen anvands.',
+  en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
+};
+
+const STATISTICS_GROUP_TITLE: Record<SupportedLanguage, string> = {
+  fi: 'Tilastointi',
+  sv: 'Statistik',
+  en: 'Statistics',
+};
+
+const STATISTICS_GROUP_DESCRIPTION: Record<SupportedLanguage, string> = {
+  fi: 'Tilastointievasteiden keraamaa tietoa kaytetaan verkkosivuston kehittamiseen.',
+  sv: 'Data fran statistikkakorna anvands for att utveckla webbplatsen.',
+  en: 'The information collected by statistics cookies is used to develop the website.',
+};
+
+const SHARED_CONSENT_DESCRIPTION: Record<SupportedLanguage, string> = {
+  fi: 'Helsingin kaupungin palvelut kayttavat yhteisia evasteita. Tallennamme nama suostumukset, jottei sinun tarvitse hyvaksy samoja evasteita uudelleen kaupungin muissa palveluissa.',
+  sv: 'Helsingfors stads tjanster anvander gemensamma kakor. Vi lagrar dessa samtycken sa att du inte behover godkanna samma kakor igen i stadens andra tjanster.',
+  en: 'City of Helsinki services use shared consent. We will store these consents so that you do not have to accept the same cookies again on other City services.',
+};
+
+const ASKEM_COOKIE_DESCRIPTION: Record<SupportedLanguage, string> = {
+  fi: 'Askem-reaktionappien toimintaan liittyva tietue.',
+  sv: 'En post relaterad till driften av reaktionsknappen Askem.',
+  en: 'A record related to the operation of the Askem react buttons.',
+};
+
+const ONE_YEAR_EXPIRATION: Record<SupportedLanguage, string> = {
+  fi: '1 vuosi',
+  sv: 'Ett ar',
+  en: '1 year',
+};
+
+const DASH_EXPIRATION = '-';
+
+const HELFI_COOKIE_CONSENTS_NAME = 'helfi-cookie-consents';
+
+const REACT_AND_SHARE_HOST = 'reactandshare.com';
+
+const HELFI_COOKIE_CONSENTS_DESCRIPTION: Record<SupportedLanguage, string> = {
+  fi: 'Sivusto kayttaa tata evastetta tietojen tallentamiseen siita, ovatko kavijat antaneet hyvaksyntansa tai kieltaytyneet evasteiden kaytosta.',
+  sv: 'Webbplatsen anvander denna kaka for att lagra information om huruvida besokare har godkant anvandningen av kakor eller inte.',
+  en: 'Used to store information about whether visitors have given or declined the use of cookie categories used on the site.',
+};
+
+const SHARED_CONSENT_TITLE: Record<SupportedLanguage, string> = {
+  fi: 'Yhteiset evasteet',
+  sv: 'Gemensamma kakor',
+  en: 'Shared consent',
+};
+
+const ONE_HOUR_EXPIRATION: Record<SupportedLanguage, string> = {
+  fi: '1 tunti',
+  sv: '1 timme',
+  en: '1 hour',
+};
 
 export type LocalizedSiteName = Record<SupportedLanguage, string>;
 
-type SiteSettings = NonNullable<CookieConsentContextProps['siteSettings']>;
-export type RequiredGroups = NonNullable<SiteSettings['requiredGroups']>;
-export type OptionalGroups = NonNullable<SiteSettings['optionalGroups']>;
+type CookieExpiration = Record<SupportedLanguage, string> | string;
+
+type CookieEntry = {
+  id?: string;
+  name: string;
+  host: string;
+  description: Record<SupportedLanguage, string>;
+  expiration: CookieExpiration;
+  storageType?: number;
+};
+
+type CookieGroup = {
+  groupId: string;
+  title: Record<SupportedLanguage, string>;
+  description: Record<SupportedLanguage, string>;
+  cookies: CookieEntry[];
+};
+
+export type RequiredGroups = CookieGroup[];
+export type OptionalGroups = CookieGroup[];
+
+type SiteSettings = {
+  languages: Array<{ code: string; name: string; direction: string }>;
+  siteName: Record<SupportedLanguage, string>;
+  cookieName: string;
+  monitorInterval: number;
+  fallbackLanguage: string;
+  requiredGroups: RequiredGroups;
+  optionalGroups: OptionalGroups;
+  robotCookies: Array<{ name: string; storageType: number }>;
+  translations: Record<string, Record<SupportedLanguage, string> | string>;
+};
+
 export type CookieConsentApp = 'kesaseteli' | 'benefit';
 
 type GetCookieConsentSiteSettingsOptions = {
@@ -87,11 +176,7 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
           sv: 'Cookie som kravs for att bevara autentiseringssession.',
           en: 'Required to persist the authentication session.',
         },
-        expiration: {
-          fi: '1 tunti',
-          sv: '1 timme',
-          en: '1 hour',
-        },
+        expiration: ONE_HOUR_EXPIRATION,
         storageType: 1,
       },
       {
@@ -150,31 +235,15 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
   },
   {
     groupId: 'shared',
-    title: {
-      fi: 'Yhteiset evasteet',
-      sv: 'Gemensamma kakor',
-      en: 'Shared consent',
-    },
-    description: {
-      fi: 'Helsingin kaupungin palvelut kayttavat yhteisia evasteita. Tallennamme nama suostumukset, jottei sinun tarvitse hyvaksy samoja evasteita uudelleen kaupungin muissa palveluissa.',
-      sv: 'Helsingfors stads tjanster anvander gemensamma kakor. Vi lagrar dessa samtycken sa att du inte behover godkanna samma kakor igen i stadens andra tjanster.',
-      en: 'City of Helsinki services use shared consent. We will store these consents so that you do not have to accept the same cookies again on other City services.',
-    },
+    title: SHARED_CONSENT_TITLE,
+    description: SHARED_CONSENT_DESCRIPTION,
     cookies: [
       {
-        name: 'helfi-cookie-consents',
+        name: HELFI_COOKIE_CONSENTS_NAME,
         host: hostName,
         storageType: 1,
-        description: {
-          fi: 'Sivusto kayttaa tata evastetta tietojen tallentamiseen siita, ovatko kavijat antaneet hyvaksyntansa tai kieltaytyneet evasteiden kaytosta.',
-          sv: 'Webbplatsen anvander denna kaka for att lagra information om huruvida besokare har godkant anvandningen av kakor eller inte.',
-          en: 'Used to store information about whether visitors have given or declined the use of cookie categories used on the site.',
-        },
-        expiration: {
-          fi: '1 vuosi',
-          sv: 'Ett ar',
-          en: '1 year',
-        },
+        description: HELFI_COOKIE_CONSENTS_DESCRIPTION,
+        expiration: ONE_YEAR_EXPIRATION,
       },
       {
         name: 'helfi-consent-version',
@@ -185,11 +254,7 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
           sv: 'Anvands for att lagra information om versionen av cookies samtycke som anvandaren har godkant.',
           en: 'Used to store information about what version of the cookie consent the user has agreed to.',
         },
-        expiration: {
-          fi: '1 vuosi',
-          sv: 'Ett ar',
-          en: '1 year',
-        },
+        expiration: ONE_YEAR_EXPIRATION,
       },
     ],
   },
@@ -200,31 +265,15 @@ export const getDefaultKesaseteliRequiredGroups = (
 ): RequiredGroups => [
   {
     groupId: 'shared',
-    title: {
-      fi: 'Yhteiset evasteet',
-      sv: 'Gemensamma kakor',
-      en: 'Shared consent',
-    },
-    description: {
-      fi: 'Helsingin kaupungin palvelut kayttavat yhteisia evasteita. Tallennamme nama suostumukset, jottei sinun tarvitse hyvaksy samoja evasteita uudelleen kaupungin muissa palveluissa.',
-      sv: 'Helsingfors stads tjanster anvander gemensamma kakor. Vi lagrar dessa samtycken sa att du inte behover godkanna samma kakor igen i stadens andra tjanster.',
-      en: 'City of Helsinki services use shared consent. We will store these consents so that you do not have to accept the same cookies again on other City services.',
-    },
+    title: SHARED_CONSENT_TITLE,
+    description: SHARED_CONSENT_DESCRIPTION,
     cookies: [
       {
-        name: 'helfi-cookie-consents',
+        name: HELFI_COOKIE_CONSENTS_NAME,
         host: hostName,
         storageType: 1,
-        description: {
-          fi: 'Sivusto kayttaa tata evastetta tietojen tallentamiseen siita, ovatko kavijat antaneet hyvaksyntansa tai kieltaytyneet evasteiden kaytosta.',
-          sv: 'Webbplatsen anvander denna kaka for att lagra information om huruvida besokare har godkant anvandningen av kakor eller inte.',
-          en: 'Used to store information about whether visitors have given or declined the use of cookie categories used on the site.',
-        },
-        expiration: {
-          fi: '1 vuosi',
-          sv: 'Ett ar',
-          en: '1 year',
-        },
+        description: HELFI_COOKIE_CONSENTS_DESCRIPTION,
+        expiration: ONE_YEAR_EXPIRATION,
       },
       {
         name: 'helfi-consent-version',
@@ -235,11 +284,7 @@ export const getDefaultKesaseteliRequiredGroups = (
           sv: 'Anvands for att lagra information om versionen av cookies samtycke som anvandaren har godkant.',
           en: 'Used to store information about what version of the cookie consent the user has agreed to.',
         },
-        expiration: {
-          fi: '1 vuosi',
-          sv: 'Ett ar',
-          en: '1 year',
-        },
+        expiration: ONE_YEAR_EXPIRATION,
       },
     ],
   },
@@ -254,25 +299,13 @@ export const getDefaultKesaseteliOptionalGroups = (
 ): OptionalGroups => [
   {
     groupId: 'statistics',
-    title: {
-      fi: 'Tilastointi',
-      sv: 'Statistik',
-      en: 'Statistics',
-    },
-    description: {
-      fi: 'Tilastointievasteiden keraamaa tietoa kaytetaan verkkosivuston kehittamiseen.',
-      sv: 'Data fran statistikkakorna anvands for att utveckla webbplatsen.',
-      en: 'The information collected by statistics cookies is used to develop the website.',
-    },
+    title: STATISTICS_GROUP_TITLE,
+    description: STATISTICS_GROUP_DESCRIPTION,
     cookies: [
       {
         name: '_pk_id.*',
         host: hostName,
-        description: {
-          fi: 'Matomo-tilastointijarjestelman evaste.',
-          sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen anvands.',
-          en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
-        },
+        description: MATOMO_DESCRIPTION,
         expiration: {
           fi: '393 paivaa',
           sv: '393 dagar',
@@ -283,16 +316,8 @@ export const getDefaultKesaseteliOptionalGroups = (
       {
         name: '_pk_ses.*',
         host: hostName,
-        description: {
-          fi: 'Matomo-tilastointijarjestelman evaste.',
-          sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen anvands.',
-          en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
-        },
-        expiration: {
-          fi: '1 tunti',
-          sv: '1 timme',
-          en: '1 hour',
-        },
+        description: MATOMO_DESCRIPTION,
+        expiration: ONE_HOUR_EXPIRATION,
         storageType: 1,
       },
     ],
@@ -304,25 +329,13 @@ export const getDefaultBenefitOptionalGroups = (
 ): OptionalGroups => [
   {
     groupId: 'statistics',
-    title: {
-      fi: 'Tilastointi',
-      sv: 'Statistik',
-      en: 'Statistics',
-    },
-    description: {
-      fi: 'Tilastointievasteiden keraamaa tietoa kaytetaan verkkosivuston kehittamiseen.',
-      sv: 'Data fran statistikkakorna anvands for att utveckla webbplatsen.',
-      en: 'The information collected by statistics cookies is used to develop the website.',
-    },
+    title: STATISTICS_GROUP_TITLE,
+    description: STATISTICS_GROUP_DESCRIPTION,
     cookies: [
       {
         name: '_pk_id.*',
         host: hostName,
-        description: {
-          fi: 'Matomo-tilastointijarjestelman evaste.',
-          sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen anvands.',
-          en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
-        },
+        description: MATOMO_DESCRIPTION,
         expiration: {
           fi: '393 paivaa',
           sv: '393 dagar',
@@ -333,52 +346,32 @@ export const getDefaultBenefitOptionalGroups = (
       {
         name: '_pk_ses.*',
         host: hostName,
-        description: {
-          fi: 'Matomo-tilastointijarjestelman evaste.',
-          sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen anvands.',
-          en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
-        },
-        expiration: {
-          fi: '1 tunti',
-          sv: '1 timme',
-          en: '1 hour',
-        },
+        description: MATOMO_DESCRIPTION,
+        expiration: ONE_HOUR_EXPIRATION,
         storageType: 1,
       },
       {
         id: 'rns',
         name: 'rnsbid',
-        host: 'reactandshare.com',
-        description: {
-          fi: 'Askem-reaktionappien toimintaan liittyva tietue.',
-          sv: 'En post relaterad till driften av reaktionsknappen Askem.',
-          en: 'A record related to the operation of the Askem react buttons.',
-        },
-        expiration: '-',
+        host: REACT_AND_SHARE_HOST,
+        description: ASKEM_COOKIE_DESCRIPTION,
+        expiration: DASH_EXPIRATION,
         storageType: 1,
       },
       {
         id: 'rnsbid_ts',
         name: 'rnsbid_ts',
-        host: 'reactandshare.com',
-        description: {
-          fi: 'Askem-reaktionappien toimintaan liittyva tietue.',
-          sv: 'En post relaterad till driften av reaktionsknappen Askem.',
-          en: 'A record related to the operation of the Askem react buttons.',
-        },
-        expiration: '-',
+        host: REACT_AND_SHARE_HOST,
+        description: ASKEM_COOKIE_DESCRIPTION,
+        expiration: DASH_EXPIRATION,
         storageType: 1,
       },
       {
         id: 'rns_reaction',
         name: 'rns_reaction_*',
-        host: 'reactandshare.com',
-        description: {
-          fi: 'Askem-reaktionappien toimintaan liittyva tietue.',
-          sv: 'En post relaterad till driften av reaktionsknappen Askem.',
-          en: 'A record related to the operation of the Askem react buttons.',
-        },
-        expiration: '-',
+        host: REACT_AND_SHARE_HOST,
+        description: ASKEM_COOKIE_DESCRIPTION,
+        expiration: DASH_EXPIRATION,
         storageType: 1,
       },
     ],
@@ -423,7 +416,7 @@ export const getCookieConsentSiteSettings = ({
       },
     ],
     siteName: getSiteNameMap(siteName, app),
-    cookieName: 'helfi-cookie-consents',
+    cookieName: HELFI_COOKIE_CONSENTS_NAME,
     monitorInterval: 0,
     fallbackLanguage: 'en',
     requiredGroups: resolvedRequiredGroups,

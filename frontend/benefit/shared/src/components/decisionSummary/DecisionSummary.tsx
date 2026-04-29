@@ -54,7 +54,7 @@ const DecisionSummary = ({
     const id = application.ahjoCaseId?.split(' ').join('-');
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    window.open(`https://paatokset.hel.fi/fi/asia/${id}`, '_blank');
+    window.open(`https://paatokset.hel.fi/fi/asia/${id ?? ''}`, '_blank');
   };
 
   const sortedAlterations = application.alterations?.sort(
@@ -74,7 +74,7 @@ const DecisionSummary = ({
         </$DecisionNumber>
       )}
       <$Subheading>
-        {t(`common:applications.decision.description.${application.status}`, {
+        {t(`common:applications.decision.description.${application.status ?? ''}`, {
           dateRangeStart: convertToUIDateFormat(application.startDate),
           dateRangeEnd: convertToUIDateFormat(application.endDate),
         })}

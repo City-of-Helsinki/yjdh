@@ -1,7 +1,7 @@
 import useCreateAdditionalInfoQuery from 'kesaseteli/youth/hooks/backend/useCreateAdditionalInfoQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
-import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
+import useCurrentYearSummerVoucherConfig from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonOption from 'kesaseteli-shared/types/additional-info-reason-option';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';

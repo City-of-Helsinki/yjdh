@@ -9,6 +9,7 @@ import {
   getErrorMessage,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
+import Application from '@frontend/shared/src/types/application';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { Selector } from 'testcafe';
 
@@ -266,7 +267,7 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
           employee_phone_number: typedPhoneNumber,
         },
       ],
-    } as any); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as Application);
   }
 );
 
@@ -347,6 +348,6 @@ test.requestHooks(
           employee_phone_number: dirtyPhoneNumber,
         },
       ],
-    } as any); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as Application);
   }
 );

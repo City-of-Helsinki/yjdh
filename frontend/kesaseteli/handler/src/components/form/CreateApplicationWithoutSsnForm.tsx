@@ -4,7 +4,7 @@ import SubmitErrorSummary from 'kesaseteli/handler/components/form/SubmitErrorSu
 import TextInput from 'kesaseteli/handler/components/form/TextInput';
 import useHandleApplicationWithoutSsnSubmit from 'kesaseteli/handler/hooks/application/useHandleApplicationWithoutSsnSubmit';
 import useCreateYouthApplicationWithoutSsnQuery from 'kesaseteli/handler/hooks/backend/useCreateYouthApplicationWithoutSsnQuery';
-import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
+import useCurrentYearSummerVoucherConfig from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';

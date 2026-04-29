@@ -1,5 +1,5 @@
 import YouthForm from 'kesaseteli/youth/components/youth-form/YouthForm';
-import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
+import useCurrentYearSummerVoucherConfig from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';

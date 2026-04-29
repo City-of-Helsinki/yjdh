@@ -5,13 +5,13 @@ import {
 } from 'hds-react';
 import React, { useMemo } from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
-import useLocale from 'shared/hooks/useLocale';
 import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
+import useLocale from 'shared/hooks/useLocale';
 import {
+  getCookieConsentSiteSettings,
   LocalizedSiteName,
   OptionalGroups,
   RequiredGroups,
-  getCookieConsentSiteSettings,
 } from 'shared/utils/cookieConsentSettings';
 
 type CookieConsentProps = {

@@ -28,8 +28,6 @@ type Props<T extends FieldValues, O extends Option> = InputProps<T, O[]> &
   };
 
 const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
-  type = 'select',
-  multiselect: _multiselect = true,
   id,
   registerOptions = {},
   initialValue,
@@ -55,8 +53,8 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
     };
   };
 
-  const hdsOptions: HdsOption[] = options.map(toHdsOption);
-  const selectedValues = (initialValue ?? []).map(toHdsOption);
+  const hdsOptions: HdsOption[] = options.map((option) => toHdsOption(option));
+  const selectedValues = (initialValue ?? []).map((option) => toHdsOption(option));
   // Mirror HDS's in-progress multi-select state locally until the menu closes.
   const [draftSelectedValues, setDraftSelectedValues] =
     React.useState<HdsOption[]>(selectedValues);

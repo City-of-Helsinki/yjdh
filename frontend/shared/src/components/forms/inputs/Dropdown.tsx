@@ -27,8 +27,6 @@ type Props<T extends FieldValues, O extends Option> = InputProps<T, O> &
     options: O[];
   };
 const Dropdown = <T extends FieldValues, O extends Option>({
-  type = 'select',
-  multiselect: _multiselect = false,
   id,
   registerOptions = {},
   initialValue,
@@ -57,10 +55,10 @@ const Dropdown = <T extends FieldValues, O extends Option>({
   const handleChange = (
     selectedOptions: HdsOption[] | undefined,
     controllerOnChange: (value: O | null) => void
-  ) => {
-    const selectedValue = selectedOptions?.[0]?.value;
+  ): void => {
+    const newSelectedValue = selectedOptions?.[0]?.value;
     const nextValue =
-      options.find((option) => getOptionValue(option) === selectedValue) ??
+      options.find((option) => getOptionValue(option) === newSelectedValue) ??
       null;
     controllerOnChange(nextValue);
     onChange?.(nextValue ?? undefined);
@@ -89,7 +87,7 @@ const Dropdown = <T extends FieldValues, O extends Option>({
           render={({
             field: { ref, value, onChange: controllerOnChange, ...field },
           }) => {
-            const selectedValue = value
+            const currentSelectedValue = value
               ? getOptionValue(value as O)
               : undefined;
 
@@ -97,7 +95,7 @@ const Dropdown = <T extends FieldValues, O extends Option>({
               <Select
                 {...field}
                 {...sharedSelectProps}
-                value={selectedValue}
+                value={currentSelectedValue}
                 onChange={(selectedOptions: HdsOption[]) =>
                   handleChange(selectedOptions, controllerOnChange)
                 }

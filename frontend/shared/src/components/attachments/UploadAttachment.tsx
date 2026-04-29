@@ -1,4 +1,4 @@
-import { Button, ButtonProps, ButtonVariant } from 'hds-react';
+import { Button, ButtonProps } from 'hds-react';
 import * as React from 'react';
 
 import { useUploadAttachment } from './useUploadAttachment';
@@ -54,11 +54,13 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
     <div>
       <Button
         id={name}
+        /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
         theme={theme}
         onClick={handleUploadClick}
-        variant={variant as ButtonVariant}
+        variant={variant}
         isLoading={isUploading}
         loadingText={loadingText}
+        iconEnd={null}
         iconStart={icon}
         ref={buttonRef}
         aria-label={ariaUploadText}

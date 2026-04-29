@@ -68,7 +68,7 @@ const CompanySearch: React.FC = () => {
                       value={businessId}
                       label={`${name} <${businessId}>`}
                       checked={selectedCompany === businessId}
-                      onChange={(event: any) =>
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         onCompanyChange(event.target.value)
                       }
                     />

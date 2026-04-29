@@ -1,12 +1,12 @@
-import { useTranslation } from 'next-i18next';
 import Router from 'next/router';
-import { useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'next-i18next';
+import { useCallback,useEffect, useRef } from 'react';
 import useConfirm from 'shared/hooks/useConfirm';
 
 import {
+  getAnchorPath,
   leaveConfirmStore,
   shouldBlockNavigation,
-  getAnchorPath,
 } from './useLeaveConfirm.utils';
 
 export {
@@ -15,13 +15,23 @@ export {
 } from './useLeaveConfirm.utils';
 
 /**
+ * Payload type for the confirm dialog.
+ */
+type ConfirmPayload = {
+  header: string;
+  submitButtonLabel: string;
+  submitButtonVariant: string;
+  content: string;
+};
+
+/**
  * Dependencies required by the leave confirmation service methods.
  */
 type HandlerDeps = {
   unsavedChanges: boolean;
   message: string;
   isConfirmedRef: { current: boolean };
-  confirm: (payload: any) => Promise<boolean>;
+  confirm: (payload: ConfirmPayload) => Promise<boolean>;
   t: (key: string) => string;
 };
 
@@ -29,11 +39,11 @@ type HandlerDeps = {
  * Service class that maps the internal leave confirmation handlers.
  * This class groups the event-related logic for better organization and readability.
  */
-class LeaveConfirmService {
+const LeaveConfirmService = {
   /**
    * Updates state and triggers navigation after user confirmation.
    */
-  static handleConfirmAction(
+  handleConfirmAction(
     pathOrUrl: string,
     isConfirmedRef: { current: boolean }
   ): void {
@@ -43,12 +53,12 @@ class LeaveConfirmService {
       // eslint-disable-next-line no-param-reassign
       isConfirmedRef.current = false;
     });
-  }
+  },
 
   /**
    * Orchestrates the confirmation dialog and resulting navigation.
    */
-  static async showConfirm(
+  async showConfirm(
     url: string,
     confirmLabel: string,
     deps: HandlerDeps
@@ -65,12 +75,12 @@ class LeaveConfirmService {
     if (isConfirmed) {
       this.handleConfirmAction(url, deps.isConfirmedRef);
     }
-  }
+  },
 
   /**
    * Logic for Next.js route change interception.
    */
-  static handleRouteChange(url: string, deps: HandlerDeps): void {
+  handleRouteChange(url: string, deps: HandlerDeps): void {
     const { unsavedChanges, isConfirmedRef, t } = deps;
     if (
       !shouldBlockNavigation({
@@ -88,12 +98,12 @@ class LeaveConfirmService {
 
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw 'Abort route change. Please ignore this error.';
-  }
+  },
 
   /**
    * Logic for browser native beforeunload interception.
    */
-  static handleBeforeUnload(
+  handleBeforeUnload(
     e: BeforeUnloadEvent,
     deps: HandlerDeps
   ): string | null {
@@ -111,12 +121,12 @@ class LeaveConfirmService {
     e.preventDefault();
     // eslint-disable-next-line no-return-assign, no-param-reassign
     return (e.returnValue = message);
-  }
+  },
 
   /**
    * Logic for catching direct internal anchor link clicks.
    */
-  static handleGlobalClick(e: MouseEvent, deps: HandlerDeps): void {
+  handleGlobalClick(e: MouseEvent, deps: HandlerDeps): void {
     const { unsavedChanges, isConfirmedRef, t } = deps;
     const path = getAnchorPath(e);
     if (
@@ -133,8 +143,8 @@ class LeaveConfirmService {
 
     e.preventDefault();
     void this.showConfirm(path, t('common:application.buttons.discard'), deps);
-  }
-}
+  },
+};
 
 /**
  * Hook to show a confirmation dialog when the user tries to leave a page with unsaved changes.
@@ -160,7 +170,7 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
     unsavedChanges,
     message,
     isConfirmedRef,
-    confirm: confirm as (payload: any) => Promise<boolean>,
+    confirm: confirm as (payload: ConfirmPayload) => Promise<boolean>,
     t,
   };
 

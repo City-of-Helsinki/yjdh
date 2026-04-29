@@ -1,4 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { ThemeProps } from 'shared/styles/theme';
 import styled from 'styled-components';
 
 export const $StatusIcon = styled.span`
@@ -10,24 +11,24 @@ export const $StatusIcon = styled.span`
 
   &.status-icon--${APPLICATION_STATUSES.HANDLING} {
     svg {
-      color: ${(props) => props.theme.colors.info};
+      color: ${(props: ThemeProps) => props.theme.colors.info};
     }
   }
 
   &.status-icon--${APPLICATION_STATUSES.ACCEPTED} {
     svg {
-      color: ${(props) => props.theme.colors.success};
+      color: ${(props: ThemeProps) => props.theme.colors.success};
     }
   }
 
   &.status-icon--${APPLICATION_STATUSES.REJECTED},
     &.status-icon--${APPLICATION_STATUSES.CANCELLED} {
     svg {
-      color: ${(props) => props.theme.colors.error};
+      color: ${(props: ThemeProps) => props.theme.colors.error};
     }
   }
 
   &.status-icon--${APPLICATION_STATUSES.INFO_REQUIRED} {
-    color: ${(props) => props.theme.colors.alertDark};
+    color: ${(props: ThemeProps) => props.theme.colors.alertDark};
   }
 `;

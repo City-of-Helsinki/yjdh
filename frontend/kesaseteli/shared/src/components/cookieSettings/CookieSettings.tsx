@@ -1,14 +1,15 @@
+import type CookieConsentComponent from 'kesaseteli-shared/components/cookieConsent/CookieConsent';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import * as React from 'react';
+import Container from 'shared/components/container/Container';
 import {
   LocalizedSiteName,
   OptionalGroups,
   RequiredGroups,
 } from 'shared/utils/cookieConsentSettings';
-import Container from 'shared/components/container/Container';
 
-const CookieConsent = dynamic(
+const CookieConsent = dynamic<React.ComponentProps<typeof CookieConsentComponent>>(
   () => import('kesaseteli-shared/components/cookieConsent/CookieConsent'),
   { ssr: false }
 );

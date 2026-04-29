@@ -10,6 +10,7 @@ import {
   logoSv,
   logoSvDark,
 } from 'hds-react';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 import useGoToPage from 'shared/hooks/useGoToPage';
@@ -18,7 +19,6 @@ import { NavigationItem, OptionType, ThemeOption } from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
 import { useHeader } from './useHeader';
-import { useRouter } from 'next/router';
 
 const mainTheme = theme;
 

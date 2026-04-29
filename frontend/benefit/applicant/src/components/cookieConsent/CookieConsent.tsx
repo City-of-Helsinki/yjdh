@@ -14,10 +14,6 @@ import { MAIN_CONTENT_ID } from 'shared/constants';
 import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
 import { getCookieConsentSiteSettings } from 'shared/utils/cookieConsentSettings';
 
-declare global {
-  var _paq: Array<Array<string | number | boolean>> | undefined;
-}
-
 const CookieConsent: React.FC<{ asPage?: boolean }> = ({ asPage = false }) => {
   const locale = useLocale();
   const router = useRouter();

@@ -41,8 +41,7 @@ export const fillEmployerDetails = async (
 export const fillEmploymentDetails = async (
   t: TestController,
   application: Application,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  expectedPreFill?: Partial<Employment>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<void> => {
   const step1 = getStep1Components(t);
   const step1Form = await step1.form();
@@ -107,10 +106,9 @@ export const fillEmploymentDetails = async (
 export const fillStep1Form = async (
   t: TestController,
   application: Application,
-  expectedPreFill?: Partial<Employment>
 ): Promise<void> => {
   await fillEmployerDetails(t, application);
-  await fillEmploymentDetails(t, application, expectedPreFill);
+  await fillEmploymentDetails(t, application);
 };
 
 export const loginAndfillApplication = async (
@@ -149,7 +147,7 @@ export const loginAndfillApplication = async (
       const companyTable = await step1.companyTable(application.company);
       await companyTable.expectations.isCompanyDataPresent();
     }
-    await fillStep1Form(t, application, expectedPreFill);
+    await fillStep1Form(t, application);
     await wizard.actions.clickSaveAndContinueButton();
   }
 

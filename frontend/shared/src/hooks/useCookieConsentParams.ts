@@ -20,14 +20,11 @@ const onChange = (changeEvent: CookieConsentChangeEvent): void => {
     if (hasStatisticsConsent) {
       // Start Matomo only after statistics consent is granted.
       if (window._paq) {
-        window._paq.push(['setConsentGiven']);
-        window._paq.push(['setCookieConsentGiven']);
+        window._paq.push(['setConsentGiven'], ['setCookieConsentGiven']);
       }
-    } else {
+    } else if (window._paq) {
       // Tell Matomo to forget consent when statistics consent is removed.
-      if (window._paq) {
-        window._paq.push(['forgetConsentGiven']);
-      }
+      window._paq.push(['forgetConsentGiven']);
     }
   }
 };
@@ -38,8 +35,7 @@ const useCookieConsentParams = ({
 }: {
   siteSettings: CookieConsentContextProps['siteSettings'];
   options: CookieConsentContextProps['options'];
-}): Partial<CookieConsentContextProps> => {
-  return useMemo(
+}): Partial<CookieConsentContextProps> => useMemo(
     () => ({
       onChange,
       siteSettings,
@@ -47,6 +43,5 @@ const useCookieConsentParams = ({
     }),
     [siteSettings, options]
   );
-};
 
 export default useCookieConsentParams;

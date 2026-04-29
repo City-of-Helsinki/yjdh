@@ -1,3 +1,4 @@
+import { NotificationSize } from 'hds-react';
 import Field from 'kesaseteli/handler/components/form/Field';
 import VtjErrorMessage from 'kesaseteli/handler/components/form/VtjErrorMessage';
 import VtjErrorNotification from 'kesaseteli/handler/components/form/VtjErrorNotification';
@@ -26,7 +27,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
 
   if (!social_security_number) {
     return (
-      <VtjErrorNotification reason="missingSsn" type="error" size="large" />
+      <VtjErrorNotification reason="missingSsn" type="error" size={NotificationSize.Large} />
     );
   }
 
@@ -35,7 +36,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
       <VtjErrorNotification
         reason="notFound"
         type="error"
-        size="large"
+        size={NotificationSize.Large}
         params={{ social_security_number }}
       />
     );
@@ -111,7 +112,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
         <VtjErrorNotification
           reason="notFound"
           type="error"
-          size="large"
+          size={NotificationSize.Large}
           params={{ social_security_number }}
         />
       )}

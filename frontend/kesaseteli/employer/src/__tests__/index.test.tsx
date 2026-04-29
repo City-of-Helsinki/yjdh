@@ -13,6 +13,7 @@ import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import type Application from 'shared/types/application';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
@@ -118,12 +119,12 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         ...fakeObjectFactory.fakeApplication(),
         status: 'draft',
         is_mine: true,
-      } as any; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as Application;
       const otherDraft = {
         ...fakeObjectFactory.fakeApplication(),
         status: 'draft',
         is_mine: false,
-      } as any; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as Application;
       const applications = [otherDraft, myDraft]; // otherDraft is first
 
       expectAuthorizedReply(myUser);

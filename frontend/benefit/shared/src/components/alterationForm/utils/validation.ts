@@ -68,13 +68,13 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
               ),
           })
 
-          .when('endDate', (endDate: string, schema: any) =>
+          .when('endDate', (endDate: string, schema: Yup.AnySchema) =>
             schema.test({
               message: t(
                 'common:applications.alterations.new.validation.resumeDateBeforeEndDate'
               ),
-              test: (value = '') =>
-                !validateIsBeforeOrOnDate(value, endDate ?? ''),
+              test: (value: unknown) =>
+                !validateIsBeforeOrOnDate((value as string) ?? '', endDate ?? ''),
             })
           ),
       }),

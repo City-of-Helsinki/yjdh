@@ -18,9 +18,12 @@ export const getErrorText = (
   isSubmitted: boolean
 ): string => {
   const error: FormikValues = getIn(errors, name) as FormikValues;
-  return !!error && (getIn(touched, name) || isSubmitted)
-    ? isString(error)
-      ? t(error)
-      : (t(error.key || '', error) as string)
-    : '';
+  if (!error || (!getIn(touched, name) && !isSubmitted)) {
+    return '';
+  }
+  if (isString(error)) {
+    return t(error);
+  }
+  const errorObj = error as Record<string, string>;
+  return t(errorObj.key || '', errorObj) ;
 };

@@ -11,7 +11,7 @@ jest.mock('shared/hooks/useGoToPage', () => jest.fn());
 jest.mock('kesaseteli/employer/hooks/backend/useCompanyQuery', () => jest.fn());
 
 describe('withOrganisation', () => {
-  const MockComponent = (): JSX.Element => <div>Mock Component</div>;
+  const MockComponent = (): React.ReactElement => <div>Mock Component</div>;
   const WrappedComponent = withOrganisation(MockComponent);
   const mockGoToPage = jest.fn();
 

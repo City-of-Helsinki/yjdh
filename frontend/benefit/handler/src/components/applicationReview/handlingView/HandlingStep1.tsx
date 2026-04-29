@@ -15,7 +15,7 @@ import {
   DecisionDetailList,
 } from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
-import { Button, ButtonPresetTheme, ButtonVariant, IconPlus } from 'hds-react';
+import { Button, ButtonVariant, IconPlus } from 'hds-react';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useMemo } from 'react';
