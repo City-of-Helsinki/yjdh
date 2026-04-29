@@ -34,7 +34,12 @@ def get_or_create_company_using_company_data(company_data: dict) -> Company:
     business_id = company_data.pop("business_id")
     ytj_data = company_data.pop("ytj_json", {})
 
-    defaults = COMPANY_SAFE_DEFAULTS | {"name": "", "ytj_json": ytj_data} | company_data
+    defaults = {"name": "", "ytj_json": ytj_data} | company_data
+
+    # Overwrite defaults only for missing or None values
+    for key, value in COMPANY_SAFE_DEFAULTS.items():
+        if defaults.get(key, None) is None:
+            defaults[key] = value
 
     company, created = Company.objects.get_or_create(
         business_id=business_id, defaults=defaults
