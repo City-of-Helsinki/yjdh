@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.0.1...benefit-handler-v5.1.0) (2026-04-29)
+
+
+### Features
+
+* **benefit:** Created tests ([62969c4](https://github.com/City-of-Helsinki/yjdh/commit/62969c43dd6e339ac6cac44ce2691d6b3efa34ea))
+* **benefit:** Paid salaries to handler view ([189526c](https://github.com/City-of-Helsinki/yjdh/commit/189526c997f46a41e357a868c14b9bd67971793e))
+* **benefit:** Tests and fix to buttons ([9cea826](https://github.com/City-of-Helsinki/yjdh/commit/9cea8269f1e4a58a620c734dec2f27bb77fbfae3))
+
+
+### Bug Fixes
+
+* **benefit:** Fixes to file input and serializer ([1027fe2](https://github.com/City-of-Helsinki/yjdh/commit/1027fe2b9f5719af10e9ac13423c5f56d2f70570))
+* **benefit:** Handling assurance, payslips and button visibility ([1f24d2b](https://github.com/City-of-Helsinki/yjdh/commit/1f24d2bb9baaa3780ed0136426836416b7acd295))
+
 ## [5.0.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.0.0...benefit-handler-v5.0.1) (2026-04-22)
 
 
