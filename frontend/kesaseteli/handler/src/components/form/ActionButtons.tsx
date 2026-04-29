@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconCheck,
@@ -10,6 +9,7 @@ import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $GridCell,
   GridCellProps,

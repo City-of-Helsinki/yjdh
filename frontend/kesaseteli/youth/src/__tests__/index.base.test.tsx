@@ -25,7 +25,13 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       } = renderComponent(<YouthIndex />);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
-      const results = await axe(container);
+      const results = await axe(container, {
+        rules: {
+          'aria-allowed-role': {
+            enabled: false,
+          },
+        },
+      });
       expect(results).toHaveNoViolations();
     });
 

@@ -3,7 +3,6 @@ import useDownloadP2PFile from 'benefit/handler/hooks/useDownloadP2PFile';
 import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowUndo,
@@ -12,6 +11,7 @@ import {
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';

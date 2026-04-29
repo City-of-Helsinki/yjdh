@@ -2,7 +2,6 @@ import useRequireAdditionalInformation from 'benefit/handler/hooks/useRequireAdd
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
@@ -11,6 +10,7 @@ import {
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 
 export type Props = {
   application: Application;

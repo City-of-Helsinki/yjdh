@@ -16,7 +16,6 @@ import {
 } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import {
-  Button,
   ButtonVariant,
   IconAlertCircleFill,
   IconArrowRight,
@@ -24,6 +23,7 @@ import {
 import kebabCase from 'lodash/kebabCase';
 import React from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import hdsToast from 'shared/components/toast/Toast';
 

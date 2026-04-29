@@ -23,7 +23,6 @@ import {
 } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonTheme,
   ButtonVariant,
@@ -37,6 +36,7 @@ import {
   TextArea,
 } from 'hds-react';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,

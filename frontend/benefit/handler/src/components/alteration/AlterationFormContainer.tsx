@@ -16,7 +16,6 @@ import {
 } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconAlertCircleFill,
@@ -25,6 +24,7 @@ import kebabCase from 'lodash/kebabCase';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,

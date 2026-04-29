@@ -2,7 +2,6 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
 import { ApplicationAlteration } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonVariant,
   Dialog,
   IconInfoCircle,
@@ -10,6 +9,7 @@ import {
 } from 'hds-react';
 import noop from 'lodash/noop';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 

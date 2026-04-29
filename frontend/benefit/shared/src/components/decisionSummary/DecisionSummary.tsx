@@ -103,7 +103,7 @@ const DecisionSummary = ({
       {isNotRejected && application.handledByAhjoAutomation && (
         <$DecisionActionContainer>
           <Button
-            iconRight={<IconLinkExternal />}
+            iconEnd={<IconLinkExternal />}
             onClick={openDecisionLink}
             theme="black"
             variant={ButtonVariant.Secondary}

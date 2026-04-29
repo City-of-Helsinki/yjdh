@@ -95,7 +95,7 @@ const NotificationView: React.FC<Props> = ({ data }) => {
                   variant="secondary"
                   theme="coat"
                   onClick={handleStartAhjo}
-                  iconRight={<IconLinkExternal />}
+                  iconEnd={<IconLinkExternal />}
                 >
                   {t(`${translationsBase}.ahjoButton.linkLabel`)}
                 </Button> */}

@@ -1,6 +1,7 @@
-import { Button, ButtonProps } from 'hds-react';
+import { ButtonProps } from 'hds-react';
 import * as React from 'react';
 
+import Button from '../button/Button';
 import { useUploadAttachment } from './useUploadAttachment';
 
 export interface UploadAttachmentProps {

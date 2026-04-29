@@ -1,10 +1,11 @@
-import { Button, IconPlus } from 'hds-react';
+import { IconPlus } from 'hds-react';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import { DashboardVoucher } from 'kesaseteli/employer/types/types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import LinkText from 'shared/components/link-text/LinkText';
