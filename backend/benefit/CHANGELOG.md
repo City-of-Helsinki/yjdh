@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.17.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.16.0...benefit-backend-v2.17.0) (2026-04-29)
+
+
+### Features
+
+* **benefit:** Paid salaries to handler view ([189526c](https://github.com/City-of-Helsinki/yjdh/commit/189526c997f46a41e357a868c14b9bd67971793e))
+* **benefit:** Test setting assurance ([e553a3e](https://github.com/City-of-Helsinki/yjdh/commit/e553a3ed5a4b3aba64f5aa139a115e6231308f32))
+
+
+### Bug Fixes
+
+* **benefit:** Fix application cloning ([42065d2](https://github.com/City-of-Helsinki/yjdh/commit/42065d29e5bfe17dd0ef2b20365357820b20ca9b))
+* **benefit:** Fixes to file input and serializer ([1027fe2](https://github.com/City-of-Helsinki/yjdh/commit/1027fe2b9f5719af10e9ac13423c5f56d2f70570))
+* **benefit:** Fixes to fixtures ([ce76596](https://github.com/City-of-Helsinki/yjdh/commit/ce76596cbae95fdf0b24b61931667d01911ca6fe))
+* **benefit:** Handling assurance, payslips and button visibility ([1f24d2b](https://github.com/City-of-Helsinki/yjdh/commit/1f24d2bb9baaa3780ed0136426836416b7acd295))
+
 ## [2.16.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.15.0...benefit-backend-v2.16.0) (2026-04-23)
 
 
