@@ -78,3 +78,36 @@ def test_get_or_create_company_via_ytj_data_uses_defaults():
     assert company.postcode == ""
     assert company.city == ""
     assert company.ytj_json == ytj_data
+
+
+@pytest.mark.django_db
+def test_get_or_create_company_using_company_data_with_none_address_fields():
+    """
+    Test that get_or_create_company_using_company_data handles cases where
+    YTJ data uses "addresses" / "freeAddressLine" field instead of separate fields
+    for postcode, street_address and city.
+
+    An example from open public endpoint data:
+    @see https://avoindata.prh.fi/opendata-ytj-api/v3/companies?businessId=3156602-3
+    """
+    company_data = {
+        "business_id": "3156602-3",
+        "city": None,
+        "company_form": "Osakeyhtiö",
+        "industry": "Muu erikoistumaton vähittäiskauppa",
+        "name": "Test Company Oy",
+        "postcode": None,
+        "street_address": None,
+    }
+
+    result = get_or_create_company_using_company_data(company_data)
+
+    assert isinstance(result, Company)
+    assert result.business_id == "3156602-3"
+    assert result.city == ""
+    assert result.company_form == "Osakeyhtiö"
+    assert result.industry == "Muu erikoistumaton vähittäiskauppa"
+    assert result.name == "Test Company Oy"
+    assert result.postcode == ""
+    assert result.street_address == ""
+    assert result.ytj_json == {}
