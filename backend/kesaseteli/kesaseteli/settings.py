@@ -159,6 +159,7 @@ env = environ.Env(
     EXCEL_DOWNLOAD_BATCH_SIZE=(int, 50),
     APP_RELEASE=(str, ""),
     OPENSHIFT_BUILD_COMMIT=(str, ""),
+    SAML_ALLOWED_HOSTS=(list, None),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -476,6 +477,8 @@ SAML_CREATE_UNKNOWN_USER = True
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
 SAML_USE_NAME_ID_AS_USERNAME = True  # Suomi.fi session ID as username
 SAML_IGNORE_LOGOUT_ERRORS = True
+if env("SAML_ALLOWED_HOSTS", default=None):
+    SAML_ALLOWED_HOSTS = env.list("SAML_ALLOWED_HOSTS")
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ACS_DEFAULT_REDIRECT_URL = reverse_lazy("eauth_authentication_init")
