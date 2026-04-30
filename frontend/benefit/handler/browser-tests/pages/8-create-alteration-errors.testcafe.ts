@@ -28,8 +28,19 @@ const expectSubmitButtonDisabled = async (
   t: TestController,
   test = true
 ): Promise<void> => {
-  const attributes = await submitButton.attributes;
-  await t.expect((attributes.disabled !== undefined) === test).ok();
+  await t.expect(submitButton.hasAttribute('disabled')).eql(test, {
+    timeout: 10000,
+  });
+};
+
+const clearFillAndBlur = async (
+  t: TestController,
+  selector: string,
+  value: string
+): Promise<void> => {
+  await clearAndFill(t, selector, value);
+  // Force blur to trigger Formik validation and mark field as touched
+  await t.click(Selector('h1').filterVisible().nth(0));
 };
 
 test('Handler attempts to create a new alteration with incorrect inputs', async (t: TestController) => {
@@ -80,7 +91,7 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
     .ok();
 
   // Fill in a last date of work that's before the start of subsidy, verify that validation fails
-  await t.typeText(alterationEndDate, '11.6.2024');
+  await clearFillAndBlur(t, alterationEndDate, '11.6.2024');
   await t
     .expect(
       Selector(alterationEndDateError).withText(
@@ -90,7 +101,7 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
     .ok();
 
   // Fill in a last date of work that's after the end of subsidy, verify that validation fails
-  await clearAndFill(t, alterationEndDate, '12.12.2024');
+  await clearFillAndBlur(t, alterationEndDate, '12.12.2024');
   await t
     .expect(
       Selector(alterationEndDateError).withText(
@@ -100,8 +111,8 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
     .ok();
 
   // Set a coherent last date of work, set the resume date to before that
-  await clearAndFill(t, alterationEndDate, '13.9.2024');
-  await t.typeText(alterationResumeDate, '9.9.2024');
+  await clearFillAndBlur(t, alterationEndDate, '13.9.2024');
+  await clearFillAndBlur(t, alterationResumeDate, '9.9.2024');
   await t
     .expect(
       Selector(alterationResumeDateError).withText(
@@ -119,7 +130,7 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
   await t.click(alterationEndDate);
   await t.selectText(alterationEndDate);
   await t.pressKey('delete');
-  await clearAndFill(t, alterationResumeDate, '11.6.2024');
+  await clearFillAndBlur(t, alterationResumeDate, '11.6.2024');
   await t
     .expect(
       Selector(alterationResumeDateError).withText(
@@ -127,7 +138,7 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
       ).exists
     )
     .ok();
-  await clearAndFill(t, alterationResumeDate, '12.12.2024');
+  await clearFillAndBlur(t, alterationResumeDate, '12.12.2024');
   await t
     .expect(
       Selector(alterationResumeDateError).withText(
@@ -137,14 +148,16 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
     .ok();
 
   // Set dates to valid, verify that form validation passes for now
-  await clearAndFill(t, alterationEndDate, '13.9.2024');
-  await clearAndFill(t, alterationResumeDate, '19.9.2024');
+  await clearFillAndBlur(t, alterationEndDate, '13.9.2024');
+  await clearFillAndBlur(t, alterationResumeDate, '19.9.2024');
   await expectSubmitButtonDisabled(t, false);
 
   // Verify that the contact person name field is required
   await t.click(alterationContactPersonName);
   await t.selectText(alterationContactPersonName);
   await t.pressKey('delete');
+  // Force blur to trigger Formik validation
+  await t.click(Selector('h1').filterVisible().nth(0));
   await expectSubmitButtonDisabled(t);
   await t
     .expect(
@@ -153,7 +166,7 @@ test('Handler attempts to create a new alteration with incorrect inputs', async 
       ).exists
     )
     .ok();
-  await clearAndFill(t, alterationContactPersonName, 'Testi Hakija');
+  await clearFillAndBlur(t, alterationContactPersonName, 'Testi Hakija');
 
   // Verify that all einvoice fields are required if the billing is set to use einvoicing
   await t.click(Selector('[for=alteration-use-einvoice-yes]'));

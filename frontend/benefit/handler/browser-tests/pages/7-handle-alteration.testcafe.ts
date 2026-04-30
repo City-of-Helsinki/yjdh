@@ -65,6 +65,16 @@ const getCurrencyString = (value: number, decimals = 2): string =>
     currency: 'EUR',
   });
 
+const clearFillAndBlur = async (
+  t: TestController,
+  selector: string | Selector,
+  value: string
+): Promise<void> => {
+  await clearAndFill(t, selector, value);
+  // Date validation messages are shown reliably after blur.
+  await t.click(Selector('h1').filterVisible().nth(0));
+};
+
 const expectHandleButtonDisabled = async (
   t: TestController,
   test = true
@@ -185,6 +195,8 @@ test('Handler creates another alteration and tries to handle it with errors', as
   await t.click(recoveryEndDate);
   await t.selectText(recoveryEndDate);
   await t.pressKey('delete');
+  // Date validation messages are shown reliably after blur.
+  await t.click(Selector('h1').filterVisible().nth(0));
   await t
     .expect(
       Selector(recoveryStartDateError).withText(fi.form.validation.required)
@@ -199,7 +211,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
     .ok();
 
   // Test dates outside the subsidy period
-  await clearAndFill(t, recoveryStartDate, '24.5.2024');
+  await clearFillAndBlur(t, recoveryStartDate, '24.5.2024');
   await t
     .expect(
       Selector(recoveryStartDateError).withText(
@@ -207,7 +219,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
       ).exists
     )
     .ok();
-  await clearAndFill(t, recoveryStartDate, '24.12.2024');
+  await clearFillAndBlur(t, recoveryStartDate, '24.12.2024');
   await t
     .expect(
       Selector(recoveryStartDateError).withText(
@@ -219,7 +231,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
   await t.selectText(recoveryStartDate);
   await t.pressKey('delete');
 
-  await clearAndFill(t, recoveryEndDate, '24.5.2024');
+  await clearFillAndBlur(t, recoveryEndDate, '24.5.2024');
   await t
     .expect(
       Selector(recoveryEndDateError).withText(
@@ -227,7 +239,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
       ).exists
     )
     .ok();
-  await clearAndFill(t, recoveryEndDate, '24.12.2024');
+  await clearFillAndBlur(t, recoveryEndDate, '24.12.2024');
   await t
     .expect(
       Selector(recoveryEndDateError).withText(
@@ -237,8 +249,8 @@ test('Handler creates another alteration and tries to handle it with errors', as
     .ok();
 
   // Test recovery end date before start date
-  await clearAndFill(t, recoveryStartDate, '25.6.2024');
-  await clearAndFill(t, recoveryEndDate, '20.6.2024');
+  await clearFillAndBlur(t, recoveryStartDate, '25.6.2024');
+  await clearFillAndBlur(t, recoveryEndDate, '20.6.2024');
   await t
     .expect(
       Selector(recoveryEndDateError).withText(
@@ -248,7 +260,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
     .ok();
 
   // Test that recovery during a period where the calculation is zero is not allowed
-  await clearAndFill(t, recoveryEndDate, '29.6.2024');
+  await clearFillAndBlur(t, recoveryEndDate, '29.6.2024');
   await t.click(calculateButton);
   const resultText = await calculationResult.textContent;
   await t.expect(resultText.includes(getCurrencyString(0, 0))).ok();
