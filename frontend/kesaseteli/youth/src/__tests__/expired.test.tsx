@@ -23,7 +23,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
     await expiredPageApi.expectations.pageIsLoaded();
     await expiredPageApi.actions.clickGoToFrontPageButton();
     await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`, undefined, {
+      expect(spyPush).toHaveBeenCalledWith(`/${DEFAULT_LANGUAGE}/`, undefined, {
         shallow: false,
       })
     );

@@ -76,7 +76,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           });
           await waitFor(() =>
             expect(spyPush).toHaveBeenCalledWith(
-              `${language}/thankyou`,
+              `/${language}/thankyou`,
               undefined,
               { shallow: false }
             )
@@ -121,7 +121,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           });
           await waitFor(() =>
             expect(spyPush).toHaveBeenCalledWith(
-              `${DEFAULT_LANGUAGE}/500`,
+              `/${DEFAULT_LANGUAGE}/500`,
               undefined,
               { shallow: false }
             )
@@ -149,7 +149,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
             });
             await waitFor(() =>
               expect(spyPush).toHaveBeenCalledWith(
-                `${DEFAULT_LANGUAGE}/${errorType}`
+                `/${DEFAULT_LANGUAGE}/${errorType}`
               )
             );
           });
