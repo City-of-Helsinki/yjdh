@@ -6,6 +6,7 @@ import FrontPageMainIngress from 'benefit/applicant/components/mainIngress/front
 import PrerequisiteReminder from 'benefit/applicant/components/prerequisiteReminder/PrerequisiteReminder';
 import AppContext from 'benefit/applicant/context/AppContext';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import { Button, IconArrowRight } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -94,6 +95,12 @@ const ApplicantIndex: NextPage = () => {
               ]}
               initialItems={4}
               onListLengthChanged={onDraftChange}
+            />
+            <ApplicationList
+              heading={t('common:applications.list.secondInstalments.heading')}
+              status={SUBMITTED_STATUSES}
+              isArchived={false}
+              secondInstalmentStatus={INSTALMENT_STATUSES.REQUESTED}
             />
             <ApplicationList
               heading={t('common:applications.list.submitted.heading')}

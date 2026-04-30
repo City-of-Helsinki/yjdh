@@ -3,6 +3,7 @@ import React from 'react';
 import { OptionType } from 'shared/types/common';
 
 import ListItem from './listItem/ListItem';
+import SecondInstalmentListItem from './listItem/SecondInstalmentListItem';
 import useApplicationList from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -14,18 +15,20 @@ export interface ApplicationListProps {
   onListLengthChanged?: (isLoading: boolean, length: number) => void;
   beforeList?: React.ReactNode;
   afterList?: React.ReactNode;
+  secondInstalmentStatus?: string;
 }
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
-  heading,
-  status,
-  isArchived,
-  orderByOptions,
-  noItemsText,
-  onListLengthChanged,
-  beforeList,
-  afterList,
-}) => {
+                                                           heading,
+                                                           status,
+                                                           isArchived,
+                                                           orderByOptions,
+                                                           noItemsText,
+                                                           onListLengthChanged,
+                                                           beforeList,
+                                                           afterList,
+                                                           secondInstalmentStatus,
+                                                         }) => {
   const {
     list,
     shouldShowSkeleton,
@@ -38,10 +41,17 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     status,
     isArchived,
     orderByOptions,
+    secondInstalmentStatus,
   });
 
   const items =
-    list?.map((props) => <ListItem key={props.id} {...props} />) || [];
+    list?.map((props) =>
+      secondInstalmentStatus ? (
+        <SecondInstalmentListItem key={props.id} {...props} />
+      ) : (
+        <ListItem key={props.id} {...props} />
+      )
+    ) || [];
 
   return (
     <ListContents

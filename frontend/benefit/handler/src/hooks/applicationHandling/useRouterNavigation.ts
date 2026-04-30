@@ -88,6 +88,14 @@ export const useRouterNavigation = (
 
     const previousLocation = getPreviousLocationData().pathname;
 
+    // If a returnTab is explicitly set in the URL, always honour it (e.g. tab=6 for Maksuerät)
+    const returnTabRaw = router.query?.returnTab;
+    const returnTab =
+      typeof returnTabRaw === 'string' ? parseInt(returnTabRaw, 10) : NaN;
+    if (!Number.isNaN(returnTab)) {
+      return router.push(`/?tab=${returnTab}`);
+    }
+
     // When coming from the alteration page (open application in new window), return to the alteration page
     if (
       getPreviousLocationData().length === 1 &&

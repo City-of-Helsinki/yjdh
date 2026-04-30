@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import transaction
-from django.db.models import Prefetch, Q, QuerySet
+from django.db.models import Prefetch, Q, QuerySet, OuterRef, Subquery
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -74,6 +74,7 @@ from applications.services.generate_application_summary import (
     get_context_for_summary_context,
 )
 from calculator.enums import InstalmentStatus
+from calculator.models import Instalment
 from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from messages.automatic_messages import send_application_reopened_message
 from messages.models import MessageType
@@ -336,6 +337,15 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             exclude_fields | (extra_exclude_fields - fields)
         )
 
+        second_instalment_due_date = Instalment.objects.filter(
+            calculation=OuterRef("calculation"),
+            instalment_number=2,
+        ).values("due_date")[:1]
+
+        qs = qs.annotate(
+            second_instalment_due_date=Subquery(second_instalment_due_date)
+        )
+
         order_by = request.query_params.get("order_by")
         if (
             order_by
@@ -360,6 +370,13 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                     Q(archived=should_filter_archived)
                     | Q(pk__in=self._get_application_pks_with_instalments())
                 )
+
+        second_instalment_status = request.query_params.get("second_instalment_status")
+        if second_instalment_status:
+            qs = qs.filter(
+                calculation__instalments__instalment_number=2,
+                calculation__instalments__status=second_instalment_status,
+            )
 
         ahjo_cases = request.query_params.get("ahjo_case") == "1"
         if ahjo_cases:

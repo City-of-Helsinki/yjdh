@@ -26,6 +26,12 @@
         "expand": "Näytä lisää",
         "contract": "Näytä vähemmän"
       },
+      "secondInstalments": {
+        "heading": "Palkkatiedot 2. maksuerän saamiseksi",
+        "prompt1": "Toimita tiedot",
+        "prompt2": "mennessä",
+        "button": "Vastaa"
+      },
       "noApplications": "Ei avoimia Helsinki-lisä -hakemuksia",
       "navigateToDecisions": "Katso kaikki päätökset",
       "alterationReminder": {
