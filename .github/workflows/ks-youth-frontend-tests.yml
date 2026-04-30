@@ -6,6 +6,12 @@ on:
   pull_request:
     paths:
       - ".github/workflows/ks-youth-frontend-tests.yml"
+      - "frontend/kesaseteli/youth/**"
+      - "frontend/kesaseteli/shared/**"
+      - "frontend/shared/**"
+      - "frontend/jest.config.js"
+      - "frontend/tsconfig.json"
+      - "frontend/next.config.js"
   workflow_dispatch:
 
 jobs:
