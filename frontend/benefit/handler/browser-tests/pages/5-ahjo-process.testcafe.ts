@@ -107,14 +107,15 @@ test('Open form and create a decision proposal', async (t: TestController) => {
     )
   );
 
-  await t.click(
-    Selector('label').withText(
-      fi.review.decisionProposal.templates.fields.select.label
-    )
-  );
+  const templateSelect = Selector('[role="combobox"]').filterVisible().nth(0);
+  await t.expect(templateSelect.exists).ok({ timeout: 10000 });
+  await t.click(templateSelect);
 
   await t.click(
-    Selector('ul > li').withText('FI: Myönteisen päätöksen Päätös-osion teksti')
+    Selector('[role="option"]')
+      .withText('FI: Myönteisen päätöksen Päätös-osion teksti')
+      .filterVisible()
+      .nth(0)
   );
 
   // Has decision text in editor

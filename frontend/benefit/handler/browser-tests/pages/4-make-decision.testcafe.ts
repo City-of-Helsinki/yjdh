@@ -37,8 +37,8 @@ test('Handler makes a favorable decision', async (t: TestController) => {
   const endDate = addMonths(startDate, 1);
 
   // Select state aid max percentage
-  await t.click(Selector('#stateAidMaxPercentage-toggle-button'));
-  await t.click(Selector('#stateAidMaxPercentage-menu li:first-child'));
+  await t.click(Selector('#stateAidMaxPercentage'));
+  await t.click(Selector('[role="option"]').filterVisible().nth(0));
 
   // Fill in the dates
   await clearAndFill(t, '#startDate', format(startDate, DATE_FORMATS.UI_DATE));
@@ -51,12 +51,8 @@ test('Handler makes a favorable decision', async (t: TestController) => {
 
   // Expect a "receipt" of calculation
   await t
-    .expect(
-      Selector('[data-testid="calculation-results-total"]').withText(
-        'Yhteensä ajanjaksolta'
-      ).exists
-    )
-    .ok();
+    .expect(Selector('main').withText(fi.calculators.result.header2).exists)
+    .ok({ timeout: 10000 });
 
   // Click "accepted" radio
   await t.click(Selector('label').withText(fi.review.fields.support));
@@ -88,12 +84,13 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
 
   // Visit the completed tab and read the current number of listed applications
   await t.click(Selector('li').withText(fi.batches.tabs.completion));
-  await t
-    .expect(Selector('h2').withText(fi.batches.tabs.completion).exists)
-    .ok();
-  const currentCompletedBatchesCount = await Selector('h2')
-    .withText(fi.batches.tabs.completion)
-    .textContent.then((text) => text.match(/\((\d+)\)/)?.[1]);
+  const completionHeading = Selector('[role="tabpanel"] h2').withText(
+    fi.batches.tabs.completion
+  );
+  await t.expect(completionHeading.exists).ok();
+  const currentCompletedBatchesCount = await completionHeading.textContent.then(
+    (text) => text.match(/\((\d+)\)/)?.[1] ?? '0'
+  );
 
   // Return to pending tab and click "Mark as ready for Ahjo" button
   await t.click(Selector('li').withText(fi.batches.tabs.pending));
@@ -143,9 +140,8 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
   await t.click(Selector('li').withText(fi.batches.tabs.completion));
 
   await t
-    .expect(
-      Selector('h2').withText(`(${Number(currentCompletedBatchesCount) + 1})`)
-        .exists
-    )
-    .ok({ timeout: 10000 });
+    .expect(completionHeading.textContent)
+    .contains(`(${Number(currentCompletedBatchesCount) + 1})`, {
+      timeout: 10000,
+    });
 });

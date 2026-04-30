@@ -1,6 +1,7 @@
-import { Selector, t } from 'testcafe';
+import { t } from 'testcafe';
 
 import WizardStep from './WizardStep';
+import { getUploadedFileLinkInScope } from '../utils/attachmentSelectors';
 
 class Step4 extends WizardStep {
   constructor() {
@@ -13,16 +14,20 @@ class Step4 extends WizardStep {
     await t.expect(this.employeeConsent.exists).ok();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async stageUploadFiles(filename: string): Promise<void> {
-    const filenameWithoutExtension = filename.replace(/\.\w+$/, '');
-    await t.setFilesToUpload('#upload_attachment_employee_consent', filename);
+    const uploadedFileLink = getUploadedFileLinkInScope(
+      '[data-testid="step-4"]',
+      filename
+    );
+
+    const inputId = '#upload_attachment_employee_consent';
+
+    await t.setFilesToUpload(inputId, filename);
     await t
-      .expect(
-        Selector(`a[aria-label^="${filenameWithoutExtension}"]`).filterVisible()
-          .exists
-      )
-      .ok('Uploaded file link should become visible', { timeout: 15_000 });
+      .expect(uploadedFileLink.exists)
+      .ok('Uploaded file link should become visible', {
+        timeout: 15_000,
+      });
   }
 }
 
