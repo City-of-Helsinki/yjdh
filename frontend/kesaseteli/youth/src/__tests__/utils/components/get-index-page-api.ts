@@ -231,9 +231,13 @@ const getIndexPageApi = (lang?: Language) => {
         youthFormData[key] = Boolean(checkbox.getAttribute('value'));
       },
       async selectTargetGroup(label?: string | RegExp): Promise<void> {
-        const radioButton = label
-          ? await screen.findByRole('radio', { name: label })
-          : (await screen.findAllByRole('radio'))[0];
+        let radioButton: HTMLElement | undefined;
+        if (label) {
+          radioButton = await screen.findByRole('radio', { name: label });
+        } else {
+          const radioButtons = await screen.findAllByRole('radio');
+          [radioButton] = radioButtons;
+        }
 
         if (!radioButton) {
           throw new Error('No target groups found');

@@ -1,7 +1,6 @@
-import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 import ApplicationNotOpen from 'kesaseteli/youth/components/ApplicationNotOpen';
 import YouthApplication from 'kesaseteli/youth/components/youth-form/YouthApplication';
-
+import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 import { GetStaticProps, NextPage } from 'next';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
