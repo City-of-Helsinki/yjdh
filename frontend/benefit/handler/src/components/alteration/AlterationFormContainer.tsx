@@ -9,6 +9,7 @@ import { $Heading } from 'benefit/handler/components/alterationList/AlterationLi
 import AlterationForm from 'benefit-shared/components/alterationForm/AlterationForm';
 import { $SaveActionFormErrorText } from 'benefit-shared/components/alterationForm/AlterationForm.sc';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
+import { AlterationFormContextType } from 'benefit-shared/context/AlterationFormContext';
 import AlterationFormProvider from 'benefit-shared/context/AlterationFormProvider';
 import {
   Application,
@@ -128,7 +129,9 @@ const AlterationFormContainer: React.FC<Props> = ({
     alterationFormContextValues;
 
   return (
-    <AlterationFormProvider {...alterationFormContextValues}>
+    <AlterationFormProvider
+      {...(alterationFormContextValues as unknown as AlterationFormContextType)}
+    >
       <Container>
         <$Heading>{t('common:applications.alterations.new.title')}</$Heading>
         <$Grid>

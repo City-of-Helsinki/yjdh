@@ -1,6 +1,14 @@
 import { FormikErrors, FormikTouched, FormikValues, getIn } from 'formik';
-import { TFunction } from 'next-i18next';
 import { isString } from 'shared/utils/type-guards';
+
+type TranslatorFn = {
+  (key: string, options?: Record<string, unknown>): string;
+  (
+    key: string,
+    defaultValue: string,
+    options?: Record<string, unknown>
+  ): string;
+};
 
 /** Get error text
  * @param {Object} errors
@@ -14,7 +22,7 @@ export const getErrorText = (
   errors: FormikErrors<FormikValues>,
   touched: FormikTouched<FormikValues>,
   name: string,
-  t: TFunction,
+  t: TranslatorFn,
   isSubmitted: boolean
 ): string => {
   const error: FormikValues = getIn(errors, name) as FormikValues;
