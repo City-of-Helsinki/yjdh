@@ -230,9 +230,9 @@ const getApplicationPageApi = (
         },
         expectForeignIbanNote: async (visible: boolean): Promise<void> => {
           const query =
-            /ulkomaista tilinumeroa|foreign iban|utländskt kontonummer/i;
+            /ulkomaisesta tilinumerosta|foreign iban|utländskt kontonummer|foreign_iban_note|foreign_iban_notification_label/i;
           if (visible) {
-            await screen.findByText(query);
+            await screen.findByRole('heading', { name: query });
 
             await screen.findByRole('link', {
                     name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
@@ -280,7 +280,12 @@ const getApplicationPageApi = (
             expect(templateLinks[0].getAttribute('href')).not.toBe('');
           } else {
             await waitFor(
-              () => expect(screen.queryByText(query)).not.toBeInTheDocument(),
+              () =>
+                expect(
+                  screen.queryByRole('heading', {
+                    name: query,
+                  })
+                ).not.toBeInTheDocument(),
               { timeout: 2000 }
             );
           }
