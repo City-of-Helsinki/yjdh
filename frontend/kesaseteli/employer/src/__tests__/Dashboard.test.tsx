@@ -67,9 +67,7 @@ describe('Dashboard', () => {
       screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /Tervetuloa Kesäseteli -palvelun työnantajien käyttöliittymään/
-      )
+      screen.getByText(/Tervetuloa työnantajien Kesäseteli-asiointipalveluun/)
     ).toBeInTheDocument();
   });
 

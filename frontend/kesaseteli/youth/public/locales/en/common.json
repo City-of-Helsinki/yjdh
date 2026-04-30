@@ -100,8 +100,8 @@
       "reasons": "Title",
       "reasonsPlaceholder": "Choose from following options",
       "additional_info_description": "More information",
-      "additional_info_attachments": "ENG Liitetiedostot",
-      "additional_info_attachmentsHelper": "ENG Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+      "additional_info_attachments": "Attachments",
+      "additional_info_attachmentsHelper": "You can add a maximum of five attachments. Accepted file formats are: pdf, jpg and png. The maximum size is 10 megabytes.",
       "sendButton": "Send the information"
     },
     "reasons": {

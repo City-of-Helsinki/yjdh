@@ -91,7 +91,7 @@ export default class HandlerForm<
     return this.expect(
       this.component.findByText(
         this.regexp(
-          `Postikoodi poikkeaa hakemukselle syötetystä postikoodista (${postcode})`
+          `Postinumero poikkeaa hakemukselle syötetystä postinumerosta (${postcode})`
         )
       )
     );

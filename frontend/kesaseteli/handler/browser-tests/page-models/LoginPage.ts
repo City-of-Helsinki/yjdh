@@ -20,6 +20,6 @@ export default class LoginPage extends PageComponent {
   }
 
   public async expectSessionExpiredMessage(): Promise<void> {
-    return this.expect(this.component.findByText(/käyttäjäsessio vanhentui/i));
+    return this.expect(this.component.findByText(/käyttäjäistunto vanhentui/i));
   }
 }

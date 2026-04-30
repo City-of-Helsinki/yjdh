@@ -26,34 +26,34 @@
   "loginPage": {
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
-    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäistunto vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
-    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään napsauttamalla alla olevaa painiketta.",
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Tunnistustietosi kulkevat suojatussa yhteydessä. Napsauta alla olevaa painiketta tunnistautuaksesi."
   },
   "thankyouPage": {
     "thankyouMessageLabel": "Hakemus on lähetetty.",
     "thankyouMessageContent": "Olemme yhteydessä jos tarvitsemme lisätietoja hakemuksen käsittelyä varten. Voit nyt kirjautua ulos ja sulkea tämän sivun.",
     "createNewApplication": "Tee uusi hakemus",
     "title": "Hakemus {{submitted_at}}",
-    "header": "Kesäseteli hakemus lähetetty onnistuneesti!",
+    "header": "Kesäsetelihakemus lähetetty onnistuneesti!",
     "success_message": "Työntekijän {{name}} tiedot on tallennettu.",
     "add_another": "Tee uusi hakemus",
     "return_to_dashboard": "Palaa etusivulle"
   },
   "dashboard": {
     "header": "Työnantajan kesäsetelihakemukset",
-    "welcome": "Tervetuloa Kesäseteli -palvelun työnantajien käyttöliittymään. Tästä voit seurata hakemustesi tilaa ja tehdä uusia hakemuksia.",
-    "info": "Lue lisää palvelusta <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\" target=\"_blank\" rel=\"noopener noreferrer\">täältä</lnk>.",
+    "welcome": "Tervetuloa työnantajien Kesäseteli-asiointipalveluun. Tämän palvelun kautta voit seurata hakemustesi tilaa ja tehdä uusia hakemuksia.",
+    "info": "Lue lisää palvelusta <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\">täältä</lnk>.",
     "noApplications": "Ei aiempia hakemuksia.",
-    "createApplicationGuidance": "Tästä voit luoda uuden hakemuksen kesäsetelin hakemiseksi.",
+    "createApplicationGuidance": "Luo uusi kesäsetelihakemus napsauttamalla alla olevaa painiketta.",
     "previousApplications": "Aiemmat kesäsetelihakemukset",
     "organisationName": "Asioit organisaation {{name}} puolesta.",
     "filterBar": {
       "label": "Omat hakemukset",
       "ariaLabel": "Omat hakemukset -suodatin",
       "tooltipLabel": "Suodatin",
-      "tooltipText": "Aktivoitu: Näytä vain omat hakemukset. Pois: Näytä organisaation hakemukset.",
+      "tooltipText": "Aktivoitu: Näytä vain omat hakemukset. Pois: Näytä kaikki organisaation puolesta tehdyt hakemukset.",
       "tooltipButtonLabel": "Avaa hakemukset-suodattimen ohjeistus"
     }
   },
@@ -83,7 +83,7 @@
         "name": "Yhteenveto",
         "header": "2. Selvitys työsuhteesta",
         "employment": "Työsuhde",
-        "tooltip": "Kirjoita kaavakkeeseen kesätyöntekijän tiedot ja Kesäsetelin sarjanumero. Aloita syöttämällä työntekijän nimi ja Kesäsetelin sarjanumero, jonka jälkeen voit hakea tiedot painamalla \"Hae tiedot työntekijän nimen ja Kesäsetelin sarjanumeron avulla\". Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
+        "tooltip": "Kirjoita kaavakkeeseen kesätyöntekijän tiedot ja kesäsetelin sarjanumero. Aloita syöttämällä työntekijän nimi ja kesäsetelin sarjanumero, jonka jälkeen voit hakea tiedot painamalla \"Hae tiedot työntekijän nimen ja kesäsetelin sarjanumeron avulla\". Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
         "attachments_section": "Pakolliset liitteet",
         "employment_section": "Työsuhteen kuvaus",
         "employment_description_placeholder": "Kerro tähän työtehtävistä, joita nuori teki.",
@@ -125,7 +125,7 @@
           "other": "Muu"
         },
         "job_type": {
-          "sports_and_leisure": "Liikunta- ja vapaa-aika",
+          "sports_and_leisure": "Liikunta ja vapaa-aika",
           "maintenance_and_construction": "Huolto- ja rakennustehtävät",
           "restaurant_and_cafe": "Ravintola- ja kahvila-ala",
           "retail": "Kaupan ala",
@@ -177,10 +177,10 @@
         "street_address": "Syötä katuosoite, postinumero ja -toimipaikka",
         "date": "Käytä muotoa P.K.VVVV",
         "format": "Käytä muotoa",
-        "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
-        "employment_contract": "Liitä tähän Kesäsetelillä palkatun nuoren työsopimus.",
-        "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus.",
-        "payslip_foreign_iban": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus. Jos kyseessä on ulkomainen tilinumero, myös rahansiirtotodistus on pakollinen. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
+        "attachments": "Voit lisätä korkeintaan viisi liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Suurin mahdollinen koko on 10 megatavua",
+        "employment_contract": "Liitä tähän kesäsetelillä palkatun nuoren työsopimus.",
+        "payslip": "Liitä tähän kesäsetelin avulla palkatun nuoren palkkatodistus.",
+        "payslip_foreign_iban": "Liitä tähän kesäsetelin avulla palkatun nuoren palkkatodistus. Jos kyseessä on ulkomainen tilinumero, myös rahansiirtotodistus on pakollinen. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
         "bank_account": "Syötä IBAN-muodossa"
       },
       "errors": {
@@ -269,10 +269,10 @@
     }
   },
   "noOrganisationPage": {
-    "title": "Ei valtuutusta",
-    "header": "Ei valtuutusta asioida organisaation puolesta",
-    "content": "Sinulla ei ole valtuuksia edustaa mitään organisaatiota Kesäseteli-palvelussa. Jotta voit käsitellä hakemuksia, sinulla on oltava voimassa oleva valtuutus edustaa työnantajaa.",
-    "instructions": "Pyydä organisaatiotasi myöntämään sinulle tarvittavat valtuudet Suomi.fi-palvelussa.",
+    "title": "Ei valtuutta",
+    "header": "Ei valtuutta asioida organisaation puolesta",
+    "content": "Sinulla ei ole valtuutta edustaa mitään organisaatiota Kesäseteli-palvelussa. Jotta voit käsitellä hakemuksia, sinulla on oltava voimassa oleva valtuus edustaa työnantajaa.",
+    "instructions": "Pyydä organisaatiotasi myöntämään sinulle tarvittava valtuus Suomi.fi-palvelussa.",
     "linkText": "Lue lisää valtuuksista <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\" target=\"_blank\">täältä</lnk>.",
     "logoutButton": "Kirjaudu ulos"
   }
