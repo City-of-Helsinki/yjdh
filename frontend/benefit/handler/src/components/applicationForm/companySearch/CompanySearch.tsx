@@ -1,9 +1,11 @@
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   LoadingSpinner,
   Notification,
   RadioButton,
-  SearchInput,
+  Search,
   SelectionGroup,
 } from 'hds-react';
 import React from 'react';
@@ -37,7 +39,7 @@ const CompanySearch: React.FC = () => {
         <h2>{t('common:applications.sections.companySearch.heading')}</h2>
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={6} data-testid="company-search-input">
-            <SearchInput
+            <Search
               label={t(
                 `${translationsBase}.companySearch.searchCompanyDetails`
               )}
@@ -45,7 +47,7 @@ const CompanySearch: React.FC = () => {
               getSuggestions={getSuggestions}
               suggestionLabelField="name"
               highlightSuggestions
-              onSubmit={getCompany}
+              onSend={getCompany}
               css={`
                 margin-bottom: ${theme.spacing.m};
               `}
@@ -66,13 +68,15 @@ const CompanySearch: React.FC = () => {
                       value={businessId}
                       label={`${name} <${businessId}>`}
                       checked={selectedCompany === businessId}
-                      onChange={(event) => onCompanyChange(event.target.value)}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        onCompanyChange(event.target.value)
+                      }
                     />
                   ))}
                 </SelectionGroup>
                 <Button
-                  variant="primary"
-                  theme="coat"
+                  variant={ButtonVariant.Primary}
+                  theme={ButtonPresetTheme.Coat}
                   onClick={() => onSelectCompany()}
                   css={`
                     margin-top: ${theme.spacing.l};

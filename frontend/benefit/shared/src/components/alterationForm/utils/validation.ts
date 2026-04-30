@@ -7,12 +7,20 @@ import {
   validateIsAfterOrOnDate,
   validateIsBeforeOrOnDate,
 } from 'benefit-shared/utils/dates';
-import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import * as Yup from 'yup';
 
+type TranslatorFn = {
+  (key: string, options?: Record<string, unknown>): string;
+  (
+    key: string,
+    defaultValue: string,
+    options?: Record<string, unknown>
+  ): string;
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const getValidationSchema = (application: Application, t: TFunction) => {
+export const getValidationSchema = (application: Application, t: TranslatorFn) => {
   const einvoiceRequired = Yup.string().when('useEinvoice', {
     is: true,
     then: Yup.string().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
@@ -68,13 +76,13 @@ export const getValidationSchema = (application: Application, t: TFunction) => {
               ),
           })
 
-          .when('endDate', (endDate: string, schema: any) =>
+          .when('endDate', (endDate: string, schema: Yup.AnySchema) =>
             schema.test({
               message: t(
                 'common:applications.alterations.new.validation.resumeDateBeforeEndDate'
               ),
-              test: (value = '') =>
-                !validateIsBeforeOrOnDate(value, endDate ?? ''),
+              test: (value: unknown) =>
+                !validateIsBeforeOrOnDate((value as string) ?? '', endDate ?? ''),
             })
           ),
       }),

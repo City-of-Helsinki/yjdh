@@ -1,5 +1,5 @@
 import { ROUTES } from 'benefit/applicant/constants';
-import { Button } from 'hds-react';
+import { Button, ButtonVariant, IconSize } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -43,7 +43,7 @@ const NotificationView: React.FC<Props> = ({
     <Container>
       <$Notification>
         <$NotificationRow>
-          <$IconCheck size="xl" />
+          <$IconCheck size={IconSize.ExtraLarge} />
         </$NotificationRow>
         <$NotificationRow>
           <$NotificationTitle>{title}</$NotificationTitle>
@@ -52,7 +52,11 @@ const NotificationView: React.FC<Props> = ({
             <Button theme="coat" onClick={handleGoHome}>
               {t('common:utility.home')}
             </Button>
-            <Button theme="coat" variant="secondary" onClick={handleReload}>
+            <Button
+              theme="coat"
+              variant={ButtonVariant.Secondary}
+              onClick={handleReload}
+            >
               {t('common:applications.actions.viewSavedApplication')}
             </Button>
           </$ActionsContainer>

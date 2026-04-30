@@ -230,15 +230,47 @@ const getApplicationPageApi = (
         },
         expectForeignIbanNote: async (visible: boolean): Promise<void> => {
           const query =
-            /ulkomaista tilinumeroa|foreign iban|utländskt kontonummer/i;
+            /ulkomaisesta tilinumerosta|foreign iban|utländskt kontonummer|foreign_iban_note|foreign_iban_notification_label/i;
           if (visible) {
-            await screen.findByText(query, undefined, { timeout: 2000 });
-            const payslipLink = screen.getByRole('link', {
-              name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
-            });
-            expect(payslipLink).toHaveAttribute(
-              'href',
-              expect.stringMatching(/#summer_vouchers\.0\.payslip$/)
+            await screen.findByRole('heading', { name: query });
+
+            await screen.findByRole('link', {
+                    name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
+                  });
+
+            await waitFor(
+              () =>
+                expect(
+                  screen.queryByRole('link', {
+                    name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
+                  })
+                ).toHaveAttribute(
+                  'href',
+                  expect.stringMatching(/#summer_vouchers\.0\.payslip$/)
+                ),
+              { timeout: 2000 }
+            );
+
+            await waitFor(
+              () =>
+                expect(
+                  screen.queryAllByRole('link', {
+                    name: /tästä|here|här/i,
+                  })[0]
+                ).toHaveAttribute('href'),
+              { timeout: 2000 }
+            );
+
+            await waitFor(
+              () =>
+                expect(
+                  screen
+                    .queryAllByRole('link', {
+                      name: /tästä|here|här/i,
+                    })[0]
+                    ?.getAttribute('href')
+                ).not.toBe(''),
+              { timeout: 2000 }
             );
 
             const templateLinks = screen.getAllByRole('link', {
@@ -248,7 +280,12 @@ const getApplicationPageApi = (
             expect(templateLinks[0].getAttribute('href')).not.toBe('');
           } else {
             await waitFor(
-              () => expect(screen.queryByText(query)).not.toBeInTheDocument(),
+              () =>
+                expect(
+                  screen.queryByRole('heading', {
+                    name: query,
+                  })
+                ).not.toBeInTheDocument(),
               { timeout: 2000 }
             );
           }

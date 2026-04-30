@@ -1,4 +1,4 @@
-import { IconAlertCircleFill } from 'hds-react';
+import { IconAlertCircleFill, IconSize } from 'hds-react';
 import React from 'react';
 
 import { $FieldErrorMessage, Props } from './FieldErrorMessage.sc';
@@ -9,7 +9,7 @@ const FieldErrorMessage: React.FC<Props> = ({
   small,
 }) => (
   <$FieldErrorMessage data-testid={dataTestId} small={small}>
-    <IconAlertCircleFill size="s" />
+    <IconAlertCircleFill size={IconSize.Small} />
     {children}
   </$FieldErrorMessage>
 );

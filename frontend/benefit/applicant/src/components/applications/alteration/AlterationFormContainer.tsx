@@ -15,10 +15,15 @@ import {
   ApplicationAlterationData,
 } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, IconAlertCircleFill, IconArrowRight } from 'hds-react';
+import {
+  ButtonVariant,
+  IconAlertCircleFill,
+  IconArrowRight,
+} from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import React from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import hdsToast from 'shared/components/toast/Toast';
 
@@ -120,14 +125,18 @@ const AlterationFormContainer: React.FC<Props> = ({
       </AlterationFormProvider>
       <$Hr />
       <$AlterationFormButtonContainer>
-        <Button theme="black" variant="secondary" onClick={onCancel}>
+        <Button
+          theme="black"
+          variant={ButtonVariant.Secondary}
+          onClick={onCancel}
+        >
           {t(`common:applications.alterations.new.actions.cancel`)}
         </Button>
         <Button
           onClick={handleSubmit}
           disabled={isSubmitting || (isSubmitted && !formik.isValid)}
           theme="coat"
-          iconRight={<IconArrowRight />}
+          iconEnd={<IconArrowRight />}
           isLoading={isSubmitting}
           loadingText={t(`common:utility.submitting`)}
         >

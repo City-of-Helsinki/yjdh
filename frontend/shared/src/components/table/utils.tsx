@@ -1,3 +1,4 @@
+import { IconSize } from 'hds-react';
 import React from 'react';
 import { HeaderGroup } from 'react-table';
 
@@ -17,7 +18,7 @@ const renderTableHead = <D extends { id: string }>(
         {column.render('Header')}
         {column.canSort && (
           <$SortArrowWrapper>
-            <$SortArrow size="xs" />
+            <$SortArrow size={IconSize.ExtraSmall} />
           </$SortArrowWrapper>
         )}
       </$HeaderCell>

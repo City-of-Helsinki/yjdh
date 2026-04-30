@@ -1,9 +1,16 @@
-import { Button, IconArrowLeft, IconArrowRight, IconCross } from 'hds-react';
+import {
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconArrowLeft,
+  IconArrowRight,
+  IconCross,
+} from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
 import useGoToPage from 'shared/hooks/useGoToPage';
@@ -101,10 +108,10 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     <$ButtonSection columns={3} withoutDivider>
       <$GridCell justifySelf="start">
         <Button
-          variant="supplementary"
-          theme="black"
+          variant={ButtonVariant.Supplementary}
+          theme={ButtonPresetTheme.Black}
           data-testid="cancel-button"
-          iconLeft={<IconCross />}
+          iconStart={<IconCross />}
           onClick={handleCancel}
           isLoading={isLoading}
           disabled={isLoading}
@@ -115,10 +122,10 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       <$GridCell justifySelf="center">
         {!isFirstStep && (
           <Button
-            variant="secondary"
-            theme="black"
+            variant={ButtonVariant.Secondary}
+            theme={ButtonPresetTheme.Black}
             data-testid="previous-button"
-            iconLeft={<IconArrowLeft />}
+            iconStart={<IconArrowLeft />}
             onClick={() => goToPreviousStep()}
             isLoading={isLoading}
             disabled={isLoading}
@@ -129,9 +136,9 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       </$GridCell>
       <$GridCell justifySelf="end">
         <Button
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           data-testid="next-button"
-          iconRight={<IconArrowRight />}
+          iconEnd={<IconArrowRight />}
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             // eslint-disable-next-line no-console
             console.debug('ActionButtons: handleSubmit called');

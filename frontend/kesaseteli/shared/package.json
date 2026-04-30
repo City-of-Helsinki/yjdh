@@ -21,13 +21,13 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
-    "hds-react": "^3.11.0",
+    "hds-react": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "hds-react": "^3.11.0",
+    "hds-react": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

@@ -20,6 +20,7 @@ jest.mock('next/dist/shared/lib/router-context.shared-runtime', () => {
 /* eslint-disable no-console */
 const originalWarn = console.warn;
 const originalError = console.error;
+const originalInfo = console.info;
 /* eslint-enable no-console */
 
 const messagesToIgnore = [
@@ -32,6 +33,8 @@ const messagesToIgnore = [
   'downshift: A component has changed the uncontrolled prop',
   'ReactDOM.render is no longer supported in React 18',
   'All radio buttons in a SelectionGroup are unchecked',
+  'Could not parse CSS stylesheet',
+  'i18next is made possible by our own product, Locize',
 ];
 
 // Directly replace console methods instead of using jest.spyOn so that
@@ -39,24 +42,55 @@ const messagesToIgnore = [
 const createFilter =
   (original: (...data: unknown[]) => void) =>
     (...args: unknown[]) => {
+      const firstArg = args[0];
+      const message =
+        isString(firstArg)
+          ? firstArg
+          : firstArg instanceof Error
+            ? firstArg.message
+            : '';
       if (
         args.length > 0 &&
-        isString(args[0]) &&
-        messagesToIgnore.some((msg) => (args[0] as string).includes(msg))
+        message.length > 0 &&
+        messagesToIgnore.some((msg) => message.includes(msg))
       ) {
         return;
       }
       original.apply(console, args);
     };
 
+// Apply filters immediately (not in beforeAll) so they catch errors
+// that fire during module initialization (e.g. jsdom CSS parse errors from HDS React).
+console.warn = createFilter(originalWarn);
+console.error = createFilter(originalError);
+console.info = createFilter(originalInfo);
+
 beforeAll(() => {
   console.warn = createFilter(originalWarn);
   console.error = createFilter(originalError);
+  console.info = createFilter(originalInfo);
 });
+
+if (typeof window.ResizeObserver === 'undefined') {
+  class ResizeObserver {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  }
+
+  // Provide the API both on window and global for libraries accessing either.
+  window.ResizeObserver = ResizeObserver;
+  global.ResizeObserver = ResizeObserver;
+}
+
+if (typeof Element.prototype.scrollIntoView !== 'function') {
+  Element.prototype.scrollIntoView = jest.fn();
+}
 
 window.scrollTo = jest.fn();
 
 afterAll(() => {
   console.warn = originalWarn;
   console.error = originalError;
+  console.info = originalInfo;
 });

@@ -17,6 +17,8 @@ import {
 import { FormikProps } from 'formik';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   DateInput,
   IconMinusCircle,
   IconPlusCircle,
@@ -117,23 +119,31 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
         <React.Fragment key={item.id}>
           <$GridCell $colStart={1}>
             <Select
-              value={getPaySubsidyPercentageSelectValue(
-                item.paySubsidyPercent || 0
-              )}
-              helper=""
-              optionLabelField="label"
-              label={t(`${translationsBase}.salarySubsidyPercentage`)}
-              onChange={(paySubsidyPercent: OptionType) =>
-                updatePaySubsidies(index, {
-                  paySubsidyPercent: paySubsidyPercent.value as number,
-                })
+              value={
+                getPaySubsidyPercentageSelectValue(item.paySubsidyPercent || 0)
+                  ?.value?.toString()
               }
-              options={paySubsidyPercentageOptions}
+              texts={{
+                assistive: "",
+                error: getErrorMessage(fields.paySubsidies.name),
+                label: t(`${translationsBase}.salarySubsidyPercentage`),
+                placeholder: t('common:select'),
+              }}
+              onChange={(selectedOptions: OptionType[]) => {
+                const selectedValue = Number(selectedOptions?.[0]?.value);
+                if (!Number.isNaN(selectedValue)) {
+                  updatePaySubsidies(index, {
+                    paySubsidyPercent: selectedValue,
+                  });
+                }
+              }}
+              options={paySubsidyPercentageOptions.map((option) => ({
+                label: option.label,
+                value: String(option.value),
+              }))}
               id={fields.paySubsidyPercent.name}
-              placeholder={t('common:select')}
               invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
               aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-              error={getErrorMessage(fields.paySubsidyPercent.name)}
             />
           </$GridCell>
 
@@ -293,9 +303,9 @@ const TrainingCompensationsList: React.FC<TrainingCompensationsListProps> = ({
           <$GridCell $colStart={9} $colSpan={3}>
             <Button
               onClick={() => removeTrainingCompensation(item.id)}
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconMinusCircle />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconMinusCircle />}
               style={{ background: 'white' }}
             >
               {t(`${translationsBase}.remove`)}
@@ -440,9 +450,9 @@ const TrainingCompensationInputSection: React.FC<
       <$GridCell $colStart={9} $colSpan={3}>
         <Button
           onClick={addNewTrainingCompensation}
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           disabled={isDisabledAddTrainingCompensationButton}
-          iconLeft={<IconPlusCircle />}
+          iconStart={<IconPlusCircle />}
           style={{ marginTop: 'var(--spacing-m)' }}
         >
           {t(`${translationsBase}.add`)}
@@ -605,24 +615,31 @@ const SalaryBenefitCalculatorView: React.FC<
           </$GridCell>
           <$GridCell $colStart={1} $colSpan={3}>
             <Select
-              value={getStateAidMaxPercentageSelectValue()}
-              helper=""
-              optionLabelField="label"
-              label={fields.stateAidMaxPercentage.label}
-              onChange={(stateAidMaxPercentage: OptionType) =>
-                formik.setFieldValue(
-                  fields.stateAidMaxPercentage.name,
-                  stateAidMaxPercentage.value
-                )
-              }
-              options={stateAidMaxPercentageOptions}
+              value={getStateAidMaxPercentageSelectValue()?.value?.toString()}
+              texts={{
+                assistive: "",
+                error: getErrorMessage(fields.stateAidMaxPercentage.name),
+                label: fields.stateAidMaxPercentage.label,
+                placeholder: t('common:select'),
+              }}
+              onChange={(selectedOptions: OptionType[]) => {
+                const selectedValue = Number(selectedOptions?.[0]?.value);
+                if (!Number.isNaN(selectedValue)) {
+                  formik.setFieldValue(
+                    fields.stateAidMaxPercentage.name,
+                    selectedValue
+                  );
+                }
+              }}
+              options={stateAidMaxPercentageOptions.map((option) => ({
+                label: option.label,
+                value: String(option.value),
+              }))}
               id={fields.stateAidMaxPercentage.name}
-              placeholder={t('common:select')}
               invalid={!!getErrorMessage(fields.stateAidMaxPercentage.name)}
               aria-invalid={
                 !!getErrorMessage(fields.stateAidMaxPercentage.name)
               }
-              error={getErrorMessage(fields.stateAidMaxPercentage.name)}
             />
           </$GridCell>
 
@@ -760,7 +777,7 @@ const SalaryBenefitCalculatorView: React.FC<
 
         <Button
           onClick={handleSubmit}
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           data-testid="run-calculation"
           style={{ marginRight: 'var(--spacing-xs)' }}
         >
@@ -769,8 +786,8 @@ const SalaryBenefitCalculatorView: React.FC<
 
         <Button
           onClick={() => setIsResetConfirmOpen(true)}
-          theme="coat"
-          variant="secondary"
+          theme={ButtonPresetTheme.Coat}
+          variant={ButtonVariant.Secondary}
         >
           {t(`${translationsBase}.clear`)}
         </Button>

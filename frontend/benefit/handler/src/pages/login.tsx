@@ -1,9 +1,11 @@
 import useLogin from 'benefit/handler/hooks/useLogin';
 import {
   Button,
+  ButtonPresetTheme,
   IconSignin,
   Notification,
   NotificationProps as HDSNotificationProps,
+  NotificationSize,
 } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -72,7 +74,7 @@ const Login: NextPage = () => {
       <Notification
         type={notificationProps.type}
         label={notificationProps.label}
-        size="large"
+        size={NotificationSize.Large}
         css={`
           margin-bottom: ${theme.spacing.xl};
         `}
@@ -81,8 +83,8 @@ const Login: NextPage = () => {
       </Notification>
       <Button
         data-testid="main-login-button"
-        theme="coat"
-        iconLeft={<IconSignin />}
+        theme={ButtonPresetTheme.Coat}
+        iconStart={<IconSignin />}
         onClick={login}
       >
         {t('common:login.login')}

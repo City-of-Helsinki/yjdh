@@ -5,6 +5,8 @@ import { Application } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   Dialog,
   IconAlertCircle,
   IconAngleLeft,
@@ -132,11 +134,11 @@ const ApplicationForm: React.FC = () => {
             <$Grid>
               <$GridCell $colSpan={6} css="display: flex; align-items: center;">
                 <Button
-                  variant="supplementary"
+                  variant={ButtonVariant.Supplementary}
                   role="link"
                   size="small"
-                  theme="black"
-                  iconLeft={<IconAngleLeft />}
+                  theme={ButtonPresetTheme.Black}
+                  iconStart={<IconAngleLeft />}
                   onClick={() =>
                     id ? setIsConfirmationModalOpen(true) : router.push('/')
                   }
@@ -233,23 +235,23 @@ const ApplicationForm: React.FC = () => {
             <Dialog.Header
               title={t(`${translationsBase}.backWithoutSavingConfirm`)}
               id="back-dialog-header"
-              iconLeft={<IconAlertCircle aria-hidden="true" />}
+              iconStart={<IconAlertCircle aria-hidden="true" />}
             />
             <Dialog.Content>
               {t(`${translationsBase}.backWithoutSavingDescription`)}
             </Dialog.Content>
             <Dialog.ActionButtons>
               <Button
-                theme="coat"
-                variant="secondary"
+                theme={ButtonPresetTheme.Coat}
+                variant={ButtonVariant.Secondary}
                 onClick={() => setIsConfirmationModalOpen(false)}
                 data-testid="modalCancel"
               >
                 {t(`${translationsBase}.backWithoutBack`)}
               </Button>
               <Button
-                theme="coat"
-                variant="primary"
+                theme={ButtonPresetTheme.Coat}
+                variant={ButtonVariant.Primary}
                 onClick={() => navigateBack()}
                 data-testid="modalBack"
               >

@@ -8,7 +8,7 @@ import {
   Application,
   DecisionMaker,
 } from 'benefit-shared/types/application';
-import { LoadingSpinner, Select, SelectionGroup } from 'hds-react';
+import { LoadingSpinner, Option, Select, SelectionGroup } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -27,9 +27,9 @@ type HandlingStepProps = {
 };
 
 const replaceDecisionTemplatePlaceholders = (
-  text: string,
+  text: string | null | undefined,
   role: string
-): string => text.replace(/@role/gi, role);
+): string => (text || '').replace(/@role/gi, role);
 
 type SignerSectionProps = {
   signerOptions: AhjoSigner[] | undefined;
@@ -178,7 +178,7 @@ type TemplateSectionProps = {
   selectedDecisionMaker: DecisionMaker | null;
   applicantLanguage: string | undefined;
   sections: DecisionProposalTemplateData[] | undefined;
-  selectTemplate: (option: DecisionProposalTemplateData) => void;
+  selectTemplate: (option: Option[]) => void;
   templateForDecisionText: string;
   templateForJustificationText: string;
   translationBase: string;
@@ -217,9 +217,11 @@ const TemplateSection: React.FC<TemplateSectionProps> = ({
       </$GridCell>
       <$GridCell $colSpan={5} css={{ marginBottom: theme.spacing.m }}>
         <Select
-          label={t(`${translationBase}.templates.fields.select.label`)}
-          helper={t(`${translationBase}.templates.fields.select.helperText`)}
-          placeholder={t('common:utility.select')}
+          texts={{
+            assistive: t(`${translationBase}.templates.fields.select.helperText`),
+            label: t(`${translationBase}.templates.fields.select.label`),
+            placeholder: t('common:utility.select'),
+          }}
           options={
             sections?.map((section: DecisionProposalTemplateData) => ({
               ...section,
@@ -310,18 +312,21 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
   );
   const { data: signerOptions } = useAhjoSettingsQuery('ahjo_signer');
 
-  const selectTemplate = (option: DecisionProposalTemplateData): void => {
-    if (!selectedDecisionMaker || !handledApplication) return;
+  const selectTemplate = (option: Option[]): void => {
+    if (!selectedDecisionMaker || !handledApplication || !sections) return;
+
+    const fullTemplate = sections.find((s) => s.name === option[0]?.label);
+    if (!fullTemplate) return;
 
     setTemplateForDecisionText(
       replaceDecisionTemplatePlaceholders(
-        option.template_decision_text,
+        fullTemplate.template_decision_text,
         selectedDecisionMaker.name || ''
       )
     );
     setTemplateForJustificationText(
       replaceDecisionTemplatePlaceholders(
-        option.template_justification_text,
+        fullTemplate.template_justification_text,
         selectedDecisionMaker.name || ''
       )
     );
@@ -329,11 +334,11 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
     setHandledApplication({
       ...handledApplication,
       decisionText: replaceDecisionTemplatePlaceholders(
-        option.template_decision_text,
+        fullTemplate.template_decision_text,
         selectedDecisionMaker.name || ''
       ),
       justificationText: replaceDecisionTemplatePlaceholders(
-        option.template_justification_text,
+        fullTemplate.template_justification_text,
         selectedDecisionMaker.name || ''
       ),
       decisionMakerId: selectedDecisionMaker.id,
@@ -413,7 +418,7 @@ const ApplicationReviewStep2: React.FC<HandlingStepProps> = ({
       <Container>
         <Heading
           header={t(
-            `review.decisionProposal.templates.missingContent.${
+            `${translationBase}.templates.missingContent.${
               handledApplication?.status || ''
             }`,
             { language }

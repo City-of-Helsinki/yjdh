@@ -44,11 +44,11 @@ const useChangeEmployerAssurance = (): UseMutationResult<
         ]);
         const previousApplications = queryClient.getQueryData('applications');
 
-        queryClient.setQueryData(['application', id], (current: any) =>
-          current ? { ...current, employerAssurance } : current
+        queryClient.setQueryData(['application', id], (current: unknown) =>
+          current && typeof current === 'object' ? { ...current, employerAssurance } : current
         );
 
-        queryClient.setQueryData('applications', (current: any) => {
+        queryClient.setQueryData('applications', (current: unknown) => {
           if (!Array.isArray(current)) {
             return current;
           }

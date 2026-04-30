@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import { Button, IconSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -30,7 +30,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   return (
     <Container>
       <$ErrorPageContainer>
-        <$IconAlertCircle size="xl" />
+        <$IconAlertCircle size={IconSize.ExtraLarge} />
         <$ErrorPageTitle>{title}</$ErrorPageTitle>
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
         {errorId && <$ErrorPageMessage>({errorId})</$ErrorPageMessage>}

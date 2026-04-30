@@ -1,8 +1,15 @@
 import { $SecondaryDangerButton } from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem.sc';
-import { Button, Dialog, IconInfoCircle, IconTrash } from 'hds-react';
+import {
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  IconInfoCircle,
+  IconTrash,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 
@@ -48,9 +55,9 @@ const AlterationDeleteModal = ({
               )}
             </$SecondaryDangerButton>
             <Button
-              theme="coat"
-              variant="danger"
-              iconLeft={<IconTrash />}
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Danger}
+              iconStart={<IconTrash />}
               onClick={onDelete}
               disabled={isDeleting}
               isLoading={isDeleting}

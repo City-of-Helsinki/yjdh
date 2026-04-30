@@ -83,4 +83,4 @@ export const Fonts = `
   font-style: italic;
   text-rendering: optimizeLegibility;
 }
-`
+`;

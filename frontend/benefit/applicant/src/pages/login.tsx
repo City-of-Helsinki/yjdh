@@ -6,10 +6,12 @@ import {
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import {
   Button,
+  ButtonVariant,
   IconLinkExternal,
   IconSignin,
   Notification,
   NotificationProps as HDSNotificationProps,
+  NotificationSize,
 } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -74,7 +76,7 @@ const Login: NextPage = () => {
             <Notification
               type={notificationProps.type}
               label={notificationProps.label}
-              size="large"
+              size={NotificationSize.Large}
             >
               {notificationProps.content}
             </Notification>
@@ -89,7 +91,7 @@ const Login: NextPage = () => {
               <Button
                 theme="coat"
                 fullWidth
-                iconRight={<IconSignin />}
+                iconEnd={<IconSignin />}
                 onClick={login}
                 data-testid="loginButton"
               >
@@ -104,9 +106,9 @@ const Login: NextPage = () => {
             <$GridCell $colSpan={14}>
               <Button
                 theme="coat"
-                variant="secondary"
+                variant={ButtonVariant.Secondary}
                 fullWidth
-                iconRight={<IconLinkExternal />}
+                iconEnd={<IconLinkExternal />}
                 onClick={() =>
                   // eslint-disable-next-line security/detect-non-literal-fs-filename
                   window.open(t('common:login.suomifiUrl'), '_blank')
@@ -120,7 +122,7 @@ const Login: NextPage = () => {
           <Notification
             type="info"
             label={t('common:login.infoLabel')}
-            size="default"
+            size={NotificationSize.Medium}
           >
             {t('common:login.infoContent')}
           </Notification>

@@ -23,7 +23,9 @@ import {
 } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import {
-  Button,
+  ButtonPresetTheme,
+  ButtonTheme,
+  ButtonVariant,
   IconAlertCircleFill,
   IconCheck,
   IconLock,
@@ -34,6 +36,7 @@ import {
   TextArea,
 } from 'hds-react';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,
@@ -248,7 +251,7 @@ const AlterationHandlingForm = ({
                   {t(`${translationBase}.talpaCsv.guideText`)}
                 </$TalpaGuideText>
                 <AlterationCsvButton
-                  theme="coat"
+                  theme={ButtonPresetTheme.Coat as unknown as ButtonTheme}
                   secondary
                   isAlterationValid={formik.isValid && !!formik.touched}
                   alteration={alteration}
@@ -265,8 +268,8 @@ const AlterationHandlingForm = ({
           <$StickyBarColumn>
             <Button
               onClick={() => navigateBack()}
-              theme="black"
-              variant="secondary"
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
             >
               {t(`${translationBase}.actions.returnToAlterationList`)}
             </Button>
@@ -274,9 +277,9 @@ const AlterationHandlingForm = ({
               onClick={() =>
                 toggleMessagesDrawerVisibility(!isMessagesDrawerVisible)
               }
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconPen />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconPen />}
             >
               {t('common:review.actions.handlingPanel')}
             </Button>
@@ -298,8 +301,8 @@ const AlterationHandlingForm = ({
             )}
             <Button
               onClick={openConfirmationModal}
-              theme="coat"
-              iconLeft={<IconCheck />}
+              theme={ButtonPresetTheme.Coat}
+              iconStart={<IconCheck />}
               disabled={
                 formik.values.isRecoverable &&
                 (isSubmitting ||

@@ -24,16 +24,23 @@ type Props = {
   application: Application;
 };
 
+export const isDateInHandledRecoveryRange = (
+  application: Application,
+  date: Date
+): boolean =>
+  application.alterations?.some(
+    (alteration) =>
+      alteration.state === ALTERATION_STATE.HANDLED &&
+      (alteration.recoveryStartDate ?? '') <=
+        formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
+      (alteration.recoveryEndDate ?? '') >=
+        formatDate(date, DATE_FORMATS.BACKEND_DATE)
+  ) ?? false;
+
 const AlterationForm = ({ application }: Props): JSX.Element | null => {
   const { t, formik, language, isSubmitted } = useContext(
     AlterationFormContext
   );
-
-  if (!t || !formik) {
-    return null; // Render nothing if context is not fully provided
-  }
-
-  const { alterationType, useEinvoice, endDate } = formik.values;
 
   const minEndDate = useMemo<Date>(
     () => new Date(application.startDate ?? ''),
@@ -43,6 +50,8 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
     () => new Date(application.endDate ?? ''),
     [application.endDate]
   );
+
+  const endDate = formik?.values.endDate;
   const minResumeDate = useMemo<Date>(() => {
     if (endDate) {
       return new Date(convertDateFormat(endDate));
@@ -51,17 +60,16 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
   }, [minEndDate, endDate]);
   const maxResumeDate = maxEndDate;
 
+  if (!t || !formik) {
+    return null; // Render nothing if context is not fully provided
+  }
+
+  const { alterationType, useEinvoice } = formik.values;
+
   const translationBase = 'common:applications.alterations.new';
 
   const disableOccupiedDates = (date: Date): boolean =>
-    application.alterations?.some(
-      (alteration) =>
-        alteration.state === ALTERATION_STATE.HANDLED &&
-        (alteration.recoveryStartDate ?? '') <=
-          formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
-        (alteration.recoveryEndDate ?? '') >=
-          formatDate(date, DATE_FORMATS.BACKEND_DATE)
-    ) ?? false;
+    isDateInHandledRecoveryRange(application, date);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);

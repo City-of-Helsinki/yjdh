@@ -1,10 +1,11 @@
 import Router from 'next/router';
+
 import {
+  getAnchorPath,
   getPathWithoutHash,
   isBypassUrl,
   isInternalLink,
   shouldBlockNavigation,
-  getAnchorPath,
 } from '../useLeaveConfirm.utils';
 
 jest.mock('next/router', () => ({
@@ -25,17 +26,20 @@ describe('useLeaveConfirm.utils', () => {
     const originalLocation = window.location;
     beforeAll(() => {
       delete (window as { location?: Location }).location;
+      // eslint-disable-next-line scanjs-rules/assign_to_location
       (window as { location: Location }).location = {
         ...originalLocation,
         origin: 'http://localhost',
       } as Location;
     });
     afterAll(() => {
+      // eslint-disable-next-line scanjs-rules/assign_to_location
       (window as { location: Location }).location = originalLocation;
     });
 
     it('should return true for internal links', () => {
       const anchor = document.createElement('a');
+      // eslint-disable-next-line scanjs-rules/assign_to_href
       anchor.href = 'http://localhost/other';
       expect(isInternalLink(anchor)).toBe(true);
     });
@@ -93,6 +97,7 @@ describe('useLeaveConfirm.utils', () => {
   describe('getAnchorPath', () => {
     it('should return path for internal anchor click', () => {
       const anchor = document.createElement('a');
+      // eslint-disable-next-line scanjs-rules/assign_to_href
       anchor.href = 'http://localhost/target';
       const event = { target: anchor } as unknown as MouseEvent;
       expect(getAnchorPath(event)).toBe('/target');

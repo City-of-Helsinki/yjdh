@@ -1,4 +1,4 @@
-import { Button, CommonButtonProps } from 'hds-react';
+import { ButtonProps } from 'hds-react';
 import React from 'react';
 import {
   FieldValues,
@@ -7,11 +7,12 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { UseMutationResult } from 'react-query';
+import Button from 'shared/components/button/Button';
 import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 type Props<FormData extends FieldValues, BackendResponseData> = Omit<
-  CommonButtonProps,
+  ButtonProps,
   'onClick' | 'onError'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;

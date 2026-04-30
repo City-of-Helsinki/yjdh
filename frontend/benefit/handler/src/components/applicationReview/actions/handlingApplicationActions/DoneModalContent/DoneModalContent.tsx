@@ -2,7 +2,7 @@ import { HandledAplication } from 'benefit/handler/types/application';
 import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Row } from 'benefit-shared/types/application';
-import { Button, Dialog } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, Dialog } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {
@@ -78,8 +78,8 @@ const DoneModalContent: React.FC<ComponentProps> = ({
       </Dialog.Content>
       <Dialog.ActionButtons>
         <Button
-          theme="coat"
-          variant="primary"
+          theme={ButtonPresetTheme.Coat}
+          variant={ButtonVariant.Primary}
           onClick={onSubmit}
           data-testid="submit"
         >
@@ -88,8 +88,8 @@ const DoneModalContent: React.FC<ComponentProps> = ({
             : t(`${translationsBase}.reject`)}
         </Button>
         <Button
-          theme="black"
-          variant="secondary"
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
           onClick={onClose}
           data-testid="close"
         >

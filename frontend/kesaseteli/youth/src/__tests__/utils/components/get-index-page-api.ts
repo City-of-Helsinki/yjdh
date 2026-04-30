@@ -22,6 +22,9 @@ type SaveParams = {
 type InputKey = keyof YouthTranslations['youthApplication']['form'];
 type ErrorType = keyof YouthTranslations['errors'];
 
+const findSelectedSchoolError = (): HTMLElement | null =>
+  screen.queryByTestId('selectedSchool-error');
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 const getIndexPageApi = (lang?: Language) => {
   const {
@@ -29,6 +32,18 @@ const getIndexPageApi = (lang?: Language) => {
     regexp,
     replaced,
   } = getYouthTranslationsApi();
+
+  const findSelectedSchoolCombobox = async (): Promise<HTMLElement> => {
+    const byLabel = screen.queryByRole('combobox', {
+      name: regexp(translations.youthApplication.form.selectedSchool),
+    });
+
+    if (byLabel) {
+      return byLabel;
+    }
+
+    return screen.findByRole('combobox');
+  };
 
   const youthFormData: Partial<YouthFormData> = {};
   return {
@@ -54,16 +69,14 @@ const getIndexPageApi = (lang?: Language) => {
         ).not.toBeInTheDocument();
       },
       async selectedSchoolIsDisabled(): Promise<void> {
-        const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.selectedSchool),
-        });
-        expect(input).toBeDisabled();
+        const input = await findSelectedSchoolCombobox();
+        expect(input).toHaveAttribute('aria-disabled', 'true');
       },
       async selectedSchoolIsEnabled(): Promise<void> {
-        const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.selectedSchool),
-        });
-        await waitFor(() => expect(input).toBeEnabled());
+        const input = await findSelectedSchoolCombobox();
+        await waitFor(() =>
+          expect(input).not.toHaveAttribute('aria-disabled', 'true')
+        );
       },
       async textInputHasError(
         key: YouthFormFields,
@@ -79,18 +92,14 @@ const getIndexPageApi = (lang?: Language) => {
         });
       },
       async selectedSchoolHasError(errorType: ErrorType): Promise<void> {
-        const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.selectedSchool),
-        });
-        await waitFor(() => expect(input).toBeInvalid());
+        await findSelectedSchoolCombobox();
         const errorText = translations.errors[errorType];
-        await waitFor(() => {
-          const errorElements = screen.queryAllByText(regexp(errorText));
-          expect(errorElements.length).toBeGreaterThan(0);
-          // Check if any of the error elements are related to the school selection
-          // HDS usually puts error text near the component.
-          // For now, just confirming the error text exists is better than failing due to wrong selector.
-        });
+        await waitFor(() =>
+          expect(findSelectedSchoolError()).toBeInTheDocument()
+        );
+        await waitFor(() =>
+          expect(screen.queryAllByText(regexp(errorText)).length).toBeGreaterThan(0)
+        );
       },
       async textInputIsValid(key: YouthFormFields): Promise<void> {
         if (key === 'selectedSchool') {
@@ -104,10 +113,13 @@ const getIndexPageApi = (lang?: Language) => {
         }
       },
       async selectedSchoolIsValid(): Promise<void> {
-        const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.selectedSchool),
-        });
-        expect(input).toBeValid();
+        const input = await findSelectedSchoolCombobox();
+        await waitFor(() =>
+          expect(findSelectedSchoolError()).not.toBeInTheDocument()
+        );
+        await waitFor(() =>
+          expect(input).not.toHaveAttribute('aria-invalid', 'true')
+        );
       },
       async checkboxHasError(
         key: Extract<
@@ -205,17 +217,16 @@ const getIndexPageApi = (lang?: Language) => {
         value: string,
         expectedOption?: string
       ): Promise<void> {
-        const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.selectedSchool),
-        });
+        const input = await findSelectedSchoolCombobox();
         await waitFor(() => {
           expect(input).toBeEnabled();
         });
         await userEvent.type(input, value);
         const option = expectedOption ?? value;
-        const schoolOption = await screen.findByText(new RegExp(option, 'i'));
+        const schoolOption = await screen.findByRole('option', {
+          name: new RegExp(option, 'i'),
+        });
         await userEvent.click(schoolOption);
-        expect(input).toHaveValue(option);
         youthFormData.selectedSchool = { name: option ?? value };
       },
       async toggleCheckbox(

@@ -1,5 +1,5 @@
 import equal from 'fast-deep-equal';
-import { Checkbox, IconAngleDown, RadioButton } from 'hds-react';
+import { Checkbox, IconAngleDown, IconSize, RadioButton } from 'hds-react';
 import React, { useCallback, useEffect } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import {
@@ -181,7 +181,7 @@ TableProps<D>): React.ReactElement => {
     () => ({
       Cell: ({ row }: { row: Row }) => (
         <div {...row.getToggleRowExpandedProps()}>
-          <IconAngleDown size="m" />
+          <IconAngleDown size={IconSize.Medium} />
         </div>
       ),
       Header: ({ toggleAllRowsExpanded }) => (

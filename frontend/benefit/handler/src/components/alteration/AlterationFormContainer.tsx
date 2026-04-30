@@ -9,17 +9,23 @@ import { $Heading } from 'benefit/handler/components/alterationList/AlterationLi
 import AlterationForm from 'benefit-shared/components/alterationForm/AlterationForm';
 import { $SaveActionFormErrorText } from 'benefit-shared/components/alterationForm/AlterationForm.sc';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
+import { AlterationFormContextType } from 'benefit-shared/context/AlterationFormContext';
 import AlterationFormProvider from 'benefit-shared/context/AlterationFormProvider';
 import {
   Application,
   ApplicationAlterationData,
 } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, IconAlertCircleFill } from 'hds-react';
+import {
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconAlertCircleFill,
+} from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,
@@ -123,7 +129,9 @@ const AlterationFormContainer: React.FC<Props> = ({
     alterationFormContextValues;
 
   return (
-    <AlterationFormProvider {...alterationFormContextValues}>
+    <AlterationFormProvider
+      {...(alterationFormContextValues as unknown as AlterationFormContextType)}
+    >
       <Container>
         <$Heading>{t('common:applications.alterations.new.title')}</$Heading>
         <$Grid>
@@ -144,13 +152,17 @@ const AlterationFormContainer: React.FC<Props> = ({
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || (isSubmitted && !formik.isValid)}
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             isLoading={isSubmitting}
             loadingText={t(`common:utility.submitting`)}
           >
             {t(`common:applications.alterations.new.actions.submit`)}
           </Button>
-          <Button theme="black" variant="secondary" onClick={onCancel}>
+          <Button
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
+            onClick={onCancel}
+          >
             {t(`common:applications.alterations.new.actions.cancel`)}
           </Button>
           {isSubmitted && !formik.isValid && (

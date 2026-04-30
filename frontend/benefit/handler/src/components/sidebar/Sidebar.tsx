@@ -1,6 +1,14 @@
 import { Application } from 'benefit/handler/types/application';
 import { MESSAGE_TYPES } from 'benefit-shared/constants';
-import { Button, Tab, TabPanel, Tabs } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonSize,
+  ButtonVariant,
+  Tab,
+  TabPanel,
+  Tabs,
+} from 'hds-react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
@@ -83,9 +91,9 @@ const Sidebar: React.FC<ComponentProps> = ({
                 ...(customItemsMessages || []),
                 <Button
                   onClick={closeAndMarkAsUnread}
-                  variant="secondary"
-                  theme="black"
-                  size="small"
+                  variant={ButtonVariant.Secondary}
+                  theme={ButtonPresetTheme.Black}
+                  size={ButtonSize.Small}
                   key="markAsUnread"
                   disabled={!haveApplicantMessages}
                 >

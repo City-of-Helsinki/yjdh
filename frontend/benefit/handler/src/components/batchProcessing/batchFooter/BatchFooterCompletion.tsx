@@ -2,10 +2,16 @@ import useBatchStatus from 'benefit/handler/hooks/useBatchStatus';
 import useDownloadP2PFile from 'benefit/handler/hooks/useDownloadP2PFile';
 import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
-import { Button, IconArrowUndo, IconDownload } from 'hds-react';
+import {
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconArrowUndo,
+  IconDownload,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
@@ -246,9 +252,9 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
       <div style={{ display: 'flex', width: '100%' }}>
         {batchStatus === BATCH_STATUSES.DECIDED_ACCEPTED && (
           <Button
-            theme="black"
-            variant="secondary"
-            iconLeft={<IconArrowUndo />}
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
+            iconStart={<IconArrowUndo />}
             isLoading={isDownloadingAttachments}
             disabled={isDownloadingAttachments}
             onClick={() => setIsModalBatchToInspection(true)}
@@ -259,8 +265,8 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
 
         {batchStatus === BATCH_STATUSES.SENT_TO_TALPA && (
           <Button
-            theme="coat"
-            variant="primary"
+            theme={ButtonPresetTheme.Coat}
+            variant={ButtonVariant.Primary}
             disabled={isDownloadingAttachments}
             onClick={() => setIsModalBatchToCompletion(true)}
           >
@@ -268,11 +274,11 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           </Button>
         )}
         <Button
-          theme="black"
+          theme={ButtonPresetTheme.Black}
           disabled={isDownloadingAttachments}
-          variant="supplementary"
+          variant={ButtonVariant.Supplementary}
           style={{ marginLeft: 'auto' }}
-          iconLeft={<IconDownload />}
+          iconStart={<IconDownload />}
           isLoading={isDownloadingAttachments}
           loadingText={t('common:utility.loading')}
           onClick={() => handleDownloadP2PFile()}

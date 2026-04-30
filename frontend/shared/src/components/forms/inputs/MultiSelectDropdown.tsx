@@ -1,7 +1,6 @@
-import { Combobox, Select } from 'hds-react';
-import { useTranslation } from 'next-i18next';
+import { Select } from 'hds-react';
 import React from 'react';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useController, useFormContext } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -15,6 +14,22 @@ type Option = {
   name: string;
 };
 
+type HdsOption = {
+  label: string;
+  value: string;
+};
+
+const haveSameOptions = (
+  previousOptions: HdsOption[],
+  nextOptions: HdsOption[]
+): boolean =>
+  previousOptions.length === nextOptions.length &&
+  previousOptions.every(
+    (option, index) =>
+      option.label === nextOptions[index]?.label &&
+      option.value === nextOptions[index]?.value
+  );
+
 type Props<T extends FieldValues, O extends Option> = InputProps<T, O[]> &
   GridCellProps & {
     type?: 'select' | 'combobox';
@@ -24,7 +39,6 @@ type Props<T extends FieldValues, O extends Option> = InputProps<T, O[]> &
   };
 
 const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
-  type = 'select',
   id,
   registerOptions = {},
   initialValue,
@@ -37,48 +51,97 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
   onChange,
   ...$gridCellProps
 }: Props<T, O>): React.ReactElement<T> => {
-  const { t } = useTranslation();
   const { control } = useFormContext<T>();
+  const {
+    field: { value, onChange: controllerOnChange, ...field },
+  } = useController<T>({
+    name: id,
+    control,
+    rules: registerOptions,
+    defaultValue: (initialValue ?? []) as T[typeof id],
+  });
   const required = Boolean(registerOptions.required);
   const inputId = String(id);
+  const getOptionValue = React.useCallback(
+    (option: O): string => String(option[optionLabelField]),
+    [optionLabelField]
+  );
+  const toHdsOption = React.useCallback((option: O): HdsOption => {
+    const optionValue = getOptionValue(option);
+    return {
+      label: optionValue,
+      value: optionValue,
+    };
+  }, [getOptionValue]);
+
+  const hdsOptions = React.useMemo(
+    () => options.map((option) => toHdsOption(option)),
+    [options, toHdsOption]
+  );
+  const selectedValues = React.useMemo(
+    () =>
+      (((value as O[] | undefined) ?? initialValue ?? []).map((option) =>
+        toHdsOption(option)
+      )),
+    [initialValue, toHdsOption, value]
+  );
+  // Mirror HDS's in-progress multi-select state locally until the menu closes.
+  const [draftSelectedValues, setDraftSelectedValues] =
+    React.useState<HdsOption[]>(selectedValues);
+  const draftSelectedValuesRef = React.useRef<HdsOption[]>(selectedValues);
+
+  React.useEffect(() => {
+    setDraftSelectedValues((previousOptions) =>
+      haveSameOptions(previousOptions, selectedValues)
+        ? previousOptions
+        : selectedValues
+    );
+    draftSelectedValuesRef.current = selectedValues;
+  }, [selectedValues]);
 
   const sharedProps = {
-    multiselect: true as const,
+    multiSelect: true as const,
+    'data-testid': inputId,
     id: inputId,
     required,
     label,
-    defaultValue: initialValue,
     placeholder,
-    selectedItemRemoveButtonAriaLabel: t('common:assistive.clearChoice'),
-    clearButtonAriaLabel: t('common:assistive.clearChoices'),
-    optionLabelField: optionLabelField as string,
-    options,
+    options: hdsOptions,
     disabled,
     invalid: Boolean(errorText),
-    'aria-invalid': Boolean(errorText),
-    errorText,
   };
+
+  const toDomainValues = React.useCallback(
+    (selectedOptions: HdsOption[]): O[] =>
+      selectedOptions
+        .map((selectedOption) =>
+          options.find(
+            (option) => getOptionValue(option) === selectedOption.value
+          )
+        )
+        .filter((option): option is O => Boolean(option)),
+      [getOptionValue, options]
+  );
 
   return (
     <$GridCell {...$gridCellProps}>
       <$DropdownWrapper errorText={errorText}>
-        <Controller
-          name={id}
-          data-testid={inputId}
-          control={control}
-          rules={registerOptions}
-          render={({ field: { ref, value, ...field } }) =>
-            type === 'combobox' ? (
-              <Combobox<O>
-                {...field}
-                {...sharedProps}
-                value={value as O[]}
-                toggleButtonAriaLabel={t('common:assistive.openDropdown')}
-              />
-            ) : (
-              <Select<O> {...field} {...sharedProps} value={value as O[]} />
-            )
-          }
+        <Select
+          {...field}
+          {...sharedProps}
+          value={draftSelectedValues}
+          onChange={(selectedOptions: HdsOption[]) => {
+            const nextValue = toDomainValues(selectedOptions);
+            draftSelectedValuesRef.current = selectedOptions;
+            setDraftSelectedValues(selectedOptions);
+            controllerOnChange(nextValue);
+            onChange?.(nextValue);
+          }}
+          onClose={() => {
+            const nextValue = toDomainValues(draftSelectedValuesRef.current);
+            controllerOnChange(nextValue);
+            onChange?.(nextValue);
+          }}
         />
         {errorText && (
           <FieldErrorMessage data-testid={`${inputId}-error`}>

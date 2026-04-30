@@ -1,9 +1,15 @@
-import { Button, IconCheck, IconCross } from 'hds-react';
+import {
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconCheck,
+  IconCross,
+} from 'hds-react';
 import useCompleteYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useCompleteYouthApplicationQuery';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $GridCell,
   GridCellProps,
@@ -56,9 +62,9 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
     <$GridCell {...gridCellprops}>
       <Button
         loadingText={t(`common:handlerApplication.saving`)}
-        theme="coat"
+        theme={ButtonPresetTheme.Coat}
         data-testid="accept-button"
-        iconLeft={icon.accept}
+        iconStart={icon.accept}
         onClick={() => complete('accept')}
         isLoading={isLoading}
         disabled={isDisabled}
@@ -69,9 +75,9 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
         {t(`common:handlerApplication.accept`)}
       </Button>
       <Button
-        variant="danger"
+        variant={ButtonVariant.Danger}
         data-testid="reject-button"
-        iconLeft={icon.reject}
+        iconStart={icon.reject}
         onClick={() => complete('reject')}
         loadingText={t(`common:handlerApplication.saving`)}
         isLoading={isLoading}

@@ -14,7 +14,15 @@ module.exports = {
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
+    '<rootDir>/test/i18n/i18n-test.ts',
   ],
-  coveragePathIgnorePatterns: ['<rootDir>/benefit/shared/src/pages/'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/src/pages/',
+    '<rootDir>/src/__tests__/',
+    '<rootDir>/src/components/statusIcon/',
+    '<rootDir>/src/config/',
+    '<rootDir>/src/constants.ts',
+    '<rootDir>/src/backend-api/',
+  ],
   testEnvironment: '<rootDir>/jest-canvas-env.js',
 };

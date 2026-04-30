@@ -14,7 +14,7 @@ import {
   Application,
   DecisionDetailList,
 } from 'benefit-shared/types/application';
-import { Button, IconLinkExternal } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -54,7 +54,7 @@ const DecisionSummary = ({
     const id = application.ahjoCaseId?.split(' ').join('-');
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    window.open(`https://paatokset.hel.fi/fi/asia/${id}`, '_blank');
+    window.open(`https://paatokset.hel.fi/fi/asia/${id ?? ''}`, '_blank');
   };
 
   const sortedAlterations = application.alterations?.sort(
@@ -74,7 +74,7 @@ const DecisionSummary = ({
         </$DecisionNumber>
       )}
       <$Subheading>
-        {t(`common:applications.decision.description.${application.status}`, {
+        {t(`common:applications.decision.description.${application.status ?? ''}`, {
           dateRangeStart: convertToUIDateFormat(application.startDate),
           dateRangeEnd: convertToUIDateFormat(application.endDate),
         })}
@@ -103,10 +103,10 @@ const DecisionSummary = ({
       {isNotRejected && application.handledByAhjoAutomation && (
         <$DecisionActionContainer>
           <Button
-            iconRight={<IconLinkExternal />}
+            iconEnd={<IconLinkExternal />}
             onClick={openDecisionLink}
-            theme="black"
-            variant="secondary"
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
             role="link"
           >
             {t('common:applications.decision.actions.showDecision')}
