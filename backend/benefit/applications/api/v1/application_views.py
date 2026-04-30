@@ -361,6 +361,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                     | Q(pk__in=self._get_application_pks_with_instalments())
                 )
 
+        second_instalment_status = request.query_params.get("second_instalment_status")
+        if second_instalment_status:
+            qs = qs.filter(calculation__instalments__status=second_instalment_status)
+
         ahjo_cases = request.query_params.get("ahjo_case") == "1"
         if ahjo_cases:
             qs = qs.filter(ahjo_case_id__isnull=False, ahjo_case_id__gt="")
