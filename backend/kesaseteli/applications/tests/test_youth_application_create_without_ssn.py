@@ -340,6 +340,40 @@ def test_post_with_required_field_empty_returns_bad_request(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "invalid_value",
+    [
+        "test",
+        "today",
+        "2026-01-33",  # Invalid date, no 33 days in any month
+        "1.5.2020",  # Must be YYYY-MM-DD or YYYYMMDD
+        "2026-50",  # Must be YYYY-MM-DD or YYYYMMDD
+        "1st May 2020",  # Must be YYYY-MM-DD or YYYYMMDD
+        "05/01/2020",  # Must be YYYY-MM-DD or YYYYMMDD
+        ["2020-05-01"],  # No lists even with contents that'd be valid
+        123,
+        123.5,
+        {},
+        [],
+    ],
+)
+def test_post_with_invalid_non_vtj_birthdate_returns_bad_request(
+    staff_client, invalid_value
+):
+    data = VALID_TEST_DATA.copy()
+    data["non_vtj_birthdate"] = invalid_value
+
+    response = staff_client.post(
+        get_create_without_ssn_url(),
+        data=data,
+        content_type="application/json",
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert not YouthApplication.objects.exists()
+
+
+@pytest.mark.django_db
 def test_valid_post_as_anonymous_redirects_to_adfs_login(client):
     response = client.post(
         get_create_without_ssn_url(),
