@@ -13,6 +13,7 @@ module.exports = {
   },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
+    '<rootDir>/../../shared/src/__tests__/utils/canvasMock.ts',
     '<rootDir>src/__tests__/utils/i18n/i18n-test.ts',
   ],
   coveragePathIgnorePatterns: [
