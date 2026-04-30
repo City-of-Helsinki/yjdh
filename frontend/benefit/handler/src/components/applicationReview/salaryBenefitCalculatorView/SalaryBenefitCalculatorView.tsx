@@ -119,23 +119,31 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
         <React.Fragment key={item.id}>
           <$GridCell $colStart={1}>
             <Select
-              value={getPaySubsidyPercentageSelectValue(
-                item.paySubsidyPercent || 0
-              )}
-              helper=""
-              optionLabelField="label"
-              label={t(`${translationsBase}.salarySubsidyPercentage`)}
-              onChange={(paySubsidyPercent: OptionType) =>
-                updatePaySubsidies(index, {
-                  paySubsidyPercent: paySubsidyPercent.value as number,
-                })
+              value={
+                getPaySubsidyPercentageSelectValue(item.paySubsidyPercent || 0)
+                  ?.value?.toString()
               }
-              options={paySubsidyPercentageOptions}
+              texts={{
+                assistive: "",
+                error: getErrorMessage(fields.paySubsidies.name),
+                label: t(`${translationsBase}.salarySubsidyPercentage`),
+                placeholder: t('common:select'),
+              }}
+              onChange={(selectedOptions: OptionType[]) => {
+                const selectedValue = Number(selectedOptions?.[0]?.value);
+                if (!Number.isNaN(selectedValue)) {
+                  updatePaySubsidies(index, {
+                    paySubsidyPercent: selectedValue,
+                  });
+                }
+              }}
+              options={paySubsidyPercentageOptions.map((option) => ({
+                label: option.label,
+                value: String(option.value),
+              }))}
               id={fields.paySubsidyPercent.name}
-              placeholder={t('common:select')}
               invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
               aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-              error={getErrorMessage(fields.paySubsidyPercent.name)}
             />
           </$GridCell>
 
@@ -607,24 +615,31 @@ const SalaryBenefitCalculatorView: React.FC<
           </$GridCell>
           <$GridCell $colStart={1} $colSpan={3}>
             <Select
-              value={getStateAidMaxPercentageSelectValue()}
-              helper=""
-              optionLabelField="label"
-              label={fields.stateAidMaxPercentage.label}
-              onChange={(stateAidMaxPercentage: OptionType) =>
-                formik.setFieldValue(
-                  fields.stateAidMaxPercentage.name,
-                  stateAidMaxPercentage.value
-                )
-              }
-              options={stateAidMaxPercentageOptions}
+              value={getStateAidMaxPercentageSelectValue()?.value?.toString()}
+              texts={{
+                assistive: "",
+                error: getErrorMessage(fields.stateAidMaxPercentage.name),
+                label: fields.stateAidMaxPercentage.label,
+                placeholder: t('common:select'),
+              }}
+              onChange={(selectedOptions: OptionType[]) => {
+                const selectedValue = Number(selectedOptions?.[0]?.value);
+                if (!Number.isNaN(selectedValue)) {
+                  formik.setFieldValue(
+                    fields.stateAidMaxPercentage.name,
+                    selectedValue
+                  );
+                }
+              }}
+              options={stateAidMaxPercentageOptions.map((option) => ({
+                label: option.label,
+                value: String(option.value),
+              }))}
               id={fields.stateAidMaxPercentage.name}
-              placeholder={t('common:select')}
               invalid={!!getErrorMessage(fields.stateAidMaxPercentage.name)}
               aria-invalid={
                 !!getErrorMessage(fields.stateAidMaxPercentage.name)
               }
-              error={getErrorMessage(fields.stateAidMaxPercentage.name)}
             />
           </$GridCell>
 
