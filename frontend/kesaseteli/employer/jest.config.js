@@ -11,5 +11,12 @@ module.exports = {
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
     '<rootDir>src/__tests__/utils/i18n/i18n-test.ts',
   ],
-  coveragePathIgnorePatterns: ['<rootDir>/kesaseteli/employer/src/pages/'],
+  collectCoverageFrom: [
+    './src/**/*.{ts,tsx,js,jsx}',
+    '!./src/pages/**/*',
+    '!./src/**/*.sc.ts',
+    '!./src/types/**/*',
+    '!./src/utils/test-utils/**/*',
+  ],
+  coveragePathIgnorePatterns: ['<rootDir>/src/pages/'],
 };
