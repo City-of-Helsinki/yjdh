@@ -607,3 +607,34 @@ def test_removable_reporting_field_titles():
 
 def test_removable_talpa_field_titles():
     check_removable_field_titles(REMOVABLE_TALPA_FIELD_TITLES)
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_youth_excel_download_with_missing_birthdate(staff_client):
+    """
+    Test that exporting youth applications' Excel uses fallback values for
+    birth_year and birthdate when birthdate is unavailable (This case should
+    not be creatable using end-user UIs, but was spotted e.g. in non-local
+    dev-environment and that crashed the youth application Excel export).
+    """
+    ActiveYouthApplicationFactory(social_security_number="", non_vtj_birthdate=None)
+
+    response = staff_client.get(youth_excel_download_url())
+
+    assert isinstance(response, StreamingHttpResponse)
+    assert response.status_code == 200
+
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows_generator = workbook.active.rows
+    _header_row = next(rows_generator)
+    data_row = next(rows_generator)  # exactly one application was created
+    with pytest.raises(StopIteration):
+        next(rows_generator)
+
+    source_fields = YouthApplicationExcelExportViewSet.source_fields()
+    row_by_field = dict(zip(source_fields, (cell.value for cell in data_row)))
+
+    # Test that birth_year and birthdate use their respective fallback values:
+    assert row_by_field["birth_year"] == -1
+    assert row_by_field["birthdate"] == "N/A"

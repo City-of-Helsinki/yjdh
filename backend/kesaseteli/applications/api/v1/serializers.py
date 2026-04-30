@@ -951,7 +951,7 @@ class YouthApplicationHandlingSerializer(serializers.ModelSerializer):
 class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
     application_year = serializers.SerializerMethodField()
     application_date = serializers.SerializerMethodField()
-    birth_year = serializers.IntegerField(source="birthdate.year")
+    birth_year = serializers.SerializerMethodField()
     birthdate = serializers.SerializerMethodField()
     confirmation_date = serializers.SerializerMethodField()
     handling_date = serializers.SerializerMethodField()
@@ -973,8 +973,17 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
             return None
         return obj.youth_summer_voucher.summer_voucher_serial_number
 
+    def get_birth_year(self, obj: YouthApplication) -> int:
+        try:
+            return obj.birthdate.year
+        except AttributeError:  # Handle invalid data gracefully
+            return -1  # Show a clearly invalid value
+
     def get_birthdate(self, obj: YouthApplication) -> str:
-        return obj.birthdate.isoformat()
+        try:
+            return obj.birthdate.isoformat()
+        except AttributeError:  # Handle invalid data gracefully
+            return "N/A"
 
     def get_application_year(self, obj: YouthApplication) -> int:
         return self.to_local_year(obj.created_at)
