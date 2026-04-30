@@ -42,7 +42,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     });
     await waitFor(() =>
       expect(spyPush).toHaveBeenCalledWith(
-        `${DEFAULT_LANGUAGE}/500`,
+        `/${DEFAULT_LANGUAGE}/500`,
         undefined,
         { shallow: false }
       )

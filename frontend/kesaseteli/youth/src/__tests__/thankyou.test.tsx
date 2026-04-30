@@ -25,7 +25,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
     await thankYouPageApi.expectations.pageIsLoaded();
     await thankYouPageApi.actions.clickGoToFrontPageButton();
     await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`, undefined, {
+      expect(spyPush).toHaveBeenCalledWith(`/${DEFAULT_LANGUAGE}/`, undefined, {
         shallow: false,
       })
     );

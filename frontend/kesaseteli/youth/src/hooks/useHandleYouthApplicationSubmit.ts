@@ -80,7 +80,7 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
               `Application creation failed: ${error.response.data.code}`,
               gdprFormValues
             );
-            void router.push(`${locale}/${encodeURIComponent(errorCode)}`);
+            void router.push(`/${locale}/${encodeURIComponent(errorCode)}`);
             return;
 
           case 'please_recheck_data':
