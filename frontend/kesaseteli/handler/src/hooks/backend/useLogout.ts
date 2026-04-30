@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router';
-import React from 'react';
 import {
   BackendEndpoint,
   getBackendUrl,
   getLogoutRedirectUrl,
   REDIRECT_FIELD_NAME,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const useLogout = (): (() => Promise<boolean>) => {
   const router = useRouter();

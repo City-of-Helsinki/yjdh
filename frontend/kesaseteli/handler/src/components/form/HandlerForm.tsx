@@ -8,6 +8,7 @@ import {
   YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION,
 } from 'kesaseteli-shared/constants/youth-application-status';
 import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
+import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -19,7 +20,6 @@ import {
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
-import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 
 type Props = {
   application: ActivatedYouthApplication;
