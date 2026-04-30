@@ -27,6 +27,7 @@ const addressIsValid = (address?: VtjAddress | null): boolean =>
       })
     : false;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const {
     encrypted_handler_vtj_json: vtjData,
