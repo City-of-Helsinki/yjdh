@@ -523,6 +523,7 @@ export type ApplicationData = {
   ahjo_error?: AhjoErrorData;
   first_instalment?: InstalmentData;
   second_instalment?: InstalmentData;
+  second_instalment_due_date?: string;
   employer_assurance?: boolean | null;
 };
 
@@ -626,6 +627,7 @@ export type ApplicationListItemData = {
   calculatedBenefitAmount?: string;
   firstInstalment?: Instalment;
   secondInstalment?: Instalment;
+  secondInstalmentDueDate?: string;
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';

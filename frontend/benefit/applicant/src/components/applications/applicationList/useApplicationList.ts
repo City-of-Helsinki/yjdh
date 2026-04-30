@@ -30,6 +30,7 @@ interface Props {
   status: string[];
   isArchived?: boolean;
   orderByOptions?: OptionType[];
+  secondInstalmentStatus?: string;
 }
 
 export interface ApplicationListProps {
@@ -72,11 +73,18 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
   return name === ' ' ? '-' : name;
 };
 
+const getDateDaysBefore = (date: string, daysBefore: number): Date => {
+  const parsedDate = new Date(`${date}T00:00:00`);
+  parsedDate.setDate(parsedDate.getDate() - daysBefore);
+  return parsedDate;
+};
+
 const useApplicationList = ({
-  status,
-  isArchived,
-  orderByOptions,
-}: Props): ApplicationListProps => {
+                              status,
+                              isArchived,
+                              orderByOptions,
+                              secondInstalmentStatus,
+                            }: Props): ApplicationListProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const [orderBy, setOrderBy] = useState<OptionType>(
@@ -91,6 +99,7 @@ const useApplicationList = ({
     status,
     isArchived,
     orderBy: orderBy.value.toString(),
+    secondInstalmentStatus,
   });
 
   const { errors, setError } = React.useContext(FrontPageContext);
@@ -150,6 +159,7 @@ const useApplicationList = ({
       end_date,
       company_contact_person_first_name,
       company_contact_person_last_name,
+      second_instalment_due_date,
     } = application;
 
     const employeeName = getEmployeeFullName(
@@ -168,6 +178,9 @@ const useApplicationList = ({
     const allowedAction = appStatus && getAllowedActions(id, appStatus);
     const submittedAt = submitted_at
       ? convertToUIDateFormat(submitted_at)
+      : '-';
+    const secondInstalmentDueDate = second_instalment_due_date
+      ? convertToUIDateFormat(getDateDaysBefore(second_instalment_due_date, 14))
       : '-';
     const modifiedAtWithTime =
       modified_at && convertToUIDateAndTimeFormat(modified_at);
@@ -194,6 +207,7 @@ const useApplicationList = ({
       unreadMessagesCount: unread_messages_count ?? 0,
       batch,
       contactPersonName,
+      secondInstalmentDueDate,
     };
     const draftProps = { modifiedAt: modifiedAtWithTime };
     const submittedProps = {

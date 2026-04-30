@@ -164,7 +164,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "Total amount must be less than MAX_AID_AMOUNT"
         ),
     )
-
+    second_instalment_due_date = serializers.DateField(read_only=True, required=False)
     class Meta:
         model = Application
         fields = [
@@ -215,6 +215,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "employer_assurance",
             "de_minimis_aid",
             "de_minimis_aid_set",
+            "second_instalment_due_date",
             "modified_at",
             "created_at",
             "additional_information_needed_by",
