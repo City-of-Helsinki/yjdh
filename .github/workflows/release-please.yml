@@ -1,19 +1,17 @@
-# .github/workflows/release-please.yml
+# This file is synced from City-of-Helsinki/.github and should not be edited directly
 name: release-please
 on:
   push:
     branches:
       - main
   schedule:
+    # Run daily to keep the release PR date current
     - cron: '1 0 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   release-please:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
+    uses: City-of-Helsinki/.github/.github/workflows/release-please.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
