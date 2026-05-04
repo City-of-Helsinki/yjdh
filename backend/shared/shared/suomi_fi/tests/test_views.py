@@ -2,10 +2,11 @@ from unittest import mock
 
 import pytest
 from django.http import HttpResponseRedirect
-from django.test import RequestFactory
+from django.test import RequestFactory, override_settings
 
 from shared.suomi_fi.views import (
     RELAY_STATE_PARAM,
+    HelsinkiSaml2LogoutServiceView,
     HelsinkiSaml2LogoutView,
     SuomiFiAssertionConsumerServiceView,
 )
@@ -45,6 +46,7 @@ class TestSuomiFiViews:
         factory = RequestFactory()
         next_url = "/dashboard"
         request = factory.get("/saml2/logout/", {"next": next_url})
+        request.session = {}
 
         view = HelsinkiSaml2LogoutView()
 
@@ -90,3 +92,110 @@ class TestSuomiFiViews:
                     request, Exception("SLO not supported")
                 )
                 mock_super.assert_called_once()
+
+    def test_helsinki_saml2_logout_view_sets_next_path_to_session(self):
+        factory = RequestFactory()
+        next_url = "https://kesaseteli.dev.hel.ninja/fi"
+        request = factory.get("/saml2/logout/", {"next": next_url})
+        request.session = {}
+
+        view = HelsinkiSaml2LogoutView()
+
+        with mock.patch("djangosaml2.views.LogoutInitView.get", return_value=None):
+            with mock.patch(
+                "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
+            ):
+                view.get(request)
+
+        assert request.session.get("saml2_logout_next_path") == next_url
+
+    @override_settings(LOGOUT_REDIRECT_URL="/")
+    def test_helsinki_saml2_logout_service_view_restores_next_path(self):
+        factory = RequestFactory()
+        next_url = "https://kesaseteli.dev.hel.ninja/fi"
+
+        request = factory.get("/saml2/ls/?SAMLResponse=foo&RelayState=bar")
+        request.session = {"saml2_logout_next_path": next_url}
+
+        view = HelsinkiSaml2LogoutServiceView()
+
+        fallback_response = HttpResponseRedirect("/")
+        with mock.patch(
+            "djangosaml2.views.LogoutView.get", return_value=fallback_response
+        ):
+            with mock.patch(
+                "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
+            ):
+                response = view.get(request)
+
+        assert isinstance(response, HttpResponseRedirect)
+        assert response.url == next_url
+        assert "saml2_logout_next_path" not in request.session
+
+    @override_settings(LOGOUT_REDIRECT_URL="/")
+    def test_helsinki_saml2_logout_service_view_ignores_unsafe_next_path(self):
+        factory = RequestFactory()
+        next_url = "https://malicious.com"
+
+        request = factory.get("/saml2/ls/?SAMLResponse=foo&RelayState=bar")
+        request.session = {"saml2_logout_next_path": next_url}
+
+        view = HelsinkiSaml2LogoutServiceView()
+
+        fallback_response = HttpResponseRedirect("/")
+        with mock.patch(
+            "djangosaml2.views.LogoutView.get", return_value=fallback_response
+        ):
+            with mock.patch(
+                "shared.suomi_fi.views.is_safe_redirect_url", return_value=False
+            ):
+                response = view.get(request)
+
+        assert isinstance(response, HttpResponseRedirect)
+        assert response.url == "/"
+
+    @override_settings(LOGOUT_REDIRECT_URL="/")
+    def test_logout_redirection_flow_integration(self):
+        """
+        Integration test replicating the HAR flow:
+        1. Initiation with 'next' parameter sets the session.
+        2. Callback from IdP retrieves that same session.
+        3. Final redirect to the original 'next' URL.
+        """
+        factory = RequestFactory()
+        next_url = "https://kesaseteli.dev.hel.ninja/fi"
+
+        # Step 1: Start logout (Initiator)
+        request_init = factory.get("/saml2/logout/", {"next": next_url})
+        request_init.session = {}  # Manually attach session
+
+        view_init = HelsinkiSaml2LogoutView()
+        with mock.patch("djangosaml2.views.LogoutInitView.get", return_value=None):
+            with mock.patch(
+                "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
+            ):
+                view_init.get(request_init)
+
+        # Verify session was set
+        assert request_init.session.get("saml2_logout_next_path") == next_url
+
+        # Step 2: Return from IdP (Service)
+        request_ls = factory.get(
+            "/saml2/ls/", {"SAMLResponse": "foo", "RelayState": "bar"}
+        )
+        # We simulate the handoff by passing the session object from step 1
+        request_ls.session = request_init.session
+
+        view_ls = HelsinkiSaml2LogoutServiceView()
+        fallback_response = HttpResponseRedirect("/")
+        with mock.patch(
+            "djangosaml2.views.LogoutView.get", return_value=fallback_response
+        ):
+            with mock.patch(
+                "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
+            ):
+                response = view_ls.get(request_ls)
+
+        # Step 3: Final Result
+        assert response.status_code == 302
+        assert response.url == next_url
