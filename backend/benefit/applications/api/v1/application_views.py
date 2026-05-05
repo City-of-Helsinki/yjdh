@@ -134,10 +134,19 @@ class BaseApplicationFilter(filters.FilterSet):
 
         query = Q(**query) | Q(status=ApplicationStatus.CANCELLED)
 
+        second_instalment_requested_query = Q(
+            calculation__instalments__instalment_number=2,
+            calculation__instalments__status=InstalmentStatus.REQUESTED,
+        )
+
         if value:
-            return queryset.filter(query)
+            return queryset.filter(query).filter(
+                ~second_instalment_requested_query
+            ).distinct()
         else:
-            return queryset.filter(~query)
+            return queryset.filter(
+                ~query | second_instalment_requested_query
+            ).distinct()
 
 
 class ApplicantApplicationFilter(BaseApplicationFilter):
@@ -376,7 +385,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             qs = qs.filter(
                 calculation__instalments__instalment_number=2,
                 calculation__instalments__status=second_instalment_status,
-            )
+            ).distinct()
 
         ahjo_cases = request.query_params.get("ahjo_case") == "1"
         if ahjo_cases:
