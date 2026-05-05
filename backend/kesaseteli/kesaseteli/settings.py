@@ -9,6 +9,7 @@ import environ
 import saml2
 import saml2.saml
 import sentry_sdk
+from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from saml2.sigver import get_xmlsec_binary
@@ -100,13 +101,10 @@ env = environ.Env(
     # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in
     # staging/production
     # Always override this value from env variables
-    ENCRYPTION_KEY=(
-        str,
-        "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
-    ),
+    ENCRYPTION_KEY=(str, ""),
     SOCIAL_SECURITY_NUMBER_HASH_KEY=(
         str,
-        "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+        "",
     ),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
     ELASTICSEARCH_HOST=(str, ""),
@@ -171,6 +169,8 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+if not ENCRYPTION_KEY:
+    raise ImproperlyConfigured("ENCRYPTION_KEY must be set.")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
 AD_ADMIN_GROUP_NAME = env.str("AD_ADMIN_GROUP_NAME")
@@ -181,6 +181,11 @@ VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
 VTJ_TIMEOUT = env.int("VTJ_TIMEOUT")
 NEXT_PUBLIC_ENABLE_SUOMIFI = env("NEXT_PUBLIC_ENABLE_SUOMIFI")
+
+if NEXT_PUBLIC_ENABLE_SUOMIFI and not SOCIAL_SECURITY_NUMBER_HASH_KEY:
+    raise ImproperlyConfigured(
+        "SOCIAL_SECURITY_NUMBER_HASH_KEY must be set when Suomi.fi is enabled."
+    )
 EXCEL_DOWNLOAD_BATCH_SIZE = env.int("EXCEL_DOWNLOAD_BATCH_SIZE")
 
 DB_PREFIX = {
@@ -469,13 +474,14 @@ ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 # Suomi.fi (djangosaml2)
 
 SAML_ATTRIBUTE_MAPPING = {
+    "nationalIdentificationNumber": ("username",),
     "givenName": ("first_name",),
     "sn": ("last_name",),
 }
 SAML_SESSION_COOKIE_NAME = "kesaseteli_saml_session"
 SAML_CREATE_UNKNOWN_USER = True
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
-SAML_USE_NAME_ID_AS_USERNAME = True  # Suomi.fi session ID as username
+SAML_USE_NAME_ID_AS_USERNAME = False  # Use SAML_ATTRIBUTE_MAPPING for username
 SAML_IGNORE_LOGOUT_ERRORS = True
 if env("SAML_ALLOWED_HOSTS", default=None):
     SAML_ALLOWED_HOSTS = env.list("SAML_ALLOWED_HOSTS")
