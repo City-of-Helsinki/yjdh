@@ -70,10 +70,12 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
         # `mozilla_django_oidc` validates the explicit `next` parameter against
         # OIDC_REDIRECT_ALLOWED_HOSTS and stores it securely in `oidc_login_next`.
         next_url = self.request.session.get("oidc_login_next")
-        if next_url:
+        eauth_init_url = reverse("eauth_authentication_init")
+
+        if next_url and next_url.rstrip("/") != eauth_init_url.rstrip("/"):
             self.request.session["eauth_next_url"] = next_url
 
-        return HttpResponseRedirect(reverse("eauth_authentication_init"))
+        return HttpResponseRedirect(eauth_init_url)
 
     def login_failure(self):
         url, error_path = self.failure_url.rsplit("/", 1)

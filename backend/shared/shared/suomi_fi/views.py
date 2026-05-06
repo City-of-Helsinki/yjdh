@@ -48,9 +48,13 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
         Intercept the validated `RelayState` and manually route the user completely
         through the eAuthorizations pipeline before allowing the final redirect.
         """
+        eauth_init_url = reverse("eauth_authentication_init")
         if relay_state and is_safe_redirect_url(self.request, relay_state):
-            self.request.session["eauth_next_url"] = relay_state
-        return reverse("eauth_authentication_init")
+            # Do not store the eAuthorizations initiation URL as the next URL,
+            # as it would cause a redirect loop.
+            if relay_state.rstrip("/") != eauth_init_url.rstrip("/"):
+                self.request.session["eauth_next_url"] = relay_state
+        return eauth_init_url
 
     def handle_acs_failure(self, request, exception=None, status=403, **kwargs):
         """
