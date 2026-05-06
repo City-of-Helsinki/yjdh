@@ -165,6 +165,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ),
     )
     second_instalment_due_date = serializers.DateField(read_only=True, required=False)
+
     class Meta:
         model = Application
         fields = [
