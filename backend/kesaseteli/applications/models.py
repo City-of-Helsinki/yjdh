@@ -1156,6 +1156,22 @@ class EmployerApplication(TimeStampedModel, UUIDModel):
         verbose_name=_("bank account number"),
         blank=True,
     )
+    # Fields for a foreign IBAN account transactions.
+    payee_name = models.CharField(
+        max_length=256, blank=True, verbose_name=_("payee name")
+    )
+    payee_address = models.CharField(
+        max_length=512, blank=True, verbose_name=_("payee address")
+    )
+    bank_swift_bic_code = models.CharField(
+        max_length=11, blank=True, verbose_name=_("bank SWIFT/BIC code")
+    )
+    bank_name = models.CharField(
+        max_length=256, blank=True, verbose_name=_("bank name")
+    )
+    bank_address = models.CharField(
+        max_length=512, blank=True, verbose_name=_("bank address")
+    )
 
     # contact information
     contact_person_name = models.CharField(

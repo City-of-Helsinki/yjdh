@@ -28,23 +28,62 @@ describe('foreign IBAN note', () => {
       await applicationPage.step1.expectations.stepIsLoaded();
 
       // Initially Finnish IBAN
-      await applicationPage.step1.actions.typeIban('FI1234567890123456');
+      await applicationPage.step1.actions.typeIban('FI2112345600000785');
       await applicationPage.step1.expectations.expectForeignIbanNote(false);
 
-      // Change to foreign IBAN but don't blur yet
-      await applicationPage.step1.actions.typeIbanWithoutBlur(
-        'DE123456789012345678'
-      );
-      await applicationPage.step1.expectations.expectForeignIbanNote(false);
-
-      // Now blur (typeIban blurs at the end)
-      await applicationPage.step1.actions.typeIban('DE123456789012345678');
+      // Change to foreign IBAN
+      await applicationPage.step1.actions.typeIban('DE89370400440532013000');
       await applicationPage.step1.expectations.expectForeignIbanNote(true);
-      await applicationPage.step1.expectations.payslipCustomMessageIsVisible();
+      applicationPage.step1.expectations.expectForeignIbanFieldsVisible(true);
+
+      // Fill in the foreign payment information
+      await applicationPage.step1.actions.typePayeeName('Foreign Payee');
+      await applicationPage.step1.actions.typePayeeAddress('Foreign Address');
+      await applicationPage.step1.actions.typeBankSwiftBicCode('SWIFT123');
+      await applicationPage.step1.actions.typeBankName('Foreign Bank');
+      await applicationPage.step1.actions.typeBankAddress('Bank Street 1');
+
+      // Verify they are set in the form
+      applicationPage.step1.expectations.inputValueIsSet(
+        'payee_name',
+        'Foreign Payee'
+      );
+      applicationPage.step1.expectations.inputValueIsSet(
+        'payee_address',
+        'Foreign Address'
+      );
+      applicationPage.step1.expectations.inputValueIsSet(
+        'bank_swift_bic_code',
+        'SWIFT123'
+      );
+      applicationPage.step1.expectations.inputValueIsSet(
+        'bank_name',
+        'Foreign Bank'
+      );
+      applicationPage.step1.expectations.inputValueIsSet(
+        'bank_address',
+        'Bank Street 1'
+      );
 
       // Change back to Finnish IBAN
-      await applicationPage.step1.actions.typeIban('FI9988776655443322');
+      await applicationPage.step1.actions.typeIban('FI2112345600000785');
       await applicationPage.step1.expectations.expectForeignIbanNote(false);
+
+      // Verify foreign fields are no longer visible
+      applicationPage.step1.expectations.expectForeignIbanFieldsVisible(false);
+
+      // Verify no leftover errors for these fields
+      applicationPage.step1.expectations.expectNoValidationError('payee_name');
+      applicationPage.step1.expectations.expectNoValidationError(
+        'payee_address'
+      );
+      applicationPage.step1.expectations.expectNoValidationError(
+        'bank_swift_bic_code'
+      );
+      applicationPage.step1.expectations.expectNoValidationError('bank_name');
+      applicationPage.step1.expectations.expectNoValidationError(
+        'bank_address'
+      );
     },
     SLOW_JEST_TIMEOUT
   );

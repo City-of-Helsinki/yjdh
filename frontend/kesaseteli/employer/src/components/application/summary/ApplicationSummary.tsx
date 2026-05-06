@@ -2,6 +2,7 @@ import { friendlyFormatIBAN } from 'ibantools';
 import { $ApplicationSummaryField } from 'kesaseteli/employer/components/application/summary/ApplicationSummary.sc';
 import EmploymentSummary from 'kesaseteli/employer/components/application/summary/EmploymentSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import { getIsForeignIban } from 'kesaseteli/employer/hooks/application/useIsForeignIban';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -33,12 +34,19 @@ const ApplicationSummary: React.FC<Props> = ({
       contact_person_phone_number,
       street_address,
       bank_account_number,
+      payee_name,
+      payee_address,
+      bank_swift_bic_code,
+      bank_name,
+      bank_address,
       summer_vouchers,
     } = applicationQuery.data;
 
     const visibleVouchers = filterVoucherId
       ? summer_vouchers.filter((v) => v.id === filterVoucherId)
       : summer_vouchers;
+
+    const isForeignIban = getIsForeignIban(bank_account_number);
 
     return (
       <div data-testid="application-summary">
@@ -95,6 +103,30 @@ const ApplicationSummary: React.FC<Props> = ({
             {t('common:application.form.inputs.bank_account_number')}:{' '}
             {friendlyFormatIBAN(bank_account_number)}
           </$ApplicationSummaryField>
+          {isForeignIban && (
+            <>
+              <$ApplicationSummaryField data-testid="payee_name">
+                {t('common:application.form.inputs.payee_name')}:{' '}
+                {payee_name || '-'}
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="payee_address">
+                {t('common:application.form.inputs.payee_address')}:{' '}
+                {payee_address || '-'}
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="bank_swift_bic_code">
+                {t('common:application.form.inputs.bank_swift_bic_code')}:{' '}
+                {bank_swift_bic_code || '-'}
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="bank_name">
+                {t('common:application.form.inputs.bank_name')}:{' '}
+                {bank_name || '-'}
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="bank_address">
+                {t('common:application.form.inputs.bank_address')}:{' '}
+                {bank_address || '-'}
+              </$ApplicationSummaryField>
+            </>
+          )}
         </FormSection>
         <FormSection
           header={t('common:application.step2.employmentTitle')}

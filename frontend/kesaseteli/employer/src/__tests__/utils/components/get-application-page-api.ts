@@ -31,7 +31,8 @@ type Step1Api = {
     inputValueIsSet: (key: keyof Application, value?: string) => void;
     inputHasError: (key: keyof Application, errorText: RegExp) => Promise<void>;
     expectForeignIbanNote: (visible: boolean) => Promise<void>;
-    payslipCustomMessageIsVisible: () => Promise<void>;
+    expectForeignIbanFieldsVisible: (visible: boolean) => void;
+    expectNoValidationError: (key: keyof Application) => void;
   };
   actions: StepActions & {
     typeContactPersonName: (name: string) => Promise<void>;
@@ -40,6 +41,11 @@ type Step1Api = {
     typeContactPersonPhone: (phoneNumber: string) => Promise<void>;
     typeIban: (iban: string) => Promise<void>;
     typeIbanWithoutBlur: (iban: string) => Promise<void>;
+    typePayeeName: (name: string) => Promise<void>;
+    typePayeeAddress: (address: string) => Promise<void>;
+    typeBankSwiftBicCode: (code: string) => Promise<void>;
+    typeBankName: (name: string) => Promise<void>;
+    typeBankAddress: (address: string) => Promise<void>;
   };
 };
 
@@ -229,36 +235,41 @@ const getApplicationPageApi = (
           );
         },
         expectForeignIbanNote: async (visible: boolean): Promise<void> => {
-          const query =
-            /ulkomaista tilinumeroa|foreign iban|utländskt kontonummer/i;
+          // eslint-disable-next-line unicorn/prefer-ternary
           if (visible) {
-            await screen.findByText(query, undefined, { timeout: 2000 });
-            const payslipLink = screen.getByRole('link', {
-              name: /palkkatodistus-kohdassa|pay statement section|lönespecifikationen/i,
+            await screen.findByTestId('foreign-iban-notification', undefined, {
+              timeout: 5000,
             });
-            expect(payslipLink).toHaveAttribute(
-              'href',
-              expect.stringMatching(/#summer_vouchers\.0\.payslip$/)
-            );
-
-            const templateLinks = screen.getAllByRole('link', {
-              name: /tästä|here|här/i,
-            });
-            expect(templateLinks[0]).toHaveAttribute('href');
-            expect(templateLinks[0].getAttribute('href')).not.toBe('');
           } else {
             await waitFor(
-              () => expect(screen.queryByText(query)).not.toBeInTheDocument(),
-              { timeout: 2000 }
+              () =>
+                expect(
+                  screen.queryByTestId('foreign-iban-notification')
+                ).not.toBeInTheDocument(),
+              { timeout: 5000 }
             );
           }
         },
-        payslipCustomMessageIsVisible: async (): Promise<void> => {
-          await screen.findByText(
-            /(rahansiirtotodistus on pakollinen)|(money transaction template is also mandatory)|(kvitto på penningöverföring)/i,
-            undefined,
-            { timeout: 2000 }
-          );
+        expectForeignIbanFieldsVisible: (visible: boolean): void => {
+          const fields = [
+            'payee_name',
+            'payee_address',
+            'bank_swift_bic_code',
+            'bank_name',
+            'bank_address',
+          ];
+          fields.forEach((field) => {
+            if (visible) {
+              expect(screen.getByTestId(field)).toBeVisible();
+            } else {
+              expect(screen.queryByTestId(field)).not.toBeInTheDocument();
+            }
+          });
+        },
+        expectNoValidationError: (key: keyof Application): void => {
+          expect(
+            screen.queryByTestId(`${key as string}-error`)
+          ).not.toBeInTheDocument();
         },
         nextButtonIsDisabled: expectNextButtonIsDisabled,
         nextButtonIsEnabled: expectNextButtonIsEnabled,
@@ -293,6 +304,32 @@ const getApplicationPageApi = (
           return userEvent.click(document.body);
         },
         typeIbanWithoutBlur,
+        typePayeeName: (name: string) =>
+          typeInput(
+            'payee_name',
+            /(maksunsaajan nimi)|(inputs.payee_name)/i,
+            name
+          ),
+        typePayeeAddress: (address: string) =>
+          typeInput(
+            'payee_address',
+            /(maksunsaajan osoite)|(inputs.payee_address)/i,
+            address
+          ),
+        typeBankSwiftBicCode: (code: string) =>
+          typeInput(
+            'bank_swift_bic_code',
+            /(pankin swift \/ bic koodi)|(inputs.bank_swift_bic_code)/i,
+            code
+          ),
+        typeBankName: (name: string) =>
+          typeInput('bank_name', /(pankin nimi)|(inputs.bank_name)/i, name),
+        typeBankAddress: (address: string) =>
+          typeInput(
+            'bank_address',
+            /(pankin käyntiosoite)|(inputs.bank_address)/i,
+            address
+          ),
         clickPreviousButton,
         clickNextButton,
         clickNextButtonAndExpectToSaveApplication,

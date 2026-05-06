@@ -6,14 +6,32 @@ import EmployerErrorSummary from 'kesaseteli/employer/components/application/ste
 import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import LinkText from 'shared/components/link-text/LinkText';
 import { EMAIL_REGEX } from 'shared/constants';
+import ApplicationFormData from 'shared/types/application-form-data';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
+  const { setValue, unregister } = useFormContext<ApplicationFormData>();
   const isForeignIban = useIsForeignIban();
+
+  React.useEffect(() => {
+    if (!isForeignIban) {
+      setValue('payee_name', '');
+      setValue('payee_address', '');
+      setValue('bank_swift_bic_code', '');
+      setValue('bank_name', '');
+      setValue('bank_address', '');
+      unregister('payee_name');
+      unregister('payee_address');
+      unregister('bank_swift_bic_code');
+      unregister('bank_name');
+      unregister('bank_address');
+    }
+  }, [isForeignIban, setValue, unregister]);
 
   const stepTitle = t('common:application.step1.header');
   return (
@@ -48,30 +66,54 @@ const EmployerForm: React.FC = () => {
         />
         <IbanInput id="bank_account_number" />
         {isForeignIban && (
-          <$GridCell $colSpan={2}>
-            <HdsNotification
-              type="info"
-              label={t(
-                'common:application.step1.employment_section.foreign_iban_notification_label'
-              )}
-            >
-              <Trans
-                i18nKey="common:application.step1.employment_section.foreign_iban_note"
-                components={{
-                  anchor: (
-                    <LinkText href="#summer_vouchers.0.payslip">
-                      {null}
-                    </LinkText>
-                  ),
-                  lnk: (
-                    <a target="_blank" rel="noopener noreferrer">
-                      {null}
-                    </a>
-                  ),
-                }}
-              />
-            </HdsNotification>
-          </$GridCell>
+          <>
+            <$GridCell $colSpan={2}>
+              <div data-testid="foreign-iban-notification">
+                <HdsNotification
+                  type="info"
+                  label={t(
+                    'common:application.step1.employment_section.foreign_iban_notification_label'
+                  )}
+                >
+                  <Trans
+                    i18nKey="common:application.step1.employment_section.foreign_iban_note"
+                    components={{
+                      anchor: (
+                        <LinkText href="#summer_vouchers.0.payslip">
+                          {null}
+                        </LinkText>
+                      ),
+                      lnk: (
+                        <a target="_blank" rel="noopener noreferrer">
+                          {null}
+                        </a>
+                      ),
+                    }}
+                  />
+                </HdsNotification>
+              </div>
+            </$GridCell>
+            <TextInput
+              id="payee_name"
+              validation={{ required: isForeignIban, maxLength: 256 }}
+            />
+            <TextInput
+              id="payee_address"
+              validation={{ required: isForeignIban, maxLength: 512 }}
+            />
+            <TextInput
+              id="bank_swift_bic_code"
+              validation={{ required: isForeignIban, maxLength: 11 }}
+            />
+            <TextInput
+              id="bank_name"
+              validation={{ required: isForeignIban, maxLength: 256 }}
+            />
+            <TextInput
+              id="bank_address"
+              validation={{ required: isForeignIban, maxLength: 512 }}
+            />
+          </>
         )}
       </FormSection>
     </>

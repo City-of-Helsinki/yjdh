@@ -257,6 +257,31 @@ FIELDS = [
         30,
         "#F7DAE3",
     ),
+    ExcelField(
+        _("Maksunsaajan nimi"),
+        "%s",
+        ["application__payee_name"],
+        30,
+        "#F7DAE3",
+    ),
+    ExcelField(
+        _("Maksunsaajan osoite"),
+        "%s",
+        ["application__payee_address"],
+        30,
+        "#F7DAE3",
+    ),
+    ExcelField(
+        _("Pankin SWIFT / BIC koodi"),
+        "%s",
+        ["application__bank_swift_bic_code"],
+        30,
+        "#F7DAE3",
+    ),
+    ExcelField(_("Pankin nimi"), "%s", ["application__bank_name"], 30, "#F7DAE3"),
+    ExcelField(
+        _("Pankin käyntiosoite"), "%s", ["application__bank_address"], 30, "#F7DAE3"
+    ),
     ExcelField(SUM_FIELD_TITLE, "%s", ["value_in_euros"], 15, "#F7DAE3", "int"),
     ExcelField(_("Tarkastaja etunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Tarkastaja sukunimi"), "", [], 30, "#F7DAE3"),

@@ -144,7 +144,9 @@ class TestEmployerApplicationValidation:
         # Attempt to link to a second application.
         # Ensure it belongs to the same company/user so it's visible in get_queryset.
         application2 = EmployerApplicationFactory(
-            company=application.company, user=application.user
+            company=application.company,
+            user=application.user,
+            status=EmployerApplicationStatus.DRAFT,
         )
         data = EmployerApplicationSerializer(application2).data
         youth_app = active_voucher.youth_application

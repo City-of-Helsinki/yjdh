@@ -158,6 +158,53 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
 );
 
 test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'can fill and send application with foreign IBAN',
+  async (t: TestController) => {
+    const application = await loginAndfillApplication(
+      t,
+      1,
+      FULLY_MOCKED_FORM_DATA
+    );
+    const wizard = await getWizardComponents(t);
+    await wizard.actions.clickGoToStep1Button();
+
+    const step1Form = await step1Components.form();
+    const foreignIban = 'DE89370400440532013000';
+    await step1Form.actions.fillBankAccountNumber(foreignIban);
+
+    const payeeData = {
+      payee_name: 'Foreign Payee',
+      payee_address: 'Foreign Address',
+      bank_swift_bic_code: 'SWIFT123',
+      bank_name: 'Foreign Bank',
+      bank_address: 'Bank Street 1',
+    };
+
+    await step1Form.actions.fillPayeeName(payeeData.payee_name);
+    await step1Form.actions.fillPayeeAddress(payeeData.payee_address);
+    await step1Form.actions.fillBankSwiftBicCode(payeeData.bank_swift_bic_code);
+    await step1Form.actions.fillBankName(payeeData.bank_name);
+    await step1Form.actions.fillBankAddress(payeeData.bank_address);
+
+    await wizard.actions.clickSaveAndContinueButton();
+
+    const step2 = getStep2Components(t);
+    const summary = await step2.summaryComponent();
+    await summary.expectations.isFulFilledWith({
+      ...application,
+      bank_account_number: foreignIban,
+      ...payeeData,
+    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    const step2Form = await step2.form();
+    await step2Form.actions.toggleAcceptTermsAndConditions();
+    await wizard.actions.clickSendButton();
+
+    const thankYouPage = getThankYouPageComponents(t);
+    await thankYouPage.header();
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
   'can cancel application filling',
   async (t: TestController) => {
     await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
@@ -269,7 +316,6 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
     } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 );
-
 test.requestHooks(
   getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
   attachmentsMock

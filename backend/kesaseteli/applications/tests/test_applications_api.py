@@ -718,3 +718,51 @@ def test_applications_ordering_by_created_at(api_client, company, user):
     assert str(results[0]["id"]) == str(app_newest.id)
     assert str(results[1]["id"]) == str(app_middle.id)
     assert str(results[2]["id"]) == str(app_oldest.id)
+
+
+@pytest.mark.django_db
+def test_summer_voucher_employee_phone_number_persistence(
+    api_client, application, summer_voucher
+):
+    """
+    Verify that employee_phone_number in EmployerSummerVoucher is correctly saved and retrieved.
+    """
+    url = get_detail_url(application)
+    data = EmployerApplicationSerializer(application).data
+
+    # Update the first summer voucher
+    voucher_data = data["summer_vouchers"][0]
+    voucher_data["employee_phone_number"] = "+358401122334"
+
+    response = api_client.put(url, data)
+    assert response.status_code == 200
+
+    assert (
+        response.data["summer_vouchers"][0]["employee_phone_number"] == "+358401122334"
+    )
+
+    summer_voucher.refresh_from_db()
+    assert summer_voucher.employee_phone_number == "+358401122334"
+
+
+@pytest.mark.django_db
+def test_required_fields_on_submission_including_new_fields(
+    api_client, application, summer_voucher
+):
+    """
+    Verify that employee_phone_number is required when submitting the application.
+    """
+    url = get_detail_url(application)
+    data = EmployerApplicationSerializer(application).data
+
+    # Set status to submitted
+    data["status"] = EmployerApplicationStatus.SUBMITTED
+
+    # Missing employee_phone_number in summer voucher
+    data["summer_vouchers"][0]["employee_phone_number"] = ""
+
+    response = api_client.put(url, data)
+    assert response.status_code == 400
+    # The error is nested in summer_vouchers
+    assert "employee_phone_number" in str(response.data)
+    assert "field is required" in str(response.data).lower()

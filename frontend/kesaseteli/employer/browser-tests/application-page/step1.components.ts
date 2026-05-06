@@ -88,6 +88,31 @@ export const getStep1Components = (t: TestController) => {
         name: /^tilinumero/i,
       });
     },
+    payeeNameInput() {
+      return withinForm().findByRole('textbox', {
+        name: /^maksunsaajan nimi/i,
+      });
+    },
+    payeeAddressInput() {
+      return withinForm().findByRole('textbox', {
+        name: /^maksunsaajan osoite/i,
+      });
+    },
+    bankSwiftBicCodeInput() {
+      return withinForm().findByRole('textbox', {
+        name: /^pankin swift \/ bic koodi/i,
+      });
+    },
+    bankNameInput() {
+      return withinForm().findByRole('textbox', {
+        name: /^pankin nimi/i,
+      });
+    },
+    bankAddressInput() {
+      return withinForm().findByRole('textbox', {
+        name: /^pankin käyntiosoite/i,
+      });
+    },
     employeeNameInput() {
       return withinForm().findByRole('textbox', {
         name: /^työntekijän nimi/i,
@@ -321,6 +346,36 @@ export const getStep1Components = (t: TestController) => {
         'bank_account_number',
         selectors.bankAccountNumberInput(),
         bankAccountNumber
+      );
+    },
+    fillPayeeName(name: string) {
+      return fillInput(t, 'payee_name', selectors.payeeNameInput(), name);
+    },
+    fillPayeeAddress(address: string) {
+      return fillInput(
+        t,
+        'payee_address',
+        selectors.payeeAddressInput(),
+        address
+      );
+    },
+    fillBankSwiftBicCode(code: string) {
+      return fillInput(
+        t,
+        'bank_swift_bic_code',
+        selectors.bankSwiftBicCodeInput(),
+        code
+      );
+    },
+    fillBankName(name: string) {
+      return fillInput(t, 'bank_name', selectors.bankNameInput(), name);
+    },
+    fillBankAddress(address: string) {
+      return fillInput(
+        t,
+        'bank_address',
+        selectors.bankAddressInput(),
+        address
       );
     },
     fillEmployeeName(name: string) {

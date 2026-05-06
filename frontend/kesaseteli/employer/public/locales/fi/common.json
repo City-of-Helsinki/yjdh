@@ -94,7 +94,7 @@
         "fetch_employment_error_title": "Sattui virhe!",
         "fetch_employment_error_message": "Ei pystytty hakemaan työntekijän tietoja.",
         "fetch_employment_not_found_error_message": "Työntekijän tietoja ei löytynyt.",
-        "foreign_iban_note": "Näyttää siltä, että käytät ulkomaista tilinumeroa. Siinä tapauksessa sinun on toimitettava myös rahansiirtotodistus liitteenä <anchor>palkkatodistus-kohdassa</anchor>. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
+        "foreign_iban_note": "Suomalainen yritys, mutta ulkomaalainen tilinumero? Silloin tarvitsemme korvauksen maksua varten lisätietoa, täytä alla olevat tiedot:",
         "foreign_iban_notification_label": "Huomioitavaa ulkomaisesta tilinumerosta"
       }
     },
@@ -148,6 +148,11 @@
         "street_address": "Yrityksen osoite",
         "bank_account_number": "Tilinumero",
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
+        "payee_name": "Maksunsaajan nimi",
+        "payee_address": "Maksunsaajan osoite",
+        "bank_swift_bic_code": "Pankin SWIFT / BIC koodi",
+        "bank_name": "Pankin nimi",
+        "bank_address": "Pankin käyntiosoite",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
         "employee_birthdate": "Syntymäaika",

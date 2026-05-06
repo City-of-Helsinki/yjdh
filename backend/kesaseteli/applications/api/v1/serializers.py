@@ -484,6 +484,11 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             "invoicer_name",
             "invoicer_email",
             "invoicer_phone_number",
+            "payee_name",
+            "payee_address",
+            "bank_swift_bic_code",
+            "bank_name",
+            "bank_address",
             "company",
             "user",
             "summer_vouchers",
@@ -581,6 +586,19 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         if data.get("is_separate_invoicer"):
             required_fields.extend(
                 ["invoicer_name", "invoicer_email", "invoicer_phone_number"]
+            )
+
+        # Foreign IBAN fields are required if IBAN is not Finnish
+        bank_account_number = data.get("bank_account_number", "")
+        if bank_account_number and not str(bank_account_number).startswith("FI"):
+            required_fields.extend(
+                [
+                    "payee_name",
+                    "payee_address",
+                    "bank_swift_bic_code",
+                    "bank_name",
+                    "bank_address",
+                ]
             )
 
         for field_name in required_fields:

@@ -6,6 +6,11 @@ export const EMPLOYER_FIELDS: (keyof Application)[] = [
     'contact_person_phone_number',
     'street_address',
     'bank_account_number',
+    'payee_name',
+    'payee_address',
+    'bank_swift_bic_code',
+    'bank_name',
+    'bank_address',
 ];
 
 export const extractEmployerFields = (

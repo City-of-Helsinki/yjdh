@@ -30,6 +30,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
 
   describe('loading data', () => {
     const application = fakeObjectFactory.fakeApplication();
+    application.bank_account_number = 'FI2112345600000785';
     const { id } = application;
 
     it('Should redirect to login when unauthorized', async () => {

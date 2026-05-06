@@ -138,6 +138,13 @@ class EmployerApplicationFactory(
     invoicer_email = factory.Faker("email")
     invoicer_phone_number = factory.Faker("phone_number")
 
+    # foreign iban fields
+    payee_name = factory.Faker("name")
+    payee_address = factory.Faker("address")
+    bank_swift_bic_code = factory.Faker("swift")
+    bank_name = factory.Faker("company")
+    bank_address = factory.Faker("address")
+
     class Meta:
         model = EmployerApplication
 

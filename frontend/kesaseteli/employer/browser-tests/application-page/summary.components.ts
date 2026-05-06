@@ -9,7 +9,7 @@ import Company from '@frontend/shared/src/types/company';
 import ContactInfo from '@frontend/shared/src/types/contact-info';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
-import { friendlyFormatIBAN } from 'ibantools';
+import { electronicFormatIBAN, friendlyFormatIBAN } from 'ibantools';
 
 import { getSelectionGroupTranslation } from '../utils/application.utils';
 
@@ -91,6 +91,16 @@ export const getSummaryComponents = async (t: TestController) => {
           'bank_account_number',
           friendlyFormatIBAN(application.bank_account_number) ?? ''
         );
+        if (
+          application.bank_account_number &&
+          !electronicFormatIBAN(application.bank_account_number)?.startsWith('FI')
+        ) {
+          await expectFieldHasValue('payee_name');
+          await expectFieldHasValue('payee_address');
+          await expectFieldHasValue('bank_swift_bic_code');
+          await expectFieldHasValue('bank_name');
+          await expectFieldHasValue('bank_address');
+        }
       },
     };
     await expectations.isPresent();

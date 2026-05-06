@@ -4,6 +4,11 @@ type ContactInfo = {
   contact_person_phone_number: string;
   street_address: string;
   bank_account_number: string;
+  payee_name?: string;
+  payee_address?: string;
+  bank_swift_bic_code?: string;
+  bank_name?: string;
+  bank_address?: string;
 };
 
 export default ContactInfo;
