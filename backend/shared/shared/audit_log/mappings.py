@@ -3,4 +3,6 @@ DJANGO_BACKEND_MAPPING = {
     "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend": "Suomi.fi",
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend": "Azure ADFS",
     "django.contrib.auth.backends.ModelBackend": "Django model backend",
+    "helusers.auth.HelusersModelBackend": "Helusers model backend",
+    "helusers.tunnistamo_oidc.TunnistamoOIDCAuth": "Tunnistamo OIDC Auth",
 }
