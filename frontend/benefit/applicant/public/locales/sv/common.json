@@ -27,9 +27,9 @@
         "contract": "Visa mindre"
       },
       "secondInstalments": {
-        "heading": "Palkkatiedot 2. maksuerän saamiseksi",
-        "prompt1": "Toimita tiedot",
-        "prompt2": "mennessä",
+        "heading": "Löneinformation för att få den andra utbetalningen.",
+        "prompt1": "Skicka in informationen senast",
+        "prompt2": "",
         "button": "Svara"
       },
       "noApplications": "Inga öppna ansökningar om Helsingforstillägget",

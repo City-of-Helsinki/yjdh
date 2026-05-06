@@ -27,8 +27,8 @@
         "contract": "Show less"
       },
       "secondInstalments": {
-        "heading": "Payment information for receiving 2nd instalment",
-        "prompt1": "Deliver information by",
+        "heading": "Salary information to receive the second payment.",
+        "prompt1": "Submit information by",
         "prompt2": "",
         "button": "Respond"
       },
