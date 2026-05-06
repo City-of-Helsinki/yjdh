@@ -1,5 +1,4 @@
 import logging
-
 from datetime import date, timedelta
 from typing import Dict, List, Union
 
@@ -166,6 +165,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ),
     )
     second_instalment_due_date = serializers.DateField(read_only=True, required=False)
+
     class Meta:
         model = Application
         fields = [
@@ -1427,9 +1427,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         data from the service bus and update the company's industry and industry_code.
         """
         try:
-            refreshed = get_or_create_organisation_with_business_id(
-                company.business_id
-            )
+            refreshed = get_or_create_organisation_with_business_id(company.business_id)
             company.industry_code = refreshed.industry_code
             company.industry = refreshed.industry
             company.save(update_fields=["industry_code", "industry"])
