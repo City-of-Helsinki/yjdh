@@ -1,6 +1,7 @@
 import { Button, IconCheckCircleFill } from 'hds-react';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
@@ -49,11 +50,28 @@ const ThankYouPage: NextPage = () => {
   const createApplicationQuery = useCreateApplicationQuery();
   const errorHandler = useErrorHandler();
 
+  const {
+    data: applications,
+    isLoading: isApplicationsLoading,
+    isFetching: isApplicationsFetching,
+  } = useApplicationsQuery(false);
+  const draftApplication = applications?.find(
+    (app) => app.status === 'draft' && app.is_mine
+  );
+
   const createNewApplicationClick = React.useCallback((): void => {
     if (applicationQuery.isSuccess && applicationQuery.data) {
       const employerData = extractEmployerFields(applicationQuery.data);
       ApplicationPersistenceService.storeEmployerData(employerData);
     }
+    if (isApplicationsLoading || isApplicationsFetching) {
+      return;
+    }
+    if (draftApplication) {
+      goToPage(`/application?id=${draftApplication.id}`);
+      return;
+    }
+
     createApplicationQuery.mutate(undefined, {
       onError: errorHandler,
       onSuccess: (data) => {
@@ -68,6 +86,9 @@ const ThankYouPage: NextPage = () => {
     applicationQuery.isSuccess,
     applicationQuery.data,
     errorHandler,
+    draftApplication,
+    isApplicationsLoading,
+    isApplicationsFetching,
   ]);
 
   const returnToDashboard = (): void => {
@@ -117,7 +138,17 @@ const ThankYouPage: NextPage = () => {
             <Button
               onClick={createNewApplicationClick}
               variant="secondary"
-              isLoading={createApplicationQuery.isLoading}
+              isLoading={
+                createApplicationQuery.isLoading ||
+                isApplicationsLoading ||
+                isApplicationsFetching
+              }
+              disabled={
+                createApplicationQuery.isLoading ||
+                isApplicationsLoading ||
+                isApplicationsFetching
+              }
+              loadingText={t('common:application.loading')}
             >
               {t('common:thankyouPage.add_another')}
             </Button>

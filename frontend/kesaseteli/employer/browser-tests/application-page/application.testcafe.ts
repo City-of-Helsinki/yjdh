@@ -266,7 +266,7 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
           employee_phone_number: typedPhoneNumber,
         },
       ],
-    } as any); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 );
 
@@ -347,6 +347,6 @@ test.requestHooks(
           employee_phone_number: dirtyPhoneNumber,
         },
       ],
-    } as any); // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 );

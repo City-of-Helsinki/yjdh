@@ -21,8 +21,10 @@ const certPath = path.resolve(
   __dirname,
   '../../../../../localdevelopment/employer/nginx/localhost.crt'
 );
+// eslint-disable-next-line security/detect-non-literal-fs-filename
 const httpsAgent = fs.existsSync(certPath)
-  ? new https.Agent({ ca: fs.readFileSync(certPath) })
+  ? // eslint-disable-next-line security/detect-non-literal-fs-filename
+    new https.Agent({ ca: fs.readFileSync(certPath) })
   : new https.Agent({ rejectUnauthorized: false }); // CodeQL: test-only fallback for CI
 
 export const MOCKED_EMPLOYEE_DATA = {
