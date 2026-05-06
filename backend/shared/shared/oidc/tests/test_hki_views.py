@@ -4,6 +4,7 @@ import pytest
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpResponse
 from django.test import RequestFactory, override_settings
+from django.urls import reverse
 
 from shared.oidc.views.hki_views import HelsinkiOIDCAuthenticationCallbackView
 
@@ -38,3 +39,31 @@ def test_hki_callback_transfers_oidc_next_url():
 
     assert response.status_code == 302
     assert req.session.get("eauth_next_url") == "https://localhost:3000/employer"
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    OIDC_OP_AUTHORIZATION_ENDPOINT="http://example.com/auth",
+)
+def test_hki_callback_skips_auth_init_url():
+    """
+    Test that the custom `HelsinkiOIDCAuthenticationCallbackView` DOES NOT transfer
+    `oidc_login_next` if it is equal to `eauth_authentication_init`.
+    """
+    factory = RequestFactory()
+    req = factory.get("/")
+    middleware = SessionMiddleware(lambda request: HttpResponse())
+    middleware.process_request(req)
+    req.session.save()
+    req.session["oidc_login_next"] = reverse("eauth_authentication_init")
+
+    view = HelsinkiOIDCAuthenticationCallbackView()
+    view.user = mock.Mock()
+    view.request = req
+
+    with mock.patch("mozilla_django_oidc.views.auth.login"):
+        response = view.login_success()
+
+    assert response.status_code == 302
+    assert "eauth_next_url" not in req.session
