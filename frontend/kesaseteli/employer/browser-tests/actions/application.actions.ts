@@ -17,6 +17,11 @@ type UserAndApplicationData = Omit<Application, 'user'> & SuomiFiData;
 
 const fakeObjectFactory = new FakeObjectFactory();
 
+const isForeignIban = (iban: string): boolean => {
+  const val = (iban || '').replace(/\s/g, '').toUpperCase();
+  return val.length >= 2 && !val.startsWith('FI');
+};
+
 export const fillEmployerDetails = async (
   t: TestController,
   application: Application
@@ -36,6 +41,22 @@ export const fillEmployerDetails = async (
   await step1Form.actions.fillBankAccountNumber(
     application.bank_account_number
   );
+
+  if (isForeignIban(application.bank_account_number)) {
+    await step1Form.actions.fillPayeeName(
+      application.payee_name || 'Test Payee'
+    );
+    await step1Form.actions.fillPayeeAddress(
+      application.payee_address || 'Test Address'
+    );
+    await step1Form.actions.fillBankSwiftBicCode(
+      application.bank_swift_bic_code || 'TESTSWIFT'
+    );
+    await step1Form.actions.fillBankName(application.bank_name || 'Test Bank');
+    await step1Form.actions.fillBankAddress(
+      application.bank_address || 'Test Bank Address'
+    );
+  }
 };
 
 export const fillEmploymentDetails = async (

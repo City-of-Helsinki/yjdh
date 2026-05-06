@@ -615,6 +615,64 @@ class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin
         "created_at",
         "modified_at",
     ]
+    fieldsets = [
+        (
+            None,
+            {
+                "fields": (
+                    "company",
+                    "user",
+                    "status",
+                    "submitted_at",
+                    "language",
+                )
+            },
+        ),
+        (
+            _("Contact Information"),
+            {
+                "fields": (
+                    "contact_person_name",
+                    "contact_person_email",
+                    "contact_person_phone_number",
+                    "street_address",
+                )
+            },
+        ),
+        (
+            _("Payment Information"),
+            {
+                "fields": (
+                    "bank_account_number",
+                    "payee_name",
+                    "payee_address",
+                    "bank_swift_bic_code",
+                    "bank_name",
+                    "bank_address",
+                )
+            },
+        ),
+        (
+            _("Invoicer Information"),
+            {
+                "fields": (
+                    "is_separate_invoicer",
+                    "invoicer_name",
+                    "invoicer_email",
+                    "invoicer_phone_number",
+                )
+            },
+        ),
+        (
+            _("Timestamps"),
+            {
+                "fields": (
+                    "created_at",
+                    "modified_at",
+                )
+            },
+        ),
+    ]
 
     def has_add_permission(self, request):
         """
