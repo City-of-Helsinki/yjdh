@@ -112,6 +112,143 @@ def test_applications_second_instalment_fetched(handler_api_client, application)
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
+def test_fetch_applications_with_requested_2nd_instalment(api_client, application):
+    """
+    Test that application with 2nd instalment in REQUESTED status is fetched.
+    """
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=date.today() - relativedelta(days=30),
+        end_date=date.today() + relativedelta(months=9),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=12000,
+    )
+    application.calculation.save()
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=1,
+        status=InstalmentStatus.PAID,
+        due_date=date.today() - relativedelta(months=1),
+    )
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=2,
+        status=InstalmentStatus.REQUESTED,
+        due_date=date.today() + relativedelta(months=5),
+    )
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list")
+        + "?second_instalment_status=requested"
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    assert response.data[0]["id"] == str(application.id)
+    assert response.data[0]["second_instalment_due_date"] == str(
+        date.today() + relativedelta(months=5)
+    )
+
+
+@pytest.mark.django_db
+def test_fetch_only_instalment_requested(api_client, application):
+    """
+    Test that only the application with 2nd instalment in REQUESTED
+    status is fetched.
+    """
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=date.today() - relativedelta(days=30),
+        end_date=date.today() + relativedelta(months=9),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=12000,
+    )
+    application.calculation.save()
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=1,
+        status=InstalmentStatus.PAID,
+        due_date=date.today() - relativedelta(months=1),
+    )
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=2,
+        status=InstalmentStatus.REQUESTED,
+        due_date=date.today() + relativedelta(months=5),
+    )
+    application_2 = ApplicationFactory(status=ApplicationStatus.ACCEPTED)
+    application_2.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=date.today() - relativedelta(days=30),
+        end_date=date.today() + relativedelta(months=9),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=12000,
+    )
+    application_2.calculation.save()
+
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list")
+        + "?second_instalment_status=requested"
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    assert response.data[0]["id"] == str(application.id)
+    assert response.data[0]["second_instalment_due_date"] == str(
+        date.today() + relativedelta(months=5)
+    )
+
+
+@pytest.mark.django_db
+def test_no_applications_with_requested_instalments(api_client, application):
+    """
+    Test that no applications with other than REQUESTED 2nd instalment
+    status are fetched.
+    """
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=date.today() - relativedelta(days=30),
+        end_date=date.today() + relativedelta(months=9),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=12000,
+    )
+    application.calculation.save()
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=1,
+        status=InstalmentStatus.PAID,
+        due_date=date.today() - relativedelta(months=1),
+    )
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=2,
+        status=InstalmentStatus.RESPONDED,
+        due_date=date.today() + relativedelta(months=5),
+    )
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list")
+        + "?second_instalment_status=requested"
+    )
+    assert len(response.data) == 0
+    assert response.status_code == 200
+
+
 @pytest.mark.parametrize(
     "view_name",
     [
@@ -2664,6 +2801,7 @@ def test_notify_applications_one_application(mock_send_notification_mail):
     assert count == 1
     assert apps[0] == app.application_number
 
+
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 @mock.patch(
@@ -2701,6 +2839,7 @@ def test_notify_applications_no_applications(mock_send_notification_mail):
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 0
     assert apps == []
+
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -2756,6 +2895,7 @@ def test_notify_applications_matching_unmatching(mock_send_notification_mail):
     assert mock_send_notification_mail.call_count == 5
     for app in apps:
         assert app.application_number in notified_applications
+
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -3020,10 +3160,10 @@ def test_change_employer_assurance_wrong_key(handler_api_client):
             "v1:handler-application-change-employer-assurance",
             kwargs={"pk": application.id},
         ),
-        {"illegal_key": 'true'},
+        {"illegal_key": "true"},
     )
     assert response.status_code == 400
-    assert application.employer_assurance == False
+    assert not application.employer_assurance
 
 
 @pytest.mark.django_db
