@@ -60,7 +60,11 @@ def log(
     """
     current_time = get_time()
     user_id = str(actor.pk) if getattr(actor, "pk", None) else ""
-    provider = DJANGO_BACKEND_MAPPING[actor_backend] if actor_backend else ""
+    provider = (
+        DJANGO_BACKEND_MAPPING.get(actor_backend, actor_backend)
+        if actor_backend
+        else ""
+    )
 
     if actor is None:
         role = Role.SYSTEM
