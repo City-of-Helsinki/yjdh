@@ -478,12 +478,12 @@ def test_youth_excel_download_content(staff_client):  # noqa: C901
             elif source_field.endswith("application_year"):
                 assert int(output_value) == localdate(app.created_at).year
             elif source_field == "summer_voucher_serial_number":
-                if output_value is None:
+                if not output_value:
                     assert not app.has_youth_summer_voucher
                 else:
                     assert (
-                        int(output_value)
-                        == app.youth_summer_voucher.summer_voucher_serial_number
+                        output_value
+                        == app.youth_summer_voucher.user_showable_serial_number
                     )
             elif source_field == "birth_year":
                 assert int(output_value) == app.birthdate.year

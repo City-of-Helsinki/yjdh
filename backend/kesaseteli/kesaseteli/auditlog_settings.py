@@ -30,7 +30,6 @@ AUDITLOG_EXCLUDE_TRACKING_MODELS = (
     "applications.historicalyouthsummervoucher",  # to be removed completely
     "audit_log.auditlogentry",  # no double audit logging
     "contenttypes.contenttype",  # system model
-    "sequences.sequence",  # system model
     "sessions.session",  # auth model
 )
 

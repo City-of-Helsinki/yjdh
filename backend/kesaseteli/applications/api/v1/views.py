@@ -272,7 +272,9 @@ class YouthApplicationViewSet(ModelViewSet):
                 request.data.get("employer_summer_voucher_id", "")
             )
             employee_name = str(request.data.get("employee_name", "")).strip()
-            voucher_number = int(request.data.get("summer_voucher_serial_number", ""))
+            voucher_number = str(
+                request.data.get("summer_voucher_serial_number", "")
+            ).strip()
         except (KeyError, ValueError, TypeError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -282,14 +284,12 @@ class YouthApplicationViewSet(ModelViewSet):
         if employer_summer_vouchers.count() != 1:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            youth_summer_voucher = YouthSummerVoucher.objects.get(
-                summer_voucher_serial_number=voucher_number
-            )
-        except YouthSummerVoucher.DoesNotExist:
-            youth_application = None
-        else:
-            youth_application = youth_summer_voucher.youth_application
+        youth_summer_voucher = YouthSummerVoucher.get_voucher_with_serial_number(
+            voucher_number
+        )
+        youth_application = (
+            youth_summer_voucher.youth_application if youth_summer_voucher else None
+        )
 
         found_match = youth_application and is_last_name_fuzzy_match_in_full_name(
             last_name=youth_application.last_name, full_name=employee_name

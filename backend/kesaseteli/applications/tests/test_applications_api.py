@@ -175,7 +175,7 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
         != new_youth_summer_voucher.summer_voucher_serial_number
     )
     data["summer_vouchers"][0]["summer_voucher_serial_number"] = str(
-        new_youth_summer_voucher.summer_voucher_serial_number
+        new_youth_summer_voucher.user_showable_serial_number
     )
     data["summer_vouchers"][0]["employee_name"] = (
         new_youth_summer_voucher.youth_application.name
@@ -188,7 +188,7 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
 
     assert response.status_code == 200
     assert response.data["summer_vouchers"][0]["summer_voucher_serial_number"] == str(
-        new_youth_summer_voucher.summer_voucher_serial_number
+        new_youth_summer_voucher.user_showable_serial_number
     )
     # Make sure that the summer voucher ID stays the same
     assert response.data["summer_vouchers"][0]["id"] == str(summer_voucher_id)

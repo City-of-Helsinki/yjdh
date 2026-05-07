@@ -264,7 +264,6 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_extensions",
     "django_auth_adfs",
-    "sequences.apps.SequencesConfig",
     "auditlog",
     "auditlog_extra",
     # shared apps

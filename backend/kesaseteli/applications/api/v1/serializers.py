@@ -314,7 +314,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         if not serial_number:
             return
 
-        voucher = self._get_youth_summer_voucher(serial_number)
+        voucher = YouthSummerVoucher.get_voucher_with_serial_number(serial_number)
         if not voucher:
             return
 
@@ -324,19 +324,6 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         self._validate_voucher_usage(
             voucher, application=self._get_application_context()
         )
-
-    def _get_youth_summer_voucher(
-        self, serial_number: str
-    ) -> Optional[YouthSummerVoucher]:
-        """
-        Safely fetch the YouthSummerVoucher by serial number.
-        """
-        try:
-            return YouthSummerVoucher.objects.get(
-                summer_voucher_serial_number=int(serial_number)
-            )
-        except (ValueError, TypeError, YouthSummerVoucher.DoesNotExist):
-            return None
 
     def _validate_voucher_employee_name(
         self, voucher: YouthSummerVoucher, user_provided_name: str
@@ -986,10 +973,10 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
     def to_local_year(value: datetime) -> int:
         return timezone.localdate(value).year
 
-    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> Optional[int]:
+    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> str | None:
         if not obj.has_youth_summer_voucher:
             return None
-        return obj.youth_summer_voucher.summer_voucher_serial_number
+        return obj.youth_summer_voucher.user_showable_serial_number
 
     def get_birth_year(self, obj: YouthApplication) -> int:
         try:

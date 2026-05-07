@@ -5,10 +5,9 @@ from email.mime.image import MIMEImage
 from typing import List
 from unittest import mock
 
+import base32_lib
 import pytest
 from django.core import mail
-from django.db import transaction
-from django.db.utils import IntegrityError
 from django.test import override_settings
 from freezegun import freeze_time
 
@@ -16,7 +15,6 @@ from applications.enums import EmployerApplicationStatus
 from applications.models import EmployerSummerVoucher, YouthSummerVoucher
 from common.tests.factories import (
     AttachmentFactory,
-    AwaitingManualProcessingYouthApplicationFactory,
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
     YouthSummerVoucherFactory,
@@ -92,30 +90,75 @@ def test_employer_summer_voucher_submitted_at(year):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "obsolete_serial_number", ["", "Testing", "Even more ABC123 testing!"]
+    "summer_voucher_serial_number",
+    [1, 1234, 99_999, 100_000, 123456789012345, 2**50 - 1],
 )
 def test_employer_summer_voucher_summer_voucher_serial_number_property(
+    summer_voucher_serial_number: int,
+):
+    """
+    Test that EmployerSummerVoucher.summer_voucher_serial_number property
+    returns the linked YouthSummerVoucher's user_showable_serial_number.
+    """
+    employer_voucher = EmployerSummerVoucherFactory(
+        youth_summer_voucher__summer_voucher_serial_number=summer_voucher_serial_number
+    )
+    assert (
+        employer_voucher.youth_summer_voucher.summer_voucher_serial_number
+        == summer_voucher_serial_number
+    )
+    assert (
+        employer_voucher.summer_voucher_serial_number
+        == employer_voucher.youth_summer_voucher.user_showable_serial_number
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "summer_voucher_serial_number, expected_user_showable_serial_number",
+    [
+        # Previously used sequentially generated serial numbers in range [1, 100k):
+        (1, "1"),
+        (1234, "1234"),
+        (99_999, "99999"),
+        # Randomly generated base32 encoded serial numbers with integer values >=100k:
+        (100_000, "31n-022"),
+        (123456789012345, "3g9-230-vqv-s62"),
+        (2**50 - 1, "zzz-zzz-zzz-z89"),
+    ],
+)
+def test_youth_summer_voucher_user_showable_serial_number_property(
+    summer_voucher_serial_number: int, expected_user_showable_serial_number: str
+):
+    """
+    Test that YouthSummerVoucher.user_showable_serial_number property matches
+    the expected encoding.
+    """
+    youth_summer_voucher = YouthSummerVoucherFactory(
+        summer_voucher_serial_number=summer_voucher_serial_number
+    )
+    assert (
+        youth_summer_voucher.user_showable_serial_number
+        == expected_user_showable_serial_number
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "obsolete_serial_number", ["", "Testing", "Even more ABC123 testing!"]
+)
+def test_employer_summer_voucher_summer_voucher_serial_number_property_fallback(
     obsolete_serial_number,
 ):
     """
     Test that EmployerSummerVoucher.summer_voucher_serial_number property
-    returns the linked YouthSummerVoucher's summer_voucher_serial_number as
-    string, or if it doesn't exist falls back to _obsolete_unclean_serial_number.
+    returns _obsolete_unclean_serial_number if not linked to a YouthSummerVoucher.
     """
     employer_voucher = EmployerSummerVoucherFactory(
-        _obsolete_unclean_serial_number=obsolete_serial_number
+        youth_summer_voucher=None,
+        _obsolete_unclean_serial_number=obsolete_serial_number,
     )
-    assert employer_voucher.youth_summer_voucher is not None
-    assert (
-        employer_voucher.youth_summer_voucher.summer_voucher_serial_number is not None
-    )
-    # Serial number should be the linked youth summer voucher's serial number as string
-    assert employer_voucher.summer_voucher_serial_number == str(
-        employer_voucher.youth_summer_voucher.summer_voucher_serial_number
-    )
-    # Serial number should fall back to _obsolete_unclean_serial_number
-    # if no linked youth summer voucher
-    employer_voucher.youth_summer_voucher = None
+    assert employer_voucher.youth_summer_voucher is None
     assert employer_voucher.summer_voucher_serial_number == obsolete_serial_number
 
 
@@ -130,6 +173,9 @@ def test_employer_summer_voucher_summer_voucher_serial_number_property(
         "00001",
         "99999",
         "  1234    ",
+        "31n-022",
+        "3g9-230-vqv-s62",
+        "zzz-zzz-zzz-z89",
         -1,
         1,
         12345,
@@ -155,24 +201,38 @@ def test_employer_summer_voucher_summer_voucher_serial_number_setter_without_mat
     # serial number should result in no linked youth summer voucher
     assert not YouthSummerVoucher.objects.exists()
     employer_voucher.summer_voucher_serial_number = serial_number
-    assert employer_voucher.summer_voucher_serial_number == ""
+    assert employer_voucher.youth_summer_voucher is None
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "input_serial_number",
+    "serial_number_as_int, user_inputted_serial_number",
     [
-        "12345",
-        "00001",
-        "99999",
-        "  1234    ",
-        1,
-        12345,
-        99999,
+        # Previously used sequentially generated serial numbers in range [1, 100k):
+        (1, "1"),
+        (1, 1),
+        (1, "00001"),
+        (1234, "1234"),
+        (1234, "  001234   "),
+        (1234, 1234),
+        (99_999, "99999"),
+        (99_999, 99999),
+        # Randomly generated base32 encoded serial numbers with integer values >=100k:
+        (100_000, "31n-022"),
+        (100_000, "3in-o22"),  # Allowed char variations
+        (100_000, "3IN-O22"),  # Allowed char variations
+        (100_000, "  31n022  "),
+        (123456789012345, "3g9-230-vqv-s62"),
+        (123456789012345, " -3---g9230v-q-v-s62  "),
+        (123456789012345, "3G923ovQVS62"),  # Allowed char variation
+        (2**50 - 1, "zzz-zzz-zzz-z89"),
+        # Non-numeric base32 encoded serial numbers with checksum still match even if <100k:
+        (12, "c62"),
+        (1034, "10a03"),
     ],
 )
 def test_employer_summer_voucher_summer_voucher_serial_number_setter_with_match(
-    input_serial_number: str | int,
+    serial_number_as_int: int, user_inputted_serial_number: str | int
 ):
     """
     Test the EmployerSummerVoucher.summer_voucher_serial_number property's setter
@@ -182,16 +242,85 @@ def test_employer_summer_voucher_summer_voucher_serial_number_setter_with_match(
     EmployerSummerVoucher.objects.all().delete()
     YouthSummerVoucher.objects.all().delete()
 
-    expected_serial_number = int(input_serial_number)
-    YouthSummerVoucherFactory(summer_voucher_serial_number=expected_serial_number)
+    YouthSummerVoucherFactory(summer_voucher_serial_number=serial_number_as_int)
     employer_voucher = EmployerSummerVoucherFactory(
         _obsolete_unclean_serial_number="", youth_summer_voucher=None
     )
 
-    assert employer_voucher.summer_voucher_serial_number == ""
+    assert employer_voucher.youth_summer_voucher is None
+    employer_voucher.summer_voucher_serial_number = user_inputted_serial_number
+    assert employer_voucher.youth_summer_voucher is not None
+    assert (
+        employer_voucher.youth_summer_voucher.summer_voucher_serial_number
+        == serial_number_as_int
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "possibly_matching_serial_numbers, input_serial_number",
+    [
+        ([], "I am not a number"),  # Not base32 encoded nor an integer
+        (
+            [
+                123,
+                base32_lib.decode("123", checksum=False),
+            ],
+            "#123",
+        ),  # Otherwise valid but contains invalid character
+        (
+            [
+                base32_lib.decode("c", checksum=False),
+            ],
+            "c",
+        ),  # Base32 encoded 12 without checksum → invalid
+        (
+            [
+                base32_lib.decode("31n-023", checksum=False),
+            ],
+            "31n-023",
+        ),  # Base32 encoded value with invalid checksum
+        (
+            [
+                base32_lib.decode("31n-022", checksum=False),
+                base32_lib.decode("31n-022", checksum=True),
+            ],
+            "31n-022$",
+        ),  # Otherwise valid but contains invalid character
+        (
+            [
+                base32_lib.decode("3g9-230-vqv-s62", checksum=False),
+                base32_lib.decode("3g9-230-vqv-s62", checksum=True),
+            ],
+            "3g9-230-vqv-s62-",
+        ),  # Otherwise valid but trailing dash is invalid
+    ],
+)
+def test_employer_summer_voucher_summer_voucher_serial_number_setter_with_invalid_input(
+    possibly_matching_serial_numbers: list[int], input_serial_number: str
+):
+    """
+    Test the EmployerSummerVoucher.summer_voucher_serial_number property's setter
+    with invalid serial number inputs.
+
+    :possibly_matching_serial_numbers: list of serial numbers that could possibly match
+        the input_serial_number if it were decoded/interpreted in a more lenient way.
+    :input_serial_number: input serial number invalid in some way
+    """
+    # Clear existing vouchers for a clean slate
+    EmployerSummerVoucher.objects.all().delete()
+    YouthSummerVoucher.objects.all().delete()
+
+    # Create youth summer vouchers for the possibly matching serial numbers
+    for serial_number in possibly_matching_serial_numbers:
+        YouthSummerVoucherFactory(summer_voucher_serial_number=serial_number)
+    employer_voucher = EmployerSummerVoucherFactory(
+        _obsolete_unclean_serial_number="", youth_summer_voucher=None
+    )
+
+    # Try to set the serial number and test that it does not find a match
     employer_voucher.summer_voucher_serial_number = input_serial_number
-    assert employer_voucher.summer_voucher_serial_number == str(expected_serial_number)
-    assert employer_voucher.youth_summer_voucher_id == expected_serial_number
+    assert employer_voucher.youth_summer_voucher is None
 
 
 @pytest.mark.django_db
@@ -206,190 +335,6 @@ def test_employer_summer_voucher_summer_voucher_serial_number_setter_exception(
     employer_voucher = EmployerSummerVoucherFactory()
     with pytest.raises(TypeError):
         employer_voucher.summer_voucher_serial_number = serial_number
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_get_last_used_serial_number():
-    assert YouthSummerVoucher.objects.count() == 0
-    assert YouthSummerVoucher.get_last_used_serial_number() is None
-    for _ in range(1, 10):
-        summer_voucher = AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-        assert YouthSummerVoucher.get_last_used_serial_number() is not None
-        assert (
-            YouthSummerVoucher.get_last_used_serial_number()
-            == summer_voucher.summer_voucher_serial_number
-        )
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_first_serial_number():
-    assert YouthSummerVoucher.objects.count() == 0
-    summer_voucher = (
-        AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    )
-    assert (
-        summer_voucher.summer_voucher_serial_number
-        == YouthSummerVoucher.SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE
-    )
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_sequentiality():
-    assert YouthSummerVoucher.objects.count() == 0
-    for ordinal_number in range(1, 10):
-        summer_voucher = AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-        assert YouthSummerVoucher.objects.count() == ordinal_number
-        assert YouthSummerVoucher.objects.last() == summer_voucher
-        assert summer_voucher.summer_voucher_serial_number == ordinal_number
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_sequentiality_duplicate_create():
-    assert YouthSummerVoucher.objects.count() == 0
-
-    app_1 = AwaitingManualProcessingYouthApplicationFactory()
-    app_1.create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    with pytest.raises(IntegrityError):
-        app_1.create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 2
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 2
-
-    assert sorted(
-        YouthSummerVoucher.objects.values_list(
-            "summer_voucher_serial_number", flat=True
-        )
-    ) == list(range(1, 3))
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_sequentiality_failing_transaction():
-    assert YouthSummerVoucher.objects.count() == 0
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    with transaction.atomic():
-        AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-        AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-        transaction.set_rollback(True)
-
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 2
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 2
-
-    assert sorted(
-        YouthSummerVoucher.objects.values_list(
-            "summer_voucher_serial_number", flat=True
-        )
-    ) == list(range(1, 3))
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_sequentiality_failing_nested_transaction():
-    assert YouthSummerVoucher.objects.count() == 0
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    with transaction.atomic():
-        AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-        with transaction.atomic():
-            AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-            AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-            transaction.set_rollback(True)
-
-    assert YouthSummerVoucher.objects.count() == 2
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 2
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 3
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 3
-
-    assert sorted(
-        YouthSummerVoucher.objects.values_list(
-            "summer_voucher_serial_number", flat=True
-        )
-    ) == list(range(1, 4))
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_sequentiality_failing_nested_transactions():
-    assert YouthSummerVoucher.objects.count() == 0
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    with transaction.atomic():
-        AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-        with transaction.atomic():
-            AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-            AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-            transaction.set_rollback(True)
-        transaction.set_rollback(True)
-
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-    assert YouthSummerVoucher.objects.count() == 2
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 2
-
-    assert sorted(
-        YouthSummerVoucher.objects.values_list(
-            "summer_voucher_serial_number", flat=True
-        )
-    ) == list(range(1, 3))
-
-
-@pytest.mark.django_db()
-def test_youth_summer_voucher_sequentiality_complex_transaction_nesting():
-    assert YouthSummerVoucher.objects.count() == 0
-
-    def create_youth_summer_vouchers(count: int):
-        for _ in range(count):
-            AwaitingManualProcessingYouthApplicationFactory().create_youth_summer_voucher()
-
-    create_youth_summer_vouchers(count=1)
-    assert YouthSummerVoucher.objects.count() == 1
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 1
-
-    with transaction.atomic():
-        create_youth_summer_vouchers(count=3)
-        with transaction.atomic():
-            create_youth_summer_vouchers(count=5)
-            with transaction.atomic():
-                create_youth_summer_vouchers(count=7)
-                with transaction.atomic():
-                    create_youth_summer_vouchers(count=9)
-                    with transaction.atomic():
-                        create_youth_summer_vouchers(count=11)
-                transaction.set_rollback(True)
-
-    assert YouthSummerVoucher.objects.count() == 9
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 9
-
-    create_youth_summer_vouchers(count=1)
-    assert YouthSummerVoucher.objects.count() == 10
-    assert YouthSummerVoucher.objects.last().summer_voucher_serial_number == 10
-
-    assert sorted(
-        YouthSummerVoucher.objects.values_list(
-            "summer_voucher_serial_number", flat=True
-        )
-    ) == list(range(1, 11))
 
 
 @pytest.mark.django_db
@@ -498,3 +443,47 @@ def test_youth_summer_voucher_helsinki_logo(language, expected_logo_from_file):
     expected_logo_mime_image = MIMEImage(expected_logo_content)
 
     assert logo_mime_image.get_payload() == expected_logo_mime_image.get_payload()
+
+
+def test_get_random_serial_number():
+    """
+    Test the YouthSummerVoucher.get_random_serial_number generates numbers in the correct range
+    at least remotely randomly. Not rigorous randomness test, but a test for gross failures.
+    """
+    sample_size = 10_000
+    serial_numbers = [
+        YouthSummerVoucher.get_random_serial_number() for _ in range(sample_size)
+    ]
+
+    # Test for correct range
+    assert all(
+        YouthSummerVoucher.MIN_RAND_SERIAL_NUM
+        <= serial_number
+        <= YouthSummerVoucher.MAX_RAND_SERIAL_NUM
+        for serial_number in serial_numbers
+    )
+
+    # No duplicates: at least a single collision in a ~2**50 range with 10k samples
+    # is approximately 1-math.exp(-k*(k-1)/(2*n)) likely where
+    # k=10_000, n=YouthSummerVoucher.RAND_SERIAL_NUM_RANGE_LEN, i.e. ~1/22M chance.
+    # See https://en.wikipedia.org/wiki/Birthday_problem for the formula derivation.
+    assert len(set(serial_numbers)) == sample_size
+
+    # Split range into buckets and verify that each bucket gets roughly as many numbers
+    num_buckets = 10
+    bucket_size = YouthSummerVoucher.RAND_SERIAL_NUM_RANGE_LEN // num_buckets
+    buckets = [0] * num_buckets
+    for n in serial_numbers:
+        bucket_index = min(
+            (n - YouthSummerVoucher.MIN_RAND_SERIAL_NUM) // bucket_size, num_buckets - 1
+        )
+        buckets[bucket_index] += 1
+
+    expected_per_bucket = 1000
+    # Allowed error of ±180 should be at least as improbable as the earlier check i.e. ~1/22M:
+    allowed_error = 180
+
+    assert all(abs(count - expected_per_bucket) <= allowed_error for count in buckets)
+    assert (
+        sum(buckets) == sample_size
+    )  # Sanity check that the buckets sum up to the total

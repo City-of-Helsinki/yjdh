@@ -1,4 +1,5 @@
 -e file:../shared
+base32-lib@https://github.com/inveniosoftware/base32-lib/archive/254311bba7aaa7e5b9e0e364adfdb7c057e252d2.zip
 django-auditlog
 django-auditlog-extra@https://github.com/City-of-Helsinki/django-auditlog-extra/archive/24978fc884355e8d210016dac2e58b8c7d4b701a.zip
 django-auth-adfs
@@ -8,7 +9,6 @@ django-extensions
 django-filter
 django-localflavor
 django-searchable-encrypted-fields
-django-sequences
 django-storages[azure]
 django~=5.2
 djangorestframework
