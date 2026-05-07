@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import transaction
-from django.db.models import Prefetch, Q, QuerySet, OuterRef, Subquery
+from django.db.models import OuterRef, Prefetch, Q, QuerySet, Subquery
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -46,6 +46,7 @@ from applications.enums import (
     ApplicationBatchStatus,
     ApplicationOrigin,
     ApplicationStatus,
+    AttachmentType,
 )
 from applications.models import (
     AhjoSetting,
@@ -83,7 +84,6 @@ from shared.audit_log.enums import Operation
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from users.models import User
 from users.utils import get_company_from_request
-from applications.enums import AttachmentType
 
 log = logging.getLogger(__name__)
 
@@ -138,14 +138,21 @@ class BaseApplicationFilter(filters.FilterSet):
             calculation__instalments__instalment_number=2,
             calculation__instalments__status=InstalmentStatus.REQUESTED,
         )
+        not_cancelled_query = ~Q(status=ApplicationStatus.CANCELLED)
+
+        active_second_instalment_requested_query = (
+            second_instalment_requested_query & not_cancelled_query
+        )
 
         if value:
-            return queryset.filter(query).filter(
-                ~second_instalment_requested_query
-            ).distinct()
+            return (
+                queryset.filter(query)
+                .filter(~active_second_instalment_requested_query)
+                .distinct()
+            )
         else:
             return queryset.filter(
-                ~query | second_instalment_requested_query
+                ~query | active_second_instalment_requested_query
             ).distinct()
 
 
@@ -346,10 +353,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
             exclude_fields | (extra_exclude_fields - fields)
         )
 
-        second_instalment_due_date = Instalment.objects.filter(
-            calculation=OuterRef("calculation"),
-            instalment_number=2,
-        ).values("due_date")[:1]
+        second_instalment_due_date = (
+            Instalment.objects.filter(
+                calculation=OuterRef("calculation"),
+                instalment_number=2,
+            )
+            .order_by("created_at", "pk")
+            .values("due_date")[:1]
+        )
 
         qs = qs.annotate(
             second_instalment_due_date=Subquery(second_instalment_due_date)
@@ -417,7 +428,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if not attachment:
             return self._attachment_not_found()
 
-        if attachment.attachment_type == AttachmentType.PAYSLIP and not request.user.is_handler():
+        if (
+            attachment.attachment_type == AttachmentType.PAYSLIP
+            and not request.user.is_handler()
+        ):
             return Response(
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
@@ -934,7 +948,6 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-
     @action(methods=["PATCH"], detail=True, url_path="change_employer_assurance")
     @transaction.atomic
     def change_employer_assurance(self, request, pk) -> HttpResponse:
@@ -949,7 +962,6 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         application.employer_assurance = employer_assurance
         application.save()
         return Response(status=status.HTTP_200_OK)
-
 
     @action(methods=["PATCH"], detail=True, url_path="require_additional_information")
     @transaction.atomic

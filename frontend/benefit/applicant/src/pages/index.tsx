@@ -45,6 +45,9 @@ const ApplicantIndex: NextPage = () => {
 
   const [infoNeededCount, setInfoNeededCount] = useState<number | null>(null);
   const [draftCount, setDraftCount] = useState<number | null>(null);
+  const [secondInstalmentCount, setSecondInstalmentCount] = useState<
+    number | null
+  >(null);
   const [submittedCount, setSubmittedCount] = useState<number | null>(null);
 
   const onInfoNeededChange = useCallback(
@@ -57,15 +60,23 @@ const ApplicantIndex: NextPage = () => {
       setDraftCount(isLoading ? null : count),
     []
   );
+  const onSecondInstalmentChange = useCallback(
+    (isLoading: boolean, count: number) =>
+      setSecondInstalmentCount(isLoading ? null : count),
+    []
+  );
   const onSubmittedChange = useCallback(
     (isLoading: boolean, count: number) =>
       setSubmittedCount(isLoading ? null : count),
     []
   );
 
-  const noApplications = [infoNeededCount, draftCount, submittedCount].every(
-    (item) => item === 0
-  );
+  const noApplications = [
+    infoNeededCount,
+    draftCount,
+    secondInstalmentCount,
+    submittedCount,
+  ].every((item) => item === 0);
 
   return (
     <>
@@ -101,6 +112,7 @@ const ApplicantIndex: NextPage = () => {
               status={SUBMITTED_STATUSES}
               isArchived={false}
               secondInstalmentStatus={INSTALMENT_STATUSES.REQUESTED}
+              onListLengthChanged={onSecondInstalmentChange}
             />
             <ApplicationList
               heading={t('common:applications.list.submitted.heading')}

@@ -185,9 +185,11 @@ def test_fetch_only_instalment_requested(api_client, application):
         status=InstalmentStatus.REQUESTED,
         due_date=date.today() + relativedelta(months=5),
     )
-    application_2 = ApplicationFactory(status=ApplicationStatus.ACCEPTED)
+    application_2 = ApplicationFactory(
+        company=application.company, status=ApplicationStatus.ACCEPTED
+    )
     application_2.calculation = Calculation(
-        application=application,
+        application=application_2,
         monthly_pay=1234,
         vacation_money=123,
         other_expenses=321,

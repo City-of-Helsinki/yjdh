@@ -7,6 +7,7 @@ import {
   ApplicationAllowedAction,
   ApplicationListItemData,
 } from 'benefit-shared/types/application';
+import subDays from 'date-fns/subDays';
 import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import { useRouter } from 'next/router';
@@ -19,6 +20,7 @@ import { OptionType } from 'shared/types/common';
 import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
+  parseDate,
 } from 'shared/utils/date.utils';
 import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
@@ -73,10 +75,10 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
   return name === ' ' ? '-' : name;
 };
 
-const getDateDaysBefore = (date: string, daysBefore: number): Date => {
-  const parsedDate = new Date(`${date}T00:00:00`);
-  parsedDate.setDate(parsedDate.getDate() - daysBefore);
-  return parsedDate;
+const getDateDaysBefore = (date: string, daysBefore: number): Date | undefined => {
+  const parsedDate = parseDate(date);
+
+  return parsedDate ? subDays(parsedDate, daysBefore) : undefined;
 };
 
 const useApplicationList = ({
@@ -179,8 +181,11 @@ const useApplicationList = ({
     const submittedAt = submitted_at
       ? convertToUIDateFormat(submitted_at)
       : '-';
+
+    // Calculate second instalment due date to allow for 14 days delivery
+    // i.e., 15 days before the second instalment due date.
     const secondInstalmentDueDate = second_instalment_due_date
-      ? convertToUIDateFormat(getDateDaysBefore(second_instalment_due_date, 14))
+      ? convertToUIDateFormat(getDateDaysBefore(second_instalment_due_date, 15))
       : '-';
     const modifiedAtWithTime =
       modified_at && convertToUIDateAndTimeFormat(modified_at);

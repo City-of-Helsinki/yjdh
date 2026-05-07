@@ -34,6 +34,7 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
                                                                              submittedAt,
                                                                              applicationNum,
                                                                              secondInstalmentDueDate,
+                                                                             allowedAction,
                                                                            }) => {
   const { t } = useTranslation();
   const translationBase = 'common:applications.list';
@@ -75,7 +76,12 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
           </$StatusDataColumn>
 
           <$DataColumn>
-            <Button iconLeft={<IconPen />} variant="primary" theme="coat">
+            <Button
+              iconLeft={<IconPen />}
+              variant="primary"
+              theme="coat"
+              onClick={() => allowedAction?.handleAction(false)}
+            >
               {t(`${translationBase}.secondInstalments.button`)}
             </Button>
           </$DataColumn>
