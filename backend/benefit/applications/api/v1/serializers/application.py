@@ -1866,6 +1866,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         # Extend from base class function.
         if instance.status == ApplicationStatus.CANCELLED:
             self._cancel_application(instance)
+        if instance.status == ApplicationStatus.REJECTED:
+            instance.archived = True
+            instance.save()
         self._assign_handler_if_needed(instance)
 
         if not instance.handled_by_ahjo_automation and instance.ahjo_case_id is None:

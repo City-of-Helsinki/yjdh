@@ -12,6 +12,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from sql_util.aggregates import SubqueryCount
 from fuzzywuzzy import fuzz
 from rest_framework import filters as drf_filters
 from rest_framework import status
@@ -25,6 +26,7 @@ from applications.api.v1.serializers.application import (
 from applications.enums import ApplicationStatus
 from applications.models import Application, ArchivalApplication
 from common.permissions import BFIsHandler
+from messages.models import MessageType
 
 
 class SearchPattern(models.TextChoices):
@@ -108,7 +110,14 @@ class SearchView(APIView):
 
 
 def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decision):
-    queryset = Application.objects.filter(archived=archived)
+    queryset = Application.objects.filter(archived=archived).select_related(
+        "company", "employee", "calculation", "calculation__handler", "batch", "handler"
+    ).prefetch_related("alteration_set", "calculation__instalments").annotate(
+        unread_messages_count=SubqueryCount(
+            "messages",
+            filter=Q(seen_by_handler=False) & ~Q(message_type=MessageType.NOTE),
+        )
+    )
 
     if subsidy_in_effect and subsidy_in_effect == SubsidyInEffect.NOW:
         queryset = queryset.filter(
