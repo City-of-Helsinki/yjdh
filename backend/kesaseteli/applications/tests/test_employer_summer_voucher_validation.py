@@ -79,9 +79,7 @@ class TestEmployerApplicationValidation:
         youth_app = active_voucher.youth_application
 
         new_voucher_data = {
-            "summer_voucher_serial_number": str(
-                active_voucher.summer_voucher_serial_number
-            ),
+            "summer_voucher_serial_number": active_voucher.user_showable_serial_number,
             "employee_name": f"{youth_app.first_name} {youth_app.last_name}",
             "employee_phone_number": "0401234567",
             "employment_postcode": "00100",
@@ -111,13 +109,13 @@ class TestEmployerApplicationValidation:
         voucher, _ = YouthSummerVoucher.objects.get_or_create(
             youth_application=youth_application,
             defaults={
-                "summer_voucher_serial_number": YouthSummerVoucher.get_next_serial_number()
+                "summer_voucher_serial_number": YouthSummerVoucher.get_random_serial_number()
             },
         )
 
         data = EmployerApplicationSerializer(application).data
         new_voucher_data = {
-            "summer_voucher_serial_number": str(voucher.summer_voucher_serial_number),
+            "summer_voucher_serial_number": voucher.user_showable_serial_number,
             "employee_name": f"{youth_application.first_name} {youth_application.last_name}",
             "employee_phone_number": "0401234567",
             "employment_postcode": "00100",
@@ -152,9 +150,7 @@ class TestEmployerApplicationValidation:
         youth_app = active_voucher.youth_application
 
         new_voucher_data = {
-            "summer_voucher_serial_number": str(
-                active_voucher.summer_voucher_serial_number
-            ),
+            "summer_voucher_serial_number": active_voucher.user_showable_serial_number,
             "employee_name": f"{youth_app.first_name} {youth_app.last_name}",
             "employee_phone_number": "0401234567",
             "employment_postcode": "00100",

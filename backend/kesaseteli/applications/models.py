@@ -1,17 +1,18 @@
 import json
 import logging
+import secrets
 from datetime import date, datetime, timedelta
 from email.mime.image import MIMEImage
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote, urljoin
 
-import sequences
+import base32_lib
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
-from django.db import models, transaction
+from django.db import IntegrityError, models, transaction
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone, translation
@@ -562,12 +563,25 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             return False
         return True
 
-    @transaction.atomic  # Needed for django-sequences serial number handling
     def create_youth_summer_voucher(self) -> "YouthSummerVoucher":
-        return YouthSummerVoucher.objects.create(
-            youth_application=self,
-            summer_voucher_serial_number=YouthSummerVoucher.get_next_serial_number(),
-        )
+        """
+        Creates youth summer voucher for this youth application if it doesn't have one.
+        :return: New youth summer voucher for this youth application, or existing one if
+            it already has one.
+        :raises RuntimeError: if unable to allocate a serial number for the voucher
+        """
+        if self.has_youth_summer_voucher:
+            return self.youth_summer_voucher
+        for _i in range(YouthSummerVoucher.SERIAL_NUM_ALLOCATION_TRY_COUNT_LIMIT):
+            try:
+                with transaction.atomic():
+                    return YouthSummerVoucher.objects.create(
+                        youth_application=self,
+                        summer_voucher_serial_number=YouthSummerVoucher.get_random_serial_number(),
+                    )
+            except IntegrityError:
+                continue  # Serial number collision → retry with new number
+        raise RuntimeError("Unable to allocate serial number for youth summer voucher")
 
     @property
     def is_handled(self) -> bool:
@@ -867,8 +881,34 @@ class YouthSummerVoucherManager(models.Manager):
 class YouthSummerVoucher(TimeStampedModel, UUIDModel):
     objects = YouthSummerVoucherManager()
 
-    _SERIAL_NUMBER_SEQUENCE_NAME = "youth_summer_voucher_serial_numbers"
-    SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE = 1
+    # Inclusive lower limit for randomly generated serial numbers,
+    # existing sequential values in production were in range [1, 30k) in May 2026.
+    MIN_RAND_SERIAL_NUM = 100_000
+
+    # Inclusive upper limit for randomly generated serial numbers,
+    # using maximum value that fits base32 encoded with checksum & dashes in 15 chars:
+    # >>> base32_lib.encode(2**50-1, split_every=3, checksum=True) == "zzz-zzz-zzz-z89"
+    # >>> base32_lib.encode(2**50, split_every=3, checksum=True) == "100-000-000-008-6"
+    MAX_RAND_SERIAL_NUM = (2**50) - 1
+
+    # The maximum count of randomly generated serial numbers
+    RAND_SERIAL_NUM_RANGE_LEN = MAX_RAND_SERIAL_NUM - MIN_RAND_SERIAL_NUM + 1
+
+    # How many times at maximum to try to allocate a new serial number
+    # until give up and raise an exception instead?
+    #
+    # Needed because of possible collisions when randomly selecting serial numbers.
+    #
+    # Basically this is completely safe with 10 retries. Why? Read below:
+    #
+    # If 1% of the random serial number range RAND_SERIAL_NUMBER_RANGE_LEN is used,
+    # which is ~10**13 ~= 1000 times the people on Earth in May 2026 (~=8_300M),
+    # the probability that a new randomly selected serial number collides
+    # with an existing one is 1%. Trying 10 times with such probability gives
+    # 0.01**10 = (10**-2)**10 = 10**-20 probability that all 10 tries collide.
+    # This is practically impossible given enough entropy in the random generation
+    # (The secrets library used generates cryptographically strong random numbers).
+    SERIAL_NUM_ALLOCATION_TRY_COUNT_LIMIT = 10
 
     youth_application = models.OneToOneField(
         YouthApplication,
@@ -890,15 +930,88 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
         return self.youth_application.get_target_group_display()
 
     @staticmethod
-    def get_next_serial_number() -> int:
-        return sequences.get_next_value(
-            sequence_name=YouthSummerVoucher._SERIAL_NUMBER_SEQUENCE_NAME,
-            initial_value=YouthSummerVoucher.SERIAL_NUMBER_SEQUENCE_INITIAL_VALUE,
+    def get_random_serial_number() -> int:
+        """
+        Get a randomly generated summer voucher serial number.
+        :return: A randomly generated summer voucher serial number.
+        """
+        return YouthSummerVoucher.MIN_RAND_SERIAL_NUM + secrets.randbelow(
+            YouthSummerVoucher.RAND_SERIAL_NUM_RANGE_LEN
         )
 
     @staticmethod
-    def get_last_used_serial_number() -> Optional[int]:
-        return sequences.get_last_value(YouthSummerVoucher._SERIAL_NUMBER_SEQUENCE_NAME)
+    def get_user_showable_serial_number(serial_number: int) -> str:
+        """
+        Get a user-showable version of the given serial number by encoding it
+        using base32 encoding with checksum and splitting it every 3 chars with dash,
+        except for old sequential serial numbers that are returned as-is as strings.
+
+        Example with new randomly generated serial number:
+        >>> YouthSummerVoucher.get_user_showable_serial_number(123456) == "3rj-076"
+
+        Example with old sequentially generated serial number (<_MIN_RAND_SERIAL_NUM):
+        >>> YouthSummerVoucher.get_user_showable_serial_number(98_765) == "98765"
+        """
+        if serial_number < YouthSummerVoucher.MIN_RAND_SERIAL_NUM:
+            # Return previously used sequentially generated serial numbers
+            # without encoding for backwards compatibility
+            return str(serial_number)
+        # Return current randomly generated serial numbers base32 encoded with checksum
+        return base32_lib.encode(serial_number, split_every=3, checksum=True)
+
+    @property
+    def user_showable_serial_number(self) -> str:
+        """
+        A user-showable version of this youth summer voucher's serial number.
+        """
+        return YouthSummerVoucher.get_user_showable_serial_number(
+            self.summer_voucher_serial_number
+        )
+
+    @staticmethod
+    def decode_user_showable_serial_number(serial_number) -> int:
+        """
+        Decode the given user-showable serial number back to an integer by
+        removing dashes and decoding using base32 encoding with checksum,
+        or parsing it as an integer if it's a previously used sequential serial number.
+
+        Example with new randomly generated serial number:
+        >>> YouthSummerVoucher.decode_user_showable_serial_number("3rj-076") == 123456
+
+        Example with old sequentially generated serial number (<_MIN_RAND_SERIAL_NUM):
+        >>> YouthSummerVoucher.decode_user_showable_serial_number("98765") == 98765
+
+        :raises ValueError: if base32 format is incorrect or its checksum is invalid
+        """
+        cleaned_num: str = str(serial_number).strip()
+        if (
+            cleaned_num.isdigit()
+            and int(cleaned_num) < YouthSummerVoucher.MIN_RAND_SERIAL_NUM
+        ):
+            return int(cleaned_num)
+        return base32_lib.decode(cleaned_num, checksum=True)
+
+    @staticmethod
+    def get_voucher_with_serial_number(serial_number) -> "YouthSummerVoucher | None":
+        """
+        Get the youth summer voucher with the given serial number, which can be a
+        previously used sequential serial number or a user-showable serial number in
+        base32 encoding with checksum.
+
+        :return: Youth summer voucher with given serial number, or None if not found.
+        """
+        try:
+            decoded_num: int = YouthSummerVoucher.decode_user_showable_serial_number(
+                serial_number
+            )
+        except ValueError:
+            return None  # Invalid format or checksum
+        try:
+            return YouthSummerVoucher.objects.get(
+                summer_voucher_serial_number=decoded_num
+            )
+        except YouthSummerVoucher.DoesNotExist:
+            return None
 
     @property
     def year(self) -> int:
@@ -1074,7 +1187,7 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
             context = {
                 "first_name": self.youth_application.first_name,
                 "last_name": self.youth_application.last_name,
-                "summer_voucher_serial_number": self.summer_voucher_serial_number,
+                "summer_voucher_serial_number": self.user_showable_serial_number,
                 "postcode": self.youth_application.postcode,
                 "school": self.youth_application.school,
                 "phone_number": self.youth_application.phone_number,
@@ -1108,7 +1221,7 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
             )
 
     def __str__(self):
-        return str(self.summer_voucher_serial_number)
+        return self.user_showable_serial_number
 
     class Meta:
         verbose_name = _("youth summer voucher")
@@ -1412,16 +1525,18 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
         when it was a CharField, now reads from the real foreign key relation
         to YouthSummerVoucher.
 
-        :return: Value of youth_summer_voucher_id as a string, if it is not None,
-            otherwise the value of _obsolete_unclean_serial_number (This may be
-            non-empty string in historical data, but should be empty string in
-            newer data).
+        :return: Value of youth_summer_voucher_id as a user-showable serial number,
+            if it is not None, otherwise value of _obsolete_unclean_serial_number
+            (This may be non-empty string in historical data, but should be empty string
+            in newer data).
         """
         if self.youth_summer_voucher_id is None:
             # Fallback to obsolete unclean serial number for historical data,
             # and for newer data this should be an empty string.
             return self._obsolete_unclean_serial_number
-        return str(self.youth_summer_voucher_id)
+        return YouthSummerVoucher.get_user_showable_serial_number(
+            self.youth_summer_voucher_id
+        )
 
     @summer_voucher_serial_number.setter
     def summer_voucher_serial_number(self, value) -> None:
@@ -1431,12 +1546,15 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
         but now sets the real foreign key relation based on the given value.
 
         Sets youth_summer_voucher to the YouthSummerVoucher instance found
-        with the given summer_voucher_serial_number value converted to int.
+        with the given summer_voucher_serial_number value decoded with
+        YouthSummerVoucher.get_voucher_with_serial_number function.
 
-        If no match is found, or value is None or not convertible to int,
+        If no match is found, or value is None or not decoded successfully,
         sets youth_summer_voucher to None.
 
-        :param value: Value to set the youth_summer_voucher_id foreign key to.
+        :param value: Value to use to set the youth_summer_voucher_id foreign key.
+            Can be base32 encoded integer value with checksum or previously used
+            sequential serial number integer value as an int or string, or None.
         :raises TypeError: if value is not str, int or None
         """
         # Explicitly disallow bool, which is a subclass of int
@@ -1444,13 +1562,11 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
             raise TypeError(
                 f"summer_voucher_serial_number must be str/int/None, not {type(value)}"
             )
-        try:
-            self.youth_summer_voucher = YouthSummerVoucher.objects.get(
-                summer_voucher_serial_number=int(value)
-            )
-        except (ValueError, TypeError, YouthSummerVoucher.DoesNotExist):
-            # Not convertible to int or no matching YouthSummerVoucher found.
-            self.youth_summer_voucher = None
+        self.youth_summer_voucher = (
+            None
+            if value is None
+            else YouthSummerVoucher.get_voucher_with_serial_number(value)
+        )
 
     @property
     def value_in_euros(self) -> int:

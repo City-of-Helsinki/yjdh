@@ -1352,14 +1352,24 @@ def test_youth_application_fetch_employee_data(user_client):
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
-def test_youth_application_fetch_employee_data_success_writes_audit_log(user_client):
+@pytest.mark.parametrize(
+    "serial_number_as_int, user_input_serial_number",
+    [
+        (123, 123),
+        (456, "456"),
+        (100_000, "31n-022"),
+    ],
+)
+def test_youth_application_fetch_employee_data_success_writes_audit_log(
+    user_client, serial_number_as_int: int, user_input_serial_number: int | str
+):
     employer_summer_voucher = EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory()
     )
     youth_application = AcceptedYouthApplicationFactory(
         first_name="Franklin",
         last_name="Doe",
-        youth_summer_voucher__summer_voucher_serial_number=123,
+        youth_summer_voucher__summer_voucher_serial_number=serial_number_as_int,
     )
     url = reverse("v1:youthapplication-fetch-employee-data")
     log_entry_count_before = LogEntry.objects.count()
@@ -1368,7 +1378,7 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
         data={
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "Peter Doe",
-            "summer_voucher_serial_number": 123,
+            "summer_voucher_serial_number": user_input_serial_number,
         },
     )
     assert LogEntry.objects.count() == log_entry_count_before + 1
@@ -1387,7 +1397,7 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(user_cli
         "parameters": {
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "Peter Doe",
-            "summer_voucher_serial_number": 123,
+            "summer_voucher_serial_number": str(user_input_serial_number),
         },
     }
 
@@ -1424,7 +1434,7 @@ def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_c
         "parameters": {
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "Teppo Testaaja",
-            "summer_voucher_serial_number": 123456789,
+            "summer_voucher_serial_number": "123456789",
         },
     }
 

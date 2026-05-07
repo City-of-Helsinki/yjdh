@@ -96,7 +96,7 @@ MANDATORY_YOUTH_SUMMER_VOUCHER_FIELDS_IN_VOUCHER_EMAIL = [
     "min_work_compensation_with_euro_sign",
     "min_work_hours",
     "summer_job_period_localized_string",
-    "summer_voucher_serial_number",
+    "user_showable_serial_number",
     "voucher_value_with_euro_sign",
     "year",
 ]
@@ -2233,11 +2233,6 @@ def test_youth_applications_accept_acceptable(
         )
         assert acceptable_youth_application.has_youth_summer_voucher
         assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
-        assert YouthSummerVoucher.get_last_used_serial_number() is not None
-        assert (
-            acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
-            == YouthSummerVoucher.get_last_used_serial_number()
-        )
         youth_voucher_audit_event, youth_app_audit_event = LogEntry.objects.all()[:2]
         # Created the youth summer voucher:
         assert youth_voucher_audit_event.action == LogEntry.Action.CREATE
@@ -2317,11 +2312,6 @@ def test_youth_applications_accept_acceptable__vtj_disabled(
     assert acceptable_youth_application.encrypted_handler_vtj_json is None
     assert acceptable_youth_application.has_youth_summer_voucher
     assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
-    assert YouthSummerVoucher.get_last_used_serial_number() is not None
-    assert (
-        acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
-        == YouthSummerVoucher.get_last_used_serial_number()
-    )
 
 
 @pytest.mark.django_db
@@ -2808,9 +2798,7 @@ def test_youth_application_fetch_employee_data_uses_fuzzy_match(
     employer_summer_voucher = EmployerSummerVoucherFactory(
         youth_summer_voucher__youth_application__last_name=last_name,
     )
-    serial_number = (
-        employer_summer_voucher.youth_summer_voucher.summer_voucher_serial_number
-    )
+    serial_number = employer_summer_voucher.summer_voucher_serial_number
     url = reverse("v1:youthapplication-fetch-employee-data")
     data = {
         "employer_summer_voucher_id": str(employer_summer_voucher.id),
