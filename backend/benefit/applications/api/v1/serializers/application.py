@@ -1,5 +1,4 @@
 import logging
-
 from datetime import date, timedelta
 from typing import Dict, List, Union
 
@@ -1426,9 +1425,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         data from the service bus and update the company's industry and industry_code.
         """
         try:
-            refreshed = get_or_create_organisation_with_business_id(
-                company.business_id
-            )
+            refreshed = get_or_create_organisation_with_business_id(company.business_id)
             company.industry_code = refreshed.industry_code
             company.industry = refreshed.industry
             company.save(update_fields=["industry_code", "industry"])
@@ -1866,6 +1863,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         # Extend from base class function.
         if instance.status == ApplicationStatus.CANCELLED:
             self._cancel_application(instance)
+        if instance.status == ApplicationStatus.REJECTED:
+            instance.archived = True
+            instance.save()
         self._assign_handler_if_needed(instance)
 
         if not instance.handled_by_ahjo_automation and instance.ahjo_case_id is None:
