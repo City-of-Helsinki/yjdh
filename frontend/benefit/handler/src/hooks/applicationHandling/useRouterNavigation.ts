@@ -88,7 +88,7 @@ export const useRouterNavigation = (
 
     const previousLocation = getPreviousLocationData().pathname;
 
-    // If a returnTab is explicitly set in the URL, always honour it (e.g. tab=6 for Maksuerät)
+    // If a returnTab is explicitly set in the URL, always honour it (e.g. returnTab=6 for Maksuerät)
     const returnTabRaw = router.query?.returnTab;
     const returnTab =
       typeof returnTabRaw === 'string' ? parseInt(returnTabRaw, 10) : NaN;
