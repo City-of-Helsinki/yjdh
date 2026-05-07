@@ -77,7 +77,10 @@ COPY --chown=default:root /kesaseteli/ /app/
 # when spinning up the container
 RUN git config --system --add safe.directory /app
 
-RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
+RUN SECRET_KEY="only-used-for-collectstatic" \
+    ENCRYPTION_KEY="only-used-for-collectstatic" \
+    SOCIAL_SECURITY_NUMBER_HASH_KEY="only-used-for-collectstatic" \
+    python manage.py collectstatic
 
 USER default
 
