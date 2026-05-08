@@ -4,12 +4,11 @@ import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode
 import { Application } from 'benefit/handler/types/application';
 import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { TextArea } from 'hds-react';
+import { TextArea, TextInput } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import {
-  $Checkbox,
   $RadioButton,
 } from 'shared/components/forms/fields/Fields.sc';
 import {
@@ -22,7 +21,6 @@ import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 import {
   $CalculatorHr,
   $CalculatorTableRow,
-  $FieldHeaderText,
   $HelpText,
   $MainHeader,
   $RadioButtonContainer,
@@ -38,10 +36,15 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
 
   const isNewAhjoMode = useDetermineAhjoMode();
 
-  const toggleGrantedAsDeMinimisAid = (): void => {
+  const needsIndustryCode =
+    handledApplication?.grantedAsDeMinimisAid === true &&
+    !data?.company?.industryCode;
+
+  const toggleGrantedAsDeMinimisAid = (value: boolean): void => {
     setHandledApplication({
       ...handledApplication,
-      grantedAsDeMinimisAid: !handledApplication?.grantedAsDeMinimisAid,
+      grantedAsDeMinimisAid: value,
+      industryCodeTouched: false,
     });
   };
 
@@ -50,7 +53,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
       setHandledApplication({
         status: data?.decisionProposalDraft?.status,
         grantedAsDeMinimisAid:
-          !!data?.decisionProposalDraft?.grantedAsDeMinimisAid,
+          data?.decisionProposalDraft?.grantedAsDeMinimisAid ?? undefined,
         logEntryComment: data?.decisionProposalDraft?.logEntryComment,
         justificationText: data?.decisionProposalDraft?.justificationText,
         decisionText: data?.decisionProposalDraft?.decisionText,
@@ -228,22 +231,89 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 </$GridCell>
               )}
             </$Grid>
-            <$Grid>
+            <$Grid style={{ marginTop: theme.spacing.xl}}>
               <$GridCell $colSpan={12}>
-                <$FieldHeaderText>
+                <$ViewField
+                  isBold
+                  style={{ fontSize: theme.fontSize.heading.s }}
+                >
                   {t(`${translationsBase}.actions.grantedAsDeminimisText`)}
-                </$FieldHeaderText>
+                </$ViewField>
               </$GridCell>
-              <$GridCell $colSpan={12}>
-                <$Checkbox
-                  id="deminimisCheckbox"
-                  name="deminimisCheckbox"
+              <$GridCell $colSpan={12} style={{ marginTop: theme.spacing.xs }}>
+                <$RadioButton
+                  id="deminimisYes"
+                  name="deminimisRadio"
+                  value="yes"
                   label={t(`${translationsBase}.actions.grantedAsDeminimisAid`)}
-                  required
                   checked={handledApplication.grantedAsDeMinimisAid === true}
-                  onChange={toggleGrantedAsDeMinimisAid}
+                  onChange={(value: boolean) => {
+                    if (value) toggleGrantedAsDeMinimisAid(true);
+                  }}
                 />
               </$GridCell>
+              <$GridCell $colSpan={12} style={{ marginTop: theme.spacing.xs2 }}>
+                <$RadioButton
+                  id="deminimisNo"
+                  name="deminimisRadio"
+                  value="no"
+                  label={t(`${translationsBase}.actions.grantedAsDeminimisAidNo`)}
+                  checked={handledApplication.grantedAsDeMinimisAid === false}
+                  onChange={(value: boolean) => {
+                    if (value) toggleGrantedAsDeMinimisAid(false);
+                  }}
+                />
+              </$GridCell>
+              {needsIndustryCode && (
+                <$GridCell $colSpan={6}>
+                  {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
+                  <TextInput
+                    id="industryCodeInput"
+                    label={t(`${translationsBase}.fields.industryCode`)}
+                    helperText={t(
+                      `${translationsBase}.fields.industryCodeHelper`
+                    )}
+                    value={
+                      handledApplication.industryDescription
+                        ? `${handledApplication.industryCode ?? ''} ${handledApplication.industryDescription}`
+                        : (handledApplication.industryCode ?? '')
+                    }
+                    // We allow users to input both code and description in the same field to make it easier to
+                    // understand which code they are selecting.
+                    // We then split the input back to code and description when saving.
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const raw = e.target.value;
+                      const spaceIndex = raw.indexOf(' ');
+                      const code = spaceIndex === -1 ? raw : raw.slice(0, spaceIndex);
+                      const description = spaceIndex === -1 ? '' : raw.slice(spaceIndex + 1);
+                      setHandledApplication({
+                        ...handledApplication,
+                        industryCode: code,
+                        industryDescription: description || undefined,
+                      });
+                    }}
+                    onBlur={() =>
+                      setHandledApplication({
+                        ...handledApplication,
+                        industryCodeTouched: true,
+                      })
+                    }
+                    required
+                    invalid={
+                      !!handledApplication.industryCodeTouched &&
+                      handledApplication.grantedAsDeMinimisAid === true &&
+                      !handledApplication.industryCode
+                    }
+                    errorText={
+                      !!handledApplication.industryCodeTouched &&
+                      handledApplication.grantedAsDeMinimisAid === true &&
+                      !handledApplication.industryCode
+                        ? t(`${translationsBase}.fields.industryCodeRequired`)
+                        : undefined
+                    }
+                  />
+                </$GridCell>
+              )}
             </$Grid>
           </>
         )}

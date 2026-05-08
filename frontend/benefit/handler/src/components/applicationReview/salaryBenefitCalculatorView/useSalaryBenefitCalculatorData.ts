@@ -37,7 +37,7 @@ type ExtendedComponentProps = {
   };
   grantedPeriod: number;
   stateAidMaxPercentageOptions: OptionType[];
-  getStateAidMaxPercentageSelectValue: () => OptionType | undefined;
+  getStateAidMaxPercentageSelectValue: () => OptionType | null;
   paySubsidyPercentageOptions: OptionType[];
   isManualCalculator: boolean;
   changeCalculatorMode: (mode: 'auto' | 'manual') => true;
@@ -195,10 +195,12 @@ const useSalaryBenefitCalculatorData = (
 
   const { values } = formik;
 
-  const getStateAidMaxPercentageSelectValue = (): OptionType | undefined => {
+  const getStateAidMaxPercentageSelectValue = (): OptionType | null => {
     const { stateAidMaxPercentage } = values;
-    return stateAidMaxPercentageOptions.find(
-      (o) => o.value?.toString() === stateAidMaxPercentage?.toString()
+    return (
+      stateAidMaxPercentageOptions.find(
+        (o) => o.value?.toString() === stateAidMaxPercentage?.toString()
+      ) ?? null
     );
   };
 

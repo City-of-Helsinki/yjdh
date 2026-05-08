@@ -4,6 +4,7 @@ import {
   HandledAplication,
 } from 'benefit/handler/types/application';
 import { Application, ApplicationData } from 'benefit-shared/types/application';
+import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ErrorData } from 'benefit-shared/types/common';
 import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
@@ -16,6 +17,7 @@ import snakecaseKeys from 'snakecase-keys';
 import { useRouterNavigation } from './applicationHandling/useRouterNavigation';
 import { useApplicationActions } from './useApplicationActions';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
+import useUpdateCompanyIndustryCode from './useUpdateCompanyIndustryCode';
 
 interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationFormProps) => void;
@@ -32,6 +34,7 @@ const useHandlerReviewActions = (
   >
 ): HandlerReviewActions => {
   const updateApplicationQuery = useUpdateApplicationQuery();
+  const updateCompanyIndustryCode = useUpdateCompanyIndustryCode();
 
   const { handledApplication } = React.useContext(AppContext);
 
@@ -41,14 +44,38 @@ const useHandlerReviewActions = (
 
   // ACCEPTED, REJECTED
   const onDone = React.useCallback((): void => {
-    if (handledApplication?.status) {
+    if (!handledApplication?.status) return;
+
+    const doUpdateStatus = (): void => {
       updateStatus(
-        handledApplication.status,
+        handledApplication.status as APPLICATION_STATUSES,
         handledApplication.logEntryComment,
         handledApplication.grantedAsDeMinimisAid
       );
+    };
+
+    if (
+      handledApplication.grantedAsDeMinimisAid &&
+      handledApplication.industryCode &&
+      application.company?.id
+    ) {
+      updateCompanyIndustryCode.mutate(
+        {
+          companyId: application.company.id,
+          industryCode: handledApplication.industryCode,
+          industry: handledApplication.industryDescription,
+        },
+        { onSuccess: doUpdateStatus, onError: doUpdateStatus }
+      );
+    } else {
+      doUpdateStatus();
     }
-  }, [handledApplication, updateStatus]);
+  }, [
+    handledApplication,
+    updateStatus,
+    updateCompanyIndustryCode,
+    application,
+  ]);
 
   // CANCELL
   const onCancel = (cancelledApplication: HandledAplication): void => {

@@ -28,6 +28,7 @@ type ExtendedComponentProps = {
   isDoneConfirmationModalOpen: boolean;
   cancelComments: string;
   handledApplication: HandledAplication | null;
+  setHandledApplication: (application: HandledAplication | null) => void;
 };
 
 const useHandlingApplicationActions = (
@@ -119,6 +120,7 @@ const useHandlingApplicationActions = (
     isDoneConfirmationModalOpen,
     cancelComments,
     handledApplication,
+    setHandledApplication,
   };
 };
 
