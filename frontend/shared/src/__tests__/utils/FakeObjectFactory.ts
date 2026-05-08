@@ -79,7 +79,7 @@ class FakeObjectFactory {
   public fakeContactInfo(): ContactInfo {
     return {
       contact_person_name: faker.name.findName(),
-      contact_person_email: faker.internet.email(),
+      contact_person_email: faker.internet.exampleEmail(),
       contact_person_phone_number: faker.phone.phoneNumber(),
       street_address: faker.address.streetAddress(),
       bank_account_number: 'FI2112345600000785',
