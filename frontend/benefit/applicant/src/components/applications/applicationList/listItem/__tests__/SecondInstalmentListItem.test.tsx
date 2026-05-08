@@ -1,9 +1,12 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
+import { ROUTES } from 'benefit/applicant/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import React from 'react';
 
 import SecondInstalmentListItem from '../SecondInstalmentListItem';
+
+const pushMock = jest.fn();
 
 jest.mock('benefit/applicant/i18n', () => ({
   useTranslation: () => ({
@@ -11,15 +14,23 @@ jest.mock('benefit/applicant/i18n', () => ({
   }),
 }));
 
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: pushMock,
+  }),
+}));
+
 jest.mock('hds-react', () => ({
   Button: ({
-             children,
-             iconLeft,
-           }: {
+    children,
+    iconLeft,
+    onClick,
+  }: {
     children: React.ReactNode;
     iconLeft?: React.ReactNode;
+    onClick?: () => void;
   }) => (
-    <button type="button">
+    <button type="button" onClick={onClick}>
       {iconLeft}
       {children}
     </button>
@@ -116,5 +127,19 @@ describe('SecondInstalmentListItem', () => {
 
     expect(screen.getByTestId('pen-icon')).toBeInTheDocument();
     expect(screen.getByTestId('warning-icon')).toBeInTheDocument();
+  });
+
+  it('navigates to application alteration when answer button is clicked', () => {
+    getComponent();
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /common:applications\.list\.secondinstalments\.button/i,
+      })
+    );
+
+    expect(pushMock).toHaveBeenCalledWith(
+      `${ROUTES.APPLICATION_ALTERATION}?id=application-id`
+    );
   });
 });
