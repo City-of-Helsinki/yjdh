@@ -113,6 +113,9 @@ export type HandledAplication = {
   status?: APPLICATION_STATUSES;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
+  industryCode?: string;
+  industryDescription?: string;
+  industryCodeTouched?: boolean;
   decisionText?: string;
   justificationText?: string;
   decisionMakerName?: string;
