@@ -1,5 +1,4 @@
 import hashlib
-import secrets
 
 import pytest
 from django.core.exceptions import ImproperlyConfigured
@@ -40,8 +39,8 @@ def test_suomifi_auth_backend_raises_with_empty_salt(settings):
     "salt",
     [
         "test-salt-123",
-        secrets.token_hex(16),
-        secrets.token_urlsafe(32),
+        "0123456789abcdef0123456789abcdef",  # Hex token
+        "L6-testing-testing-6MkVie-interesting-y9YoI",  # URL-safe token
     ],
 )
 @pytest.mark.parametrize(
