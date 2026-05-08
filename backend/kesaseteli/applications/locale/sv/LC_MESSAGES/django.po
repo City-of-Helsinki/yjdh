@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-12 12:51+0200\n"
+"POT-Creation-Date: 2026-05-08 10:30+0300\n"
 "PO-Revision-Date: 2024-02-10 16:22+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -17,6 +17,131 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
+
+#, python-brace-format
+msgid "Imported {created_count} new school. {existing_count} already existed."
+msgid_plural ""
+"Imported {created_count} new schools. {existing_count} already existed."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Import Schools"
+msgstr ""
+
+msgid "Is up to date with source file?"
+msgstr ""
+
+#, python-brace-format
+msgid "Created {count} missing template."
+msgid_plural "Created {count} missing templates."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "All templates already exist."
+msgstr ""
+
+msgid "Template not found"
+msgstr ""
+
+msgid "Error rendering template"
+msgstr ""
+
+msgid "Send selected email templates to me"
+msgstr ""
+
+msgid "You do not have an email address configured."
+msgstr ""
+
+#, python-brace-format
+msgid "Error rendering template {template}: {e}"
+msgstr ""
+
+#, python-brace-format
+msgid "Successfully sent {count} email to {email}."
+msgid_plural "Successfully sent {count} emails to {email}."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Failed to send {count} email."
+msgid_plural "Failed to send {count} emails."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Reinitialize selected templates from file"
+msgstr ""
+
+#, python-brace-format
+msgid "Reinitialized {count} template."
+msgid_plural "Reinitialized {count} templates."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "school"
+msgstr ""
+
+msgid "is in school list"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "is in current school list"
+msgstr ""
+
+msgid "target group"
+msgstr ""
+
+msgid "birthdate"
+msgstr ""
+
+msgid "social security number"
+msgstr ""
+
+msgid "youth application"
+msgstr ""
+
+msgid "Resend summer voucher to selected applicants and to the handler"
+msgstr ""
+
+#, python-brace-format
+msgid "Resent summer voucher to {count} applicant."
+msgid_plural "Resent summer voucher to {count} applicants."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "Failed to resend summer voucher to {count} applicant."
+msgid_plural "Failed to resend summer voucher to {count} applicants."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Employee"
+msgstr ""
+
+msgid "Timestamps"
+msgstr ""
+
+msgid "Has obsolete serial number been migrated?"
+msgstr ""
+
+msgid "employee social security number"
+msgstr ""
+
+msgid ""
+"School A\n"
+"School B\n"
+"School C"
+msgstr ""
+
+msgid "School names (one per line)"
+msgstr ""
+
+msgid "Enter school names, one per line. Existing schools will be skipped."
+msgstr ""
 
 #, python-brace-format
 msgid "EmployerApplication state transition not allowed: {status} to {value}"
@@ -32,7 +157,7 @@ msgstr ""
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr ""
 
-msgid "Too many attachments"
+msgid "At most five attachments per type"
 msgstr ""
 
 msgid "Not a valid pdf file"
@@ -42,6 +167,18 @@ msgid "Not a valid image file"
 msgstr ""
 
 msgid "This field is required before submitting the application"
+msgstr ""
+
+msgid "Employee name is required when providing a serial number"
+msgstr ""
+
+msgid "Provided employee name does not match the voucher owner"
+msgstr ""
+
+msgid "This voucher is not yet valid for attachment "
+msgstr ""
+
+msgid "This voucher has already been used in another application"
 msgstr ""
 
 msgid "Status of the application, visible to the applicant"
@@ -59,6 +196,15 @@ msgid "Attachments missing with types: {attachment_types}"
 msgstr ""
 
 msgid "Must be set"
+msgstr ""
+
+msgid "Summer voucher configuration for current year does not exist"
+msgstr ""
+
+msgid "Invalid language"
+msgstr ""
+
+msgid "Invalid date"
 msgstr ""
 
 msgid "Kyllä"
@@ -97,9 +243,6 @@ msgid "Failed to send activation/additional info request email"
 msgstr ""
 
 msgid "File not found."
-msgstr ""
-
-msgid "Operation not allowed for this application status."
 msgstr ""
 
 msgid "Reporting"
@@ -156,10 +299,34 @@ msgstr ""
 msgid "payslip"
 msgstr ""
 
-msgid "primary target group"
+msgid "Company"
 msgstr ""
 
-msgid "secondary target group"
+msgid "Association"
+msgstr ""
+
+msgid "Parish"
+msgstr ""
+
+msgid "Sports and leisure"
+msgstr ""
+
+msgid "Maintenance and construction"
+msgstr ""
+
+msgid "Restaurant and cafe sector"
+msgstr ""
+
+msgid "Retail sector"
+msgstr ""
+
+msgid "Office and media"
+msgstr ""
+
+msgid "Gardening and agricultural work"
+msgstr ""
+
+msgid "Service sector"
 msgstr ""
 
 msgid "yes"
@@ -201,6 +368,21 @@ msgid "Kotikunta Helsinki"
 msgstr "Helsingfors"
 
 msgid "Kotikunta Utsjoki"
+msgstr ""
+
+msgid "Turvakielto"
+msgstr ""
+
+msgid "Activation"
+msgstr ""
+
+msgid "Additional information request"
+msgstr ""
+
+msgid "Processing"
+msgstr ""
+
+msgid "Youth summer voucher"
 msgstr ""
 
 msgid "Hakemuksen kieli"
@@ -245,6 +427,9 @@ msgid "Laskuttajan nimi"
 msgstr ""
 
 msgid "Laskuttajan Puhelin"
+msgstr ""
+
+msgid "Setelin numero"
 msgstr ""
 
 msgid "Y-tunnus"
@@ -343,10 +528,10 @@ msgstr ""
 msgid "Muuta"
 msgstr ""
 
-msgid "Setelin numero"
+msgid "Nuoren nimi"
 msgstr ""
 
-msgid "Nuoren nimi"
+msgid "VTJ-tietojen luovutuskielto (ts. turvakielto)"
 msgstr ""
 
 msgid "Työnantaja"
@@ -364,10 +549,25 @@ msgstr ""
 msgid "Setelit"
 msgstr ""
 
-msgid "school"
+msgid "schools"
 msgstr ""
 
-msgid "schools"
+msgid "year"
+msgstr ""
+
+msgid "voucher value in euros"
+msgstr ""
+
+msgid "minimum work compensation in euros"
+msgstr ""
+
+msgid "minimum work hours"
+msgstr ""
+
+msgid "summer voucher configuration"
+msgstr ""
+
+msgid "summer voucher configurations"
 msgstr ""
 
 msgid "first name"
@@ -376,7 +576,20 @@ msgstr ""
 msgid "last name"
 msgstr ""
 
-msgid "social security number"
+msgid "non-vtj birthdate"
+msgstr ""
+
+msgid ""
+"Birthdate of person who has no permanent Finnish personal identity code, and "
+"thus no data obtainable through the VTJ integration"
+msgstr ""
+
+msgid "non-vtj home municipality"
+msgstr ""
+
+msgid ""
+"Home municipality of person who has no permanent Finnish personal identity "
+"code, and thus no data obtainable through the VTJ integration"
 msgstr ""
 
 msgid "email"
@@ -406,6 +619,9 @@ msgstr ""
 msgid "status"
 msgstr ""
 
+msgid "creator"
+msgstr ""
+
 msgid "handler"
 msgstr ""
 
@@ -421,57 +637,14 @@ msgstr ""
 msgid "additional info description"
 msgstr ""
 
-msgid "Aktivoi Kesäseteli"
-msgstr "Aktivera Sommarsedeln"
-
-#, python-format
-msgid ""
-"Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi klikkaamalla alla "
-"olevaa linkkiä:\n"
-"\n"
-"%(activation_link)s\n"
-"\n"
-"Ystävällisin terveisin, Kesäseteli-tiimi"
-msgstr ""
-"Aktivera din Sommarsedel genom att bekräfta din e-postadress genom att "
-"klicka på länken nedan:\n"
-"\n"
-"%(activation_link)s\n"
-"\n"
-"Med vänliga hälsningar, Sommarsedeln-teamet"
-
-msgid "Lisätietopyyntö"
-msgstr "Begäran om ytterligare information"
-
-#, python-format
-msgid ""
-"Täydennäthän kesäsetelihakemuksesi tietoja alla olevasta linkistä:\n"
-"\n"
-"%(activation_link)s\n"
-"\n"
-"Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
-msgstr ""
-"Fyll i informationen om din sommarsedelansökan från länken nedan:\n"
-"\n"
-"%(activation_link)s\n"
-"\n"
-"Tack! Med vänliga hälsningar, Sommarsedeln-teamet"
-
-#, python-format
-msgid "Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s"
+msgid "is vtj data restricted"
 msgstr ""
 
-#, python-format
 msgid ""
-"Seuraava henkilö on pyytänyt Kesäseteliä:\n"
-"\n"
-"%(first_name)s %(last_name)s\n"
-"Postinumero: %(postcode)s\n"
-"Koulu: %(school)s\n"
-"Puhelinnumero: %(phone_number)s\n"
-"Sähköposti: %(email)s\n"
-"\n"
-"%(processing_link)s"
+"The Population Information System (VTJ) has restricted data disclosure (a "
+"non-disclosure of personal data / turvakielto). This prevents automatic "
+"retrieval of municipality and address data, requiring manual application "
+"processing."
 msgstr ""
 
 msgid "Unable to send youth application's additional info request email"
@@ -483,24 +656,11 @@ msgstr ""
 msgid "Unable to send youth application's processing email to handler"
 msgstr ""
 
-msgid "youth application"
-msgstr ""
-
 msgid "youth applications"
 msgstr ""
 
 msgid "summer voucher id"
 msgstr ""
-
-msgid "summer voucher target group"
-msgstr ""
-
-msgid "Summer voucher's target group type"
-msgstr ""
-
-#, python-format
-msgid "Vuoden %(year)s Kesäsetelisi"
-msgstr "Din Sommarsedel %(year)s"
 
 #, python-format
 msgid "%(value_in_currency)d%(currency_sign)s"
@@ -533,7 +693,15 @@ msgstr ""
 msgid "user"
 msgstr ""
 
-msgid "invoicer work address"
+msgid "timestamp when employer application was submitted"
+msgstr ""
+
+msgid "company postal address"
+msgstr ""
+
+msgid ""
+"Enter the whole company postal address including street address, postcode "
+"and city."
 msgstr ""
 
 msgid "bank account number"
@@ -563,28 +731,22 @@ msgstr ""
 msgid "invoicer phone number"
 msgstr ""
 
-msgid "application"
+msgid "employer application"
 msgstr ""
 
-msgid "applications"
+msgid "employer applications"
 msgstr ""
 
-msgid "employee name"
+msgid "obsolete unclean summer voucher serial number"
 msgstr ""
 
-msgid "employee school"
-msgstr ""
-
-msgid "employee social security number"
+msgid ""
+"Old obsolete unclean summer_voucher_serial_number values before data "
+"migration in early 2026. Can be used for manual data cleaning and as "
+"fallback summer_voucher_serial_number values in historical data."
 msgstr ""
 
 msgid "employee phone number"
-msgstr ""
-
-msgid "employee home city"
-msgstr ""
-
-msgid "employee postcode"
 msgstr ""
 
 msgid "employment postcode"
@@ -605,6 +767,9 @@ msgstr ""
 msgid "employment description"
 msgstr ""
 
+msgid "job type"
+msgstr ""
+
 msgid "hired without voucher assessment"
 msgstr ""
 
@@ -617,10 +782,10 @@ msgstr ""
 msgid "Has been exported to Excel"
 msgstr ""
 
-msgid "summer voucher"
+msgid "employer summer voucher"
 msgstr ""
 
-msgid "summer vouchers"
+msgid "employer summer vouchers"
 msgstr ""
 
 msgid "attachment type in business rules"
@@ -638,172 +803,138 @@ msgstr ""
 msgid "attachments"
 msgstr ""
 
+msgid "template type"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "subject"
+msgstr ""
+
+msgid "HTML body"
+msgstr ""
+
+msgid "text body"
+msgstr ""
+
+msgid "Text body will be auto-generated from HTML body."
+msgstr ""
+
+msgid "email template"
+msgstr ""
+
+msgid "email templates"
+msgstr ""
+
+msgid "8. luokkalainen"
+msgstr ""
+
+#: applications/target_groups.py:174
+msgid "8th graders: 15 years old, MUST live in Helsinki."
+msgstr ""
+
+msgid "9. luokkalainen"
+msgstr ""
+
+#: applications/target_groups.py:183
+msgid "9th graders: 16 years old, MUST live in Helsinki."
+msgstr ""
+
+msgid "Toisen asteen ensimmäisen vuoden opiskelija"
+msgstr ""
+
+msgid "Upper secondary 1st year: 17 years old, must live in Helsinki."
+msgstr ""
+"Andra stadiets 1:a års studerande: 17 år gamla, måste bo i Helsingfors."
+
+msgid "Toisen asteen toisen vuoden opiskelija"
+msgstr ""
+
+msgid "Upper secondary 2nd year: 18 years old, must live in Helsinki."
+msgstr ""
+"Andra stadiets 2:a års studerande: 18 år gamla, måste bo i Helsingfors."
+
+msgid "Preview"
+msgstr ""
+
+msgid "Reproduce Missing Templates"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
+msgid "Schools"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Luo hakemus ilman henkilötunnusta"
+msgstr ""
+
 msgid "Kirjaudu ulos"
 msgstr ""
 
-msgid ""
-"Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä "
-"hakemuksista. Kun hakemus lisätään käsittelemättömien hakemusten excel "
-"tiedostoon, se merkataan järjestelmässä \"käsitellyiksi\" eikä sitä tuoda "
-"enää seuraavaan käsittelemättömien hakemusten exceliin."
+msgid "Lataa Excel-tiedostoja"
 msgstr ""
 
-msgid "Lataa raportointi-Excel käsittelemättömistä hakemuksista"
-msgstr ""
-
-msgid "Lataa Talpa-Excel käsittelemättömistä hakemuksista"
+msgid "Työnantajien kesäsetelihakemukset"
 msgstr ""
 
 msgid ""
-"Luo uusi excel tiedosto kaikista järjestelmän tämän vuoden hakemuksista. "
-"Tiedosto sisältää myös kaikki käsitellyt hakemukset."
+"\n"
+"        <strong>HUOM</strong>:\n"
+"        Kun hakemus on merkitty käsitellyksi, se ei enää tule "
+"käsittelemättömien Excel-latauksiin!\n"
+"        "
 msgstr ""
 
-msgid "Lataa raportointi-Excel kaikista tämän vuoden hakemuksista"
+msgid "Työnantajien hakemukset"
 msgstr ""
 
-msgid "Lataa Talpa-Excel kaikista tämän vuoden hakemuksista"
+msgid "Raportointi-Excel"
 msgstr ""
 
-msgid ""
-"Luo uusi excel tiedosto kaikista järjestelmän viime vuoden hakemuksista. "
-"Tiedosto sisältää myös kaikki käsitellyt hakemukset."
+msgid "Talpa-Excel"
 msgstr ""
 
-msgid "Lataa raportointi-Excel kaikista viime vuoden hakemuksista"
+msgid "Käsittelemättömät"
 msgstr ""
 
-msgid "Lataa Talpa-Excel kaikista viime vuoden hakemuksista"
+msgid "Lataa ja merkitse käsitellyiksi"
 msgstr ""
 
-msgid "Lataa Excel kaikista nuorten vahvistetuista kesäsetelihakemuksista"
+msgid "Kaikki tämän vuoden (myös käsitellyt)"
 msgstr ""
 
-msgid "Kesäsetelisi ja ohjeet sen käyttämiseen"
-msgstr "Din Sommarsedel och instruktioner för hur du använder den"
+msgid "Lataa"
+msgstr ""
+
+msgid "Kaikki viime vuoden (myös käsitellyt)"
+msgstr ""
+
+msgid "Nuorten kesäsetelihakemukset"
+msgstr ""
+
+msgid "Lataa kaikki nuorten vahvistetut kesäsetelihakemukset"
+msgstr ""
+
+msgid "Authentication credentials were not provided."
+msgstr ""
+
+msgid "You do not have permission to view this page."
+msgstr ""
+
+msgid "Metodi \"GET\" ei ole sallittu."
+msgstr ""
 
 #, python-format
-msgid "Helsinki, Kesäseteli, %(voucher_value_with_euro_sign)s"
-msgstr "Helsingfors, Sommarsedeln, %(voucher_value_with_euro_sign)s"
-
-msgid "Kesäsetelisi, ole hyvä"
-msgstr "Din Sommarsedel, varsågod"
-
-msgid "Tässä henkilökohtainen Kesäsetelisi."
-msgstr "Här är din personliga Sommarsedel."
-
-msgid ""
-"Tutustu Kesäsetelin nettisivuihin, jossa on tietoa Kesäsetelin käytöstä, "
-"kesätyönhausta sekä työpaikkoja."
+msgid "Invalid template syntax: %(error)s"
 msgstr ""
-"Ta del av Sommarsedelns webbplats, som innehåller information om användning "
-"av Sommarsedeln, sökande av sommarjobb och arbetsplatser."
-
-msgid "Ystävällisin terveisin, Kesäseteli-tiimi"
-msgstr "Med vänliga hälsningar, Sommarsedeln-teamet"
-
-msgid "Kesäsetelinumero:"
-msgstr "Sommarsedelns nummer:"
-
-msgid "Kesäsetelin summa:"
-msgstr "Sommadsedelns belopp:"
-
-msgid "Postinumero:"
-msgstr "Postnummer:"
-
-msgid "Koulu:"
-msgstr "Skolan:"
-
-msgid "Puhelinnumero:"
-msgstr "Telefonnummer:"
-
-msgid "Sähköpostiosoite:"
-msgstr "E-postadress:"
-
-msgid "Ohjeita työnhakijalle"
-msgstr "Anvisningar för den arbetssökande"
-
-msgid ""
-"Kesäseteli helpottaa sinua kesätyöpaikan löytämisessä: viime vuonna "
-"tyypillisiä työtehtäviä olivat kesäleirin ohjaaja, myymälän hyllyttäjä, "
-"ravintolan saliapulainen, puutarhatyöntekijä, lastenhoitaja, verkkosivujen "
-"ja somen sisällöntuottaja ja kioskimyyjä."
-msgstr ""
-"Sommarsedeln gör det lättare för dig att hitta ett sommarjobb: i fjol var "
-"typiska arbetsuppgifter sommarlägerledare, varuplockare, diskplockare, "
-"trädgårdsarbetare, barnskötare, webbinnehållsproducent och kioskförsäljare."
-
-msgid ""
-"Erikoisia kesätöitä olivat esimerkiksi peliohjelmointi, äänitiedostojen "
-"editointi ja nahkapajan apulainen!"
-msgstr ""
-"Mer speciella sommarjobb var bland annat spelprogrammering, editerande av "
-"ljudfiler och hjälpreda i en läderateljé!"
-
-msgid ""
-"Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän "
-"sähköpostiviestin työnantajalle tai antaa heille yllä olevan "
-"kesäsetelinumeron."
-msgstr ""
-"När du har hittat ett sommarjobb och ingått ett arbetsavtal kan du "
-"vidarebefordra det här e-postmeddelandet till arbetsgivaren eller ge dem "
-"sommarsedelnumret som finns här ovanför."
-
-msgid "Työpäivät ja palkka:"
-msgstr "Arbetsdagar och lön:"
-
-#, python-format
-msgid ""
-"Kesätyön vähimmäisvaatimuksena on %(min_work_hours)s tuntia töitä ja siitä "
-"vähintään %(min_work_compensation_with_euro_sign)s palkka, ellei alan "
-"työehtosopimus edellytä korkeampaa palkkaa. Lisäksi työnantaja maksaa "
-"normaalit työnantajamaksut, lomakorvauksen ja mahdolliset lisät."
-msgstr ""
-"Arbetstiden är minst %(min_work_hours)s timmar, för vilket utbetalas minst "
-"%(min_work_compensation_with_euro_sign)s lön, om inte kollektivavtalet "
-"förutsätter en högre lön. Dessutom betalar arbetsgivaren normala "
-"arbetsgivaravgifter, semesterersättning och möjliga andra tillägg."
-
-msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/nuorelle/"
-msgstr ""
-"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/"
-
-msgid "Lue lisää"
-msgstr "Läs mer"
-
-msgid "Ohjeita työnantajalle"
-msgstr "Anvisningar för arbetsgivaren"
-
-#, python-format
-msgid ""
-"Kaupunki korvaa kesätyön jälkeen %(voucher_value_with_euro_sign)s "
-"työnantajalle, joka palkkaa Kesäseteliin oikeutetun nuoren töihin "
-"%(summer_job_period_localized_string)s välisenä aikana. Korvaus haetaan "
-"Kesäsetelin sivuilta olevasta linkistä ennen "
-"%(employer_summer_voucher_application_end_date_localized_string)s."
-msgstr ""
-"Helsingfors stad betalar %(voucher_value_with_euro_sign)s till en "
-"arbetsgivare efter sommarjobbet är slutfört, åt arbetsgivare som anställer "
-"en ung, som är berättigad till Sommarsedeln mellan "
-"%(summer_job_period_localized_string)s. Ersättning ansöks före "
-"%(employer_summer_voucher_application_end_date_localized_string)s från "
-"länken på Sommarsedelns webbsida."
-
-msgid "Muut käyttöehdot voit lukea täältä:"
-msgstr "Anda användarvillkor kan läsas här:"
-
-msgid "https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
-msgstr ""
-"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/at-arbetsgivaren/"
-
-msgid "Helsinki"
-msgstr "Helsingfors"
-
-msgid "https://nuorten.hel.fi/kesaseteli/"
-msgstr "https://nuorten.hel.fi/sommarsedeln/"
-
-msgid "nuorten.hel.fi/kesaseteli/"
-msgstr "nuorten.hel.fi/sommarsedeln/"
 
 msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""
@@ -886,7 +1017,4 @@ msgid "Lisätiedot annettu"
 msgstr "Begäran om ytterligare information"
 
 msgid "Käsitelty"
-msgstr ""
-
-msgid "Nuorten kesäsetelihakemukset"
 msgstr ""
