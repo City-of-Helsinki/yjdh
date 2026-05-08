@@ -599,6 +599,7 @@ export type Company = {
   city: string;
   bankAccountNumber?: string;
   organizationType: ORGANIZATION_TYPES;
+  industryCode?: string;
 };
 
 export type ApplicationListItemData = {

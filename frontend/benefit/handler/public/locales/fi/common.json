@@ -1113,6 +1113,7 @@
       "grantedAsDeminimisText": "De minimis",
       "confirm": "Vahvista toimenpide",
       "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena",
+      "grantedAsDeminimisAidNo": "Helsinki-lisä ei ole hakijalle de minimis-tukea",
       "accepting": "Olet siirtämässä hakemuksen päätösjonoon, jossa sille tehdään myönteinen päätös",
       "rejecting": "Olet siirtämässä hakemuksen päätösjonoon, jossa sille tehdään kielteinen päätös",
       "accept": "Tee myönteinen päätösehdotus",
@@ -1187,7 +1188,10 @@
         "granted": "Palkkatuki",
         "grantedAged": "55-vuotta täyttäneiden työllistämistuki",
         "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
-      }
+      },
+      "industryCode": "TOL-koodi (toimialaluokitus)",
+      "industryCodeHelper": "Pakollinen yhdistyksen de minimis -tuessa",
+      "industryCodeRequired": "TOL-koodi on pakollinen de minimis -tuessa"
     },
     "notifications": {
       "editEndDate": "Hakemus avattu muokattavaksi ja lukittuu {{date}}",
@@ -1256,7 +1260,9 @@
           "decisionMakerId": "Päättäjän rooli puuttuu",
           "decisionText": "Päätös ei voi olla tyhjä",
           "signerId": "Allekirjoittaja puuttuu",
-          "justificationText": "Päätöksen perustelu ei voi olla tyhjä"
+          "justificationText": "Päätöksen perustelu ei voi olla tyhjä",
+          "industryCode": "TOL-koodi on pakollinen de minimis -tuessa",
+          "deMinimis": "De minimis -valinta on pakollinen"
         }
       },
       "list": {
@@ -1274,6 +1280,9 @@
         "employeeName": "Työllistettävä",
         "totalAmount": "Myönnettävä tuki yhteensä",
         "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena",
+        "industryCode": "TOL-koodi (toimialaluokitus)",
+        "industryCodeHelper": "Pakollinen yhdistyksen de minimis -tuessa",
+        "industryCodeRequired": "TOL-koodi on pakollinen de minimis -tuessa",
         "decisionMaker": "Päättäjän rooli"
       },
       "calculationReview": {

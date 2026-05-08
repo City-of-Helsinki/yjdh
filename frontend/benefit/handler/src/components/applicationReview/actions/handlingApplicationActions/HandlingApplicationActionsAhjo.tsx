@@ -8,6 +8,7 @@ import {
 } from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
+import useUpdateCompanyIndustryCode from 'benefit/handler/hooks/useUpdateCompanyIndustryCode';
 import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
@@ -74,6 +75,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     isConfirmationModalOpen,
     isDoneConfirmationModalOpen,
     handledApplication,
+    setHandledApplication,
     onDoneConfirmation,
   } = useHandlingApplicationActions(application);
 
@@ -93,6 +95,28 @@ const HandlingApplicationActions: React.FC<Props> = ({
   } = useDecisionProposalDraftMutation(application as HandlerApplication);
 
   const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
+  const updateCompanyIndustryCode = useUpdateCompanyIndustryCode();
+
+  const saveIndustryCodeIfNeeded = React.useCallback((): void => {
+    if (
+      stepState.activeStepIndex === 0 &&
+      handledApplication?.grantedAsDeMinimisAid &&
+      handledApplication?.industryCode &&
+      application.company?.id &&
+      !application.company?.industryCode
+    ) {
+      updateCompanyIndustryCode.mutate({
+        companyId: application.company.id,
+        industryCode: handledApplication.industryCode,
+        industry: handledApplication.industryDescription,
+      });
+    }
+  }, [
+    stepState.activeStepIndex,
+    handledApplication,
+    application.company,
+    updateCompanyIndustryCode,
+  ]);
 
   // TODO: This callback is currently unused (dead code). Remove it once
   // index-navigation-on-save behavior is confirmed unnecessary.
@@ -174,6 +198,13 @@ const HandlingApplicationActions: React.FC<Props> = ({
       logEntry:
         (handledApplication?.logEntryComment?.length ?? 0) <= 0 &&
         handledApplication?.status === APPLICATION_STATUSES.REJECTED,
+      deMinimis:
+        handledApplication?.status === APPLICATION_STATUSES.ACCEPTED &&
+        handledApplication?.grantedAsDeMinimisAid === undefined,
+      industryCode:
+        handledApplication?.grantedAsDeMinimisAid === true &&
+        !handledApplication?.industryCode &&
+        !application.company?.industryCode,
       decisionMakerId:
         !handledApplication?.decisionMakerId ||
         handledApplication?.decisionMakerId?.length <= 0,
@@ -192,6 +223,8 @@ const HandlingApplicationActions: React.FC<Props> = ({
       status: '#proccessRejectedRadio',
       calculation: '#endDate',
       logEntry: '#proccessRejectedRadio',
+      deMinimis: '#deminimisYes',
+      industryCode: '#industryCodeInput',
       decisionMakerId: '#radio-decision-maker-0',
       decisionText: '[data-testid="decisionText"]',
       signerId: '[data-testid="decisionText"]',
@@ -237,10 +270,16 @@ const HandlingApplicationActions: React.FC<Props> = ({
     }
 
     const fields = getValidationFields();
+    if (fields.missing.industryCode) {
+      setHandledApplication({ ...handledApplication, industryCodeTouched: true });
+    }
+
     const errorStep1 =
       fields.missing.status ||
       fields.missing.calculation ||
-      fields.missing.logEntry;
+      fields.missing.logEntry ||
+      fields.missing.deMinimis ||
+      fields.missing.industryCode;
 
     let errorStep2 = false;
     if (currentStepIndex > 0) {
@@ -273,6 +312,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
   };
 
   const handleNext = (finishProposal = false): void => {
+    saveIndustryCodeIfNeeded();
     if (finishProposal || stepState.activeStepIndex < 2) {
       updateApplication({
         ...handledApplication,
@@ -286,6 +326,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
   };
 
   const handlePrev = (): void => {
+    saveIndustryCodeIfNeeded();
     updateApplication({
       ...handledApplication,
       reviewStep: Math.max(0, stepState.activeStepIndex),

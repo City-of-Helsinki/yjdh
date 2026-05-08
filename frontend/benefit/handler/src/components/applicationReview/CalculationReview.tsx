@@ -107,6 +107,19 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
                     : t('common:utility.no')}
                 </dd>
               </div>
+              {decisionProposalDraft.grantedAsDeMinimisAid &&
+                (handledApplication?.industryCode ||
+                  company?.industryCode) && (
+                  <div>
+                    <dt>
+                      {t('common:review.decisionProposal.list.industryCode')}
+                    </dt>
+                    <dd>
+                      {handledApplication?.industryCode ||
+                        company?.industryCode}
+                    </dd>
+                  </div>
+                )}
             </>
           )}
           <div style={{ maxWidth: '220px', minWidth: '220px' }}>
