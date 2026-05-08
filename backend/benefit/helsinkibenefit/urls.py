@@ -39,6 +39,7 @@ from companies.api.v1.views import (
     GetOrganisationByIdView,
     GetUsersOrganizationView,
     SearchOrganisationsView,
+    UpdateCompanyIndustryCodeView,
 )
 from messages.views import (
     ApplicantMessageViewSet,
@@ -160,6 +161,7 @@ urlpatterns = [
     path("v1/company/", GetUsersOrganizationView.as_view()),
     path("v1/company/search/<str:name>/", SearchOrganisationsView.as_view()),
     path("v1/company/get/<str:business_id>/", GetOrganisationByIdView.as_view()),
+    path("v1/company/<str:id>/industry_code/", UpdateCompanyIndustryCodeView.as_view()),
     path("v1/users/me/", CurrentUserView.as_view(), name="users-me"),
     path("v1/users/options/", UserOptionsView.as_view()),
     path(

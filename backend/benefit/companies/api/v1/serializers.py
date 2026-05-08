@@ -19,6 +19,8 @@ class CompanySerializer(serializers.ModelSerializer):
             "city",
             "bank_account_number",
             "organization_type",
+            "industry",
+            "industry_code",
         ]
 
     organization_type = serializers.SerializerMethodField(
@@ -34,3 +36,14 @@ class CompanySerializer(serializers.ModelSerializer):
 class CompanySearchSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=200)
     business_id = serializers.CharField(max_length=20)
+
+
+class UpdateCompanyIndustryCodeSerializer(serializers.Serializer):
+    industry_code = serializers.CharField(max_length=10)
+    industry = serializers.CharField(max_length=255, allow_blank=True, default="")
+
+    def update(self, instance, validated_data):
+        instance.industry_code = validated_data["industry_code"]
+        instance.industry = validated_data["industry"]
+        instance.save(update_fields=["industry_code", "industry"])
+        return instance
