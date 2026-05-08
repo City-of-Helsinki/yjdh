@@ -89,6 +89,13 @@ const ApplicantIndex: NextPage = () => {
           <NoApplications />
         ) : (
           <>
+            <ApplicationList
+              heading={t('common:applications.list.secondInstalments.heading')}
+              status={SUBMITTED_STATUSES}
+              isArchived={false}
+              secondInstalmentStatus={INSTALMENT_STATUSES.REQUESTED}
+              onListLengthChanged={onSecondInstalmentChange}
+            />
             <ExpandableApplicationList
               heading={t('common:applications.list.moreInfo.heading')}
               status={['additional_information_needed']}
@@ -106,13 +113,6 @@ const ApplicantIndex: NextPage = () => {
               ]}
               initialItems={4}
               onListLengthChanged={onDraftChange}
-            />
-            <ApplicationList
-              heading={t('common:applications.list.secondInstalments.heading')}
-              status={SUBMITTED_STATUSES}
-              isArchived={false}
-              secondInstalmentStatus={INSTALMENT_STATUSES.REQUESTED}
-              onListLengthChanged={onSecondInstalmentChange}
             />
             <ApplicationList
               heading={t('common:applications.list.submitted.heading')}

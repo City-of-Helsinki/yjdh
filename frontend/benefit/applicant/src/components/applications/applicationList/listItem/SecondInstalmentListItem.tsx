@@ -1,6 +1,8 @@
+import { ROUTES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import { Button, IconAlertCircleFill, IconPen } from 'hds-react';
+import { useRouter } from 'next/router';
 import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
@@ -28,15 +30,16 @@ const $StatusText = styled.span`
 `;
 
 const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
-                                                                             avatar,
-                                                                             contactPersonName,
-                                                                             name,
-                                                                             submittedAt,
-                                                                             applicationNum,
-                                                                             secondInstalmentDueDate,
-                                                                             allowedAction,
-                                                                           }) => {
+  avatar,
+  contactPersonName,
+  name,
+  submittedAt,
+  applicationNum,
+  secondInstalmentDueDate,
+  id,
+}) => {
   const { t } = useTranslation();
+  const router = useRouter();
   const translationBase = 'common:applications.list';
 
   return (
@@ -69,8 +72,11 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
             <$StatusDataValue>
               <$StatusText>
                 <IconAlertCircleFill aria-hidden="true" />
-                <span>{t(`${translationBase}.secondInstalments.prompt1`)}&nbsp;{secondInstalmentDueDate}&nbsp;
-                  {t(`${translationBase}.secondInstalments.prompt2`)}</span>
+                <span>
+                  {t(`${translationBase}.secondInstalments.prompt1`)}&nbsp;
+                  {secondInstalmentDueDate}&nbsp;
+                  {t(`${translationBase}.secondInstalments.prompt2`)}
+                </span>
               </$StatusText>
             </$StatusDataValue>
           </$StatusDataColumn>
@@ -80,12 +86,13 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
               iconLeft={<IconPen />}
               variant="primary"
               theme="coat"
-              onClick={() => allowedAction?.handleAction(false)}
+              onClick={() =>
+                router.push(`${ROUTES.APPLICATION_ALTERATION}?id=${id ?? ''}`)
+              }
             >
               {t(`${translationBase}.secondInstalments.button`)}
             </Button>
           </$DataColumn>
-
         </$ItemContent>
       </$ListItem>
     </$ListItemWrapper>
