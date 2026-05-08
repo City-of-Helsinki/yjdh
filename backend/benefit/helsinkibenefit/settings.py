@@ -122,9 +122,9 @@ env = environ.Env(
     ADFS_CONTROLLER_GROUP_UUIDS=(list, []),
     DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
     AZURE_ACCOUNT_NAME=(str, ""),
-    AZURE_ACCOUNT_KEY=(str, ""),
+    AZURE_BLOB_STORAGE_SAS_TOKEN=(str, ""),
     AZURE_CONTAINER=(str, ""),
-    AZURE_URL_EXPIRATION_SECS=(int, 900),
+    AZURE_URL_EXPIRATION_SECS=(int, None),
     MINIMUM_WORKING_HOURS_PER_WEEK=(int, 18),
     AUDIT_LOG_ORIGIN=(str, "helsinki-benefit-api"),
     AUDIT_LOG_ENV=(str, ""),
@@ -608,7 +608,7 @@ STORAGES = {
     },
 }
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
-AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_SAS_TOKEN = env("AZURE_BLOB_STORAGE_SAS_TOKEN")
 AZURE_CONTAINER = env("AZURE_CONTAINER")
 AZURE_URL_EXPIRATION_SECS = env(
     "AZURE_URL_EXPIRATION_SECS"
