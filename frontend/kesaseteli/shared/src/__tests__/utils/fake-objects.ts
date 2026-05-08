@@ -165,7 +165,7 @@ export const fakeYouthApplication = (
       : faker.random.arrayElement(fakeSchools),
     is_unlisted_school,
     phone_number: faker.phone.phoneNumber('+358#########'),
-    email: faker.internet.email(),
+    email: faker.internet.exampleEmail(),
     language: DEFAULT_LANGUAGE,
     target_group: targetGroupForSSN(social_security_number),
     ...override,

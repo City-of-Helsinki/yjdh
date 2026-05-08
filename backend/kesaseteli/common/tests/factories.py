@@ -130,12 +130,12 @@ class EmployerApplicationFactory(
     street_address = factory.Faker("street_address")
     bank_account_number = factory.Faker("iban")
     contact_person_name = factory.Faker("name")
-    contact_person_email = factory.Faker("email")
+    contact_person_email = factory.Faker("safe_email")
     contact_person_phone_number = factory.Faker("phone_number")
 
     is_separate_invoicer = factory.Faker("boolean")
     invoicer_name = factory.Faker("name")
-    invoicer_email = factory.Faker("email")
+    invoicer_email = factory.Faker("safe_email")
     invoicer_phone_number = factory.Faker("phone_number")
 
     # foreign iban fields
@@ -283,6 +283,8 @@ def determine_school(youth_application) -> str:
 
 
 def get_test_phone_number() -> str:
+    # TODO: PHONE_NUMBER_REGEX should support international phone numbers.
+
     # PHONE_NUMBER_REGEX didn't accept phone numbers starting with (+358) but did with
     # +358 so removing the parentheses to make the generated phone numbers fit it
     return get_faker().phone_number().replace("(+358)", "+358")
@@ -464,7 +466,7 @@ class AbstractYouthApplicationFactory(
     non_vtj_birthdate = None
     school = factory.LazyAttribute(determine_school)
     is_unlisted_school = factory.LazyAttribute(determine_is_unlisted_school)
-    email = factory.Faker("email")
+    email = factory.Faker("safe_email")
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
     language = factory.Faker("random_element", elements=get_supported_languages())
