@@ -1,3 +1,5 @@
+import random
+
 import pytest
 from auditlog.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
@@ -6,6 +8,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework.reverse import reverse
 
+from applications.api.v1.permissions import ALLOWED_APPLICATION_VIEW_STATUSES
 from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
@@ -553,9 +556,23 @@ def test_application_create_double(api_client, company):
 def test_applications_list_only_finds_own_application(
     api_client, application, company, user
 ):
-    EmployerApplicationFactory()  # Not seen (different company)
-    app2 = EmployerApplicationFactory(company=company)  # Seen (same company, diff user)
-    EmployerApplicationFactory(user=user)  # Not seen (same user, diff company)
+    EmployerApplicationFactory(
+        status=random.choice(
+            ALLOWED_APPLICATION_VIEW_STATUSES,
+        ),
+    )  # Not seen (different company)
+    app2 = EmployerApplicationFactory(
+        company=company,
+        status=random.choice(
+            ALLOWED_APPLICATION_VIEW_STATUSES,
+        ),
+    )  # Seen (same company, diff user)
+    EmployerApplicationFactory(
+        user=user,
+        status=random.choice(
+            ALLOWED_APPLICATION_VIEW_STATUSES,
+        ),
+    )  # Not seen (same user, diff company)
 
     assert EmployerApplication.objects.count() == 4
 
@@ -579,9 +596,23 @@ def test_applications_list_only_finds_own_application(
 def test_application_get_only_finds_own_application(
     api_client, application, company, user
 ):
-    app1 = EmployerApplicationFactory()
-    app2 = EmployerApplicationFactory(company=company)
-    app3 = EmployerApplicationFactory(user=user)
+    app1 = EmployerApplicationFactory(
+        status=random.choice(
+            ALLOWED_APPLICATION_VIEW_STATUSES,
+        )
+    )  # not seen, different company
+    app2 = EmployerApplicationFactory(
+        company=company,
+        status=random.choice(
+            ALLOWED_APPLICATION_VIEW_STATUSES,
+        ),
+    )  # seen, colleague's draft or accepted in same company
+    app3 = EmployerApplicationFactory(
+        user=user,
+        status=random.choice(
+            ALLOWED_APPLICATION_VIEW_STATUSES,
+        ),
+    )  # not seen, own application in different company
 
     assert EmployerApplication.objects.count() == 4
 
