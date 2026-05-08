@@ -13,8 +13,12 @@ from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from stdnum.fi import ytunnus
 
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
-from companies.api.v1.serializers import CompanySearchSerializer, CompanySerializer
+from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
+from companies.api.v1.serializers import (
+    CompanySearchSerializer,
+    CompanySerializer,
+    UpdateCompanyIndustryCodeSerializer,
+)
 from companies.models import Company
 from companies.services import (
     get_or_create_organisation_with_business_id,
@@ -118,6 +122,25 @@ class GetUsersOrganizationView(APIView):
         company_data = CompanySerializer(company).data
 
         return Response(company_data)
+
+
+class UpdateCompanyIndustryCodeView(APIView):
+    """Handler-only endpoint to set the industry (TOL) code on a company."""
+
+    permission_classes = [BFIsHandler]
+
+    @transaction.atomic
+    def patch(self, request: HttpRequest, id: str) -> Response:
+        try:
+            company = Company.objects.get(pk=id)
+        except (Company.DoesNotExist, ValueError):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UpdateCompanyIndustryCodeSerializer(company, data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(CompanySerializer(company).data)
 
 
 class SearchOrganisationsView(APIView):
