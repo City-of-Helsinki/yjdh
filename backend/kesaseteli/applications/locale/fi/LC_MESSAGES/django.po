@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 10:30+0300\n"
+"POT-Creation-Date: 2026-05-11 14:48+0300\n"
 "PO-Revision-Date: 2022-03-29 08:43+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -839,16 +839,14 @@ msgstr ""
 msgid "8. luokkalainen"
 msgstr ""
 
-#: applications/target_groups.py:174
-msgid "8th graders: 15 years old, MUST live in Helsinki."
-msgstr ""
+msgid "8th graders: 15 years old, must live in Helsinki."
+msgstr "8. luokkalaiset: 15-vuotiaat, asuinpaikan on oltava Helsinki."
 
 msgid "9. luokkalainen"
 msgstr ""
 
-#: applications/target_groups.py:183
-msgid "9th graders: 16 years old, MUST live in Helsinki."
-msgstr ""
+msgid "9th graders: 16 years old, must live in Helsinki."
+msgstr "9. luokkalaiset: 16-vuotiaat, asuinpaikan on oltava Helsinki."
 
 msgid "Toisen asteen ensimmäisen vuoden opiskelija"
 msgstr ""

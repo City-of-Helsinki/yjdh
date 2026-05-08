@@ -1,0 +1,145 @@
+import { renderHook } from '@testing-library/react-hooks';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
+import nock from 'nock';
+
+import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
+
+const API_BASE_TEST_URL = 'http://kesaseteli-api';
+
+type Language = 'fi' | 'sv' | 'en';
+type LanguageSummerVoucherConfigurations = Record<
+  Language,
+  SummerVoucherConfiguration[]
+>;
+
+const languages = ['fi', 'sv', 'en'] as const;
+
+const languageDataMock = languages.reduce<LanguageSummerVoucherConfigurations>(
+  (acc, lang: typeof languages[number]) => ({
+    ...acc,
+    [lang]: [
+      {
+        target_groups: [
+          {
+            id: 'primary_target_group',
+            name: `name-${lang}`,
+            description: `description-${lang}`,
+          },
+        ],
+      },
+    ],
+  }),
+  {} as LanguageSummerVoucherConfigurations
+);
+
+jest.mock('next-i18next', () => ({
+  useTranslation: jest.fn(),
+}));
+
+jest.mock('shared/hooks/useErrorHandler', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
+const mockUseTranslation = useTranslation as jest.Mock;
+const mockUseErrorHandler = useErrorHandler as jest.Mock;
+const mockErrorHandler = jest.fn();
+
+describe('useSummerVoucherConfigurationQuery', () => {
+  beforeAll(() => {
+    nock.disableNetConnect();
+  });
+
+  afterAll(() => {
+    nock.enableNetConnect();
+  });
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <BackendAPIProvider baseURL={API_BASE_TEST_URL}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </BackendAPIProvider>
+  );
+
+  beforeEach(() => {
+    queryClient.clear();
+    nock.cleanAll();
+    mockUseErrorHandler.mockReturnValue(mockErrorHandler);
+    jest.clearAllMocks();
+  });
+
+  it('returns target groups in the requested language (fi, sv, en)', async () => {
+    const firstLang = languages[0];
+    mockUseTranslation.mockReturnValue({
+      i18n: { language: firstLang },
+    });
+
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
+      .reply(200, languageDataMock[firstLang]);
+
+    const { result, waitFor, rerender } = renderHook(
+      () => useSummerVoucherConfigurationQuery(),
+      { wrapper }
+    );
+
+    await waitFor(() => result.current.isSuccess);
+    expect(result.current.data).toEqual(languageDataMock[firstLang]);
+    expect(nock.isDone()).toBe(true);
+
+    // Test remaining languages
+    for (let i = 1; i < languages.length; i++) {
+      const lang = languages[i];
+      mockUseTranslation.mockReturnValue({
+        i18n: { language: lang },
+      });
+
+      nock(API_BASE_TEST_URL, {
+        reqheaders: {
+          'accept-language': lang,
+        },
+      })
+        .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
+        .reply(200, languageDataMock[lang]);
+
+      rerender();
+      await waitFor(() => result.current.isSuccess, { timeout: 5000 });
+
+      expect(result.current.data).toEqual(languageDataMock[lang]);
+      expect(nock.isDone()).toBe(true);
+    }
+  });
+
+  it('calls useErrorHandler on error', async () => {
+    mockUseTranslation.mockReturnValue({
+      i18n: { language: languages[0] },
+    });
+
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
+      .reply(500);
+
+    const { result, waitFor } = renderHook(
+      () => useSummerVoucherConfigurationQuery(),
+      { wrapper }
+    );
+
+    await waitFor(() => result.current.isError);
+
+    expect(mockErrorHandler).toHaveBeenCalled();
+    expect(nock.isDone()).toBe(true);
+  });
+});
