@@ -171,7 +171,7 @@ def get_target_group_choices() -> List[Tuple[str, str]]:
 class EighthGraderTargetGroup(AbstractTargetGroup):
     name = _("8. luokkalainen")
     identifier = "hki_15"
-    description = _("8th graders: 15 years old, MUST live in Helsinki.")
+    description = _("8th graders: 15 years old, must live in Helsinki.")
 
     def is_age_valid(self, age: int) -> bool:
         return age == 15
@@ -180,7 +180,7 @@ class EighthGraderTargetGroup(AbstractTargetGroup):
 class NinthGraderTargetGroup(AbstractTargetGroup):
     name = _("9. luokkalainen")
     identifier = "primary_target_group"
-    description = _("9th graders: 16 years old, MUST live in Helsinki.")
+    description = _("9th graders: 16 years old, must live in Helsinki.")
 
     def is_age_valid(self, age: int) -> bool:
         return age == 16
@@ -189,7 +189,7 @@ class NinthGraderTargetGroup(AbstractTargetGroup):
 class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
     name = _("Toisen asteen ensimmäisen vuoden opiskelija")
     identifier = "secondary_target_group"
-    description = _("Upper secondary 1st year: 17 years old, MUST live in Helsinki.")
+    description = _("Upper secondary 1st year: 17 years old, must live in Helsinki.")
 
     def is_age_valid(self, age: int) -> bool:
         return age == 17
@@ -198,7 +198,7 @@ class UpperSecondaryFirstYearTargetGroup(AbstractTargetGroup):
 class UpperSecondarySecondYearTargetGroup(AbstractTargetGroup):
     name = _("Toisen asteen toisen vuoden opiskelija")
     identifier = "hki_18"
-    description = _("Upper secondary 2nd year: 18 years old, MUST live in Helsinki.")
+    description = _("Upper secondary 2nd year: 18 years old, must live in Helsinki.")
 
     def is_age_valid(self, age: int) -> bool:
         return age == 18

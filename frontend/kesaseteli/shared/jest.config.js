@@ -4,7 +4,7 @@ module.exports = {
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     ['^kesaseteli/shared/test/(.*)$']: '<rootDir>/test/$1',
-    [`^kesaseteli/shared\/(.*)$`]: '<rootDir>src/$1',
+    [`^kesaseteli-shared\/(.*)$`]: '<rootDir>/src/$1',
   },
   testEnvironment: '<rootDir>/../../shared/jest-canvas-env.js',
   setupFilesAfterEnv: [

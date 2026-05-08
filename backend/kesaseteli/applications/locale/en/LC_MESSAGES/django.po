@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 10:30+0300\n"
+"POT-Creation-Date: 2026-05-11 14:48+0300\n"
 "PO-Revision-Date: 2024-02-10 16:36+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -828,31 +828,27 @@ msgid "email templates"
 msgstr ""
 
 msgid "8. luokkalainen"
-msgstr ""
+msgstr "8th grader"
 
-#: applications/target_groups.py:174
-msgid "8th graders: 15 years old, MUST live in Helsinki."
+msgid "8th graders: 15 years old, must live in Helsinki."
 msgstr ""
 
 msgid "9. luokkalainen"
-msgstr ""
+msgstr "9th grader"
 
-#: applications/target_groups.py:183
-msgid "9th graders: 16 years old, MUST live in Helsinki."
+msgid "9th graders: 16 years old, must live in Helsinki."
 msgstr ""
 
 msgid "Toisen asteen ensimmäisen vuoden opiskelija"
-msgstr ""
+msgstr "First year student of upper secondary education"
 
-#: applications/target_groups.py:192
-msgid "Upper secondary 1st year: 17 years old, MUST live in Helsinki."
+msgid "Upper secondary 1st year: 17 years old, must live in Helsinki."
 msgstr ""
 
 msgid "Toisen asteen toisen vuoden opiskelija"
-msgstr ""
+msgstr "Second year student of upper secondary education"
 
-#: applications/target_groups.py:201
-msgid "Upper secondary 2nd year: 18 years old, MUST live in Helsinki."
+msgid "Upper secondary 2nd year: 18 years old, must live in Helsinki."
 msgstr ""
 
 msgid "Preview"
