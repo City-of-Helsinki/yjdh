@@ -284,7 +284,7 @@ class YouthApplicationViewSet(ModelViewSet):
         if employer_summer_vouchers.count() != 1:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        youth_summer_voucher = YouthSummerVoucher.get_voucher_with_serial_number(
+        youth_summer_voucher = YouthSummerVoucher.objects.get_by_serial_number(
             voucher_number
         )
         youth_application = (

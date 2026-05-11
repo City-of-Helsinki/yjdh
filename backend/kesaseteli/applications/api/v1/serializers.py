@@ -314,7 +314,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         if not serial_number:
             return
 
-        voucher = YouthSummerVoucher.get_voucher_with_serial_number(serial_number)
+        voucher = YouthSummerVoucher.objects.get_by_serial_number(serial_number)
         if not voucher:
             return
 

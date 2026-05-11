@@ -867,6 +867,25 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
 
 class YouthSummerVoucherQuerySet(models.QuerySet):
+    def get_by_serial_number(self, serial_number) -> "YouthSummerVoucher | None":
+        """
+        Get the youth summer voucher with the given serial number, which can be a
+        previously used sequential serial number or a user-showable serial number in
+        base32 encoding with checksum.
+
+        :return: Youth summer voucher with given serial number, or None if not found.
+        """
+        try:
+            decoded_num: int = YouthSummerVoucher.decode_user_showable_serial_number(
+                serial_number
+            )
+        except ValueError:
+            return None  # Invalid format or checksum
+        try:
+            return self.get(summer_voucher_serial_number=decoded_num)
+        except YouthSummerVoucher.DoesNotExist:
+            return None
+
     def select_youth_application(self):
         return self.select_related("youth_application")
 
@@ -879,7 +898,7 @@ class YouthSummerVoucherManager(models.Manager):
 
 
 class YouthSummerVoucher(TimeStampedModel, UUIDModel):
-    objects = YouthSummerVoucherManager()
+    objects = YouthSummerVoucherManager.from_queryset(YouthSummerVoucherQuerySet)()
 
     # Inclusive lower limit for randomly generated serial numbers,
     # existing sequential values in production were in range [1, 30k) in May 2026.
@@ -990,28 +1009,6 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
         ):
             return int(cleaned_num)
         return base32_lib.decode(cleaned_num, checksum=True)
-
-    @staticmethod
-    def get_voucher_with_serial_number(serial_number) -> "YouthSummerVoucher | None":
-        """
-        Get the youth summer voucher with the given serial number, which can be a
-        previously used sequential serial number or a user-showable serial number in
-        base32 encoding with checksum.
-
-        :return: Youth summer voucher with given serial number, or None if not found.
-        """
-        try:
-            decoded_num: int = YouthSummerVoucher.decode_user_showable_serial_number(
-                serial_number
-            )
-        except ValueError:
-            return None  # Invalid format or checksum
-        try:
-            return YouthSummerVoucher.objects.get(
-                summer_voucher_serial_number=decoded_num
-            )
-        except YouthSummerVoucher.DoesNotExist:
-            return None
 
     @property
     def year(self) -> int:
@@ -1547,7 +1544,7 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
 
         Sets youth_summer_voucher to the YouthSummerVoucher instance found
         with the given summer_voucher_serial_number value decoded with
-        YouthSummerVoucher.get_voucher_with_serial_number function.
+        YouthSummerVoucher.objects.get_by_serial_number function.
 
         If no match is found, or value is None or not decoded successfully,
         sets youth_summer_voucher to None.
@@ -1565,7 +1562,7 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
         self.youth_summer_voucher = (
             None
             if value is None
-            else YouthSummerVoucher.get_voucher_with_serial_number(value)
+            else YouthSummerVoucher.objects.get_by_serial_number(value)
         )
 
     @property
