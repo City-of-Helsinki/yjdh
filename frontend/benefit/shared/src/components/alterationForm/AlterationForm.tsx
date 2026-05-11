@@ -29,12 +29,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
     AlterationFormContext
   );
 
-  if (!t || !formik) {
-    return null; // Render nothing if context is not fully provided
-  }
-
-  const { alterationType, useEinvoice, endDate } = formik.values;
-
   const minEndDate = useMemo<Date>(
     () => new Date(application.startDate ?? ''),
     [application.startDate]
@@ -43,6 +37,8 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
     () => new Date(application.endDate ?? ''),
     [application.endDate]
   );
+
+  const endDate = formik?.values.endDate;
   const minResumeDate = useMemo<Date>(() => {
     if (endDate) {
       return new Date(convertDateFormat(endDate));
@@ -50,6 +46,12 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
     return minEndDate;
   }, [minEndDate, endDate]);
   const maxResumeDate = maxEndDate;
+
+  if (!t || !formik) {
+    return null; // Render nothing if context is not fully provided
+  }
+
+  const { alterationType, useEinvoice } = formik.values;
 
   const translationBase = 'common:applications.alterations.new';
 
