@@ -68,6 +68,8 @@
       "targetGroupsError": "Could not load class / level of education. Filling out the application is currently not possible.",
       "schoolsLoading": "Loading up options...",
       "schoolsPlaceholder": "Choose your school from the list",
+      "schoolsFilterLabel": "Filter",
+      "schoolsFilterPlaceholder": "Enter text for filtering",
       "is_unlisted_school": "School not found on the list",
       "unlistedSchool": "Name of the school",
       "unlistedSchoolPlaceholder": "E.g. International School of Helsinki",

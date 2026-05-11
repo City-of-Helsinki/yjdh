@@ -68,6 +68,8 @@
       "targetGroupsError": "Luokkaa / koulutusastetta ei pystytty lataamaan. Hakemuksen täyttäminen ei ole tällä hetkellä mahdollista.",
       "schoolsLoading": "Ladataan vaihtoehtoja...",
       "schoolsPlaceholder": "Valitse koulusi listalta",
+      "schoolsFilterLabel": "Suodata",
+      "schoolsFilterPlaceholder": "Anna teksti suodatusta varten",
       "is_unlisted_school": "Koulua ei löydy listalta",
       "unlistedSchool": "Koulun nimi",
       "unlistedSchoolPlaceholder": "Esim. Merilahden peruskoulu",

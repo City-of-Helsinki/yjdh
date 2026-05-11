@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import Checkbox from 'shared/components/forms/inputs/Checkbox';
-import Dropdown from 'shared/components/forms/inputs/Dropdown';
+import Dropdown, { HdsOption } from 'shared/components/forms/inputs/Dropdown';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { NAMES_REGEX } from 'shared/constants';
@@ -58,6 +58,13 @@ const SchoolSelection: React.FC = () => {
         placeholder={schoolsPlaceholderText}
         $colSpan={2}
         label={t('common:youthApplication.form.selectedSchool')}
+        filter={(option: HdsOption, filterValue: string) =>
+          option.label.toLowerCase().includes(filterValue.toLowerCase())
+        }
+        filterLabel={t('common:youthApplication.form.schoolsFilterLabel')}
+        filterPlaceholder={t(
+          'common:youthApplication.form.schoolsFilterPlaceholder'
+        )}
       />
       <$GridCell $colSpan={2}>
         <Checkbox<YouthFormData>

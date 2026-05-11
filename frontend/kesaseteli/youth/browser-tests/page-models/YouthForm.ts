@@ -28,8 +28,14 @@ class YouthForm extends YouthPageComponent {
     this.translations.youthApplication.form.schoolsLoading
   );
 
-  private schoolsDropdown = this.component.findByRole('combobox', {
+  private schoolsDropdown = this.component.findByRole('button', {
     name: this.regexp(this.translations.youthApplication.form.selectedSchool),
+  });
+
+  private schoolsFilterInput = this.component.findByRole('combobox', {
+    name: this.regexp(
+      this.translations.youthApplication.form.schoolsFilterLabel
+    ),
   });
 
   private school(schoolName: string): SelectorPromise {
@@ -78,7 +84,8 @@ class YouthForm extends YouthPageComponent {
   public async typeAndSelectSchoolFromDropdown(
     schoolName: string
   ): Promise<TestControllerPromise> {
-    await this.fillInput(this.schoolsDropdown, schoolName);
+    await t.click(this.schoolsDropdown);
+    await this.fillInput(this.schoolsFilterInput, schoolName);
     return t.click(this.school(schoolName));
   }
 
@@ -87,7 +94,9 @@ class YouthForm extends YouthPageComponent {
   }
 
   public selectTargetGroup(): TestControllerPromise {
-    return this.clickSelectRadioButton(this.component.findAllByRole('radio').nth(0));
+    return this.clickSelectRadioButton(
+      this.component.findAllByRole('radio').nth(0)
+    );
   }
 
   public clickSendButton(): TestControllerPromise {
