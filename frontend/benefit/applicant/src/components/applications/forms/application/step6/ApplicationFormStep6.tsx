@@ -3,8 +3,9 @@ import { $Markdown } from 'benefit/applicant/components/termsOfService/TermsOfSe
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { TextProp } from 'benefit-shared/types/application';
-import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';

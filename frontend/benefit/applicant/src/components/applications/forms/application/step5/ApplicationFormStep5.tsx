@@ -12,7 +12,6 @@ import {
   BENEFIT_TYPES,
 } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconPen,
@@ -22,6 +21,7 @@ import {
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

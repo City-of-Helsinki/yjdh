@@ -1,6 +1,5 @@
 import { ApplicationAlterationHandlingForm } from 'benefit/handler/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   Dialog,
@@ -9,6 +8,7 @@ import {
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 import { formatFloatToEvenEuros } from 'shared/utils/string.utils';

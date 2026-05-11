@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import Button from 'shared/components/button/Button';
 import alignCenterSvg from 'shared/styles/svg/align-center-svg.sc';
 import styled from 'styled-components';
 
