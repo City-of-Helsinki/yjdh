@@ -24,6 +24,19 @@ type Props = {
   application: Application;
 };
 
+export const isDateInHandledRecoveryRange = (
+  application: Application,
+  date: Date
+): boolean =>
+  application.alterations?.some(
+    (alteration) =>
+      alteration.state === ALTERATION_STATE.HANDLED &&
+      (alteration.recoveryStartDate ?? '') <=
+        formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
+      (alteration.recoveryEndDate ?? '') >=
+        formatDate(date, DATE_FORMATS.BACKEND_DATE)
+  ) ?? false;
+
 const AlterationForm = ({ application }: Props): JSX.Element | null => {
   const { t, formik, language, isSubmitted } = useContext(
     AlterationFormContext
@@ -56,14 +69,7 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
   const translationBase = 'common:applications.alterations.new';
 
   const disableOccupiedDates = (date: Date): boolean =>
-    application.alterations?.some(
-      (alteration) =>
-        alteration.state === ALTERATION_STATE.HANDLED &&
-        (alteration.recoveryStartDate ?? '') <=
-          formatDate(date, DATE_FORMATS.BACKEND_DATE) &&
-        (alteration.recoveryEndDate ?? '') >=
-          formatDate(date, DATE_FORMATS.BACKEND_DATE)
-    ) ?? false;
+    isDateInHandledRecoveryRange(application, date);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
