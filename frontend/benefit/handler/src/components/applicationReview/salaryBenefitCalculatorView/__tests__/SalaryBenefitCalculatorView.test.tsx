@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
+import { setupUserAndRender } from 'benefit/handler/__tests__/utils/user-render-helper';
 import { CALCULATION_SALARY_KEYS } from 'benefit/handler/constants';
 import {
   Application,
@@ -218,8 +219,7 @@ describe('SalaryBenefitCalculatorView', () => {
   });
 
   it('calls handleSubmit when calculation button is clicked', async () => {
-    renderSubject();
-    const user = userEvent.setup();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(screen.getByTestId('run-calculation'));
 
@@ -227,8 +227,7 @@ describe('SalaryBenefitCalculatorView', () => {
   });
 
   it('updates monthlyPay via formik.setFieldValue when monthly pay input changes', async () => {
-    renderSubject();
-    const user = userEvent.setup();
+    const user = setupUserAndRender(() => renderSubject());
 
     const monthlyPayInput = screen.getByRole('textbox', {
       name: CALCULATION_SALARY_KEYS.MONTHLY_PAY,
@@ -253,8 +252,7 @@ describe('SalaryBenefitCalculatorView', () => {
   ])(
     'updates %s via formik.setFieldValue when textbox value changes',
     async (fieldName) => {
-      renderSubject();
-      const user = userEvent.setup();
+      const user = setupUserAndRender(() => renderSubject());
 
       const input = screen.getByRole('textbox', {
         name: fieldName,
@@ -288,8 +286,7 @@ describe('SalaryBenefitCalculatorView', () => {
   );
 
   it('updates stateAidMaxPercentage via formik.setFieldValue when select value changes', async () => {
-    renderSubject();
-    const user = userEvent.setup();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(screen.getByRole('combobox'));
     await user.click(screen.getByRole('option', { name: '100%' }));
@@ -318,8 +315,9 @@ describe('SalaryBenefitCalculatorView', () => {
     });
 
     it('updates newTrainingCompensation via updater function when training compensation inputs change', async () => {
-      renderSubject({ applicationOverride: { apprenticeshipProgram: true } });
-      const user = userEvent.setup();
+      const user = setupUserAndRender(() =>
+        renderSubject({ applicationOverride: { apprenticeshipProgram: true } })
+      );
 
       // monthlyAmount — TextInput; fireEvent sets the full value atomically
       // (userEvent.type can't be used here: the controlled input doesn't
@@ -350,8 +348,7 @@ describe('SalaryBenefitCalculatorView', () => {
   });
 
   it('changes calculator mode and requests recalculation when tabs are clicked', async () => {
-    renderSubject();
-    const user = userEvent.setup();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(screen.getByText(/laske käsin/i));
 
@@ -364,8 +361,7 @@ describe('SalaryBenefitCalculatorView', () => {
   });
 
   it('opens reset modal and confirms clear action', async () => {
-    renderSubject();
-    const user = userEvent.setup();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(
       screen.getByRole('button', {
@@ -416,7 +412,6 @@ describe('SalaryBenefitCalculatorView', () => {
   });
 
   it('calls removeTrainingCompensation with item id when clicking remove row action', async () => {
-    const user = userEvent.setup();
     const removeTrainingCompensation = jest.fn();
 
     mockUseSalaryBenefitCalculatorData.mockReturnValue(
@@ -439,11 +434,11 @@ describe('SalaryBenefitCalculatorView', () => {
       }) as never
     );
 
-    renderSubject({
+    const user = setupUserAndRender(() => renderSubject({
       applicationOverride: {
         apprenticeshipProgram: true,
       },
-    });
+    }));
 
     await user.click(screen.getByRole('button', { name: /poista|remove/i }));
 
@@ -490,8 +485,7 @@ describe('SalaryBenefitCalculatorView', () => {
     };
 
     it('updates paySubsidyPercent via formik when select value changes', async () => {
-      renderWithPaySubsidies();
-      const user = userEvent.setup();
+      const user = setupUserAndRender(() => renderWithPaySubsidies());
 
       // The paySubsidyPercent Select combobox is labelled by texts.label (Finnish translation)
       const combobox = screen.getByRole('combobox', {
@@ -522,8 +516,7 @@ describe('SalaryBenefitCalculatorView', () => {
     });
 
     it('updates paySubsidy startDate via formik when date input changes', async () => {
-      renderWithPaySubsidies();
-      const user = userEvent.setup();
+      const user = setupUserAndRender(() => renderWithPaySubsidies());
 
       // PaySubsidies section renders before the main calculator date inputs in the DOM
       const startDateInputs = screen.getAllByPlaceholderText(
@@ -538,8 +531,7 @@ describe('SalaryBenefitCalculatorView', () => {
     });
 
     it('updates paySubsidy endDate via formik when date input changes', async () => {
-      renderWithPaySubsidies();
-      const user = userEvent.setup();
+      const user = setupUserAndRender(() => renderWithPaySubsidies());
 
       // PaySubsidies section renders before the main calculator date inputs in the DOM
       const endDateInputs = screen.getAllByPlaceholderText(
