@@ -7,7 +7,7 @@ import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import { AlterationAccordionItemProps } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, IconTrash } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, IconTrash } from 'hds-react';
 import React, { useState } from 'react';
 import {
   $Grid,
@@ -179,9 +179,9 @@ const AlterationAccordionItem = ({
       </$Grid>
       {alteration.state === ALTERATION_STATE.RECEIVED && (
         <Button
-          theme="black"
-          variant="secondary"
-          iconLeft={<IconTrash />}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+          iconStart={<IconTrash />}
           onClick={() => setIsDeleteModalOpen(true)}
         >
           {t('common:applications.decision.alterationList.item.actions.delete')}

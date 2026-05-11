@@ -20,6 +20,7 @@ jest.mock('next/dist/shared/lib/router-context.shared-runtime', () => {
 /* eslint-disable no-console */
 const originalWarn = console.warn;
 const originalError = console.error;
+const originalInfo = console.info;
 /* eslint-enable no-console */
 
 const messagesToIgnore = [
@@ -32,26 +33,41 @@ const messagesToIgnore = [
   'downshift: A component has changed the uncontrolled prop',
   'ReactDOM.render is no longer supported in React 18',
   'All radio buttons in a SelectionGroup are unchecked',
+  'Could not parse CSS stylesheet',
+  'i18next is made possible by our own product, Locize',
 ];
 
 // Directly replace console methods instead of using jest.spyOn so that
 // jest's reporter does not capture and redisplay the suppressed messages.
 const createFilter =
   (original: (...data: unknown[]) => void) =>
-    (...args: unknown[]) => {
-      if (
-        args.length > 0 &&
-        isString(args[0]) &&
-        messagesToIgnore.some((msg) => (args[0] as string).includes(msg))
-      ) {
-        return;
-      }
-      original.apply(console, args);
-    };
+  (...args: unknown[]) => {
+    const firstArg = args[0];
+    const message = isString(firstArg)
+      ? firstArg
+      : firstArg instanceof Error
+      ? firstArg.message
+      : '';
+    if (
+      args.length > 0 &&
+      message.length > 0 &&
+      messagesToIgnore.some((msg) => message.includes(msg))
+    ) {
+      return;
+    }
+    original.apply(console, args);
+  };
+
+// Apply filters immediately (not in beforeAll) so they catch errors
+// that fire during module initialization (e.g. jsdom CSS parse errors from HDS React).
+console.warn = createFilter(originalWarn);
+console.error = createFilter(originalError);
+console.info = createFilter(originalInfo);
 
 beforeAll(() => {
   console.warn = createFilter(originalWarn);
   console.error = createFilter(originalError);
+  console.info = createFilter(originalInfo);
 });
 
 window.scrollTo = jest.fn();
@@ -59,4 +75,5 @@ window.scrollTo = jest.fn();
 afterAll(() => {
   console.warn = originalWarn;
   console.error = originalError;
+  console.info = originalInfo;
 });

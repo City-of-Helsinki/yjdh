@@ -6,7 +6,13 @@ import useSecondInstalmentInfoQuery from 'benefit/applicant/hooks/useSecondInsta
 import useSecondInstalmentRespondMutation from 'benefit/applicant/hooks/useSecondInstalmentRespondMutation';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
-import { Button, IconArrowRight, LoadingSpinner } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconArrowRight,
+  LoadingSpinner,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Container from 'shared/components/container/Container';
@@ -74,7 +80,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
     setAssuranceChecked(
       Boolean(
         application?.employer_assurance ??
-        applicationWithSnakeCaseFields?.employer_assurance
+          applicationWithSnakeCaseFields?.employer_assurance
       )
     );
   }, [application]);
@@ -291,8 +297,8 @@ const SecondInstalmentUploadPage: React.FC = () => {
         <$GridCell>
           <Button
             css={{ marginLeft: '16px' }}
-            theme="black"
-            variant="secondary"
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
             disabled={isNavigatingBack}
             onClick={handleBack}
           >
@@ -302,8 +308,8 @@ const SecondInstalmentUploadPage: React.FC = () => {
         <$GridCell justifySelf="end">
           <Button
             css={{ marginLeft: '16px' }}
-            theme="coat"
-            variant="primary"
+            theme={ButtonPresetTheme.Coat}
+            variant={ButtonVariant.Primary}
             disabled={
               isNavigatingBack ||
               isSubmittingSecondInstalmentResponse ||
@@ -311,7 +317,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
               !assuranceChecked ||
               !applicationId
             }
-            iconRight={<IconArrowRight />}
+            iconEnd={<IconArrowRight />}
             onClick={handleSubmit}
           >
             {isSubmittingSecondInstalmentResponse ? (

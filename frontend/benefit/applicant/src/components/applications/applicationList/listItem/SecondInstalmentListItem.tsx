@@ -1,7 +1,13 @@
 import { ROUTES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
-import { Button, IconAlertCircleFill, IconPen } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconAlertCircleFill,
+  IconPen,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
@@ -26,7 +32,7 @@ const $StatusText = styled.span`
   align-items: center;
   gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs3};
   padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs3}
-  ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs2};
+    ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs2};
 `;
 
 const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
@@ -83,9 +89,9 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
 
           <$DataColumn>
             <Button
-              iconLeft={<IconPen />}
-              variant="primary"
-              theme="coat"
+              iconStart={<IconPen />}
+              variant={ButtonVariant.Primary}
+              theme={ButtonPresetTheme.Coat}
               onClick={() =>
                 router.push(`${ROUTES.SECOND_INSTALMENT_UPLOAD}?id=${id ?? ''}`)
               }

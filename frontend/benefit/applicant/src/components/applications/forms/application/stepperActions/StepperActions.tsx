@@ -2,6 +2,8 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   IconAlertCircleFill,
   IconArrowLeft,
   IconArrowRight,
@@ -75,9 +77,9 @@ const StepperActions: React.FC<StepperActionsProps> = ({
         <$GridCell $colSpan={3} justifySelf="start">
           {handleBack && (
             <Button
-              theme="black"
-              variant="secondary"
-              iconLeft={<IconArrowLeft />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconArrowLeft />}
               onClick={handleBack}
             >
               {t(`${translationsBase}.back`)}
@@ -87,8 +89,8 @@ const StepperActions: React.FC<StepperActionsProps> = ({
         <$GridCell $colSpan={6} justifySelf="center">
           <$SaveAction>
             <Button
-              theme="black"
-              variant="secondary"
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
               onClick={(e: React.MouseEvent) => onClickSave(e, handleSave)}
               disabled={!handleSave}
             >
@@ -106,9 +108,9 @@ const StepperActions: React.FC<StepperActionsProps> = ({
         </$GridCell>
         <$GridCell $colSpan={3} justifySelf="end">
           <Button
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             disabled={disabledNext}
-            iconRight={!lastStep ? <IconArrowRight /> : null}
+            iconEnd={!lastStep ? <IconArrowRight /> : null}
             onClick={handleSubmit}
             data-testid="nextButton"
           >
@@ -120,9 +122,9 @@ const StepperActions: React.FC<StepperActionsProps> = ({
         {handleDelete && (
           <$GridCell $colSpan={10} $colStart={2} justifySelf="center">
             <Button
-              theme="black"
-              variant="supplementary"
-              iconLeft={<IconCross />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconCross />}
               onClick={() => setIsConfirmationModalOpen(true)}
               data-testid="deleteButton"
             >

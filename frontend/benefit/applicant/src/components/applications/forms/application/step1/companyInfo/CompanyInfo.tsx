@@ -3,7 +3,12 @@ import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
-import { IconCheckCircleFill, SelectionGroup, TextInput } from 'hds-react';
+import {
+  IconCheckCircleFill,
+  SelectionGroup,
+  TextInput,
+  Tooltip,
+} from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
@@ -327,9 +332,13 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           <$GridCell $colSpan={8} $colStart={1}>
             <SelectionGroup
               label={fields.associationHasBusinessActivities.label}
-              tooltipText={t(
-                `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
-              )}
+              tooltip={
+                <Tooltip>
+                  {t(
+                    `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
+                  )}
+                </Tooltip>
+              }
               direction="vertical"
               required
               errorText={getErrorMessage(

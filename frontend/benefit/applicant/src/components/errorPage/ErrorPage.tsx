@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, IconSize } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 
@@ -29,18 +29,18 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   return (
     <Container>
       <$ErrorPageContainer>
-        <$IconAlertCircle size="xl" />
+        <$IconAlertCircle size={IconSize.ExtraLarge} />
         <$ErrorPageTitle>{title}</$ErrorPageTitle>
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
         {!!showActions && (
           <$ActionsContainer>
             {showActions?.linkToRoot && (
-              <Button theme="coat" onClick={handleBackClick}>
+              <Button theme={ButtonPresetTheme.Coat} onClick={handleBackClick}>
                 {t('common:errorPage.home')}
               </Button>
             )}
             {showActions?.linkToLogout && (
-              <Button theme="coat" onClick={handleLogout}>
+              <Button theme={ButtonPresetTheme.Coat} onClick={handleLogout}>
                 {t('common:errorPage.logout')}
               </Button>
             )}

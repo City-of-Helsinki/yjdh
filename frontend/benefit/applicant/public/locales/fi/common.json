@@ -805,7 +805,8 @@
     "previous": "Edellinen sivu",
     "next": "Seuraava sivu",
     "page": "Sivu",
-    "terms": "Ehdot.PDF"
+    "terms": "Ehdot.PDF",
+    "openInExternalDomainAriaLabel": "Avautuu uudella verkkosivulla"
   },
   "tooltip": {
     "ariaLabel": "Näytä ohjeteksti",

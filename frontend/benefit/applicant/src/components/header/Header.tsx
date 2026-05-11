@@ -2,7 +2,14 @@ import { ROUTES, SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import useLogout from 'benefit/applicant/hooks/useLogout';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
-import { Button, IconLock, IconSpeechbubbleText } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonSize,
+  ButtonVariant,
+  IconLock,
+  IconSpeechbubbleText,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -68,13 +75,17 @@ const Header: React.FC = () => {
             ? [
                 <Button
                   key="open-messenger-button"
-                  variant={unreadMessagesCount ? 'primary' : 'secondary'}
+                  variant={
+                    unreadMessagesCount
+                      ? ButtonVariant.Primary
+                      : ButtonVariant.Secondary
+                  }
                   css={`
                     border: none;
                   `}
-                  size="small"
-                  iconLeft={<IconSpeechbubbleText />}
-                  theme="coat"
+                  size={ButtonSize.Small}
+                  iconStart={<IconSpeechbubbleText />}
+                  theme={ButtonPresetTheme.Coat}
                   onClick={() => setMessagesDrawerVisiblity(true)}
                 >
                   {t('common:header.messages')}

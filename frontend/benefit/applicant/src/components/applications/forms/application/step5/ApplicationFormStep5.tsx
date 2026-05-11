@@ -11,7 +11,14 @@ import {
   ATTACHMENT_TYPES,
   BENEFIT_TYPES,
 } from 'benefit-shared/constants';
-import { Button, IconPen, IconPlus, IconPrinter } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconPen,
+  IconPlus,
+  IconPrinter,
+} from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
@@ -97,13 +104,13 @@ const ApplicationFormStep5: React.FC<
         action={
           !isReadOnly && (
             <Button
-              theme="black"
+              theme={ButtonPresetTheme.Black}
               css={`
                 margin-top: ${theme.spacing.s};
               `}
               onClick={() => handleStepChange(3)}
-              variant="supplementary"
-              iconLeft={<IconPen />}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconPen />}
             >
               {t(`common:applications.actions.edit`)}
             </Button>
@@ -159,13 +166,13 @@ const ApplicationFormStep5: React.FC<
         action={
           !isReadOnly && (
             <Button
-              theme="black"
+              theme={ButtonPresetTheme.Black}
               css={`
                 margin-top: ${theme.spacing.s};
               `}
               onClick={() => handleStepChange(4)}
-              variant="supplementary"
-              iconLeft={<IconPen />}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconPen />}
             >
               {t(`common:applications.actions.edit`)}
             </Button>
@@ -188,16 +195,20 @@ const ApplicationFormStep5: React.FC<
       {isReadOnly ? (
         <$Grid>
           <$GridCell $colSpan={1}>
-            <Button theme="black" variant="secondary" onClick={handleClose}>
+            <Button
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
+              onClick={handleClose}
+            >
               {t('common:utility.close')}
             </Button>
           </$GridCell>
           <$GridCell $colSpan={3}>
             <Button
-              iconLeft={<IconPrinter />}
-              theme="coat"
+              iconStart={<IconPrinter />}
+              theme={ButtonPresetTheme.Coat}
               role="link"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={() =>
                 // eslint-disable-next-line security/detect-non-literal-fs-filename
                 window.open(
@@ -214,10 +225,10 @@ const ApplicationFormStep5: React.FC<
           <$GridCell $colSpan={8} justifySelf="end">
             <Button
               isLoading={isLoading}
-              iconLeft={<IconPlus />}
-              theme="coat"
+              iconStart={<IconPlus />}
+              theme={ButtonPresetTheme.Coat}
               role="link"
-              variant="secondary"
+              variant={ButtonVariant.Secondary}
               onClick={() => handleCloneApplication()}
             >
               {t(`common:applications.actions.clone`)}

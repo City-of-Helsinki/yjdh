@@ -21,20 +21,7 @@ jest.mock('next/router', () => ({
 }));
 
 jest.mock('hds-react', () => ({
-  Button: ({
-    children,
-    iconLeft,
-    onClick,
-  }: {
-    children: React.ReactNode;
-    iconLeft?: React.ReactNode;
-    onClick?: () => void;
-  }) => (
-    <button type="button" onClick={onClick}>
-      {iconLeft}
-      {children}
-    </button>
-  ),
+  ...jest.requireActual('hds-react'),
   IconAlertCircleFill: () => <svg data-testid="warning-icon" />,
   IconPen: () => <svg data-testid="pen-icon" />,
 }));
@@ -97,12 +84,13 @@ describe('SecondInstalmentListItem', () => {
     getComponent();
 
     expect(
-      screen.getByText((content) =>
-        content.includes(
-          'common:applications.list.secondInstalments.prompt1'
-        ) &&
-        content.includes('4.4.2026') &&
-        content.includes('common:applications.list.secondInstalments.prompt2')
+      screen.getByText(
+        (content) =>
+          content.includes(
+            'common:applications.list.secondInstalments.prompt1'
+          ) &&
+          content.includes('4.4.2026') &&
+          content.includes('common:applications.list.secondInstalments.prompt2')
       )
     ).toBeInTheDocument();
   });
@@ -142,5 +130,4 @@ describe('SecondInstalmentListItem', () => {
       `${ROUTES.SECOND_INSTALMENT_UPLOAD}?id=application-id`
     );
   });
-
 });

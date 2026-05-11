@@ -104,22 +104,7 @@ jest.mock(
 );
 
 jest.mock('hds-react', () => ({
-  Button: ({
-    children,
-    disabled,
-    iconRight,
-    onClick,
-  }: {
-    children: React.ReactNode;
-    disabled?: boolean;
-    iconRight?: React.ReactNode;
-    onClick?: () => void;
-  }) => (
-    <button type="button" disabled={disabled} onClick={onClick}>
-      {children}
-      {iconRight}
-    </button>
-  ),
+  ...jest.requireActual('hds-react'),
   IconArrowRight: () => <svg data-testid="arrow-right-icon" />,
   LoadingSpinner: ({ small }: { small?: boolean }) => (
     <span data-testid={small ? 'small-loading-spinner' : 'loading-spinner'} />
@@ -350,9 +335,7 @@ describe('SecondInstalmentUploadPage', () => {
         'common:applications.secondInstalmentUpload.successMessage2',
       ].join(' ')
     );
-    expect(replaceMock).toHaveBeenCalledWith(
-      `${ROUTES.HOME}`
-    );
+    expect(replaceMock).toHaveBeenCalledWith(`${ROUTES.HOME}`);
   });
 
   it('renders employer assurance checkbox checked when employer assurance exists on application', () => {

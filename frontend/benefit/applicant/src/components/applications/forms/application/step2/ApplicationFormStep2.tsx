@@ -8,7 +8,7 @@ import {
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { DateInput, SelectionGroup, TextInput } from 'hds-react';
+import { DateInput, SelectionGroup, TextInput, Tooltip } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -252,11 +252,16 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             errorText={getErrorMessage(
               fields.employee.collectiveBargainingAgreement.name
             )}
-            tooltipLabel={t(`common:tooltip.ariaLabel`)}
-            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
-            tooltipText={t(
-              `${translationsBase}.fields.collectiveBargainingAgreement.tooltip`
-            )}
+            tooltip={
+              <Tooltip
+                tooltipLabel={t(`common:tooltip.ariaLabel`)}
+                buttonLabel={t(`common:tooltip.ariaButtonLabel`)}
+              >
+                {t(
+                  `${translationsBase}.fields.collectiveBargainingAgreement.tooltip`
+                )}
+              </Tooltip>
+            }
             required
           />
         </$GridCell>
@@ -289,9 +294,14 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             errorText={getErrorMessage(fields.employee.monthlyPay.name)}
             required
             helperText={t(`${translationsBase}.fields.monthlyPay.helperText`)}
-            tooltipLabel={t(`common:tooltip.ariaLabel`)}
-            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
-            tooltipText={t(`${translationsBase}.fields.monthlyPay.tooltip`)}
+            tooltip={
+              <Tooltip
+                tooltipLabel={t(`common:tooltip.ariaLabel`)}
+                buttonLabel={t(`common:tooltip.ariaButtonLabel`)}
+              >
+                {t(`${translationsBase}.fields.monthlyPay.tooltip`)}
+              </Tooltip>
+            }
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
@@ -317,9 +327,14 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             helperText={t(
               `${translationsBase}.fields.vacationMoney.helperText`
             )}
-            tooltipLabel={t(`common:tooltip.ariaLabel`)}
-            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
-            tooltipText={t(`${translationsBase}.fields.vacationMoney.tooltip`)}
+            tooltip={
+              <Tooltip
+                tooltipLabel={t(`common:tooltip.ariaLabel`)}
+                buttonLabel={t(`common:tooltip.ariaButtonLabel`)}
+              >
+                {t(`${translationsBase}.fields.vacationMoney.tooltip`)}
+              </Tooltip>
+            }
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
@@ -345,9 +360,14 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             helperText={t(
               `${translationsBase}.fields.otherExpenses.helperText`
             )}
-            tooltipLabel={t(`common:tooltip.ariaLabel`)}
-            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
-            tooltipText={t(`${translationsBase}.fields.otherExpenses.tooltip`)}
+            tooltip={
+              <Tooltip
+                tooltipLabel={t(`common:tooltip.ariaLabel`)}
+                buttonLabel={t(`common:tooltip.ariaButtonLabel`)}
+              >
+                {t(`${translationsBase}.fields.otherExpenses.tooltip`)}
+              </Tooltip>
+            }
           />
         </$GridCell>
       </FormSection>

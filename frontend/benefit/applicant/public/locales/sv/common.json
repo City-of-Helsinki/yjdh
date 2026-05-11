@@ -805,7 +805,8 @@
     "previous": "Föregående sida",
     "next": "Nästa sida",
     "page": "Sida",
-    "terms": "Villkor.PDF"
+    "terms": "Villkor.PDF",
+    "openInExternalDomainAriaLabel": "Öppnas på en annan webbplats"
   },
   "tooltip": {
     "ariaLabel": "Visa hjälptext",

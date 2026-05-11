@@ -1,6 +1,6 @@
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/ApplicationList';
 import ListContents from 'benefit/applicant/components/applications/applicationList/listItem/ListContents';
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React, { useState } from 'react';
 
 import { $ListActionButtonContainer } from './ApplicationList.sc';
@@ -69,8 +69,8 @@ const ExpandableApplicationList: React.FC<Props> = ({
             <$ListActionButtonContainer>
               <Button
                 onClick={() => setIsExpanded(!isExpanded)}
-                variant="secondary"
-                theme="black"
+                variant={ButtonVariant.Secondary}
+                theme={ButtonPresetTheme.Black}
               >
                 {t(
                   isExpanded

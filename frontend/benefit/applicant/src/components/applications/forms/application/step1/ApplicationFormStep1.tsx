@@ -7,7 +7,13 @@ import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
+import {
+  Select,
+  SelectionGroup,
+  TextArea,
+  TextInput,
+  Tooltip,
+} from 'hds-react';
 import React from 'react';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
@@ -64,6 +70,21 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
 
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
   const { deMinimisTotal } = useDeminimisAidsList();
+  const applicantLanguageSelectTexts = React.useMemo<
+    NonNullable<React.ComponentProps<typeof Select>['texts']>
+  >(
+    () => ({
+      error: getErrorMessage(fields.applicantLanguage.name),
+      label: fields.applicantLanguage.label,
+      placeholder: t('common:select'),
+    }),
+    [
+      fields.applicantLanguage.label,
+      fields.applicantLanguage.name,
+      getErrorMessage,
+      t,
+    ]
+  );
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -167,21 +188,20 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         </$GridCell>
         <$GridCell $colSpan={3}>
           <Select
-            defaultValue={getDefaultLanguage()}
-            helper={getErrorMessage(fields.applicantLanguage.name)}
-            optionLabelField="label"
-            label={fields.applicantLanguage.label}
-            onChange={(language: Option) =>
+            texts={applicantLanguageSelectTexts}
+            onChange={(language: Option[]) =>
               formik.setFieldValue(
                 fields.applicantLanguage.name,
-                language.value
+                language[0]?.value
               )
             }
             options={languageOptions}
             id={fields.applicantLanguage.name}
-            placeholder={t('common:select')}
             invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
+            value={[
+              formik.values.applicantLanguage ?? getDefaultLanguage(),
+            ].filter(Boolean)}
             required
           />
         </$GridCell>
@@ -254,9 +274,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             direction="vertical"
             required
             errorText={getErrorMessage(fields.coOperationNegotiations.name)}
-            tooltipText={t(
-              `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.tooltipText`
-            )}
+            tooltip={
+              <Tooltip>
+                {t(
+                  `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.tooltipText`
+                )}
+              </Tooltip>
+            }
           >
             <$RadioButton
               id={`${fields.coOperationNegotiations.name}False`}
