@@ -5,7 +5,6 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import {
   APPLICATION_STATUSES,
-  PAY_SUBSIDY_GRANTED,
 } from 'benefit-shared/constants';
 import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
@@ -106,10 +105,7 @@ const useApplicationFormStep5 = (
       {
         ...application,
         ...submitFields,
-        apprenticeshipProgram:
-          application?.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
-            ? null
-            : application?.apprenticeshipProgram,
+        apprenticeshipProgram: application?.apprenticeshipProgram,
         trainingCompensations: application?.apprenticeshipProgram
           ? application?.trainingCompensations
           : [],
