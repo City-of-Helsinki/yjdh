@@ -68,6 +68,8 @@
       "targetGroupsError": "Det gick inte att ladda klass / utbildningsnivå. Det är för närvarande inte möjligt att fylla i ansökan.",
       "schoolsLoading": "Laddar upp alternativ...",
       "schoolsPlaceholder": "Välj din skola från listan",
+      "schoolsFilterLabel": "Filtrera",
+      "schoolsFilterPlaceholder": "Ange text för filtrering",
       "is_unlisted_school": "Skolan finns inte i listan",
       "unlistedSchool": "Skolans namn",
       "unlistedSchoolPlaceholder": "Te.x. Grundskolan Norsen",

@@ -5,6 +5,7 @@ import {
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import YouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/youth-translations';
+import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
 import AdditionalInfoApplication from 'kesaseteli-shared/types/additional-info-application';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
@@ -18,6 +19,18 @@ import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 type NotificationType =
   keyof YouthTranslations['additionalInfo']['notification'];
+
+const queryReasonsDropdownError = (): HTMLElement | null =>
+  screen.queryByTestId('additional_info_user_reasons-error');
+
+const sortReasonsByFormOrder = (
+  reasons: AdditionalInfoReasonType[]
+): AdditionalInfoReasonType[] =>
+  [...reasons].sort(
+    (leftReason, rightReason) =>
+      ADDITIONAL_INFO_REASON_TYPE.indexOf(leftReason) -
+      ADDITIONAL_INFO_REASON_TYPE.indexOf(rightReason)
+  );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 const getAdditionalInfoPageApi = (
@@ -33,6 +46,12 @@ const getAdditionalInfoPageApi = (
     language: lang ?? DEFAULT_LANGUAGE,
     ...initialApplication,
   };
+
+  const getReasonsDropdown = async (): Promise<HTMLElement> =>
+    screen.getByRole('combobox', {
+      name: regexp(translations.additionalInfo.form.reasons),
+    });
+
   return {
     expectations: {
       async formIsPresent() {
@@ -56,10 +75,10 @@ const getAdditionalInfoPageApi = (
         );
       },
       async exceptionTypeDropDownHasError(errorText: RegExp) {
-        const dropdownToggle = await screen.findByRole('button', {
-          name: regexp(translations.additionalInfo.form.reasons),
+        await getReasonsDropdown();
+        await waitFor(() => {
+          expect(queryReasonsDropdownError()).toBeInTheDocument();
         });
-        await waitFor(() => expect(dropdownToggle).toBeInvalid());
         await screen.findAllByText(errorText);
       },
       async textInputHasError(
@@ -70,7 +89,12 @@ const getAdditionalInfoPageApi = (
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           name: regexp((translations.additionalInfo.form as any)[key]),
         });
-        await waitFor(() => expect(input).toBeInvalid());
+        await waitFor(() => {
+          expect(
+            input.matches(':invalid') ||
+              input.getAttribute('aria-invalid') === 'true'
+          ).toBe(true);
+        });
         await screen.findAllByText(errorText);
       },
     },
@@ -78,18 +102,17 @@ const getAdditionalInfoPageApi = (
       async clickAndSelectReasonsFromDropdown(
         reasons: AdditionalInfoReasonType[]
       ) {
-        const dropdownToggle = await screen.findByRole('button', {
-          name: regexp(translations.additionalInfo.form.reasons),
-        });
+        const dropdownToggle = await getReasonsDropdown();
         await userEvent.click(dropdownToggle);
         for (const reason of reasons) {
-          const option = await screen.findByText(
-            translations.additionalInfo.reasons[reason]
-          );
-          option.click();
+          const option = await screen.findByRole('option', {
+            name: regexp(translations.additionalInfo.reasons[reason]),
+          });
+          await userEvent.click(option);
         }
         await userEvent.click(dropdownToggle);
-        application.additional_info_user_reasons = reasons;
+        application.additional_info_user_reasons =
+          sortReasonsByFormOrder(reasons);
       },
       async inputDescription(description: string) {
         const textArea = await screen.findByRole('textbox', {
