@@ -1,6 +1,6 @@
 import { UploadProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
-import { IconPlus } from 'hds-react';
+import { ButtonVariant, IconPlus } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
@@ -38,7 +38,7 @@ const EmploymentActions: React.FC<UploadProps> = ({
         >
           <UploadAttachment
             theme="black"
-            variant="secondary"
+            variant={ButtonVariant.Secondary}
             onUpload={handleUpload || (() => {})}
             isUploading={isUploading ?? false}
             attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}

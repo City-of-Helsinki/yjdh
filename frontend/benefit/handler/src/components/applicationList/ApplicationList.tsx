@@ -124,15 +124,25 @@ export const renderPaymentTagPerStatus = (
 
 const renderAhjoError = (ahjoError: AhjoError): JSX.Element[] => {
   if (Array.isArray(ahjoError.errorFromAhjo))
-    return ahjoError.errorFromAhjo.map(({ message }) => <li>{message}</li>);
+    return ahjoError.errorFromAhjo.map(({ id, message }) => (
+      <li key={id}>{message}</li>
+    ));
 
   if (
     typeof ahjoError.errorFromAhjo === 'object' &&
     ahjoError.errorFromAhjo.message
   )
-    return [<li>{ahjoError.errorFromAhjo.message}</li>];
+    return [
+      <li key={ahjoError.errorFromAhjo.id}>
+        {ahjoError.errorFromAhjo.message}
+      </li>,
+    ];
 
-  return [<li>{String(ahjoError.errorFromAhjo)}</li>];
+  return [
+    <li key={String(ahjoError.errorFromAhjo)}>
+      {String(ahjoError.errorFromAhjo)}
+    </li>,
+  ];
 };
 
 const ApplicationList: React.FC<ApplicationListProps> = ({
@@ -230,19 +240,23 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     (
       applicationStatus: APPLICATION_STATUSES,
       additionalInformationNeededBy: string | Date
-    ): JSX.Element => (
-      <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
-        <Tag>
-          {t(
-            `common:applications.list.columns.applicationStatuses.${String(
-              applicationStatus
-            )}`
-          )}
-          {applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED &&
-            dateForAdditionalInformationNeededBy(additionalInformationNeededBy)}
-        </Tag>
-      </$TagWrapper>
-    ),
+    ): JSX.Element => {
+      const label = t(
+        `common:applications.list.columns.applicationStatuses.${String(
+          applicationStatus
+        )}`
+      );
+      const additionalInformationLabel =
+        applicationStatus === APPLICATION_STATUSES.INFO_REQUIRED
+          ? dateForAdditionalInformationNeededBy(additionalInformationNeededBy)
+          : '';
+
+      return (
+        <$TagWrapper $colors={getTagStyleForStatus(applicationStatus)}>
+          <Tag>{`${label}${additionalInformationLabel}`}</Tag>
+        </$TagWrapper>
+      );
+    },
     [t]
   );
 

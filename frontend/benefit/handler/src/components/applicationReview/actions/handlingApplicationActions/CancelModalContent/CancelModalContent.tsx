@@ -1,6 +1,13 @@
 import { HandledAplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Button, Dialog, IconTrash, TextArea } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  IconTrash,
+  TextArea,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { useState } from 'react';
@@ -49,16 +56,16 @@ const CancelModalContent: React.FC<ComponentProps> = ({
       </Dialog.Content>
       <Dialog.ActionButtons>
         <Button
-          theme="black"
-          variant="secondary"
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
           onClick={onClose}
           data-testid="cancel"
         >
           {t('common:applications.actions.close')}
         </Button>
         <Button
-          theme="coat"
-          variant="danger"
+          theme={ButtonPresetTheme.Coat}
+          variant={ButtonVariant.Danger}
           onClick={() =>
             onSubmit({
               status: APPLICATION_STATUSES.CANCELLED,
@@ -67,7 +74,7 @@ const CancelModalContent: React.FC<ComponentProps> = ({
           }
           disabled={!message}
           data-testid="submit"
-          iconLeft={<IconTrash />}
+          iconStart={<IconTrash />}
         >
           {t(`${translationsBase}.reasonCancelConfirm`)}
         </Button>

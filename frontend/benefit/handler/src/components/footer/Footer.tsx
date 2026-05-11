@@ -1,5 +1,5 @@
 import AppContext from 'benefit/handler/context/AppContext';
-import { Footer, Logo, logoFiDark } from 'hds-react';
+import { Footer, Logo, logoFiDark, LogoSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -18,10 +18,14 @@ const FooterSection: React.FC = () => {
     <$FooterWrapper layoutBackgroundColor={layoutBackgroundColor}>
       <Footer title={t('common:appName')} theme="dark">
         <Footer.Base
-          copyrightHolder={t('footer.copyrightText')}
-          copyrightText={t('footer.allRightsReservedText')}
+          copyrightHolder={t('common:footer.copyrightText')}
+          copyrightText={t('common:footer.allRightsReservedText')}
           logo={
-            <Logo src={logoFiDark} size="medium" alt="Helsingin kaupunki" />
+            <Logo
+              src={logoFiDark}
+              size={LogoSize.Medium}
+              alt="Helsingin kaupunki"
+            />
           }
         />
       </Footer>

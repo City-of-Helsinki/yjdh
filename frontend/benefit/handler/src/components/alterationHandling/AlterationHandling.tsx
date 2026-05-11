@@ -6,7 +6,7 @@ import ApplicationHeader from 'benefit/handler/components/applicationHeader/Appl
 import { ROUTES } from 'benefit/handler/constants';
 import { ALTERATION_STATE } from 'benefit-shared/constants';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, IconArrowLeft } from 'hds-react';
+import { Button, ButtonPresetTheme, IconArrowLeft } from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -130,9 +130,9 @@ const AlterationHandling = (): JSX.Element => {
         </$PageHeading>
         <p>{t(`${translationBase}.error.applicationNotFound`)}</p>
         <Button
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
           onClick={() => router.push(ROUTES.ALTERATIONS)}
-          iconLeft={<IconArrowLeft />}
+          iconStart={<IconArrowLeft />}
         >
           {t(`${translationBase}.actions.returnToAlterationList`)}
         </Button>
@@ -175,7 +175,7 @@ const AlterationHandling = (): JSX.Element => {
             <p>{t(`${translationBase}.error.alterationNotFound`)}</p>
           )}
           <Button
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             onClick={() =>
               router.push(
                 applicationFound
@@ -185,7 +185,7 @@ const AlterationHandling = (): JSX.Element => {
                   : ROUTES.ALTERATIONS
               )
             }
-            iconLeft={<IconArrowLeft />}
+            iconStart={<IconArrowLeft />}
           >
             {applicationFound
               ? t(`${translationBase}.actions.returnToApplication`)

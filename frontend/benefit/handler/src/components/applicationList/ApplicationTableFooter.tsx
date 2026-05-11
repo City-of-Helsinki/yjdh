@@ -34,7 +34,7 @@ const ApplicationTableFooter: React.FC<TableFooterProps> = ({
   translationsBase,
   changeInstalmentStatus,
   setIsInstalmentCancelModalShown,
-  setIsInstalmentChangeDateDialogShown
+  setIsInstalmentChangeDateDialogShown,
 }) => {
   const { t } = useTranslation();
   const router = useRouter();

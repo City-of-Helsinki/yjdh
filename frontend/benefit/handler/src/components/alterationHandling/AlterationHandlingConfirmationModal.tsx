@@ -1,5 +1,11 @@
 import { ApplicationAlterationHandlingForm } from 'benefit/handler/types/application';
-import { Button, Dialog, IconInfoCircle } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  IconInfoCircle,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -56,7 +62,7 @@ const AlterationHandlingConfirmationModal = ({
           </Dialog.Content>
           <Dialog.ActionButtons>
             <Button
-              theme="coat"
+              theme={ButtonPresetTheme.Coat}
               onClick={onSubmit}
               disabled={isWorking}
               isLoading={isWorking}
@@ -65,8 +71,8 @@ const AlterationHandlingConfirmationModal = ({
               {t('common:utility.confirm')}
             </Button>
             <Button
-              theme="coat"
-              variant="secondary"
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Secondary}
               disabled={isWorking}
               onClick={onClose}
             >

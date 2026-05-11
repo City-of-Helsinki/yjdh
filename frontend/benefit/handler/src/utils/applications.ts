@@ -1,4 +1,8 @@
-import {APPLICATION_STATUSES, INSTALMENT_STATUSES, TALPA_STATUSES,} from 'benefit-shared/constants';
+import {
+  APPLICATION_STATUSES,
+  INSTALMENT_STATUSES,
+  TALPA_STATUSES,
+} from 'benefit-shared/constants';
 import theme from 'shared/styles/theme';
 
 export const getTagStyleForStatus = (

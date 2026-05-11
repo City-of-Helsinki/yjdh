@@ -86,6 +86,16 @@ const CompanySection: React.FC<Props> = ({
 }) => {
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
+
+  const languageTexts = React.useMemo(
+    () => ({
+      error: getErrorMessage(fields.applicantLanguage.name),
+      label: fields.applicantLanguage.label,
+      placeholder: t('common:select'),
+    }),
+    [getErrorMessage, fields, t]
+  );
+
   return (
     <>
       <FormSection
@@ -420,18 +430,20 @@ const CompanySection: React.FC<Props> = ({
         </$GridCell>
         <$GridCell $colSpan={3}>
           <Select
-            defaultValue={{ label: 'Suomi', value: 'fi' }}
-            helper={getErrorMessage(fields.applicantLanguage.name)}
-            optionLabelField="label"
-            label={fields.applicantLanguage.label}
-            onChange={(lang: Option) =>
-              formik.setFieldValue(fields.applicantLanguage.name, lang.value)
+            texts={languageTexts}
+            onChange={(lang: Option[]) =>
+              formik.setFieldValue(fields.applicantLanguage.name, lang[0].value)
             }
             options={languageOptions}
             id={fields.applicantLanguage.name}
-            placeholder={t('common:select')}
             invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
+            value={[
+              formik.values.applicantLanguage ?? {
+                label: 'Suomi',
+                value: 'fi',
+              },
+            ].filter(Boolean)}
             required
           />
         </$GridCell>

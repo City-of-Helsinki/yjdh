@@ -7,6 +7,8 @@ import { BatchProposal } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   DateInput,
   IconArrowUndo,
   RadioButton,
@@ -365,8 +367,8 @@ BatchProps) => {
           >
             <Button
               type="submit"
-              theme="coat"
-              variant="primary"
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Primary}
               css="min-width: 284px;"
             >
               {proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED
@@ -376,9 +378,9 @@ BatchProps) => {
           </$GridCell>
           <$GridCell $colSpan={4} alignSelf="end">
             <Button
-              theme="black"
-              variant="supplementary"
-              iconLeft={<IconArrowUndo />}
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconArrowUndo />}
               onClick={() => setModalBatchToDraft(true)}
             >
               {t('common:batches.actions.markAsWaitingForAhjo')}

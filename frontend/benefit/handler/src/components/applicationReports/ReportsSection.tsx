@@ -1,4 +1,4 @@
-import { Button, IconDownload } from 'hds-react';
+import { Button, ButtonPresetTheme, IconDownload } from 'hds-react';
 import * as React from 'react';
 import Heading from 'shared/components/forms/heading/Heading';
 import {
@@ -16,7 +16,7 @@ export type ReportsSectionProp = {
   header: string;
   buttonText: string;
   compactButtonText: string;
-  onDownloadButtonClick: (type: ExportFileType, isCompact:boolean) => void;
+  onDownloadButtonClick: (type: ExportFileType, isCompact: boolean) => void;
 };
 
 const ReportsSection: React.FC<ReportsSectionProp> = ({
@@ -53,8 +53,8 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
           <$Grid columns={3}>
             <$GridCell>
               <Button
-                theme="coat"
-                iconLeft={<IconDownload />}
+                theme={ButtonPresetTheme.Coat}
+                iconStart={<IconDownload />}
                 css={`
                   margin-top: ${theme.spacing.l};
                 `}
@@ -65,8 +65,8 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
             </$GridCell>
             <$GridCell>
               <Button
-                theme="coat"
-                iconLeft={<IconDownload />}
+                theme={ButtonPresetTheme.Coat}
+                iconStart={<IconDownload />}
                 css={`
                   margin-top: ${theme.spacing.l};
                 `}

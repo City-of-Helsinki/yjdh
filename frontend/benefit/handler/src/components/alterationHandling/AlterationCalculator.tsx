@@ -18,6 +18,7 @@ import { areIntervalsOverlapping, max, min } from 'date-fns';
 import { FormikProps } from 'formik';
 import {
   Button,
+  ButtonPresetTheme,
   DateInput,
   Fieldset,
   Notification,
@@ -335,7 +336,10 @@ const AlterationCalculator = ({
             </>
           )}
           <$GridCell $colSpan={12}>
-            <Button theme="coat" onClick={calculateRecoveryAmount}>
+            <Button
+              theme={ButtonPresetTheme.Coat}
+              onClick={calculateRecoveryAmount}
+            >
               {t(`${translationBase}.calculation.actions.calculate`)}
             </Button>
             {calculationDescription && (

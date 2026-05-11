@@ -5,6 +5,8 @@ import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   DialogVariant,
   IconCheckCircleFill,
   IconCross,
@@ -162,9 +164,9 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
 
       {status === BATCH_STATUSES.DRAFT ? (
         <Button
-          theme="coat"
-          variant={isAtAhjo}
-          iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
+          theme={ButtonPresetTheme.Coat}
+          variant={isAtAhjo as ButtonVariant}
+          iconStart={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
           className="table-custom-action"
           style={{ minWidth: '222px', marginRight: theme.spacing.s }}
           onClick={() =>
@@ -177,11 +179,11 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
 
       {status === BATCH_STATUSES.AHJO_REPORT_CREATED ? (
         <Button
-          theme="black"
+          theme={ButtonPresetTheme.Black}
           disabled={isDownloadingAttachments}
-          variant="secondary"
+          variant={ButtonVariant.Secondary}
           style={{ minWidth: '222px', marginRight: theme.spacing.s }}
-          iconLeft={<IconDownload />}
+          iconStart={<IconDownload />}
           isLoading={isDownloadingAttachments}
           loadingText={t('common:utility.loading')}
           onClick={() => handleDownloadBatchFiles()}
@@ -190,11 +192,11 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
         </Button>
       ) : null}
       <Button
-        theme="coat"
+        theme={ButtonPresetTheme.Coat}
         disabled={isDownloadingAttachments || status === BATCH_STATUSES.DRAFT}
         style={{ marginRight: theme.spacing.s }}
-        variant={isAtAhjo}
-        iconLeft={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
+        variant={isAtAhjo as ButtonVariant}
+        iconStart={isAtAhjo === 'secondary' ? <IconCheckCircleFill /> : null}
         onClick={() => setModalBatchToAhjo(true)}
       >
         {isAtAhjo === 'primary'
@@ -223,11 +225,11 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
         </label>
       </$TooltipWrapper>
       <Button
-        theme="black"
+        theme={ButtonPresetTheme.Black}
         disabled={isDownloadingAttachments}
         style={{ marginLeft: 'auto' }}
-        variant="secondary"
-        iconLeft={<IconCross />}
+        variant={ButtonVariant.Secondary}
+        iconStart={<IconCross />}
         onClick={() => setModalBatchRemoval(true)}
       >
         {t('common:batches.actions.deleteBatch')}
