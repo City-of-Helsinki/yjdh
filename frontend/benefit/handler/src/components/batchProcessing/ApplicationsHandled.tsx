@@ -4,7 +4,7 @@ import {
 } from 'benefit/handler/components/applicationList/ApplicationList.sc';
 import useAddToBatchQuery from 'benefit/handler/hooks/useApplicationToBatch';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Button, Table } from 'hds-react';
+import { Button, ButtonPresetTheme, Table } from 'hds-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
@@ -150,7 +150,7 @@ const ApplicationsHandled: React.FC<Props> = ({
               ) : null}
             </$HintText>
             <Button
-              theme="coat"
+              theme={ButtonPresetTheme.Coat}
               onClick={() => handleBatchChange()}
               disabled={selectedRows.length === 0}
             >

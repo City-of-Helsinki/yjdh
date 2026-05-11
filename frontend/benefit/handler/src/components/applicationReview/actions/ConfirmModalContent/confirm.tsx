@@ -1,4 +1,10 @@
-import { Button, Dialog, DialogVariant } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  DialogVariant,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {
@@ -53,16 +59,18 @@ const ConfirmModalContent: React.FC<ComponentProps> = ({
       </Dialog.Content>
       <Dialog.ActionButtons>
         <Button
-          theme="black"
-          variant="secondary"
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
           onClick={onClose}
           data-testid="confirm-cancel"
         >
           {t('common:utility.cancel')}
         </Button>
         <Button
-          theme="coat"
-          variant={variant === 'danger' ? 'danger' : 'primary'}
+          theme={ButtonPresetTheme.Coat}
+          variant={
+            variant === 'danger' ? ButtonVariant.Danger : ButtonVariant.Primary
+          }
           onClick={onSubmit}
           data-testid="confirm-ok"
         >

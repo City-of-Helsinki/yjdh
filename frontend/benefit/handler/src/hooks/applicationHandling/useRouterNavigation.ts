@@ -20,13 +20,12 @@ export const useRouterNavigation = (
   const statusToTabId = React.useCallback(():
     | APPLICATION_LIST_TABS
     | number => {
-
     const returnTabRaw = router.query?.returnTab;
     const returnTab =
       typeof returnTabRaw === 'string' ? parseInt(returnTabRaw, 10) : NaN;
 
     if (!Number.isNaN(returnTab)) {
-      return returnTab
+      return returnTab;
     }
 
     if (batchStatus === BATCH_STATUSES.DECIDED_ACCEPTED) {

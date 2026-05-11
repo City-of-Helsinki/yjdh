@@ -13,6 +13,8 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   IconArrowLeft,
   IconArrowRight,
   IconCopy,
@@ -92,6 +94,8 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const [isSavingAndClosing, setIsSavingAndClosing] = React.useState(false);
 
+  // TODO: This callback is currently unused (dead code). Remove it once
+  // index-navigation-on-save behavior is confirmed unnecessary.
   const navigateToIndex = React.useCallback((): void => {
     if (!application.status) return;
     void router.push({
@@ -217,6 +221,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
   };
 
   const validateNextStep = (currentStepIndex: number): boolean => {
+    // TODO: This branch appears unreachable via current UI because validateNextStep
+    // is only triggered from Next/Send actions rendered for HANDLING status.
+    // Remove this block if no non-UI call sites for validateNextStep are introduced.
     if (
       application.status &&
       application.status === APPLICATION_STATUSES.INFO_REQUIRED
@@ -224,7 +231,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
       focusAndScroll('header-info-needed');
       showErrorToast(
         t('common:status.additional_information_needed'),
-        t(`common:applications.statuses.additionalInformationNeeded`)
+        t('common:applications.statuses.additional_information_needed')
       );
       return true;
     }
@@ -368,7 +375,11 @@ const HandlingApplicationActions: React.FC<Props> = ({
   return (
     <$Wrapper data-testid={dataTestId}>
       <$Column>
-        <Button onClick={handleClose} theme="black" variant="secondary">
+        <Button
+          onClick={handleClose}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+        >
           {t(`${translationsBase}.close`)}
         </Button>
 
@@ -378,8 +389,8 @@ const HandlingApplicationActions: React.FC<Props> = ({
             onClick={handleSaveAndClose}
             disabled={isSavingAndClosing || isApplicationReadOnly}
             isLoading={isSavingAndClosing}
-            theme="black"
-            variant="secondary"
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
           >
             {t(`${translationsBase}.saveAndContinue`)}
           </Button>
@@ -387,9 +398,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
         <Button
           onClick={toggleMessagesDrawerVisibility}
-          theme="black"
-          variant="secondary"
-          iconLeft={<IconPen />}
+          theme={ButtonPresetTheme.Black}
+          variant={ButtonVariant.Secondary}
+          iconStart={<IconPen />}
         >
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
@@ -404,10 +415,10 @@ const HandlingApplicationActions: React.FC<Props> = ({
             APPLICATION_STATUSES.RECEIVED,
           ].includes(application.status) && (
             <Button
-              iconLeft={<IconCopy />}
+              iconStart={<IconCopy />}
               onClick={handleClone}
-              theme="black"
-              variant="supplementary"
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Supplementary}
             >
               {t(`${translationsBase}.clone`)}
             </Button>
@@ -423,10 +434,10 @@ const HandlingApplicationActions: React.FC<Props> = ({
           !application.archived && (
             <Button
               onClick={openDialog}
-              theme="black"
+              theme={ButtonPresetTheme.Black}
               disabled={isApplicationReadOnly && !application.ahjoCaseId}
-              variant="supplementary"
-              iconLeft={<IconTrash />}
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconTrash />}
             >
               {t(`${translationsBase}.cancel`)}
             </Button>
@@ -437,23 +448,23 @@ const HandlingApplicationActions: React.FC<Props> = ({
         <$Column>
           {stepState.activeStepIndex !== 0 && (
             <Button
-              variant="secondary"
-              theme="black"
-              iconLeft={<IconArrowLeft />}
+              variant={ButtonVariant.Secondary}
+              theme={ButtonPresetTheme.Black}
+              iconStart={<IconArrowLeft />}
               onClick={() => handlePrev()}
             >
               {t('common:utility.previous')}
             </Button>
           )}
           <Button
-            theme="coat"
-            variant="primary"
+            theme={ButtonPresetTheme.Coat}
+            variant={ButtonVariant.Primary}
             disabled={isApplicationReadOnly}
             style={{ minWidth: '158px' }}
             onClick={() =>
               !validateNextStep(stepState.activeStepIndex) ? handleNext() : null
             }
-            iconRight={lastStep ? undefined : <IconArrowRight />}
+            iconEnd={lastStep ? undefined : <IconArrowRight />}
           >
             {lastStep ? t('common:utility.send') : t('common:utility.next')}
           </Button>

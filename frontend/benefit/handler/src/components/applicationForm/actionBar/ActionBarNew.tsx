@@ -1,4 +1,11 @@
-import { Button, IconArrowLeft, IconArrowRight, IconTrash } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconArrowLeft,
+  IconArrowRight,
+  IconTrash,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -39,10 +46,10 @@ const ActionBarNew: React.FC<ActionBarProps> = ({
           <$ButtonContainer>
             {handleBack && (
               <Button
-                theme="black"
-                variant="secondary"
+                theme={ButtonPresetTheme.Black}
+                variant={ButtonVariant.Secondary}
                 onClick={handleBack}
-                iconLeft={<IconArrowLeft />}
+                iconStart={<IconArrowLeft />}
                 css={{ marginRight: 'var(--spacing-2-xs)' }}
               >
                 {t(`${translationsBase}.back`)}
@@ -50,9 +57,9 @@ const ActionBarNew: React.FC<ActionBarProps> = ({
             )}
             {handleSave && (
               <Button
-                theme="coat"
+                theme={ButtonPresetTheme.Coat}
                 onClick={handleSave}
-                iconRight={<IconArrowRight />}
+                iconEnd={<IconArrowRight />}
                 data-testid="nextButton"
               >
                 {t(`${translationsBase}.continue`)}
@@ -60,9 +67,9 @@ const ActionBarNew: React.FC<ActionBarProps> = ({
             )}
             {handleSubmit && (
               <Button
-                theme="coat"
+                theme={ButtonPresetTheme.Coat}
                 onClick={handleSubmit}
-                iconRight={<IconArrowRight />}
+                iconEnd={<IconArrowRight />}
                 data-testid="nextButton"
               >
                 {t(`${translationsBase}.send`)}
@@ -74,8 +81,8 @@ const ActionBarNew: React.FC<ActionBarProps> = ({
           <$GridCell $colSpan={3} $colStart={7}>
             <$ButtonContainer>
               <Button
-                theme="black"
-                variant="secondary"
+                theme={ButtonPresetTheme.Black}
+                variant={ButtonVariant.Secondary}
                 onClick={handleSaveDraft}
               >
                 {t(`${translationsBase}.saveAndContinueLater`)}
@@ -85,9 +92,9 @@ const ActionBarNew: React.FC<ActionBarProps> = ({
           <$GridCell $colSpan={3} $colStart={10} justifySelf="end">
             <$ButtonContainer>
               <Button
-                theme="black"
-                variant="supplementary"
-                iconLeft={<IconTrash />}
+                theme={ButtonPresetTheme.Black}
+                variant={ButtonVariant.Supplementary}
+                iconStart={<IconTrash />}
                 onClick={() =>
                   id ? setIsConfirmationModalOpen(true) : router.push('/')
                 }

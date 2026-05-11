@@ -1,7 +1,14 @@
 import { $SecondaryDangerButton } from 'benefit/handler/components/applicationReview/handlingView/AlterationAccordionItem.sc';
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
 import { ApplicationAlteration } from 'benefit-shared/types/application';
-import { Button, Dialog, IconInfoCircle, IconTrash } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  IconInfoCircle,
+  IconTrash,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -65,9 +72,9 @@ const AlterationCancelModal = ({
               )}
             </$SecondaryDangerButton>
             <Button
-              theme="coat"
-              variant="danger"
-              iconLeft={<IconTrash />}
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Danger}
+              iconStart={<IconTrash />}
               onClick={onSetCancelled}
               disabled={isDeleting}
               isLoading={isDeleting}

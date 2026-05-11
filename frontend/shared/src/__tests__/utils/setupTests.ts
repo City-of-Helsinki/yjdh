@@ -70,6 +70,19 @@ beforeAll(() => {
   console.info = createFilter(originalInfo);
 });
 
+if (typeof window.ResizeObserver === 'undefined') {
+  class ResizeObserver {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  }
+
+  // Provide the API both on window and global for libraries accessing either.
+  window.ResizeObserver = ResizeObserver;
+  global.ResizeObserver = ResizeObserver;
+  globalThis.ResizeObserver = ResizeObserver;
+}
+
 window.scrollTo = jest.fn();
 
 afterAll(() => {

@@ -1,9 +1,10 @@
 import { ROUTES } from 'benefit/handler/constants';
 import {
   Button,
+  ButtonPresetTheme,
   IconCross,
   RadioButton,
-  SearchInput,
+  Search,
   SelectionGroup,
   StatusLabel,
 } from 'hds-react';
@@ -44,6 +45,11 @@ const $SearchInputArea = styled.div`
   }
 `;
 
+const searchButtonAriaLabelKey =
+  'common:search.fields.searchInput.keyword.searchButtonAriaLabel'; // eslint-disable-line no-secrets/no-secrets
+const searchClearButtonAriaLabelKey =
+  'common:search.fields.searchInput.keyword.searchClearButtonAriaLabel'; // eslint-disable-line no-secrets/no-secrets
+
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
   const [initialQuery, setInitialQuery] = React.useState<boolean>(true);
@@ -73,6 +79,16 @@ const ApplicationsArchive: React.FC = () => {
       applicationNum ? applicationNum.toString() : null,
       loadAll
     );
+  const searchTexts = React.useMemo(
+    () => ({
+      assistive: t('common:search.fields.searchInput.keyword.helperText'),
+      label: t('common:search.fields.searchInput.keyword.label'),
+      placeholder: t('common:search.fields.searchInput.keyword.placeholder'),
+      searchButtonAriaLabel: t(searchButtonAriaLabelKey),
+      searchClearButtonAriaLabel: t(searchClearButtonAriaLabelKey),
+    }),
+    [t]
+  );
 
   const onSearch = (value: string): void => {
     setSearchString(value);
@@ -127,16 +143,10 @@ const ApplicationsArchive: React.FC = () => {
       <>
         <$SearchInputArea>
           {!applicationNum && (
-            <SearchInput
-              helperText={t(
-                'common:search.fields.searchInput.keyword.helperText'
-              )}
-              label={t('common:search.fields.searchInput.keyword.label')}
-              placeholder={t(
-                'common:search.fields.searchInput.keyword.placeholder'
-              )}
-              onChange={(value) => setSearchString(value)}
-              onSubmit={(value) => onSearch(value)}
+            <Search
+              texts={searchTexts}
+              onChange={(value) => setSearchString(value.target.value)}
+              onSend={(value) => onSearch(value)}
               css="margin-bottom: var(--spacing-m);"
             />
           )}
@@ -239,7 +249,7 @@ const ApplicationsArchive: React.FC = () => {
         (searchResults?.matches || []).length >= 30 && (
           <Button
             style={{ marginTop: 'var(--spacing-m)' }}
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             onClick={() => {
               setLoadAll(true);
               setDisplayLoadAll(false);

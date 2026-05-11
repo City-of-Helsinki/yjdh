@@ -104,6 +104,9 @@
       "label": "Käsitelty takaisinlasku on poistettu",
       "message": "Poistit hakemuksen {{applicationNumber}} muutosilmoituksen."
     },
+    "alterationActionError": {
+      "label": "Muutosilmoituksen käsittely epäonnistui"
+    },
     "alterationHandled": {
       "recoverable": {
         "label": "Muutosilmoitus on käsitelty",
@@ -1102,7 +1105,8 @@
       "acceptedSubsidy": "Myönnettävä tuki",
       "eurosTotal": "{{total}} euroa yhteensä",
       "eurosPerMonth": "{{euros}} euroa kuukaudessa {{dateRange}}",
-      "searchPriorApplications": "Hae työllistettävän aiempia tukia"
+      "searchPriorApplications": "Hae työllistettävän aiempia tukia",
+      "toggleReviewStatusAriaLabel": "Vaihda tarkistusmerkinnän tila"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -1514,7 +1518,8 @@
     "approved": "Myönteinen",
     "rejected": "Kielteinen",
     "cancelled": "Peruutettu",
-    "handling": "Käsittelyssä"
+    "handling": "Käsittelyssä",
+    "archival": "Myönteinen"
   },
   "upload": {
     "isUploading": "Ladataan...",
@@ -1762,7 +1767,9 @@
         "keyword": {
           "helperText": "Kirjoita hakemusnumero, työllistettävän nimi tai hetu, työnantajan nimi, y-tunnus tai diaari",
           "label": "Etsi hakemusta",
-          "placeholder": "Kirjoita hakusana"
+          "placeholder": "Kirjoita hakusana",
+          "searchButtonAriaLabel": "Hae",
+          "searchClearButtonAriaLabel": "Tyhjennä haku"
         }
       },
       "filters": {

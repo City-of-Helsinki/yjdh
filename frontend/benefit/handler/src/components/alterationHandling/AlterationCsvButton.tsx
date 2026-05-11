@@ -1,6 +1,6 @@
 import updateApplicationAlterationWithCsvQuery from 'benefit/handler/hooks/useUpdateApplicationAlterationWithCsvQuery';
 import { AlterationCsvProps } from 'benefit/handler/types/application';
-import { Button, IconDownload } from 'hds-react';
+import { Button, ButtonVariant, IconDownload } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
@@ -49,8 +49,8 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
     <Button
       data-testid="button-download-alteration-csv"
       theme={theme}
-      variant={secondary ? 'secondary' : 'primary'}
-      iconLeft={<IconDownload />}
+      variant={secondary ? ButtonVariant.Secondary : ButtonVariant.Primary}
+      iconStart={<IconDownload />}
       onClick={handleDownloadCsv}
       disabled={!isAlterationValid || updateMutation.isLoading}
     >

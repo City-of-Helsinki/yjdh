@@ -15,6 +15,8 @@ import {
 } from 'benefit-shared/types/application';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   IconAlertCircle,
   IconAngleDown,
   IconAngleUp,
@@ -157,9 +159,9 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
       transform: ({ id }: { id: string }) =>
         IS_WAITING_FOR_INSPECTION ? (
           <Button
-            theme="black"
-            variant="supplementary"
-            iconLeft={<IconArrowUndo />}
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Supplementary}
+            iconStart={<IconArrowUndo />}
             onClick={() => openAppRemovalDialog(id)}
             disabled={status !== BATCH_STATUSES.DRAFT}
           >

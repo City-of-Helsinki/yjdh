@@ -2,7 +2,13 @@ import StatusLabel from 'benefit/handler/components/statusLabel/StatusLabel';
 import useChangeHandlerMutation from 'benefit/handler/hooks/useChangeHandlerMutation';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button, IconLockOpen } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonSize,
+  ButtonVariant,
+  IconLockOpen,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -109,10 +115,10 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({
             }.`,
           })}{' '}
           <Button
-            variant="supplementary"
-            theme="coat"
-            size="small"
-            iconLeft={<IconLockOpen />}
+            variant={ButtonVariant.Supplementary}
+            theme={ButtonPresetTheme.Coat}
+            size={ButtonSize.Small}
+            iconStart={<IconLockOpen />}
             onClick={() => takeControl()}
           >
             {t('common:review.actions.handle')}

@@ -1,5 +1,12 @@
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
-import { Button, Dialog, IconArrowRedo, IconArrowUndo } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  IconArrowRedo,
+  IconArrowUndo,
+} from 'hds-react';
 import React from 'react';
 import {
   $Grid,
@@ -33,28 +40,34 @@ const TalpaStatusChangeModal: React.FC<{
           <Dialog.Content>
             <$Grid columns={1} alignItems="center">
               <$GridCell>
-                <h2>{t('applications.dialog.talpaStatusChange.heading')}</h2>
-                <p>{t('applications.dialog.talpaStatusChange.text')}</p>
+                <h2>
+                  {t('common:applications.dialog.talpaStatusChange.heading')}
+                </h2>
+                <p>{t('common:applications.dialog.talpaStatusChange.text')}</p>
               </$GridCell>
             </$Grid>
           </Dialog.Content>
 
           <Dialog.ActionButtons>
             <Button
-              theme="coat"
-              iconLeft={<IconArrowUndo />}
+              theme={ButtonPresetTheme.Coat}
+              iconStart={<IconArrowUndo />}
               onClick={() => onStatusChange(INSTALMENT_STATUSES.ACCEPTED)}
             >
               {t('common:applications.list.actions.return_as_waiting')}
             </Button>
             <Button
-              theme="coat"
-              iconLeft={<IconArrowRedo />}
+              theme={ButtonPresetTheme.Coat}
+              iconStart={<IconArrowRedo />}
               onClick={() => onStatusChange(INSTALMENT_STATUSES.PAID)}
             >
               {t('common:applications.list.actions.mark_as_paid')}
             </Button>
-            <Button theme="coat" variant="secondary" onClick={onClose}>
+            <Button
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Secondary}
+              onClick={onClose}
+            >
               {t('common:applications.actions.close')}
             </Button>
           </Dialog.ActionButtons>

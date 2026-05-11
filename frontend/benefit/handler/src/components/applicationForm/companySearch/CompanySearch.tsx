@@ -1,9 +1,11 @@
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   LoadingSpinner,
   Notification,
   RadioButton,
-  SearchInput,
+  Search,
   SelectionGroup,
 } from 'hds-react';
 import React from 'react';
@@ -31,21 +33,38 @@ const CompanySearch: React.FC = () => {
   } = useCompanySearch();
   const theme = useTheme();
 
+  const searchTexts = React.useMemo(
+    () => ({
+      label: t(`${translationsBase}.companySearch.searchCompanyDetails`),
+      searching: t(`${translationsBase}.messages.loading`),
+    }),
+    [t, translationsBase]
+  );
+
+  const onSearch = React.useCallback(
+    async (searchValue: string) => {
+      const suggestions = await getSuggestions(searchValue);
+
+      return {
+        options: suggestions.map(({ business_id: businessId, name }) => ({
+          label: name,
+          value: businessId,
+        })),
+      };
+    },
+    [getSuggestions]
+  );
+
   return (
     <>
       <div>
         <h2>{t('common:applications.sections.companySearch.heading')}</h2>
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={6} data-testid="company-search-input">
-            <SearchInput
-              label={t(
-                `${translationsBase}.companySearch.searchCompanyDetails`
-              )}
-              loadingSpinnerText={t(`${translationsBase}.messages.loading`)}
-              getSuggestions={getSuggestions}
-              suggestionLabelField="name"
-              highlightSuggestions
-              onSubmit={getCompany}
+            <Search
+              texts={searchTexts}
+              onSearch={onSearch}
+              onSend={getCompany}
               css={`
                 margin-bottom: ${theme.spacing.m};
               `}
@@ -66,13 +85,15 @@ const CompanySearch: React.FC = () => {
                       value={businessId}
                       label={`${name} <${businessId}>`}
                       checked={selectedCompany === businessId}
-                      onChange={(event) => onCompanyChange(event.target.value)}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        onCompanyChange(event.target.value)
+                      }
                     />
                   ))}
                 </SelectionGroup>
                 <Button
-                  variant="primary"
-                  theme="coat"
+                  variant={ButtonVariant.Primary}
+                  theme={ButtonPresetTheme.Coat}
                   onClick={() => onSelectCompany()}
                   css={`
                     margin-top: ${theme.spacing.l};
@@ -97,7 +118,11 @@ const CompanySearch: React.FC = () => {
           </$GridCell>
         </$GridCell>
       </div>
-      {isLoading && <LoadingSpinner />}
+      {isLoading && (
+        <LoadingSpinner
+          loadingText={t(`${translationsBase}.messages.loading`)}
+        />
+      )}
     </>
   );
 };

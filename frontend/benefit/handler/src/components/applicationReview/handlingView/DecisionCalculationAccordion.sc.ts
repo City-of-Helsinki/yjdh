@@ -9,7 +9,7 @@ export const $DecisionCalculatorAccordion = styled.div`
       props.theme.spacing.xs};
   }
 
-  div[role='heading'] > div[role='button'] > span.label {
+  div[role='heading'] > button > span:first-child {
     padding-left: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
   }
 `;
