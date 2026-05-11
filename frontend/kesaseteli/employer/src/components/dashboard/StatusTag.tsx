@@ -17,14 +17,14 @@ const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
   switch (status) {
     case 'accepted':
       return (
-        <StatusLabel type="success" iconLeft={<IconCheckCircle aria-hidden />}>
+        <StatusLabel type="success" iconStart={<IconCheckCircle aria-hidden />}>
           {label}
         </StatusLabel>
       );
 
     case 'rejected':
       return (
-        <StatusLabel type="error" iconLeft={<IconAlertCircle aria-hidden />}>
+        <StatusLabel type="error" iconStart={<IconAlertCircle aria-hidden />}>
           {label}
         </StatusLabel>
       );
@@ -32,26 +32,26 @@ const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
     case 'submitted':
     case 'additional_information_provided':
       return (
-        <StatusLabel type="alert" iconLeft={<IconClock aria-hidden />}>
+        <StatusLabel type="alert" iconStart={<IconClock aria-hidden />}>
           {label}
         </StatusLabel>
       );
 
     case 'additional_information_requested':
       return (
-        <StatusLabel type="info" iconLeft={<IconAlertCircle aria-hidden />}>
+        <StatusLabel type="info" iconStart={<IconAlertCircle aria-hidden />}>
           {label}
         </StatusLabel>
       );
 
     case 'draft':
       return (
-        <StatusLabel iconLeft={<IconPen aria-hidden />}>{label}</StatusLabel>
+        <StatusLabel iconStart={<IconPen aria-hidden />}>{label}</StatusLabel>
       );
 
     case 'deleted_by_customer':
       return (
-        <StatusLabel iconLeft={<IconTrash aria-hidden />}>{label}</StatusLabel>
+        <StatusLabel iconStart={<IconTrash aria-hidden />}>{label}</StatusLabel>
       );
 
     default:

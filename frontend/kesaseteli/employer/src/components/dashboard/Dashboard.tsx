@@ -120,7 +120,7 @@ const Dashboard = ({
         <$ButtonContainer>
           <p>{t('common:dashboard.createApplicationGuidance')}</p>
           <Button
-            iconLeft={(<IconPlus aria-hidden />) as React.ReactElement}
+            iconStart={(<IconPlus aria-hidden />) as React.ReactElement}
             onClick={handleCreateNew}
             isLoading={createApplicationQuery.isLoading}
             loadingText={t('common:appName')}

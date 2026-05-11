@@ -1,5 +1,5 @@
-
-export const STEPS = [1,2,3];
+export const STEPS = [1, 2, 3];
 export const DEFAULT_STEP = 1;
 
-export const getStepNumber = (step?: number) : number => step && STEPS.includes(step) ? step: DEFAULT_STEP
+export const getStepNumber = (step?: number): number =>
+  step && STEPS.includes(step) ? step : DEFAULT_STEP;
