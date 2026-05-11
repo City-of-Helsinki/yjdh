@@ -1,4 +1,4 @@
-import { Footer, Logo, logoFiDark, logoSvDark } from 'hds-react';
+import { Footer, Logo, logoFiDark, LogoSize, logoSvDark } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
@@ -37,7 +37,7 @@ const FooterSection: React.FC = () => {
           logo={
             <Logo
               src={logoSrcFromLanguage()}
-              size="medium"
+              size={LogoSize.Medium}
               alt={t('common:helsinkiLogo')}
             />
           }
