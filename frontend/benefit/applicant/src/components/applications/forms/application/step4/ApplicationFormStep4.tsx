@@ -7,10 +7,13 @@ import {
 } from 'benefit-shared/constants';
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   IconArrowRight,
   IconDocument,
   IconPenLine,
   IconPrinter,
+  IconSize,
 } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import * as React from 'react';
@@ -65,12 +68,12 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
               description={t(
                 `${translationsBase}.electronicPowerOfAttorney.description`
               )}
-              icon={<IconPenLine size="l" />}
+              icon={<IconPenLine size={IconSize.Large} />}
               actions={
                 <Button
-                  theme="black"
-                  variant="secondary"
-                  iconRight={<IconArrowRight />}
+                  theme={ButtonPresetTheme.Black}
+                  variant={ButtonVariant.Secondary}
+                  iconEnd={<IconArrowRight />}
                 >
                   {t(`${translationsBase}.electronicPowerOfAttorney.action1`)}
                 </Button>
@@ -84,7 +87,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
             description={t(
               `${translationsBase}.uploadPowerOfAttorney.description`
             )}
-            icon={<IconDocument size="l" />}
+            icon={<IconDocument size={IconSize.Large} />}
             actions={
               <$Grid>
                 {attachment ? (
@@ -110,7 +113,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                   <>
                     <$GridCell $colSpan={4}>
                       <Button
-                        theme="black"
+                        theme={ButtonPresetTheme.Black}
                         onClick={() =>
                           // eslint-disable-next-line security/detect-non-literal-fs-filename
                           window
@@ -120,16 +123,16 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                             )
                             ?.focus()
                         }
-                        variant="secondary"
-                        iconLeft={<IconPrinter />}
+                        variant={ButtonVariant.Secondary}
+                        iconStart={<IconPrinter />}
                       >
                         {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
                       </Button>
                     </$GridCell>
                     <$GridCell $colSpan={8} data-testid="employee_consent">
                       <UploadAttachment
-                        theme="black"
-                        variant="secondary"
+                        theme={ButtonPresetTheme.Black}
+                        variant={ButtonVariant.Secondary}
                         onUpload={handleUploadAttachment}
                         isUploading={isUploading}
                         attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}

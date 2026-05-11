@@ -805,7 +805,8 @@
     "previous": "Previous page",
     "next": "Next page",
     "page": "Page",
-    "terms": "Terms.PDF"
+    "terms": "Terms.PDF",
+    "openInExternalDomainAriaLabel": "Opens a different website"
   },
   "tooltip": {
     "ariaLabel": "Show help text",

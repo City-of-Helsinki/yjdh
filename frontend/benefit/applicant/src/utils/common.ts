@@ -21,7 +21,8 @@ export const translateBackendErrorMessage = (
   t: TFunction,
   error: Error
 ): string =>
-  t(`common:error.backend.${error.message}`) || t('common:notifications.error.title');
+  t(`common:error.backend.${error.message}`) ||
+  t('common:notifications.error.title');
 
 export const getApplicationStepFromString = (step: string): number => {
   try {

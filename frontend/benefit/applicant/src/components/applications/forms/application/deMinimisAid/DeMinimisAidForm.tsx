@@ -5,7 +5,13 @@ import {
 } from 'benefit/applicant/constants';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
-import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  DateInput,
+  IconPlusCircle,
+  TextInput,
+} from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -146,7 +152,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
           `}
         >
           <Button
-            theme="coat"
+            theme={ButtonPresetTheme.Coat}
             disabled={
               !(
                 formik.values.granter &&
@@ -159,7 +165,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
               onSubmit(e)
             }
-            iconLeft={<IconPlusCircle />}
+            iconStart={<IconPlusCircle />}
             fullWidth
           >
             {t(`${translationsBase}.deMinimisAidsAdd`)}

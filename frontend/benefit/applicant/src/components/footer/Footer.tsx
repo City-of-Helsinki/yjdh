@@ -1,5 +1,5 @@
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Footer, Logo, logoFiDark } from 'hds-react';
+import { Footer, Logo, logoFiDark, LogoSize } from 'hds-react';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 
@@ -17,7 +17,11 @@ const FooterSection: React.FC = () => {
           copyrightText={t('common:footer.allRightsReservedText')}
           backToTopLabel={t('common:footer.backToTop')}
           logo={
-            <Logo src={logoFiDark} size="medium" alt="Helsingin kaupunki" />
+            <Logo
+              src={logoFiDark}
+              size={LogoSize.Medium}
+              alt="Helsingin kaupunki"
+            />
           }
         >
           <Footer.Link

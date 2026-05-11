@@ -33,7 +33,13 @@ import {
   BATCH_STATUSES,
 } from 'benefit-shared/constants';
 import { DecisionDetailList } from 'benefit-shared/types/application';
-import { Button, IconInfoCircleFill, LoadingSpinner, Stepper } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  IconInfoCircleFill,
+  LoadingSpinner,
+  Stepper,
+} from 'hds-react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 import Container from 'shared/components/container/Container';
@@ -272,7 +278,7 @@ const PageContent: React.FC = () => {
             actions={
               application.status === APPLICATION_STATUSES.ACCEPTED ? (
                 <Button
-                  theme="coat"
+                  theme={ButtonPresetTheme.Coat}
                   onClick={() =>
                     router.push(
                       `${ROUTES.APPLICATION_ALTERATION}?id=${
