@@ -1,4 +1,4 @@
-import { Button, TextArea } from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonSize, TextArea } from 'hds-react';
 import React from 'react';
 
 import { $Actions, $FormActions, $Notification } from './Messaging.sc';
@@ -63,8 +63,8 @@ const Actions: React.FC<ActionProps> = ({
           {showAllActionsOnOneLine && customItems}
           <Button
             type="submit"
-            theme="coat"
-            size="small"
+            theme={ButtonPresetTheme.Coat}
+            size={ButtonSize.Small}
             disabled={!messageValue || !isValid || !canWriteNewMessages}
             onClick={handleSend}
             css="margin-left: auto"

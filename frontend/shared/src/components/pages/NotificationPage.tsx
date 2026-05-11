@@ -1,7 +1,9 @@
 import {
   Button,
+  ButtonPresetTheme,
+  ButtonVariant,
   IconArrowRight,
-  NotificationSizeInline,
+  NotificationSize,
   NotificationType,
 } from 'hds-react';
 import Head from 'next/head';
@@ -15,7 +17,7 @@ import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 
 type Props = {
   type: NotificationType;
-  size?: NotificationSizeInline;
+  size?: NotificationSize;
   title: string;
   message?: React.ReactNode;
   goToFrontPageText?: string;
@@ -24,7 +26,7 @@ type Props = {
 
 const NotificationPage: React.FC<Props> = ({
   type,
-  size = 'large',
+  size = NotificationSize.Large,
   title,
   message,
   goToFrontPageText,
@@ -47,9 +49,9 @@ const NotificationPage: React.FC<Props> = ({
         <FormSection columns={1} withoutDivider>
           <$GridCell>
             <Button
-              theme="coat"
-              variant="secondary"
-              iconLeft={<IconArrowRight />}
+              theme={ButtonPresetTheme.Coat}
+              variant={ButtonVariant.Secondary}
+              iconStart={<IconArrowRight />}
               onClick={goToFrontPage}
             >
               {goToFrontPageText}

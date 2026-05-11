@@ -1,4 +1,10 @@
-import { Button, Dialog, DialogVariant } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  Dialog,
+  DialogVariant,
+} from 'hds-react';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -59,26 +65,32 @@ const Modal: React.FC<ModalProps> = ({
       variant={variant}
       theme={theme}
     >
-      {title && <Dialog.Header title={title} id={titleId} iconLeft={headerIcon} />}
+      {title && (
+        <Dialog.Header title={title} id={titleId} iconStart={headerIcon} />
+      )}
       {customContent || (
         <>
           {children && <Dialog.Content>{children}</Dialog.Content>}
           <Dialog.ActionButtons>
             <Button
-              theme="black"
-              variant="secondary"
+              theme={ButtonPresetTheme.Black}
+              variant={ButtonVariant.Secondary}
               onClick={handleToggle}
               data-testid="modalCancel"
             >
               {cancelButtonLabel}
             </Button>
             <Button
-              theme="coat"
-              variant={variant}
+              theme={ButtonPresetTheme.Coat}
+              variant={
+                variant === 'danger'
+                  ? ButtonVariant.Danger
+                  : ButtonVariant.Primary
+              }
               onClick={onAccept}
               disabled={actionDisabled}
               data-testid="modalSubmit"
-              iconLeft={submitButtonIcon}
+              iconStart={submitButtonIcon}
             >
               {submitButtonLabel}
             </Button>
