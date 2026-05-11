@@ -165,10 +165,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       endDate: endDate
         ? convertToBackendDateFormat(parseDate(endDate))
         : undefined,
-      apprenticeshipProgram:
-        paySubsidyGranted !== PAY_SUBSIDY_GRANTED.NOT_GRANTED
-          ? apprenticeshipProgram
-          : null,
+      apprenticeshipProgram,
     };
 
     // Use context on first step, otherwise pass data from backend

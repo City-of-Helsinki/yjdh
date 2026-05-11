@@ -185,11 +185,9 @@ const useApplicationFormStep2 = (
   const clearPaySubsidyValues = React.useCallback((): void => {
     void setFieldValue(fields.paySubsidyPercent.name, null);
     void setFieldValue(fields.additionalPaySubsidyPercent.name, null);
-    void setFieldValue(fields.apprenticeshipProgram.name, null);
   }, [
     fields.paySubsidyPercent.name,
     fields.additionalPaySubsidyPercent.name,
-    fields.apprenticeshipProgram.name,
     setFieldValue,
   ]);
 
