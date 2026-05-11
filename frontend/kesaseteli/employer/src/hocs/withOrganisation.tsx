@@ -21,6 +21,7 @@ const isNotFound = (err: unknown): boolean =>
 const withOrganisation = <P extends JSX.IntrinsicAttributes>(
   WrappedComponent: React.FC<P>
 ): React.FC<P> =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   function Wrapped(props: P) {
     const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
     const goToPage = useGoToPage();

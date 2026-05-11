@@ -1,4 +1,9 @@
-import { Button, IconSignout } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  IconSignout,
+  NotificationSize,
+} from 'hds-react';
 import useLogout from 'kesaseteli/employer/hooks/backend/useLogout';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -27,7 +32,7 @@ const NoOrganisation: NextPage = () => {
       <$Notification
         label={t('common:noOrganisationPage.header')}
         type="error"
-        size="large"
+        size={NotificationSize.Large}
       >
         <p>{t('common:noOrganisationPage.content')}</p>
         <p>{t('common:noOrganisationPage.instructions')}</p>
@@ -44,7 +49,11 @@ const NoOrganisation: NextPage = () => {
           />
         </p>
       </$Notification>
-      <Button theme="coat" iconLeft={<IconSignout />} onClick={onLogout}>
+      <Button
+        theme={ButtonPresetTheme.Coat}
+        iconStart={<IconSignout />}
+        onClick={onLogout}
+      >
         {t('common:noOrganisationPage.logoutButton')}
       </Button>
     </Container>

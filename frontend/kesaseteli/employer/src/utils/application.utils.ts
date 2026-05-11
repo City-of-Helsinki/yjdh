@@ -14,13 +14,13 @@ export const EMPLOYER_FIELDS: (keyof Application)[] = [
 ];
 
 export const extractEmployerFields = (
-    application: Partial<Application>
+  application: Partial<Application>
 ): Partial<Application> => {
-    const result: Partial<Application> = {};
-    EMPLOYER_FIELDS.forEach((field) => {
-        if (application[field] !== undefined) {
-            (result as Record<string, unknown>)[field] = application[field];
-        }
-    });
-    return result;
+  const result: Partial<Application> = {};
+  EMPLOYER_FIELDS.forEach((field) => {
+    if (application[field] !== undefined) {
+      (result as Record<string, unknown>)[field] = application[field];
+    }
+  });
+  return result;
 };
