@@ -1,4 +1,4 @@
-import { Footer, Logo, logoFiDark } from 'hds-react';
+import { Footer, Logo, logoFiDark, LogoSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -14,7 +14,11 @@ const FooterSection: React.FC = () => {
           copyrightText={t('common:footer.allRightsReservedText')}
           backToTopLabel={t('common:footer.backToTop')}
           logo={
-            <Logo src={logoFiDark} size="medium" alt="Helsingin kaupunki" />
+            <Logo
+              src={logoFiDark}
+              size={LogoSize.Medium}
+              alt="Helsingin kaupunki"
+            />
           }
         />
       </Footer>

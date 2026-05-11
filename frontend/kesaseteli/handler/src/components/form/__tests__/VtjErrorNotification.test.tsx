@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { NotificationSize } from 'hds-react';
 import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/get-handler-translations-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
@@ -21,7 +22,9 @@ describe('VtjErrorNotification', () => {
   });
 
   it('renders with explicit large size as set in VtjInfo for notFound', () => {
-    renderComponent(<VtjErrorNotification reason="notFound" size="large" />);
+    renderComponent(
+      <VtjErrorNotification reason="notFound" size={NotificationSize.Large} />
+    );
     expect(
       screen.getByText(
         regexp(translations.handlerApplication.vtjException.notFound)
