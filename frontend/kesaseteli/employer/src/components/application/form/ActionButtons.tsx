@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowLeft,
@@ -11,6 +10,7 @@ import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
 import useGoToPage from 'shared/hooks/useGoToPage';

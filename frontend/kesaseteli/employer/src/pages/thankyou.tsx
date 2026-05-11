@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, IconCheckCircleFill } from 'hds-react';
+import { ButtonVariant, IconCheckCircleFill } from 'hds-react';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';
