@@ -214,4 +214,6 @@ const theme: DefaultTheme = {
   },
 };
 
+export type ThemeProps = { theme: DefaultTheme };
+
 export default theme;

@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import { Button, ButtonPresetTheme, IconSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -30,19 +30,19 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   return (
     <Container>
       <$ErrorPageContainer>
-        <$IconAlertCircle size="xl" />
+        <$IconAlertCircle size={IconSize.ExtraLarge} />
         <$ErrorPageTitle>{title}</$ErrorPageTitle>
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
         {errorId && <$ErrorPageMessage>({errorId})</$ErrorPageMessage>}
         {(retry || logout) && (
           <$ActionsContainer>
             {retry && (
-              <Button theme="coat" onClick={retry}>
+              <Button theme={ButtonPresetTheme.Coat} onClick={retry}>
                 {t('common:errorPage.retry')}
               </Button>
             )}
             {logout && (
-              <Button theme="coat" onClick={logout}>
+              <Button theme={ButtonPresetTheme.Coat} onClick={logout}>
                 {t('common:errorPage.logout')}
               </Button>
             )}

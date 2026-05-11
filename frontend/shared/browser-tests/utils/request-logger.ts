@@ -20,8 +20,9 @@ const getShortenedHeadersString = (
   const headersJson =
     typeof headers === 'string' ? headers : JSON.stringify(headers, null, 2);
   if (headersJson?.length > 5000) {
-    return `${headersJson.slice(0, 5000)}...${headers === 'string' ? '' : '\n}'
-      }`;
+    return `${headersJson.slice(0, 5000)}...${
+      headers === 'string' ? '' : '\n}'
+    }`;
   }
   return headersJson;
 };

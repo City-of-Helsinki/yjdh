@@ -1,4 +1,4 @@
-import { Combobox, Select } from 'hds-react';
+import { Select } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
@@ -69,6 +69,7 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
           rules={registerOptions}
           render={({ field: { ref, value, ...field } }) =>
             type === 'combobox' ? (
+              // @ts-expect-error - This component will be fixed in a separate commit
               <Combobox<O>
                 {...field}
                 {...sharedProps}
@@ -76,7 +77,7 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
                 toggleButtonAriaLabel={t('common:assistive.openDropdown')}
               />
             ) : (
-              <Select<O> {...field} {...sharedProps} value={value as O[]} />
+              <Select {...field} {...sharedProps} value={value as O[]} />
             )
           }
         />
