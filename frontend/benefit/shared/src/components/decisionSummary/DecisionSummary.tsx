@@ -14,7 +14,12 @@ import {
   Application,
   DecisionDetailList,
 } from 'benefit-shared/types/application';
-import { Button, ButtonVariant, IconLinkExternal } from 'hds-react';
+import {
+  Button,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconLinkExternal,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -110,7 +115,7 @@ const DecisionSummary = ({
           <Button
             iconEnd={<IconLinkExternal />}
             onClick={openDecisionLink}
-            theme="black"
+            theme={ButtonPresetTheme.Black}
             variant={ButtonVariant.Secondary}
             role="link"
           >
