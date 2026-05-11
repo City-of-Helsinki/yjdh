@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
+import { setupUserAndRender } from 'benefit/handler/__tests__/utils/user-render-helper';
 import AppContext, { AppContextType } from 'benefit/handler/context/AppContext';
 import useDecisionProposalTemplateQuery from 'benefit/handler/hooks/applicationHandling/useDecisionProposalTemplateQuery';
 import useAhjoSettingsQuery from 'benefit/handler/hooks/useAhjoSettingsQuery';
@@ -187,8 +187,7 @@ describe('HandlingStep2', () => {
   });
 
   it('updates handled application when a signer is selected', async () => {
-    const user = userEvent.setup();
-    renderSubject();
+    const user = setupUserAndRender(() => renderSubject());
 
     setHandledApplication.mockClear();
 
@@ -207,8 +206,7 @@ describe('HandlingStep2', () => {
   });
 
   it('updates handled application when a decision maker is selected', async () => {
-    const user = userEvent.setup();
-    renderSubject();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(
       screen.getByRole('radio', {
@@ -227,8 +225,7 @@ describe('HandlingStep2', () => {
   });
 
   it('renders template editor previews when a decision maker is selected', async () => {
-    const user = userEvent.setup();
-    renderSubject();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(
       screen.getByRole('radio', {
@@ -245,8 +242,7 @@ describe('HandlingStep2', () => {
   });
 
   it('updates handled application when a template is selected', async () => {
-    const user = userEvent.setup();
-    renderSubject();
+    const user = setupUserAndRender(() => renderSubject());
 
     await user.click(
       screen.getByRole('radio', {
@@ -282,10 +278,11 @@ describe('HandlingStep2', () => {
   });
 
   it('does not update handled application from template selection when handledApplication is null', async () => {
-    const user = userEvent.setup();
-    renderSubject({
-      handledApplication: null,
-    });
+    const user = setupUserAndRender(() =>
+      renderSubject({
+        handledApplication: null,
+      })
+    );
 
     const templateCombobox = screen.getByRole('combobox', {
       name: /päätöstekstipohja/i,

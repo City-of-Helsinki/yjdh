@@ -514,4 +514,39 @@ describe('ApplicationFormStep1', () => {
 
     expect(setFieldValue).toHaveBeenCalledWith('applicantLanguage', 'sv');
   });
+
+  describe('applicant language select value', () => {
+    let getDefaultLanguage: jest.Mock;
+
+    beforeEach(() => {
+      getDefaultLanguage = jest.fn(() => ({ label: 'Finnish', value: 'fi' }));
+    });
+
+    const renderWithLanguage = (applicantLanguage?: string): void => {
+      mockUseApplicationFormStep1.mockReturnValue({
+        ...mockHookReturn,
+        getDefaultLanguage,
+        formik: {
+          ...mockHookReturn.formik,
+          values: { ...mockHookReturn.formik.values, applicantLanguage },
+        },
+      });
+      renderForm();
+    };
+
+    it('uses getDefaultLanguage fallback when applicantLanguage is missing', () => {
+      renderWithLanguage();
+
+      expect(getDefaultLanguage).toHaveBeenCalledTimes(1);
+      expect(
+        screen.getByRole('combobox', { name: /asiointikieli/i })
+      ).toHaveTextContent('Finnish');
+    });
+
+    it('does not use getDefaultLanguage fallback when applicantLanguage exists', () => {
+      renderWithLanguage('sv');
+
+      expect(getDefaultLanguage).not.toHaveBeenCalled();
+    });
+  });
 });

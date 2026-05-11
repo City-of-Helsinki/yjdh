@@ -83,6 +83,10 @@ if (typeof window.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = ResizeObserver;
 }
 
+if (typeof Element.prototype.scrollIntoView !== 'function') {
+  Element.prototype.scrollIntoView = jest.fn();
+}
+
 window.scrollTo = jest.fn();
 
 afterAll(() => {

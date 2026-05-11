@@ -22,6 +22,7 @@ const config = {
     '<rootDir>/src/pages/',
     '<rootDir>/../../shared/src/server/next-server.js',
     '<rootDir>/../../shared/src/test/',
+    '<rootDir>/src/__tests__/utils/',
   ],
   testEnvironment: '<rootDir>/jest-canvas-env.js',
 };
