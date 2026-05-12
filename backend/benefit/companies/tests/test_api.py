@@ -1,5 +1,6 @@
 import re
 from copy import deepcopy
+from unittest.mock import patch
 
 import pytest
 from django.conf import settings
@@ -219,3 +220,129 @@ def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
         == YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
     )
     assert response.data["company_form"] == "Osakeyhtiö"
+
+
+# ── UpdateCompanyIndustryCodeView ──────────────────────────────────────────────
+
+
+def get_industry_code_url(company_id):
+    return f"/v1/company/{company_id}/industry_code/"
+
+
+@pytest.mark.django_db
+def test_update_industry_code_success(handler_api_client):
+    from companies.tests.factories import CompanyFactory
+
+    company = CompanyFactory()
+    url = get_industry_code_url(company.pk)
+    response = handler_api_client.patch(
+        url,
+        {"industry_code": "62010", "industry": "Computer programming"},
+        format="json",
+    )
+    assert response.status_code == 200
+    company.refresh_from_db()
+    assert company.industry_code == "62010"
+    assert company.industry == "Computer programming"
+
+
+@pytest.mark.django_db
+def test_update_industry_code_missing_field(handler_api_client):
+    from companies.tests.factories import CompanyFactory
+
+    company = CompanyFactory()
+    url = get_industry_code_url(company.pk)
+    response = handler_api_client.patch(url, {"industry_code": ""}, format="json")
+    assert response.status_code == 400
+    assert "industry_code" in response.data
+
+
+@pytest.mark.django_db
+def test_update_industry_code_company_not_found(handler_api_client):
+    import uuid
+
+    url = get_industry_code_url(uuid.uuid4())
+    response = handler_api_client.patch(url, {"industry_code": "62010"}, format="json")
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_update_industry_code_unauthenticated(anonymous_client):
+    from companies.tests.factories import CompanyFactory
+
+    company = CompanyFactory()
+    url = get_industry_code_url(company.pk)
+    response = anonymous_client.patch(url, {"industry_code": "62010"}, format="json")
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_update_industry_code_non_handler_forbidden(api_client):
+    from companies.tests.factories import CompanyFactory
+
+    company = CompanyFactory()
+    url = get_industry_code_url(company.pk)
+    response = api_client.patch(url, {"industry_code": "62010"}, format="json")
+    assert response.status_code == 403
+
+
+# ── SearchOrganisationsView ────────────────────────────────────────────────────
+
+
+def get_search_url(name):
+    return f"/v1/company/search/{name}/"
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+def test_search_organisations_mock(api_client):
+    response = api_client.get(get_search_url("test"))
+    assert response.status_code == 200
+    assert isinstance(response.data, list)
+
+
+@pytest.mark.django_db
+def test_search_organisations_live(api_client):
+    mock_results = [
+        {"name": "Acme Oy", "business_id": "1234567-8"},
+        {"name": "Beta Oy", "business_id": "8765432-1"},
+    ]
+    with patch("companies.services.ServiceBusClient") as mock_sb_cls:
+        mock_sb_cls.return_value.search_companies.return_value = mock_results
+        with patch("companies.services.YRTTIClient") as mock_yrtti_cls:
+            mock_yrtti_cls.return_value.search_associations.return_value = []
+            response = api_client.get(get_search_url("Acme"))
+    assert response.status_code == 200
+    assert len(response.data) == 2
+    business_ids = {item["business_id"] for item in response.data}
+    assert "1234567-8" in business_ids
+
+
+# ── GetOrganisationByIdView ────────────────────────────────────────────────────
+
+
+def get_organisation_by_id_url(business_id):
+    return f"/v1/company/get/{business_id}/"
+
+
+@pytest.mark.django_db
+def test_get_organisation_by_id_invalid_business_id(api_client):
+    response = api_client.get(get_organisation_by_id_url("invalid-id"))
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_get_organisation_by_id_valid(api_client):
+    from companies.tests.factories import CompanyFactory
+
+    business_id = DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
+        "BusinessId"
+    ]
+    company = CompanyFactory(business_id=business_id)
+    with patch(
+        "companies.api.v1.views.get_or_create_organisation_with_business_id",
+        return_value=company,
+    ):
+        response = api_client.get(get_organisation_by_id_url(business_id))
+    assert response.status_code == 200
+    assert response.data["business_id"] == business_id

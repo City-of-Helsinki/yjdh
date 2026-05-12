@@ -224,13 +224,12 @@ const useSalaryBenefitCalculatorData = (
   };
 
   useEffect(() => {
-    if (
+    const allFieldsFilled = Boolean(
       newTrainingCompensation.monthlyAmount &&
-      newTrainingCompensation.startDate &&
-      newTrainingCompensation.endDate
-    )
-      setIsDisabledAddTrainingCompensationButton(false);
-    else setIsDisabledAddTrainingCompensationButton(true);
+        newTrainingCompensation.startDate &&
+        newTrainingCompensation.endDate
+    );
+    setIsDisabledAddTrainingCompensationButton(!allFieldsFilled);
   }, [newTrainingCompensation]);
 
   return {
