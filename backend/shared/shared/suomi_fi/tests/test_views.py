@@ -1,10 +1,17 @@
+import base64
+import sys
+import types
+import zlib
 from unittest import mock
 
 import pytest
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.test import RequestFactory, override_settings
+from django.test import Client, RequestFactory, override_settings
+from django.urls import clear_url_caches, path
+from six.moves import urllib_parse
 
+from shared.common.tests.utils import normalize_whitespace
 from shared.suomi_fi.views import (
     RELAY_STATE_PARAM,
     HelsinkiSaml2LogoutServiceView,
@@ -242,3 +249,163 @@ class TestSuomiFiViews:
 
         assert response.status_code == 302
         assert response.url == next_url
+
+
+@pytest.mark.django_db
+class TestSuomiFiViewsHARIntegration:
+    """
+    Integration tests using the Django Client to verify the end-to-end SAML logout flow.
+
+    These tests require a custom URL configuration because the production kesaseteli.urls
+    conditionally loads SAML routes, which can be inconsistent in a test environment.
+    """
+
+    # Minimal URL conf for Client-based tests.
+    _SAML_TEST_URLCONF = "_shared_suomi_fi_test_urlconf"
+    _saml_url_module = types.ModuleType(_SAML_TEST_URLCONF)
+    _saml_url_module.urlpatterns = [
+        path("saml2/logout/", HelsinkiSaml2LogoutView.as_view(), name="saml2_logout"),
+        path("saml2/ls/", HelsinkiSaml2LogoutServiceView.as_view(), name="saml2_ls"),
+    ]
+    sys.modules[_SAML_TEST_URLCONF] = _saml_url_module
+
+    # Real SAMLResponse from HAR (base64-encoded LogoutResponse, URL-decoded).
+    # Decodes to:
+    # <?xml version="1.0" encoding="UTF-8"?>
+    # <saml2p:LogoutResponse xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol"
+    #   Destination="https://yjdh-kesaseteli.api.dev.hel.ninja/saml2/ls/"
+    #   ID="_5c6cb09746cf826f3456e6fa223c6674" InResponseTo="id-CXP5fBFhcypIJA9bY"
+    #   IssueInstant="2026-05-12T11:50:33.932Z" Version="2.0">
+    #   <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">
+    #     https://testi.apro.tunnistus.fi/idp1
+    #   </saml2:Issuer>
+    #   <saml2p:Status>
+    #     <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Requester">
+    #       <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal"/>
+    #     </saml2p:StatusCode>
+    #     <saml2p:StatusMessage>An error occurred.</saml2p:StatusMessage>
+    #   </saml2p:Status>
+    # </saml2p:LogoutResponse>
+    #
+    # NOTE: This response contains an 'UnknownPrincipal' error from the IdP.
+    # This is a valuable test case because it forces djangosaml2 to fall back
+    # to the local LOGOUT_REDIRECT_URL (/). Our fix ensures that even in this
+    # "error" state, the session-stored next_path is recovered and used
+    # instead of the API root.
+    SAML_RESPONSE_HAR = (
+        "pZJNT+MwEIb/iuV7nMRpArWaoC4IKSuQEBQEe1kZZ9Ia0nHWY7Pw71d0KZQe"
+        "uHAcz8f7zuOZHT2vB/YEnqzDmuci4wzQuM7isubXi9PkkB81M9LrQY7qzC1dD"
+        "JdAo0MC9rwekNT/XM2jR+U0WVKo10AqGHU1Pz9TUmRq9C444wbOToCCRR02c"
+        "qsQRlJp+vLQrZJHIE0QYLBCj1Z08CRWMAi0+KDTjUg6UMpZe1Lz36WpzH02"
+        "PZhUpj+UVV9MygqqXktZmKo6mHDW4tbnwtXcdsnx7UXZ/zhdmZex/Tmf3t9x"
+        "1hJFaJGCxlBzmckqycokl4s8V2WmikJMC/mLs5stHyky/kZDbZr9LoSvGWgi"
+        "8K9782a7d3iFIfTonQgR0VKIJHqb2m7MZ+muzPsXXAUdIu2Fx64DdqOHCF9b"
+        "oE21uoQ/ESiA59+bc42P6P7ihbdo7KgHnjZvrncH7mmcA5FeQjNHBt47z5wx0"
+        "XvoxF7vtnDv+SP+fI3NPw=="
+    )
+
+    EXPECTED_DECODED_SAML_RESPONSE_HAR = normalize_whitespace("""
+        <?xml version="1.0" encoding="UTF-8"?>
+        <saml2p:LogoutResponse xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol"
+                               Destination="https://yjdh-kesaseteli.api.dev.hel.ninja/saml2/ls/"
+                               ID="_5c6cb09746cf826f3456e6fa223c6674"
+                               InResponseTo="id-CXP5fBFhcypIJA9bY"
+                               IssueInstant="2026-05-12T11:50:33.932Z"
+                               Version="2.0">
+          <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">https://testi.apro.tunnistus.fi/idp1</saml2:Issuer>
+          <saml2p:Status>
+            <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Requester">
+              <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal"/>
+            </saml2p:StatusCode>
+            <saml2p:StatusMessage>An error occurred.</saml2p:StatusMessage>
+          </saml2p:Status>
+        </saml2p:LogoutResponse>
+    """).replace("> <", "><")  # Remove whitespace between tags for exact string match
+
+    NEXT_URL_HAR = "https://kesaseteli.dev.hel.ninja/fi"
+
+    # Real RelayState from HAR — pysaml2's opaque ID, never a URL.
+    # Format: [request_id]|[timestamp]|[hmac_signature]
+    # - request_id: matches InResponseTo in the LogoutResponse
+    # - timestamp: 1778586633 (2026-05-12 11:50:33 UTC)
+    RELAY_STATE_HAR = (
+        "id-CXP5fBFhcypIJA9bY|1778586633|dcad624ca4cf9af0f69f31ad9a6dbe51231c19b9"
+    )
+
+    # Mock IdP SLO URL used in the HAR flow
+    IDP_SLO_URL_HAR = "https://testi.apro.tunnistus.fi/idp/profile/SAML2/Redirect/SLO"
+
+    def test_saml_response_har_decoded_content(self):
+        """
+        Test that SAML_RESPONSE_HAR decodes as expected
+        """
+        saml_response_xml = zlib.decompress(
+            base64.b64decode(self.SAML_RESPONSE_HAR), -zlib.MAX_WBITS
+        ).decode()
+        assert saml_response_xml == self.EXPECTED_DECODED_SAML_RESPONSE_HAR
+
+    @override_settings(
+        ROOT_URLCONF=_SAML_TEST_URLCONF,
+        LOGOUT_REDIRECT_URL="/",
+        SAML_ALLOWED_HOSTS=[urllib_parse.urlparse(NEXT_URL_HAR).netloc],
+    )
+    def test_har_documented_slo_flow(self):
+        """
+        Client-level replay of the real SLO flow captured in the HAR file.
+
+        Uses the actual RelayState pysaml2 generated ('id-CXP5...|timestamp|hmac')
+        and the actual SAMLResponse the IdP returned. This proves that the opaque
+        RelayState is NOT mistaken for a redirect URL, and that the session-based
+        next_path mechanism (our fix) is the only route to the correct frontend
+        redirect — even after auth.logout() flushes the session inside finish_logout.
+
+        HAR flow:
+          GET /saml2/logout/?next=https://kesaseteli.dev.hel.ninja/fi  →  302 to IdP
+          GET /saml2/ls/?SAMLResponse=<real>&RelayState=id-CXP5...     →  302 to next_url
+                                                                (broken: was 302 to /)
+        """
+        clear_url_caches()
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()  # noqa: N806
+        user = User.objects.create_user(username="saml2test", password="x")
+        client = Client()
+        client.force_login(user)
+
+        # Step 1: SP initiates SLO — our view stores next_url in session before
+        # handing off to LogoutInitView (which needs real SAML config, so mock it).
+        with mock.patch(
+            "djangosaml2.views.LogoutInitView.get",
+            return_value=HttpResponseRedirect(self.IDP_SLO_URL_HAR),
+        ):
+            client.get("/saml2/logout/", {"next": self.NEXT_URL_HAR})
+
+        assert client.session["saml2_logout_next_path"] == self.NEXT_URL_HAR
+
+        # Step 2: IdP sends back real SAMLResponse and echoes the opaque RelayState.
+        # finish_logout calls auth.logout() which flushes the session — our fix pops
+        # next_path before super() so it survives the flush.
+        def flushing_finish_logout(req, response, **kwargs):
+            req.session.clear()
+            return HttpResponseRedirect("/")
+
+        with mock.patch.object(
+            HelsinkiSaml2LogoutServiceView,
+            "get_state_client",
+            return_value=(mock.MagicMock(), mock.MagicMock()),
+        ):
+            with mock.patch(
+                "djangosaml2.views.finish_logout", side_effect=flushing_finish_logout
+            ):
+                response = client.get(
+                    "/saml2/ls/",
+                    {
+                        "SAMLResponse": self.SAML_RESPONSE_HAR,
+                        "RelayState": self.RELAY_STATE_HAR,
+                    },
+                )
+
+        assert response.status_code == 302
+        assert (
+            response.url == self.NEXT_URL_HAR
+        )  # not "/" (the pre-fix broken behavior)
