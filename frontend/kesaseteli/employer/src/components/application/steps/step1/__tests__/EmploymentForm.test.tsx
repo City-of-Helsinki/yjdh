@@ -13,6 +13,14 @@ import { ThemeProvider } from 'styled-components';
 
 import EmploymentForm from '../EmploymentForm';
 
+const mockFetchEmployment = jest.fn();
+const mockUpdateApplication = jest.fn();
+
+const getFetchEmployeeDataButton = (): HTMLElement =>
+  screen.getByRole('button', {
+    name: /common:application.step1.employment_section.fetch_employment/i,
+  });
+
 jest.mock('next-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -51,12 +59,131 @@ const renderWithProviders = (
 
 describe('EmploymentForm', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     (useApplicationApi as jest.Mock).mockReturnValue({
-      fetchEmployment: jest.fn(),
-      updateApplication: jest.fn(),
+      fetchEmployment: mockFetchEmployment,
+      updateApplication: mockUpdateApplication,
       applicationQuery: { data: { status: 'draft' } },
       applicationId: 'test-id',
     });
+  });
+
+  it('enables fetch employee data button for valid name and numeric voucher serial number', () => {
+    renderWithProviders(0, {
+      employee_name: 'Test',
+      summer_voucher_serial_number: ' 123 ',
+    });
+
+    expect(getFetchEmployeeDataButton()).toBeEnabled();
+  });
+
+  it('disables fetch employee data button when serial number is non-numeric', async () => {
+    renderWithProviders(0, {
+      employee_name: '',
+      summer_voucher_serial_number: '12A3',
+    });
+
+    await waitFor(() => {
+      expect(getFetchEmployeeDataButton()).toBeDisabled();
+    });
+  });
+
+  it('fetches employee data directly when voucher id already exists', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(0, {
+      id: 'voucher-id',
+      employee_name: 'Test',
+      summer_voucher_serial_number: '123',
+    });
+
+    await user.click(getFetchEmployeeDataButton());
+
+    expect(mockFetchEmployment).toHaveBeenCalledTimes(1);
+    expect(mockFetchEmployment).toHaveBeenCalledWith(
+      expect.objectContaining({
+        summer_vouchers: expect.arrayContaining([
+          expect.objectContaining({ id: 'voucher-id' }),
+        ]),
+      }),
+      0,
+      expect.any(Function)
+    );
+    expect(mockUpdateApplication).not.toHaveBeenCalled();
+  });
+
+  it('updates application first and then fetches employee data when voucher id is missing', async () => {
+    const user = userEvent.setup();
+
+    mockUpdateApplication.mockImplementation(
+      (_currentValues: Application, onSuccess: (app: Application) => void) => {
+        onSuccess({
+          summer_vouchers: [{ id: 'server-voucher-id' }],
+        } as Application);
+      }
+    );
+
+    renderWithProviders(0, {
+      employee_name: 'Test',
+      summer_voucher_serial_number: '123',
+    });
+
+    await user.click(getFetchEmployeeDataButton());
+
+    expect(mockUpdateApplication).toHaveBeenCalledTimes(1);
+    expect(mockFetchEmployment).toHaveBeenCalledTimes(1);
+    expect(mockFetchEmployment).toHaveBeenCalledWith(
+      expect.objectContaining({
+        summer_vouchers: expect.arrayContaining([
+          expect.objectContaining({ id: 'server-voucher-id' }),
+        ]),
+      }),
+      0,
+      expect.any(Function)
+    );
+  });
+
+  it('applies updated voucher from fetch callback and marks employee data as fetched', async () => {
+    const user = userEvent.setup();
+
+    mockFetchEmployment.mockImplementation(
+      (
+        _values: Application,
+        _index: number,
+        onSuccess: (app: Application) => void
+      ) => {
+        onSuccess({
+          summer_vouchers: [
+            {
+              id: 'voucher-id',
+              employee_phone_number: '0401234567',
+              employment_postcode: '00100',
+              employee_birthdate: '2000-01-01',
+            } as Employment,
+          ],
+        } as Application);
+      }
+    );
+
+    renderWithProviders(0, {
+      id: 'voucher-id',
+      employee_name: 'Test',
+      summer_voucher_serial_number: '123',
+    });
+
+    await user.click(getFetchEmployeeDataButton());
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText(
+          /common:application.form.inputs.employee_phone_number/i
+        )
+      ).toHaveValue('0401234567');
+    });
+
+    expect(
+      screen.getByLabelText(/common:application.form.inputs.employee_name/i)
+    ).toHaveAttribute('readOnly');
+    expect(getFetchEmployeeDataButton()).toBeDisabled();
   });
 
   it('initially disables the second part of the form if no data is fetched', () => {
