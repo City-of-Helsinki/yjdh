@@ -41,11 +41,10 @@ const useFetchEmployeeDataButtonState = (
   const enableFetchEmployeeDataButton = useCallback((): void => {
     const formDataVoucher = getValues().summer_vouchers[index];
     if (!formDataVoucher) return;
-    const integerStringRegex = /^\s*\d+\s*$/; // Allow leading and trailing whitespace
     setIsFetchEmployeeDataEnabled(
       (formDataVoucher.employee_name?.length ?? 0) > 0 &&
         typeof formDataVoucher.summer_voucher_serial_number === 'string' &&
-        integerStringRegex.test(formDataVoucher.summer_voucher_serial_number)
+        !!formDataVoucher.summer_voucher_serial_number.trim()
     );
   }, [getValues, index]);
 
