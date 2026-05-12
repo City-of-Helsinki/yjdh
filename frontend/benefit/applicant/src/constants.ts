@@ -12,6 +12,7 @@ export enum ROUTES {
   HOME = '/',
   APPLICATION_FORM = '/application',
   APPLICATION_ALTERATION = '/application/alteration',
+  SECOND_INSTALMENT_UPLOAD = '/application/second-instalment-upload',
   LOGIN = '/login',
   TERMS_OF_SERVICE = '/terms-of-service',
   ACCESSIBILITY_STATEMENT = '/accessibility-statement',

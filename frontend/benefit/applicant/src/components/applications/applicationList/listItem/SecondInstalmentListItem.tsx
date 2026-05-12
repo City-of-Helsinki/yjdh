@@ -87,7 +87,7 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
               variant="primary"
               theme="coat"
               onClick={() =>
-                router.push(`${ROUTES.APPLICATION_ALTERATION}?id=${id ?? ''}`)
+                router.push(`${ROUTES.SECOND_INSTALMENT_UPLOAD}?id=${id ?? ''}`)
               }
             >
               {t(`${translationBase}.secondInstalments.button`)}

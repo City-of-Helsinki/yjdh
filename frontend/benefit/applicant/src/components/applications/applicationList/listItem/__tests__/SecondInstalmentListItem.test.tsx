@@ -129,7 +129,7 @@ describe('SecondInstalmentListItem', () => {
     expect(screen.getByTestId('warning-icon')).toBeInTheDocument();
   });
 
-  it('navigates to application alteration when answer button is clicked', () => {
+  it('navigates to second instalment payslip upload page when answer button is clicked', () => {
     getComponent();
 
     fireEvent.click(
@@ -139,7 +139,8 @@ describe('SecondInstalmentListItem', () => {
     );
 
     expect(pushMock).toHaveBeenCalledWith(
-      `${ROUTES.APPLICATION_ALTERATION}?id=application-id`
+      `${ROUTES.SECOND_INSTALMENT_UPLOAD}?id=application-id`
     );
   });
+
 });
