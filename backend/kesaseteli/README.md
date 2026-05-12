@@ -118,13 +118,16 @@ commit.
 
 This project uses
 [`django-storages`](https://github.com/jschneier/django-storages)
-for blob storage handling. Production / staging will use Azure blob storage
-which requires the `DEFAULT_FILE_STORAGE` env variable / setting to be set to
+for blob storage handling. Production & staging use
+[Azure blob storage](https://github.com/jschneier/django-storages/blob/1.14.6/storages/backends/azure_storage.py)
+by setting the `DEFAULT_FILE_STORAGE` env variable to
 `"storages.backends.azure_storage.AzureStorage"`. The following
-env variables / settings are provided by Azure blob storage:
+settings are to be [used](https://github.com/jschneier/django-storages/blob/1.14.6/storages/backends/azure_storage.py#L136-L174)
+by Azure blob storage:
 
-- `AZURE_ACCOUNT_NAME`
-- `AZURE_ACCOUNT_KEY`
+- `AZURE_ACCOUNT_NAME` ← `AZURE_BLOB_STORAGE_NAME` in DevOps config map
+- `AZURE_CONTAINER` ← `AZURE_BLOB_STORAGE_CONTAINER` in DevOps config map
+- `AZURE_SAS_TOKEN` ← `AZURE_BLOB_STORAGE_SAS_TOKEN` env variable ← `BLOBSTORAGE-SAS-TOKEN` keyvault secret
 
 ## Authentication Methods Overview
 
