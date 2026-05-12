@@ -19,6 +19,7 @@
     - [Mock Mode](#mock-mode)
   - [Authentication Matrix](#authentication-matrix)
 - [Environment Variables](#environment-variables)
+- [Audit Logging](#audit-logging)
 - [Documentation](#documentation)
   - [Summer Voucher Configuration](#summer-voucher-configuration)
   - [Management Commands](#management-commands)
@@ -194,6 +195,41 @@ When `NEXT_PUBLIC_MOCK_FLAG=true` (typically in local development):
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
 | `AD_ADMIN_GROUP_NAME` | The name of the AD group that maps to Django admin permissions. Default is None (feature disabled). |
 | `ENABLE_AUTH_LOGGING` | A boolean value. If set to True, enables DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events. Default is False. |
+
+## Audit Logging
+
+Kesäseteli is the only YJDH backend that uses
+[`django-auditlog`](https://github.com/jazzband/django-auditlog) and
+[`django-auditlog-extra`](https://github.com/City-of-Helsinki/django-auditlog-extra)
+(a City of Helsinki wrapper that fixes issues and adds helpers for the Helsinki
+context).
+
+`django-auditlog` automatically records every create, update, and delete event
+on registered models to the `auditlog_logentry` table. Configuration lives in
+[`kesaseteli/auditlog_settings.py`](kesaseteli/auditlog_settings.py):
+
+- `AUDITLOG_INCLUDE_ALL_MODELS = True` — all models are tracked by default.
+- `AUDITLOG_EXCLUDE_TRACKING_MODELS` — models explicitly opted out (internal
+  Django/auditlog tables, session data, etc.).
+- `AUDITLOG_INCLUDE_TRACKING_MODELS` — models with field-level exclusions (e.g.
+  VTJ JSON fields are stripped from `YouthApplication` entries to reduce
+  personal data volume in the log).
+
+`django-auditlog-extra` adds:
+
+- `AuditLogConfigurationHelper` — called in `KesaseteliProjectConfig.ready()`
+  to raise an error on startup if any model is neither explicitly included nor
+  excluded, preventing accidental gaps in coverage.
+- `AuditlogAdminViewAccessLogMixin` — logs admin view access for `User` and
+  `Group` admin classes in [`kesaseteli/admin.py`](kesaseteli/admin.py) and for others 
+  in some other `admin.py` files.
+- `AuditlogMiddleware` — records the IP address and authenticated user on every
+  request so that log entries carry actor context.
+
+`auditlog.LogEntry` records are shipped to Elasticsearch via
+`django-resilient-logger`'s `DjangoAuditLogSource`. See
+[Auth & Compliance Logging](kesaseteli/AUTH_LOGGING.md) for details on the
+shipping pipeline.
 
 ## Documentation
 
