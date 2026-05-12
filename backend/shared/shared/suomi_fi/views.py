@@ -49,7 +49,9 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
         through the eAuthorizations pipeline before allowing the final redirect.
         """
         eauth_init_url = reverse("eauth_authentication_init")
-        if relay_state and is_safe_redirect_url(self.request, relay_state):
+        if relay_state and is_safe_redirect_url(
+            self.request, relay_state, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        ):
             # Do not store the eAuthorizations initiation URL as the next URL,
             # as it would cause a redirect loop.
             if relay_state.rstrip("/") != eauth_init_url.rstrip("/"):
@@ -67,7 +69,9 @@ class SuomiFiAssertionConsumerServiceView(AssertionConsumerServiceView):
         relay_state = request.POST.get(RELAY_STATE_PARAM) or request.GET.get(
             RELAY_STATE_PARAM
         )
-        if relay_state and is_safe_redirect_url(request, relay_state):
+        if relay_state and is_safe_redirect_url(
+            request, relay_state, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        ):
             return HttpResponseRedirect(relay_state)
 
         return super().handle_acs_failure(request, exception, status, **kwargs)
@@ -90,7 +94,9 @@ class HelsinkiSaml2LogoutView(LogoutInitView):
             or request.GET.get(RELAY_STATE_PARAM)
             or request.POST.get(RELAY_STATE_PARAM)
         )
-        if self.next_path and is_safe_redirect_url(request, self.next_path):
+        if self.next_path and is_safe_redirect_url(
+            request, self.next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        ):
             request.session["saml2_logout_next_path"] = self.next_path
 
         return super().get(request, *args, **kwargs)
@@ -104,7 +110,9 @@ class HelsinkiSaml2LogoutView(LogoutInitView):
         if (
             hasattr(self, "next_path")
             and self.next_path
-            and is_safe_redirect_url(request, self.next_path)
+            and is_safe_redirect_url(
+                request, self.next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+            )
         ):
             return HttpResponseRedirect(self.next_path)
         return super().handle_unsupported_slo_exception(
@@ -144,7 +152,9 @@ class HelsinkiSaml2LogoutServiceView(LogoutView):
         if next_path and isinstance(response, HttpResponseRedirect):
             fallback_url = resolve_url(getattr(settings, "LOGOUT_REDIRECT_URL", "/"))
             if response.url == fallback_url:
-                if is_safe_redirect_url(request, next_path):
+                if is_safe_redirect_url(
+                    request, next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+                ):
                     return HttpResponseRedirect(next_path)
         return response
 

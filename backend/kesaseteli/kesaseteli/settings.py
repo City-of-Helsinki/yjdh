@@ -482,8 +482,14 @@ SAML_CREATE_UNKNOWN_USER = True
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = "username"
 SAML_USE_NAME_ID_AS_USERNAME = False  # Use SAML_ATTRIBUTE_MAPPING for username
 SAML_IGNORE_LOGOUT_ERRORS = True
-if env("SAML_ALLOWED_HOSTS", default=None):
-    SAML_ALLOWED_HOSTS = env.list("SAML_ALLOWED_HOSTS")
+SAML_ALLOWED_HOSTS = env.list(
+    "SAML_ALLOWED_HOSTS",
+    default=[
+        urlparse(EMPLOYER_URL).netloc,
+    ]
+    if EMPLOYER_URL
+    else [],
+)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ACS_DEFAULT_REDIRECT_URL = reverse_lazy("eauth_authentication_init")

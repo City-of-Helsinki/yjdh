@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 import stdnum.exceptions
+from django.conf import settings
 from django.db.models import Q
 from django.test import override_settings
 
@@ -294,6 +295,21 @@ class TestIsSafeRedirectUrl:
         )
         # Should also work by default (None)
         assert is_safe_redirect_url(request, "http://trusted.com")
+
+    @override_settings(
+        SAML_ALLOWED_HOSTS=["saml-trusted.com"], OIDC_REDIRECT_REQUIRE_HTTPS=False
+    )
+    def test_setting_lookup_saml_hosts(self, rf):
+        request = rf.get("/")
+        # Use settings value directly
+        assert is_safe_redirect_url(
+            request,
+            "http://saml-trusted.com",
+            allowed_hosts=settings.SAML_ALLOWED_HOSTS,
+        )
+        assert not is_safe_redirect_url(
+            request, "http://evil.com", allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
     @override_settings(OIDC_REDIRECT_REQUIRE_HTTPS=True)
     def test_setting_lookup_https(self, rf):
