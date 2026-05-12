@@ -1,22 +1,32 @@
-import { render, RenderResult, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Dashboard from 'kesaseteli/employer/components/dashboard/Dashboard';
+import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import { DashboardVoucher } from 'kesaseteli/employer/types/types';
-import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
+import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
-import theme from 'shared/styles/theme';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
-import { ThemeProvider } from 'styled-components';
+
+const mockPush = jest.fn();
+const mockMutate = jest.fn();
+const mockErrorHandler = jest.fn();
+const routerMock = {
+  push: mockPush,
+  asPath: '/',
+  locale: 'fi',
+  query: {},
+};
 
 jest.mock('next/router', () => ({
-  useRouter: jest.fn().mockReturnValue({
-    push: jest.fn(),
-    asPath: '/',
-    locale: 'fi',
-    query: {},
-  }),
+  useRouter: () => routerMock,
 }));
+
+jest.mock('kesaseteli/employer/hooks/backend/useCreateApplicationQuery', () =>
+  jest.fn()
+);
+
+jest.mock('shared/hooks/useErrorHandler', () => jest.fn());
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
 jest.mock('shared/hooks/useLocale', () => () => 'fi');
@@ -34,35 +44,67 @@ const mockVouchers: DashboardVoucher[] = [
 
 const [voucher1] = mockVouchers;
 
+const getCreateApplicationButton = (): HTMLElement =>
+  screen.getByRole('button', { name: /tee uusi hakemus/i });
+
 type RenderOptions = {
   vouchers?: DashboardVoucher[];
   organisationName?: string;
+  draftApplicationId?: string;
+};
+
+type SetupOptions = RenderOptions & {
+  isCreateLoading?: boolean;
+  mutateImplementation?: (
+    variables: undefined,
+    options: { onSuccess?: (data: { id: string }) => void }
+  ) => void;
 };
 
 const renderWithProviders = ({
   vouchers = [],
   organisationName,
-}: RenderOptions = {}): RenderResult => {
-  const queryClient = new QueryClient();
-  return render(
-    <BackendAPIProvider baseURL={getBackendDomain()}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <Dashboard
-            vouchers={vouchers}
-            showOnlyMine={false}
-            onToggleOnlyMine={jest.fn()}
-            organisationName={organisationName}
-          />
-        </ThemeProvider>
-      </QueryClientProvider>
-    </BackendAPIProvider>
+  draftApplicationId,
+}: RenderOptions = {}): void => {
+  renderComponent(
+    <Dashboard
+      vouchers={vouchers}
+      showOnlyMine={false}
+      onToggleOnlyMine={jest.fn()}
+      organisationName={organisationName}
+      draftApplicationId={draftApplicationId}
+    />
   );
 };
 
+const setupDashboard = ({
+  isCreateLoading = false,
+  mutateImplementation,
+  ...renderOptions
+}: SetupOptions = {}): {
+  user: ReturnType<typeof userEvent.setup>;
+} => {
+  (useCreateApplicationQuery as jest.Mock).mockReturnValue({
+    mutate: mockMutate,
+    isLoading: isCreateLoading,
+  });
+
+  if (mutateImplementation) {
+    mockMutate.mockImplementation(mutateImplementation);
+  }
+
+  renderWithProviders(renderOptions);
+  return { user: userEvent.setup() };
+};
+
 describe('Dashboard', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useErrorHandler as jest.Mock).mockReturnValue(mockErrorHandler);
+  });
+
   it('renders the dashboard title and intro text', () => {
-    renderWithProviders();
+    setupDashboard();
     expect(
       screen.getByRole('heading', { name: 'Työnantajan kesäsetelihakemukset' })
     ).toBeInTheDocument();
@@ -72,19 +114,17 @@ describe('Dashboard', () => {
   });
 
   it('renders the create application button', () => {
-    renderWithProviders();
-    expect(
-      screen.getByRole('button', { name: /tee uusi hakemus/i })
-    ).toBeInTheDocument();
+    setupDashboard();
+    expect(getCreateApplicationButton()).toBeInTheDocument();
   });
 
   it('renders "Ei aiempia hakemuksia" when list is empty', () => {
-    renderWithProviders();
+    setupDashboard();
     expect(screen.getByText(/ei aiempia hakemuksia/i)).toBeInTheDocument();
   });
 
   it('renders vouchers in the table', () => {
-    renderWithProviders({ vouchers: mockVouchers });
+    setupDashboard({ vouchers: mockVouchers });
     expect(screen.getByText(voucher1.employee_name ?? '')).toBeInTheDocument();
     expect(
       screen.getByText(voucher1.summer_voucher_serial_number)
@@ -97,14 +137,43 @@ describe('Dashboard', () => {
   });
 
   it('renders the organisation name text when organisationName prop is provided', () => {
-    renderWithProviders({ organisationName: 'Testiyritys Oy' });
+    setupDashboard({ organisationName: 'Testiyritys Oy' });
     expect(
       screen.getByText('Asioit organisaation Testiyritys Oy puolesta.')
     ).toBeInTheDocument();
   });
 
   it('does not render the organisation name element when organisationName is not provided', () => {
-    renderWithProviders();
+    setupDashboard();
     expect(screen.queryByText(/asioit organisaation/i)).not.toBeInTheDocument();
+  });
+
+  it('navigates to existing draft when create button is clicked', async () => {
+    const { user } = setupDashboard({ draftApplicationId: 'draft-123' });
+
+    await user.click(getCreateApplicationButton());
+
+    expect(mockPush).toHaveBeenCalledWith('/fi/application?id=draft-123');
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('creates new application and navigates to created application id', async () => {
+    const { user } = setupDashboard({
+      mutateImplementation: (_variables, options) => {
+        options.onSuccess?.({ id: 'new-app-id' });
+      },
+    });
+
+    await user.click(getCreateApplicationButton());
+
+    expect(mockMutate).toHaveBeenCalledTimes(1);
+    expect(mockMutate).toHaveBeenCalledWith(
+      undefined,
+      expect.objectContaining({
+        onError: mockErrorHandler,
+        onSuccess: expect.any(Function),
+      })
+    );
+    expect(mockPush).toHaveBeenCalledWith('/fi/application?id=new-app-id');
   });
 });
