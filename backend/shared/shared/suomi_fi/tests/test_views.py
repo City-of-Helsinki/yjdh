@@ -1,6 +1,7 @@
 from unittest import mock
 
 import pytest
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.test import RequestFactory, override_settings
 
@@ -23,8 +24,12 @@ class TestSuomiFiViews:
 
         with mock.patch(
             "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
-        ):
+        ) as mock_is_safe_redirect_url:
             response = view.handle_acs_failure(request)
+
+        mock_is_safe_redirect_url.assert_called_with(
+            request, relay_state, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         assert isinstance(response, HttpResponseRedirect)
         assert response.url == relay_state
@@ -66,10 +71,14 @@ class TestSuomiFiViews:
 
         with mock.patch(
             "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
-        ):
+        ) as mock_is_safe_redirect_url:
             response = view.handle_unsupported_slo_exception(
                 request, Exception("SLO not supported")
             )
+
+        mock_is_safe_redirect_url.assert_called_with(
+            request, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         assert isinstance(response, HttpResponseRedirect)
         assert response.url == next_url
@@ -84,7 +93,7 @@ class TestSuomiFiViews:
 
         with mock.patch(
             "shared.suomi_fi.views.is_safe_redirect_url", return_value=False
-        ):
+        ) as mock_is_safe_redirect_url:
             with mock.patch(
                 "djangosaml2.views.LogoutInitView.handle_unsupported_slo_exception"
             ) as mock_super:
@@ -92,6 +101,10 @@ class TestSuomiFiViews:
                     request, Exception("SLO not supported")
                 )
                 mock_super.assert_called_once()
+
+        mock_is_safe_redirect_url.assert_called_with(
+            request, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
     def test_helsinki_saml2_logout_view_sets_next_path_to_session(self):
         factory = RequestFactory()
@@ -104,8 +117,12 @@ class TestSuomiFiViews:
         with mock.patch("djangosaml2.views.LogoutInitView.get", return_value=None):
             with mock.patch(
                 "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
-            ):
+            ) as mock_is_safe_redirect_url:
                 view.get(request)
+
+        mock_is_safe_redirect_url.assert_called_with(
+            request, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         assert request.session.get("saml2_logout_next_path") == next_url
 
@@ -125,8 +142,12 @@ class TestSuomiFiViews:
         ):
             with mock.patch(
                 "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
-            ):
+            ) as mock_is_safe_redirect_url:
                 response = view.get(request)
+
+        mock_is_safe_redirect_url.assert_called_with(
+            request, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         assert isinstance(response, HttpResponseRedirect)
         assert response.url == next_url
@@ -148,8 +169,12 @@ class TestSuomiFiViews:
         ):
             with mock.patch(
                 "shared.suomi_fi.views.is_safe_redirect_url", return_value=False
-            ):
+            ) as mock_is_safe_redirect_url:
                 response = view.get(request)
+
+        mock_is_safe_redirect_url.assert_called_with(
+            request, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         assert isinstance(response, HttpResponseRedirect)
         assert response.url == "/"
@@ -173,8 +198,12 @@ class TestSuomiFiViews:
         with mock.patch("djangosaml2.views.LogoutInitView.get", return_value=None):
             with mock.patch(
                 "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
-            ):
+            ) as mock_is_safe_init:
                 view_init.get(request_init)
+
+        mock_is_safe_init.assert_called_with(
+            request_init, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         # Verify session was set
         assert request_init.session.get("saml2_logout_next_path") == next_url
@@ -193,8 +222,12 @@ class TestSuomiFiViews:
         ):
             with mock.patch(
                 "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
-            ):
+            ) as mock_is_safe_ls:
                 response = view_ls.get(request_ls)
+
+        mock_is_safe_ls.assert_called_with(
+            request_ls, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        )
 
         # Step 3: Final Result
         assert response.status_code == 302
