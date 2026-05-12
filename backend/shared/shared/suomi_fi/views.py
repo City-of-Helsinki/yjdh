@@ -124,47 +124,25 @@ class HelsinkiSaml2LogoutServiceView(LogoutView):
     """
     SAML2 Logout CALLBACK view (Single Logout Service / SLS).
 
-    This is the "Return Door": it is called by the IdP (Suomi.fi) after the
-    logout is finished on their end. It recovers the 'next' URL from the
-    session to ensure the user is returned to the correct frontend page.
+    Called by the IdP after logout. Recovers the 'next' URL from the session
+    to return the user to the correct frontend page.
+
+    pysaml2 sets RelayState to an internal request ID (not a URL), so
+    djangosaml2's finish_logout always falls back to LOGOUT_REDIRECT_URL.
+    We pop next_path from the session BEFORE super() calls auth.logout() and
+    flushes it, then replace the fallback redirect with next_path.
     """
 
-    def _handle_response(self, request, response):
-        """
-        Intercept the final response from djangosaml2's LogoutView to fix a known
-        routing issue during the SAML Single Logout (SLO) flow.
-
-        Why this is needed:
-        1. When initiating the logout, pysaml2 internally populates the SAML
-           `RelayState` parameter with a generated request ID (e.g. `id-slRc7Ma...`)
-           rather than the actual `next` redirect URL.
-        2. When the user returns from the IdP, djangosaml2's `LogoutView` attempts
-           to use this `RelayState` as the literal URL to redirect to.
-        3. Because the `RelayState` ID is not a valid URL, djangosaml2's strict URL
-           validation rejects it and forces a fallback to the `LOGOUT_REDIRECT_URL`.
-
-        To circumvent this, we capture the `next` URL in the session during logout
-        initiation. Here, we pop it back out, wait for djangosaml2 to predictably
-        fail and yield the fallback URL, and then replace it with our desired `next`
-        destination (provided it passes security checks).
-        """
+    def do_logout_service(self, request, data, binding, *args, **kwargs):
         next_path = request.session.pop("saml2_logout_next_path", None)
+        response = super().do_logout_service(request, data, binding, *args, **kwargs)
         if next_path and isinstance(response, HttpResponseRedirect):
-            fallback_url = resolve_url(getattr(settings, "LOGOUT_REDIRECT_URL", "/"))
-            if response.url == fallback_url:
-                if is_safe_redirect_url(
-                    request, next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
-                ):
-                    return HttpResponseRedirect(next_path)
+            fallback = resolve_url(getattr(settings, "LOGOUT_REDIRECT_URL", "/"))
+            if response.url == fallback and is_safe_redirect_url(
+                request, next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+            ):
+                return HttpResponseRedirect(next_path)
         return response
-
-    def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-        return self._handle_response(request, response)
-
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        return self._handle_response(request, response)
 
 
 class SuomiFiMetadataView(MetadataView):
