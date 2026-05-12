@@ -95,7 +95,7 @@ env = environ.Env(
     ADFS_CONTROLLER_GROUP_UUIDS=(list, []),
     DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
     AZURE_ACCOUNT_NAME=(str, ""),
-    AZURE_ACCOUNT_KEY=(str, ""),
+    AZURE_BLOB_STORAGE_SAS_TOKEN=(str, ""),
     AZURE_CONTAINER=(str, ""),
     AUDIT_LOG_ORIGIN=(str, ""),
     # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in
@@ -726,16 +726,31 @@ if SUOMIFI_TEST:
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
 # Django storages
+DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
+
+# Override SAS-token exposing AzureStorage always with custom storage that
+# doesn't expose the SAS token in the URL for added security:
+if DEFAULT_FILE_STORAGE == "storages.backends.azure_storage.AzureStorage":
+    DEFAULT_FILE_STORAGE = "common.storage.AzureStorageWithoutQuerystringAuth"
+
 STORAGES = {
     "default": {
-        "BACKEND": env("DEFAULT_FILE_STORAGE"),
+        "BACKEND": DEFAULT_FILE_STORAGE,
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+# Make sure the SAS-token exposing AzureStorage really is not being used:
+if STORAGES["default"]["BACKEND"] == "storages.backends.azure_storage.AzureStorage":
+    raise ImproperlyConfigured(
+        "SAS-token exposing vulnerable AzureStorage being used. "
+        "Use common.storage.AzureStorageWithoutQuerystringAuth instead."
+    )
+
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
-AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_SAS_TOKEN = env("AZURE_BLOB_STORAGE_SAS_TOKEN")
 AZURE_CONTAINER = env("AZURE_CONTAINER")
 
 MAX_UPLOAD_SIZE = 10485760  # 10MB
