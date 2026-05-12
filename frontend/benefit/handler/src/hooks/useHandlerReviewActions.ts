@@ -3,8 +3,8 @@ import {
   CalculationFormProps,
   HandledAplication,
 } from 'benefit/handler/types/application';
-import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
+import { Application, ApplicationData } from 'benefit-shared/types/application';
 import { ErrorData } from 'benefit-shared/types/common';
 import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';

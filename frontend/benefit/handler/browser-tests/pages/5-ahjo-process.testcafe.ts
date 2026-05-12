@@ -80,15 +80,16 @@ test('Open form and create a decision proposal', async (t: TestController) => {
   await t.expect(handleButton.visible).ok();
 
   await t.click(Selector('label').withText(fi.review.fields.support));
+  await t.click(
+    Selector('label').withText(fi.review.actions.grantedAsDeminimisAidNo)
+  );
   await t.click(handleButton);
 
   const firstSignerRadio = Selector('[id^="radio-signer-"]')
     .filterVisible()
     .nth(0);
   await t.expect(firstSignerRadio.exists).ok();
-  const firstSignerRadioId = await firstSignerRadio.getAttribute(
-    'id'
-  );
+  const firstSignerRadioId = await firstSignerRadio.getAttribute('id');
   await t.click(Selector(`label[for="${firstSignerRadioId}"]`));
   await t.expect(firstSignerRadio.checked).ok();
 

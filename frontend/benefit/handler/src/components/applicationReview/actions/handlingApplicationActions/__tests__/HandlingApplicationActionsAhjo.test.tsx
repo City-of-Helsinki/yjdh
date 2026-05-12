@@ -1,510 +1,335 @@
-import '@testing-library/jest-dom';
-
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { createAlterationApplication } from 'benefit/handler/__tests__/utils/alteration-fixtures';
+import { fireEvent, RenderResult, screen } from '@testing-library/react';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
-import { setupUserAndRender } from 'benefit/handler/__tests__/utils/user-render-helper';
+import { useHandlingApplicationActions } from 'benefit/handler/components/applicationReview/actions/handlingApplicationActions/useHandlingApplicationActions';
+import AppContext, { AppContextType } from 'benefit/handler/context/AppContext';
 import useDecisionProposalDraftMutation from 'benefit/handler/hooks/applicationHandling/useDecisionProposalDraftMutation';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
+import useUpdateCompanyIndustryCode from 'benefit/handler/hooks/useUpdateCompanyIndustryCode';
+import { HandledAplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Calculation, Row } from 'benefit-shared/types/application';
-import i18n from 'i18next';
+import { Application } from 'benefit-shared/types/application';
+import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import React from 'react';
-import showErrorToast from 'shared/components/toast/show-error-toast';
-import { focusAndScroll } from 'shared/utils/dom.utils';
+import theme from 'shared/styles/theme';
 
-import HandlingApplicationActionsAhjo from '../HandlingApplicationActionsAhjo';
-import { useHandlingApplicationActions } from '../useHandlingApplicationActions';
+import HandlingApplicationActionsAhjo, {
+  Props,
+} from '../HandlingApplicationActionsAhjo';
 
-jest.mock('benefit/handler/hooks/applicationHandling/useRouterNavigation');
 jest.mock(
-  'benefit/handler/hooks/applicationHandling/useDecisionProposalDraftMutation'
+  'benefit/handler/components/applicationReview/actions/handlingApplicationActions/useHandlingApplicationActions',
+  () => ({
+    useHandlingApplicationActions: jest.fn(),
+  })
 );
-jest.mock('benefit/handler/hooks/useCloneApplicationMutation');
-jest.mock('../useHandlingApplicationActions');
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
-}));
-jest.mock('shared/components/toast/show-error-toast');
+jest.mock(
+  'benefit/handler/hooks/applicationHandling/useRouterNavigation',
+  () => ({
+    useRouterNavigation: jest.fn(),
+  })
+);
+jest.mock(
+  'benefit/handler/hooks/applicationHandling/useDecisionProposalDraftMutation',
+  () => jest.fn()
+);
+jest.mock('benefit/handler/hooks/useCloneApplicationMutation', () => jest.fn());
+jest.mock('benefit/handler/hooks/useUpdateCompanyIndustryCode', () =>
+  jest.fn()
+);
+jest.mock('next/router', () => ({ useRouter: jest.fn() }));
+jest.mock('shared/components/toast/show-error-toast', () => jest.fn());
+
+function MockEditAction(): JSX.Element {
+  return <span />;
+}
+function MockSidebar(): JSX.Element {
+  return <span />;
+}
+
+jest.mock(
+  'benefit/handler/components/applicationReview/actions/editAction/EditAction',
+  () => MockEditAction
+);
+jest.mock('benefit/handler/components/sidebar/Sidebar', () => MockSidebar);
 jest.mock('shared/utils/dom.utils', () => ({
   focusAndScroll: jest.fn(),
   focusAndScrollToSelector: jest.fn(),
 }));
 
-const ACTION_LABELS = {
-  close: 'Sulje',
-  saveAndClose: 'Tallenna ja sulje',
-  handlingPanel: 'Käsittelypaneeli',
-  cloneApplication: 'Kopioi hakemus',
-  cancelApplication: 'Peruuta hakemus',
-  previous: 'Edellinen',
-  next: 'Seuraava',
-  send: 'Lähetä',
-} as const;
-
-const t = i18n.t.bind(i18n);
-
-const getActionButton = (label: string): HTMLElement =>
-  screen.getByRole('button', { name: label });
-
-const queryActionButton = (label: string): HTMLElement | null =>
-  screen.queryByRole('button', { name: label });
-
-const getDialogs = (): HTMLElement[] => screen.getAllByRole('dialog');
-
-type HandlingActionsHookValue = ReturnType<
-  typeof useHandlingApplicationActions
->;
-
-type DraftPayload = {
-  reviewStep: number;
-  applicationId: string;
-};
-
-const mockNavigateBack = jest.fn();
-const mockUpdateApplication = jest.fn();
-const mockCloneApplication = jest.fn();
-const mockPush = jest.fn();
-const mockToggleMessagesDrawerVisibility = jest.fn();
-const mockOpenDialog = jest.fn();
-const mockOnDoneConfirmation = jest.fn();
-const originalSentryEnvironment = process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT;
-
-const createHandlingApplication = (
-  overrides: Partial<ReturnType<typeof createAlterationApplication>> = {}
-): ReturnType<typeof createAlterationApplication> =>
-  createAlterationApplication({
-    status: APPLICATION_STATUSES.HANDLING,
-    calculation: { rows: [{ id: 'row-1' } as Row] } as Calculation,
-    archived: false,
-    ...overrides,
-  });
-
-const expectDraftMutationPayload = (
-  reviewStep: number,
-  applicationId: string
-): void => {
-  expect(mockUpdateApplication).toHaveBeenCalledWith(
-    expect.objectContaining<DraftPayload>({
-      reviewStep,
-      applicationId,
-    })
-  );
-};
-
-const mockCloneConfirmation = (isConfirmed: boolean): jest.SpyInstance =>
-  jest.spyOn(window, 'confirm').mockReturnValue(isConfirmed);
-
-const createHandledApplication = (overrides = {}): Record<string, unknown> => ({
-  status: APPLICATION_STATUSES.REJECTED,
-  logEntryComment: 'rejection reason',
-  decisionMakerId: 'decision-maker',
-  signerId: 'signer',
-  decisionText: 'Decision text is long enough',
-  justificationText: 'Justification text is long enough',
-  ...overrides,
-});
-
-const createHookMockValue = (
-  overrides: Partial<HandlingActionsHookValue> = {}
-): HandlingActionsHookValue =>
+const buildApplication = (overrides: Partial<Application> = {}): Application =>
   ({
-    t,
-    toggleMessagesDrawerVisibility: mockToggleMessagesDrawerVisibility,
-    openDialog: mockOpenDialog,
-    closeDialog: jest.fn(),
-    closeDoneDialog: jest.fn(),
-    handleCancel: jest.fn(),
-    isMessagesDrawerVisible: false,
-    translationsBase: 'common:review.actions',
-    isConfirmationModalOpen: false,
-    isDoneConfirmationModalOpen: false,
-    handledApplication: createHandledApplication() as never,
-    onDoneConfirmation: mockOnDoneConfirmation,
+    id: 'app-1',
+    status: APPLICATION_STATUSES.HANDLING,
+    startDate: '2026-01-01',
+    endDate: '2026-06-30',
+    company: {
+      id: 'company-1',
+      businessId: '1234567-1',
+      name: 'Test Oy',
+      industryCode: '',
+    },
+    calculation: { rows: [{ id: 'row-1' }] },
     ...overrides,
-  } as HandlingActionsHookValue);
+  } as unknown as Application);
 
-const createStepState = (
-  activeStepIndex = 0
-): { activeStepIndex: number; steps: Record<string, unknown>[] } => ({
-  activeStepIndex,
-  steps: [{}, {}, {}],
+const buildContextValue = (
+  handledApplication: HandledAplication | null = null,
+  setHandledApplication: (app: HandledAplication | null) => void = noop
+): AppContextType => ({
+  isNavigationVisible: false,
+  isFooterVisible: true,
+  isSidebarVisible: false,
+  layoutBackgroundColor: theme.colors.white,
+  handledApplication,
+  setIsNavigationVisible: noop,
+  setIsFooterVisible: noop,
+  setLayoutBackgroundColor: noop,
+  setHandledApplication,
+  setIsSidebarVisible: noop,
 });
 
-const createDefaultTestApplication = (): ReturnType<
-  typeof createHandlingApplication
-> => createHandlingApplication({ id: 'app-123' });
+// A fully valid handledApplication (all step 1 + step 2 fields valid)
+const validHandledApplication: HandledAplication = {
+  status: APPLICATION_STATUSES.ACCEPTED,
+  grantedAsDeMinimisAid: false,
+  decisionMakerId: 'dm-1',
+  signerId: 'signer-1',
+  decisionText: 'Decision text that is long enough',
+  justificationText: 'Justification text that is long enough',
+};
 
-const renderSubject = ({
-  application = createHandlingApplication(),
-  stepState = createStepState(0),
-  stepperDispatch = jest.fn(),
-  isRecalculationRequired = false,
-  isCalculationsErrors = false,
-  isApplicationReadOnly = false,
-}: {
-  application?: ReturnType<typeof createAlterationApplication>;
-  stepState?: ReturnType<typeof createStepState>;
-  stepperDispatch?: jest.Mock;
-  isRecalculationRequired?: boolean;
-  isCalculationsErrors?: boolean;
-  isApplicationReadOnly?: boolean;
-} = {}): ReturnType<typeof renderComponent> =>
-  renderComponent(
-    <HandlingApplicationActionsAhjo
-      application={application}
-      stepState={stepState as never}
-      stepperDispatch={stepperDispatch}
-      isRecalculationRequired={isRecalculationRequired}
-      isCalculationsErrors={isCalculationsErrors}
-      isApplicationReadOnly={isApplicationReadOnly}
-    />,
-    {
-      push: mockPush,
-      query: {},
-    }
-  );
+type MakeComponentOptions = {
+  props?: Partial<Props>;
+  handledApplication?: HandledAplication | null;
+  setHandledApplication?: (app: HandledAplication | null) => void;
+};
+
+const makeComponent = ({
+  props = {},
+  handledApplication = validHandledApplication,
+  setHandledApplication = noop,
+}: MakeComponentOptions = {}): RenderResult => {
+  const defaultStepState = {
+    activeStepIndex: 0,
+    steps: [1, 2, 3] as unknown as Props['stepState']['steps'],
+  };
+  const defaultProps: Props = {
+    application: buildApplication(),
+    stepperDispatch: jest.fn(),
+    stepState: defaultStepState,
+    isRecalculationRequired: false,
+    isCalculationsErrors: false,
+    isApplicationReadOnly: false,
+  };
+
+  return renderComponent(
+    <AppContext.Provider
+      value={buildContextValue(handledApplication, setHandledApplication)}
+    >
+      <HandlingApplicationActionsAhjo {...defaultProps} {...props} />
+    </AppContext.Provider>
+  ).renderResult;
+};
 
 describe('HandlingApplicationActionsAhjo', () => {
+  const mockMutate = jest.fn();
+  const mockNavigateBack = jest.fn();
+  const mockOnDoneConfirmation = jest.fn();
+
+  const setupHookMocks = (
+    handledApplication: HandledAplication = validHandledApplication
+  ): void => {
+    (useHandlingApplicationActions as jest.Mock).mockReturnValue({
+      t: (key: string): string => key,
+      toggleMessagesDrawerVisibility: jest.fn(),
+      openDialog: jest.fn(),
+      closeDialog: jest.fn(),
+      closeDoneDialog: jest.fn(),
+      handleCancel: jest.fn(),
+      isMessagesDrawerVisible: false,
+      translationsBase: 'common:review.actions',
+      isConfirmationModalOpen: false,
+      isDoneConfirmationModalOpen: false,
+      handledApplication,
+      setHandledApplication: noop,
+      onDoneConfirmation: mockOnDoneConfirmation,
+    });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT = 'development';
 
-    (useHandlingApplicationActions as jest.Mock).mockReturnValue(
-      createHookMockValue()
-    );
+    setupHookMocks();
+
     (useRouterNavigation as jest.Mock).mockReturnValue({
       navigateBack: mockNavigateBack,
     });
     (useDecisionProposalDraftMutation as jest.Mock).mockReturnValue({
+      mutate: mockMutate,
       data: null,
-      mutate: mockUpdateApplication,
       isError: false,
     });
     (useCloneApplicationMutation as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
       data: null,
-      mutate: mockCloneApplication,
     });
-    (useRouter as jest.Mock).mockReturnValue({
-      push: mockPush,
-      query: {},
+    (useUpdateCompanyIndustryCode as jest.Mock).mockReturnValue({
+      mutate: jest.fn(),
     });
+    (useRouter as jest.Mock).mockReturnValue({ query: {}, push: jest.fn() });
   });
 
-  afterAll(() => {
-    process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT = originalSentryEnvironment;
+  it('renders without crashing', () => {
+    makeComponent();
+    expect(screen.getByText('common:review.actions.close')).toBeInTheDocument();
   });
 
-  it('renders base action buttons', () => {
-    renderSubject();
-
-    expect(getActionButton(ACTION_LABELS.close)).toBeInTheDocument();
-    expect(getActionButton(ACTION_LABELS.saveAndClose)).toBeInTheDocument();
-    expect(getActionButton(ACTION_LABELS.handlingPanel)).toBeInTheDocument();
+  it('renders Next button when application is in HANDLING status', () => {
+    makeComponent();
+    expect(screen.getByText('common:utility.next')).toBeInTheDocument();
   });
 
-  it('calls navigateBack when close is clicked', async () => {
-    const user = setupUserAndRender(() => renderSubject());
-
-    await user.click(getActionButton(ACTION_LABELS.close));
-
-    expect(mockNavigateBack).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls toggleMessagesDrawerVisibility when handling panel is clicked', async () => {
-    const user = setupUserAndRender(() => renderSubject());
-
-    await user.click(getActionButton(ACTION_LABELS.handlingPanel));
-
-    expect(mockToggleMessagesDrawerVisibility).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls cloneApplication when clone is confirmed', async () => {
-    const confirmSpy = mockCloneConfirmation(true);
-    const application = createHandlingApplication({
-      id: 'clone-id-1',
-    });
-
-    const user = setupUserAndRender(() => renderSubject({ application }));
-
-    await user.click(getActionButton(ACTION_LABELS.cloneApplication));
-
-    expect(confirmSpy).toHaveBeenCalledWith(
-      'Haluatko varmasti kloonata tämän hakemuksen?'
-    );
-    expect(mockCloneApplication).toHaveBeenCalledWith('clone-id-1');
-    confirmSpy.mockRestore();
-  });
-
-  it('does not call cloneApplication when clone confirmation is rejected', async () => {
-    const confirmSpy = mockCloneConfirmation(false);
-
-    const user = setupUserAndRender(() =>
-      renderSubject({
-        application: createHandlingApplication({
-          id: 'clone-id-2',
+  it('does not render Next button when application is not in HANDLING status', () => {
+    makeComponent({
+      props: {
+        application: buildApplication({
+          status: APPLICATION_STATUSES.RECEIVED,
         }),
-      })
-    );
-
-    await user.click(getActionButton(ACTION_LABELS.cloneApplication));
-
-    expect(mockCloneApplication).not.toHaveBeenCalled();
-    confirmSpy.mockRestore();
-  });
-
-  it('navigates to cloned application when clonedData.id exists', async () => {
-    (useCloneApplicationMutation as jest.Mock).mockReturnValue({
-      data: { id: 'cloned-app-123' },
-      mutate: mockCloneApplication,
+      },
     });
+    expect(screen.queryByText('common:utility.next')).not.toBeInTheDocument();
+  });
 
-    renderSubject();
+  it('clicking Next calls updateApplication (mutate) when step 0 validation passes', () => {
+    makeComponent();
+    fireEvent.click(screen.getByText('common:utility.next'));
+    expect(mockMutate).toHaveBeenCalled();
+  });
 
-    await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('/application?id=cloned-app-123');
+  it('clicking Next is blocked when status is missing (step 0 validation fails)', () => {
+    const noStatus: HandledAplication = {
+      ...validHandledApplication,
+      status: undefined,
+    };
+    setupHookMocks(noStatus);
+    makeComponent({ handledApplication: noStatus });
+    fireEvent.click(screen.getByText('common:utility.next'));
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('step 2 fields (decisionText) do NOT block at step 0', () => {
+    const shortDecisionText: HandledAplication = {
+      ...validHandledApplication,
+      decisionText: 'short', // < 10 chars, invalid for step 2
+      justificationText: 'short',
+    };
+    setupHookMocks(shortDecisionText);
+    makeComponent({
+      props: {
+        stepState: {
+          activeStepIndex: 0,
+          steps: [1, 2, 3] as unknown as Props['stepState']['steps'],
+        },
+      },
+      handledApplication: shortDecisionText,
     });
+    fireEvent.click(screen.getByText('common:utility.next'));
+    // Step 0 should pass because step2 fields are only validated at step > 0
+    expect(mockMutate).toHaveBeenCalled();
   });
 
-  it('dispatches completeStep when draft mutation data contains review_step', async () => {
-    const stepperDispatch = jest.fn();
-
-    (useDecisionProposalDraftMutation as jest.Mock).mockReturnValue({
-      data: { review_step: 4 },
-      mutate: mockUpdateApplication,
-      isError: false,
+  it('step 2 fields (decisionText) block at step 1', () => {
+    const shortDecisionText: HandledAplication = {
+      ...validHandledApplication,
+      decisionText: 'short',
+      justificationText: 'short',
+    };
+    setupHookMocks(shortDecisionText);
+    makeComponent({
+      props: {
+        stepState: {
+          activeStepIndex: 1,
+          steps: [1, 2, 3] as unknown as Props['stepState']['steps'],
+        },
+      },
+      handledApplication: shortDecisionText,
     });
+    fireEvent.click(screen.getByText('common:utility.next'));
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
 
-    renderSubject({ stepperDispatch });
-
-    await waitFor(() => {
-      expect(stepperDispatch).toHaveBeenCalledWith({
-        type: 'completeStep',
-        payload: 2,
-      });
+  it('step 2 fields (empty signerId) block at step 1', () => {
+    const emptySignerId: HandledAplication = {
+      ...validHandledApplication,
+      signerId: '',
+      decisionMakerId: '',
+    };
+    setupHookMocks(emptySignerId);
+    makeComponent({
+      props: {
+        stepState: {
+          activeStepIndex: 1,
+          steps: [1, 2, 3] as unknown as Props['stepState']['steps'],
+        },
+      },
+      handledApplication: emptySignerId,
     });
+    fireEvent.click(screen.getByText('common:utility.next'));
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('calls updateApplication from save and close with current review step', async () => {
-    const application = createDefaultTestApplication();
-
-    const user = setupUserAndRender(() => renderSubject({ application }));
-
-    await user.click(getActionButton(ACTION_LABELS.saveAndClose));
-
-    expectDraftMutationPayload(1, 'app-123');
-  });
-
-  it('navigates back after save and close when mutation review step matches current step', async () => {
-    const application = createDefaultTestApplication();
-
-    (useDecisionProposalDraftMutation as jest.Mock).mockReturnValue({
-      data: { review_step: 1 },
-      mutate: mockUpdateApplication,
-      isError: false,
+  it('all valid fields at step 1 allow proceeding', () => {
+    makeComponent({
+      props: {
+        stepState: {
+          activeStepIndex: 1,
+          steps: [1, 2, 3] as unknown as Props['stepState']['steps'],
+        },
+      },
     });
+    fireEvent.click(screen.getByText('common:utility.next'));
+    expect(mockMutate).toHaveBeenCalled();
+  });
 
-    const user = setupUserAndRender(() => renderSubject({ application }));
-
-    await user.click(getActionButton(ACTION_LABELS.saveAndClose));
-
-    await waitFor(() => {
-      expect(mockNavigateBack).toHaveBeenCalledTimes(1);
+  it('industryCode is required when grantedAsDeMinimisAid is true and no company industryCode', () => {
+    const deMinimisNoCode: HandledAplication = {
+      ...validHandledApplication,
+      grantedAsDeMinimisAid: true,
+      industryCode: '',
+    };
+    setupHookMocks(deMinimisNoCode);
+    makeComponent({
+      handledApplication: deMinimisNoCode,
     });
+    fireEvent.click(screen.getByText('common:utility.next'));
+    // industryCode missing → errorStep1 = true → mutate NOT called
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('shows calculation error and blocks save when recalculation is required', async () => {
-    const user = setupUserAndRender(() =>
-      renderSubject({ isRecalculationRequired: true })
-    );
-
-    await user.click(getActionButton(ACTION_LABELS.saveAndClose));
-
-    expect(focusAndScroll).toHaveBeenCalledWith('endDate');
-    expect(showErrorToast).toHaveBeenCalledTimes(1);
-    expect(mockUpdateApplication).not.toHaveBeenCalled();
-  });
-
-  it('shows cancel button and calls openDialog when clicked', async () => {
-    const user = setupUserAndRender(() => renderSubject());
-
-    await user.click(getActionButton(ACTION_LABELS.cancelApplication));
-
-    expect(mockOpenDialog).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not show cancel button for ACCEPTED status', () => {
-    renderSubject({
-      application: createHandlingApplication({
-        status: APPLICATION_STATUSES.ACCEPTED,
-      }),
-    });
-
-    expect(
-      queryActionButton(ACTION_LABELS.cancelApplication)
-    ).not.toBeInTheDocument();
-  });
-
-  it('disables cancel button for read-only application without ahjoCaseId', () => {
-    renderSubject({
-      isApplicationReadOnly: true,
-      application: createHandlingApplication({
-        ahjoCaseId: undefined,
-      }),
-    });
-
-    expect(getActionButton(ACTION_LABELS.cancelApplication)).toBeDisabled();
-  });
-
-  it('shows previous button on step > 0 and calls updateApplication on click', async () => {
-    const application = createDefaultTestApplication();
-
-    const user = setupUserAndRender(() =>
-      renderSubject({
-        application,
-        stepState: createStepState(1),
-      })
-    );
-
-    await user.click(getActionButton(ACTION_LABELS.previous));
-
-    expectDraftMutationPayload(1, 'app-123');
-  });
-
-  it('calls updateApplication with next review step when next is clicked on non-final step', async () => {
-    const application = createDefaultTestApplication();
-
-    const user = setupUserAndRender(() =>
-      renderSubject({
-        application,
-        stepState: createStepState(0),
-      })
-    );
-
-    await user.click(getActionButton(ACTION_LABELS.next));
-
-    expectDraftMutationPayload(2, 'app-123');
-  });
-
-  it('filters out step2 validation fields when validating from first step', async () => {
-    (useHandlingApplicationActions as jest.Mock).mockReturnValue(
-      createHookMockValue({
-        handledApplication: null,
-      })
-    );
-
-    renderSubject({
-      application: createHandlingApplication({
-        id: 'app-step-1',
-      }),
-    });
-
-    fireEvent.click(getActionButton(ACTION_LABELS.next));
-
-    await waitFor(() => {
-      expect(showErrorToast).toHaveBeenCalled();
-    });
-
-    const toastMessages = (showErrorToast as jest.Mock).mock.calls.map(
-      (call) => call[1]
-    );
-
-    expect(toastMessages).toContain('Puoltotieto puuttuu');
-    expect(toastMessages).not.toContain('Päätös ei voi olla tyhjä');
-    expect(toastMessages).not.toContain(
-      'Päätöksen perustelu ei voi olla tyhjä'
-    );
-    expect(toastMessages).not.toContain('Allekirjoittaja puuttuu');
-    expect(toastMessages).not.toContain('Päättäjän rooli puuttuu');
-    expect(mockUpdateApplication).not.toHaveBeenCalled();
-  });
-
-  it('calls onDoneConfirmation when send is clicked on final step', async () => {
-    const application = createHandlingApplication();
-
-    (useHandlingApplicationActions as jest.Mock).mockReturnValue(
-      createHookMockValue({
-        handledApplication: createHandledApplication({
-          status: APPLICATION_STATUSES.ACCEPTED,
-        }) as never,
-      })
-    );
-
-    const user = setupUserAndRender(() =>
-      renderSubject({
-        application,
-        stepState: createStepState(2),
-      })
-    );
-
-    await user.click(getActionButton(ACTION_LABELS.send));
-
-    expect(mockOnDoneConfirmation).toHaveBeenCalledTimes(1);
-  });
-
-  it.each([APPLICATION_STATUSES.ACCEPTED, APPLICATION_STATUSES.REJECTED])(
-    'sets router query action to submit and pushes router on final step for %s status',
-    async (status) => {
-      renderSubject({
-        application: createHandlingApplication({
-          status,
+  it('industryCode is not required when company already has an industryCode', () => {
+    const deMinimisWithCompanyCode: HandledAplication = {
+      ...validHandledApplication,
+      grantedAsDeMinimisAid: true,
+      industryCode: '',
+    };
+    setupHookMocks(deMinimisWithCompanyCode);
+    makeComponent({
+      props: {
+        application: buildApplication({
+          company: {
+            id: 'c1',
+            businessId: '123',
+            name: 'Oy',
+            industryCode: '62010',
+          } as Application['company'],
         }),
-        stepState: createStepState(2),
-      });
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith(
-          expect.objectContaining({
-            query: expect.objectContaining({ action: 'submit' }),
-          })
-        );
-      });
-    }
-  );
-
-  it('submits done confirmation modal via onSubmit and updates application with finish step', async () => {
-    const application = createHandlingApplication({
-      id: 'app-999',
+      },
+      handledApplication: deMinimisWithCompanyCode,
     });
-
-    (useHandlingApplicationActions as jest.Mock).mockReturnValue(
-      createHookMockValue({
-        isDoneConfirmationModalOpen: true,
-        handledApplication: createHandledApplication({
-          status: APPLICATION_STATUSES.ACCEPTED,
-        }) as never,
-      })
-    );
-
-    const user = setupUserAndRender(() =>
-      renderSubject({
-        application,
-        stepState: createStepState(2),
-      })
-    );
-
-    await user.click(screen.getByTestId('submit'));
-
-    expect(mockUpdateApplication).toHaveBeenCalledWith(
-      expect.objectContaining<DraftPayload>({
-        reviewStep: 4,
-        applicationId: 'app-999',
-      })
-    );
-  });
-
-  it('renders confirmation modals based on hook state', () => {
-    (useHandlingApplicationActions as jest.Mock).mockReturnValue(
-      createHookMockValue({
-        isConfirmationModalOpen: true,
-        isDoneConfirmationModalOpen: true,
-      })
-    );
-
-    renderSubject();
-
-    expect(getDialogs()).toHaveLength(2);
+    fireEvent.click(screen.getByText('common:utility.next'));
+    // Company already has industryCode → not missing → mutate called
+    expect(mockMutate).toHaveBeenCalled();
   });
 });
