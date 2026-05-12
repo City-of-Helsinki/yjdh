@@ -251,6 +251,91 @@ def test_no_applications_with_requested_instalments(api_client, application):
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
+def test_mark_application_as_responded(api_client, application):
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=date.today() - relativedelta(days=30),
+        end_date=date.today() + relativedelta(months=9),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=12000,
+    )
+    application.calculation.save()
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=1,
+        status=InstalmentStatus.PAID,
+        due_date=date.today() - relativedelta(months=1),
+    )
+    instalment_2 = Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=2,
+        status=InstalmentStatus.REQUESTED,
+        due_date=date.today() + relativedelta(months=6),
+    )
+    response = api_client.post(
+        reverse(
+            "v1:applicant-application-second-instalment-respond", args=[application.id]
+        )
+    )
+    assert response.status_code == 200
+    instalment_2.refresh_from_db()
+    assert instalment_2.status == InstalmentStatus.RESPONDED
+
+
+@pytest.mark.django_db
+def test_get_second_instalment_info(api_client, application):
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=1234,
+        vacation_money=123,
+        other_expenses=321,
+        start_date=date.today() - relativedelta(months=1),
+        end_date=date.today() + relativedelta(months=9),
+        state_aid_max_percentage=0,
+        calculated_benefit_amount=12000,
+    )
+    application.calculation.save()
+    Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=1,
+        status=InstalmentStatus.PAID,
+        due_date=date.today() - relativedelta(months=1),
+    )
+    instalment_2 = Instalment.objects.create(
+        calculation=application.calculation,
+        amount=9000,
+        instalment_number=2,
+        status=InstalmentStatus.REQUESTED,
+        due_date=application.calculation.start_date + relativedelta(months=6),
+    )
+    response = api_client.get(
+        reverse(
+            "v1:applicant-application-get-second-instalment-info", args=[application.id]
+        )
+    )
+    assert response.status_code == 200
+    assert len(response.data) == 7
+    assert response.data[
+        "start_date"
+    ] == application.calculation.start_date + relativedelta(months=6)
+    assert response.data["end_date"] == application.calculation.end_date
+    assert response.data["amount"] == instalment_2.amount
+    assert response.data["employee_first_name"] == application.employee.first_name
+    assert response.data["employee_last_name"] == application.employee.last_name
+    assert response.data["application_number"] == application.application_number
+
+    # submitted_at is an annotation to the application object
+    application_1 = Application.objects.filter(id=application.id).first()
+    assert response.data["submitted_at"] == application_1.submitted_at
+
+
 @pytest.mark.parametrize(
     "view_name",
     [

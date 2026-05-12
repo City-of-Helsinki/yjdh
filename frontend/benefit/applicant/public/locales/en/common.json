@@ -406,6 +406,14 @@
           "helsinkiBenefitVoucher": {
             "title": "The Helsinki benefit card",
             "message": "Add Helsinki benefit card if one has been issued"
+          },
+          "payslip": {
+            "title": "Palkkakuitti",
+            "message": ""
+          },
+          "otherAttachment": {
+            "title": "Muu liite",
+            "message": "Tarvittaessa voit lisätä tähän toisen liitteen"
           }
         },
         "add": "Attach the file",
@@ -566,6 +574,26 @@
         },
         "details": "Changes in employment",
         "billing": "Invoicing details"
+      }
+    },
+    "secondInstalmentUpload": {
+      "heading": "Ilmoita palkan maksusta",
+      "applicationNumber": "Hakemusnumero",
+      "submittedAt": "Lähetetty",
+      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tosite tähän saakka maksetuista palkoista.",
+      "conditionSpecial": "(palkkakuitti tai pankin tosite maksetusta palkasta)",
+      "missingApplicationId": "Hakemuksen tunnistetta ei löytynyt.",
+      "secondInstalmentInfoError": "Toisen maksuerän tietoja ei voitu hakea.",
+      "successTitle": "Palkkatietoilmoitus lähetetty",
+      "successMessage1": "Hakemuksen",
+      "successMessage2": "palkkatiedot toimitettu.",
+      "errorTitle": "Virhe palkkatietojen lähetyksessä",
+      "errorMessage": "Palkkatietoilmoituksen lähetys epäonnistui.",
+      "missingPayslipTitle": "Palkkakuitti puuttuu",
+      "missingPayslipMessage": "Lisää vähintään yksi palkkakuitti ennen lähettämistä.",
+      "buttons": {
+        "submit": "Lähetä",
+        "back": "Peruuta"
       }
     }
   },

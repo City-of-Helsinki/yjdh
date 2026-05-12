@@ -70,6 +70,10 @@ const applicationsBase = (id: string): string =>
 export const ApplicantEndpoint = {
   APPLICATIONS_CLONE_AS_DRAFT: (id: string) =>
     `${applicationsBase(id)}clone_as_draft/`,
+  SECOND_INSTALMENT_INFO: (id: string) =>
+    `${applicationsBase(id)}get_second_instalment_info/`,
+  SECOND_INSTALMENT_RESPOND: (id: string) =>
+    `${applicationsBase(id)}second_instalment_respond/`,
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);

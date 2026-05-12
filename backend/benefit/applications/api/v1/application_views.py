@@ -790,6 +790,63 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             status=status.HTTP_201_CREATED,
         )
 
+    @action(methods=["GET"], detail=True, url_path="get_second_instalment_info")
+    @transaction.atomic
+    def get_second_instalment_info(self, request, pk) -> HttpResponse:
+        application = self.get_object()
+        if not application.calculation:
+            return Response(
+                {"detail": _("No calculation found")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        second_instalment = application.calculation.instalments.filter(
+            instalment_number=2
+        ).first()
+        if not second_instalment:
+            return Response(
+                {"detail": _("No second instalment found")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        instalment_start_date = application.calculation.start_date + relativedelta(
+            months=6
+        )
+        instalment_end_date = application.calculation.end_date
+        return Response(
+            {
+                "application_number": application.application_number,
+                "submitted_at": application.submitted_at,
+                "employee_first_name": application.employee.first_name,
+                "employee_last_name": application.employee.last_name,
+                "start_date": instalment_start_date,
+                "end_date": instalment_end_date,
+                "amount": second_instalment.amount,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @action(methods=["POST"], detail=True, url_path="second_instalment_respond")
+    @transaction.atomic
+    def second_instalment_respond(self, request, pk) -> HttpResponse:
+        application = self.get_object()
+        if not application.calculation:
+            return Response(
+                {"detail": "Application calculation not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        second_instalment = application.calculation.instalments.filter(
+            instalment_number=2
+        ).first()
+        if not second_instalment:
+            return Response(
+                {"detail": "Second instalment not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        second_instalment.status = InstalmentStatus.RESPONDED
+        second_instalment.save()
+        return Response(
+            status=status.HTTP_200_OK,
+        )
+
 
 @extend_schema(
     description=(
