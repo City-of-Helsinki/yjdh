@@ -7,6 +7,10 @@ const createJestConfig = nextJest({
 
 const config = {
   ...sharedConfig,
+  testPathIgnorePatterns: [
+    ...(sharedConfig.testPathIgnorePatterns || []),
+    '<rootDir>/src/__tests__/utils/',
+  ],
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
@@ -18,6 +22,7 @@ const config = {
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/src/pages/',
+    '<rootDir>/src/__tests__/utils/',
     '<rootDir>/../../shared/src/server/next-server.js',
     '<rootDir>/../../shared/src/test/',
   ],
