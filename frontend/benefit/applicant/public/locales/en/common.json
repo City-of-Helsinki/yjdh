@@ -408,12 +408,12 @@
             "message": "Add Helsinki benefit card if one has been issued"
           },
           "payslip": {
-            "title": "Palkkakuitti",
+            "title": "Salary slip or bank receipt for the salary paid",
             "message": ""
           },
           "otherAttachment": {
-            "title": "Muu liite",
-            "message": "Tarvittaessa voit lisätä tähän toisen liitteen"
+            "title": "Other attachment",
+            "message": "If necessary, you can submit additional attachments here."
           }
         },
         "add": "Attach the file",
@@ -577,23 +577,26 @@
       }
     },
     "secondInstalmentUpload": {
-      "heading": "Ilmoita palkan maksusta",
-      "applicationNumber": "Hakemusnumero",
-      "submittedAt": "Lähetetty",
-      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tosite tähän saakka maksetuista palkoista.",
-      "conditionSpecial": "(palkkakuitti tai pankin tosite maksetusta palkasta)",
-      "missingApplicationId": "Hakemuksen tunnistetta ei löytynyt.",
-      "secondInstalmentInfoError": "Toisen maksuerän tietoja ei voitu hakea.",
-      "successTitle": "Palkkatietoilmoitus lähetetty",
-      "successMessage1": "Hakemuksen",
-      "successMessage2": "palkkatiedot toimitettu.",
-      "errorTitle": "Virhe palkkatietojen lähetyksessä",
-      "errorMessage": "Palkkatietoilmoituksen lähetys epäonnistui.",
-      "missingPayslipTitle": "Palkkakuitti puuttuu",
-      "missingPayslipMessage": "Lisää vähintään yksi palkkakuitti ennen lähettämistä.",
+      "heading": "Report paid salary",
+      "applicationNumber": "Application number",
+      "submittedAt": "Submitted",
+      "instalmentInfo1": "The second payment installment of the subsidy is",
+      "instalmentInfo2": "euros for the period",
+      "condition": "To receive the second payment installment, you must submit information regarding the salary paid so far",
+      "conditionSpecial": "(salary slips or bank receipts for the salaries paid)",
+      "employerAssurance": "I certify that the employment relationship has been carried out as planned and the employee has been paid the stated salary.",
+      "missingApplicationId": "The application identifier was not found.",
+      "secondInstalmentInfoError": "The information of the second installment could not be retrieved.",
+      "successTitle": "Salary information submitted",
+      "successMessage1": "Application",
+      "successMessage2": "salary information submitted.",
+      "errorTitle": "Error in sending salary information",
+      "errorMessage": "Sending the salary information notification failed.",
+      "missingPayslipTitle": "Salary receipt or bank slip missing",
+      "missingPayslipMessage": "Add at least one pay slip or bank statement before sending.",
       "buttons": {
-        "submit": "Lähetä",
-        "back": "Peruuta"
+        "submit": "Send",
+        "back": "Cancel"
       }
     }
   },

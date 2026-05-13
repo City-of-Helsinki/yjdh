@@ -408,12 +408,12 @@
             "message": "Lägg till Helsingforstilläggskortet om en har utfärdats"
           },
           "payslip": {
-            "title": "Palkkakuitti",
+            "title": "Lönespecifikation eller bankkvitto för utbetald lön",
             "message": ""
           },
           "otherAttachment": {
-            "title": "Muu liite",
-            "message": "Tarvittaessa voit lisätä tähän toisen liitteen"
+            "title": "Bifoga en bilaga",
+            "message": "Vid behov kan du lägga till ytterligare bilagor här."
           }
         },
         "add": "Bifoga fil",
@@ -577,23 +577,26 @@
       }
     },
     "secondInstalmentUpload": {
-      "heading": "Ilmoita palkan maksusta",
-      "applicationNumber": "Hakemusnumero",
-      "submittedAt": "Lähetetty",
-      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tosite tähän saakka maksetuista palkoista.",
-      "conditionSpecial": "(palkkakuitti tai pankin tosite maksetusta palkasta)",
-      "missingApplicationId": "Hakemuksen tunnistetta ei löytynyt.",
-      "secondInstalmentInfoError": "Toisen maksuerän tietoja ei voitu hakea.",
-      "successTitle": "Palkkatietoilmoitus lähetetty",
-      "successMessage1": "Hakemuksen",
-      "successMessage2": "palkkatiedot toimitettu.",
-      "errorTitle": "Virhe palkkatietojen lähetyksessä",
-      "errorMessage": "Palkkatietoilmoituksen lähetys epäonnistui.",
-      "missingPayslipTitle": "Palkkakuitti puuttuu",
-      "missingPayslipMessage": "Lisää vähintään yksi palkkakuitti ennen lähettämistä.",
+      "heading": "Anmäla utbetald lön",
+      "applicationNumber": "Ansökningsnummer",
+      "submittedAt": "Skickad",
+      "instalmentInfo1": "Den andra utbetalningen av stödet är",
+      "instalmentInfo2": "euro för perioden",
+      "condition": "För att få den andra utbetalningen måste du skicka in uppgifter om den lön som hittills utbetalats",
+      "conditionSpecial": "(lönespecifikationer eller bankkvitton för utbetalda löner)",
+      "employerAssurance": "Jag intygar att anställningsförhållandet har genomförts enligt plan och att den anställde har fått utbetald lön.",
+      "missingApplicationId": "Applikationens identifierare hittades inte.",
+      "secondInstalmentInfoError": "Informationen om den andra delen kunde inte hämtas.",
+      "successTitle": "Löneuppgifter skickade",
+      "successMessage1": "Ansökan",
+      "successMessage2": "löneuppgifter skickade.",
+      "errorTitle": "Fel vid sändning av löneinformation",
+      "errorMessage": "Det gick inte att skicka meddelandet om löneinformation.",
+      "missingPayslipTitle": "Lönekvitto eller banksedel saknas",
+      "missingPayslipMessage": "Lägg till minst ett lönebesked eller kontoutdrag innan du skickar.",
       "buttons": {
-        "submit": "Lähetä",
-        "back": "Peruuta"
+        "submit": "Skicka",
+        "back": "Avbryt"
       }
     }
   },

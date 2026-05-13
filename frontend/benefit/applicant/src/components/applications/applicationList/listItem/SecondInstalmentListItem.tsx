@@ -73,8 +73,8 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
               <$StatusText>
                 <IconAlertCircleFill aria-hidden="true" />
                 <span>
-                  {t(`${translationBase}.secondInstalments.prompt1`)}&nbsp;
-                  {secondInstalmentDueDate}&nbsp;
+                  {t(`${translationBase}.secondInstalments.prompt1`)}{' '}
+                  {secondInstalmentDueDate}{' '}
                   {t(`${translationBase}.secondInstalments.prompt2`)}
                 </span>
               </$StatusText>

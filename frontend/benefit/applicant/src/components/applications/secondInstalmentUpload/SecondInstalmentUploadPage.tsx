@@ -1,6 +1,7 @@
 import AttachmentsList from 'benefit/applicant/components/applications/forms/application/step3/attachmentsList/AttachmentsList';
 import { ROUTES } from 'benefit/applicant/constants';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
+import useChangeEmployerAssuranceMutation from 'benefit/applicant/hooks/useChangeEmployerAssuranceMutation';
 import useSecondInstalmentInfoQuery from 'benefit/applicant/hooks/useSecondInstalmentInfoQuery';
 import useSecondInstalmentRespondMutation from 'benefit/applicant/hooks/useSecondInstalmentRespondMutation';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -9,25 +10,19 @@ import { Button, IconArrowRight, LoadingSpinner } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Container from 'shared/components/container/Container';
+import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
+import useLocale from 'shared/hooks/useLocale';
 import { BenefitAttachment } from 'shared/types/attachment';
 import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
-
-const FOG_COLOR = 'var(--color-fog)';
-
-const formatEuroAmount = (amount: number | string): string =>
-  new Intl.NumberFormat('fi-FI', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 0,
-  }).format(Number(amount));
 
 const getFileNameFromPath = (path?: string): string =>
   path?.split('/').filter(Boolean).at(-1) ?? '';
@@ -60,14 +55,39 @@ const normalizeAttachmentFileNames = (
   });
 
 const SecondInstalmentUploadPage: React.FC = () => {
+  const locale = useLocale();
   const { t } = useTranslation();
   const router = useRouter();
   const [isNavigatingBack, setIsNavigatingBack] = React.useState(false);
+  const [assuranceChecked, setAssuranceChecked] = React.useState(false);
 
   const applicationId =
     typeof router.query.id === 'string' ? router.query.id : undefined;
 
   const { data: application } = useApplicationQuery(applicationId ?? '');
+
+  React.useEffect(() => {
+    const applicationWithSnakeCaseFields = application as
+      | { employer_assurance?: boolean | null }
+      | undefined;
+
+    setAssuranceChecked(
+      Boolean(
+        application?.employer_assurance ??
+        applicationWithSnakeCaseFields?.employer_assurance
+      )
+    );
+  }, [application]);
+
+  const formatEuroAmount = React.useCallback(
+    (amount: number | string): string =>
+      new Intl.NumberFormat(`${locale}-FI`, {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+      }).format(Number(amount)),
+    [locale]
+  );
+
   const attachments = React.useMemo(
     () => normalizeAttachmentFileNames(application?.attachments),
     [application?.attachments]
@@ -90,6 +110,29 @@ const SecondInstalmentUploadPage: React.FC = () => {
     mutate: secondInstalmentRespond,
     isLoading: isSubmittingSecondInstalmentResponse,
   } = useSecondInstalmentRespondMutation();
+
+  const {
+    mutate: changeEmployerAssurance,
+    isLoading: isChangingEmployerAssurance,
+  } = useChangeEmployerAssuranceMutation();
+
+  const handleEmployerAssuranceChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      const { checked } = event.target;
+
+      setAssuranceChecked(checked);
+
+      if (!applicationId) {
+        return;
+      }
+
+      changeEmployerAssurance({
+        applicationId,
+        employerAssurance: checked,
+      });
+    },
+    [applicationId, changeEmployerAssurance]
+  );
 
   const handleSubmit = React.useCallback((): void => {
     if (isNavigatingBack || !applicationId) {
@@ -118,7 +161,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
               t('common:applications.secondInstalmentUpload.successMessage2'),
             ].join(' ')
           );
-          void router.replace(`${ROUTES.APPLICATION_FORM}?id=${applicationId}`);
+          void router.replace(ROUTES.HOME);
         },
         onError: () => {
           showErrorToast(
@@ -164,15 +207,15 @@ const SecondInstalmentUploadPage: React.FC = () => {
 
       {secondInstalmentInfo && (
         <>
-          <$Grid columns={12} css={{ marginBottom: '24px' }}>
+          <$Grid columns={12} css={{ marginBottom: '6px' }}>
             <$GridCell $colSpan={6}>
-              <span css={{ color: FOG_COLOR }}>
-                {secondInstalmentInfo.employee_first_name}&nbsp;
+              <span>
+                {secondInstalmentInfo.employee_first_name}{' '}
                 {secondInstalmentInfo.employee_last_name}
               </span>
             </$GridCell>
             <$GridCell $colSpan={6} justifySelf="end">
-              <span css={{ color: FOG_COLOR }}>
+              <span css={{ color: 'var(--color-fog)' }}>
                 {t(
                   'common:applications.secondInstalmentUpload.applicationNumber'
                 )}
@@ -187,42 +230,63 @@ const SecondInstalmentUploadPage: React.FC = () => {
               </span>
             </$GridCell>
           </$Grid>
-          <hr css={{ color: FOG_COLOR }} />
+          <hr css={{ marginTop: '6px', marginBottom: '6px' }} />
         </>
       )}
 
       {secondInstalmentInfo && (
         <p>
-          Tuen toinen maksuerä on{' '}
-          {formatEuroAmount(secondInstalmentInfo.amount)} euroa ajalle{' '}
+          {t('common:applications.secondInstalmentUpload.instalmentInfo1')}{' '}
+          {formatEuroAmount(secondInstalmentInfo.amount)}{' '}
+          {t('common:applications.secondInstalmentUpload.instalmentInfo2')}{' '}
           {convertToUIDateFormat(secondInstalmentInfo.start_date)} -{' '}
-          {convertToUIDateFormat(secondInstalmentInfo.end_date)}
+          {convertToUIDateFormat(secondInstalmentInfo.end_date)}.
         </p>
       )}
 
-      <p>{t('common:applications.secondInstalmentUpload.condition')}</p>
+      <p>
+        {t('common:applications.secondInstalmentUpload.condition')}
+        <br />
+        {t('common:applications.secondInstalmentUpload.conditionSpecial')}
+      </p>
 
       {!applicationId && (
         <p>
           {t('common:applications.secondInstalmentUpload.missingApplicationId')}
         </p>
       )}
-
-      <ul>
-        <AttachmentsList
-          as="li"
-          attachments={attachments}
-          attachmentType={ATTACHMENT_TYPES.PAYSLIP}
-          attachmentTypeTranslationKey="payslip"
-          required
-        />
-        <AttachmentsList
-          as="li"
-          attachments={attachments}
-          attachmentType={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
-          attachmentTypeTranslationKey="otherAttachment"
-        />
-      </ul>
+      <$Grid columns={1}>
+        <$GridCell colSpan={1}>
+          <$Checkbox
+            id="employer-assurance"
+            name="employer-assurance"
+            label={`${t(
+              'common:applications.secondInstalmentUpload.employerAssurance'
+            )} *`}
+            checked={assuranceChecked}
+            disabled={isChangingEmployerAssurance}
+            onChange={handleEmployerAssuranceChange}
+            required
+          />
+        </$GridCell>
+        <$GridCell colSpan={1}>
+          <ul>
+            <AttachmentsList
+              as="li"
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.PAYSLIP}
+              attachmentTypeTranslationKey="payslip"
+              required
+            />
+            <AttachmentsList
+              as="li"
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.OTHER_ATTACHMENT}
+              attachmentTypeTranslationKey="otherAttachment"
+            />
+          </ul>
+        </$GridCell>
+      </$Grid>
       <$Grid columns={2} css={{ marginTop: '24px' }}>
         <$GridCell>
           <Button
@@ -243,6 +307,8 @@ const SecondInstalmentUploadPage: React.FC = () => {
             disabled={
               isNavigatingBack ||
               isSubmittingSecondInstalmentResponse ||
+              !hasPayslipAttachment ||
+              !assuranceChecked ||
               !applicationId
             }
             iconRight={<IconArrowRight />}

@@ -847,6 +847,21 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @action(methods=["PATCH"], detail=True, url_path="change_employer_assurance")
+    @transaction.atomic
+    def change_employer_assurance(self, request, pk) -> HttpResponse:
+        try:
+            employer_assurance = request.data["employerAssurance"]
+        except KeyError:
+            return Response(
+                {"detail": "employerAssurance is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        application = self.get_object()
+        application.employer_assurance = employer_assurance
+        application.save()
+        return Response(status=status.HTTP_200_OK)
+
 
 @extend_schema(
     description=(
