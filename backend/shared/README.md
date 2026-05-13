@@ -13,9 +13,10 @@
 
 ## Suomi.fi authentication (suomi_fi)
 
-IDP metadata last updated in 2024-09-26 based on Suomi.fi
-[news](https://palveluhallinta.suomi.fi/en/ajankohtaista/uutiset/66b1b15f3672c6001a51505a)
-"Certificates used for signing Suomi.fi e-Identification SAML messages will change in August-September 2024".
+Production IDP metadata was refreshed from the Suomi.fi notice published on
+2026-05-05:
+[news](https://kehittajille.suomi.fi/topical/certificates-used-for-signing-suomi-fi-e-identification-saml-messages-will-change-in-april-may-2026)
+"Certificates used for signing Suomi.fi e-Identification SAML messages will change in April-May 2026".
 
 IDP metadata files are originally downloaded from:
 - Suomi.fi production IDP metadata https://tunnistus.suomi.fi/static/metadata/idp-metadata.xml →
