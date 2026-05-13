@@ -718,9 +718,9 @@ class YouthSummerVoucherFactory(
         AcceptedYouthApplicationFactory, youth_summer_voucher=None
     )
     # NOTE: Difference from production use:
-    # - This does not generate a gapless sequence
+    # - This does not generate a gapless sequence for old sequential values
     summer_voucher_serial_number = factory.Faker(
-        "pyint", min_value=1, max_value=(2**63) - 1
+        "pyint", min_value=1, max_value=YouthSummerVoucher.MAX_RAND_SERIAL_NUM
     )
 
     class Meta:

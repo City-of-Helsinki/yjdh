@@ -35,6 +35,35 @@ TARGET_GROUP_CHOICES_DICT = dict(get_target_group_choices())
 LOGGER = logging.getLogger(__name__)
 
 
+class SerialNumberDecodingSearchMixin:
+    """
+    Mixin for adding decoding of base32 encoded youth summer voucher serial numbers
+    before searching with it. The values in the database are decoded values, so
+    searching with the decoded values is needed to find something.
+    """
+
+    def get_search_results(self, request, queryset, search_term):
+        """ """
+        search_term = search_term.strip()
+        try:
+            # If the search term could be a randomly generated encoded serial number,
+            # try to decode it and search with the decoded value instead:
+            if (
+                "-" in search_term
+                and len(search_term)
+                >= YouthSummerVoucher.MIN_RAND_SERIAL_NUMBER_STR_LEN
+            ):
+                decoded_search_term = str(
+                    YouthSummerVoucher.decode_user_showable_serial_number(search_term)
+                )
+                return super().get_search_results(
+                    request, queryset, decoded_search_term
+                )
+        except ValueError:  # Invalid checksum or format
+            pass
+        return super().get_search_results(request, queryset, search_term)
+
+
 class SummerVoucherConfigurationAdminForm(forms.ModelForm):
     target_group = forms.MultipleChoiceField(
         choices=get_target_group_choices(),
@@ -488,10 +517,13 @@ class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
         return False
 
 
-class YouthSummerVoucherAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
+class YouthSummerVoucherAdmin(
+    AuditlogAdminViewAccessLogMixin, SerialNumberDecodingSearchMixin, admin.ModelAdmin
+):
     list_display = [
         "id",
         "summer_voucher_serial_number",
+        "user_showable_serial_number",
         "target_group_display",
         "birthdate",
         "youth_application_link",
@@ -518,6 +550,7 @@ class YouthSummerVoucherAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin)
     autocomplete_fields = [
         "youth_application",
     ]
+    readonly_fields = ["user_showable_serial_number"]
     actions = ["resend_voucher"]
 
     def get_queryset(self, request):
@@ -703,10 +736,13 @@ class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin
         )
 
 
-class EmployerSummerVoucherAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
+class EmployerSummerVoucherAdmin(
+    AuditlogAdminViewAccessLogMixin, SerialNumberDecodingSearchMixin, admin.ModelAdmin
+):
     list_display = [
         "id",
         "youth_summer_voucher_id",
+        "summer_voucher_serial_number",
         "_obsolete_unclean_serial_number",
         "has_migrated_obsolete_serial_number",
         "target_group_display",

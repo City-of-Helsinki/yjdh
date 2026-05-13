@@ -256,6 +256,52 @@ def test_employer_summer_voucher_summer_voucher_serial_number_setter_with_match(
     )
 
 
+@pytest.mark.parametrize(
+    "input_serial_number, expected_result",
+    [
+        # Previously used sequentially generated serial numbers in range [1, 100k):
+        (1, "1"),
+        (1234, "1234"),
+        (99_999, "99999"),
+        # Randomly generated base32 encoded serial numbers with integer values >=100k:
+        (100_000, "31n-022"),
+        (123456789012345, "3g9-230-vqv-s62"),
+        (2**50 - 1, "zzz-zzz-zzz-z89"),
+    ],
+)
+def test_youth_summer_voucher_get_user_showable_serial_number(
+    input_serial_number: int, expected_result: str
+):
+    """
+    Test that YouthSummerVoucher.get_user_showable_serial_number encodes serial numbers
+    as expected.
+    """
+    assert (
+        YouthSummerVoucher.get_user_showable_serial_number(input_serial_number)
+        == expected_result
+    )
+
+
+def test_youth_summer_voucher_encoded_serial_number_lengths():
+    """
+    Test that youth summer vouchers' sequential and randomly generated serial numbers
+    are distinguishable unambiguously in their encoded format simply by their string lengths.
+    """
+    encoded_min_rand_serial_number = YouthSummerVoucher.get_user_showable_serial_number(
+        YouthSummerVoucher.MIN_RAND_SERIAL_NUM
+    )
+    max_sequential_serial_number = YouthSummerVoucher.MIN_RAND_SERIAL_NUM - 1
+    assert (
+        encoded_min_rand_serial_number == "31n-022"
+    )  # Should have been base32 encoded
+    assert YouthSummerVoucher.MIN_RAND_SERIAL_NUMBER_STR_LEN == len(
+        encoded_min_rand_serial_number
+    )
+    assert YouthSummerVoucher.MIN_RAND_SERIAL_NUMBER_STR_LEN > len(
+        str(max_sequential_serial_number)
+    )
+
+
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "possibly_matching_serial_numbers, input_serial_number",

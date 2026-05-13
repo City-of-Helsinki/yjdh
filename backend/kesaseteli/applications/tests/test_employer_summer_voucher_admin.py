@@ -2,7 +2,9 @@ import pytest
 from django.contrib.admin.sites import AdminSite
 from django.test import RequestFactory
 
-from applications.admin import EmployerSummerVoucherAdmin
+from applications.admin import (
+    EmployerSummerVoucherAdmin,
+)
 from applications.models import EmployerSummerVoucher
 from common.tests.factories import EmployerSummerVoucherFactory
 
@@ -70,3 +72,33 @@ def test_get_queryset(employer_summer_voucher_admin):
     request = RequestFactory().get("/")
     qs = employer_summer_voucher_admin.get_queryset(request)
     assert qs.filter(pk=voucher.pk).exists()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "serial_number, search_term",
+    [
+        (9999, "9999"),  # sequential number, stringified as-is
+        (100_000, "31n-022"),  # base32 encoded, decoded to "100000" before searching
+        (123456789012345, "3g9-230-vqv-s62"),  # base32 encoded → decoded
+    ],
+)
+def test_serial_number_search(
+    employer_summer_voucher_admin, serial_number: int, search_term
+):
+    """
+    Test that searching with a serial number (in both sequential and base32 encoded forms)
+    returns the correct voucher.
+    """
+    _smaller, voucher, _larger = (
+        EmployerSummerVoucherFactory(
+            youth_summer_voucher__summer_voucher_serial_number=serial_number + diff
+        )
+        for diff in (-1, 0, 1)
+    )
+    request = RequestFactory().get("/")
+
+    result_qs, _ = employer_summer_voucher_admin.get_search_results(
+        request, EmployerSummerVoucher.objects.all(), search_term
+    )
+    assert list(result_qs.values_list("pk", flat=True)) == [voucher.pk]

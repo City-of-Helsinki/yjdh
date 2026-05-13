@@ -904,6 +904,9 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
     # existing sequential values in production were in range [1, 30k) in May 2026.
     MIN_RAND_SERIAL_NUM = 100_000
 
+    # Minimum string length of encoded randomly generated serial numbers,
+    MIN_RAND_SERIAL_NUMBER_STR_LEN = 7  # Length of encoded MIN_RAND_SERIAL_NUM
+
     # Inclusive upper limit for randomly generated serial numbers,
     # using maximum value that fits base32 encoded with checksum & dashes in 15 chars:
     # >>> base32_lib.encode(2**50-1, split_every=3, checksum=True) == "zzz-zzz-zzz-z89"
