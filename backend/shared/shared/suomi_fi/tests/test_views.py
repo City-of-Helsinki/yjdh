@@ -250,6 +250,21 @@ class TestSuomiFiViews:
         assert response.status_code == 302
         assert response.url == next_url
 
+    def test_helsinki_saml2_logout_view_uses_next_as_relay_state(self):
+        factory = RequestFactory()
+        next_url = "https://kesaseteli.dev.hel.ninja/fi"
+        request = factory.get("/saml2/logout/", {"next": next_url})
+        request.session = {}
+
+        view = HelsinkiSaml2LogoutView()
+
+        with mock.patch(
+            "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
+        ):
+            relay_state = view.get_relay_state(request)
+
+        assert relay_state == next_url
+
 
 @pytest.mark.django_db
 class TestSuomiFiViewsHARIntegration:
@@ -409,3 +424,46 @@ class TestSuomiFiViewsHARIntegration:
         assert (
             response.url == self.NEXT_URL_HAR
         )  # not "/" (the pre-fix broken behavior)
+
+    @override_settings(
+        ROOT_URLCONF=_SAML_TEST_URLCONF,
+        LOGOUT_REDIRECT_URL="/",
+        SAML_ALLOWED_HOSTS=[urllib_parse.urlparse(NEXT_URL_HAR).netloc],
+    )
+    def test_har_documented_slo_flow_with_lost_session(self):
+        """
+        Verify that redirection still works even if the session is lost,
+        by relying on RelayState (which now contains the next URL).
+        """
+        clear_url_caches()
+        client = Client()
+
+        # Step 1: IdP sends back the URL in RelayState.
+        # Even if the session is empty, djangosaml2's finish_logout should use RelayState.
+        with mock.patch.object(
+            HelsinkiSaml2LogoutServiceView,
+            "get_state_client",
+            return_value=(mock.MagicMock(), mock.MagicMock()),
+        ):
+            # We mock the standalone finish_logout function in djangosaml2.views
+            # to return the fallback if no RelayState, or the RelayState itself
+            # if it's provided (simulating djangosaml2 behavior).
+            def finish_logout_mock(request, response):
+                from djangosaml2.views import _get_next_path
+
+                next_path = _get_next_path(request)
+                return HttpResponseRedirect(next_path or "/")
+
+            with mock.patch(
+                "djangosaml2.views.finish_logout", side_effect=finish_logout_mock
+            ):
+                response = client.get(
+                    "/saml2/ls/",
+                    {
+                        "SAMLResponse": self.SAML_RESPONSE_HAR,
+                        "RelayState": self.NEXT_URL_HAR,  # URL is in RelayState!
+                    },
+                )
+
+        assert response.status_code == 302
+        assert response.url == self.NEXT_URL_HAR
