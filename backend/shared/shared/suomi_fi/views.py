@@ -86,17 +86,26 @@ class HelsinkiSaml2LogoutView(LogoutInitView):
     redirecting the user to the IdP (Suomi.fi).
     """
 
-    def get(self, request, *args, **kwargs):
-        # Capture 'next' parameter so it can be used on failure.
-        # RELAY_STATE_PARAM is also checked as a fallback for standard SAML logout.
-        self.next_path = (
+    def get_relay_state(self, request):
+        """
+        Use 'next' path as RelayState so it survives if session is lost.
+        """
+        next_path = (
             request.GET.get(REDIRECT_FIELD_NAME)
             or request.GET.get(RELAY_STATE_PARAM)
             or request.POST.get(RELAY_STATE_PARAM)
         )
-        if self.next_path and is_safe_redirect_url(
-            request, self.next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+        if next_path and is_safe_redirect_url(
+            request, next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
         ):
+            return next_path
+        return ""
+
+    def get(self, request, *args, **kwargs):
+        # Capture 'next' parameter so it can be used on failure.
+        # RELAY_STATE_PARAM is also checked as a fallback for standard SAML logout.
+        self.next_path = self.get_relay_state(request)
+        if self.next_path:
             request.session["saml2_logout_next_path"] = self.next_path
 
         return super().get(request, *args, **kwargs)
@@ -134,8 +143,13 @@ class HelsinkiSaml2LogoutServiceView(LogoutView):
     """
 
     def do_logout_service(self, request, data, binding, *args, **kwargs):
+        # Pop next_path from session BEFORE super() calls auth.logout() and flushes it.
         next_path = request.session.pop("saml2_logout_next_path", None)
+
         response = super().do_logout_service(request, data, binding, *args, **kwargs)
+
+        # If next_path was in the session, and the response is a redirect to the default
+        # fallback, replace it with the session-stored next_path.
         if next_path and isinstance(response, HttpResponseRedirect):
             fallback = resolve_url(getattr(settings, "LOGOUT_REDIRECT_URL", "/"))
             if response.url == fallback and is_safe_redirect_url(
