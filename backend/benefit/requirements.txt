@@ -14,7 +14,7 @@ attrs==25.4.0
     # via
     #   jsonschema
     #   referencing
-authlib==1.6.11
+authlib==1.6.12
     # via drf-oidc-auth
 azure-core==1.38.0
     # via
@@ -208,7 +208,6 @@ pycryptodome==3.23.0
 pyjwt==2.12.0
     # via
     #   django-auth-adfs
-    #   pyjwt
     #   social-auth-core
 pyopenssl==24.2.1
     # via pysaml2
