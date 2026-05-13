@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.18.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.17.0...benefit-backend-v2.18.0) (2026-05-13)
+
+
+### Features
+
+* **benefit:** Custom azure storage class to hide token from url ([4ff1089](https://github.com/City-of-Helsinki/yjdh/commit/4ff10899c2c1e1c5397196d468295314ad81361c))
+* **benefit:** Use SAS-token for blob storage ([de2ff24](https://github.com/City-of-Helsinki/yjdh/commit/de2ff243602e5eed2f66568f6bc3326a36ddc188))
+
+
+### Bug Fixes
+
+* **benefit:** Various fixes to bugs ([e680b51](https://github.com/City-of-Helsinki/yjdh/commit/e680b51e0168a60262cb8a90a96afab0a721dc03))
+
 ## [2.17.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.16.0...benefit-backend-v2.17.0) (2026-04-29)
 
 
