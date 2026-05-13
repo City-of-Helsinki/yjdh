@@ -74,6 +74,8 @@ export const ApplicantEndpoint = {
     `${applicationsBase(id)}get_second_instalment_info/`,
   SECOND_INSTALMENT_RESPOND: (id: string) =>
     `${applicationsBase(id)}second_instalment_respond/`,
+  CHANGE_EMPLOYER_ASSURANCE: (id: string) =>
+    `${applicationsBase(id)}change_employer_assurance/`,
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);

@@ -408,12 +408,12 @@
             "message": "Lisää Helsinki-lisä -kortti, jos sellainen on myönnetty"
           },
           "payslip": {
-            "title": "Palkkakuitti",
+            "title": "Palkkakuitti tai pankin tosite maksetuista palkoista",
             "message": ""
           },
           "otherAttachment": {
-            "title": "Muu liite",
-            "message": "Tarvittaessa voit lisätä tähän toisen liitteen"
+            "title": "Lisää liite",
+            "message": "Tarvittaessa voit lisätä tähän toisen liitteen."
           }
         },
         "add": "Liitä tiedosto",
@@ -577,20 +577,23 @@
       }
     },
     "secondInstalmentUpload": {
-      "heading": "Ilmoita palkan maksusta",
+      "heading": "Ilmoita maksetusta palkasta",
       "applicationNumber": "Hakemusnumero",
       "submittedAt": "Lähetetty",
-      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tosite tähän saakka maksetuista palkoista.",
-      "conditionSpecial": "(palkkakuitti tai pankin tosite maksetusta palkasta)",
+      "instalmentInfo1": "Tuen toinen maksuerä on",
+      "instalmentInfo2": "euroa ajalle",
+      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tiedot tähän saakka maksetuista palkoista´",
+      "conditionSpecial": "(palkkakuitit tai pankin tositteet maksetuista palkoista)",
+      "employerAssurance": "Vakuutan työsuhteen toteutuneen suunnitellusti ja työntekijälle on maksettu hakemuksen mukaista palkkaa.",
       "missingApplicationId": "Hakemuksen tunnistetta ei löytynyt.",
       "secondInstalmentInfoError": "Toisen maksuerän tietoja ei voitu hakea.",
       "successTitle": "Palkkatietoilmoitus lähetetty",
-      "successMessage1": "Hakemuksen",
-      "successMessage2": "palkkatiedot toimitettu.",
+      "successMessage1": "Hakemus",
+      "successMessage2": "palkkatiedot lähetetty.",
       "errorTitle": "Virhe palkkatietojen lähetyksessä",
       "errorMessage": "Palkkatietoilmoituksen lähetys epäonnistui.",
-      "missingPayslipTitle": "Palkkakuitti puuttuu",
-      "missingPayslipMessage": "Lisää vähintään yksi palkkakuitti ennen lähettämistä.",
+      "missingPayslipTitle": "Palkkakuitti tai pankkitosite puuttuvat",
+      "missingPayslipMessage": "Lisää vähintään yksi palkkakuitti tai pankintosite ennen lähettämistä.",
       "buttons": {
         "submit": "Lähetä",
         "back": "Peruuta"

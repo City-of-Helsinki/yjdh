@@ -288,6 +288,31 @@ def test_mark_application_as_responded(api_client, application):
     assert instalment_2.status == InstalmentStatus.RESPONDED
 
 
+@pytest.mark.parametrize(
+    "employer_assurance,sent_employer_assurance",
+    [
+        (None, False),
+        (None, True),
+        (False, True),
+        (True, False),
+    ],
+)
+@pytest.mark.django_db
+def test_applicant_change_employer_assurance(
+    api_client, application, employer_assurance, sent_employer_assurance
+):
+    application.employer_assurance = employer_assurance
+    response = api_client.patch(
+        reverse(
+            "v1:applicant-application-change-employer-assurance", args=[application.id]
+        ),
+        {"employerAssurance": str(sent_employer_assurance)},
+    )
+    application.refresh_from_db()
+    assert response.status_code == 200
+    assert application.employer_assurance == sent_employer_assurance
+
+
 @pytest.mark.django_db
 def test_get_second_instalment_info(api_client, application):
     application.calculation = Calculation(

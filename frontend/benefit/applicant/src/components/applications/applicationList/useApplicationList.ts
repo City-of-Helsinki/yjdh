@@ -182,7 +182,7 @@ const useApplicationList = ({
       ? convertToUIDateFormat(submitted_at)
       : '-';
 
-    // Calculate second instalment due date to allow for 14 days delivery
+    // Calculate second instalment due date to allow for 15 days delivery
     // i.e., 15 days before the second instalment due date.
     const secondInstalmentDueDate = second_instalment_due_date
       ? convertToUIDateFormat(getDateDaysBefore(second_instalment_due_date, 15))
