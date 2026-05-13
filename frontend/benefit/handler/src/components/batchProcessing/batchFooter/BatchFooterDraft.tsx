@@ -80,11 +80,11 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
     downloadBatchFiles(id);
   };
 
-  const variantForAction = (): DialogVariant => {
+  const variantForAction = (): Extract<ButtonVariant, DialogVariant> => {
     if (isModalBatchRemoval) {
-      return 'danger';
+      return ButtonVariant.Danger;
     }
-    return 'primary';
+    return ButtonVariant.Primary;
   };
 
   const handleBatchStatusChange = (

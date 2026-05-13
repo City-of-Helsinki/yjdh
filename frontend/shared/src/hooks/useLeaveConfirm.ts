@@ -1,3 +1,4 @@
+import { ButtonVariant } from 'hds-react';
 import Router from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useCallback, useEffect, useRef } from 'react';
@@ -66,7 +67,7 @@ const LeaveConfirmService = {
     const isConfirmed = await deps.confirm({
       header: deps.message,
       submitButtonLabel: confirmLabel,
-      submitButtonVariant: 'danger',
+      submitButtonVariant: ButtonVariant.Danger,
       content: deps.t(
         'common:application.buttons.leave_confirmation_description'
       ),

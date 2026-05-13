@@ -115,7 +115,7 @@ const ActionBarNew: React.FC<ActionBarProps> = ({
           cancelButtonLabel={t(`${translationsBase}.close`)}
           handleToggle={() => setIsConfirmationModalOpen(false)}
           handleSubmit={handleDelete}
-          variant="danger"
+          variant={ButtonVariant.Danger}
         >
           {t(`${translationsBase}.deleteApplicationDescription`)}
         </Modal>

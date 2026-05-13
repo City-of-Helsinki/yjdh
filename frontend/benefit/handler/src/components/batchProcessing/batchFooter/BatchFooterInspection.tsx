@@ -129,12 +129,12 @@ BatchProps) => {
         cancelButtonLabel=""
         handleSubmit={noop}
         handleToggle={noop}
-        variant="primary"
+        variant={ButtonVariant.Primary}
         customContent={
           <>
             {isModalBatchToDraft ? (
               <ConfirmModalContent
-                variant="primary"
+                variant={ButtonVariant.Primary}
                 heading={t(
                   'common:batches.dialog.fromInspectionToDraft.heading'
                 )}
@@ -145,7 +145,7 @@ BatchProps) => {
             ) : null}
             {isModalBatchToCompletion && getModalTranslations() ? (
               <ConfirmModalContent
-                variant="primary"
+                variant={ButtonVariant.Primary}
                 heading={getModalTranslations()?.heading || ''}
                 text={getModalTranslations()?.text || ''}
                 onClose={handleModalClose}

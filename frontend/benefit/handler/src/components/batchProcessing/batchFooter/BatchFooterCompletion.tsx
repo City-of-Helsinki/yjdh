@@ -95,11 +95,11 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           cancelButtonLabel=""
           handleSubmit={noop}
           handleToggle={noop}
-          variant="primary"
+          variant={ButtonVariant.Primary}
           customContent={
             isModalBatchToCompletion ? (
               <ConfirmModalContent
-                variant="primary"
+                variant={ButtonVariant.Primary}
                 heading={t(
                   'common:batches.dialog.fromInspectionToArchive.heading'
                 )}
@@ -121,11 +121,11 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           cancelButtonLabel=""
           handleSubmit={noop}
           handleToggle={noop}
-          variant="primary"
+          variant={ButtonVariant.Primary}
           customContent={
             isModalBatchToCompletion ? (
               <ConfirmModalContent
-                variant="primary"
+                variant={ButtonVariant.Primary}
                 heading={t(
                   'common:batches.dialog.fromCompletionToArchive.heading'
                 )}
@@ -147,11 +147,11 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
           cancelButtonLabel=""
           handleSubmit={noop}
           handleToggle={noop}
-          variant="primary"
+          variant={ButtonVariant.Primary}
           customContent={
             isModalBatchToInspection ? (
               <ConfirmModalContent
-                variant="primary"
+                variant={ButtonVariant.Primary}
                 heading={t(
                   'common:batches.dialog.fromCompletionToInspection.heading'
                 )}

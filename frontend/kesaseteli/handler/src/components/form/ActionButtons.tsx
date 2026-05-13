@@ -46,7 +46,8 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
       content: t(`common:dialog.${type}.content`),
       submitButtonLabel: t(`common:dialog.${type}.submit`),
       submitButtonIcon: icon[type],
-      submitButtonVariant: type === 'reject' ? 'danger' : 'primary',
+      submitButtonVariant:
+        type === 'reject' ? ButtonVariant.Danger : ButtonVariant.Primary,
     });
     if (isConfirmed) {
       mutate({ type, encrypted_handler_vtj_json });

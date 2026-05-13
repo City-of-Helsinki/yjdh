@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
 import { setupUserAndRender } from 'benefit/handler/__tests__/utils/user-render-helper';
+import { ButtonVariant } from 'hds-react';
 import React from 'react';
 
 import ConfirmModalContent from '../confirm';
@@ -19,7 +20,7 @@ const renderSubject = (
     <ConfirmModalContent
       onClose={onClose}
       onSubmit={onSubmit}
-      variant="primary"
+      variant={ButtonVariant.Primary}
       {...overrides}
     />
   );
@@ -69,7 +70,9 @@ describe('ConfirmModalContent', () => {
   });
 
   it('submits correctly with danger variant', async () => {
-    const user = setupUserAndRender(() => renderSubject({ variant: 'danger' }));
+    const user = setupUserAndRender(() =>
+      renderSubject({ variant: ButtonVariant.Danger })
+    );
 
     await user.click(getConfirmButton());
 
