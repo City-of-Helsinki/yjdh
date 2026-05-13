@@ -340,7 +340,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           handleSubmit={noop}
           headerIcon={<IconInfoCircle />}
           submitButtonIcon={<IconTrash />}
-          variant="danger"
+          variant={ButtonVariant.Danger}
           customContent={
             <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
           }
@@ -357,7 +357,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
           handleSubmit={noop}
           headerIcon={<IconInfoCircle />}
           className=""
-          variant="primary"
+          variant={ButtonVariant.Primary}
           theme={theme.components.modal.coat}
           customContent={
             <DoneModalContent

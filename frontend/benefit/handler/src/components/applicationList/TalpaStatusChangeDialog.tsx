@@ -29,7 +29,7 @@ const TalpaStatusChangeModal: React.FC<{
     <Modal
       id="dialog-talpa-payment-status-change"
       theme={theme.components.modal.coat}
-      variant="primary"
+      variant={ButtonVariant.Primary}
       isOpen={isOpen}
       submitButtonLabel="yes"
       cancelButtonLabel="cancel"

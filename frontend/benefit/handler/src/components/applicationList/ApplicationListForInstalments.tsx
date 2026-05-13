@@ -14,6 +14,7 @@ import {
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
   Button,
+  ButtonVariant,
   DateInput,
   Dialog,
   IconErrorFill,
@@ -293,10 +294,10 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             cancelButtonLabel=""
             handleSubmit={noop}
             handleToggle={noop}
-            variant="danger"
+            variant={ButtonVariant.Danger}
             customContent={
               <ConfirmModalContent
-                variant="danger"
+                variant={ButtonVariant.Danger}
                 heading={t(
                   'common:instalments.dialog.cancelInstalment.heading'
                 )}
@@ -329,7 +330,9 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               {/* @ts-expect-error -- HDS DateInput types are overly strict with TS 5.9 */}
               <DateInput
                 id="instalment-change-date-dateinput"
-                label={t('common:instalments.dialog.changeInstalmentDate.label')}
+                label={t(
+                  'common:instalments.dialog.changeInstalmentDate.label'
+                )}
                 helperText={t(
                   'common:instalments.dialog.changeInstalmentDate.helperText'
                 )}

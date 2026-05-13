@@ -146,7 +146,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           cancelButtonLabel={t(`${translationsBase}.close`)}
           handleToggle={() => setIsConfirmationModalOpen(false)}
           handleSubmit={handleDelete}
-          variant="danger"
+          variant={ButtonVariant.Danger}
         >
           {t(`${translationsBase}.${cancelModalTranslationsBase}.confirm.text`)}
         </Modal>

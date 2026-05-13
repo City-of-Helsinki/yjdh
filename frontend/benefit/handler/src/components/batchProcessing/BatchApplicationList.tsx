@@ -237,11 +237,11 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
           cancelButtonLabel=""
           handleSubmit={noop}
           handleToggle={noop}
-          variant="primary"
+          variant={ButtonVariant.Primary}
           customContent={
             isConfirmAppRemoval && appToRemove ? (
               <ConfirmModalContent
-                variant="primary"
+                variant={ButtonVariant.Primary}
                 heading={t('common:batches.dialog.removeApplication.heading')}
                 text={t('common:batches.dialog.removeApplication.text', {
                   applicationNumber: `${appToRemove.company_name} / ${appToRemove.employee_name} (${appToRemove.application_number})`,

@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ButtonVariant } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
@@ -154,7 +155,7 @@ describe('ActionButtons', () => {
         header: expect.any(String),
         content: expect.any(String),
         submitButtonLabel: expect.any(String),
-        submitButtonVariant: 'danger',
+        submitButtonVariant: ButtonVariant.Danger,
       });
     });
 

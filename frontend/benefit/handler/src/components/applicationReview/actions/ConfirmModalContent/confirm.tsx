@@ -1,23 +1,18 @@
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  Dialog,
-  DialogVariant,
-} from 'hds-react';
+import { Button, ButtonPresetTheme, ButtonVariant, Dialog } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import type { ModalProps } from 'shared/components/modal/Modal';
 
 type ComponentProps = {
   onClose: () => void;
   onSubmit: () => void;
   text?: string;
   heading?: string;
-  variant: DialogVariant;
+  variant: ModalProps['variant'];
 };
 
 /**
@@ -27,7 +22,7 @@ type ComponentProps = {
  * @param {function} onSubmit - Function to be invoked when "confirm" is pressed
  * @param {String} heading - Heading text for the dialog window
  * @param {String} text - Body text for the dialog window
- * @param {DialogVariant} variant - HDS DialogVariant to change dialog style
+ * @param {ModalProps['variant']} variant - HDS variant to change dialog style
  * @return {React.ReactElement} React element
  *
  */
@@ -36,7 +31,7 @@ const ConfirmModalContent: React.FC<ComponentProps> = ({
   onSubmit,
   heading,
   text,
-  variant = 'primary',
+  variant = ButtonVariant.Primary,
 }) => {
   const { t } = useTranslation();
 
@@ -68,9 +63,7 @@ const ConfirmModalContent: React.FC<ComponentProps> = ({
         </Button>
         <Button
           theme={ButtonPresetTheme.Coat}
-          variant={
-            variant === 'danger' ? ButtonVariant.Danger : ButtonVariant.Primary
-          }
+          variant={variant}
           onClick={onSubmit}
           data-testid="confirm-ok"
         >

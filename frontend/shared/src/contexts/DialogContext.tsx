@@ -1,3 +1,4 @@
+import { ButtonVariant } from 'hds-react';
 import React, { useReducer } from 'react';
 import { ModalProps } from 'shared/components/modal/Modal';
 
@@ -75,7 +76,7 @@ export const DialogContext = React.createContext<
     header: '',
     content: '',
     submitButtonLabel: '',
-    submitButtonVariant: 'primary',
+    submitButtonVariant: ButtonVariant.Primary,
     link: '',
     linkText: '',
   },

@@ -56,7 +56,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       header: t('common:application.buttons.leave_confirmation'),
       content: t('common:application.buttons.leave_confirmation_description'),
       submitButtonLabel: t('common:application.buttons.discard'),
-      submitButtonVariant: 'danger',
+      submitButtonVariant: ButtonVariant.Danger,
     });
     if (isConfirmed) {
       deleteApplication(() => {

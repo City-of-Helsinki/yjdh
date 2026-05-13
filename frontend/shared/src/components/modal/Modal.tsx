@@ -19,7 +19,7 @@ export type ModalProps = {
   className?: string;
   isOpen: boolean;
   scrollable?: boolean;
-  variant?: DialogVariant;
+  variant?: Extract<ButtonVariant, DialogVariant>;
   handleToggle: () => void;
   handleSubmit: (e: React.SyntheticEvent) => void;
   children?: React.ReactNode;
@@ -82,11 +82,7 @@ const Modal: React.FC<ModalProps> = ({
             </Button>
             <Button
               theme={ButtonPresetTheme.Coat}
-              variant={
-                variant === 'danger'
-                  ? ButtonVariant.Danger
-                  : ButtonVariant.Primary
-              }
+              variant={variant}
               onClick={onAccept}
               disabled={actionDisabled}
               data-testid="modalSubmit"

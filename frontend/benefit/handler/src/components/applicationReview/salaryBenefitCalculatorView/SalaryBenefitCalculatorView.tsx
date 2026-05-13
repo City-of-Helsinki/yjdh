@@ -838,7 +838,7 @@ const SalaryBenefitCalculatorView: React.FC<
           handleToggle={() => setIsResetConfirmOpen(false)}
           handleSubmit={() => onClear()}
           className=""
-          variant="danger"
+          variant={ButtonVariant.Danger}
           theme={theme.components.modal.coat}
         />
       )}
