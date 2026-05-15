@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 import logging
 from datetime import datetime, timezone
 from typing import Callable, Optional, Union
@@ -18,7 +19,6 @@ except ImportError:
 
 from shared.audit_log.enums import Operation, Role, Status
 from shared.audit_log.mappings import DJANGO_BACKEND_MAPPING
-from shared.audit_log.models import AuditLogEntry
 
 User = get_user_model()
 
@@ -117,9 +117,9 @@ def log(
             message=message,
         )
     else:
-        # Fallback to legacy audit log
-        AuditLogEntry.objects.create(
-            message=message,
+        raise ImproperlyConfigured(
+            "No resilient logger configured. Add RESILIENT_LOGGER to settings.py. "
+            "No other log targets supported."
         )
 
 
