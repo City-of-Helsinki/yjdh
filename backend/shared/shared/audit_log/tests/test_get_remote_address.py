@@ -1,14 +1,11 @@
 from unittest.mock import Mock
 
 import pytest
-from django.http import HttpRequest
 
 from shared.audit_log.utils import get_remote_address
 
 
-@pytest.mark.parametrize(
-    "x_forwarded_for", [True, False]
-)
+@pytest.mark.parametrize("x_forwarded_for", [True, False])
 @pytest.mark.parametrize(
     "remote_address, expected_ip",
     [
