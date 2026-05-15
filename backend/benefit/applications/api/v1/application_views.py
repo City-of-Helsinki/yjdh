@@ -134,25 +134,24 @@ class BaseApplicationFilter(filters.FilterSet):
 
         query = Q(**query) | Q(status=ApplicationStatus.CANCELLED)
 
-        second_instalment_requested_query = Q(
-            calculation__instalments__instalment_number=2,
-            calculation__instalments__status=InstalmentStatus.REQUESTED,
-        )
-        not_cancelled_query = ~Q(status=ApplicationStatus.CANCELLED)
-
-        active_second_instalment_requested_query = (
-            second_instalment_requested_query & not_cancelled_query
+        active_second_instalment_requested_application_pks = (
+            Application.objects.filter(
+                calculation__instalments__instalment_number=2,
+                calculation__instalments__status=InstalmentStatus.REQUESTED,
+            )
+            .exclude(status=ApplicationStatus.CANCELLED)
+            .values("pk")
         )
 
         if value:
             return (
                 queryset.filter(query)
-                .filter(~active_second_instalment_requested_query)
+                .exclude(pk__in=active_second_instalment_requested_application_pks)
                 .distinct()
             )
         else:
             return queryset.filter(
-                ~query | active_second_instalment_requested_query
+                ~query | Q(pk__in=active_second_instalment_requested_application_pks)
             ).distinct()
 
 
@@ -304,17 +303,22 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
     def post_attachment(self, request, *args, **kwargs):
         """
         Upload a single file as attachment.
-        Validate that adding attachments is allowed in this application status
+        Validate that adding attachments is allowed in this application status.
+        Only PAYSLIPs and OTHER_ATTACHMENTs can be added in the
+        current application state.
         """
         obj = self.get_object()
 
         attachment_type = request.data.get("attachment_type")
-        if attachment_type != AttachmentType.PAYSLIP:
-            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
-                return Response(
-                    {"detail": _("Operation not allowed for this application status.")},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
+        if not (
+            attachment_type == AttachmentType.PAYSLIP
+            or attachment_type == AttachmentType.OTHER_ATTACHMENT
+            or ApplicationStatus.is_editable_status(self.request.user, obj.status)
+        ):
+            return Response(
+                {"detail": _("Operation not allowed for this application status.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Validate request data
         serializer = AttachmentSerializer(
@@ -428,21 +432,15 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if not attachment:
             return self._attachment_not_found()
 
-        if (
+        if not (
             attachment.attachment_type == AttachmentType.PAYSLIP
-            and not request.user.is_handler()
+            or attachment.attachment_type == AttachmentType.OTHER_ATTACHMENT
+            or ApplicationStatus.is_editable_status(self.request.user, obj.status)
         ):
             return Response(
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
-
-        if attachment.attachment_type != AttachmentType.PAYSLIP:
-            if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
-                return Response(
-                    {"detail": _("Operation not allowed for this application status.")},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
         if instance := attachment:
             audit_logging.log(
                 request.user,
@@ -807,6 +805,16 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
                 {"detail": _("No second instalment found")},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+        if (
+            not application.calculation.start_date
+            or not application.calculation.end_date
+        ):
+            return Response(
+                {"detail": _("Calculation start or end date is missing")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         instalment_start_date = application.calculation.start_date + relativedelta(
             months=6
         )
@@ -840,6 +848,11 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             return Response(
                 {"detail": "Second instalment not found"},
                 status=status.HTTP_404_NOT_FOUND,
+            )
+        if not second_instalment.status == InstalmentStatus.REQUESTED:
+            return Response(
+                {"detail": "Second instalment status is not REQUESTED"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         second_instalment.status = InstalmentStatus.RESPONDED
         second_instalment.save()
