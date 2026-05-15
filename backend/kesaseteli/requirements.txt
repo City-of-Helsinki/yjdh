@@ -130,8 +130,10 @@ polyleven==0.11.0
     # via -r requirements.in
 prompt-toolkit==3.0.52
     # via ipython
-psycopg2==2.9.11
+psycopg[binary]==3.3.4
     # via -r requirements.in
+psycopg-binary==3.3.4
+    # via psycopg
 ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.3
@@ -183,6 +185,7 @@ typing-extensions==4.15.0
     # via
     #   azure-core
     #   azure-storage-blob
+    #   psycopg
 urllib3==2.6.3
     # via
     #   django-auth-adfs

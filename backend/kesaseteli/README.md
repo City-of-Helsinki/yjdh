@@ -38,7 +38,7 @@ Prerequisites:
 * Run `pip install -r requirements.txt`
 * Run `pip install -r requirements-dev.txt` (development requirements)
 
-**Known issues:** `psycopg2` installation often fails on macOS. Try to install it with `brew install postgresql` and then run `pip install psycopg2`, or for a more permanent but not so good solution, try `pip install psycopg2-binary`.
+**Note on Database Drivers:** This project uses `psycopg` (v3) with the `[binary]` extension. This handles the PostgreSQL client library (`libpq`) requirements automatically for most platforms, including macOS (even with architecture mismatches), Windows, and Linux. No manual installation of `libpq` is usually required.
 
 ### Database
 
