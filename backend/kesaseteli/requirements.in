@@ -13,7 +13,6 @@ django-searchable-encrypted-fields
 django-storages[azure]
 django~=5.2
 djangorestframework
-elasticsearch~=7.17  # TODO: remove and update to 8.x when elasticsearch servers are updated to elasticsearch 8
 factory-boy
 filetype
 ipython
