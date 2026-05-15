@@ -86,7 +86,9 @@ class ServiceBusClient:
                 service_bus_data["LegalForm"]
             ),
             "industry": cls._get_industry(service_bus_data.get("BusinessLine", {})),
-            "industry_code": cls._get_industry_code(service_bus_data.get("BusinessLine", {})),
+            "industry_code": cls._get_industry_code(
+                service_bus_data.get("BusinessLine", {})
+            ),
             "street_address": address["StreetAddress"],
             "postcode": address["PostalCode"],
             "city": address["City"],
