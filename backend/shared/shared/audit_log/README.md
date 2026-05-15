@@ -3,14 +3,26 @@
 **Table of Contents**
 
 - [YJDH Audit Logging](#yjdh-audit-logging)
+  - [Legacy Documentation (For components still in use by Benefit)](#legacy-documentation-for-components-still-in-use-by-benefit)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## YJDH Audit Logging
 
+> **DEPRECATION WARNING:** This package is deprecated and is pending complete removal.
+>
+> **Current Status:**
+> - The old audit log database models (`AuditLogEntry`) and Elasticsearch log transfer tasks have been removed, as they are no longer needed by any backend project.
+> - **Kesäseteli** has migrated to using `django-auditlog`.
+> - **Benefit** is using a custom audit logging implementation but currently still relies on some components of this package, such as the `AuditLoggingModelViewSet` and the `log` utility.
+>
+> The ultimate goal is to remove this `shared.audit_log` package entirely. This will happen once Benefit fully migrates away from its dependencies on it. The schedule for Benefit's migration is currently undetermined.
+
+### Legacy Documentation (For components still in use by Benefit)
+
 An audit logging package that can be used with `djangorestframework`.
 
-This audit logger allows you to save log messages from Django Rest Famework CRUD events to database. The serializer works by defining a DRF model viewset that inherits `AuditLoggingModelViewSet`.
+This audit logger allows you to log messages from Django Rest Framework CRUD events. The serializer works by defining a DRF model viewset that inherits `AuditLoggingModelViewSet`.
 
 To start using this package, follow these steps:
 
