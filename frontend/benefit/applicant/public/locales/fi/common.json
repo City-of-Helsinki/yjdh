@@ -582,7 +582,7 @@
       "submittedAt": "Lähetetty",
       "instalmentInfo1": "Tuen toinen maksuerä on",
       "instalmentInfo2": "euroa ajalle",
-      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tiedot tähän saakka maksetuista palkoista´",
+      "condition": "Saadaksesi toisen maksuerän sinun tulee toimittaa tiedot tähän saakka maksetuista palkoista",
       "conditionSpecial": "(palkkakuitit tai pankin tositteet maksetuista palkoista)",
       "employerAssurance": "Vakuutan työsuhteen toteutuneen suunnitellusti ja työntekijälle on maksettu hakemuksen mukaista palkkaa.",
       "missingApplicationId": "Hakemuksen tunnistetta ei löytynyt.",
