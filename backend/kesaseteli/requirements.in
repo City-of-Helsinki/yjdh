@@ -20,7 +20,7 @@ jsonpath-ng
 mozilla-django-oidc
 pillow
 polyleven
-psycopg2
+psycopg[binary]
 python-stdnum>=1.19
 requests
 sentry-sdk
