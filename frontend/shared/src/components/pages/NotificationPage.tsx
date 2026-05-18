@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowRight,
@@ -9,6 +8,7 @@ import {
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';

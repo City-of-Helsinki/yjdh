@@ -1,9 +1,4 @@
-import {
-  Button,
-  ButtonPresetTheme,
-  IconSignin,
-  NotificationSize,
-} from 'hds-react';
+import { ButtonPresetTheme, IconSignin, NotificationSize } from 'hds-react';
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -11,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';

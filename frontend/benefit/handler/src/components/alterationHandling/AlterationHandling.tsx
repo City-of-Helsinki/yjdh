@@ -6,12 +6,13 @@ import ApplicationHeader from 'benefit/handler/components/applicationHeader/Appl
 import { ROUTES } from 'benefit/handler/constants';
 import { ALTERATION_STATE } from 'benefit-shared/constants';
 import camelcaseKeys from 'camelcase-keys';
-import { Button, ButtonPresetTheme, IconArrowLeft } from 'hds-react';
+import { ButtonPresetTheme, IconArrowLeft } from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import hdsToast from 'shared/components/toast/Toast';
 import { useTheme } from 'styled-components';

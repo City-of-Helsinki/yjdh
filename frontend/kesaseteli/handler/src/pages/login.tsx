@@ -1,10 +1,11 @@
-import { Button, ButtonPresetTheme, IconSignin } from 'hds-react';
+import { ButtonPresetTheme, IconSignin } from 'hds-react';
 import useLogin from 'kesaseteli/handler/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';

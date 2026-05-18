@@ -1,7 +1,8 @@
 import { StepActionType } from 'benefit/handler/hooks/useSteps';
-import { Button, ButtonPresetTheme, ButtonVariant, IconPen } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
 type Props = {

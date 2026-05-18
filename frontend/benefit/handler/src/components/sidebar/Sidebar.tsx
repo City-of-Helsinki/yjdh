@@ -1,7 +1,6 @@
 import { Application } from 'benefit/handler/types/application';
 import { MESSAGE_TYPES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
@@ -12,6 +11,7 @@ import {
 import * as React from 'react';
 import { useEffect } from 'react';
 import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
+import Button from 'shared/components/button/Button';
 import Drawer from 'shared/components/drawer/Drawer';
 import Actions from 'shared/components/messaging/Actions';
 

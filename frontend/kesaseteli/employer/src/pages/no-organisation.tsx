@@ -1,14 +1,10 @@
-import {
-  Button,
-  ButtonPresetTheme,
-  IconSignout,
-  NotificationSize,
-} from 'hds-react';
+import { ButtonPresetTheme, IconSignout, NotificationSize } from 'hds-react';
 import useLogout from 'kesaseteli/employer/hooks/backend/useLogout';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import LinkText from 'shared/components/link-text/LinkText';
 import { $Notification } from 'shared/components/notification/Notification.sc';

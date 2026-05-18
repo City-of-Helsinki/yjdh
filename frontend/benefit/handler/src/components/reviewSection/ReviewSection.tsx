@@ -1,16 +1,11 @@
 import { ROUTES } from 'benefit/handler/constants';
 import ReviewStateContext from 'benefit/handler/context/ReviewStateContext';
 import { ReviewState } from 'benefit/handler/types/application';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconPen,
-  IconSize,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconPen, IconSize } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import Heading from 'shared/components/forms/heading/Heading';
 import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
 import {

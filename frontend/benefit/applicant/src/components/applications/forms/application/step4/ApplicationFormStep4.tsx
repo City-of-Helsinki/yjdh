@@ -6,7 +6,6 @@ import {
   ATTACHMENT_TYPES,
 } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowRight,
@@ -19,6 +18,7 @@ import isEmpty from 'lodash/isEmpty';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

@@ -3,7 +3,6 @@ import useChangeHandlerMutation from 'benefit/handler/hooks/useChangeHandlerMuta
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
@@ -11,6 +10,7 @@ import {
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat, formatDate } from 'shared/utils/date.utils';

@@ -1,7 +1,8 @@
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/ApplicationList';
 import ListContents from 'benefit/applicant/components/applications/applicationList/listItem/ListContents';
-import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 
 import { $ListActionButtonContainer } from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';

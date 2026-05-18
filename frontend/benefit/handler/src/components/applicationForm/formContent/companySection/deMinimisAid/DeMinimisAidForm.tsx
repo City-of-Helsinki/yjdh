@@ -6,7 +6,6 @@ import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   DateInput,
   IconPlusCircle,
@@ -14,6 +13,7 @@ import {
 } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React, { useCallback, useEffect } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

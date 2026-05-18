@@ -17,7 +17,6 @@ import { Application } from 'benefit-shared/types/application';
 import { areIntervalsOverlapping, max, min } from 'date-fns';
 import { FormikProps } from 'formik';
 import {
-  Button,
   ButtonPresetTheme,
   DateInput,
   Fieldset,
@@ -26,6 +25,7 @@ import {
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

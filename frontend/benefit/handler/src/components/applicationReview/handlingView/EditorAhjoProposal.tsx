@@ -6,7 +6,6 @@ import Text from '@tiptap/extension-text';
 import { EditorContent, useEditor } from '@tiptap/react';
 import AppContext from 'benefit/handler/context/AppContext';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
@@ -15,6 +14,7 @@ import {
   IconTextTool,
 } from 'hds-react';
 import React, { useEffect } from 'react';
+import Button from 'shared/components/button/Button';
 
 import { $Content, $EditorWrapper, $Toolbar } from './EditorAhjoProposal.sc';
 

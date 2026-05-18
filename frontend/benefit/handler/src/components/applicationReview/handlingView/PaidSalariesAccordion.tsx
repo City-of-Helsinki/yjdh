@@ -1,14 +1,20 @@
 import { $CalculatorTableRow } from 'benefit/handler/components/applicationReview/ApplicationReview.sc';
 import useChangeEmployerAssurance from 'benefit/handler/hooks/useChangeEmployerAssurance';
-import useInstalmentStatusTransitions from 'benefit/handler/hooks/useInstalmentStatusTransition'
+import useInstalmentStatusTransitions from 'benefit/handler/hooks/useInstalmentStatusTransition';
 import useRemoveAttachmentQuery from 'benefit/handler/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/handler/hooks/useUploadAttachmentQuery';
-import { ATTACHMENT_TYPES, INSTALMENT_STATUSES } from 'benefit-shared/constants';
+import {
+  ATTACHMENT_TYPES,
+  INSTALMENT_STATUSES,
+} from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import Button from 'shared/components/button/Button';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 
 type Props = {
   data: Application;
@@ -19,7 +25,9 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
   const { mutate: removeAttachment } = useRemoveAttachmentQuery();
   const { mutate: uploadAttachment } = useUploadAttachmentQuery();
   const uploadInputRef = React.useRef<HTMLInputElement | null>(null);
-  const [ isEmployerAssurance, setIsEmployerAssurance ] = React.useState(Boolean(data?.employerAssurance));
+  const [isEmployerAssurance, setIsEmployerAssurance] = React.useState(
+    Boolean(data?.employerAssurance)
+  );
   const instalmentStatusTransition = useInstalmentStatusTransitions();
   const changeEmployerAssurance = useChangeEmployerAssurance();
 
@@ -35,15 +43,15 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
     const payload = {
       applicationId: data.id,
       attachmentId,
-    }
+    };
 
     removeAttachment(payload);
-  }
+  };
 
   const handleEmployerAssuranceChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    const {checked} = event.target;
+    const { checked } = event.target;
     setIsEmployerAssurance(checked);
 
     if (data.id) {
@@ -63,7 +71,7 @@ const PaidSalariesAccordion: React.FC<Props> = ({ data }) => {
       id: data.secondInstalment.id,
       status: INSTALMENT_STATUSES.PENDING,
     });
-  }
+  };
 
   const handleSetAccepted = (): void => {
     if (!data.secondInstalment) {

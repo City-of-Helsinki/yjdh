@@ -1,6 +1,7 @@
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
-import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   removeLocalStorageItem,
   setLocalStorageItem,

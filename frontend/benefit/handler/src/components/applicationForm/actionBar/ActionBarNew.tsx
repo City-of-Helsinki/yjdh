@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowLeft,
@@ -9,6 +8,7 @@ import {
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

@@ -1,6 +1,7 @@
-import { Button, ButtonPresetTheme, IconSize } from 'hds-react';
+import { ButtonPresetTheme, IconSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 
 import {

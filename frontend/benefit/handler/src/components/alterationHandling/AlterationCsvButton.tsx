@@ -1,8 +1,9 @@
 import updateApplicationAlterationWithCsvQuery from 'benefit/handler/hooks/useUpdateApplicationAlterationWithCsvQuery';
 import { AlterationCsvProps } from 'benefit/handler/types/application';
-import { Button, ButtonVariant, IconDownload } from 'hds-react';
+import { ButtonVariant, IconDownload } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { downloadFile } from 'shared/utils/file.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';

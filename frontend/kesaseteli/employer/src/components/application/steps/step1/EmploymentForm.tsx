@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   TextInput as HdsTextInput,
@@ -14,6 +13,7 @@ import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeign
 import { Trans, useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import Button from 'shared/components/button/Button';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import FormSectionDivider from 'shared/components/forms/section/FormSectionDivider';

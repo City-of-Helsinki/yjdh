@@ -3,12 +3,13 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button, ButtonPresetTheme, ButtonVariant, IconSize } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconSize } from 'hds-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { useEffect } from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,

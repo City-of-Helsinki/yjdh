@@ -6,14 +6,10 @@ import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSectio
 import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconSearch,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconSearch } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 

@@ -1,7 +1,8 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
-import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';

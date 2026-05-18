@@ -2,9 +2,10 @@ import { HandledAplication } from 'benefit/handler/types/application';
 import { extractCalculatorRows } from 'benefit/handler/utils/calculator';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Row } from 'benefit-shared/types/application';
-import { Button, ButtonPresetTheme, ButtonVariant, Dialog } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, Dialog } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

@@ -2,13 +2,13 @@ import { $Notification } from 'benefit/applicant/components/Notification/Notific
 import { MAX_DEMINIMIS_AID_TOTAL_AMOUNT } from 'benefit/applicant/constants';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
   IconTrash,
 } from 'hds-react';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

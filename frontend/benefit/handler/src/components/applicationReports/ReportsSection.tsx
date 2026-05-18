@@ -1,5 +1,6 @@
-import { Button, ButtonPresetTheme, IconDownload } from 'hds-react';
+import { ButtonPresetTheme, IconDownload } from 'hds-react';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import Heading from 'shared/components/forms/heading/Heading';
 import {
   $Grid,

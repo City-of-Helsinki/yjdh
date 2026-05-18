@@ -1,6 +1,5 @@
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   Dialog,
@@ -8,6 +7,7 @@ import {
   IconArrowUndo,
 } from 'hds-react';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

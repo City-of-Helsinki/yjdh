@@ -8,7 +8,6 @@ import ApplicationListContext from 'benefit/applicant/context/ApplicationListCon
 import { Trans, useTranslation } from 'benefit/applicant/i18n';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowLeft,
@@ -16,6 +15,7 @@ import {
 } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import { useTheme } from 'styled-components';
 
 const DecisionsApplicationList = (): JSX.Element => {

@@ -1,6 +1,5 @@
 import { ROUTES } from 'benefit/handler/constants';
 import {
-  Button,
   ButtonPresetTheme,
   IconCross,
   RadioButton,
@@ -11,6 +10,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
 import {
