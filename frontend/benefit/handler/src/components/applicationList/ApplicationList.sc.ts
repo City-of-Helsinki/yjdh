@@ -32,11 +32,11 @@ type TagWrapperProps = {
 };
 
 export const $TagWrapper = styled.div<TagWrapperProps>`
-  #hds-tag {
+  [class*='Tag-module_tag'] {
     background: ${(props: TagWrapperProps) => props.$colors.background};
     color: ${(props: TagWrapperProps) => props.$colors.text};
 
-    #hds-tag-label span {
+    span {
       display: flex;
       align-items: center;
       svg {

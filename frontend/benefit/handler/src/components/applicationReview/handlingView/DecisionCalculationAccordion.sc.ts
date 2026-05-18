@@ -12,6 +12,10 @@ export const $DecisionCalculatorAccordion = styled.div`
   div[role='heading'] > button > span:first-child {
     padding-left: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
   }
+
+  div[class*='Accordion-module_accordionContent'] {
+    align-items: stretch;
+  }
 `;
 
 export const $DecisionCalculatorAccordionIconContainer = styled.div`

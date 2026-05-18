@@ -11,4 +11,5 @@ type StatusLabelProps = {
 export const $StatusLabel = styled(Tag)<StatusLabelProps>`
   background-color: ${(props) =>
     props.theme.colors[statusColorMap(props.status)]};
+  color: ${(props) => props.theme.colors.black90};
 `;
