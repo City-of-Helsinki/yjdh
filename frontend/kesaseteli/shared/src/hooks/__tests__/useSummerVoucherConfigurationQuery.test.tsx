@@ -9,6 +9,7 @@ import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfiguration
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useLocale from 'shared/hooks/useLocale';
 
 const API_BASE_TEST_URL = 'http://kesaseteli-api';
 
@@ -47,8 +48,11 @@ jest.mock('shared/hooks/useErrorHandler', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('shared/hooks/useLocale', () => jest.fn());
+
 const mockUseTranslation = useTranslation as jest.Mock;
 const mockUseErrorHandler = useErrorHandler as jest.Mock;
+const mockUseLocale = useLocale as jest.Mock;
 const mockErrorHandler = jest.fn();
 
 describe('useSummerVoucherConfigurationQuery', () => {
@@ -86,8 +90,13 @@ describe('useSummerVoucherConfigurationQuery', () => {
     mockUseTranslation.mockReturnValue({
       i18n: { language: firstLang },
     });
+    mockUseLocale.mockReturnValue(firstLang);
 
-    nock(API_BASE_TEST_URL)
+    nock(API_BASE_TEST_URL, {
+      reqheaders: {
+        'accept-language': firstLang,
+      },
+    })
       .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
       .reply(200, languageDataMock[firstLang]);
 
@@ -106,6 +115,7 @@ describe('useSummerVoucherConfigurationQuery', () => {
       mockUseTranslation.mockReturnValue({
         i18n: { language: lang },
       });
+      mockUseLocale.mockReturnValue(lang);
 
       nock(API_BASE_TEST_URL, {
         reqheaders: {
@@ -127,6 +137,7 @@ describe('useSummerVoucherConfigurationQuery', () => {
     mockUseTranslation.mockReturnValue({
       i18n: { language: languages[0] },
     });
+    mockUseLocale.mockReturnValue(languages[0]);
 
     nock(API_BASE_TEST_URL)
       .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
