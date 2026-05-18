@@ -42,7 +42,8 @@ class DeMinimisAid {
     await this.step1.fillEmployerInfo(
       '6051437344779954',
       '10',
-      'Lorem ipsum dolor sit amet');
+      'Lorem ipsum dolor sit amet'
+    );
     await this.step1.fillContactPerson(
       'Tester',
       'Example',
@@ -139,7 +140,7 @@ class DeMinimisAid {
       const toastError = Selector(this.selectors.toastError).withText(
         fi.applications.sections.company.notifications.deMinimisUnfinished.label
       );
-      await t.expect(await toastError.exists).ok();
+      await t.expect(toastError.exists).ok({ timeout: 5000 });
       await t.click(toastError.find(`[title="${fi.toast.closeToast}"]`));
     },
 
@@ -148,6 +149,9 @@ class DeMinimisAid {
       action: SAVE_ACTIONS
     ): Promise<void> => {
       await this.step1.selectDeMinimis(false);
+      await t
+        .expect(Selector(this.selectors.deMinimisRow).count)
+        .eql(0, { timeout: 5000 });
 
       if (action === SAVE_ACTIONS.CONTINUE) {
         await this.actions.saveStep1AndReturn();
@@ -158,7 +162,9 @@ class DeMinimisAid {
 
       await this.step1.selectDeMinimis(true);
       await t.scrollIntoView(this.getSelectorContinueButton());
-      await t.expect(await this.getRowCount()).eql(0);
+      await t
+        .expect(Selector(this.selectors.deMinimisRow).count)
+        .eql(0, { timeout: 5000 });
     },
   };
 

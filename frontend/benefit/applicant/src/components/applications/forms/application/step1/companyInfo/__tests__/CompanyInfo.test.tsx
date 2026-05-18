@@ -41,6 +41,15 @@ describe('CompanyInfo', () => {
             name: 'associationHasBusinessActivities',
             label: 'associationHasBusinessActivities',
           },
+          companyNumberOfEmployees: {
+            name: 'companyNumberOfEmployees',
+            label: 'companyNumberOfEmployees',
+          },
+          companyBusinessBrief: {
+            name: 'companyBusinessBrief',
+            label: 'companyBusinessBrief',
+            placeholder: 'companyBusinessBrief',
+          },
         }}
         formik={formik}
         translationsBase=""
@@ -49,7 +58,13 @@ describe('CompanyInfo', () => {
 
   it('should render with no accessibility violations', async () => {
     const { result } = renderHook(() =>
-      useFormik({ initialValues: {}, onSubmit: jest.fn() })
+      useFormik({
+        initialValues: {
+          companyNumberOfEmployees: '',
+          companyBusinessBrief: '',
+        },
+        onSubmit: jest.fn(),
+      })
     );
 
     const { container } = getComponent(result.current);

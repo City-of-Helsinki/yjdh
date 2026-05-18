@@ -66,7 +66,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   const { deMinimisTotal } = useDeminimisAidsList();
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form id="employer-application-form" onSubmit={handleSubmit} noValidate>
       <CompanyInfo
         getErrorMessage={getErrorMessage}
         formik={formik}

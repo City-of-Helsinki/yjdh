@@ -1,4 +1,4 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
@@ -6,6 +6,8 @@ class Step1 extends WizardStep {
   constructor() {
     super(1);
   }
+
+  private formSelector = Selector('form#employer-application-form');
 
   private bankAccountNumber = this.component.findByRole('textbox', {
     name: this.regexp(
@@ -77,42 +79,24 @@ class Step1 extends WizardStep {
     ),
   });
 
-  private businessActivitiesFalse = this.findRadioLabelWithGroupText(
-    this.translations.applications.sections.company.fields
-      .associationHasBusinessActivities.label,
-    this.translations.applications.sections.company.fields
-      .associationHasBusinessActivities.no
+  private businessActivitiesFalse = Selector(
+    '#associationHasBusinessActivitiesFalse'
   );
 
-  private businessActivitiesTrue = this.findRadioLabelWithGroupText(
-    this.translations.applications.sections.company.fields
-      .associationHasBusinessActivities.label,
-    this.translations.applications.sections.company.fields
-      .associationHasBusinessActivities.yes
+  private businessActivitiesTrue = Selector(
+    '#associationHasBusinessActivitiesTrue'
   );
 
-  private deMinimisAidFalse = this.findRadioLabelWithGroupText(
-    this.translations.applications.sections.company.fields.deMinimisAid.label,
-    this.translations.applications.sections.company.fields.deMinimisAid.no
+  private deMinimisAidFalse = Selector('#deMinimisAidFalse');
+
+  private deMinimisAidTrue = Selector('#deMinimisAidTrue');
+
+  private coOperationNegotiationsFalse = Selector(
+    '#coOperationNegotiationsFalse'
   );
 
-  private deMinimisAidTrue = this.findRadioLabelWithGroupText(
-    this.translations.applications.sections.company.fields.deMinimisAid.label,
-    this.translations.applications.sections.company.fields.deMinimisAid.yes
-  );
-
-  private coOperationNegotiationsFalse = this.findRadioLabelWithGroupText(
-    this.translations.applications.sections.company.fields
-      .coOperationNegotiations.label,
-    this.translations.applications.sections.company.fields
-      .coOperationNegotiations.no
-  );
-
-  private coOperationNegotiationsTrue = this.findRadioLabelWithGroupText(
-    this.translations.applications.sections.company.fields
-      .coOperationNegotiations.label,
-    this.translations.applications.sections.company.fields
-      .coOperationNegotiations.yes
+  private coOperationNegotiationsTrue = Selector(
+    '#coOperationNegotiationsTrue'
   );
 
   private coOperationNegotiationsDescription = this.component.findByRole(
@@ -125,15 +109,32 @@ class Step1 extends WizardStep {
     }
   );
 
+  private async clickRadioInput(
+    inputSelector: Selector,
+    labelCssSelector: string
+  ): Promise<void> {
+    const radioInput = inputSelector.with({ timeout: 10_000 });
+
+    await t.expect(radioInput.exists).ok({ timeout: 10_000 });
+    await t.scrollIntoView(radioInput);
+    await this.htmlElementClick(labelCssSelector);
+    await t.expect(radioInput.checked).ok({ timeout: 5000 });
+  }
+
   public async fillEmployerInfo(
     iban: string,
     companyNumberOfEmployees: string,
     companyBusinessBrief: string
   ): Promise<void> {
-    await this.clickSelectRadioButton(this.businessActivitiesTrue);
+    await t.expect(this.formSelector.exists).ok({ timeout: 60_000 });
+    await t.expect(this.businessActivitiesTrue.exists).ok({ timeout: 10_000 });
+    await this.selectBusinessActivities(true);
     await this.fillInput(this.bankAccountNumber, iban);
-    await this.fillInput(this.companyNumberOfEmployees, companyNumberOfEmployees);
-    await this.fillInput(this.companyBusinessBrief, companyBusinessBrief)
+    await this.fillInput(
+      this.companyNumberOfEmployees,
+      companyNumberOfEmployees
+    );
+    await this.fillInput(this.companyBusinessBrief, companyBusinessBrief);
   }
 
   public async fillContactPerson(
@@ -180,20 +181,49 @@ class Step1 extends WizardStep {
     return t.click(this.deminimisRemove(index));
   }
 
-  public selectBusinessActivities(yes: boolean): Promise<void> {
-    if (yes) return this.clickSelectRadioButton(this.businessActivitiesFalse);
-    return this.clickSelectRadioButton(this.businessActivitiesTrue);
+  public async selectBusinessActivities(yes: boolean): Promise<void> {
+    if (yes) {
+      await this.clickRadioInput(
+        this.businessActivitiesTrue,
+        'label[for="associationHasBusinessActivitiesTrue"]'
+      );
+      return;
+    }
+
+    await this.clickRadioInput(
+      this.businessActivitiesFalse,
+      'label[for="associationHasBusinessActivitiesFalse"]'
+    );
   }
 
-  public selectDeMinimis(yes: boolean): Promise<void> {
-    if (yes) return this.clickSelectRadioButton(this.deMinimisAidTrue);
-    return this.clickSelectRadioButton(this.deMinimisAidFalse);
+  public async selectDeMinimis(yes: boolean): Promise<void> {
+    if (yes) {
+      await this.clickRadioInput(
+        this.deMinimisAidTrue,
+        'label[for="deMinimisAidTrue"]'
+      );
+      return;
+    }
+
+    await this.clickRadioInput(
+      this.deMinimisAidFalse,
+      'label[for="deMinimisAidFalse"]'
+    );
   }
 
-  public selectCoOperationNegotiations(yes: boolean): Promise<void> {
-    if (yes)
-      return this.clickSelectRadioButton(this.coOperationNegotiationsTrue);
-    return this.clickSelectRadioButton(this.coOperationNegotiationsFalse);
+  public async selectCoOperationNegotiations(yes: boolean): Promise<void> {
+    if (yes) {
+      await this.clickRadioInput(
+        this.coOperationNegotiationsTrue,
+        'label[for="coOperationNegotiationsTrue"]'
+      );
+      return;
+    }
+
+    await this.clickRadioInput(
+      this.coOperationNegotiationsFalse,
+      'label[for="coOperationNegotiationsFalse"]'
+    );
   }
 }
 

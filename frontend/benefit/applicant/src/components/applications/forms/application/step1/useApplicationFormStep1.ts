@@ -7,7 +7,11 @@ import {
   APPLICATION_FIELDS_STEP1_KEYS,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { Application, DeMinimisAid } from 'benefit-shared/types/application';
+import {
+  Application,
+  ApplicationData,
+  DeMinimisAid,
+} from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import { FormikErrors, FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
@@ -83,8 +87,32 @@ const hasBusinessActivitiesOrIsCompany = (
   hasBusinessActivities: boolean,
   organizationType: ORGANIZATION_TYPES | undefined
 ): boolean =>
-  hasBusinessActivities === true ||
+  hasBusinessActivities  ||
   organizationType === ORGANIZATION_TYPES.COMPANY;
+
+const clearDeMinimisAidsAfterSuccessfulSubmit = (
+  submitOk: ApplicationData | void,
+  setDeMinimisAids: React.Dispatch<React.SetStateAction<DeMinimisAid[]>>
+): void => {
+  if (submitOk) {
+    setDeMinimisAids([]);
+  }
+};
+
+const shouldQuietSaveOnOpen = (
+  applicationId: string | undefined,
+  hasQuietSavedOnOpen: React.MutableRefObject<boolean>
+): boolean => !applicationId && !hasQuietSavedOnOpen.current;
+
+const getHandleDelete = (
+  applicationId: string | undefined,
+  onDelete: (id: string) => void
+): (() => void) | undefined =>
+  applicationId
+    ? () => {
+        void onDelete(applicationId);
+      }
+    : undefined;
 
 const useApplicationFormStep1 = (
   application: Partial<Application>,
@@ -92,7 +120,8 @@ const useApplicationFormStep1 = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-  const { onNext, onSave, onDelete } = useFormActions(application);
+  const { onNext, onSave, onDelete, onQuietSave } = useFormActions(application);
+  const hasQuietSavedOnOpen = React.useRef(false);
 
   const locale = useLocale();
   const translationsBase = 'common:applications.sections.company';
@@ -104,8 +133,7 @@ const useApplicationFormStep1 = (
 
   const onNextCallback = (values: FormikValues): Promise<void> =>
     onNext(values).then((submitOk): void => {
-      // Make sure context is cleared
-      if (submitOk) setDeMinimisAids([]);
+      clearDeMinimisAidsAfterSuccessfulSubmit(submitOk, setDeMinimisAids);
 
       // eslint-disable-next-line unicorn/no-useless-undefined
       return undefined;
@@ -119,6 +147,13 @@ const useApplicationFormStep1 = (
     enableReinitialize: true,
     onSubmit: onNextCallback,
   });
+
+  React.useEffect(() => {
+    if (shouldQuietSaveOnOpen(application.id, hasQuietSavedOnOpen)) {
+      hasQuietSavedOnOpen.current = true;
+      void onQuietSave(formik.values);
+    }
+  }, [application.id, formik.values, onQuietSave]);
 
   const { values, touched, errors, setFieldValue } = formik;
 
@@ -183,17 +218,13 @@ const useApplicationFormStep1 = (
       ? false
       : void onSave(values);
 
-  const applicationId = String(values?.id);
-  const handleDelete = applicationId
-    ? () => {
-        void onDelete(applicationId);
-      }
-    : undefined;
+  const handleDelete = getHandleDelete(values?.id, onDelete);
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
     void setFieldValue(fields.deMinimisAid.name, null);
   }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
+
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(
     Boolean(values.associationHasBusinessActivities),

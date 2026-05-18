@@ -32,6 +32,9 @@ interface FormActions {
   onNext: (values: Application) => Promise<ApplicationData | void>;
   onBack: () => Promise<ApplicationData | void>;
   onSave: (values: Partial<Application>) => Promise<ApplicationData | void>;
+  onQuietSave: (
+    values: Partial<Application>
+  ) => Promise<ApplicationData | void>;
   onDelete: (id: string) => void;
 }
 
@@ -162,7 +165,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       companyNumberOfEmployees:
         companyNumberOfEmployees === '' ||
         companyNumberOfEmployees === undefined
-          ? ('' as const)
+          ? null
           : Number(companyNumberOfEmployees),
       paySubsidyPercent,
       startDate: startDate
@@ -279,6 +282,36 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     return undefined;
   };
 
+  const onQuietSave = async (
+    currentValues: Application
+  ): Promise<ApplicationData | void> => {
+    if (applicationId) {
+      return undefined;
+    }
+
+    const data = getData(getModifiedValues(currentValues), currentStep);
+
+    try {
+      const newApplication = await createApplication(data);
+
+      void router.replace(
+        {
+          query: {
+            ...router.query,
+            id: newApplication?.id,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
+
+      return newApplication;
+    } catch (error) {
+      // useEffect will catch this error
+    }
+    return undefined;
+  };
+
   const onDelete = (id: string): void => {
     deleteApplication(id, {
       onSuccess: () => {
@@ -298,6 +331,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     onNext,
     onBack,
     onSave,
+    onQuietSave,
     onDelete,
   };
 };
