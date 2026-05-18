@@ -133,6 +133,15 @@
           "companyAddress": "Osoite",
           "companyPostcode": "Postinumero",
           "companyCity": "Postitoimipaikka",
+          "companyNumberOfEmployees": {
+            "label": "Henkilöstömäärä ennen työllistettyä",
+            "placeholder": "Henkilöstömäärä"
+          },
+          "companyBusinessBrief": {
+            "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja.",
+            "helperText": "",
+            "placeholder": ""
+          },
           "useAlternativeAddress": {
             "label": "Käytä toista osoitetta"
           },
@@ -381,6 +390,10 @@
           "employmentContract": {
             "title": "Työsopimus",
             "message": ""
+          },
+          "businessBrief": {
+            "title": "Toimintaa kuvaava liite",
+            "message": "Voit halutessasi liittää tähän toimintaanne kuvaavan liitteen"
           },
           "paySubsidyDecision": {
             "title": "Palkkatukipäätös",

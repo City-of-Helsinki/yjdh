@@ -35,6 +35,8 @@ const endDate = addDays(startDate, 30);
 const form: ApplicationFormData = {
   organization: {
     iban: '6051437344779954',
+    companyNumberOfEmployees: '10',
+    companyBusinessBrief: 'Lorem ipsum dolor sit amet',
     firstName: 'Raven',
     lastName: 'Stamm',
     phone: '050001234',
@@ -76,7 +78,11 @@ test('New application', async () => {
   await step1.isLoaded(60_000);
   const step2 = new Step2();
 
-  await step1.fillEmployerInfo(form.organization.iban, false);
+  await step1.fillEmployerInfo(
+    form.organization.iban,
+    form.organization.companyNumberOfEmployees,
+    form.organization.companyBusinessBrief
+  );
   await step1.fillContactPerson(
     form.organization.firstName,
     form.organization.lastName,

@@ -126,6 +126,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     const {
       coOperationNegotiations,
       coOperationNegotiationsDescription,
+      companyNumberOfEmployees,
       paySubsidyGranted,
       startDate,
       endDate,
@@ -158,6 +159,11 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     const normalizedValues = {
       ...currentValues,
       employee,
+      companyNumberOfEmployees:
+        companyNumberOfEmployees === '' ||
+        companyNumberOfEmployees === undefined
+          ? ('' as const)
+          : Number(companyNumberOfEmployees),
       paySubsidyPercent,
       startDate: startDate
         ? convertToBackendDateFormat(parseDate(startDate))

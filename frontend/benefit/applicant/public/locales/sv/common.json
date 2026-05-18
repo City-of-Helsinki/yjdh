@@ -133,6 +133,15 @@
           "companyAddress": "Adress",
           "companyPostcode": "Postnummer",
           "companyCity": "Postort",
+          "companyNumberOfEmployees": {
+            "label": "Antal anställda före anställning",
+            "placeholder": ""
+          },
+          "companyBusinessBrief": {
+            "label": "Beskriv arten av arbetsgivarens verksamhet. Vid behov kommer vi att be om ytterligare information.",
+            "helperText": "",
+            "placeholder": ""
+          },
           "useAlternativeAddress": {
             "label": "Använd en annan adress"
           },
@@ -381,6 +390,10 @@
           "employmentContract": {
             "title": "Arbetsavtal",
             "message": ""
+          },
+          "businessBrief": {
+            "title": "Bilaga som beskriver åtgärden",
+            "message": "Om du vill kan du bifoga en bilaga som beskriver dina aktiviteter här."
           },
           "paySubsidyDecision": {
             "title": "Beslut om lönesubvention",

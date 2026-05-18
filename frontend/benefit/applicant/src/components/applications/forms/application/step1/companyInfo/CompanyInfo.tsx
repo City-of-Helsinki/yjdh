@@ -1,9 +1,9 @@
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
-import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
-import { IconCheckCircleFill, SelectionGroup, TextInput } from 'hds-react';
+import { IconCheckCircleFill, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
@@ -24,6 +24,7 @@ import {
   $ApplicationDetailValue,
   $HintText,
 } from '../../ApplicationInfo.sc';
+import AttachmentsList from '../../step3/attachmentsList/AttachmentsList';
 import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
 
 export interface CompanyInfoProps {
@@ -322,58 +323,94 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             }
           </InputMask>
         </$GridCell>
-        {data.organizationType.toLowerCase() ===
-          ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (
-          <$GridCell $colSpan={8} $colStart={1}>
-            <SelectionGroup
-              label={fields.associationHasBusinessActivities.label}
-              tooltipText={t(
-                `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
+        <$GridCell $colSpan={12} $colStart={1}>
+          <SelectionGroup
+            label={fields.associationHasBusinessActivities.label}
+            tooltipText={t(
+              `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
+            )}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(
+              fields.associationHasBusinessActivities.name
+            )}
+          >
+            <$RadioButton
+              id={`${fields.associationHasBusinessActivities.name}False`}
+              name={fields.associationHasBusinessActivities.name}
+              value="false"
+              label={t(
+                `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
               )}
-              direction="vertical"
-              required
-              errorText={getErrorMessage(
-                fields.associationHasBusinessActivities.name
+              onChange={() => {
+                void formik.setFieldValue(
+                  fields.associationHasBusinessActivities.name,
+                  false
+                );
+              }}
+              // 3 states: null (none is selected), true, false
+              checked={formik.values.associationHasBusinessActivities === false}
+            />
+            <$RadioButton
+              id={`${fields.associationHasBusinessActivities.name}True`}
+              name={fields.associationHasBusinessActivities.name}
+              value="true"
+              label={t(
+                `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
               )}
-            >
-              <$RadioButton
-                id={`${fields.associationHasBusinessActivities.name}False`}
-                name={fields.associationHasBusinessActivities.name}
-                value="false"
-                label={t(
-                  `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
-                )}
-                onChange={() => {
-                  void formik.setFieldValue(
-                    fields.associationHasBusinessActivities.name,
-                    false
-                  );
-                }}
-                // 3 states: null (none is selected), true, false
-                checked={
-                  formik.values.associationHasBusinessActivities === false
-                }
-              />
-              <$RadioButton
-                id={`${fields.associationHasBusinessActivities.name}True`}
-                name={fields.associationHasBusinessActivities.name}
-                value="true"
-                label={t(
-                  `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
-                )}
-                onChange={() =>
-                  formik.setFieldValue(
-                    fields.associationHasBusinessActivities.name,
-                    true
-                  )
-                }
-                checked={
-                  formik.values.associationHasBusinessActivities === true
-                }
-              />
-            </SelectionGroup>
-          </$GridCell>
-        )}
+              onChange={() =>
+                formik.setFieldValue(
+                  fields.associationHasBusinessActivities.name,
+                  true
+                )
+              }
+              checked={formik.values.associationHasBusinessActivities === true}
+            />
+          </SelectionGroup>
+        </$GridCell>
+      </$GridCell>
+      <$GridCell $colSpan={4}>
+        {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
+        <TextInput
+          id={fields.companyNumberOfEmployees.name}
+          name={fields.companyNumberOfEmployees.name}
+          label={fields.companyNumberOfEmployees.label}
+          onBlur={formik.handleBlur}
+          onChange={(event) => {
+            void formik.setFieldValue(
+              fields.companyNumberOfEmployees.name,
+              event.target.value.replace(/\D/g, '')
+            );
+          }}
+          value={String(formik.values.companyNumberOfEmployees || '')}
+          invalid={!!getErrorMessage(fields.companyNumberOfEmployees.name)}
+          aria-invalid={!!getErrorMessage(fields.companyNumberOfEmployees.name)}
+          errorText={getErrorMessage(fields.companyNumberOfEmployees.name)}
+          required
+        />
+      </$GridCell>
+      <$GridCell $colSpan={12}>
+        {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
+        <TextArea
+          id={fields.companyBusinessBrief.name}
+          name={fields.companyBusinessBrief.name}
+          label={fields.companyBusinessBrief.label}
+          placeholder={fields.companyBusinessBrief.placeholder}
+          helperText={t(`${translationsBase}.fields.companyBusinessBrief.helperText`)}
+          onBlur={formik.handleBlur}
+          onChange={formik.handleChange}
+          value={formik.values.companyBusinessBrief || ''}
+          invalid={!!getErrorMessage(fields.companyBusinessBrief.name)}
+          aria-invalid={!!getErrorMessage(fields.companyBusinessBrief.name)}
+          errorText={getErrorMessage(fields.companyBusinessBrief.name)}
+          required
+        />
+      </$GridCell>
+      <$GridCell $colSpan={12}>
+        <AttachmentsList
+          attachments={formik.values.attachments}
+          attachmentType={ATTACHMENT_TYPES.BUSINESS_BRIEF}
+        />
       </$GridCell>
     </FormSection>
   );

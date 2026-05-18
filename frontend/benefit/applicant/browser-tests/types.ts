@@ -1,6 +1,8 @@
 export type ApplicationFormData = {
   organization: {
     iban: string;
+    companyNumberOfEmployees: string;
+    companyBusinessBrief: string;
     firstName: string;
     lastName: string;
     phone: string;

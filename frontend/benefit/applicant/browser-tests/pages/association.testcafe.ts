@@ -36,7 +36,10 @@ test.skip('New application', async () => {
   const step1 = new Step1();
   await step1.isLoaded(60_000);
 
-  await step1.fillEmployerInfo('3943561142000926', true);
+  await step1.fillEmployerInfo(
+    '3943561142000926',
+    '10',
+    'Lorem ipsum dolor sit amet');
   await step1.fillContactPerson(
     'Waild',
     'Ömoussons',

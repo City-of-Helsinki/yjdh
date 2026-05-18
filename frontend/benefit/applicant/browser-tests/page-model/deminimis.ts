@@ -39,7 +39,10 @@ class DeMinimisAid {
 
     await this.step1.isLoaded(30_000);
 
-    await this.step1.fillEmployerInfo('6051437344779954', false);
+    await this.step1.fillEmployerInfo(
+      '6051437344779954',
+      '10',
+      'Lorem ipsum dolor sit amet');
     await this.step1.fillContactPerson(
       'Tester',
       'Example',

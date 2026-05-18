@@ -382,6 +382,14 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("YTJ type code for company form")
     )
 
+    company_number_of_employees = models.IntegerField(
+        verbose_name=_("number of employees"), null=True, blank=True
+    )
+
+    company_business_brief = models.TextField(
+        verbose_name=_("company business brief"), blank=True
+    )
+
     company_department = models.CharField(
         max_length=256, blank=True, verbose_name=_("company department")
     )

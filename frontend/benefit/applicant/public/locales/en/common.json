@@ -133,6 +133,15 @@
           "companyAddress": "Street address",
           "companyPostcode": "Postal code",
           "companyCity": "City / town",
+          "companyNumberOfEmployees": {
+            "label": "Number of employees before the employed",
+            "placeholder": ""
+          },
+          "companyBusinessBrief": {
+            "label": "Describe the nature of the employer's activities. We will ask for additional information if necessary.",
+            "helperText": "",
+            "placeholder": ""
+          },
           "useAlternativeAddress": {
             "label": "Use a different address"
           },
@@ -381,6 +390,10 @@
           "employmentContract": {
             "title": "Employment contract",
             "message": ""
+          },
+          "businessBrief": {
+            "title": "Attachment describing the employer's activities",
+            "message": "If you wish, you can attach an attachment describing your activities here."
           },
           "paySubsidyDecision": {
             "title": "Pay subsidy decision",

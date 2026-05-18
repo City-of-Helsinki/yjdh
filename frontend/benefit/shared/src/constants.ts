@@ -64,6 +64,9 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   COMPANY_DEPARTMENT = 'companyDepartment',
   COMPANY_BANK_ACCOUNT_NUMBER = 'companyBankAccountNumber',
   ASSOCIATION_HAS_BUSINESS_ACTIVITIES = 'associationHasBusinessActivities',
+  COMPANY_NUMBER_OF_EMPLOYEES = 'companyNumberOfEmployees',
+  COMPANY_BUSINESS_ID = 'companyBusinessId',
+  COMPANY_BUSINESS_BRIEF = 'companyBusinessBrief',
   COMPANY_CONTACT_PERSON_FIRST_NAME = 'companyContactPersonFirstName',
   COMPANY_CONTACT_PERSON_LAST_NAME = 'companyContactPersonLastName',
   COMPANY_CONTACT_PERSON_PHONE_NUMBER = 'companyContactPersonPhoneNumber',
@@ -140,6 +143,7 @@ export enum ATTACHMENT_TYPES {
   EMPLOYEE_CONSENT = 'employee_consent',
   FULL_APPLICATION = 'full_application',
   PAYSLIP = 'payslip',
+  BUSINESS_BRIEF ="business_brief",
   OTHER_ATTACHMENT = 'other_attachment',
 }
 
