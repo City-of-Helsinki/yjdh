@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: ${(props) => props.theme.fontSize.heading.s};
   }
 
-	div#hds-tag {
+	[class*='Tag-module_tag'] {
 		border-radius: 15px;
 	}
 
