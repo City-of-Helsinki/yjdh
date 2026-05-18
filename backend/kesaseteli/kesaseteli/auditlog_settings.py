@@ -28,7 +28,6 @@ AUDITLOG_EXCLUDE_TRACKING_MODELS = (
     "applications.historicalemployerapplication",  # to be removed completely
     "applications.historicalemployersummervoucher",  # to be removed completely
     "applications.historicalyouthsummervoucher",  # to be removed completely
-    "audit_log.auditlogentry",  # no double audit logging
     "contenttypes.contenttype",  # system model
     "sessions.session",  # auth model
     # resilient-logger internal model, not subject to audit
