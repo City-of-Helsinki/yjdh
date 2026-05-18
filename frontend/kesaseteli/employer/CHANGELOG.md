@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.0.0...kesaseteli-employer-v2.1.0) (2026-05-18)
+
+
+### Features
+
+* **ks:** Add foreign IBAN payment fields ([613f0a4](https://github.com/City-of-Helsinki/yjdh/commit/613f0a4aeda83ce9d73280b6781185d2eabaf6fa))
+
+
+### Bug Fixes
+
+* **ks,employer:** Handle existing draft redirection on thank you page ([f189eae](https://github.com/City-of-Helsinki/yjdh/commit/f189eaece8fac864b8ddafff4a4f28a311ce34ea))
+* **ks,employer:** Remove enforcement of numeric voucher serial numbers ([e104426](https://github.com/City-of-Helsinki/yjdh/commit/e104426e85675aa3fd5d94c3df7760bab30c5a6e))
+
 ## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v1.5.2...kesaseteli-employer-v2.0.0) (2026-04-30)
 
 
