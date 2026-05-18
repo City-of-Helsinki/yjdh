@@ -83,4 +83,82 @@ export const Fonts = `
   font-style: italic;
   text-rendering: optimizeLegibility;
 }
+
+/*
+ * HelsinkiGroteskPro variable font (font file served from CDN).
+ * Regular (400), Medium (500), Bold (700), Black (900), each normal and italic.
+ * Font axes (fvar): wght 200–900, ital 0–1.
+ */
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: italic;
+  font-weight: 400;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: normal;
+  font-weight: 500;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: italic;
+  font-weight: 500;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: normal;
+  font-weight: 700;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: italic;
+  font-weight: 700;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: normal;
+  font-weight: 900;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-display: swap;
+  font-family: HelsinkiGroteskPro;
+  font-style: italic;
+  font-weight: 900;
+  src: url('https://makasiini.hel.fi/delivery/917fc4ffc37c44d31b143244042e0078/9a677fe2c4414b1a40990971cd4ac24c.woff2')
+    format('woff2');
+  text-rendering: optimizeLegibility;
+}
 `;
