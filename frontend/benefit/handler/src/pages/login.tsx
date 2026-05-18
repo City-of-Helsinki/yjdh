@@ -1,6 +1,5 @@
 import useLogin from 'benefit/handler/hooks/useLogin';
 import {
-  Button,
   ButtonPresetTheme,
   IconSignin,
   Notification,
@@ -12,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { removeLocalStorageItem } from 'shared/utils/localstorage.utils';

@@ -3,7 +3,6 @@ import { Application as HandlerApplication } from 'benefit/handler/types/applica
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowUndo,
@@ -14,6 +13,7 @@ import {
 } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';
 

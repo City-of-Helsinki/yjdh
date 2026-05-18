@@ -3,7 +3,6 @@ import { useFrontPageMainIngress } from 'benefit/applicant/components/mainIngres
 import MainIngress from 'benefit/applicant/components/mainIngress/MainIngress';
 import useCloneApplicationMutation from 'benefit/applicant/hooks/useCloneApplicationMutation';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconCopy,
@@ -11,6 +10,7 @@ import {
 } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 
 const FrontPageMainIngress: React.FC = () => {
   const { t, handleNewApplicationClick } = useFrontPageMainIngress();

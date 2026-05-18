@@ -1,15 +1,10 @@
 import { $NoApplicationsContainer } from 'benefit/applicant/components/applications/Applications.sc';
 import { ROUTES } from 'benefit/applicant/constants';
-import {
-  Button,
-  ButtonPresetTheme,
-  IconDocument,
-  IconPlus,
-  IconSize,
-} from 'hds-react';
+import { ButtonPresetTheme, IconDocument, IconPlus, IconSize } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 
 const NoApplications = (): JSX.Element => {
   const router = useRouter();

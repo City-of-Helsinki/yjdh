@@ -14,14 +14,10 @@ import {
   Application,
   DecisionDetailList,
 } from 'benefit-shared/types/application';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconLinkExternal,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactNode } from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 

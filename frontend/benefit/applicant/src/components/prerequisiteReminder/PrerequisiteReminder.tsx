@@ -5,15 +5,11 @@ import {
   $Link,
   $PrerequisiteCard,
 } from 'benefit/applicant/components/prerequisiteReminder/PrerequisiteReminder.sc';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconDownload,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconDownload } from 'hds-react';
 import { NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { openFileInNewTab } from 'shared/utils/file.utils';
 

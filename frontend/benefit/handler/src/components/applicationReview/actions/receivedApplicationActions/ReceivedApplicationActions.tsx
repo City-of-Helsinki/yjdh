@@ -3,9 +3,10 @@ import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { Application, ApplicationData } from 'benefit-shared/types/application';
-import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

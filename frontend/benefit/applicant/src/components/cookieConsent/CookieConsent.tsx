@@ -2,7 +2,6 @@ import { ROUTES } from 'benefit/applicant/constants';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
-  Button,
   CookieBanner,
   CookieConsentContextProvider,
   CookieSettingsPage,
@@ -10,6 +9,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import React, { useMemo } from 'react';
+import Button from 'shared/components/button/Button';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
 import { getCookieConsentSiteSettings } from 'shared/utils/cookieConsentSettings';

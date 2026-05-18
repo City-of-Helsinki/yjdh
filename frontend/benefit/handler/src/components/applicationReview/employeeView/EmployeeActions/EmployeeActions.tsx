@@ -1,14 +1,10 @@
 import { ROUTES } from 'benefit/handler/constants';
 import { UploadProps } from 'benefit/handler/types/application';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconEuroSign,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconEuroSign } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

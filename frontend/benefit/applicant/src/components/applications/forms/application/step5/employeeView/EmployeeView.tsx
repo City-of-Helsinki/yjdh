@@ -1,9 +1,10 @@
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { BENEFIT_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
-import { Button, ButtonPresetTheme, ButtonVariant, IconPen } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import {

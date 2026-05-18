@@ -7,9 +7,10 @@ import {
   ALTERATION_STATE,
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
-import { Button, ButtonPresetTheme } from 'hds-react';
+import { ButtonPresetTheme } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import ErrorPage from 'shared/components/pages/ErrorPage';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';

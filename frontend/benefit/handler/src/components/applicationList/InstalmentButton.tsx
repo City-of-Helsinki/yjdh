@@ -1,5 +1,6 @@
-import { Button, ButtonPresetTheme, IconCheck } from 'hds-react';
+import { ButtonPresetTheme, IconCheck } from 'hds-react';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 
 interface InstalmentButtonProps {
   isLoading: boolean;

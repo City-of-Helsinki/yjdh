@@ -1,5 +1,6 @@
-import { Button, ButtonPresetTheme, ButtonSize, TextArea } from 'hds-react';
+import { ButtonPresetTheme, ButtonSize, TextArea } from 'hds-react';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 
 import { $Actions, $FormActions, $Notification } from './Messaging.sc';
 

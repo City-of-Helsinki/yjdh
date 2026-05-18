@@ -34,7 +34,6 @@ import {
 } from 'benefit-shared/constants';
 import { DecisionDetailList } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   IconInfoCircleFill,
   LoadingSpinner,
@@ -42,6 +41,7 @@ import {
 } from 'hds-react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import {

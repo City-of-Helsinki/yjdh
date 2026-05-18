@@ -14,7 +14,6 @@ import {
   BatchProposal,
 } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconAlertCircle,
@@ -31,6 +30,7 @@ import {
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';

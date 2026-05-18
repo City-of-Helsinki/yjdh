@@ -3,7 +3,6 @@ import useLogin from 'benefit/applicant/hooks/useLogin';
 import useLogout from 'benefit/applicant/hooks/useLogout';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
@@ -13,6 +12,7 @@ import {
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import Button from 'shared/components/button/Button';
 import BaseHeader from 'shared/components/header/Header';
 import { getFullName } from 'shared/utils/application.utils';
 

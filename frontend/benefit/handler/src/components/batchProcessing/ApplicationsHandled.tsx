@@ -4,9 +4,10 @@ import {
 } from 'benefit/handler/components/applicationList/ApplicationList.sc';
 import useAddToBatchQuery from 'benefit/handler/hooks/useApplicationToBatch';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
-import { Button, ButtonPresetTheme, Table } from 'hds-react';
+import { ButtonPresetTheme, Table } from 'hds-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Link } from 'shared/components/table/Table.sc';
 import theme from 'shared/styles/theme';

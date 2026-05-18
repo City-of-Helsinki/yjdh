@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   LoadingSpinner,
@@ -9,6 +8,7 @@ import {
   SelectionGroup,
 } from 'hds-react';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

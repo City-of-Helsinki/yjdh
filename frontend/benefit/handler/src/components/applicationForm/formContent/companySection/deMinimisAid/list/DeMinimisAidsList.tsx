@@ -1,13 +1,9 @@
 import { MAX_DEMINIMIS_AID_TOTAL_AMOUNT } from 'benefit/handler/constants';
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconMinusCircle,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconMinusCircle } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

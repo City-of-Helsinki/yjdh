@@ -1,7 +1,6 @@
 import { HandledAplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   Dialog,
@@ -11,6 +10,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

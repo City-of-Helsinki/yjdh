@@ -4,13 +4,13 @@ import StatusIcon from 'benefit-shared/components/statusIcon/StatusIcon';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconSpeechbubbleText,
 } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import {

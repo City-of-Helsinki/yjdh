@@ -16,7 +16,6 @@ import {
 } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   DateInput,
@@ -28,6 +27,7 @@ import {
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
+import Button from 'shared/components/button/Button';
 import { Field } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';

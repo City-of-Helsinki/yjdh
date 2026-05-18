@@ -7,18 +7,14 @@ import PrerequisiteReminder from 'benefit/applicant/components/prerequisiteRemin
 import AppContext from 'benefit/applicant/context/AppContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
-import {
-  Button,
-  ButtonPresetTheme,
-  ButtonVariant,
-  IconArrowRight,
-} from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconArrowRight } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import withAuth from 'shared/components/hocs/withAuth';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 

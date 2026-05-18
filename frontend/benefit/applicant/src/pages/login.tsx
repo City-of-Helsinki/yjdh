@@ -5,7 +5,6 @@ import {
 } from 'benefit/applicant/components/pages/Pages.sc';
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconLinkExternal,
@@ -19,6 +18,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import { useQueryClient } from 'react-query';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
 import {

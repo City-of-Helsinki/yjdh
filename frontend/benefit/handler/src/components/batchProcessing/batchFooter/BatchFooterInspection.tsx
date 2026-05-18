@@ -6,7 +6,6 @@ import {
 import { BatchProposal } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   DateInput,
@@ -17,6 +16,7 @@ import {
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React, { ChangeEvent } from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Modal from 'shared/components/modal/Modal';
 import theme from 'shared/styles/theme';

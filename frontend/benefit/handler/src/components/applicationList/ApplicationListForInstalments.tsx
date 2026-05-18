@@ -13,7 +13,6 @@ import {
 } from 'benefit-shared/constants';
 import { ApplicationListItemData } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonVariant,
   DateInput,
   Dialog,
@@ -25,6 +24,7 @@ import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
 import { $Link } from 'shared/components/table/Table.sc';
 import {

@@ -1,7 +1,6 @@
 import { useTranslation } from 'benefit/applicant/i18n';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconAlertCircleFill,
@@ -10,6 +9,7 @@ import {
   IconCross,
 } from 'hds-react';
 import React, { MouseEvent, useState } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

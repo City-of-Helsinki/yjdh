@@ -1,8 +1,9 @@
 import { ROUTES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Button, Notification } from 'hds-react';
+import { Notification } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 
 const NoCookieConsentsNotification: React.FC<{
   submittedApplication: string;

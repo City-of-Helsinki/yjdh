@@ -4,7 +4,6 @@ import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationF
 import { Application } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonSize,
   ButtonVariant,
@@ -15,6 +14,7 @@ import {
   Stepper,
 } from 'hds-react';
 import React, { useEffect } from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
   $Grid,

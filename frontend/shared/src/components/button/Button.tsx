@@ -1,11 +1,12 @@
 import {
-  Button as HdsButton,
   ButtonProps as HdsButtonProps,
   ButtonVariant,
   LoadingSpinner,
 } from 'hds-react';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { $Button } from './Button.sc';
 
 export type ButtonProps = HdsButtonProps & {
   loadingText?: string;
@@ -23,7 +24,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const variant = isLoading ? ButtonVariant.Clear : props.variant;
 
     return (
-      <HdsButton
+      <$Button
         {...props}
         ref={ref}
         disabled={disabled}
@@ -31,7 +32,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         variant={variant as ButtonVariant}
       >
         {buttonText}
-      </HdsButton>
+      </$Button>
     );
   }
 );

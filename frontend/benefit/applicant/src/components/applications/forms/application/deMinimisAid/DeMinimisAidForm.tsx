@@ -6,7 +6,6 @@ import {
 import { DE_MINIMIS_AID_KEYS } from 'benefit-shared/constants';
 import { DeMinimisAid } from 'benefit-shared/types/application';
 import {
-  Button,
   ButtonPresetTheme,
   DateInput,
   IconPlusCircle,
@@ -14,6 +13,7 @@ import {
 } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
 import {

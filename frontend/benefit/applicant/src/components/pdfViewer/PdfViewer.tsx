@@ -1,9 +1,10 @@
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-import { Button, ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,

@@ -6,7 +6,6 @@ import {
 } from 'benefit/handler/types/application';
 import { FormikProps } from 'formik';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   Dialog,
@@ -18,6 +17,7 @@ import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import {
   $Grid,
   $GridCell,
