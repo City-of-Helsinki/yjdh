@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.0.0...kesaseteli-youth-v2.0.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* **ks:** Generate readme for youth UI and handlers UI ([832c569](https://github.com/City-of-Helsinki/yjdh/commit/832c5692777388c6db0b36014dc81c1e9c38f509))
+
 ## [2.0.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v1.5.2...kesaseteli-youth-v2.0.0) (2026-04-30)
 
 
