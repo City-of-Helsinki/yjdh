@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.13.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.12.0...kesaseteli-backend-v1.13.0) (2026-05-18)
+
+
+### Features
+
+* **ks,backend,admin:** Add user showable serial number search to admin ([09cdce9](https://github.com/City-of-Helsinki/yjdh/commit/09cdce99e84163883576531c836a10e9bc20cd82))
+* **ks,backend:** Add use of randomly generated voucher serial numbers ([09fe360](https://github.com/City-of-Helsinki/yjdh/commit/09fe3604236d07d140fa63b7c1ba409b1b1a807a))
+* **ks,shared:** Use persistent Suomi.fi usernames ([990e34e](https://github.com/City-of-Helsinki/yjdh/commit/990e34ea76217b3bc6d92d0e493153aaf957779c))
+* **ks:** Add foreign IBAN payment fields ([613f0a4](https://github.com/City-of-Helsinki/yjdh/commit/613f0a4aeda83ce9d73280b6781185d2eabaf6fa))
+* **ks:** Provide translations for target groups through API endpoint ([593807e](https://github.com/City-of-Helsinki/yjdh/commit/593807e9902ff39dd5ba60ac9b53687ac7d15b4f))
+
+
+### Bug Fixes
+
+* **ks,shared:** Logout redirection to relay state ([bcf850f](https://github.com/City-of-Helsinki/yjdh/commit/bcf850fd90eaec82c756097ca6fda651f334ba91))
+* **ks,shared:** Suomi-fi logout relay state handling for next-url ([e66a1a3](https://github.com/City-of-Helsinki/yjdh/commit/e66a1a35c7c5b27be7dbcc7c4d1581e6c840ce32))
+
+
+### Dependencies
+
+* Bump django from 5.2.13 to 5.2.14 in /backend/kesaseteli ([63b14d6](https://github.com/City-of-Helsinki/yjdh/commit/63b14d6cd048a39717e622a676f1d20a35bc4495))
+
 ## [1.12.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.11.0...kesaseteli-backend-v1.12.0) (2026-04-30)
 
 
