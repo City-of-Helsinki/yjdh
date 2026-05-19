@@ -113,6 +113,7 @@ test('New application', async () => {
     form.employee.lastName,
     form.employee.ssn
   );
+  await step2.selectOtherFinancialSupport(false);
   await step2.fillEmploymentInfo(
     form.employee.title,
     form.employee.workHours,

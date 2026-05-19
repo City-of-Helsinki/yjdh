@@ -71,7 +71,15 @@ export const getValidationSchema = (
         .nullable()
         .test({
           message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
-          test: (val) => typeof val === 'boolean',
+          test: (val) => {
+            if (
+              organizationType?.toLowerCase() ===
+              ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
+            )
+              return typeof val === 'boolean';
+
+            return true;
+          },
         }),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_NUMBER_OF_EMPLOYEES]: Yup.string()
       .matches(/^\d+$/, t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
@@ -79,7 +87,9 @@ export const getValidationSchema = (
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BUSINESS_BRIEF]: Yup.string()
       .max(
         MAX_VERY_LONG_STRING_LENGTH,
-        t(VALIDATION_MESSAGE_KEYS.STRING_MAX, { max: MAX_VERY_LONG_STRING_LENGTH })
+        t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
+          max: MAX_VERY_LONG_STRING_LENGTH,
+        })
       )
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]:

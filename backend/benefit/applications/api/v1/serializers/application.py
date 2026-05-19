@@ -887,7 +887,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     # must be filled before submitting the application for processing
     REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS = [
         "company_bank_account_number",
-        "association_has_business_activities",
         "company_number_of_employees",
         "company_business_brief",
         "company_contact_person_phone_number",
@@ -944,9 +943,19 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_association_has_business_activities(
         self, company, association_has_business_activities
     ):
-        """
-        This method is left empty to preserve existing behavior.
-        """
+        if OrganizationType.resolve_organization_type(
+            company.company_form_code
+        ) == OrganizationType.COMPANY and association_has_business_activities not in [
+            None,
+            False,
+        ]:
+            raise serializers.ValidationError(
+                {
+                    "association_has_business_activities": _(
+                        "This field can be set for associations only"
+                    )
+                }
+            )
 
     @extend_schema_field(serializers.ChoiceField(choices=BenefitType.choices))
     def get_available_benefit_types(self, obj):

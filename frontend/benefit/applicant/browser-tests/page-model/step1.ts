@@ -79,14 +79,6 @@ class Step1 extends WizardStep {
     ),
   });
 
-  private businessActivitiesFalse = Selector(
-    '#associationHasBusinessActivitiesFalse'
-  );
-
-  private businessActivitiesTrue = Selector(
-    '#associationHasBusinessActivitiesTrue'
-  );
-
   private deMinimisAidFalse = Selector('#deMinimisAidFalse');
 
   private deMinimisAidTrue = Selector('#deMinimisAidTrue');
@@ -127,8 +119,6 @@ class Step1 extends WizardStep {
     companyBusinessBrief: string
   ): Promise<void> {
     await t.expect(this.formSelector.exists).ok({ timeout: 60_000 });
-    await t.expect(this.businessActivitiesTrue.exists).ok({ timeout: 10_000 });
-    await this.selectBusinessActivities(true);
     await this.fillInput(this.bankAccountNumber, iban);
     await this.fillInput(
       this.companyNumberOfEmployees,
@@ -179,21 +169,6 @@ class Step1 extends WizardStep {
 
   public clickDeminimisRemove(index: number): Promise<void> {
     return t.click(this.deminimisRemove(index));
-  }
-
-  public async selectBusinessActivities(yes: boolean): Promise<void> {
-    if (yes) {
-      await this.clickRadioInput(
-        this.businessActivitiesTrue,
-        'label[for="associationHasBusinessActivitiesTrue"]'
-      );
-      return;
-    }
-
-    await this.clickRadioInput(
-      this.businessActivitiesFalse,
-      'label[for="associationHasBusinessActivitiesFalse"]'
-    );
   }
 
   public async selectDeMinimis(yes: boolean): Promise<void> {

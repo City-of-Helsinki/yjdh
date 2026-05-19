@@ -1,4 +1,4 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
@@ -52,6 +52,14 @@ class Step2 extends WizardStep {
       .apprenticeshipProgram.label,
     this.translations.applications.sections.employee.fields
       .apprenticeshipProgram.yes
+  );
+
+  private otherFinancialSupportForEmploymentFalse = Selector(
+    'label[for="otherFinancialSupportForEmploymentFalse"]'
+  );
+
+  private otherFinancialSupportForEmploymentTrue = Selector(
+    'label[for="otherFinancialSupportForEmploymentTrue"]'
   );
 
   private startDate = this.component.findByRole('textbox', {
@@ -127,12 +135,22 @@ class Step2 extends WizardStep {
     await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
-  public async fillApprenticeshipProgram(apprenticeshipProgram: boolean): Promise<void> {
+  public async fillApprenticeshipProgram(
+    apprenticeshipProgram: boolean
+  ): Promise<void> {
     if (apprenticeshipProgram) {
       await this.clickSelectRadioButton(this.apprenticeshipProgramTrue);
       return;
     }
     await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
+  }
+
+  public async selectOtherFinancialSupport(yes: boolean): Promise<void> {
+    await this.clickSelectRadioButton(
+      yes
+        ? this.otherFinancialSupportForEmploymentTrue
+        : this.otherFinancialSupportForEmploymentFalse
+    );
   }
 
   public async fillBenefitPeriod(
