@@ -7,7 +7,12 @@ import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import { AlterationAccordionItemProps } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
-import { ButtonPresetTheme, ButtonVariant, IconTrash } from 'hds-react';
+import {
+  AccordionSize,
+  ButtonPresetTheme,
+  ButtonVariant,
+  IconTrash,
+} from 'hds-react';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
 import {
@@ -77,7 +82,7 @@ const AlterationAccordionItem = ({
   return (
     <$AlterationAccordionItem
       card
-      size="s"
+      size={AccordionSize.Small}
       language={locale}
       headingLevel={3}
       heading={t(
