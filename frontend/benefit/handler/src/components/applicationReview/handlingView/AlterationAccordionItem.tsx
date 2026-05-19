@@ -20,6 +20,7 @@ import { AlterationAccordionItemProps } from 'benefit-shared/types/application';
 import { prettyPrintObject } from 'benefit-shared/utils/errors';
 import camelcaseKeys from 'camelcase-keys';
 import {
+  AccordionSize,
   ButtonPresetTheme,
   ButtonTheme,
   ButtonVariant,
@@ -160,7 +161,7 @@ AlterationAccordionItemProps): JSX.Element => {
       </$TagContainer>
       <$AlterationAccordionItem
         card
-        size="s"
+        size={AccordionSize.Small}
         language={locale}
         headingLevel={3}
         heading={t(

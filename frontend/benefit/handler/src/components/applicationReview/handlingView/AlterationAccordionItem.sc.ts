@@ -5,7 +5,7 @@ import styled, { DefaultTheme } from 'styled-components';
 export const $AlterationAccordionItemContainer = styled.div`
   position: relative;
 
-  div[role='heading'] > div[role='button'] > span.label {
+  div[role='heading'] > button > span:first-child {
     display: inline-block;
     max-width: 66.6%;
     padding-left: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl};
