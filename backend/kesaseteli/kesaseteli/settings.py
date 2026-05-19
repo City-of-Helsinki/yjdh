@@ -274,7 +274,6 @@ INSTALLED_APPS = [
     "auditlog",
     "auditlog_extra",
     # shared apps
-    "shared.audit_log",
     "shared.oidc",
     # local apps
     "applications",
