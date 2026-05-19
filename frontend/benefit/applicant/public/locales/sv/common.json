@@ -306,6 +306,10 @@
             "label": "Har personen som ska sysselsättas utsetts en arbetsledande chef?",
             "placeholder": "Ja, personen som ska sysselsättas har en arbetsledande chef."
           },
+          "otherFinancialSupportForEmployment": {
+            "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
+            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+          },
           "paySubsidyGranted": {
             "label": "Har något av de följande stöden beviljats för anställningsförhållandet?",
             "labelShort": "Beviljat stöd",

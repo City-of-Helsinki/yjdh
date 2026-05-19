@@ -306,6 +306,10 @@
             "label": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
             "placeholder": "Kyllä, työllistettävällä on työnjohdollinen esihenkilö."
           },
+          "otherFinancialSupportForEmployment": {
+            "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
+            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+          },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
             "labelShort": "Myönnetyt tuet",

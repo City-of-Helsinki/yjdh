@@ -380,6 +380,9 @@ export interface Step1 {
 }
 
 export interface Step2 {
+  [APPLICATION_FIELDS_STEP2_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]?:
+    | boolean
+    | null;
   [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_GRANTED | null;
   [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
   [APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
@@ -486,6 +489,7 @@ export type ApplicationData = {
   applicant_language?: SUPPORTED_LANGUAGES;
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
+  other_financial_support_for_employment?: boolean | null;
   pay_subsidy_granted?: PAY_SUBSIDY_GRANTED;
   pay_subsidy_percent?: PaySubsidyPercent | null;
   additional_pay_subsidy_percent?: PaySubsidyPercent;

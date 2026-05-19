@@ -306,6 +306,10 @@
             "label": "Has the person who is being employed been assigned a job supervisor?",
             "placeholder": "Yes, the person to be employed has a supervisor."
           },
+          "otherFinancialSupportForEmployment": {
+            "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
+            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+          },
           "paySubsidyGranted": {
             "label": "Has this employment relationship received any of the following aid?",
             "labelShort": "Received aid",

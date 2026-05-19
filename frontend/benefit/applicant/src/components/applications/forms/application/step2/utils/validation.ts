@@ -31,6 +31,10 @@ export const getValidationSchema = (
   t: TFunction
 ) =>
   Yup.object().shape({
+    [APPLICATION_FIELDS_STEP2_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]:
+      Yup.boolean()
+        .nullable()
+        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),

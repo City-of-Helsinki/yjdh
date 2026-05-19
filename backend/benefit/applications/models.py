@@ -469,10 +469,14 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     )
 
     """
-    This field is required if the applicant company form is an association.
-    For "normal" businesses, this field has no effect and should always be set to None.
+    This field is always required.
+    Previously, the field was only required for associations.
     """
     association_immediate_manager_check = models.BooleanField(null=True)
+
+    other_financial_support_for_employment = models.BooleanField(
+        verbose_name=_("other financial support for employment"), null=True
+    )
 
     co_operation_negotiations = models.BooleanField(null=True)
     co_operation_negotiations_description = models.CharField(
