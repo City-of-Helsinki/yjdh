@@ -1,0 +1,8 @@
+# pyrefly.toml
+preset = "basic"
+
+search_path = [
+    "backend/shared",
+    "backend/kesaseteli",
+    "backend/benefit"
+]
