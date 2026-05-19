@@ -4,7 +4,7 @@ import {
   APPLICATION_START_DATE_WITHIN_MONTHS,
   EMPLOYEE_MAX_WORKING_HOURS,
   EMPLOYEE_MIN_WORKING_HOURS,
-  MAX_SHORT_STRING_LENGTH,
+  MAX_SHORT_STRING_LENGTH, MAX_VERY_LONG_STRING_LENGTH,
 } from 'benefit/applicant/constants';
 import {
   APPLICATION_FIELDS_STEP2_KEYS,
@@ -32,8 +32,16 @@ export const getValidationSchema = (
 ) =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP2_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]:
-      Yup.boolean()
-        .nullable()
+      Yup.boolean().nullable().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELDS_STEP2_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION]:
+      Yup.string()
+        .trim()
+        .max(
+          MAX_VERY_LONG_STRING_LENGTH,
+          t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
+            max: MAX_VERY_LONG_STRING_LENGTH,
+          })
+        )
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()

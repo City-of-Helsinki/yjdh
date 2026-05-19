@@ -93,6 +93,13 @@ class Step2 extends WizardStep {
     ),
   });
 
+  private roleOfEmployeeInOrganization = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields
+        .roleOfEmployeeInOrganization.label
+    ),
+  });
+
   private monthlyPay = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.monthlyPay.label
@@ -159,6 +166,15 @@ class Step2 extends WizardStep {
   ): Promise<void> {
     await t.typeText(this.startDate, startDate);
     await t.typeText(this.endDate, endDate);
+  }
+
+  public async fillRoleOfEmployeeInOrganization(
+    roleOfEmployeeInOrganization: string
+  ): Promise<void> {
+    await t.typeText(
+      this.roleOfEmployeeInOrganization,
+      roleOfEmployeeInOrganization
+    );
   }
 
   public async fillEmploymentInfo(

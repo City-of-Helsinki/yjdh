@@ -50,6 +50,7 @@ const form: ApplicationFormData = {
     title: 'Kuljettaja',
     workHours: '30',
     collectiveBargainingAgreement: 'Logistiikka TES',
+    roleOfEmployeeInOrganization: 'Työntekijä toimii kuljetustehtävissä.',
     monthlyPay: '2300',
     otherExpenses: '300',
     vacationMoney: '500',
@@ -121,6 +122,9 @@ test('New application', async () => {
     form.employee.monthlyPay,
     form.employee.otherExpenses,
     form.employee.vacationMoney
+  );
+  await step2.fillRoleOfEmployeeInOrganization(
+    form.employee.roleOfEmployeeInOrganization
   );
   await step2.fillApprenticeshipProgram(true);
 

@@ -83,6 +83,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
 export enum APPLICATION_FIELDS_STEP2_KEYS {
   ASSOCIATION_IMMEDIATE_MANAGER_CHECK = 'associationImmediateManagerCheck',
   OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT = 'otherFinancialSupportForEmployment',
+  ROLE_OF_EMPLOYEE_IN_ORGANIZATION = 'roleOfEmployeeInOrganization',
   PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   ADDITIONAL_PAY_SUBSIDY_PERCENT = 'additionalPaySubsidyPercent',

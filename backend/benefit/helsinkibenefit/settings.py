@@ -58,7 +58,7 @@ env = environ.Env(
     DJANGO_4_CSRF_TRUSTED_ORIGINS=(list, []),
     CSRF_TRUSTED_ORIGINS=(
         list,
-        ["https://localhost:3000", "https://localhost:3100", "https://localhost:8000"],
+        ["localhost:3000", "localhost:3100", "localhost:8000"],
     ),
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi"),

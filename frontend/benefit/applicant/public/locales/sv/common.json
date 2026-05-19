@@ -307,8 +307,8 @@
             "placeholder": "Ja, personen som ska sysselsättas har en arbetsledande chef."
           },
           "otherFinancialSupportForEmployment": {
-            "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
-            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+            "label": "Har något annat stöd beviljats för den anställdes lön?",
+            "tooltip": "Om annat stöd har sökts/erhållits för den anställdes lön kommer vi att begära en förklaring."
           },
           "paySubsidyGranted": {
             "label": "Har något av de följande stöden beviljats för anställningsförhållandet?",
@@ -322,6 +322,10 @@
           },
           "additionalPaySubsidyPercent": {
             "label": "Om någon annan lönesubvention har beviljats för anställningen, \nange lönesubventionsprocent för den."
+          },
+          "roleOfEmployeeInOrganization": {
+            "label": "Beskriv hur arbetsuppgifterna för den anställde med support är relaterade till organisationen",
+            "placeholder": ""
           },
           "apprenticeshipProgram": {
             "label": "Handlar det om ett läroavtal?",

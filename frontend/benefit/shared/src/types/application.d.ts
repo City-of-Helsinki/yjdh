@@ -383,6 +383,7 @@ export interface Step2 {
   [APPLICATION_FIELDS_STEP2_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]?:
     | boolean
     | null;
+  [APPLICATION_FIELDS_STEP2_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION]?: string;
   [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_GRANTED | null;
   [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
   [APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
@@ -484,12 +485,13 @@ export type ApplicationData = {
   company_bank_account_number?: string;
   company_contact_person_phone_number?: string;
   company_contact_person_email?: string;
-  association_has_business_activities?: boolean;
-  association_immediate_manager_check?: boolean;
+  association_has_business_activities?: boolean | null;
+  association_immediate_manager_check?: boolean | null;
   applicant_language?: SUPPORTED_LANGUAGES;
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
   other_financial_support_for_employment?: boolean | null;
+  role_of_employee_in_organization?: string;
   pay_subsidy_granted?: PAY_SUBSIDY_GRANTED;
   pay_subsidy_percent?: PaySubsidyPercent | null;
   additional_pay_subsidy_percent?: PaySubsidyPercent;

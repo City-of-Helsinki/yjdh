@@ -478,6 +478,10 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("other financial support for employment"), null=True
     )
 
+    role_of_employee_in_organization = models.TextField(
+        verbose_name=_("role of employee in organization"), blank=True
+    )
+
     co_operation_negotiations = models.BooleanField(null=True)
     co_operation_negotiations_description = models.CharField(
         max_length=256,

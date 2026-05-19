@@ -323,6 +323,10 @@
           "additionalPaySubsidyPercent": {
             "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki,\nanna siinä oleva palkkatukiprosentti"
           },
+          "roleOfEmployeeInOrganization": {
+            "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
+            "placeholder": ""
+          },
           "apprenticeshipProgram": {
             "label": "Onko kyseessä oppisopimus?",
             "yes": "Kyllä",

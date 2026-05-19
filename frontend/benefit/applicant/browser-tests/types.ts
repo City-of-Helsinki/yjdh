@@ -16,6 +16,7 @@ export type ApplicationFormData = {
     title: string;
     workHours: string;
     collectiveBargainingAgreement: string;
+    roleOfEmployeeInOrganization: string;
     monthlyPay: string;
     otherExpenses: string;
     vacationMoney: string;

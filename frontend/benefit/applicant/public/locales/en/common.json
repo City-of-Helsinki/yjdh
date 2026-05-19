@@ -307,8 +307,8 @@
             "placeholder": "Yes, the person to be employed has a supervisor."
           },
           "otherFinancialSupportForEmployment": {
-            "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
-            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+            "label": "Has any other support been granted for the employee's salary?",
+            "tooltip": "If other support has been applied for/received for the employee's salary, we will request an explanation."
           },
           "paySubsidyGranted": {
             "label": "Has this employment relationship received any of the following aid?",
@@ -322,6 +322,10 @@
           },
           "additionalPaySubsidyPercent": {
             "label": "If another pay subsidy has been granted for the employment relationship, \nplease provide the pay subsidy percent"
+          },
+          "roleOfEmployeeInOrganization": {
+            "label": "Describe how the work tasks of the person hired with support are related to the organization",
+            "placeholder": ""
           },
           "apprenticeshipProgram": {
             "label": "Is this an apprenticeship?",

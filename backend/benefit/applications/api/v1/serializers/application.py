@@ -203,12 +203,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "company_contact_person_email",
             "association_has_business_activities",
             "association_immediate_manager_check",
+            "other_financial_support_for_employment",
             "applicant_language",
             "co_operation_negotiations",
             "co_operation_negotiations_description",
             "pay_subsidy_granted",
             "pay_subsidy_percent",
             "additional_pay_subsidy_percent",
+            "role_of_employee_in_organization",
             "apprenticeship_program",
             "archived",
             "application_step",
@@ -742,7 +744,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                         )
                     }
                 )
-        elif association_immediate_manager_check not in [None, False]:
+        elif association_immediate_manager_check is not None:
             raise serializers.ValidationError(
                 {
                     "association_immediate_manager_check": _(
@@ -751,6 +753,13 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     )
                 }
             )
+
+    def _normalize_association_immediate_manager_check(self, company, data):
+        if (
+            OrganizationType.resolve_organization_type(company.company_form_code)
+            != OrganizationType.ASSOCIATION
+        ):
+            data["association_immediate_manager_check"] = None
 
     def _validate_de_minimis_aid_set(
         self,
@@ -943,12 +952,11 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_association_has_business_activities(
         self, company, association_has_business_activities
     ):
-        if OrganizationType.resolve_organization_type(
-            company.company_form_code
-        ) == OrganizationType.COMPANY and association_has_business_activities not in [
-            None,
-            False,
-        ]:
+        if (
+            OrganizationType.resolve_organization_type(company.company_form_code)
+            == OrganizationType.COMPANY
+            and association_has_business_activities is not None
+        ):
             raise serializers.ValidationError(
                 {
                     "association_has_business_activities": _(
@@ -956,6 +964,13 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     )
                 }
             )
+
+    def _normalize_association_has_business_activities(self, company, data):
+        if (
+            OrganizationType.resolve_organization_type(company.company_form_code)
+            == OrganizationType.COMPANY
+        ):
+            data["association_has_business_activities"] = None
 
     @extend_schema_field(serializers.ChoiceField(choices=BenefitType.choices))
     def get_available_benefit_types(self, obj):
@@ -1111,6 +1126,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise PermissionDenied(_("You are not allowed to do this action"))
         company = self.get_company(data)
         self._handle_breaking_changes(company, data)
+        self._normalize_association_has_business_activities(company, data)
+        self._normalize_association_immediate_manager_check(company, data)
 
         self._validate_date_range(
             data.get("start_date"),

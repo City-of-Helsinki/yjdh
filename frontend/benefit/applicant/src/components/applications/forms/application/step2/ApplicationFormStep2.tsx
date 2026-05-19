@@ -8,7 +8,7 @@ import {
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { DateInput, SelectionGroup, TextInput } from 'hds-react';
+import { DateInput, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -303,6 +303,28 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
             tooltipText={t(
               `${translationsBase}.fields.collectiveBargainingAgreement.tooltip`
+            )}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={12}>
+          {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
+          <TextArea
+            id={fields.roleOfEmployeeInOrganization.name}
+            name={fields.roleOfEmployeeInOrganization.name}
+            label={fields.roleOfEmployeeInOrganization.label}
+            placeholder={fields.roleOfEmployeeInOrganization.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.roleOfEmployeeInOrganization || ''}
+            invalid={
+              !!getErrorMessage(fields.roleOfEmployeeInOrganization.name)
+            }
+            aria-invalid={
+              !!getErrorMessage(fields.roleOfEmployeeInOrganization.name)
+            }
+            errorText={getErrorMessage(
+              fields.roleOfEmployeeInOrganization.name
             )}
             required
           />
