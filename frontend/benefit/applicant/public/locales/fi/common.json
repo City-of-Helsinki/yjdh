@@ -602,6 +602,7 @@
   },
   "serviceName": "Helsinki-lisän asiointipalvelu",
   "appName": "Helsinki-lisä",
+  "openInNewTabLabel": "(avautuu uudessa välilehdessä)",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",

@@ -1,5 +1,7 @@
-import { Card, IconInfoCircle, Link } from 'hds-react';
+import { Card, IconInfoCircle } from 'hds-react';
 import styled, { DefaultTheme } from 'styled-components';
+
+import OpenInNewTabLink from '../link/OpenInNewTabLink';
 
 export const $PrerequisiteCard = styled(Card)`
   --background-color: ${(props: { theme: DefaultTheme }) =>
@@ -33,7 +35,7 @@ export const $DownloadButtonContainer = styled.div`
   margin: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m} 0;
 `;
 
-export const $Link = styled(Link)`
+export const $Link = styled(OpenInNewTabLink)`
   --link-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black};
   --link-visited-color: ${(props: { theme: DefaultTheme }) =>
     props.theme.colors.black};

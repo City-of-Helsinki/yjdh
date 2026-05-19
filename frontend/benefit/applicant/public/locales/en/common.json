@@ -602,6 +602,7 @@
   },
   "serviceName": "Helsinki benefit service",
   "appName": "Helsinki benefit",
+  "openInNewTabLabel": "(opens in a new tab)",
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",

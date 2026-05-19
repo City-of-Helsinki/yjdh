@@ -68,7 +68,7 @@ describe('ConsentViewer', () => {
     renderConsentViewer(baseApplication);
 
     const termsLink = screen.getByRole('link', {
-      name: /ehdot\.pdf\.\s*avautuu uudella verkkosivulla/i,
+      name: /ehdot\.pdf.*avautuu uudessa välilehdessä.*avautuu uudella verkkosivulla/i,
     });
     expect(termsLink).toBeInTheDocument();
     expect(termsLink).toHaveAttribute(

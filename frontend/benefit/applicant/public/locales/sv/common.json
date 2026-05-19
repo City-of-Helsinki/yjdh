@@ -602,6 +602,7 @@
   },
   "serviceName": "E-tjänsten för Helsingforstillägg",
   "appName": "Helsingforstillägg",
+  "openInNewTabLabel": "(öppnas i en ny flik)",
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
