@@ -1,11 +1,12 @@
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { TermsProp, TextProp } from 'benefit-shared/types/application';
-import { Link, LinkSize } from 'hds-react';
+import { LinkSize } from 'hds-react';
 import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 
+import OpenInNewTabLink from '../../../../link/OpenInNewTabLink';
 import { useConsentViewer } from './useConsentViewer';
 
 const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
@@ -17,7 +18,7 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
     <>
       {data && (
         <$GridCell $colSpan={12}>
-          <Link
+          <OpenInNewTabLink
             style={{ color: theme.colors.black }}
             external
             openInExternalDomainAriaLabel={t(
@@ -32,7 +33,7 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
             }
           >
             {t('common:pdfViewer.terms')}
-          </Link>
+          </OpenInNewTabLink>
         </$GridCell>
       )}
       {data?.applicantTermsApproval?.terms?.applicantConsents?.map(
