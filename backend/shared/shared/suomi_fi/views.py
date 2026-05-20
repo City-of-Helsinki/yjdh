@@ -148,14 +148,22 @@ class HelsinkiSaml2LogoutServiceView(LogoutView):
 
         response = super().do_logout_service(request, data, binding, *args, **kwargs)
 
-        # If next_path was in the session, and the response is a redirect to the default
-        # fallback, replace it with the session-stored next_path.
-        if next_path and isinstance(response, HttpResponseRedirect):
-            fallback = resolve_url(getattr(settings, "LOGOUT_REDIRECT_URL", "/"))
-            if response.url == fallback and is_safe_redirect_url(
+        if isinstance(response, HttpResponseRedirect):
+            # 1. If we have a stashed next_path, redirect to it (if safe)
+            if next_path and is_safe_redirect_url(
                 request, next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
             ):
                 return HttpResponseRedirect(next_path)
+
+            # 2. Fallback workaround: If the response is a redirect to '/' (because
+            # djangosaml2 rejected the off-domain LOGOUT_REDIRECT_URL), but
+            # settings.LOGOUT_REDIRECT_URL is safe, redirect to it.
+            fallback = getattr(settings, "LOGOUT_REDIRECT_URL", None)
+            if response.url == "/" and fallback and fallback != "/" and is_safe_redirect_url(
+                request, fallback, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+            ):
+                return HttpResponseRedirect(fallback)
+
         return response
 
 
