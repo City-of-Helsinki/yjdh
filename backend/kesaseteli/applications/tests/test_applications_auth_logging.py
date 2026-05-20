@@ -11,7 +11,7 @@ from common.tests.factories import (
     DuplicateAllowingUserFactory,
     YouthApplicationFactory,
 )
-from kesaseteli.auth_logging import AuthEventType
+from kesaseteli.auth_logging import AuthEventType, VtjQueryType
 
 pytestmark = pytest.mark.django_db
 
@@ -44,7 +44,7 @@ def test_fetch_vtj_json_logs_vtj_query():
     assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
     assert entry.context["end_user"] == end_user
     assert entry.context["social_security_number"] == application.social_security_number
-    assert entry.context["query_type"] == "PERUSSANOMA 1"
+    assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is True
 
 
