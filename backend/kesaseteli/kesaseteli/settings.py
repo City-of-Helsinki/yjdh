@@ -113,6 +113,9 @@ env = environ.Env(
     ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
+    # Should auth events be logged to resilient logger
+    ENABLE_AUTH_LOGGING=(bool, False),
+    AUDIT_LOG_ENV=(str, "development"),
     ENABLE_ADMIN=(bool, False),
     # Configuration for the staff admin group name (ADFS group). Default is None.
     AD_ADMIN_GROUP_NAME=(str, None),
@@ -278,6 +281,7 @@ INSTALLED_APPS = [
     "companies",
     "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
     "django.contrib.postgres",
+    "resilient_logger",
     "kesaseteli",  # MUST BE LAST for AUDIT LOGGING enforcement! See app's apps.py
 ]
 
@@ -352,10 +356,38 @@ AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
 CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
 ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
 ELASTICSEARCH_HOST = env("ELASTICSEARCH_HOST")
-ELASTICSEARCH_PORT = env("ELASTICSEARCH_PORT")
+ELASTICSEARCH_PORT = int(env("ELASTICSEARCH_PORT") or 9200)
 ELASTICSEARCH_USERNAME = env("ELASTICSEARCH_USERNAME")
 ELASTICSEARCH_PASSWORD = env("ELASTICSEARCH_PASSWORD")
 ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
+
+# Should auth events be logged to resilient logger
+ENABLE_AUTH_LOGGING = env("ENABLE_AUTH_LOGGING")
+
+# Resilient logger — ships compliance events and django-auditlog entries to ES
+RESILIENT_LOGGER = {
+    "origin": env("AUDIT_LOG_ORIGIN"),
+    "environment": env("AUDIT_LOG_ENV"),
+    "submit_unsent_entries": True,
+    "clear_sent_entries": True,
+    "sources": [
+        {"class": "resilient_logger.sources.ResilientLogSource"},
+        {"class": "resilient_logger.sources.DjangoAuditLogSource"},
+    ],
+    "targets": [
+        {
+            "class": "resilient_logger.targets.ElasticsearchLogTarget",
+            "es_host": env("ELASTICSEARCH_HOST"),
+            "es_port": ELASTICSEARCH_PORT,
+            "es_username": env("ELASTICSEARCH_USERNAME"),
+            "es_password": env("ELASTICSEARCH_PASSWORD"),
+            "es_index": env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX"),
+            "required": True,
+        }
+    ],
+    "batch_limit": 5000,
+    "chunk_size": 500,
+}
 
 LOGGING = {
     "version": 1,
