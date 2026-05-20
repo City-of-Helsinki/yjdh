@@ -4,6 +4,7 @@ import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmen
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
+import camelcaseKeys from 'camelcase-keys';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
@@ -25,7 +26,9 @@ type ExtendedComponentProps = {
 };
 
 const useApplicationFormStep4 = (
-  application: Application
+  application: Application,
+  onUploadAttachmentSuccess?: (attachment: BenefitAttachment) => void,
+  onRemoveAttachmentSuccess?: () => void
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.credentials.sections';
   const { t } = useTranslation();
@@ -82,16 +85,34 @@ const useApplicationFormStep4 = (
     );
 
   const handleRemoveAttachment = (attachmentId: string): void =>
-    removeAttachment({
-      applicationId: application.id || '',
-      attachmentId,
-    });
+    removeAttachment(
+      {
+        applicationId: application.id || '',
+        attachmentId,
+      },
+      {
+        onSuccess: () => {
+          onRemoveAttachmentSuccess?.();
+        },
+      }
+    );
 
   const handleUploadAttachment = (attachment: FormData): void =>
-    uploadAttachment({
-      applicationId: application.id || '',
-      data: attachment,
-    });
+    uploadAttachment(
+      {
+        applicationId: application.id || '',
+        data: attachment,
+      },
+      {
+        onSuccess: (uploadedAttachment) => {
+          onUploadAttachmentSuccess?.(
+            camelcaseKeys(uploadedAttachment, {
+              deep: true,
+            }) as BenefitAttachment
+          );
+        },
+      }
+    );
 
   return {
     t,

@@ -2,21 +2,25 @@ import { ErrorResponse } from 'benefit/applicant/types/common';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import { UploadAttachmentData } from 'shared/types/attachment';
+import {
+  BenefitAttachment,
+  UploadAttachmentData,
+} from 'shared/types/attachment';
 
 const useUploadAttachmentQuery = (): UseMutationResult<
-  UploadAttachmentData,
+  BenefitAttachment,
   ErrorResponse,
   UploadAttachmentData
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
-  return useMutation<UploadAttachmentData, ErrorResponse, UploadAttachmentData>(
+
+  return useMutation<BenefitAttachment, ErrorResponse, UploadAttachmentData>(
     ['attachment'],
     (attachment: UploadAttachmentData) =>
       !attachment?.applicationId
         ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<UploadAttachmentData>(
+        : handleResponse<BenefitAttachment>(
             axios.post(
               `${BackendEndpoint.APPLICATIONS}${attachment?.applicationId}/attachments/`,
               attachment.data,
@@ -29,8 +33,9 @@ const useUploadAttachmentQuery = (): UseMutationResult<
           ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries('application');
+        void queryClient.invalidateQueries('applications', {
+          exact: true,
+        });
       },
     }
   );

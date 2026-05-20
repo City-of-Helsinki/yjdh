@@ -2,6 +2,7 @@ import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmen
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ErrorResponse } from 'benefit/applicant/types/common';
+import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React from 'react';
@@ -15,12 +16,15 @@ type ExtendedComponentProps = {
   attachments: [];
   isRemoving: boolean;
   isUploading: boolean;
-  handleRemove: (attachmentId: string) => void;
-  handleUpload: (attachment: FormData) => void;
+  handleRemove: (attachmentId: string) => void | Promise<void>;
+  handleUpload: (attachment: FormData) => void | Promise<void>;
   handleOpenFile: (attachment: BenefitAttachment) => void;
 };
 
-const useAttachmentsList = (): ExtendedComponentProps => {
+const useAttachmentsList = (
+  onUploadSuccess?: (attachment: BenefitAttachment) => void,
+  onRemoveSuccess?: (attachmentId: string) => void
+): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
   const { t } = useTranslation();
@@ -94,17 +98,35 @@ const useAttachmentsList = (): ExtendedComponentProps => {
   );
 
   const handleRemove = (attachmentId: string): void => {
-    removeAttachment({
-      applicationId,
-      attachmentId,
-    });
+    removeAttachment(
+      {
+        applicationId,
+        attachmentId,
+      },
+      {
+        onSuccess: () => {
+          onRemoveSuccess?.(attachmentId);
+        },
+      }
+    );
   };
 
   const handleUpload = (attachment: FormData): void => {
-    uploadAttachment({
-      applicationId,
-      data: attachment,
-    });
+    uploadAttachment(
+      {
+        applicationId,
+        data: attachment,
+      },
+      {
+        onSuccess: (uploadedAttachment) => {
+          onUploadSuccess?.(
+            camelcaseKeys(uploadedAttachment, {
+              deep: true,
+            }) as BenefitAttachment
+          );
+        },
+      }
+    );
   };
 
   return {

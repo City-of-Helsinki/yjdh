@@ -11,6 +11,7 @@ const useRemoveAttachmentQuery = (): UseMutationResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
+
   return useMutation<RemoveAttachmentData, ErrorResponse, RemoveAttachmentData>(
     ['attachment'],
     (attachment: RemoveAttachmentData) =>
@@ -23,8 +24,9 @@ const useRemoveAttachmentQuery = (): UseMutationResult<
           ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries('application');
+        void queryClient.invalidateQueries('applications', {
+          exact: true,
+        });
       },
     }
   );

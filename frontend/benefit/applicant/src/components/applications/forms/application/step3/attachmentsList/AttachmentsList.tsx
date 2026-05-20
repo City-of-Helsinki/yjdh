@@ -14,6 +14,8 @@ export type AttachmentsListProps = {
   attachments?: BenefitAttachment[];
   required?: boolean;
   as?: 'div' | 'li';
+  onUploadSuccess?: (attachment: BenefitAttachment) => void;
+  onRemoveSuccess?: (attachmentId: string) => void;
 };
 
 const getTitleTranslation = (
@@ -35,7 +37,17 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachments,
   required,
   as,
+  onUploadSuccess,
+  onRemoveSuccess,
 }) => {
+  const [visibleAttachments, setVisibleAttachments] = React.useState<
+    BenefitAttachment[]
+  >(attachments ?? []);
+
+  React.useEffect(() => {
+    setVisibleAttachments(attachments ?? []);
+  }, [attachments]);
+
   const {
     t,
     handleRemove,
@@ -44,7 +56,23 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     translationsBase,
     isRemoving,
     isUploading,
-  } = useAttachmentsList();
+  } = useAttachmentsList(
+    (uploadedAttachment) => {
+      setVisibleAttachments((currentAttachments) => [
+        ...currentAttachments,
+        uploadedAttachment,
+      ]);
+      onUploadSuccess?.(uploadedAttachment);
+    },
+    (removedAttachmentId) => {
+      setVisibleAttachments((currentAttachments) =>
+        currentAttachments.filter(
+          (attachment) => attachment.id !== removedAttachmentId
+        )
+      );
+      onRemoveSuccess?.(removedAttachmentId);
+    }
+  );
 
   const message = t(
     `${translationsBase}.types.${camelCase(attachmentType)}.message`
@@ -62,7 +90,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
       attachmentType={attachmentType}
       name={attachmentType}
       message={showMessage && message}
-      attachments={attachments}
+      attachments={visibleAttachments}
       onUpload={handleUpload}
       onRemove={handleRemove}
       onOpen={handleOpenFile}

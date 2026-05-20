@@ -6,6 +6,7 @@ import {
 } from 'benefit-shared/constants';
 import React from 'react';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
+import { BenefitAttachment } from 'shared/types/attachment';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -15,15 +16,46 @@ import { useApplicationFormStep3 } from './useApplicationFormStep3';
 const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
+  const [attachments, setAttachments] = React.useState<BenefitAttachment[]>(
+    data.attachments ?? []
+  );
+
+  React.useEffect(() => {
+    setAttachments(data.attachments ?? []);
+  }, [data.attachments]);
+
+  const handleUploadSuccess = React.useCallback(
+    (uploadedAttachment: BenefitAttachment): void => {
+      setAttachments((currentAttachments) => [
+        ...currentAttachments,
+        uploadedAttachment,
+      ]);
+    },
+    []
+  );
+
+  const handleRemoveSuccess = React.useCallback(
+    (removedAttachmentId: string): void => {
+      setAttachments((currentAttachments) =>
+        currentAttachments.filter(
+          (attachment) => attachment.id !== removedAttachmentId
+        )
+      );
+    },
+    []
+  );
+
   const {
     handleBack,
     handleNext,
     handleSave,
     handleDelete,
     apprenticeshipProgram,
-    attachments,
     hasRequiredAttachments,
-  } = useApplicationFormStep3(data);
+  } = useApplicationFormStep3({
+    ...data,
+    attachments,
+  });
 
   const theme = useTheme();
 
@@ -35,6 +67,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
           as="li"
           attachments={attachments}
           attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+          onUploadSuccess={handleUploadSuccess}
+          onRemoveSuccess={handleRemoveSuccess}
           required
         />
         {apprenticeshipProgram && (
@@ -42,6 +76,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
             as="li"
             attachments={attachments}
             attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+            onUploadSuccess={handleUploadSuccess}
+            onRemoveSuccess={handleRemoveSuccess}
             required
           />
         )}
@@ -49,6 +85,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
           as="li"
           attachments={attachments}
           attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+          onUploadSuccess={handleUploadSuccess}
+          onRemoveSuccess={handleRemoveSuccess}
         />
       </ul>
       <$Hr

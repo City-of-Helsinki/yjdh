@@ -26,6 +26,7 @@ import {
   ATTACHMENT_MAX_SIZE,
 } from 'shared/constants/attachment-constants';
 import useLocale from 'shared/hooks/useLocale';
+import { BenefitAttachment } from 'shared/types/attachment';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -35,6 +36,21 @@ import { useApplicationFormStep4 } from './useApplicationFormStep4';
 const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
+  const [employeeConsentAttachment, setEmployeeConsentAttachment] =
+    React.useState<BenefitAttachment | null>(
+      data.attachments?.find(
+        (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+      ) ?? null
+    );
+
+  React.useEffect(() => {
+    setEmployeeConsentAttachment(
+      data.attachments?.find(
+        (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+      ) ?? null
+    );
+  }, [data.attachments]);
+
   const {
     t,
     handleBack,
@@ -44,10 +60,25 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
     handleRemoveAttachment,
     handleUploadAttachment,
     translationsBase,
-    attachment,
     isRemoving,
     isUploading,
-  } = useApplicationFormStep4(data);
+  } = useApplicationFormStep4(
+    {
+      ...data,
+      attachments: employeeConsentAttachment
+        ? [
+            ...(data.attachments ?? []).filter(
+              (att) => att.attachmentType !== ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+            ),
+            employeeConsentAttachment,
+          ]
+        : (data.attachments ?? []).filter(
+            (att) => att.attachmentType !== ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+          ),
+    },
+    setEmployeeConsentAttachment,
+    () => setEmployeeConsentAttachment(null)
+  );
   const theme = useTheme();
   const locale = useLocale();
 
@@ -87,22 +118,26 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
             icon={<IconDocument size="l" />}
             actions={
               <$Grid>
-                {attachment ? (
+                {employeeConsentAttachment ? (
                   <$GridCell>
                     <AttachmentItem
-                      id={attachment.id}
-                      name={attachment.attachmentFileName}
+                      id={employeeConsentAttachment.id}
+                      name={employeeConsentAttachment.attachmentFileName}
                       removeText={t(
                         `common:applications.sections.attachments.remove`
                       )}
                       onClick={() =>
                         // eslint-disable-next-line security/detect-non-literal-fs-filename
                         window
-                          .open(attachment.attachmentFile, '_blank')
+                          .open(
+                            employeeConsentAttachment.attachmentFile,
+                            '_blank'
+                          )
                           ?.focus()
                       }
                       onRemove={() =>
-                        !isRemoving && handleRemoveAttachment(attachment.id)
+                        !isRemoving &&
+                        handleRemoveAttachment(employeeConsentAttachment.id)
                       }
                     />
                   </$GridCell>
@@ -161,11 +196,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
         `}
       />
       <StepperActions
-        disabledNext={isEmpty(
-          data.attachments?.find(
-            (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
-          )
-        )}
+        disabledNext={isEmpty(employeeConsentAttachment)}
         handleSubmit={handleNext}
         handleSave={handleSave}
         handleBack={handleBack}
