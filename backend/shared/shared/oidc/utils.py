@@ -104,7 +104,7 @@ def request_organization_roles(request: HttpRequest) -> dict:
         )
         response.raise_for_status()
     except RequestException as e:
-        suomifi_mandate_query_failed.send_robust(
+        suomifi_mandate_query_failed.send(
             sender=request_organization_roles,
             request=request,
             request_id=str(request_id),
@@ -114,7 +114,7 @@ def request_organization_roles(request: HttpRequest) -> dict:
 
     org_roles = response.json()[0]
 
-    suomifi_mandate_queried.send_robust(
+    suomifi_mandate_queried.send(
         sender=request_organization_roles,
         request=request,
         request_id=str(request_id),
