@@ -4,6 +4,8 @@ import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
+import { Application } from '../types/application';
+
 type Payload = {
   id: string;
   employerAssurance: boolean;
@@ -44,21 +46,25 @@ const useChangeEmployerAssurance = (): UseMutationResult<
         ]);
         const previousApplications = queryClient.getQueryData('applications');
 
-        queryClient.setQueryData(['application', id], (current: any) =>
-          current ? { ...current, employerAssurance } : current
+        queryClient.setQueryData<Application | undefined>(
+          ['application', id],
+          (current) => (current ? { ...current, employerAssurance } : current)
         );
 
-        queryClient.setQueryData('applications', (current: any) => {
-          if (!Array.isArray(current)) {
-            return current;
-          }
+        queryClient.setQueryData<Application[] | undefined>(
+          'applications',
+          (current) => {
+            if (!Array.isArray(current)) {
+              return current;
+            }
 
-          return current.map((application) =>
-            application?.id === id
-              ? { ...application, employerAssurance }
-              : application
-          );
-        });
+            return current.map((application) =>
+              application?.id === id
+                ? { ...application, employerAssurance }
+                : application
+            );
+          }
+        );
 
         return { previousApplication, previousApplications };
       },

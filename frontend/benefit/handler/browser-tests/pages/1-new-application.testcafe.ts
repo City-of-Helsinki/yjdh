@@ -35,6 +35,8 @@ test('Fill form and submit', async (t: TestController) => {
 
   // Company info
   await t.typeText('#companyBankAccountNumber', form.company.bankAccountNumber);
+  await t.typeText('#companyNumberOfEmployees', form.company.companyNumberOfEmployees);
+  await t.typeText('#companyBusinessBrief', form.company.companyBusinessBrief);
   await t.typeText('#companyContactPersonFirstName', form.company.firstName);
   await t.typeText('#companyContactPersonLastName', form.company.lastName);
   await t.typeText('#companyContactPersonPhoneNumber', form.company.phone);
@@ -61,7 +63,7 @@ test('Fill form and submit', async (t: TestController) => {
   await t.typeText('[name="employee.lastName"]', form.employee.lastName);
   await t.typeText('[name="employee.socialSecurityNumber"]', form.employee.ssn);
   await t.click('[for="employee.isLivingInHelsinki"]');
-
+  await t.click('[for="otherFinancialSupportForEmploymentFalse"]');
   await t.typeText('[name="employee.jobTitle"]', form.employee.jobTitle);
   await t.typeText(
     '[name="employee.workingHours"]',
@@ -72,6 +74,8 @@ test('Fill form and submit', async (t: TestController) => {
     form.employee.collectiveBargainingAgreement
   );
 
+  // Employee info
+  await t.typeText('[name="roleOfEmployeeInOrganization"]', form.company.roleOfEmployeeInOrganization);
   await t.typeText('[name="employee.monthlyPay"]', form.employee.monthlyPay);
   await t.typeText(
     '[name="employee.vacationMoney"]',

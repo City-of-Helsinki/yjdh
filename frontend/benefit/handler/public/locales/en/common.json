@@ -497,6 +497,15 @@
           "label": "Tilinumero",
           "placeholder": "IBAN-muodossa"
         },
+        "companyNumberOfEmployees": {
+          "label": "Number of personnel before employment",
+          "placeholder": ""
+        },
+        "companyBusinessBrief": {
+          "label": "Describe the nature of the employer's activities. We will ask for additional information if necessary.",
+          "placeholder": "",
+          "helperText": ""
+        },
         "companyContactPersonFirstName": {
           "label": "Etunimi",
           "placeholder": "Etunimi"
@@ -583,6 +592,10 @@
           "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki.",
           "review": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?"
         },
+        "otherFinancialSupportForEmployment": {
+          "label": "Has any other support been granted for the employee's salary?",
+          "tooltip": "If other support has been applied for/received for the employee's salary, we will request an explanation."
+        },
         "paySubsidyGranted": {
           "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
           "granted": "Palkkatuki",
@@ -595,6 +608,10 @@
         },
         "additionalPaySubsidyPercent": {
           "label": "Toisen myönnetyn palkkatuen palkkatukiprosentti"
+        },
+        "roleOfEmployeeInOrganization": {
+          "label": "Describe how the work tasks of the person hired with the support are related to the organization's operations.",
+          "placeholder": ""
         },
         "apprenticeshipProgram": {
           "label": "Onko kyseessä oppisopimus?",
@@ -705,6 +722,10 @@
         "types": {
           "employmentContract": {
             "title": "Työsopimus"
+          },
+          "businessBrief": {
+            "title": "Attachment describing the employer's activities",
+            "message": "If you wish, you can attach an attachment describing your activities here."
           },
           "paySubsidyDecision": {
             "title": "Palkkatukipäätös"

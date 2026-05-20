@@ -902,6 +902,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         "company_contact_person_email",
         "company_contact_person_first_name",
         "company_contact_person_last_name",
+        "other_financial_support_for_employment",
+        "role_of_employee_in_organization",
         "co_operation_negotiations",
         "pay_subsidy_granted",
         "benefit_type",

@@ -30,6 +30,11 @@ const CompanySearch: React.FC = () => {
     isLoading,
   } = useCompanySearch();
   const theme = useTheme();
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <>
@@ -37,19 +42,21 @@ const CompanySearch: React.FC = () => {
         <h2>{t('common:applications.sections.companySearch.heading')}</h2>
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={6} data-testid="company-search-input">
-            <SearchInput
-              label={t(
-                `${translationsBase}.companySearch.searchCompanyDetails`
-              )}
-              loadingSpinnerText={t(`${translationsBase}.messages.loading`)}
-              getSuggestions={getSuggestions}
-              suggestionLabelField="name"
-              highlightSuggestions
-              onSubmit={getCompany}
-              css={`
-                margin-bottom: ${theme.spacing.m};
-              `}
-            />
+            {isMounted && (
+              <SearchInput
+                label={t(
+                  `${translationsBase}.companySearch.searchCompanyDetails`
+                )}
+                loadingSpinnerText={t(`${translationsBase}.messages.loading`)}
+                getSuggestions={getSuggestions}
+                suggestionLabelField="name"
+                highlightSuggestions
+                onSubmit={getCompany}
+                css={`
+                  margin-bottom: ${theme.spacing.m};
+                `}
+              />
+            )}
           </$GridCell>
           <$GridCell $colStart={1} $colSpan={6}>
             {companies.length > 0 && (

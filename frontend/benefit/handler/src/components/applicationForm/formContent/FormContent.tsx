@@ -24,7 +24,13 @@ import {
 } from 'benefit-shared/types/application';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import { FormikProps } from 'formik';
-import { DateInput, Notification, SelectionGroup, TextInput } from 'hds-react';
+import {
+  DateInput,
+  Notification,
+  SelectionGroup,
+  TextArea,
+  TextInput,
+} from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -303,6 +309,53 @@ const FormContent: React.FC<Props> = ({
             </SelectionGroup>
           </$GridCell>
         )}
+        <$GridCell $colSpan={8}>
+          <SelectionGroup
+            id={fields.otherFinancialSupportForEmployment.name}
+            label={fields.otherFinancialSupportForEmployment.label}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(
+              fields.otherFinancialSupportForEmployment.name
+            )}
+            tooltipLabel={t(`common:tooltip.ariaLabel`)}
+            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
+            tooltipText={t(
+              `${translationsBase}.fields.otherFinancialSupportForEmployment.tooltip`
+            )}
+          >
+            <$RadioButton
+              id={`${fields.otherFinancialSupportForEmployment.name}False`}
+              name={fields.otherFinancialSupportForEmployment.name}
+              value="false"
+              label="Ei"
+              onChange={() => {
+                void formik.setFieldValue(
+                  fields.otherFinancialSupportForEmployment.name,
+                  false
+                );
+              }}
+              checked={
+                formik.values.otherFinancialSupportForEmployment === false
+              }
+            />
+            <$RadioButton
+              id={`${fields.otherFinancialSupportForEmployment.name}True`}
+              name={fields.otherFinancialSupportForEmployment.name}
+              value="true"
+              label="Kyllä"
+              onChange={() => {
+                void formik.setFieldValue(
+                  fields.otherFinancialSupportForEmployment.name,
+                  true
+                );
+              }}
+              checked={
+                formik.values.otherFinancialSupportForEmployment === true
+              }
+            />
+          </SelectionGroup>
+        </$GridCell>
       </FormSection>
       <FormSection
         header={t(`${translationsBase}.headings.employment5Employment`)}
@@ -377,7 +430,28 @@ const FormContent: React.FC<Props> = ({
               required
             />
           </$GridCell>
-
+          <$GridCell $colSpan={12}>
+            {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
+            <TextArea
+              id={fields.roleOfEmployeeInOrganization.name}
+              name={fields.roleOfEmployeeInOrganization.name}
+              label={fields.roleOfEmployeeInOrganization.label}
+              placeholder={fields.roleOfEmployeeInOrganization.placeholder}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.roleOfEmployeeInOrganization || ''}
+              invalid={
+                !!getErrorMessage(fields.roleOfEmployeeInOrganization.name)
+              }
+              aria-invalid={
+                !!getErrorMessage(fields.roleOfEmployeeInOrganization.name)
+              }
+              errorText={getErrorMessage(
+                fields.roleOfEmployeeInOrganization.name
+              )}
+              required
+            />
+          </$GridCell>
           <$GridCell $colSpan={12}>
             <Heading
               as="h3"

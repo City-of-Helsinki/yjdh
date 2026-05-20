@@ -497,6 +497,15 @@
           "label": "Tilinumero",
           "placeholder": "IBAN-muodossa"
         },
+        "companyNumberOfEmployees": {
+          "label": "Antal anställda före anställning",
+          "placeholder": ""
+        },
+        "companyBusinessBrief": {
+          "label": "Beskriv arten av arbetsgivarens verksamhet. Vi kommer att be om ytterligare information vid behov.",
+          "placeholder": "",
+          "helperText": ""
+        },
         "companyContactPersonFirstName": {
           "label": "Etunimi",
           "placeholder": "Etunimi"
@@ -583,6 +592,10 @@
           "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki.",
           "review": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?"
         },
+        "otherFinancialSupportForEmployment": {
+          "label": "Har något annat stöd beviljats för den anställdes lön?",
+          "tooltip": "Om annat stöd har sökts/erhållits för den anställdes lön kommer vi att begära en förklaring."
+        },
         "paySubsidyGranted": {
           "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
           "granted": "Palkkatuki",
@@ -595,6 +608,10 @@
         },
         "additionalPaySubsidyPercent": {
           "label": "Toisen myönnetyn palkkatuen palkkatukiprosentti"
+        },
+        "roleOfEmployeeInOrganization": {
+          "label": "Beskriv hur arbetsuppgifterna för den person som anställts med stödet är relaterade till organisationens verksamhet.",
+          "placeholder": ""
         },
         "apprenticeshipProgram": {
           "label": "Onko kyseessä oppisopimus?",
@@ -705,6 +722,10 @@
         "types": {
           "employmentContract": {
             "title": "Työsopimus"
+          },
+          "businessBrief": {
+            "title": "Bilaga som beskriver åtgärden",
+            "message": "Om du vill kan du bifoga en bilaga som beskriver dina aktiviteter här."
           },
           "paySubsidyDecision": {
             "title": "Palkkatukipäätös"
