@@ -140,7 +140,7 @@ class BaseApplicationFilter(filters.FilterSet):
                 calculation__instalments__status=InstalmentStatus.REQUESTED,
             )
             .exclude(status=ApplicationStatus.CANCELLED)
-            .values("pk")
+            .values_list("pk", flat=True)
         )
 
         if value:
@@ -363,7 +363,7 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 instalment_number=2,
             )
             .order_by("created_at", "pk")
-            .values("due_date")[:1]
+            .values_list("due_date", flat=True)[:1]
         )
 
         qs = qs.annotate(
@@ -849,7 +849,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
                 {"detail": "Second instalment not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        if not second_instalment.status == InstalmentStatus.REQUESTED:
+        if second_instalment.status != InstalmentStatus.REQUESTED:
             return Response(
                 {"detail": "Second instalment status is not REQUESTED"},
                 status=status.HTTP_400_BAD_REQUEST,
