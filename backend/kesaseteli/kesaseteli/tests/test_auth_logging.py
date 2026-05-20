@@ -127,6 +127,7 @@ def test_log_vtj_query_creates_entry():
         sender=None,
         end_user="handler-uuid-123",
         social_security_number="010101-123N",
+        request_id="req-vtj-123",
     )
 
     entry = ResilientLogEntry.objects.last()
@@ -136,6 +137,7 @@ def test_log_vtj_query_creates_entry():
     assert entry.context["social_security_number"] == "010101-123N"
     assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is True
+    assert entry.context["request_id"] == "req-vtj-123"
     assert entry.level == logging.INFO
 
 
@@ -148,6 +150,7 @@ def test_log_vtj_query_failure_creates_entry():
         end_user="handler-uuid-123",
         social_security_number="010101-123N",
         error=error,
+        request_id="req-vtj-123-failed",
     )
 
     entry = ResilientLogEntry.objects.last()
@@ -157,6 +160,7 @@ def test_log_vtj_query_failure_creates_entry():
     assert entry.context["social_security_number"] == "010101-123N"
     assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is False
+    assert entry.context["request_id"] == "req-vtj-123-failed"
     assert "Connection refused" in entry.context["error"]
     assert entry.level == logging.WARNING
 
