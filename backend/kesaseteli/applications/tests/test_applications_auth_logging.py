@@ -46,6 +46,7 @@ def test_fetch_vtj_json_logs_vtj_query():
     assert entry.context["social_security_number"] == application.social_security_number
     assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is True
+    assert entry.context["request_id"] is not None
 
 
 @override_settings(
@@ -75,6 +76,7 @@ def test_fetch_vtj_json_logs_vtj_query_failure_on_api_error():
     assert entry.context["end_user"] == end_user
     assert entry.context["social_security_number"] == application.social_security_number
     assert entry.context["success"] is False
+    assert entry.context["request_id"] is not None
     assert "Connection refused" in entry.context["error"]
 
 
