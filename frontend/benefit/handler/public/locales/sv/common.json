@@ -1190,7 +1190,7 @@
         "notGranted": "Työsuhteeseen ei ole myönnetty mitään edeltävää tukea"
       },
       "industryCode": "TOL-koodi (toimialaluokitus)",
-      "industryCodeHelper": "Pakollinen yhdistyksen de minimis -tuessa",
+      "industryCodeHelper": "Pakollinen yhdistyksen de minimis -tuessa. Voit kopiodia YTJ:n sivulta koko kohdan Päätoimiala (koodi + selite)",
       "industryCodeRequired": "TOL-koodi on pakollinen de minimis -tuessa"
     },
     "notifications": {
@@ -1281,8 +1281,6 @@
         "totalAmount": "Myönnettävä tuki yhteensä",
         "grantedAsDeMinimisAid": "Myönnetään de minimis -tukena",
         "industryCode": "TOL-koodi (toimialaluokitus)",
-        "industryCodeHelper": "Pakollinen yhdistyksen de minimis -tuessa",
-        "industryCodeRequired": "TOL-koodi on pakollinen de minimis -tuessa",
         "decisionMaker": "Päättäjän rooli"
       },
       "calculationReview": {
