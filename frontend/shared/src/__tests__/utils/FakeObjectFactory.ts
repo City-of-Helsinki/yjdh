@@ -96,7 +96,6 @@ class FakeObjectFactory {
       id: this.generateId(),
       application: this.generateId(),
       attachment_type: type ?? faker.random.arrayElement(ATTACHMENT_TYPES),
-      attachment_file: faker.datatype.string(100),
       attachment_file_name: faker.random.arrayElement(attachmentFilePaths),
       content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
       summer_voucher: this.generateId(),

@@ -31,7 +31,6 @@ export type KesaseteliAttachment = {
   id: string;
   application: string;
   attachment_type: AttachmentType;
-  attachment_file: string;
   attachment_file_name: string;
   content_type: AttachmentContentType;
   created_at?: string;

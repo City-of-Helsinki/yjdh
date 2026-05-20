@@ -116,6 +116,13 @@ class AttachmentSerializer(serializers.ModelSerializer):
         EmployerApplicationStatus.DRAFT,
     )
 
+    # Use write_only to allow validation of incoming files, but
+    # not allowing their URLs (e.g. to Azure blob storage) to be
+    # outputted to the user, see FileField's asymmetric behavior on input/output:
+    # https://github.com/encode/django-rest-framework/blob/main/rest_framework/fields.py
+    # https://www.django-rest-framework.org/api-guide/fields/#filefield
+    attachment_file = serializers.FileField(write_only=True)
+
     attachment_file_name = serializers.SerializerMethodField(
         "get_attachment_file_name",
         help_text="Name of the uploaded file",
