@@ -9,8 +9,10 @@ from dateutil.parser import isoparse
 from django.conf import settings
 from django.http import HttpRequest
 from django.utils import timezone
+from requests.exceptions import RequestException
 
 from shared.common.utils import is_safe_redirect_url
+from shared.oidc.signals import suomifi_mandate_queried, suomifi_mandate_query_failed
 
 
 def get_eauth_login_success_url(request: HttpRequest) -> str:
@@ -71,6 +73,18 @@ def get_checksum_header(path: str) -> str:
 
 
 def request_organization_roles(request: HttpRequest) -> dict:
+    """
+    Query Suomi.fi mandates ("Valtuudet") for organization roles for the authenticated
+    user.
+
+    This function queries the Suomi.fi Valtuudet (eAuthorizations) REST API to
+    verify that the user holds a valid mandate for a company and to retrieve
+    the list of roles granted. The results are then stored in the session
+    (and should be logged for audit purposes).
+
+    :param request: The HttpRequest containing the current session.
+    :return: A dictionary containing the organization roles and request ID.
+    """
     request_id = uuid4()
     id_token = request.session.get("eauth_id_token")
     path = f"/service/ypa/api/organizationRoles/{id_token}?requestId={request_id}"
@@ -79,17 +93,37 @@ def request_organization_roles(request: HttpRequest) -> dict:
     checksum_header = get_checksum_header(path)
 
     eauth_access_token = request.session.get("eauth_access_token")
-    response = requests.get(
-        organization_roles_endpoint,
-        headers={
-            "Authorization": f"Bearer {eauth_access_token}",
-            "X-AsiointivaltuudetAuthorization": checksum_header,
-        },
-    )
-    response.raise_for_status()
+
+    try:
+        response = requests.get(
+            organization_roles_endpoint,
+            headers={
+                "Authorization": f"Bearer {eauth_access_token}",
+                "X-AsiointivaltuudetAuthorization": checksum_header,
+            },
+        )
+        response.raise_for_status()
+    except RequestException as e:
+        suomifi_mandate_query_failed.send_robust(
+            sender=request_organization_roles,
+            request=request,
+            request_id=str(request_id),
+            error=e,
+        )
+        raise
+
     org_roles = response.json()[0]
+
+    suomifi_mandate_queried.send_robust(
+        sender=request_organization_roles,
+        request=request,
+        request_id=str(request_id),
+        organization_roles=org_roles,
+    )
+
     if request:
         request.session["organization_roles"] = org_roles
+
     return org_roles
 
 

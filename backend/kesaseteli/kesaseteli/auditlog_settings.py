@@ -31,6 +31,8 @@ AUDITLOG_EXCLUDE_TRACKING_MODELS = (
     "audit_log.auditlogentry",  # no double audit logging
     "contenttypes.contenttype",  # system model
     "sessions.session",  # auth model
+    # resilient-logger internal model, not subject to audit
+    "resilient_logger.resilientlogentry",
 )
 
 AUDITLOG_INCLUDE_TRACKING_MODELS = (
