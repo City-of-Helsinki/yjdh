@@ -87,7 +87,7 @@ def get_or_create_company_with_name_and_business_id(
     return company
 
 
-def create_mock_company_and_store_org_roles_in_session(request: HttpRequest):
+def create_mock_company_and_store_org_roles_in_session(request: HttpRequest) -> Company:
     company = CompanyFactory()
     org_roles = dict(DUMMY_ORG_ROLES)
     org_roles.update(
@@ -101,7 +101,7 @@ def create_mock_company_and_store_org_roles_in_session(request: HttpRequest):
     return company
 
 
-def handle_mock_company(request: HttpRequest):
+def handle_mock_company(request: HttpRequest) -> Company:
     org_roles = request.session.get("organization_roles")
     if not org_roles:
         company = create_mock_company_and_store_org_roles_in_session(request)
@@ -153,6 +153,9 @@ def get_or_create_company_using_organization_roles(
         )
 
     business_id = organization_roles.get("identifier")
+    if not isinstance(business_id, str):
+        LOGGER.error("Company identifier missing or invalid in organization roles")
+        raise NotFound(detail="Company identifier missing from organization roles")
 
     company = Company.objects.filter(business_id=business_id).first()
 
@@ -168,7 +171,7 @@ def get_or_create_company_using_organization_roles(
 
         # If fetching from YTJ failed, use the fallback method
         if not company:
-            name = organization_roles.get("name")
+            name = str(organization_roles.get("name") or "")
             company = get_or_create_company_with_name_and_business_id(name, business_id)
 
     return company
