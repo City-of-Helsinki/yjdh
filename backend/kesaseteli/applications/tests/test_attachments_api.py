@@ -1,14 +1,19 @@
-import json
 import os
 import re
 import tempfile
 import uuid
+from datetime import datetime
 
 import pytest
 from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.utils import validate_file_name
+from django.http import FileResponse
+from django.utils import timezone
+from freezegun import freeze_time
 from PIL import Image
+from rest_framework.exceptions import ErrorDetail, ValidationError
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import AttachmentSerializer
@@ -52,23 +57,51 @@ def _upload_file(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("extension", ["pdf", "jpg"])
-def test_attachment_upload(request, api_client, summer_voucher, extension):
+@pytest.mark.parametrize(
+    "extension, expected_content_type",
+    [
+        ("pdf", "application/pdf"),
+        ("jpg", "image/jpeg"),
+    ],
+)
+def test_attachment_upload(
+    request, api_client, summer_voucher, extension, expected_content_type
+):
     """
-    Test that uploading an attachment to an employer summer voucher works.
+    Test that uploading an attachment to an employer summer voucher works
+    and returns expected data.
     """
     assert not summer_voucher.attachments.exists()
-    response = _upload_file(
-        request,
-        api_client,
-        summer_voucher,
-        extension,
-        AttachmentType.EMPLOYMENT_CONTRACT,
-    )
+    upload_time = timezone.now()
+    with freeze_time(upload_time):
+        response = _upload_file(
+            request,
+            api_client,
+            summer_voucher,
+            extension,
+            AttachmentType.EMPLOYMENT_CONTRACT,
+        )
     assert response.status_code == 201
-    assert len(summer_voucher.attachments.all()) == 1
-    attachment = summer_voucher.attachments.all().first()
-    assert attachment.attachment_file.name.endswith(f".{extension}")
+    assert summer_voucher.attachments.count() == 1
+    attachment = summer_voucher.attachments.first()
+
+    assert isinstance(response.data, dict)
+    assert response.data.keys() == {
+        "id",
+        "summer_voucher",
+        "attachment_type",
+        "attachment_file_name",
+        "content_type",
+        "created_at",
+    }
+    assert response.data["id"] == str(attachment.pk)
+    assert response.data["summer_voucher"] == summer_voucher.pk
+    assert response.data["attachment_type"] == "employment_contract"
+    # Should not raise SuspiciousFileOperation:
+    validate_file_name(response.data["attachment_file_name"])
+    assert response.data["attachment_file_name"].endswith(f".{extension}")
+    assert response.data["content_type"] == expected_content_type
+    assert datetime.fromisoformat(response.data["created_at"]) == upload_time
 
 
 @pytest.mark.django_db
@@ -115,9 +148,16 @@ def test_attachment_upload_writes_audit_log(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
+@pytest.mark.parametrize(
+    "extension, expected_error_string",
+    [
+        ("pdf", "Not a valid pdf file"),
+        ("png", "Not a valid image file"),
+        ("jpg", "Not a valid image file"),
+    ],
+)
 def test_invalid_attachment_upload(
-    api_client, summer_voucher: EmployerSummerVoucher, extension
+    api_client, summer_voucher: EmployerSummerVoucher, extension, expected_error_string
 ):
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
     tmp_file.write(b"invalid data " * 100)
@@ -132,9 +172,13 @@ def test_invalid_attachment_upload(
         format="multipart",
     )
 
-    assert re.match("Not a valid.*file", str(response.data["non_field_errors"][0]))
+    assert response.data == {
+        "non_field_errors": [
+            ErrorDetail(string=expected_error_string, code=ValidationError.default_code)
+        ]
+    }
     assert response.status_code == 400
-    assert len(summer_voucher.attachments.all()) == 0
+    assert not summer_voucher.attachments.exists()
 
 
 @pytest.mark.django_db
@@ -155,10 +199,15 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
     )
 
     assert response.status_code == 400
-    assert str(settings.MAX_UPLOAD_SIZE) in json.dumps(
-        response.json()
-    )  # To avoid false positive
-    assert len(summer_voucher.attachments.all()) == 0
+    assert response.data == {
+        "non_field_errors": [
+            ErrorDetail(
+                string=f"Upload file size cannot be greater than {settings.MAX_UPLOAD_SIZE} bytes",
+                code=ValidationError.default_code,
+            )
+        ]
+    }
+    assert not summer_voucher.attachments.exists()
 
 
 @pytest.mark.django_db
@@ -217,6 +266,21 @@ def test_get_attachment(request, api_client, summer_voucher, attachment_type):
     response = api_client.get(attachment_url)
 
     assert response.status_code == 200
+    assert isinstance(response, FileResponse)
+
+    # No filename in response.filename
+    assert not response.filename
+
+    # But has a valid filename in Content-Disposition header
+    filename_match = re.match(
+        '^inline; filename="([^"]+)"$', response.headers["Content-Disposition"]
+    )
+    assert filename_match is not None
+    assert len(filename_match.groups()) == 1
+    filename = filename_match.groups()[0]
+    assert filename.endswith(".pdf")
+    # Should not raise SuspiciousFileOperation:
+    validate_file_name(filename)
 
 
 @pytest.mark.django_db
@@ -227,6 +291,7 @@ def test_get_attachment_with_invalid_uuid(
     response = api_client.get(attachment_url)
 
     assert response.status_code == 404
+    assert response.data == {"detail": "File not found."}
 
 
 @pytest.mark.django_db
@@ -244,6 +309,7 @@ def test_delete_attachment(request, api_client, summer_voucher, attachment_type)
     response = api_client.delete(attachment_delete_url)
 
     assert response.status_code == 204
+    assert response.data is None
 
     with pytest.raises(Attachment.DoesNotExist):
         attachment.refresh_from_db()
@@ -276,15 +342,17 @@ def test_delete_attachment_writes_audit_log(
 
 
 @pytest.mark.django_db
-def test_delete_attachment_when_not_saved(
+def test_delete_attachment_that_does_not_exist(
     api_client, summer_voucher: EmployerSummerVoucher
 ):
+    inexistent_attachment_pk = uuid.uuid4()
     employment_contract_url = handle_attachment_url(
-        summer_voucher, attachment_pk=uuid.uuid4()
+        summer_voucher, attachment_pk=inexistent_attachment_pk
     )
     response = api_client.delete(employment_contract_url)
 
     assert response.status_code == 404
+    assert response.data == {"detail": "File not found."}
 
 
 @pytest.mark.django_db
