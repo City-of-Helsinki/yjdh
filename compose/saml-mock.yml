@@ -1,0 +1,14 @@
+services:
+  saml-mock:
+    image: kristophjunge/test-saml-idp
+    container_name: yjdh-saml-mock
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - ../localdevelopment/saml-mock/authsources.php:/var/www/simplesamlphp/config/authsources.php
+    environment:
+      # SP metadata coordinates matching the local django-saml2 SP
+      - SIMPLESAMLPHP_SP_ENTITY_ID=https://localhost:8000/saml2/metadata/
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=https://localhost:8000/saml2/acs/
+      - SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=https://localhost:8000/saml2/ls/

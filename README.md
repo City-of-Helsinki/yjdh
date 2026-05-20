@@ -22,6 +22,7 @@
   - [Local troubleshooting](#local-troubleshooting)
       - [502 Bad Gateway in frontend](#502-bad-gateway-in-frontend)
       - [Login fails or CORS errors in the browser](#login-fails-or-cors-errors-in-the-browser)
+      - [Testing SAML / Suomi.fi Authentication and Logout locally](#testing-saml--suomifi-authentication-and-logout-locally)
       - [Access container shell](#access-container-shell)
   - [Publishing with Release Please & Git workflow](#publishing-with-release-please--git-workflow)
     - [Basics](#basics)
@@ -244,6 +245,10 @@ docker logs -f kesaseteli-backend
 #### Login fails or CORS errors in the browser
 
 CORS-style errors often mean the backend is not reachable. First confirm the backend is running (e.g. `curl -k https://localhost:8000/admin/`). If the backend is up and login still fails, try a different browser or clear site data.
+
+#### Testing SAML / Suomi.fi Authentication and Logout locally
+
+By default, local development uses OIDC mocks to bypass SAML. If you need to test the actual SAML2/Suomi.fi integration or troubleshoot Single Logout (SLO) issues locally, see the [Local SAML Mock Guide](file:///Users/nikojmakela/Code/ratkaisutoimisto/yjdh/localdevelopment/saml-mock/README.md).
 
 #### Access container shell
 
