@@ -65,12 +65,16 @@ class VTJClient:
     def get_personal_info(
         self, social_security_number, end_user: str, **kwargs
     ) -> dict:
+        request_id = str(uuid.uuid4())
+        headers = kwargs.pop("headers", {})
+        headers["X-Request-ID"] = request_id
         try:
             response = requests.post(
                 self._url,
                 auth=self._auth,
                 json=self._json(social_security_number, end_user),
                 timeout=self._timeout,
+                headers=headers,
                 **kwargs,
             )
             response.raise_for_status()
@@ -80,6 +84,7 @@ class VTJClient:
                 end_user=end_user,
                 social_security_number=social_security_number,
                 error=e,
+                request_id=request_id,
             )
             raise
 
@@ -87,5 +92,6 @@ class VTJClient:
             sender=self.__class__,
             end_user=end_user,
             social_security_number=social_security_number,
+            request_id=request_id,
         )
         return response.json()

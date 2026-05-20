@@ -269,7 +269,7 @@ def on_suomifi_mandate_query_failed(sender, request, request_id, error, **kwargs
 
 @receiver(vtj_queried)
 @_requires_auth_logging
-def on_vtj_queried(sender, end_user, social_security_number, **kwargs):
+def on_vtj_queried(sender, end_user, social_security_number, request_id=None, **kwargs):
     """Write a successful VTJ_QUERY compliance entry for a VTJ personal info query.
 
     Triggered by the ``vtj_queried`` signal emitted from
@@ -279,6 +279,7 @@ def on_vtj_queried(sender, end_user, social_security_number, **kwargs):
         sender: The class that sent the signal.
         end_user: The identifier of the handler (caseworker) who triggered the query.
         social_security_number: The Finnish personal identity code queried.
+        request_id: The unique ID generated for the query.
     """
     ResilientLogSource.create(
         level=logging.INFO,
@@ -289,13 +290,16 @@ def on_vtj_queried(sender, end_user, social_security_number, **kwargs):
             "social_security_number": social_security_number,
             "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": True,
+            "request_id": request_id,
         },
     )
 
 
 @receiver(vtj_query_failed)
 @_requires_auth_logging
-def on_vtj_query_failed(sender, end_user, social_security_number, error, **kwargs):
+def on_vtj_query_failed(
+    sender, end_user, social_security_number, error, request_id=None, **kwargs
+):
     """Write a failed VTJ_QUERY compliance entry when a VTJ query fails.
 
     Triggered by the ``vtj_query_failed`` signal emitted from
@@ -306,6 +310,7 @@ def on_vtj_query_failed(sender, end_user, social_security_number, error, **kwarg
         end_user: The identifier of the handler who triggered the query.
         social_security_number: The personal identity code that was being queried.
         error: The exception that caused the failure.
+        request_id: The unique ID generated for the query.
     """
     ResilientLogSource.create(
         level=logging.WARNING,
@@ -317,6 +322,7 @@ def on_vtj_query_failed(sender, end_user, social_security_number, error, **kwarg
             "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": False,
             "error": str(error),
+            "request_id": request_id,
         },
     )
 
