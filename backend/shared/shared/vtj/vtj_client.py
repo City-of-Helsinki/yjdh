@@ -4,6 +4,9 @@ from typing import Tuple
 import requests
 from django.conf import settings
 from django.http import HttpRequest
+from requests.exceptions import RequestException
+
+from shared.vtj.signals import vtj_queried, vtj_query_failed
 
 
 class VTJClient:
@@ -60,12 +63,27 @@ class VTJClient:
     def get_personal_info(
         self, social_security_number, end_user: str, **kwargs
     ) -> dict:
-        response = requests.post(
-            self._url,
-            auth=self._auth,
-            json=self._json(social_security_number, end_user),
-            timeout=self._timeout,
-            **kwargs,
+        try:
+            response = requests.post(
+                self._url,
+                auth=self._auth,
+                json=self._json(social_security_number, end_user),
+                timeout=self._timeout,
+                **kwargs,
+            )
+            response.raise_for_status()
+        except RequestException as e:
+            vtj_query_failed.send_robust(
+                sender=self.__class__,
+                end_user=end_user,
+                social_security_number=social_security_number,
+                error=e,
+            )
+            raise
+
+        vtj_queried.send_robust(
+            sender=self.__class__,
+            end_user=end_user,
+            social_security_number=social_security_number,
         )
-        response.raise_for_status()
         return response.json()
