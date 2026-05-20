@@ -1,6 +1,7 @@
 import logging
 import uuid
 from functools import cached_property
+from typing import Any
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -17,6 +18,13 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django_filters import rest_framework as filters
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiResponse,
+)
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -24,9 +32,17 @@ from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from applications.api.v1.openapi_serializers import (
+    EmployerSummerVoucherAttachmentUploadRequestSerializer,
+    YouthApplicationCreateWithoutSsnRequestSerializer,
+    YouthApplicationFetchEmployeeDataRequestSerializer,
+    YouthApplicationFetchEmployeeDataResponseSerializer,
+    YouthApplicationIdResponseSerializer,
+)
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
@@ -74,6 +90,7 @@ from shared.vtj.vtj_client import VTJClient
 LOGGER = logging.getLogger(__name__)
 
 
+@extend_schema(responses=SchoolSerializer(many=True))
 class SchoolListView(ListAPIView):
     serializer_class = SchoolSerializer
 
@@ -81,7 +98,7 @@ class SchoolListView(ListAPIView):
     # - Custom sorter for name field to ensure finnish language sorting order.
     # - NOTE: This can be removed if the database is made to use collation fi_FI.utf8
     # TODO: Remove this after fixing related GitHub workflows to use Finnish PostgreSQL
-    def get_sorter(self, field_name, collation):
+    def get_sorter(self, field_name: str, collation: str | None) -> F | Func:
         if collation is None:
             return F(field_name)
         else:
@@ -91,7 +108,7 @@ class SchoolListView(ListAPIView):
                 template='(%(expressions)s) COLLATE "%(function)s"',
             )
 
-    def get_collations(self):
+    def get_collations(self) -> list[str | None]:
         return [
             "fi_FI.utf8",  # PostgreSQL UTF-8 version
             "Finnish_Swedish_CI_AS_UTF8",  # Azure's UTF-8 version
@@ -99,7 +116,7 @@ class SchoolListView(ListAPIView):
             None,  # No collation override
         ]
 
-    def get_sorters(self):
+    def get_sorters(self) -> list[F | Func]:
         return [
             self.get_sorter("name", collation) for collation in self.get_collations()
         ]
@@ -128,6 +145,7 @@ class SchoolListView(ListAPIView):
         return [permission() for permission in permission_classes]
 
 
+@extend_schema(responses=TargetGroupSerializer(many=True))
 class TargetGroupListView(ListAPIView):
     """
     DEPRECATED: This view is preserved for backward compatibility but is no
@@ -138,33 +156,40 @@ class TargetGroupListView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = TargetGroupSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> list[dict[str, str]]:
         identifiers = [cls().identifier for cls in AbstractTargetGroup.__subclasses__()]
         return get_target_group_data(identifiers)
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         queryset = self.get_queryset()
         return Response(queryset)
 
 
+@extend_schema_view(
+    list=extend_schema(exclude=True),
+    update=extend_schema(exclude=True),
+    partial_update=extend_schema(exclude=True),
+    destroy=extend_schema(exclude=True),
+)
 class YouthApplicationViewSet(ModelViewSet):
     permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def partial_update(self, request, *args, **kwargs):
+    def partial_update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @action(methods=["get"], detail=True)
+    @extend_schema(responses=YouthApplicationStatusSerializer)
     def status(self, request, *args, **kwargs) -> HttpResponse:
         # Not audit logging anything here as this is open to everyone,
         # also to anonymous users. The returned data is relatively
@@ -178,7 +203,10 @@ class YouthApplicationViewSet(ModelViewSet):
 
     @transaction.atomic
     @enforce_handler_view_adfs_login
-    def retrieve(self, request, *args, **kwargs):
+    @extend_schema(responses=YouthApplicationSerializer)
+    def retrieve(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> Response | HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
         # Update unhandled youth applications' encrypted_handler_vtj_json so
         # handlers can accept/reject using it
@@ -201,12 +229,25 @@ class YouthApplicationViewSet(ModelViewSet):
             )
         return super().retrieve(request, *args, **kwargs)
 
+    @extend_schema(
+        responses={
+            302: OpenApiResponse(description="Redirect to handler processing page"),
+        },
+    )
     @action(methods=["get"], detail=True)
     @enforce_handler_view_adfs_login
     def process(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
         return redirect(youth_application.handler_processing_url())
 
+    @extend_schema(
+        request=YouthApplicationAdditionalInfoSerializer,
+        responses={
+            201: YouthApplicationAdditionalInfoSerializer,
+            400: OpenApiResponse(description="Invalid input or status"),
+            500: OpenApiResponse(description="Failed to send email"),
+        },
+    )
     @transaction.atomic
     @action(methods=["post"], detail=True)
     def additional_info(self, request, *args, **kwargs) -> HttpResponse:
@@ -256,6 +297,15 @@ class YouthApplicationViewSet(ModelViewSet):
             )
             raise
 
+    @extend_schema(
+        request=YouthApplicationFetchEmployeeDataRequestSerializer,
+        responses={
+            200: YouthApplicationFetchEmployeeDataResponseSerializer,
+            400: OpenApiResponse(description="Bad request"),
+            403: OpenApiResponse(description="Forbidden"),
+            404: OpenApiResponse(description="Employee not found"),
+        },
+    )
     @transaction.atomic
     @method_decorator(csrf_protect)
     @action(methods=["post"], detail=False)
@@ -278,6 +328,16 @@ class YouthApplicationViewSet(ModelViewSet):
         except (KeyError, ValueError, TypeError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        request_serializer = YouthApplicationFetchEmployeeDataRequestSerializer(
+            data={
+                "employer_summer_voucher_id": str(employer_summer_voucher_id),
+                "employee_name": employee_name,
+                "summer_voucher_serial_number": voucher_number,
+            }
+        )
+        request_serializer.is_valid(raise_exception=True)
+
+        # Resolve the matching records and enforce the access checks.
         employer_summer_vouchers = EmployerSummerVoucher.objects.filter(
             id=employer_summer_voucher_id
         )
@@ -362,6 +422,18 @@ class YouthApplicationViewSet(ModelViewSet):
             additional_data=additional_data_for_access_audit_log,
         )
 
+        response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
+            data={
+                "employer_summer_voucher_id": str(employer_summer_voucher_id),
+                "employee_name": youth_application.name,
+                "employee_birthdate": youth_application.birthdate,
+                "employee_phone_number": youth_application.phone_number,
+                "employee_home_city": youth_application.home_municipality,
+                "employee_postcode": youth_application.postcode,
+                "employee_school": youth_application.school,
+            }
+        )
+        response_serializer.is_valid(raise_exception=True)
         return Response(
             data={
                 "employer_summer_voucher_id": str(employer_summer_voucher_id),
@@ -375,6 +447,13 @@ class YouthApplicationViewSet(ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(
+        request=YouthApplicationHandlingSerializer,
+        responses={
+            200: OpenApiResponse(description="Application accepted"),
+            400: OpenApiResponse(description="Application was not accepted"),
+        },
+    )
     @transaction.atomic
     @action(methods=["patch"], detail=True)
     @enforce_handler_view_adfs_login
@@ -422,6 +501,13 @@ class YouthApplicationViewSet(ModelViewSet):
         else:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        request=YouthApplicationHandlingSerializer,
+        responses={
+            200: OpenApiResponse(description="Application rejected"),
+            400: OpenApiResponse(description="Application was not rejected"),
+        },
+    )
     @transaction.atomic
     @action(methods=["patch"], detail=True)
     @enforce_handler_view_adfs_login
@@ -457,6 +543,13 @@ class YouthApplicationViewSet(ModelViewSet):
         else:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        responses={
+            302: OpenApiResponse(description="Redirect to application page"),
+            401: OpenApiResponse(description="Unable to activate application"),
+            500: OpenApiResponse(description="Failed to send email"),
+        },
+    )
     @transaction.atomic
     @action(methods=["get"], detail=True)
     def activate(self, request, *args, **kwargs) -> HttpResponse:  # noqa: C901
@@ -517,7 +610,10 @@ class YouthApplicationViewSet(ModelViewSet):
         )
 
     @staticmethod
-    def _set_application_needs_additional_info(youth_application) -> HttpResponse:
+    def _set_application_needs_additional_info(
+        youth_application: YouthApplication,
+    ) -> HttpResponse:
+        """Move the application into the additional-info flow and redirect."""
         LOGGER.info(
             f"Activated youth application {youth_application.pk}: "
             "Additional info is needed, redirecting user to page to provide it"
@@ -534,6 +630,7 @@ class YouthApplicationViewSet(ModelViewSet):
     def error_response_with_logging(
         cls, reason: YouthApplicationRejectedReason
     ) -> JsonResponse:
+        """Return a logged 400 response with the given rejection reason."""
         response_status = status.HTTP_400_BAD_REQUEST
         response_data = reason.json()
         LOGGER.info(
@@ -544,13 +641,22 @@ class YouthApplicationViewSet(ModelViewSet):
         return JsonResponse(status=response_status, data=response_data)
 
     @transaction.atomic
-    def create(self, request, *args, **kwargs):  # noqa: C901
+    @extend_schema(
+        request=YouthApplicationSerializer,
+        responses={
+            201: YouthApplicationIdResponseSerializer,
+            400: OpenApiResponse(description="Validation rejected"),
+            500: OpenApiResponse(description="Failed to send email"),
+        },
+    )
+    def create(self, request: Request, *args: Any, **kwargs: Any):  # noqa: C901
+        """Create a VTJ-backed youth application and notify the applicant."""
         try:
-            # This function is based on CreateModelMixin class's create function.
+            # Validate the incoming application payload first.
             serializer = self.get_serializer(data=request.data, hide_vtj_data=True)
             serializer.is_valid(raise_exception=True)
 
-            # Data is valid but let's check other criteria before creating the object
+            # Apply the business rules that sit outside serializer validation.
             email = serializer.validated_data["email"]
             social_security_number = serializer.validated_data["social_security_number"]
 
@@ -568,7 +674,6 @@ class YouthApplicationViewSet(ModelViewSet):
             # Data was valid and other criteria passed too, so let's create the object
             self.perform_create(serializer)
 
-            # Send the localized activation/additional info request email
             youth_application = serializer.instance
 
             # Fetch the VTJ JSON data and save it
@@ -589,6 +694,7 @@ class YouthApplicationViewSet(ModelViewSet):
                 ]
             )
 
+            # Send the localized activation or additional-info email.
             if settings.NEXT_PUBLIC_DISABLE_VTJ:
                 was_email_sent = youth_application.send_activation_email(
                     request, youth_application.language
@@ -656,10 +762,20 @@ class YouthApplicationViewSet(ModelViewSet):
             )
             raise
 
+    @extend_schema(
+        request=YouthApplicationCreateWithoutSsnRequestSerializer,
+        responses={
+            201: YouthApplicationIdResponseSerializer,
+            400: OpenApiResponse(description="Validation rejected"),
+            500: OpenApiResponse(description="Failed to send email"),
+        },
+    )
     @transaction.atomic
     @enforce_handler_view_adfs_login
     @action(methods=["post"], detail=False, url_path="create-without-ssn")
-    def create_without_ssn(self, request, *args, **kwargs) -> HttpResponse:
+    def create_without_ssn(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         """
         Create a YouthApplication without a social security number.
 
@@ -673,6 +789,7 @@ class YouthApplicationViewSet(ModelViewSet):
             if hasattr(data, "dict"):
                 data = data.dict()
 
+            # Add server-managed fields before the model serializer runs.
             data["is_unlisted_school"] = True
             data["receipt_confirmed_at"] = timezone.now()
             data["additional_info_provided_at"] = timezone.now()
@@ -687,9 +804,12 @@ class YouthApplicationViewSet(ModelViewSet):
                 data=data, context=self.get_serializer_context()
             )
             serializer.is_valid(raise_exception=True)
+
+            # Create the application and persist its initial state.
             self.perform_create(serializer)
             app: YouthApplication = serializer.instance
 
+            # Trigger the side effect that accompanies successful creation.
             was_email_sent = app.send_processing_email_to_handler(request)
             if not was_email_sent:
                 transaction.set_rollback(True)
@@ -704,6 +824,7 @@ class YouthApplicationViewSet(ModelViewSet):
                 "Sending application to be processed by a handler"
             )
 
+            # Shape and return the documented success response.
             headers = self.get_success_headers(serializer.data)
             return Response(
                 data={"id": app.id},
@@ -828,7 +949,7 @@ class EmployerApplicationViewSet(ModelViewSet):
         )
         return queryset.none()
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         Allow only 1 (DRAFT) application per user & company.
         """
@@ -841,7 +962,7 @@ class EmployerApplicationViewSet(ModelViewSet):
 
         return super().create(request, *args, **kwargs)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         Allow to update only DRAFT status applications.
         """
@@ -858,7 +979,7 @@ class EmployerApplicationViewSet(ModelViewSet):
 
         return super().update(request, *args, **kwargs)
 
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         Allow to delete only DRAFT status applications.
         """
@@ -876,6 +997,14 @@ class EmployerApplicationViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+@extend_schema_view(
+    create=extend_schema(exclude=True),
+    update=extend_schema(exclude=True),
+    partial_update=extend_schema(exclude=True),
+    retrieve=extend_schema(exclude=True),
+    list=extend_schema(exclude=True),
+    destroy=extend_schema(exclude=True),
+)
 class EmployerSummerVoucherViewSet(ModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
     serializer_class = EmployerSummerVoucherSerializer
@@ -914,28 +1043,37 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         # they should not see any summer vouchers.
         return queryset.none()
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    @extend_schema(
+        request=EmployerSummerVoucherAttachmentUploadRequestSerializer,
+        responses={
+            201: AttachmentSerializer,
+            400: OpenApiResponse(description="Invalid input"),
+            403: OpenApiResponse(description="Forbidden"),
+            404: OpenApiResponse(description="Voucher not found"),
+        },
+    )
     @action(
         methods=("POST",),
         detail=True,
         url_path="attachments",
         parser_classes=(MultiPartParser,),
     )
-    def post_attachment(self, request, *args, **kwargs):
+    def post_attachment(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         Upload a single file as attachment.
         """
@@ -966,6 +1104,21 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="attachment_pk",
+                type=OpenApiTypes.UUID,
+                location=OpenApiParameter.PATH,
+                description="A UUID string identifying this attachment.",
+            ),
+        ],
+        responses={
+            200: OpenApiTypes.BINARY,
+            204: OpenApiResponse(description="Attachment deleted"),
+            404: OpenApiResponse(description="File not found"),
+        },
+    )
     @action(
         methods=(
             "GET",
@@ -974,7 +1127,10 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         detail=True,
         url_path="attachments/(?P<attachment_pk>[^/.]+)",
     )
-    def handle_attachment(self, request, attachment_pk, *args, **kwargs):
+    def handle_attachment(
+        self, request: Request, attachment_pk: str, *args: Any, **kwargs: Any
+    ) -> HttpResponse | Response:
+        """Download or delete a single attachment identified by its UUID."""
         obj = self.get_object()
 
         if request.method == "GET":
@@ -1033,6 +1189,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema(responses=SummerVoucherConfigurationSerializer(many=True))
 class SummerVoucherConfigurationViewSet(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = SummerVoucherConfigurationSerializer

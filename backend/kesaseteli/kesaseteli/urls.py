@@ -2,6 +2,10 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, reverse_lazy
 from django.views.generic import RedirectView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+)
 from rest_framework import routers
 
 from applications.api.v1 import views as application_views
@@ -57,6 +61,12 @@ urlpatterns = [
             url=reverse_lazy("django_auth_adfs:logout"), query_string=True
         ),
         name="logout",
+    ),
+    path("openapi/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api_docs/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
     ),
 ]
 
