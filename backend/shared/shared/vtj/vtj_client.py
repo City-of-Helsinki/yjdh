@@ -79,7 +79,7 @@ class VTJClient:
             )
             response.raise_for_status()
         except RequestException as e:
-            vtj_query_failed.send_robust(
+            vtj_query_failed.send(
                 sender=self.__class__,
                 end_user=end_user,
                 social_security_number=social_security_number,
@@ -88,7 +88,7 @@ class VTJClient:
             )
             raise
 
-        vtj_queried.send_robust(
+        vtj_queried.send(
             sender=self.__class__,
             end_user=end_user,
             social_security_number=social_security_number,
