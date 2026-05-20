@@ -43,7 +43,7 @@ class VTJClient:
 
     @property
     def _auth(self) -> Tuple[str, str]:
-        return settings.VTJ_USERNAME, settings.VTJ_PASSWORD
+        return str(settings.VTJ_USERNAME or ""), str(settings.VTJ_PASSWORD or "")
 
     def _json(self, social_security_number, end_user: str) -> dict:
         return {
@@ -53,12 +53,12 @@ class VTJClient:
         }
 
     @property
-    def _url(self):
-        return settings.VTJ_PERSONAL_ID_QUERY_URL
+    def _url(self) -> str:
+        return str(settings.VTJ_PERSONAL_ID_QUERY_URL or "")
 
     @property
     def _timeout(self) -> int:
-        return settings.VTJ_TIMEOUT
+        return int(settings.VTJ_TIMEOUT or 30)
 
     def get_personal_info(
         self, social_security_number, end_user: str, **kwargs

@@ -36,7 +36,7 @@ def get_eauth_login_success_url(request: HttpRequest) -> str:
     if next_url and is_safe_redirect_url(request, next_url):
         return next_url
 
-    return settings.LOGIN_REDIRECT_URL
+    return str(settings.LOGIN_REDIRECT_URL or "")
 
 
 def get_userinfo(request: HttpRequest) -> dict:
