@@ -2133,6 +2133,7 @@ def test_attachment_requirements(
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
         ["employment_contract", "required"],
         ["helsinki_benefit_voucher", "optional"],
+        ["business_brief", "optional"],
     ]
 
 
@@ -2664,6 +2665,7 @@ def test_notify_applications_one_application(mock_send_notification_mail):
     assert count == 1
     assert apps[0] == app.application_number
 
+
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 @mock.patch(
@@ -2701,6 +2703,7 @@ def test_notify_applications_no_applications(mock_send_notification_mail):
     # notify_applications must return the sum of _send_notification_mail return values
     assert count == 0
     assert apps == []
+
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -2756,6 +2759,7 @@ def test_notify_applications_matching_unmatching(mock_send_notification_mail):
     assert mock_send_notification_mail.call_count == 5
     for app in apps:
         assert app.application_number in notified_applications
+
 
 @pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -3020,10 +3024,10 @@ def test_change_employer_assurance_wrong_key(handler_api_client):
             "v1:handler-application-change-employer-assurance",
             kwargs={"pk": application.id},
         ),
-        {"illegal_key": 'true'},
+        {"illegal_key": "true"},
     )
     assert response.status_code == 400
-    assert application.employer_assurance == False
+    assert not application.employer_assurance
 
 
 @pytest.mark.django_db

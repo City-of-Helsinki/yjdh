@@ -85,6 +85,7 @@ export const getValidationSchema = (
       .matches(/^\d+$/, t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BUSINESS_BRIEF]: Yup.string()
+      .trim()
       .max(
         MAX_VERY_LONG_STRING_LENGTH,
         t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {

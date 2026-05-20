@@ -123,6 +123,10 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     additional_pay_subsidy_percent = None
 
+    company_number_of_employees = factory.Faker("random_int", min=1, max=1000)
+    company_business_brief = factory.Faker("paragraph")
+    role_of_employee_in_organization = factory.Faker("paragraph")
+
     apprenticeship_program = None
     archived = False
     application_step = ApplicationStep.STEP_1
