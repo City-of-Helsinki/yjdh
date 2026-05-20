@@ -1,0 +1,127 @@
+from unittest import mock
+
+import pytest
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.test import override_settings, RequestFactory
+from requests.exceptions import ConnectionError as RequestsConnectionError
+from resilient_logger.models import ResilientLogEntry
+
+from applications.services import VTJService
+from common.tests.factories import (
+    DuplicateAllowingUserFactory,
+    YouthApplicationFactory,
+)
+from kesaseteli.auth_logging import AuthEventType
+
+pytestmark = pytest.mark.django_db
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
+    ENABLE_AUTH_LOGGING=True,
+    VTJ_USERNAME="test_user",
+    VTJ_PASSWORD="test_password",
+    VTJ_TIMEOUT=30,
+    VTJ_PERSONAL_ID_QUERY_URL="https://example.com/vtj",
+)
+def test_fetch_vtj_json_logs_vtj_query():
+    """Successful VTJ query creates a VTJ_QUERY log entry."""
+    application = YouthApplicationFactory()
+    end_user = "test-handler-uuid"
+    vtj_response = {
+        "Henkilo": {"Henkilotunnus": {"value": application.social_security_number}}
+    }
+
+    with mock.patch("shared.vtj.vtj_client.requests.post") as mock_post:
+        mock_response = mock.Mock()
+        mock_response.json.return_value = vtj_response
+        mock_post.return_value = mock_response
+        VTJService.fetch_vtj_json(application, end_user=end_user)
+
+    entry = ResilientLogEntry.objects.last()
+    assert entry is not None
+    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
+    assert entry.context["end_user"] == end_user
+    assert entry.context["social_security_number"] == application.social_security_number
+    assert entry.context["query_type"] == "PERUSSANOMA 1"
+    assert entry.context["success"] is True
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
+    ENABLE_AUTH_LOGGING=True,
+    VTJ_USERNAME="test_user",
+    VTJ_PASSWORD="test_password",
+    VTJ_TIMEOUT=30,
+    VTJ_PERSONAL_ID_QUERY_URL="https://example.com/vtj",
+)
+def test_fetch_vtj_json_logs_vtj_query_failure_on_api_error():
+    """Failed VTJ query creates a failed VTJ_QUERY log entry and re-raises."""
+    application = YouthApplicationFactory()
+    end_user = "test-handler-uuid"
+
+    with mock.patch(
+        "shared.vtj.vtj_client.requests.post",
+        side_effect=RequestsConnectionError("Connection refused"),
+    ):
+        with pytest.raises(RequestsConnectionError):
+            VTJService.fetch_vtj_json(application, end_user=end_user)
+
+    entry = ResilientLogEntry.objects.last()
+    assert entry is not None
+    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
+    assert entry.context["end_user"] == end_user
+    assert entry.context["social_security_number"] == application.social_security_number
+    assert entry.context["success"] is False
+    assert "Connection refused" in entry.context["error"]
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
+    ENABLE_AUTH_LOGGING=False,
+    VTJ_USERNAME="test_user",
+    VTJ_PASSWORD="test_password",
+    VTJ_TIMEOUT=30,
+    VTJ_PERSONAL_ID_QUERY_URL="https://example.com/vtj",
+)
+def test_fetch_vtj_json_no_log_when_logging_disabled():
+    """No log entry is written when ENABLE_AUTH_LOGGING is False."""
+    application = YouthApplicationFactory()
+    vtj_response = {"Henkilo": {}}
+
+    with mock.patch("shared.vtj.vtj_client.requests.post") as mock_post:
+        mock_response = mock.Mock()
+        mock_response.json.return_value = vtj_response
+        mock_post.return_value = mock_response
+        VTJService.fetch_vtj_json(application, end_user="handler")
+
+    assert ResilientLogEntry.objects.count() == 0
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_on_user_logged_in_logs_login():
+    """Successful login triggers a LOGIN log entry."""
+    user = DuplicateAllowingUserFactory()
+    request = RequestFactory().get("/")
+    user_logged_in.send(sender=user.__class__, request=request, user=user)
+
+    entry = ResilientLogEntry.objects.last()
+    assert entry is not None
+    assert entry.context["event_type"] == AuthEventType.LOGIN
+    assert entry.context["user_id"] == str(user.pk)
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_on_user_logged_out_logs_logout():
+    """Successful logout triggers a LOGOUT log entry."""
+    user = DuplicateAllowingUserFactory()
+    request = RequestFactory().get("/")
+    user_logged_out.send(sender=user.__class__, request=request, user=user)
+
+    entry = ResilientLogEntry.objects.last()
+    assert entry is not None
+    assert entry.context["event_type"] == AuthEventType.LOGOUT
+    assert entry.context["user_id"] == str(user.pk)
