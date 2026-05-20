@@ -274,6 +274,7 @@ INSTALLED_APPS = [
     "django_auth_adfs",
     "auditlog",
     "auditlog_extra",
+    "drf_spectacular",
     # shared apps
     "shared.oidc",
     # local apps
@@ -430,6 +431,23 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# Keep the exported schema aligned with the Kesäseteli API surface and the
+# environments we actively deploy to.
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Kesäseteli API",
+    # Explicit enum names keep the generated components stable across schema
+    # regenerations and avoid drf-spectacular fallback names for repeated status
+    # fields.
+    "ENUM_NAME_OVERRIDES": {
+        "EmployerApplicationStatusEnum": "applications.enums.EmployerApplicationStatus",
+        "YouthApplicationStatusEnum": "applications.enums.YouthApplicationStatus",
+    },
+    "DESCRIPTION": "REST API for Kesäseteli application management",
+    "VERSION": APP_RELEASE or "0.0.1",
+    "OAS_VERSION": "3.1.0",
 }
 
 YTJ_BASE_URL = env.str("YTJ_BASE_URL")
