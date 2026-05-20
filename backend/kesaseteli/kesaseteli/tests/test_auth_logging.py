@@ -14,6 +14,10 @@ from shared.oidc.signals import (
     suomifi_mandate_queried,
     suomifi_mandate_query_failed,
 )
+from shared.vtj.signals import (
+    vtj_queried,
+    vtj_query_failed,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -116,6 +120,46 @@ def test_log_login_event_missing_backend(user):
     assert entry.context["auth_backend"] == "unknown"
 
 
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_log_vtj_query_creates_entry():
+    vtj_queried.send(
+        sender=None,
+        end_user="handler-uuid-123",
+        social_security_number="010101-123N",
+    )
+
+    entry = ResilientLogEntry.objects.last()
+    assert entry is not None
+    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
+    assert entry.context["end_user"] == "handler-uuid-123"
+    assert entry.context["social_security_number"] == "010101-123N"
+    assert entry.context["query_type"] == "PERUSSANOMA 1"
+    assert entry.context["success"] is True
+    assert entry.level == logging.INFO
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_log_vtj_query_failure_creates_entry():
+    error = Exception("Connection refused")
+
+    vtj_query_failed.send(
+        sender=None,
+        end_user="handler-uuid-123",
+        social_security_number="010101-123N",
+        error=error,
+    )
+
+    entry = ResilientLogEntry.objects.last()
+    assert entry is not None
+    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
+    assert entry.context["end_user"] == "handler-uuid-123"
+    assert entry.context["social_security_number"] == "010101-123N"
+    assert entry.context["query_type"] == "PERUSSANOMA 1"
+    assert entry.context["success"] is False
+    assert "Connection refused" in entry.context["error"]
+    assert entry.level == logging.WARNING
+
+
 @override_settings(ENABLE_AUTH_LOGGING=False)
 def test_logging_disabled_creates_no_entry(user):
     """When ENABLE_AUTH_LOGGING is False no entries are written."""
@@ -135,6 +179,18 @@ def test_logging_disabled_creates_no_entry(user):
         sender=None,
         request=request,
         request_id="req-123",
+        error=Exception("fail"),
+    )
+
+    vtj_queried.send(
+        sender=None,
+        end_user="handler-uuid-123",
+        social_security_number="010101-123N",
+    )
+    vtj_query_failed.send(
+        sender=None,
+        end_user="handler-uuid-123",
+        social_security_number="010101-123N",
         error=Exception("fail"),
     )
 

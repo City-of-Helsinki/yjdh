@@ -1,10 +1,11 @@
 """
-DVV compliance logging for Suomi.fi authentication and mandate (eAuthorization)
-query events.
+DVV compliance logging for Suomi.fi authentication, mandate (eAuthorization),
+and VTJ (Population Information System) query events.
 
 Background
 ----------
-Kesäseteli uses Suomi.fi for two distinct purposes:
+Kesäseteli uses Suomi.fi for two distinct purposes and also queries the Finnish
+Population Information System (VTJ) during application handling:
 
 1. **Personal identification (SAML2 / SuomiFi login)**
    Users authenticate via Suomi.fi's SAML2 identity broker. After a successful
@@ -18,6 +19,17 @@ Kesäseteli uses Suomi.fi for two distinct purposes:
    REST API to verify that the user holds a valid mandate for that company and to
    retrieve the list of roles granted. This module logs both successful and failed
    mandate queries as MANDATE_QUERY entries.
+
+3. **VTJ personal information queries**
+   Kesäseteli queries the VTJ REST API to verify an applicant's identity and
+   home municipality in two situations:
+
+   * Automatically by the system when a youth submits their youth application,
+     to check if the application can be automatically accepted.
+   * Manually by a handler (caseworker) when they open a youth application for
+     processing (if the application was not automatically accepted).
+
+   This module logs both successful and failed queries as VTJ_QUERY entries.
 
 DVV logging requirements — Suomi.fi Valtuudet (mandate)
 --------------------------------------------------------
@@ -37,6 +49,18 @@ The audit trail must make the following facts recoverable after the fact:
   succeeded or failed.
 
 See: https://kehittajille.suomi.fi/palvelut/valtuudet/tekninen-dokumentaatio/lokitusvaatimukset
+
+DVV logging requirements — VTJ queries
+---------------------------------------
+The permit holder (luvansaaja) is responsible for maintaining a log of all
+queries made to the Population Information System. Logs must be retained for
+**five (5) years** as a general rule. The log must record:
+
+* **Who made the query** – identified at the individual (person) level.
+* **What data was queried** – which fields / query type were requested from VTJ.
+* **When** – full date and time (pp.kk.vvvv klo).
+
+See: https://dvv.fi/vtjkysely-rajapinta
 
 Implementation
 --------------
@@ -69,6 +93,10 @@ from shared.oidc.signals import (
     suomifi_mandate_queried,
     suomifi_mandate_query_failed,
 )
+from shared.vtj.signals import (
+    vtj_queried,
+    vtj_query_failed,
+)
 
 
 class AuthEventType(StrEnum):
@@ -82,6 +110,7 @@ class AuthEventType(StrEnum):
     LOGIN = "LOGIN"
     LOGOUT = "LOGOUT"
     MANDATE_QUERY = "MANDATE_QUERY"
+    VTJ_QUERY = "VTJ_QUERY"
 
 
 class AuthEventMessage(StrEnum):
@@ -94,6 +123,8 @@ class AuthEventMessage(StrEnum):
     LOGOUT = "User logout"
     MANDATE_QUERY = "Mandate authorization query"
     MANDATE_QUERY_FAILED = "Mandate authorization query failed"
+    VTJ_QUERY = "VTJ personal information query"
+    VTJ_QUERY_FAILED = "VTJ personal information query failed"
 
 
 def _requires_auth_logging(fn):
@@ -223,6 +254,60 @@ def on_suomifi_mandate_query_failed(sender, request, request_id, error, **kwargs
             "event_type": AuthEventType.MANDATE_QUERY,
             "user_id": str(user.pk) if user and user.is_authenticated else None,
             "request_id": request_id,
+            "success": False,
+            "error": str(error),
+        },
+    )
+
+
+@receiver(vtj_queried)
+@_requires_auth_logging
+def on_vtj_queried(sender, end_user, social_security_number, **kwargs):
+    """Write a successful VTJ_QUERY compliance entry for a VTJ personal info query.
+
+    Triggered by the ``vtj_queried`` signal emitted from
+    ``shared.vtj.vtj_client.VTJClient``.
+
+    Args:
+        sender: The class that sent the signal.
+        end_user: The identifier of the handler (caseworker) who triggered the query.
+        social_security_number: The Finnish personal identity code queried.
+    """
+    ResilientLogSource.create(
+        level=logging.INFO,
+        message=AuthEventMessage.VTJ_QUERY,
+        context={
+            "event_type": AuthEventType.VTJ_QUERY,
+            "end_user": end_user,
+            "social_security_number": social_security_number,
+            "query_type": "PERUSSANOMA 1",
+            "success": True,
+        },
+    )
+
+
+@receiver(vtj_query_failed)
+@_requires_auth_logging
+def on_vtj_query_failed(sender, end_user, social_security_number, error, **kwargs):
+    """Write a failed VTJ_QUERY compliance entry when a VTJ query fails.
+
+    Triggered by the ``vtj_query_failed`` signal emitted from
+    ``shared.vtj.vtj_client.VTJClient``.
+
+    Args:
+        sender: The class that sent the signal.
+        end_user: The identifier of the handler who triggered the query.
+        social_security_number: The personal identity code that was being queried.
+        error: The exception that caused the failure.
+    """
+    ResilientLogSource.create(
+        level=logging.WARNING,
+        message=AuthEventMessage.VTJ_QUERY_FAILED,
+        context={
+            "event_type": AuthEventType.VTJ_QUERY,
+            "end_user": end_user,
+            "social_security_number": social_security_number,
+            "query_type": "PERUSSANOMA 1",
             "success": False,
             "error": str(error),
         },

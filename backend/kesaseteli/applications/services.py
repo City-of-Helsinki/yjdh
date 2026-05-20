@@ -399,9 +399,10 @@ class VTJService:
                 )
             return mock_vtj_person_id_query_not_found_content()
 
-        return json.dumps(
-            VTJClient().get_personal_info(application.social_security_number, end_user)
+        vtj_data = VTJClient().get_personal_info(
+            application.social_security_number, end_user
         )
+        return json.dumps(vtj_data)
 
     @classmethod
     def is_response_restricted(cls, vtj_json_dict: dict) -> bool:
