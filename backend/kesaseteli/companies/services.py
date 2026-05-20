@@ -118,7 +118,9 @@ def handle_mock_company(request: HttpRequest):
     return company
 
 
-def get_or_create_company_using_organization_roles(request: HttpRequest) -> Company:
+def get_or_create_company_using_organization_roles(
+    request: HttpRequest,
+) -> Company:
     """
     The flow will execute only step 1 or steps 2-5 if company does not exist in
     db.

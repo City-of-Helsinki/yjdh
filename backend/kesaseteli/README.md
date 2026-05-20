@@ -193,11 +193,13 @@ When `NEXT_PUBLIC_MOCK_FLAG=true` (typically in local development):
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the current year. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
 | `AD_ADMIN_GROUP_NAME` | The name of the AD group that maps to Django admin permissions. Default is None (feature disabled). |
+| `ENABLE_AUTH_LOGGING` | A boolean value. If set to True, enables DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events. Default is False. |
 
 ## Documentation
 
 -   [Applications Module](applications/README.md): Documentation for Summer Voucher Configuration, Email Templates, Target Groups, and School Management.
 -   [Staff Admin Permissions](staff_admin_permissions/README.md): Documentation for handling staff user permissions and AD group mappings.
+-   [Auth & Compliance Logging](kesaseteli/AUTH_LOGGING.md): DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events — retention requirements and log entry structure.
 
 ### Summer Voucher Configuration
 
