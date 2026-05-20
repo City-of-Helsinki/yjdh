@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import date, datetime
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import filetype
 from django.conf import settings
@@ -128,7 +128,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         help_text="Name of the uploaded file",
     )
 
-    def get_attachment_file_name(self, obj):
+    def get_attachment_file_name(self, obj) -> str:
         return getattr(obj.attachment_file, "name", "")
 
     def validate(self, data):
@@ -171,7 +171,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(_("Not a valid image file"))
         return data
 
-    def _is_valid_image(self, uploaded_file):
+    def _is_valid_image(self, uploaded_file) -> bool:
         try:
             # check if the file is a valid image
             im = Image.open(uploaded_file)
@@ -181,7 +181,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         else:
             return True
 
-    def _is_valid_pdf(self, uploaded_file):
+    def _is_valid_pdf(self, uploaded_file) -> bool:
         file_pos = uploaded_file.tell()
         mime_type = None
         if file_type_guess := filetype.guess(uploaded_file):
@@ -567,7 +567,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
         return application
 
-    def get_is_mine(self, obj):
+    def get_is_mine(self, obj) -> bool:
         request = self.context.get("request")
         if request:
             return obj.user == request.user
@@ -745,7 +745,7 @@ class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
             "target_groups",
         ]
 
-    def get_target_groups(self, obj):
+    def get_target_groups(self, obj) -> list[dict[str, str]]:
         return get_target_group_data(obj.target_group)
 
 
@@ -872,7 +872,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             del validated_data["request_additional_information"]
         return super().create(validated_data)
 
-    def get_encrypted_char_field_as_json(self, obj, field_name):
+    def get_encrypted_char_field_as_json(self, obj, field_name: str) -> dict[str, Any]:
         """
         Return EncryptedCharField as JSON object, converting None & empty
         string to {}.
@@ -886,10 +886,10 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         else:
             return json.loads(field_value)
 
-    def get_encrypted_original_vtj_json(self, obj):
+    def get_encrypted_original_vtj_json(self, obj) -> dict[str, Any]:
         return self.get_encrypted_char_field_as_json(obj, "encrypted_original_vtj_json")
 
-    def get_encrypted_handler_vtj_json(self, obj):
+    def get_encrypted_handler_vtj_json(self, obj) -> dict[str, Any]:
         return self.get_encrypted_char_field_as_json(obj, "encrypted_handler_vtj_json")
 
 

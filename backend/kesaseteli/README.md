@@ -237,6 +237,12 @@ shipping pipeline.
 -   [Staff Admin Permissions](staff_admin_permissions/README.md): Documentation for handling staff user permissions and AD group mappings.
 -   [Auth & Compliance Logging](kesaseteli/AUTH_LOGGING.md): DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events — retention requirements and log entry structure.
 
+The OpenAPI schema is served from `/openapi/`.
+ReDoc is served from `/api_docs/redoc/`.
+
+The schema is generated from the Kesäseteli backend code at runtime. There is no committed `openapi.yaml`
+artifact in this repository.
+
 ### Summer Voucher Configuration
 
 A `SummerVoucherConfiguration` for the current year is **required** for creating new `YouthApplication`s. If no configuration exists for the current year, the API will reject creation requests with a 400 Bad Request error.

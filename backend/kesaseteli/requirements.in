@@ -8,6 +8,7 @@ django-cors-headers
 django-environ
 django-extensions
 django-filter
+drf-spectacular
 django-localflavor
 django-searchable-encrypted-fields
 django-storages[azure]

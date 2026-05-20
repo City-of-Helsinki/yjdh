@@ -1415,7 +1415,8 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
         )
 
     @property
-    def employee_birthdate(self):
+    def employee_birthdate(self) -> date | None:
+        """Return the employee's birthdate from the linked youth application."""
         return (
             self.youth_summer_voucher.youth_application.birthdate
             if self.youth_summer_voucher
