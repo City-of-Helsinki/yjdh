@@ -35,8 +35,6 @@ from shared.vtj.vtj_client import VTJClient
 if TYPE_CHECKING:
     from django.contrib.contenttypes.models import ContentType
 
-    from applications.models import YouthApplication
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -140,9 +138,9 @@ class EmailTemplateService:
             return False
 
         # Parse: Line 0 = Subject, Line 1 = Empty Separator, Line 2+ = Body
-        template.subject = lines[0].strip()
-        template.html_body = "\n".join(lines[2:])
-        template.text_body = ""
+        template.subject = lines[0].strip()  # type: ignore
+        template.html_body = "\n".join(lines[2:])  # type: ignore
+        template.text_body = ""  # type: ignore
 
         template.save()
         return True
@@ -307,7 +305,7 @@ class AuditAccessLogService:
         actor: User,
         actor_email: str,
         additional_data: dict,
-    ) -> LogEntry:
+    ) -> LogEntry | None:
         """
         Create an ACCESS audit log entry with related object instance and
         additional data into which "is_sent" and "request_path" info
@@ -334,7 +332,7 @@ class VTJService:
         """Find the matching VTJ test case based on last name."""
         for test_case in VtjTestCase.values:
             if are_same_texts(last_name, test_case):
-                return test_case
+                return str(test_case)
         return ""
 
     @classmethod
