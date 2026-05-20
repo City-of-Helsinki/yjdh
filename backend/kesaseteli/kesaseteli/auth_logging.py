@@ -97,6 +97,7 @@ from shared.vtj.signals import (
     vtj_queried,
     vtj_query_failed,
 )
+from shared.vtj.vtj_client import VTJClient
 
 
 class AuthEventType(StrEnum):
@@ -125,6 +126,12 @@ class AuthEventMessage(StrEnum):
     MANDATE_QUERY_FAILED = "Mandate authorization query failed"
     VTJ_QUERY = "VTJ personal information query"
     VTJ_QUERY_FAILED = "VTJ personal information query failed"
+
+
+class VtjQueryType(StrEnum):
+    """VTJ query types used in compliance logs."""
+
+    PERSONAL_DATA_QUERY = VTJClient.DEFAULT_QUERY_TYPE
 
 
 def _requires_auth_logging(fn):
@@ -280,7 +287,7 @@ def on_vtj_queried(sender, end_user, social_security_number, **kwargs):
             "event_type": AuthEventType.VTJ_QUERY,
             "end_user": end_user,
             "social_security_number": social_security_number,
-            "query_type": "PERUSSANOMA 1",
+            "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": True,
         },
     )
@@ -307,7 +314,7 @@ def on_vtj_query_failed(sender, end_user, social_security_number, error, **kwarg
             "event_type": AuthEventType.VTJ_QUERY,
             "end_user": end_user,
             "social_security_number": social_security_number,
-            "query_type": "PERUSSANOMA 1",
+            "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": False,
             "error": str(error),
         },

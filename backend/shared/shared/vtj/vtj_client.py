@@ -17,6 +17,8 @@ class VTJClient:
     https://dvv.fi/en/population-information-system
     """
 
+    DEFAULT_QUERY_TYPE = "PERUSSANOMA 1"
+
     def __init__(self):
         if not all([*self._auth, self._timeout, self._url]):
             raise ValueError("VTJ client settings not configured.")
@@ -48,7 +50,7 @@ class VTJClient:
     def _json(self, social_security_number, end_user: str) -> dict:
         return {
             "Henkilotunnus": social_security_number,
-            "SoSoNimi": "PERUSSANOMA 1",
+            "SoSoNimi": self.DEFAULT_QUERY_TYPE,
             "Loppukayttaja": end_user,
         }
 

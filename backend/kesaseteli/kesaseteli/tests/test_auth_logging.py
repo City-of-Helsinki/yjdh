@@ -8,6 +8,7 @@ from resilient_logger.models import ResilientLogEntry
 
 from kesaseteli.auth_logging import (
     AuthEventType,
+    VtjQueryType,
     log_login_event,
 )
 from shared.oidc.signals import (
@@ -133,7 +134,7 @@ def test_log_vtj_query_creates_entry():
     assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
     assert entry.context["end_user"] == "handler-uuid-123"
     assert entry.context["social_security_number"] == "010101-123N"
-    assert entry.context["query_type"] == "PERUSSANOMA 1"
+    assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is True
     assert entry.level == logging.INFO
 
@@ -154,7 +155,7 @@ def test_log_vtj_query_failure_creates_entry():
     assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
     assert entry.context["end_user"] == "handler-uuid-123"
     assert entry.context["social_security_number"] == "010101-123N"
-    assert entry.context["query_type"] == "PERUSSANOMA 1"
+    assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is False
     assert "Connection refused" in entry.context["error"]
     assert entry.level == logging.WARNING
