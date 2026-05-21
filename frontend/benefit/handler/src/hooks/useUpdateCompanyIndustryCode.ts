@@ -1,7 +1,9 @@
 import { AxiosError } from 'axios';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { Company } from 'benefit-shared/types/application';
-import { useMutation, UseMutationResult } from 'react-query';
+import { useTranslation } from 'next-i18next';
+import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useUpdateCompanyIndustryCode = (): UseMutationResult<
@@ -10,6 +12,8 @@ const useUpdateCompanyIndustryCode = (): UseMutationResult<
   { companyId: string; industryCode: string; industry?: string }
 > => {
   const { axios, handleResponse } = useBackendAPI();
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation<
     Company,
@@ -23,7 +27,23 @@ const useUpdateCompanyIndustryCode = (): UseMutationResult<
           industry_code: industryCode,
           industry: industry ?? '',
         })
-      )
+      ),
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries('applications');
+        void queryClient.invalidateQueries('application');
+      },
+      onError: (): void => {
+        showErrorToast(
+          t(
+            'common:review.decisionProposal.errors.industryCodeUpdateFailed.label'
+          ),
+          t(
+            'common:review.decisionProposal.errors.industryCodeUpdateFailed.text'
+          )
+        );
+      },
+    }
   );
 };
 

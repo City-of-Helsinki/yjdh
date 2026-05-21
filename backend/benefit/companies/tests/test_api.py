@@ -286,6 +286,30 @@ def test_update_industry_code_non_handler_forbidden(api_client):
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
+def test_update_industry_code_too_long(handler_api_client):
+    from companies.tests.factories import CompanyFactory
+
+    company = CompanyFactory()
+    url = get_industry_code_url(company.pk)
+    response = handler_api_client.patch(url, {"industry_code": "X" * 11}, format="json")
+    assert response.status_code == 400
+    assert "industry_code" in response.data
+
+
+@pytest.mark.django_db
+def test_update_industry_too_long(handler_api_client):
+    from companies.tests.factories import CompanyFactory
+
+    company = CompanyFactory()
+    url = get_industry_code_url(company.pk)
+    response = handler_api_client.patch(
+        url, {"industry_code": "62010", "industry": "A" * 256}, format="json"
+    )
+    assert response.status_code == 400
+    assert "industry" in response.data
+
+
 # ── SearchOrganisationsView ────────────────────────────────────────────────────
 
 

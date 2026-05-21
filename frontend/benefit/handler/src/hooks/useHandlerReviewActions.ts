@@ -65,7 +65,7 @@ const useHandlerReviewActions = (
           industryCode: handledApplication.industryCode,
           industry: handledApplication.industryDescription,
         },
-        { onSuccess: doUpdateStatus, onError: doUpdateStatus }
+        { onSuccess: doUpdateStatus }
       );
     } else {
       doUpdateStatus();
