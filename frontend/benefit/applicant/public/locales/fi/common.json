@@ -139,6 +139,7 @@
           },
           "companyBusinessBrief": {
             "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja.",
+            "summaryLabel": "Kuvaus työnantajan toiminnan luonteesta",
             "helperText": "",
             "placeholder": ""
           },
@@ -308,7 +309,9 @@
           },
           "otherFinancialSupportForEmployment": {
             "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
-            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä.",
+            "yes": "Kyllä",
+            "no": "Ei"
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
@@ -325,6 +328,7 @@
           },
           "roleOfEmployeeInOrganization": {
             "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
+            "summaryLabel": "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
             "placeholder": ""
           },
           "apprenticeshipProgram": {

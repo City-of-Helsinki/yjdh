@@ -98,6 +98,24 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 )}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
+            <$ApplicationDetailRow
+              $alignItems="flex-start"
+              $forceColumn
+              data-testid="application-field-otherFinancialSupportForEmployment"
+            >
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {t(
+                  `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.${
+                    data.otherFinancialSupportForEmployment ? 'yes' : 'no'
+                  }`
+                )}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
             {data.associationImmediateManagerCheck && (
               <$ApplicationDetailRow
                 $alignItems="flex-start"
@@ -134,7 +152,16 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {data.employee?.jobTitle || '-'}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
-
+              <$ApplicationDetailRow data-testid="application-field-roleOfEmployeeInOrganization">
+                <$ApplicationDetailLabel>
+                  {t(
+                    `${translationsBase}.employee.fields.roleOfEmployeeInOrganization.summaryLabel`
+                  )}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {data?.roleOfEmployeeInOrganization || '-'}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
               <$ApplicationDetailRow data-testid="application-field-collectiveBargainingAgreement">
                 <$ApplicationDetailLabel>
                   {t(
