@@ -191,10 +191,7 @@ describe('useHandlerReviewActions', () => {
         industryCode: '62010',
         industry: 'Computer programming',
       },
-      expect.objectContaining({
-        onSuccess: expect.any(Function),
-        onError: expect.any(Function),
-      })
+      { onSuccess: expect.any(Function) }
     );
     expect(mockUpdateStatus).not.toHaveBeenCalled();
   });

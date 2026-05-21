@@ -1263,6 +1263,10 @@
           "justificationText": "Päätöksen perustelu ei voi olla tyhjä",
           "industryCode": "TOL-koodi on pakollinen de minimis -tuessa",
           "deMinimis": "De minimis -valinta on pakollinen"
+        },
+        "industryCodeUpdateFailed": {
+          "label": "TOL-koodin tallennus epäonnistui",
+          "text": "Tarkista TOL-koodi ja yritä uudelleen."
         }
       },
       "list": {

@@ -7,6 +7,13 @@ import useUpdateCompanyIndustryCode from '../useUpdateCompanyIndustryCode';
 
 jest.mock('react-query', () => ({
   useMutation: jest.fn(),
+  useQueryClient: jest.fn().mockReturnValue({
+    invalidateQueries: jest.fn(),
+  }),
+}));
+
+jest.mock('next-i18next', () => ({
+  useTranslation: jest.fn().mockReturnValue({ t: (key: string) => key }),
 }));
 
 jest.mock('shared/hooks/useBackendAPI', () => jest.fn());
@@ -82,7 +89,8 @@ describe('useUpdateCompanyIndustryCode', () => {
 
     expect(useMutation).toHaveBeenCalledWith(
       'updateCompanyIndustryCode',
-      expect.any(Function)
+      expect.any(Function),
+      expect.any(Object)
     );
   });
 });

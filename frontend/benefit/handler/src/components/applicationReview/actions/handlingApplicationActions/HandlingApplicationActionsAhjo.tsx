@@ -271,7 +271,10 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
     const fields = getValidationFields();
     if (fields.missing.industryCode) {
-      setHandledApplication({ ...handledApplication, industryCodeTouched: true });
+      setHandledApplication({
+        ...handledApplication,
+        industryCodeTouched: true,
+      });
     }
 
     const errorStep1 =
