@@ -125,6 +125,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     company_number_of_employees = factory.Faker("random_int", min=1, max=1000)
     company_business_brief = factory.Faker("paragraph")
+    other_financial_support_for_employment = False
     role_of_employee_in_organization = factory.Faker("paragraph")
 
     apprenticeship_program = None
