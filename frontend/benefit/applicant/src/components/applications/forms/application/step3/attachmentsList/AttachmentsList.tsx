@@ -40,14 +40,6 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   onUploadSuccess,
   onRemoveSuccess,
 }) => {
-  const [visibleAttachments, setVisibleAttachments] = React.useState<
-    BenefitAttachment[]
-  >(attachments ?? []);
-
-  React.useEffect(() => {
-    setVisibleAttachments(attachments ?? []);
-  }, [attachments]);
-
   const {
     t,
     handleRemove,
@@ -58,18 +50,9 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     isUploading,
   } = useAttachmentsList(
     (uploadedAttachment) => {
-      setVisibleAttachments((currentAttachments) => [
-        ...currentAttachments,
-        uploadedAttachment,
-      ]);
       onUploadSuccess?.(uploadedAttachment);
     },
     (removedAttachmentId) => {
-      setVisibleAttachments((currentAttachments) =>
-        currentAttachments.filter(
-          (attachment) => attachment.id !== removedAttachmentId
-        )
-      );
       onRemoveSuccess?.(removedAttachmentId);
     }
   );
@@ -90,7 +73,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
       attachmentType={attachmentType}
       name={attachmentType}
       message={showMessage && message}
-      attachments={visibleAttachments}
+      attachments={attachments ?? []}
       onUpload={handleUpload}
       onRemove={handleRemove}
       onOpen={handleOpenFile}

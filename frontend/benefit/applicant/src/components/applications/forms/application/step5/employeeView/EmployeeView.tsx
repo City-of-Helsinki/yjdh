@@ -158,8 +158,14 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                     `${translationsBase}.employee.fields.roleOfEmployeeInOrganization.summaryLabel`
                   )}
                 </$ApplicationDetailLabel>
-                <$ApplicationDetailValue>
-                  {data?.roleOfEmployeeInOrganization || '-'}
+                <$ApplicationDetailValue $column={1}>
+                  {data?.roleOfEmployeeInOrganization &&
+                    data?.roleOfEmployeeInOrganization.split('\n').map((line) => (
+                      <>
+                        {line}
+                        <br />
+                      </>
+                    ))}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
               <$ApplicationDetailRow data-testid="application-field-collectiveBargainingAgreement">

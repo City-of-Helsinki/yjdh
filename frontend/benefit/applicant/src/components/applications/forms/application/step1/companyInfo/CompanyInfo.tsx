@@ -16,6 +16,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import { BenefitAttachment } from 'shared/types/attachment';
 import { useTheme } from 'styled-components';
 
 import {
@@ -60,6 +61,34 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
   );
 
   const theme = useTheme();
+
+  const handleBusinessBriefUploadSuccess = React.useCallback(
+    (uploadedAttachment: BenefitAttachment): void => {
+      const currentAttachments = formik.values.attachments ?? [];
+      const attachmentsById = new Map<string, BenefitAttachment>();
+
+      currentAttachments.forEach((attachment) => {
+        attachmentsById.set(attachment.id, attachment);
+      });
+
+      attachmentsById.set(uploadedAttachment.id, uploadedAttachment);
+
+      void formik.setFieldValue('attachments', [...attachmentsById.values()]);
+    },
+    [formik]
+  );
+
+  const handleBusinessBriefRemoveSuccess = React.useCallback(
+    (removedAttachmentId: string): void => {
+      void formik.setFieldValue(
+        'attachments',
+        (formik.values.attachments ?? []).filter(
+          (attachment) => attachment.id !== removedAttachmentId
+        )
+      );
+    },
+    [formik]
+  );
 
   return (
     <FormSection
@@ -419,6 +448,8 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         <AttachmentsList
           attachments={formik.values.attachments}
           attachmentType={ATTACHMENT_TYPES.BUSINESS_BRIEF}
+          onUploadSuccess={handleBusinessBriefUploadSuccess}
+          onRemoveSuccess={handleBusinessBriefRemoveSuccess}
         />
       </$GridCell>
     </FormSection>

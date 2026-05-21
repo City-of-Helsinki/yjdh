@@ -21,15 +21,34 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
   );
 
   React.useEffect(() => {
-    setAttachments(data.attachments ?? []);
+    setAttachments((currentAttachments) => {
+      const attachmentsById = new Map<string, BenefitAttachment>();
+
+      currentAttachments.forEach((attachment) => {
+        attachmentsById.set(attachment.id, attachment);
+      });
+
+      (data.attachments ?? []).forEach((attachment) => {
+        attachmentsById.set(attachment.id, attachment);
+      });
+
+      return [...attachmentsById.values()];
+    });
   }, [data.attachments]);
 
   const handleUploadSuccess = React.useCallback(
     (uploadedAttachment: BenefitAttachment): void => {
-      setAttachments((currentAttachments) => [
-        ...currentAttachments,
-        uploadedAttachment,
-      ]);
+      setAttachments((currentAttachments) => {
+        const attachmentsById = new Map<string, BenefitAttachment>();
+
+        currentAttachments.forEach((attachment) => {
+          attachmentsById.set(attachment.id, attachment);
+        });
+
+        attachmentsById.set(uploadedAttachment.id, uploadedAttachment);
+
+        return [...attachmentsById.values()];
+      });
     },
     []
   );

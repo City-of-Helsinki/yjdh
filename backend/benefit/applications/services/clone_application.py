@@ -111,6 +111,8 @@ def clone_application_based_on_other(
         employee.other_expenses = None
         employee.working_hours = None
         employee.collective_bargaining_agreement = ""
+        cloned_application.role_of_employee_in_organization = ""
+        cloned_application.other_financial_support_for_employment = None
         employee.save()
 
     cloned_application.save()
