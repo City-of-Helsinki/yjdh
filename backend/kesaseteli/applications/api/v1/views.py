@@ -1183,6 +1183,11 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+        return Response(
+            {"detail": format_lazy(_("Method not allowed."))},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
 
 @extend_schema(responses=SummerVoucherConfigurationSerializer(many=True))
 class SummerVoucherConfigurationViewSet(ListAPIView):
