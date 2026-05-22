@@ -50,7 +50,18 @@ class AttachmentInline(admin.StackedInline):
     model = Attachment
     fk_name = "application"
     extra = 0
-    readonly_fields = ("created_at",)
+    readonly_fields = ("created_at", "download_link")
+
+    def download_link(self, obj):
+        if obj.pk and obj.application_id:
+            url = reverse(
+                "v1:handler-application-download-attachment",
+                kwargs={"pk": obj.application_id, "attachment_pk": obj.pk},
+            )
+            return format_html('<a href="{}" target="_blank">Download</a>', url)
+        return "-"
+
+    download_link.short_description = "Download URL"
 
 
 class ApplicationAlterationInline(admin.StackedInline):
@@ -223,6 +234,29 @@ class ApplicationLogEntryAdmin(admin.ModelAdmin):
     search_fields = ["application__id"]
 
 
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "attachment_type",
+        "content_type",
+        "application",
+        "download_link",
+    ]
+    readonly_fields = ["created_at", "download_link"]
+    search_fields = ["id", "application__id"]
+
+    def download_link(self, obj):
+        if obj.pk and obj.application_id:
+            url = reverse(
+                "v1:handler-application-download-attachment",
+                kwargs={"pk": obj.application_id, "attachment_pk": obj.pk},
+            )
+            return format_html('<a href="{}" target="_blank">Download</a>', url)
+        return "-"
+
+    download_link.short_description = "Download URL"
+
+
 class EmployeeAdmin(admin.ModelAdmin):
     exclude = ("encrypted_social_security_number", "social_security_number")
     list_display = [
@@ -240,7 +274,7 @@ admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
 admin.site.register(Employee, EmployeeAdmin)
-admin.site.register(Attachment)
+admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
 admin.site.register(ApplicationLogEntry, ApplicationLogEntryAdmin)
 admin.site.register(AhjoSetting, AhjoSettingAdmin)
