@@ -138,8 +138,10 @@ dmypy.json
 *.iml
 
 # antigravity
-.antigravityignore
+.vscode
 .agent/**
+.*antigravity*
+.ag_cache/
 
 node_modules
 
@@ -162,4 +164,3 @@ nohup.out
 
 # do not include testcafe videos
 1.mp4
-.vscode
