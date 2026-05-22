@@ -113,7 +113,7 @@ class HelsinkiOIDCLogoutView(View):
             return HttpResponseRedirect(redirect_url)
         else:
             # user is already logged out, inform them about the fact
-            HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
+            return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
 class HelsinkiOIDCLogoutCallbackView(View):
