@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 from terms.models import (
     ApplicantConsent,
@@ -25,6 +26,28 @@ class TermsSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
+    terms_pdf_fi = serializers.SerializerMethodField()
+    terms_pdf_en = serializers.SerializerMethodField()
+    terms_pdf_sv = serializers.SerializerMethodField()
+
+    def _pdf_download_url(self, obj, language):
+        if not getattr(obj, f"terms_pdf_{language}"):
+            return None
+        request = self.context.get("request")
+        return reverse(
+            "terms-pdf-download",
+            kwargs={"terms_id": obj.id, "language": language},
+            request=request,
+        )
+
+    def get_terms_pdf_fi(self, obj):
+        return self._pdf_download_url(obj, "fi")
+
+    def get_terms_pdf_en(self, obj):
+        return self._pdf_download_url(obj, "en")
+
+    def get_terms_pdf_sv(self, obj):
+        return self._pdf_download_url(obj, "sv")
 
     class Meta:
         model = Terms
