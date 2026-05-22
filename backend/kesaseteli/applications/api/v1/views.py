@@ -1,7 +1,6 @@
 import logging
 import uuid
 from functools import cached_property
-from typing import Any
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -156,11 +155,11 @@ class TargetGroupListView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = TargetGroupSerializer
 
-    def get_queryset(self) -> list[dict[str, str]]:
+    def get_queryset(self) -> list[dict]:
         identifiers = [cls().identifier for cls in AbstractTargetGroup.__subclasses__()]
         return get_target_group_data(identifiers)
 
-    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def list(self, request: Request, *args, **kwargs) -> Response:
         queryset = self.get_queryset()
         return Response(queryset)
 
@@ -176,16 +175,16 @@ class YouthApplicationViewSet(ModelViewSet):
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
 
-    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def list(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def update(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def partial_update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def partial_update(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @action(methods=["get"], detail=True)
@@ -204,9 +203,7 @@ class YouthApplicationViewSet(ModelViewSet):
     @transaction.atomic
     @enforce_handler_view_adfs_login
     @extend_schema(responses=YouthApplicationSerializer)
-    def retrieve(
-        self, request: Request, *args: Any, **kwargs: Any
-    ) -> Response | HttpResponse:
+    def retrieve(self, request: Request, *args, **kwargs) -> Response | HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
         # Update unhandled youth applications' encrypted_handler_vtj_json so
         # handlers can accept/reject using it
@@ -649,7 +646,7 @@ class YouthApplicationViewSet(ModelViewSet):
             500: OpenApiResponse(description="Failed to send email"),
         },
     )
-    def create(self, request: Request, *args: Any, **kwargs: Any):  # noqa: C901
+    def create(self, request: Request, *args, **kwargs):  # noqa: C901
         """Create a VTJ-backed youth application and notify the applicant."""
         try:
             # Validate the incoming application payload first.
@@ -773,9 +770,7 @@ class YouthApplicationViewSet(ModelViewSet):
     @transaction.atomic
     @enforce_handler_view_adfs_login
     @action(methods=["post"], detail=False, url_path="create-without-ssn")
-    def create_without_ssn(
-        self, request: Request, *args: Any, **kwargs: Any
-    ) -> HttpResponse:
+    def create_without_ssn(self, request: Request, *args, **kwargs) -> HttpResponse:
         """
         Create a YouthApplication without a social security number.
 
@@ -949,7 +944,7 @@ class EmployerApplicationViewSet(ModelViewSet):
         )
         return queryset.none()
 
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def create(self, request: Request, *args, **kwargs) -> Response:
         """
         Allow only 1 (DRAFT) application per user & company.
         """
@@ -962,7 +957,7 @@ class EmployerApplicationViewSet(ModelViewSet):
 
         return super().create(request, *args, **kwargs)
 
-    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def update(self, request: Request, *args, **kwargs) -> Response:
         """
         Allow to update only DRAFT status applications.
         """
@@ -979,7 +974,7 @@ class EmployerApplicationViewSet(ModelViewSet):
 
         return super().update(request, *args, **kwargs)
 
-    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
         """
         Allow to delete only DRAFT status applications.
         """
@@ -1043,19 +1038,19 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         # they should not see any summer vouchers.
         return queryset.none()
 
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def create(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def update(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def retrieve(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def list(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @extend_schema(
@@ -1073,7 +1068,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         url_path="attachments",
         parser_classes=(MultiPartParser,),
     )
-    def post_attachment(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def post_attachment(self, request: Request, *args, **kwargs) -> Response:
         """
         Upload a single file as attachment.
         """
@@ -1128,7 +1123,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         url_path="attachments/(?P<attachment_pk>[^/.]+)",
     )
     def handle_attachment(
-        self, request: Request, attachment_pk: str, *args: Any, **kwargs: Any
+        self, request: Request, attachment_pk: str, *args, **kwargs
     ) -> HttpResponse | Response:
         """Download or delete a single attachment identified by its UUID."""
         obj = self.get_object()
