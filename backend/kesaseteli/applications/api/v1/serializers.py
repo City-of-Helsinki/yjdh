@@ -1,7 +1,7 @@
 import json
 import logging
 from datetime import date, datetime
-from typing import Any, Optional, Union
+from typing import Optional, Union
 
 import filetype
 from django.conf import settings
@@ -745,7 +745,7 @@ class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
             "target_groups",
         ]
 
-    def get_target_groups(self, obj) -> list[dict[str, str]]:
+    def get_target_groups(self, obj) -> list[dict]:
         return get_target_group_data(obj.target_group)
 
 
@@ -872,7 +872,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             del validated_data["request_additional_information"]
         return super().create(validated_data)
 
-    def get_encrypted_char_field_as_json(self, obj, field_name: str) -> dict[str, Any]:
+    def get_encrypted_char_field_as_json(self, obj, field_name: str) -> dict:
         """
         Return EncryptedCharField as JSON object, converting None & empty
         string to {}.
@@ -886,10 +886,10 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         else:
             return json.loads(field_value)
 
-    def get_encrypted_original_vtj_json(self, obj) -> dict[str, Any]:
+    def get_encrypted_original_vtj_json(self, obj) -> dict:
         return self.get_encrypted_char_field_as_json(obj, "encrypted_original_vtj_json")
 
-    def get_encrypted_handler_vtj_json(self, obj) -> dict[str, Any]:
+    def get_encrypted_handler_vtj_json(self, obj) -> dict:
         return self.get_encrypted_char_field_as_json(obj, "encrypted_handler_vtj_json")
 
 
