@@ -13,6 +13,11 @@ $config = array(
             'urn:oid:2.5.4.42' => array('Matti'),         // givenName
             'urn:oid:2.5.4.4' => array('Meikäläinen'),   // sn
             'urn:oid:2.5.4.3' => array('Matti Meikäläinen'), // cn
+            'nationalIdentificationNumber' => array('210281-9988'),
+            'electronicIdentificationNumber' => array('1234567890'),
+            'givenName' => array('Matti'),
+            'sn' => array('Meikäläinen'),
+            'cn' => array('Matti Meikäläinen'),
         ),
     ),
 );

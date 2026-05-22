@@ -7,6 +7,7 @@ services:
       - "8443:8443"
     volumes:
       - ../localdevelopment/saml-mock/authsources.php:/var/www/simplesamlphp/config/authsources.php
+      - ../localdevelopment/saml-mock/saml20-idp-hosted.php:/var/www/simplesamlphp/metadata/saml20-idp-hosted.php:ro
     environment:
       # SP metadata coordinates matching the local django-saml2 SP
       - SIMPLESAMLPHP_SP_ENTITY_ID=https://localhost:8000/saml2/metadata/

@@ -6,6 +6,8 @@ services:
       - ../backend/kesaseteli:/app
       - ../backend/shared:/shared
       - ../backend/kesaseteli/media:/var/media
+    environment:
+      - DATABASE_HOST=kesaseteli-db
   employer:
     build:
       target: development
