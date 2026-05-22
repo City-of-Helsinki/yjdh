@@ -158,6 +158,10 @@ env = environ.Env(
     APP_RELEASE=(str, ""),
     OPENSHIFT_BUILD_COMMIT=(str, ""),
     SAML_ALLOWED_HOSTS=(list, None),
+    DJANGO_LOG_LEVEL=(str, "INFO"),
+    DJANGOSAML2_LOG_LEVEL=(str, "INFO"),
+    SHARED_LOG_LEVEL=(str, "INFO"),
+    KESASETELI_LOG_LEVEL=(str, "INFO"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -368,7 +372,16 @@ LOGGING = {
         },
     },
     "loggers": {
-        "django": {"handlers": ["console"], "level": "INFO"},
+        "django": {"handlers": ["console"], "level": env.str("DJANGO_LOG_LEVEL")},
+        "djangosaml2": {
+            "handlers": ["console"],
+            "level": env.str("DJANGOSAML2_LOG_LEVEL"),
+        },
+        "shared": {"handlers": ["console"], "level": env.str("SHARED_LOG_LEVEL")},
+        "kesaseteli": {
+            "handlers": ["console"],
+            "level": env.str("KESASETELI_LOG_LEVEL"),
+        },
     },
 }
 
