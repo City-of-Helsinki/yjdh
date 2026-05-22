@@ -1,7 +1,7 @@
 """Regression tests for the Kesäseteli OpenAPI contract and exported schema."""
 
 from pathlib import Path
-from typing import Any, Final
+from typing import Final
 
 from django.core.management import call_command
 from django.http import HttpResponse
@@ -14,7 +14,7 @@ def test_openapi_schema_and_docs_routes_exist(client: Client) -> None:
     schema_response: HttpResponse = client.get(
         reverse("schema"), HTTP_ACCEPT="application/json"
     )
-    schema: dict[str, Any] = schema_response.json()
+    schema = schema_response.json()
 
     assert schema_response.status_code == 200
     assert schema_response.content
@@ -36,9 +36,7 @@ def test_schema_excludes_unsupported_kesaseteli_operations(client: Client) -> No
     for that resource, and it must omit `EmployerSummerVoucherViewSet` entirely
     because that viewset disables all default CRUD operations.
     """
-    schema: dict[str, Any] = client.get(
-        reverse("schema"), HTTP_ACCEPT="application/json"
-    ).json()
+    schema = client.get(reverse("schema"), HTTP_ACCEPT="application/json").json()
 
     youth_collection_path: Final[str] = "/v1/youthapplications/"
     youth_detail_path: Final[str] = "/v1/youthapplications/{id}/"

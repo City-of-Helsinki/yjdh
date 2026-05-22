@@ -1,9 +1,8 @@
 """Contract tests for Kesäseteli OpenAPI request and response serializers."""
 
-from typing import Any, Mapping
-
 import pytest
 from django.http import HttpResponse
+from django.test import Client
 from rest_framework import serializers, status
 from rest_framework.reverse import reverse
 
@@ -22,7 +21,7 @@ from common.tests.factories import (
 )
 from common.urls import get_create_without_ssn_url
 
-CREATE_WITHOUT_SSN_EXAMPLES: dict[str, Any] = {
+CREATE_WITHOUT_SSN_EXAMPLES: dict = {
     "first_name": "Testi",
     "last_name": "Testaaja",
     "email": "test@example.org",
@@ -35,7 +34,7 @@ CREATE_WITHOUT_SSN_EXAMPLES: dict[str, Any] = {
     "target_group": NinthGraderTargetGroup.identifier,
 }
 
-FETCH_EMPLOYEE_DATA_EXAMPLES: dict[str, Any] = {
+FETCH_EMPLOYEE_DATA_EXAMPLES: dict = {
     "employer_summer_voucher_id": "01234567-89ab-cdef-0123-456789abcdef",
     "employee_name": "John Doe",
     "summer_voucher_serial_number": "123",
@@ -44,8 +43,8 @@ FETCH_EMPLOYEE_DATA_EXAMPLES: dict[str, Any] = {
 
 def build_required_payload(
     serializer_class: type[serializers.Serializer],
-    examples: Mapping[str, Any],
-) -> dict[str, Any]:
+    examples: dict,
+) -> dict:
     """Build the smallest payload that satisfies the required fields.
 
     Args:
@@ -60,7 +59,7 @@ def build_required_payload(
         AssertionError: If a required field does not have an example value.
     """
     serializer = serializer_class()
-    payload: dict[str, Any] = {}
+    payload: dict = {}
 
     for field_name, field in serializer.fields.items():
         if field.read_only or not field.required:
@@ -76,9 +75,9 @@ def build_required_payload(
 
 
 @pytest.mark.django_db
-def test_create_without_ssn_contract(staff_client: Any) -> None:
+def test_create_without_ssn_contract(staff_client: Client) -> None:
     """The create-without-SSN endpoint must accept and return the declared shapes."""
-    payload: dict[str, Any] = build_required_payload(
+    payload: dict = build_required_payload(
         YouthApplicationCreateWithoutSsnRequestSerializer,
         CREATE_WITHOUT_SSN_EXAMPLES,
     )
@@ -98,9 +97,9 @@ def test_create_without_ssn_contract(staff_client: Any) -> None:
 
 
 @pytest.mark.django_db
-def test_fetch_employee_data_contract(user_client: Any) -> None:
+def test_fetch_employee_data_contract(user_client: Client) -> None:
     """The employee-data lookup endpoint must accept and return the declared shapes."""
-    employer_summer_voucher: Any = EmployerSummerVoucherFactory(
+    employer_summer_voucher = EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory()
     )
     AcceptedYouthApplicationFactory(
@@ -120,7 +119,7 @@ def test_fetch_employee_data_contract(user_client: Any) -> None:
         ),
     )
 
-    payload: dict[str, Any] = build_required_payload(
+    payload: dict = build_required_payload(
         YouthApplicationFetchEmployeeDataRequestSerializer,
         FETCH_EMPLOYEE_DATA_EXAMPLES,
     )
