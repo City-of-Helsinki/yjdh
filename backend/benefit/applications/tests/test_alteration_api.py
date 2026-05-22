@@ -3,11 +3,18 @@ from datetime import date
 import faker
 import pytest
 from dateutil.relativedelta import relativedelta
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from rest_framework.reverse import reverse
 
 from applications.enums import ApplicationAlterationState, ApplicationAlterationType
 from applications.models import ApplicationAlteration
+from applications.tests.factories import (
+    ApplicationAlterationFactory,
+    ApplicationFactory,
+)
 from companies.tests.factories import CompanyFactory
+from users.tests.factories import BFHandlerUserFactory
 
 
 @pytest.mark.django_db
@@ -766,6 +773,60 @@ def test_application_alteration_patch_handler_get_requests(
     assert response.status_code == 200
     assert len(response.data) == 1
     assert response.data[0]["id"] == alteration.pk
+
+
+@pytest.mark.django_db
+def test_handler_application_alteration_list_no_n_plus_1_queries(
+    handler_api_client,
+):
+    """Verify that listing handler alterations does not produce N+1 queries."""
+
+    application_1 = ApplicationFactory()
+    application_2 = ApplicationFactory()
+
+    application_alteration = ApplicationAlterationFactory(
+        application=application_1,
+        alteration_type=ApplicationAlterationType.TERMINATION,
+        handled_by=BFHandlerUserFactory(),
+        cancelled_by=BFHandlerUserFactory(),
+    )
+
+    assert application_alteration.application.company is not None
+    assert application_alteration.application.employee is not None
+    assert application_alteration.application.company is not None
+    assert application_alteration.handled_by is not None
+    assert application_alteration.cancelled_by is not None
+
+    url = reverse("v1:handler-application-alteration-list")
+
+    with CaptureQueriesContext(connection) as ctx_small:
+        response = handler_api_client.get(url)
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    count_small = (
+        len(ctx_small) - 2
+    )  # Each User serializer runs Terms.objects.get_terms_in_effect
+
+    ApplicationAlterationFactory(
+        application=application_2,
+        alteration_type=ApplicationAlterationType.TERMINATION,
+        handled_by=BFHandlerUserFactory(),
+        cancelled_by=BFHandlerUserFactory(),
+    )
+
+    with CaptureQueriesContext(connection) as ctx_large:
+        response = handler_api_client.get(url)
+    assert response.status_code == 200
+    assert len(response.data) == 2
+
+    count_large = (
+        len(ctx_large) - 4
+    )  # Each User serializer runs Terms.objects.get_terms_in_effect
+
+    assert count_small == count_large, (
+        f"N+1 query detected: {count_small} queries for 1 object, "
+        f"{count_large} queries for 2 objects."
+    )
 
 
 def _create_application_alteration(application):
