@@ -547,6 +547,17 @@ class HandlerApplicationAlterationViewSet(BaseApplicationAlterationViewSet):
         ApplicationAlterationState.CANCELLED,
     ]
 
+    queryset = ApplicationAlteration.objects.select_related(
+        "application__company",
+        "application__employee",
+        "handled_by",
+        "cancelled_by",
+    ).prefetch_related(
+        "handled_by__terms_of_service_approvals",
+        "handled_by__terms_of_service_approvals__terms",
+        "cancelled_by__terms_of_service_approvals",
+        "cancelled_by__terms_of_service_approvals__terms",
+    )
     serializer_class = HandlerApplicationAlterationSerializer
     permission_classes = [BFIsHandler]
     http_method_names = BaseApplicationAlterationViewSet.http_method_names + ["get"]
