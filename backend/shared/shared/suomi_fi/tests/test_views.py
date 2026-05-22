@@ -1,6 +1,7 @@
 import base64
 import sys
 import types
+import urllib.parse as urllib_parse
 import zlib
 from unittest import mock
 
@@ -9,9 +10,8 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.test import Client, RequestFactory, override_settings
 from django.urls import clear_url_caches, path
-from six.moves import urllib_parse
+from django.utils.module_loading import import_string
 
-from shared.common.tests.utils import normalize_whitespace
 from shared.suomi_fi.tests.mock_data import (
     EXPECTED_DECODED_SAML_RESPONSE_LOGIN_HAR,
     EXPECTED_DECODED_SAML_RESPONSE_LOGOUT_HAR,
@@ -91,6 +91,7 @@ class TestSuomiFiViews:
         next_url = "/dashboard"
         request = factory.get("/saml2/logout/", {"next": next_url})
         request.session = {}
+        request.saml_session = {}
 
         view = HelsinkiSaml2LogoutView()
 
@@ -162,6 +163,7 @@ class TestSuomiFiViews:
         next_url = "https://kesaseteli.dev.hel.ninja/fi"
         request = factory.get("/saml2/logout/", {"next": next_url})
         request.session = {}
+        request.saml_session = {}
 
         view = HelsinkiSaml2LogoutView()
 
@@ -175,7 +177,7 @@ class TestSuomiFiViews:
             request, next_url, allowed_hosts=settings.SAML_ALLOWED_HOSTS
         )
 
-        assert request.session.get("saml2_logout_next_path") == next_url
+        assert request.saml_session.get("saml2_logout_next_path") == next_url
 
     @override_settings(LOGOUT_REDIRECT_URL="/")
     def test_logout_service_view_redirects_to_next_after_session_flush(self):
@@ -188,7 +190,8 @@ class TestSuomiFiViews:
         request = factory.get(
             "/saml2/ls/", {"SAMLResponse": "foo", "RelayState": "bar"}
         )
-        request.session = {"saml2_logout_next_path": next_url}
+        request.session = {}
+        request.saml_session = {"saml2_logout_next_path": next_url}
 
         view = HelsinkiSaml2LogoutServiceView()
         mock_client = mock.MagicMock()
@@ -226,7 +229,8 @@ class TestSuomiFiViews:
         request = factory.get(
             "/saml2/ls/", {"SAMLResponse": "foo", "RelayState": "bar"}
         )
-        request.session = {"saml2_logout_next_path": next_url}
+        request.session = {}
+        request.saml_session = {"saml2_logout_next_path": next_url}
 
         view = HelsinkiSaml2LogoutServiceView()
         mock_client = mock.MagicMock()
@@ -265,19 +269,21 @@ class TestSuomiFiViews:
         # Step 1: initiation stores next_url in session
         request_init = factory.get("/saml2/logout/", {"next": next_url})
         request_init.session = {}
+        request_init.saml_session = {}
         view_init = HelsinkiSaml2LogoutView()
         with mock.patch("djangosaml2.views.LogoutInitView.get", return_value=None):
             with mock.patch(
                 "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
             ):
                 view_init.get(request_init)
-        assert request_init.session.get("saml2_logout_next_path") == next_url
+        assert request_init.saml_session.get("saml2_logout_next_path") == next_url
 
         # Step 2: IdP sends SAMLResponse back; finish_logout flushes session
         request_ls = factory.get(
             "/saml2/ls/", {"SAMLResponse": "foo", "RelayState": "bar"}
         )
-        request_ls.session = dict(request_init.session)
+        request_ls.session = {}
+        request_ls.saml_session = dict(request_init.saml_session)
 
         view_ls = HelsinkiSaml2LogoutServiceView()
         mock_client = mock.MagicMock()
@@ -332,13 +338,11 @@ class TestSuomiFiViews:
         view = SuomiFiAssertionConsumerServiceView()
         view.request = request
 
-        session_info = {
-            "ava": {
-                "nationalIdentificationNumber": ["123456-789A"]
-            }
-        }
+        session_info = {"ava": {"nationalIdentificationNumber": ["123456-789A"]}}
 
-        with mock.patch("djangosaml2.views.AssertionConsumerServiceView.post_login_hook") as mock_super:
+        with mock.patch(
+            "djangosaml2.views.AssertionConsumerServiceView.post_login_hook"
+        ) as mock_super:
             view.post_login_hook(request, mock.MagicMock(), session_info)
             mock_super.assert_called_once()
 
@@ -361,7 +365,10 @@ class TestSuomiFiViews:
         with mock.patch(
             "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
         ) as mock_is_safe:
-            with mock.patch("shared.suomi_fi.views.reverse", return_value="/oidc/eauthorizations/init/"):
+            with mock.patch(
+                "shared.suomi_fi.views.reverse",
+                return_value="/oidc/eauthorizations/init/",
+            ):
                 redirect_url = view.custom_redirect(None, relay_state, {})
 
         mock_is_safe.assert_called_with(
@@ -386,7 +393,10 @@ class TestSuomiFiViews:
         with mock.patch(
             "shared.suomi_fi.views.is_safe_redirect_url", return_value=False
         ):
-            with mock.patch("shared.suomi_fi.views.reverse", return_value="/oidc/eauthorizations/init/"):
+            with mock.patch(
+                "shared.suomi_fi.views.reverse",
+                return_value="/oidc/eauthorizations/init/",
+            ):
                 view.custom_redirect(None, relay_state, {})
 
         assert "eauth_next_url" not in request.session
@@ -408,11 +418,13 @@ class TestSuomiFiViews:
         with mock.patch(
             "shared.suomi_fi.views.is_safe_redirect_url", return_value=True
         ):
-            with mock.patch("shared.suomi_fi.views.reverse", return_value="/oidc/eauthorizations/init/"):
+            with mock.patch(
+                "shared.suomi_fi.views.reverse",
+                return_value="/oidc/eauthorizations/init/",
+            ):
                 view.custom_redirect(None, relay_state, {})
 
         assert "eauth_next_url" not in request.session
-
 
 
 @pytest.mark.django_db
@@ -444,6 +456,10 @@ class TestSuomiFiViewsLogoutHARIntegration:
     # Mock IdP SLO URL used in the HAR flow
     IDP_SLO_URL_HAR = "https://testi.apro.tunnistus.fi/idp/profile/SAML2/Redirect/SLO"
 
+    _MIDDLEWARE_WITH_SAML = settings.MIDDLEWARE + [
+        "djangosaml2.middleware.SamlSessionMiddleware"
+    ]
+
     def test_saml_response_har_decoded_content(self):
         """
         Test that EXPECTED_DECODED_SAML_RESPONSE_LOGOUT_HAR encodes and decodes correctly
@@ -458,6 +474,7 @@ class TestSuomiFiViewsLogoutHARIntegration:
         ROOT_URLCONF=_SAML_TEST_URLCONF,
         LOGOUT_REDIRECT_URL=NEXT_URL_HAR + "-fallback",
         SAML_ALLOWED_HOSTS=[urllib_parse.urlparse(NEXT_URL_HAR).netloc],
+        MIDDLEWARE=_MIDDLEWARE_WITH_SAML,
     )
     def test_har_documented_slo_flow(self):
         """
@@ -489,7 +506,11 @@ class TestSuomiFiViewsLogoutHARIntegration:
         ):
             client.get("/saml2/logout/", {"next": self.NEXT_URL_HAR})
 
-        assert client.session["saml2_logout_next_path"] == self.NEXT_URL_HAR
+        saml_cookie = client.cookies.get(settings.SAML_SESSION_COOKIE_NAME)
+        assert saml_cookie is not None, "SamlSessionMiddleware did not set cookie"
+        SessionStore = import_string(settings.SESSION_ENGINE)
+        saml_session = SessionStore(saml_cookie.value)
+        assert saml_session["saml2_logout_next_path"] == self.NEXT_URL_HAR
 
         # Step 2: IdP sends back real SAMLResponse and echoes the opaque RelayState.
         # Here we do NOT mock finish_logout. The real finish_logout will run,
@@ -519,6 +540,7 @@ class TestSuomiFiViewsLogoutHARIntegration:
         ROOT_URLCONF=_SAML_TEST_URLCONF,
         LOGOUT_REDIRECT_URL=NEXT_URL_HAR + "-fallback",
         SAML_ALLOWED_HOSTS=[urllib_parse.urlparse(NEXT_URL_HAR).netloc],
+        MIDDLEWARE=_MIDDLEWARE_WITH_SAML,
     )
     def test_har_documented_slo_flow_fallback_to_safe_logout_redirect_url(self):
         """
@@ -541,7 +563,11 @@ class TestSuomiFiViewsLogoutHARIntegration:
             client.get("/saml2/logout/")
 
         # Session does not have next_path.
-        assert "saml2_logout_next_path" not in client.session
+        saml_cookie = client.cookies.get(settings.SAML_SESSION_COOKIE_NAME)
+        if saml_cookie:
+            SessionStore = import_string(settings.SESSION_ENGINE)
+            saml_session = SessionStore(saml_cookie.value)
+            assert "saml2_logout_next_path" not in saml_session
 
         # Step 2: IdP sends back SAMLResponse.
         saml_response_logout_har_encoded = encode_saml(
@@ -568,6 +594,7 @@ class TestSuomiFiViewsLogoutHARIntegration:
         ROOT_URLCONF=_SAML_TEST_URLCONF,
         LOGOUT_REDIRECT_URL=NEXT_URL_HAR + "-fallback",
         SAML_ALLOWED_HOSTS=[urllib_parse.urlparse(NEXT_URL_HAR).netloc],
+        MIDDLEWARE=_MIDDLEWARE_WITH_SAML,
     )
     def test_har_documented_slo_flow_with_lost_session_redirects_to_fallback(self):
         """
