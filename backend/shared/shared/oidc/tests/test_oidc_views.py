@@ -9,6 +9,19 @@ from django.urls import reverse
 
 @pytest.mark.django_db
 @override_settings(
+    LOGOUT_REDIRECT_URL="http://example.com/logout_redirect/",
+    NEXT_PUBLIC_MOCK_FLAG=False,
+)
+def test_logout_view_unauthenticated(client):
+    """Unauthenticated users should be redirected to LOGOUT_REDIRECT_URL."""
+    logout_url = reverse("oidc_logout")
+    response = client.get(logout_url)
+    assert response.status_code == 302
+    assert response.headers["Location"] == settings.LOGOUT_REDIRECT_URL
+
+
+@pytest.mark.django_db
+@override_settings(
     OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/",
     OIDC_OP_LOGOUT_CALLBACK_URL="http://example.com/logout_callback/",
     NEXT_PUBLIC_MOCK_FLAG=False,
