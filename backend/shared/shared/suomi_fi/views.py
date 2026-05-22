@@ -109,7 +109,10 @@ class HelsinkiSaml2LogoutView(LogoutInitView):
         # RELAY_STATE_PARAM is also checked as a fallback for standard SAML logout.
         self.next_path = self.get_relay_state(request)
         if self.next_path:
-            request.session["saml2_logout_next_path"] = self.next_path
+            if hasattr(request, "saml_session"):
+                request.saml_session["saml2_logout_next_path"] = self.next_path
+            else:
+                request.session["saml2_logout_next_path"] = self.next_path
 
         return super().get(request, *args, **kwargs)
 
@@ -147,7 +150,10 @@ class HelsinkiSaml2LogoutServiceView(LogoutView):
 
     def do_logout_service(self, request, data, binding, *args, **kwargs):
         # Pop next_path from session BEFORE super() calls auth.logout() and flushes it.
-        next_path = request.session.pop("saml2_logout_next_path", None)
+        if hasattr(request, "saml_session"):
+            next_path = request.saml_session.pop("saml2_logout_next_path", None)
+        else:
+            next_path = request.session.pop("saml2_logout_next_path", None)
 
         response = super().do_logout_service(request, data, binding, *args, **kwargs)
 
