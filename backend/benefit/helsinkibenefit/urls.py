@@ -25,7 +25,10 @@ from applications.api.v1.ahjo_integration_views import (
     AhjoDecisionCallbackView,
 )
 from applications.api.v1.ahjo_setting_views import AhjoSettingDetailView
-from applications.api.v1.deminimis_integration_views import DeMinimisCallbackView, DeMinimisIntegrationView
+from applications.api.v1.deminimis_integration_views import (
+    DeMinimisCallbackView,
+    DeMinimisIntegrationView,
+)
 from applications.api.v1.power_bi_integration_views import PowerBiIntegrationView
 from applications.api.v1.review_state_views import ReviewStateView
 from applications.api.v1.search_views import SearchView
@@ -42,7 +45,7 @@ from messages.views import (
     HandlerMessageViewSet,
     HandlerNoteViewSet,
 )
-from terms.api.v1.views import ApproveTermsOfServiceView
+from terms.api.v1.views import ApproveTermsOfServiceView, TermsPdfDownloadView
 from users.api.v1.views import CurrentUserView, UserOptionsView
 
 router = routers.DefaultRouter()
@@ -129,7 +132,6 @@ urlpatterns = [
         DeMinimisCallbackView.as_view(),
         name="deminimis_callback_url",
     ),
-
     path(
         "v1/decision-proposal-sections/",
         DecisionProposalTemplateSectionList.as_view(),
@@ -150,6 +152,11 @@ urlpatterns = [
     path("v1/", include(applicant_app_router.urls)),
     path("v1/", include(handler_app_router.urls)),
     path("v1/terms/approve_terms_of_service/", ApproveTermsOfServiceView.as_view()),
+    path(
+        "v1/terms/<uuid:terms_id>/download/<str:language>/",
+        TermsPdfDownloadView.as_view(),
+        name="terms-pdf-download",
+    ),
     path("v1/company/", GetUsersOrganizationView.as_view()),
     path("v1/company/search/<str:name>/", SearchOrganisationsView.as_view()),
     path("v1/company/get/<str:business_id>/", GetOrganisationByIdView.as_view()),
