@@ -419,30 +419,20 @@ class YouthApplicationViewSet(ModelViewSet):
             additional_data=additional_data_for_access_audit_log,
         )
 
+        response_data = {
+            "employer_summer_voucher_id": str(employer_summer_voucher_id),
+            "employee_name": youth_application.name,
+            "employee_birthdate": youth_application.birthdate,
+            "employee_phone_number": youth_application.phone_number,
+            "employee_home_city": youth_application.home_municipality,
+            "employee_postcode": youth_application.postcode,
+            "employee_school": youth_application.school,
+        }
         response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
-            data={
-                "employer_summer_voucher_id": str(employer_summer_voucher_id),
-                "employee_name": youth_application.name,
-                "employee_birthdate": youth_application.birthdate,
-                "employee_phone_number": youth_application.phone_number,
-                "employee_home_city": youth_application.home_municipality,
-                "employee_postcode": youth_application.postcode,
-                "employee_school": youth_application.school,
-            }
+            data=response_data
         )
         response_serializer.is_valid(raise_exception=True)
-        return Response(
-            data={
-                "employer_summer_voucher_id": str(employer_summer_voucher_id),
-                "employee_name": youth_application.name,
-                "employee_birthdate": youth_application.birthdate,
-                "employee_phone_number": youth_application.phone_number,
-                "employee_home_city": youth_application.home_municipality,
-                "employee_postcode": youth_application.postcode,
-                "employee_school": youth_application.school,
-            },
-            status=status.HTTP_200_OK,
-        )
+        return Response(data=response_serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         request=YouthApplicationHandlingSerializer,
