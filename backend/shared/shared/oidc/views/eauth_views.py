@@ -80,9 +80,16 @@ class EauthAuthenticationRequestView(View):
             # Suomi.fi SAML authentication has been enabled
             user_ssn = request.saml_session.get("national_id_num")
             if not user_ssn:
+                logger.error(
+                    "Cannot use eauthorizations API due to missing"
+                    " nationalIdentificationNumber"
+                )
                 return self.login_failure()
         else:
             if not request.session.get("oidc_access_token"):
+                logger.error(
+                    "Cannot use eauthorizations API due to missing access token"
+                )
                 return self.login_failure()
 
             user_info = get_userinfo(request)
@@ -96,7 +103,7 @@ class EauthAuthenticationRequestView(View):
                         request.session.get("oidc_access_token")
                     )
                 except HelsinkiProfileError as e:
-                    logger.warning(
+                    logger.error(
                         "Reading nationalIdentificationNumber from Helsinki Profile"
                         f" API failed: {str(e)}"
                     )
@@ -104,7 +111,7 @@ class EauthAuthenticationRequestView(View):
                 user_ssn = profile["user_ssn"]
 
         if user_ssn is None:
-            logger.warning(
+            logger.error(
                 "Cannot use eauthorizations API due to missing"
                 " nationalIdentificationNumber"
             )
@@ -158,6 +165,10 @@ class EauthAuthenticationCallbackView(View):
         return HttpResponseRedirect(url)
 
     def login_failure(self):
+        """
+        Redirect the user to the login failure page, appending the current language
+        from cookies to the redirect URL path if available.
+        """
         url, error_path = settings.LOGIN_REDIRECT_URL_FAILURE.rsplit("/", 1)
 
         lang = self.request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)

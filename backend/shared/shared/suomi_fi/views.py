@@ -1,7 +1,8 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import resolve_url
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -19,6 +20,8 @@ from shared.common.utils import is_safe_redirect_url
 # "RelayState" is a standard SAML parameter name and no constant is exported
 # for it in djangosaml2 or pysaml2.
 RELAY_STATE_PARAM = "RelayState"
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -148,22 +151,48 @@ class HelsinkiSaml2LogoutServiceView(LogoutView):
 
         response = super().do_logout_service(request, data, binding, *args, **kwargs)
 
+        # For debugging
+        response_info = {
+            "response_status": response.status_code,
+            "response_class": response.__class__.__name__,
+            "response_url": getattr(response, "url", None),
+        }
+
+        logger.debug(
+            "Response from super",
+            extra={**response_info, "next_path": next_path},
+        )
+
         if isinstance(response, HttpResponseRedirect):
             # 1. If we have a stashed next_path, redirect to it (if safe)
             if next_path and is_safe_redirect_url(
                 request, next_path, allowed_hosts=settings.SAML_ALLOWED_HOSTS
             ):
+                logger.debug(
+                    "Using next_path",
+                    extra={"next_path": next_path, **response_info},
+                )
                 return HttpResponseRedirect(next_path)
 
             # 2. Fallback workaround: If the response is a redirect to '/' (because
             # djangosaml2 rejected the off-domain LOGOUT_REDIRECT_URL), but
             # settings.LOGOUT_REDIRECT_URL is safe, redirect to it.
             fallback = getattr(settings, "LOGOUT_REDIRECT_URL", None)
-            if response.url == "/" and fallback and fallback != "/" and is_safe_redirect_url(
-                request, fallback, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+            if (
+                response.url == "/"
+                and fallback
+                and fallback != "/"
+                and is_safe_redirect_url(
+                    request, fallback, allowed_hosts=settings.SAML_ALLOWED_HOSTS
+                )
             ):
+                logger.debug(
+                    "Using fallback LOGOUT_REDIRECT_URL",
+                    extra={"fallback": fallback, **response_info},
+                )
                 return HttpResponseRedirect(fallback)
 
+        logger.debug("Using default response", extra=response_info)
         return response
 
 
