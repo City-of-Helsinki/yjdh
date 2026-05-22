@@ -29,51 +29,6 @@ const createAttachment = (
   contentType: 'application/pdf',
 });
 
-jest.mock(
-  '../attachmentsList/AttachmentsList',
-  () =>
-    function AttachmentsList({
-      attachmentType,
-      attachments,
-      onUploadSuccess,
-      onRemoveSuccess,
-    }: {
-      attachmentType: ATTACHMENT_TYPES;
-      attachments?: BenefitAttachment[];
-      onUploadSuccess?: (attachment: BenefitAttachment) => void;
-      onRemoveSuccess?: (attachmentId: string) => void;
-    }): JSX.Element {
-      const attachmentCount =
-        attachments?.filter(
-          (attachment) => attachment.attachmentType === attachmentType
-        ).length ?? 0;
-
-      return (
-        <li data-testid={`attachments-list-${attachmentType}`}>
-          <span data-testid={`attachment-count-${attachmentType}`}>
-            {attachmentCount}
-          </span>
-          <button
-            type="button"
-            onClick={() =>
-              onUploadSuccess?.(
-                createAttachment(`uploaded-${attachmentType}`, attachmentType)
-              )
-            }
-          >
-            Upload {attachmentType}
-          </button>
-          <button
-            type="button"
-            onClick={() => onRemoveSuccess?.(`uploaded-${attachmentType}`)}
-          >
-            Remove {attachmentType}
-          </button>
-        </li>
-      );
-    }
-);
-
 jest.mock('../useApplicationFormStep3', () => ({
   useApplicationFormStep3: jest.fn(),
 }));

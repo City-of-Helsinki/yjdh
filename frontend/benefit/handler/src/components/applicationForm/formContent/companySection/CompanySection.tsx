@@ -5,7 +5,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
-import { DeMinimisAid } from 'benefit-shared/types/application';
+import { ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import {
   IconCheckCircleFill,
@@ -52,6 +52,7 @@ type Props = {
   languageOptions: OptionType[];
   showDeminimisSection: boolean;
   deMinimisAidSet: DeMinimisAid[];
+  handleQuietSave?: () => Promise<ApplicationData | void>;
 };
 
 type WithCheckboxProps = {
@@ -84,6 +85,7 @@ const CompanySection: React.FC<Props> = ({
   languageOptions,
   showDeminimisSection,
   deMinimisAidSet,
+  handleQuietSave,
 }) => {
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
@@ -378,6 +380,7 @@ const CompanySection: React.FC<Props> = ({
           <AttachmentsList
             attachments={formik.values.attachments}
             attachmentType={ATTACHMENT_TYPES.BUSINESS_BRIEF}
+            handleQuietSave={handleQuietSave}
           />
         </$GridCell>
       </FormSection>

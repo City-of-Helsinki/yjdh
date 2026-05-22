@@ -1628,7 +1628,7 @@ msgstr "Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteit�
 msgid "Number of employees before the employed"
 msgstr "Henkilöstömäärä ennen työllistettyä"
 
-msgid "Description of employers business activities"
+msgid "Description of employer's business activities"
 msgstr "Kuvaus työnantajan toiminnan luonteesta"
 
 msgid "Has other financial support been granted for employment?"

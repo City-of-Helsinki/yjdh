@@ -176,6 +176,7 @@ const FormContent: React.FC<Props> = ({
         languageOptions={languageOptions}
         showDeminimisSection={showDeminimisSection}
         deMinimisAidSet={deMinimisAidSet}
+        handleQuietSave={handleQuietSave}
       />
 
       <FormSection header={t(`${translationsBase}.headings.employment1`)}>

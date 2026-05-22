@@ -335,7 +335,7 @@ msgid "pay subsidy decision"
 msgstr "Pay subsidy decision"
 
 msgid "business_brief"
-msgstr "Toiminnan kuvaus"
+msgstr "Business description"
 
 #, fuzzy
 #| msgid "education_contract"
@@ -1574,8 +1574,8 @@ msgstr "Payment of the second installment of the Helsinki benefit requires measu
 msgid "Number of employees before the employed"
 msgstr "Number of employees before the employed"
 
-msgid "Description of employers business activities"
-msgstr "Description of employers business activities"
+msgid "Description of employer's business activities"
+msgstr "Description of employer's business activities"
 
 msgid "Has other financial support been granted for employment?"
 msgstr "Has other financial support been granted for employment?"

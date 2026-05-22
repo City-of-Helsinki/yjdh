@@ -469,8 +469,8 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     )
 
     """
-    This field is always required.
-    Previously, the field was only required for associations.
+    Required on submit for associations only.
+    For companies, this field is not required and is normalized to null.
     """
     association_immediate_manager_check = models.BooleanField(null=True)
 

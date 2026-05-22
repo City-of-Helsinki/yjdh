@@ -201,7 +201,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "company_contact_person_last_name",
             "company_contact_person_phone_number",
             "company_contact_person_email",
-            "association_has_business_activities",
             "association_immediate_manager_check",
             "other_financial_support_for_employment",
             "applicant_language",
@@ -710,13 +709,20 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 + self._get_handler_attachment_requirements(obj)
             )
         elif obj.benefit_type == BenefitType.COMMISSION_BENEFIT:
-            return [
-                (AttachmentType.COMMISSION_CONTRACT, AttachmentRequirement.REQUIRED),
-                (
-                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
-                    AttachmentRequirement.OPTIONAL,
-                ),
-            ] + self._get_handler_attachment_requirements(obj)
+            return (
+                [
+                    (
+                        AttachmentType.COMMISSION_CONTRACT,
+                        AttachmentRequirement.REQUIRED,
+                    ),
+                    (
+                        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                        AttachmentRequirement.OPTIONAL,
+                    ),
+                ]
+                + self._get_handler_attachment_requirements(obj)
+                + self._get_business_brief_attachment_requirements(obj)
+            )
         elif not obj.benefit_type:
             # applicant has not selected the value yet
             return []

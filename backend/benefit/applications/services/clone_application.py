@@ -124,7 +124,12 @@ def _clone_business_brief_attachments(application_base, cloned_application):
     for base_attachment in application_base.attachments.filter(
         attachment_type=AttachmentType.BUSINESS_BRIEF
     ):
-        base_attachment.attachment_file.open("rb")
+        # If BUSINESS_BRIEF attachment does not exist, do not clone it
+        try:
+            base_attachment.attachment_file.open("rb")
+        except IOError:
+            return
+
         try:
             attachment_file = ContentFile(
                 base_attachment.attachment_file.read(),

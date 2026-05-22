@@ -1,6 +1,6 @@
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
-import { ATTACHMENT_TYPES,ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import { IconCheckCircleFill, SelectionGroup, TextArea, TextInput } from 'hds-react';
@@ -418,7 +418,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               event.target.value.replace(/\D/g, '')
             );
           }}
-          value={String(formik.values.companyNumberOfEmployees || '')}
+          value={formik.values.companyNumberOfEmployees?.toString() || ''}
           invalid={!!getErrorMessage(fields.companyNumberOfEmployees.name)}
           aria-invalid={!!getErrorMessage(fields.companyNumberOfEmployees.name)}
           errorText={getErrorMessage(fields.companyNumberOfEmployees.name)}

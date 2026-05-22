@@ -1653,7 +1653,7 @@ msgstr "Utbetalning av den andra raten av det beviljade Helsingforstillägget kr
 msgid "Number of employees before the employed"
 msgstr "Antal anställda före de anställda"
 
-msgid "Description of employers business activities"
+msgid "Description of employer's business activities"
 msgstr "Beskrivning av arbetsgivarens affärsverksamhet"
 
 msgid "Has other financial support been granted for employment?"

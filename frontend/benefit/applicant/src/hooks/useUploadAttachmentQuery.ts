@@ -33,9 +33,8 @@ const useUploadAttachmentQuery = (): UseMutationResult<
           ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries('applications', {
-          exact: true,
-        });
+        // Only invalidate the applications list, NOT the individual application being edited
+        void queryClient.invalidateQueries('applicationsList');
       },
     }
   );

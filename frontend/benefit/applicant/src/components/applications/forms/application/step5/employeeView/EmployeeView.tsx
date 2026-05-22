@@ -109,11 +109,14 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 )}
               </$ApplicationDetailLabel>
               <$ApplicationDetailValue>
-                {t(
-                  `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.${
-                    data.otherFinancialSupportForEmployment ? 'yes' : 'no'
-                  }`
-                )}
+                {data.otherFinancialSupportForEmployment === null ||
+                data.otherFinancialSupportForEmployment === undefined
+                  ? '-'
+                  : t(
+                      `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.${
+                        data.otherFinancialSupportForEmployment ? 'yes' : 'no'
+                      }`
+                    )}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
             {data.associationImmediateManagerCheck && (
@@ -160,12 +163,18 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 </$ApplicationDetailLabel>
                 <$ApplicationDetailValue $column={1}>
                   {data?.roleOfEmployeeInOrganization &&
-                    data?.roleOfEmployeeInOrganization.split('\n').map((line) => (
-                      <>
-                        {line}
-                        <br />
-                      </>
-                    ))}
+                    data?.roleOfEmployeeInOrganization
+                      .split('\n')
+                      .map((line) => (
+                        <React.Fragment
+                          key={`role-of-employee-${line
+                            .slice(0, 20)
+                            .replace(/\s/g, '')}`}
+                        >
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
               <$ApplicationDetailRow data-testid="application-field-collectiveBargainingAgreement">

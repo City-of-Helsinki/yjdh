@@ -145,7 +145,7 @@ export enum ATTACHMENT_TYPES {
   EMPLOYEE_CONSENT = 'employee_consent',
   FULL_APPLICATION = 'full_application',
   PAYSLIP = 'payslip',
-  BUSINESS_BRIEF ="business_brief",
+  BUSINESS_BRIEF = 'business_brief',
   OTHER_ATTACHMENT = 'other_attachment',
 }
 
