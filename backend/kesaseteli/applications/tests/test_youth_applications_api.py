@@ -2820,3 +2820,58 @@ def test_youth_application_fetch_employee_data_uses_fuzzy_match(
             last_name=last_name, full_name=employee_name
         )
         assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
+    VTJ_USERNAME="u",
+    VTJ_PASSWORD="p",
+    VTJ_TIMEOUT=30,
+    VTJ_PERSONAL_ID_QUERY_URL="https://example.com/vtj",
+)
+def test_create_youth_application_returns_503_on_vtj_request_exception(api_client):
+    """POST /youth-applications/ → 503 when VTJ is unreachable."""
+    from requests.exceptions import ConnectionError as RequestsConnectionError
+
+    app = InactiveNoNeedAdditionalInfoYouthApplicationFactory.build()
+    data = YouthApplicationSerializer(app).data
+
+    with mock.patch(
+        "shared.vtj.vtj_client.requests.post",
+        side_effect=RequestsConnectionError("VTJ down"),
+    ):
+        with mock.patch("sentry_sdk.capture_exception") as mock_capture:
+            response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
+    assert response.data["detail"].code == "vtj_service_unavailable"
+    mock_capture.assert_called_once()
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
+    VTJ_USERNAME="u",
+    VTJ_PASSWORD="p",
+    VTJ_TIMEOUT=30,
+    VTJ_PERSONAL_ID_QUERY_URL="https://example.com/vtj",
+)
+def test_retrieve_youth_application_returns_503_on_vtj_request_exception(staff_client):
+    """GET /youth-applications/{pk}/ → 503 when VTJ is unreachable."""
+    from requests.exceptions import ConnectionError as RequestsConnectionError
+
+    app = AwaitingManualProcessingYouthApplicationFactory.create()
+
+    with mock.patch(
+        "shared.vtj.vtj_client.requests.post",
+        side_effect=RequestsConnectionError("VTJ down"),
+    ):
+        with mock.patch("sentry_sdk.capture_exception") as mock_capture:
+            response = staff_client.get(get_detail_url(pk=app.pk))
+
+    assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
+    assert response.data["detail"].code == "vtj_service_unavailable"
+    mock_capture.assert_called_once()

@@ -3,6 +3,7 @@ import logging
 from typing import Optional, TYPE_CHECKING
 
 import jsonpath_ng
+import sentry_sdk
 from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -10,8 +11,10 @@ from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 from requests import ReadTimeout
+from requests.exceptions import RequestException
 
 import applications.target_groups
+from applications.api.v1.exceptions import VTJServiceUnavailableError
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
     EmailTemplateType,
@@ -397,9 +400,13 @@ class VTJService:
                 )
             return mock_vtj_person_id_query_not_found_content()
 
-        vtj_data = VTJClient().get_personal_info(
-            application.social_security_number, end_user
-        )
+        try:
+            vtj_data = VTJClient().get_personal_info(
+                application.social_security_number, end_user
+            )
+        except (RequestException, ValueError) as e:
+            sentry_sdk.capture_exception(e)
+            raise VTJServiceUnavailableError() from e
         return json.dumps(vtj_data)
 
     @classmethod
