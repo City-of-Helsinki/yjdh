@@ -41,7 +41,7 @@ class YouthApplicationFetchEmployeeDataResponseSerializer(serializers.Serializer
     employee_name = serializers.CharField()
     employee_birthdate = serializers.DateField()
     employee_phone_number = serializers.CharField(allow_blank=True)
-    employee_home_city = serializers.CharField(allow_blank=True)
+    employee_home_city = serializers.CharField(allow_blank=True, allow_null=True)
     employee_postcode = serializers.CharField(allow_blank=True)
     employee_school = serializers.CharField(allow_blank=True)
 
