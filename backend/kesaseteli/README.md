@@ -238,6 +238,7 @@ shipping pipeline.
 -   [Auth & Compliance Logging](kesaseteli/AUTH_LOGGING.md): DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events — retention requirements and log entry structure.
 
 The OpenAPI schema is served from `/openapi/`.
+Swagger UI is served from `/api_docs/swagger/`.
 ReDoc is served from `/api_docs/redoc/`.
 
 The schema is generated from the Kesäseteli backend code at runtime. There is no committed `openapi.yaml`
