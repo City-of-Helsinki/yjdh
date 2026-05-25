@@ -4,6 +4,7 @@ from typing import Optional, Union
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.base import ModelBase
@@ -139,11 +140,16 @@ class AuditLoggingModelViewSet(ModelViewSet):
     def _get_target_object(self):
         lookup_value = self.kwargs.get(self.lookup_field, None)
         if lookup_value is not None:
-            return (
-                self._unfiltered_queryset()
-                .filter(**{self.lookup_field: lookup_value})
-                .first()
-            )
+            try:
+                return (
+                    self._unfiltered_queryset()
+                    .filter(**{self.lookup_field: lookup_value})
+                    .first()
+                )
+            except ValidationError:
+                # Converting the lookup value to the type of lookup field failed
+                return None
+
         else:
             return None
 
