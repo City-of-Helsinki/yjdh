@@ -10,7 +10,7 @@ from django.urls import reverse
 
 
 def test_openapi_schema_and_docs_routes_exist(client: Client) -> None:
-    """Ensure the schema endpoint and ReDoc page are reachable."""
+    """Ensure the schema endpoint and documentation pages are reachable."""
     schema_response: HttpResponse = client.get(
         reverse("schema"), HTTP_ACCEPT="application/json"
     )
@@ -21,6 +21,7 @@ def test_openapi_schema_and_docs_routes_exist(client: Client) -> None:
     assert schema["openapi"] == "3.1.0"
     assert b"/v1/" in schema_response.content
 
+    assert client.get(reverse("swagger-ui")).status_code == 200
     assert client.get(reverse("redoc")).status_code == 200
 
 
