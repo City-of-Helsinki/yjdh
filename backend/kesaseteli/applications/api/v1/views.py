@@ -532,7 +532,9 @@ class YouthApplicationViewSet(ModelViewSet):
 
     @extend_schema(
         responses={
-            302: OpenApiResponse(description="Redirect to application page"),
+            302: OpenApiResponse(
+                description="Redirect to the relevant application status page"
+            ),
             401: OpenApiResponse(description="Unable to activate application"),
             500: OpenApiResponse(description="Failed to send email"),
         },
