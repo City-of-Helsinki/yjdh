@@ -107,6 +107,8 @@ env = environ.Env(
         "",
     ),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
+    ELASTICSEARCH_RESILIENT_LOG_INDEX=(str, ""),
+    ELASTICSEARCH_DJANGO_AUDIT_LOG_INDEX=(str, ""),
     ELASTICSEARCH_HOST=(str, ""),
     ELASTICSEARCH_PORT=(str, ""),
     ELASTICSEARCH_USERNAME=(str, ""),
@@ -353,6 +355,12 @@ OIDC_REDIRECT_REQUIRE_HTTPS = env.bool("OIDC_REDIRECT_REQUIRE_HTTPS", default=Tr
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
 ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
+ELASTICSEARCH_RESILIENT_LOG_INDEX = (
+    env("ELASTICSEARCH_RESILIENT_LOG_INDEX") or ELASTICSEARCH_APP_AUDIT_LOG_INDEX
+)
+ELASTICSEARCH_DJANGO_AUDIT_LOG_INDEX = (
+    env("ELASTICSEARCH_DJANGO_AUDIT_LOG_INDEX") or ELASTICSEARCH_APP_AUDIT_LOG_INDEX
+)
 ELASTICSEARCH_HOST = env("ELASTICSEARCH_HOST")
 ELASTICSEARCH_PORT = int(env("ELASTICSEARCH_PORT") or 9200)
 ELASTICSEARCH_USERNAME = env("ELASTICSEARCH_USERNAME")
@@ -373,12 +381,13 @@ RESILIENT_LOGGER = {
     ],
     "targets": [
         {
-            "class": "resilient_logger.targets.ElasticsearchLogTarget",
+            "class": "kesaseteli.log_targets.RoutedElasticsearchLogTarget",
             "es_host": env("ELASTICSEARCH_HOST"),
             "es_port": ELASTICSEARCH_PORT,
             "es_username": env("ELASTICSEARCH_USERNAME"),
             "es_password": env("ELASTICSEARCH_PASSWORD"),
-            "es_index": env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX"),
+            "resilient_index": ELASTICSEARCH_RESILIENT_LOG_INDEX,
+            "auditlog_index": ELASTICSEARCH_DJANGO_AUDIT_LOG_INDEX,
             "required": True,
         }
     ],
