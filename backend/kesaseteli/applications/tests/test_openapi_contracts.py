@@ -13,7 +13,10 @@ from applications.api.v1.openapi_serializers import (
     YouthApplicationIdResponseSerializer,
 )
 from applications.target_groups import NinthGraderTargetGroup
-from applications.tests.data.mock_vtj import mock_vtj_person_id_query_found_content
+from applications.tests.data.mock_vtj import (
+    mock_vtj_person_id_query_found_content,
+    mock_vtj_person_id_query_restricted_content,
+)
 from common.tests.factories import (
     AcceptedYouthApplicationFactory,
     EmployerApplicationFactory,
@@ -139,5 +142,84 @@ def test_fetch_employee_data_contract(user_client: Client) -> None:
     assert response.status_code == status.HTTP_200_OK
     response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
         data=response.json()
+    )
+    assert response_serializer.is_valid(), response_serializer.errors
+
+
+def test_fetch_employee_data_response_accepts_null_employee_home_city():
+    """
+    Regression test for turvakielto applicants with no home municipality.
+
+    Some applicants have turvakielto. VTJ does not give us their home municipality.
+    The response serializer must still accept a null home city field.
+
+    Further context in PR #4089:
+    https://github.com/City-of-Helsinki/yjdh/pull/4089
+    """
+    serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
+        data={
+            "employer_summer_voucher_id": FETCH_EMPLOYEE_DATA_EXAMPLES[
+                "employer_summer_voucher_id"
+            ],
+            "employee_name": "John Doe",
+            "employee_birthdate": "1911-11-11",
+            "employee_phone_number": "123456789",
+            "employee_home_city": None,
+            "employee_postcode": "00100",
+            "employee_school": "Test school",
+        }
+    )
+    assert serializer.is_valid(), serializer.errors
+    assert serializer.validated_data["employee_home_city"] is None
+
+
+@pytest.mark.django_db
+def test_fetch_employee_data_contract_restricted_vtj_home_municipality(
+    user_client: Client,
+):
+    """
+    Regression test that employee lookup works when home municipality is missing.
+
+    Employers find accepted applicants by last name and summer voucher number.
+    With turvakielto, we may not know the home municipality. The API must still
+    return 200 and the other employee details.
+
+    Further context in PR #4089:
+    https://github.com/City-of-Helsinki/yjdh/pull/4089
+    """
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
+    youth_application = AcceptedYouthApplicationFactory(
+        last_name="Turvakielto",
+        is_vtj_data_restricted=True,
+        encrypted_original_vtj_json=mock_vtj_person_id_query_restricted_content(
+            first_name="Testi",
+            last_name="Turvakielto",
+            social_security_number="010101-0101",
+        ),
+    )
+    # API lookup decodes user-showable serials (base32), not the raw DB integer.
+    summer_voucher_serial_number = (
+        youth_application.youth_summer_voucher.user_showable_serial_number
+    )
+
+    payload: dict = {
+        "employer_summer_voucher_id": str(employer_summer_voucher.id),
+        "employee_name": "Turvakielto",
+        "summer_voucher_serial_number": summer_voucher_serial_number,
+    }
+
+    response: HttpResponse = user_client.post(
+        reverse("v1:youthapplication-fetch-employee-data"),
+        data=payload,
+        content_type="application/json",
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    response_body = response.json()
+    assert response_body["employee_home_city"] in (None, "")
+    response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
+        data=response_body
     )
     assert response_serializer.is_valid(), response_serializer.errors
