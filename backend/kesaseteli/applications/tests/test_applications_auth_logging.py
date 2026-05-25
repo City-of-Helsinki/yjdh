@@ -6,6 +6,7 @@ from django.test import override_settings, RequestFactory
 from requests.exceptions import ConnectionError as RequestsConnectionError
 from resilient_logger.models import ResilientLogEntry
 
+from applications.api.v1.exceptions import VTJServiceUnavailableError
 from applications.services import VTJService
 from common.tests.factories import (
     DuplicateAllowingUserFactory,
@@ -67,7 +68,7 @@ def test_fetch_vtj_json_logs_vtj_query_failure_on_api_error():
         "shared.vtj.vtj_client.requests.post",
         side_effect=RequestsConnectionError("Connection refused"),
     ):
-        with pytest.raises(RequestsConnectionError):
+        with pytest.raises(VTJServiceUnavailableError):
             VTJService.fetch_vtj_json(application, end_user=end_user)
 
     entry = ResilientLogEntry.objects.last()
@@ -127,3 +128,17 @@ def test_on_user_logged_out_logs_logout():
     assert entry is not None
     assert entry.context["event_type"] == AuthEventType.LOGOUT
     assert entry.context["user_id"] == str(user.pk)
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_DISABLE_VTJ=False,
+    VTJ_USERNAME="",
+    VTJ_PASSWORD="",
+    VTJ_PERSONAL_ID_QUERY_URL="",
+)
+def test_fetch_vtj_json_raises_service_unavailable_on_value_error():
+    """ValueError due to missing VTJ settings should be caught and raise VTJServiceUnavailableError."""
+    application = YouthApplicationFactory()
+    with pytest.raises(VTJServiceUnavailableError):
+        VTJService.fetch_vtj_json(application, end_user="test-handler-uuid")
