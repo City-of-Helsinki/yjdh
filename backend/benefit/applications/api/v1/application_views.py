@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from decimal import ROUND_DOWN, Decimal
 from typing import List
 
+from azure.core.exceptions import ResourceNotFoundError
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core import exceptions
@@ -472,7 +473,10 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
                 Operation.READ,
                 attachment,
             )
-            return FileResponse(attachment.attachment_file)
+            try:
+                return FileResponse(attachment.attachment_file)
+            except (OSError, ResourceNotFoundError):
+                return self._attachment_not_found()
         else:
             return self._attachment_not_found()
 
