@@ -78,7 +78,7 @@ def build_required_payload(
 
 
 @pytest.mark.django_db
-def test_create_without_ssn_contract(staff_client: Client) -> None:
+def test_create_without_ssn_contract(staff_client: Client):
     """The create-without-SSN endpoint must accept and return the declared shapes."""
     payload: dict = build_required_payload(
         YouthApplicationCreateWithoutSsnRequestSerializer,
@@ -100,7 +100,7 @@ def test_create_without_ssn_contract(staff_client: Client) -> None:
 
 
 @pytest.mark.django_db
-def test_fetch_employee_data_contract(user_client: Client) -> None:
+def test_fetch_employee_data_contract(user_client: Client):
     """The employee-data lookup endpoint must accept and return the declared shapes."""
     employer_summer_voucher = EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory()
