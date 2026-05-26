@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from applications.enums import AttachmentType, get_supported_languages
+from applications.enums import APPLICATION_LANGUAGE_CHOICES, AttachmentType
 from applications.target_groups import get_target_group_choices
 
 
@@ -15,7 +15,7 @@ class YouthApplicationCreateWithoutSsnRequestSerializer(serializers.Serializer):
     school = serializers.CharField()
     phone_number = serializers.CharField()
     postcode = serializers.CharField()
-    language = serializers.ChoiceField(choices=get_supported_languages())
+    language = serializers.ChoiceField(choices=APPLICATION_LANGUAGE_CHOICES)
     non_vtj_birthdate = serializers.DateField()
     non_vtj_home_municipality = serializers.CharField(
         required=False,

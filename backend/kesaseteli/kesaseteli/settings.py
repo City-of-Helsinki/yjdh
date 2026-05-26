@@ -444,6 +444,9 @@ SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "EmployerApplicationStatusEnum": "applications.enums.EmployerApplicationStatus",
         "YouthApplicationStatusEnum": "applications.enums.YouthApplicationStatus",
+        # Model and OpenAPI serializers share this language enum.
+        # Stops drf-spectacular from emitting hash-suffixed names like LanguageC70Enum.
+        "ApplicationLanguageEnum": "applications.enums.APPLICATION_LANGUAGE_CHOICES",
     },
     "DESCRIPTION": "REST API for Kesäseteli application management",
     "VERSION": APP_RELEASE or "0.0.1",

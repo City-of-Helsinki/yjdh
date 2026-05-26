@@ -9,7 +9,27 @@ from django.test import Client
 from django.urls import reverse
 
 
-def test_openapi_schema_and_docs_routes_exist(client: Client) -> None:
+def test_openapi_schema_uses_stable_application_language_enum_name(
+    client: Client,
+):
+    """
+    Regression test for a stable application language enum in the OpenAPI schema.
+
+    If serializers define language choices differently, drf-spectacular may invent
+    hash-suffixed names like LanguageC70Enum. ReDoc and Swagger should show
+    ApplicationLanguageEnum with fi, sv, and en.
+
+    Further context in PR #4089:
+    https://github.com/City-of-Helsinki/yjdh/pull/4089
+    """
+    schema = client.get(reverse("schema"), HTTP_ACCEPT="application/json").json()
+    enum_names = schema.get("components", {}).get("schemas", {})
+
+    assert "ApplicationLanguageEnum" in enum_names
+    assert enum_names["ApplicationLanguageEnum"]["enum"] == ["fi", "sv", "en"]
+
+
+def test_openapi_schema_and_docs_routes_exist(client: Client):
     """Ensure the schema endpoint and documentation pages are reachable."""
     schema_response: HttpResponse = client.get(
         reverse("schema"), HTTP_ACCEPT="application/json"
