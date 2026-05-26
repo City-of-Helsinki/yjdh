@@ -1,6 +1,6 @@
 import 'benefit/applicant/__tests__/utils/mock-hds-date-input';
 
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { createMockApplication } from 'benefit/applicant/__tests__/utils/mock-data';
 import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
 import { setupUserAndRender } from 'benefit/applicant/__tests__/utils/user-render-helper';
@@ -157,6 +157,14 @@ const fields = {
     label: 'Onko kyseessä palkkatuettu oppisopimus?',
     placeholder: '',
   },
+  otherFinancialSupportForEmployment: {
+    name: 'otherFinancialSupportForEmployment',
+    label: 'Muu taloudellinen tuki',
+  },
+  roleOfEmployeeInOrganization: {
+    name: 'roleOfEmployeeInOrganization',
+    label: 'Työntekijän rooli yrityksessä',
+  }
 };
 
 const createHookReturn = (
@@ -412,8 +420,19 @@ describe('ApplicationFormStep2', () => {
     mockUseApplicationFormStep2.mockReturnValue(hookReturn);
     const user = setupUserAndRender(() => renderForm());
 
-    await user.click(screen.getByRole('radio', { name: 'Ei' }));
-    await user.click(screen.getByRole('radio', { name: 'Kyllä' }));
+    const apprenticeshipGroup = screen.getByRole('group', {
+      name: /onko kyseessä palkkatuettu oppisopimus/i,
+    });
+
+    const noButton = within(apprenticeshipGroup).getByRole('radio', {
+      name: 'Ei',
+    });
+    const yesButton = within(apprenticeshipGroup).getByRole('radio', {
+      name: 'Kyllä',
+    });
+
+    await user.click(noButton);
+    await user.click(yesButton);
 
     expect(
       (hookReturn.formik as Record<string, unknown>).setFieldValue

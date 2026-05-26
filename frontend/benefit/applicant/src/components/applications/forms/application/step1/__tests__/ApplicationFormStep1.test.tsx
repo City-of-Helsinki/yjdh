@@ -102,6 +102,7 @@ const mockHookReturn = {
   t: i18n.t.bind(i18n),
   handleSubmit: jest.fn(),
   handleSave: jest.fn(),
+  handleQuietSave: jest.fn(),
   handleDelete: jest.fn(),
   getErrorMessage: jest.fn(),
   clearDeminimisAids: jest.fn(),

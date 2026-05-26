@@ -27,6 +27,8 @@ const translationsBase = 'common:applications.sections.company';
 const companyData = {
   name: 'Yritys Oy',
   businessId: '1234567-8',
+  companyNumberOfEmployees: 50,
+  companyBusinessBrief: 'Yrityksen kuvaus',
   streetAddress: 'Testikatu 1',
   postcode: '00100',
   city: 'Helsinki',
@@ -81,6 +83,14 @@ describe('CompanyInfo', () => {
     associationHasBusinessActivities: {
       name: 'associationHasBusinessActivities',
       label: 'associationHasBusinessActivities',
+    },
+    companyNumberOfEmployees: {
+      name: 'companyNumberOfEmployees',
+      label: 'companyNumberOfEmployees',
+    },
+    companyBusinessBrief: {
+      name: 'companyBusinessBrief',
+      label: 'companyBusinessBrief',
     },
   };
 
