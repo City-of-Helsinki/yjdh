@@ -437,11 +437,11 @@ describe('FormContent new fields', () => {
     expect(
       screen.getByText('otherFinancialSupportForEmployment.label')
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Ei')).toHaveAttribute(
+    expect(screen.getByLabelText('common:utility.no')).toHaveAttribute(
       'name',
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
     );
-    expect(screen.getByLabelText('Kyllä')).toHaveAttribute(
+    expect(screen.getByLabelText('common:utility.yes')).toHaveAttribute(
       'name',
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
     );
@@ -451,7 +451,7 @@ describe('FormContent new fields', () => {
     const formik = createFormik();
     renderComponent({ formik });
 
-    fireEvent.click(screen.getByLabelText('Ei'));
+    fireEvent.click(screen.getByLabelText('common:utility.no'));
 
     expect(formik.setFieldValue).toHaveBeenCalledWith(
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT,
@@ -463,7 +463,7 @@ describe('FormContent new fields', () => {
     const formik = createFormik();
     renderComponent({ formik });
 
-    fireEvent.click(screen.getByLabelText('Kyllä'));
+    fireEvent.click(screen.getByLabelText('common:utility.yes'));
 
     expect(formik.setFieldValue).toHaveBeenCalledWith(
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT,

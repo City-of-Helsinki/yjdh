@@ -128,7 +128,7 @@ def _clone_business_brief_attachments(application_base, cloned_application):
         try:
             base_attachment.attachment_file.open("rb")
         except IOError:
-            return
+            continue
 
         try:
             attachment_file = ContentFile(

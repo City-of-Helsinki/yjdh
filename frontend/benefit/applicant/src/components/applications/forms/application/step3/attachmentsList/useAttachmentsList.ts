@@ -94,6 +94,13 @@ const useAttachmentsList = (): ExtendedComponentProps => {
   );
 
   const handleRemove = (attachmentId: string): void => {
+    if (!applicationId) {
+      showErrorToast(
+        t('common:error.attachments.label'),
+        t('common:error.attachments.noApplicationId')
+      );
+      return;
+    }
     removeAttachment({
       applicationId,
       attachmentId,
@@ -101,6 +108,13 @@ const useAttachmentsList = (): ExtendedComponentProps => {
   };
 
   const handleUpload = (attachment: FormData): void => {
+    if (!applicationId) {
+      showErrorToast(
+        t('common:error.generic.label'),
+        t('common:error.attachments.noApplicationId')
+      );
+      return;
+    }
     uploadAttachment({
       applicationId,
       data: attachment,

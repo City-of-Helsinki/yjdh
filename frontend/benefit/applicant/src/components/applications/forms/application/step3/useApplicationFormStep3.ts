@@ -61,7 +61,7 @@ const useApplicationFormStep3 = (
         );
       }
       let hasApprenticeshipProgram = true;
-      if (application.apprenticeshipProgram && applicantHasPaySubsidyGranted) {
+      if (application.apprenticeshipProgram) {
         hasApprenticeshipProgram = !isEmpty(
           application?.attachments?.find(
             (att) => att.attachmentType === ATTACHMENT_TYPES.EDUCATION_CONTRACT

@@ -188,17 +188,22 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             errorText={getErrorMessage(
               fields.otherFinancialSupportForEmployment.name
             )}
-            tooltipLabel={t(`common:tooltip.ariaLabel`)}
-            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
-            tooltipText={t(
-              `${translationsBase}.fields.otherFinancialSupportForEmployment.tooltip`
-            )}
+            tooltip={
+              <Tooltip
+                tooltipLabel={t(`common:tooltip.ariaLabel`)}
+                buttonLabel={t(`common:tooltip.ariaButtonLabel`)}
+              >
+                {t(
+                  `${translationsBase}.fields.otherFinancialSupportForEmployment.tooltip`
+                )}
+              </Tooltip>
+            }
           >
             <$RadioButton
               id={`${fields.otherFinancialSupportForEmployment.name}False`}
               name={fields.otherFinancialSupportForEmployment.name}
               value="false"
-              label="Ei"
+              label={t('common:utility.no')}
               onChange={() => {
                 void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
@@ -213,7 +218,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               id={`${fields.otherFinancialSupportForEmployment.name}True`}
               name={fields.otherFinancialSupportForEmployment.name}
               value="true"
-              label="Kyllä"
+              label={t('common:utility.yes')}
               onChange={() => {
                 void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,

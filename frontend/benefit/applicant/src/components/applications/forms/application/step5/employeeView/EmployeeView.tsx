@@ -166,11 +166,11 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {data?.roleOfEmployeeInOrganization &&
                     data?.roleOfEmployeeInOrganization
                       .split('\n')
-                      .map((line) => (
+                      .map((line, index, array) => (
                         <React.Fragment
-                          key={`role-of-employee-${line
-                            .slice(0, 20)
-                            .replace(/\s/g, '')}`}
+                          key={`role-of-employee-${
+                            array.slice(0, index + 1).join('').length
+                          }-${line.length}-${line.slice(0, 50)}`}
                         >
                           {line}
                           <br />
