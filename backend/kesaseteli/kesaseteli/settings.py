@@ -106,7 +106,13 @@ env = environ.Env(
         str,
         "",
     ),
-    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
+    # NOTE: ELASTICSEARCH_APP_AUDIT_LOG_INDEX is the base default fallback.
+    # The default changed from 'kesaseteli_django_audit_log' to
+    # 'kesaseteli_audit_log_v1' to conform to the Platta naming convention and remain
+    # consistent with other apps. It also serves as the fallback index for
+    # ELASTICSEARCH_RESILIENT_LOG_INDEX and ELASTICSEARCH_DJANGO_AUDIT_LOG_INDEX if
+    # they are not explicitly configured.
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log_v1"),
     ELASTICSEARCH_RESILIENT_LOG_INDEX=(str, ""),
     ELASTICSEARCH_DJANGO_AUDIT_LOG_INDEX=(str, ""),
     ELASTICSEARCH_HOST=(str, ""),
