@@ -24,11 +24,13 @@ import {
 } from 'benefit-shared/types/application';
 import { paySubsidyTitle } from 'benefit-shared/utils/common';
 import { FormikProps } from 'formik';
-import { DateInput,
+import {
+  DateInput,
   Notification,
   SelectionGroup,
   TextArea,
-  TextInput } from 'hds-react';
+  TextInput,
+} from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -316,17 +318,12 @@ const FormContent: React.FC<Props> = ({
             errorText={getErrorMessage(
               fields.otherFinancialSupportForEmployment.name
             )}
-            tooltipLabel={t(`common:tooltip.ariaLabel`)}
-            tooltipButtonLabel={t(`common:tooltip.ariaButtonLabel`)}
-            tooltipText={t(
-              `${translationsBase}.fields.otherFinancialSupportForEmployment.tooltip`
-            )}
           >
             <$RadioButton
               id={`${fields.otherFinancialSupportForEmployment.name}False`}
               name={fields.otherFinancialSupportForEmployment.name}
               value="false"
-              label="Ei"
+              label={t('common:utility.no')}
               onChange={() => {
                 void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
@@ -341,7 +338,7 @@ const FormContent: React.FC<Props> = ({
               id={`${fields.otherFinancialSupportForEmployment.name}True`}
               name={fields.otherFinancialSupportForEmployment.name}
               value="true"
-              label="Kyllä"
+              label={t('common:utility.yes')}
               onChange={() => {
                 void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,

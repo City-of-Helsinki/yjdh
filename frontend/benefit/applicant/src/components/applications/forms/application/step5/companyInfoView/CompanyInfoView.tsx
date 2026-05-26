@@ -137,16 +137,18 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               </$ApplicationDetailLabel>
               <$ApplicationDetailValue $column={1}>
                 {data?.companyBusinessBrief &&
-                  data?.companyBusinessBrief.split('\n').map((line) => (
-                    <React.Fragment
-                      key={`business-brief-${line
-                        .slice(0, 20)
-                        .replace(/\s/g, '')}`}
-                    >
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))}
+                  data?.companyBusinessBrief
+                    .split('\n')
+                    .map((line, index, array) => (
+                      <React.Fragment
+                        key={`business-brief-${
+                          array.slice(0, index + 1).join('').length
+                        }-${line.length}-${line.slice(0, 50)}`}
+                      >
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
 
