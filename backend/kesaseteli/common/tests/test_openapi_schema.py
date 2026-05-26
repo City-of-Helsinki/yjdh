@@ -45,7 +45,7 @@ def test_openapi_schema_and_docs_routes_exist(client: Client):
     assert client.get(reverse("redoc")).status_code == 200
 
 
-def test_schema_excludes_unsupported_kesaseteli_operations(client: Client) -> None:
+def test_schema_excludes_unsupported_kesaseteli_operations(client: Client):
     """
     Ensure the exported schema only advertises operations the viewsets actually
     support.
@@ -68,7 +68,7 @@ def test_schema_excludes_unsupported_kesaseteli_operations(client: Client) -> No
     assert set(schema["paths"][youth_detail_path]) == {"get"}
 
 
-def test_openapi_schema_export_validates(tmp_path: Path) -> None:
+def test_openapi_schema_export_validates(tmp_path: Path):
     """Export the OpenAPI schema to a temporary YAML file and validate it.
 
     This test exercises the schema export path end to end and fails if the
