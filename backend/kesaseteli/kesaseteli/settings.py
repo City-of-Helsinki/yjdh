@@ -451,6 +451,9 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "REST API for Kesäseteli application management",
     "VERSION": APP_RELEASE or "0.0.1",
     "OAS_VERSION": "3.1.0",
+    # Strip the version prefix when deriving ReDoc/Swagger tags so resources
+    # group as company, employerapplications, etc. instead of v1.
+    "SCHEMA_PATH_PREFIX": "/v1/",
 }
 
 YTJ_BASE_URL = env.str("YTJ_BASE_URL")
