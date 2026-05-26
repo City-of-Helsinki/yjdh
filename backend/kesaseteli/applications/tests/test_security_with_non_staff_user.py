@@ -1,4 +1,3 @@
-from datetime import date
 from unittest import mock
 
 import pytest
@@ -1305,7 +1304,7 @@ def test_youth_application_fetch_employee_data(user_client):
         assert response.data == {
             "employer_summer_voucher_id": str(employer_summer_voucher.id),
             "employee_name": "John Doe",
-            "employee_birthdate": date(1911, 11, 11),
+            "employee_birthdate": "1911-11-11",
             "employee_phone_number": "123456789",
             "employee_home_city": "Helsinki",
             "employee_postcode": "00100",
