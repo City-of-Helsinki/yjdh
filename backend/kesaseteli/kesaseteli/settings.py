@@ -113,6 +113,8 @@ env = environ.Env(
     ELASTICSEARCH_PASSWORD=(str, ""),
     # Should auth events be logged to resilient logger
     ENABLE_AUTH_LOGGING=(bool, False),
+    # Should resilient logger submit unsent entries
+    RESILIENT_LOGGER_SUBMIT_UNSENT_ENTRIES=(bool, False),
     AUDIT_LOG_ENV=(str, "development"),
     ENABLE_ADMIN=(bool, False),
     # Configuration for the staff admin group name (ADFS group). Default is None.
@@ -363,7 +365,7 @@ ENABLE_AUTH_LOGGING = env("ENABLE_AUTH_LOGGING")
 RESILIENT_LOGGER = {
     "origin": env("AUDIT_LOG_ORIGIN"),
     "environment": env("AUDIT_LOG_ENV"),
-    "submit_unsent_entries": True,
+    "submit_unsent_entries": env("RESILIENT_LOGGER_SUBMIT_UNSENT_ENTRIES"),
     "clear_sent_entries": True,
     "sources": [
         {"class": "resilient_logger.sources.ResilientLogSource"},
