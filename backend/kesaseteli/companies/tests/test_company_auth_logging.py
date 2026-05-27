@@ -1,5 +1,4 @@
 import re
-from unittest import mock
 
 import pytest
 from django.conf import settings
@@ -55,7 +54,9 @@ def test_get_or_create_company_logs_mandate_query(api_client, requests_mock):
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
 )
-def test_get_or_create_company_logs_mandate_query_failure_on_api_error(api_client, requests_mock):
+def test_get_or_create_company_logs_mandate_query_failure_on_api_error(
+    api_client, requests_mock
+):
     """Failed org roles fetch creates a failed MANDATE_QUERY log entry."""
     matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.get(matcher, exc=RequestsConnectionError("Connection refused"))
