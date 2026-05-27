@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.19.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.18.0...benefit-backend-v2.19.0) (2026-05-27)
+
+
+### Features
+
+* **benefit:** Add download url for attachments in django admin ([91937f0](https://github.com/City-of-Helsinki/yjdh/commit/91937f0970a00a68b34aa939d1437e773f6f8c97))
+* **benefit:** Add error handling to attachment download ([42afd8d](https://github.com/City-of-Helsinki/yjdh/commit/42afd8d92b7e555f293007e493851ba4ae2b8cd8))
+* **benefit:** Add terms download endpoint to api ([aa773b0](https://github.com/City-of-Helsinki/yjdh/commit/aa773b00259a50e2dd4d98703306636a4bc17553))
+* **benefit:** Applicant can send the payslips ([0418a52](https://github.com/City-of-Helsinki/yjdh/commit/0418a52c5e0e571046567e80dc5513d22c9d3130))
+* **benefit:** Applications with requested payslips ([4dc99a5](https://github.com/City-of-Helsinki/yjdh/commit/4dc99a5319abc4b96bb98530e83773cc87dbfaac))
+* **benefit:** Backend testing ([f97aa5b](https://github.com/City-of-Helsinki/yjdh/commit/f97aa5b28da1e34844ada98b35b4d8748906e10b))
+* **benefit:** Testing and translation changes ([e03ef22](https://github.com/City-of-Helsinki/yjdh/commit/e03ef220c3ee70e863468f00e9dad1a6cb7ceed8))
+
+
+### Bug Fixes
+
+* **benefit:** Fixes from copilot ([8e066ec](https://github.com/City-of-Helsinki/yjdh/commit/8e066ecf4011ac8c721b24b2de9f65bd905b53fe))
+* **benefit:** Fixes from reviewers ([bfb9ca4](https://github.com/City-of-Helsinki/yjdh/commit/bfb9ca4e15b97a8c367a4bf7972c3a0f87706f39))
+* **benefit:** Fixes from sentry ([74b6c46](https://github.com/City-of-Helsinki/yjdh/commit/74b6c4677807b3a45ad9faad7bf933e6e54e2481))
+* **benefit:** Fixes to logic ([76b60da](https://github.com/City-of-Helsinki/yjdh/commit/76b60da7abb0e6333cd824077f6b2745315f3513))
+
+
+### Dependencies
+
+* Bump authlib from 1.6.11 to 1.6.12 in /backend/benefit ([372e63d](https://github.com/City-of-Helsinki/yjdh/commit/372e63d4461a6d917c39a276da836dd320177f91))
+* Bump django from 5.2.13 to 5.2.14 in /backend/benefit ([7cad158](https://github.com/City-of-Helsinki/yjdh/commit/7cad15825b6c1195fa051ea349e7cb57e8239baa))
+
 ## [2.18.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.17.0...benefit-backend-v2.18.0) (2026-05-13)
 
 
