@@ -35,6 +35,16 @@ class ExcelColumns(models.TextChoices):
     TALPA = "talpa", _("Talpa")
 
 
+class EmployerExcelExportKind(models.TextChoices):
+    """
+    Employer summer voucher Excel export sets for handler downloads.
+    """
+
+    UNHANDLED = "unhandled", _("Unhandled applications")
+    ANNUAL = "annual", _("Current year applications")
+    ANNUAL_PREVIOUS = "annual-previous", _("Previous year applications")
+
+
 class EmployerApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")

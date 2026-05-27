@@ -16,6 +16,7 @@ from django.utils.timezone import localdate
 from freezegun import freeze_time
 from rest_framework import status
 
+from applications.api.handler_excel_views import YouthApplicationExcelExportViewSet
 from applications.enums import (
     EmployerApplicationStatus,
     ExcelColumns,
@@ -49,7 +50,6 @@ from applications.exporters.excel_exporter import (
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
 from applications.tests.test_models import create_test_employer_summer_vouchers
-from applications.views import YouthApplicationExcelExportViewSet
 from common.tests.factories import (
     ActiveVtjTestCaseYouthApplicationFactory,
     ActiveYouthApplicationFactory,
@@ -65,6 +65,16 @@ from shared.common.tests.utils import utc_datetime
 
 def excel_download_url():
     return reverse("excel-download")
+
+
+def employer_excel_export_url(
+    export_kind: str,
+    columns: str = ExcelColumns.REPORTING.value,
+) -> str:
+    return reverse(
+        "employer-excel-export",
+        kwargs={"export_kind": export_kind, "columns": columns},
+    )
 
 
 def youth_excel_download_url():
@@ -86,7 +96,9 @@ def check_removable_field_titles(removable_field_titles):
 def test_excel_view_unallowed_methods(request, staff_client, http_method):
     client_http_method_func = getattr(staff_client, http_method)
     assert callable(client_http_method_func)
-    response = client_http_method_func(excel_download_url())
+    response = client_http_method_func(
+        employer_excel_export_url("annual", ExcelColumns.REPORTING.value)
+    )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
@@ -113,7 +125,9 @@ def test_excel_view_download_unhandled(
     submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
     submitted_summer_voucher.application.save()
 
-    response = staff_client.get(f"{excel_download_url()}?download=unhandled")
+    response = staff_client.get(
+        employer_excel_export_url("unhandled", ExcelColumns.REPORTING.value)
+    )
 
     assert response.status_code == 200
     submitted_summer_voucher.refresh_from_db()
@@ -126,9 +140,11 @@ def test_excel_view_download_unhandled(
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_no_unhandled_applications(staff_client):
-    response = staff_client.get(f"{excel_download_url()}?download=unhandled")
+    response = staff_client.get(
+        employer_excel_export_url("unhandled", ExcelColumns.REPORTING.value)
+    )
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "Ei uusia käsittelemättömiä hakemuksia." in response.content.decode()
 
 
@@ -142,11 +158,9 @@ def test_excel_view_download_no_annual_applications(staff_client, columns):
     )
     EmployerApplicationFactory(status=EmployerApplicationStatus.DRAFT)
 
-    response = staff_client.get(
-        f"{excel_download_url()}?download=annual&columns={columns}"
-    )
+    response = staff_client.get(employer_excel_export_url("annual", columns))
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "Hakemuksia ei löytynyt." in response.content.decode()
 
 
@@ -195,7 +209,7 @@ def test_excel_download_writes_audit_log(staff_client, columns, download_type):
     Excel files.
     """
     create_test_employer_summer_vouchers(year=2021)
-    download_url = f"{excel_download_url()}?download={download_type}&columns={columns}"
+    download_url = employer_excel_export_url(download_type, columns)
 
     old_audit_log_entry_count = LogEntry.objects.count()
     frozen_datetime = utc_datetime(2021, 12, 31)
@@ -214,11 +228,11 @@ def test_excel_download_writes_audit_log(staff_client, columns, download_type):
     )
     assert audit_event.additional_data == {
         "is_sent": False,
-        "request_path": excel_download_url(),
-        "method": "EmployerApplicationExcelDownloadView.get",
+        "request_path": download_url,
+        "method": "EmployerApplicationExcelExportView.get",
         "parameters": {
             "columns": columns,
-            "download": download_type,
+            "export_kind": download_type,
         },
     }
     assert audit_event.timestamp == frozen_datetime
@@ -234,7 +248,9 @@ def test_excel_view_download_annual(
     submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
     submitted_summer_voucher.application.save()
 
-    response = staff_client.get(f"{excel_download_url()}?download=annual")
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.REPORTING.value)
+    )
 
     assert response.status_code == 200
     submitted_summer_voucher.refresh_from_db()
@@ -250,15 +266,10 @@ def test_excel_view_download_annual(
     "download_url,expected_output_excel_fields",
     [
         (
-            (
-                f"{excel_download_url()}?download={download}"
-                + ("" if columns is None else f"&columns={columns}")
-            ),
-            get_exportable_fields(
-                ExcelColumns.REPORTING.value if columns is None else columns
-            ),
+            employer_excel_export_url(download, columns),
+            get_exportable_fields(columns),
         )
-        for columns in ExcelColumns.values + [None]
+        for columns in ExcelColumns.values
         for download in ["unhandled", "annual"]
     ],
 )
@@ -269,7 +280,7 @@ def test_excel_view_download_content(  # noqa: C901
 ):
     def employer_summer_voucher_sorting_key(voucher: EmployerSummerVoucher):
         # Sorting key should be the same as what is used to order by queryset results
-        # in Excel download, see EmployerApplicationExcelDownloadView
+        # in Excel download, see EmployerExcelExportService.base_queryset
         return voucher.submitted_at, voucher.created_at, voucher.pk
 
     vouchers: List[EmployerSummerVoucher] = sorted(
@@ -403,7 +414,7 @@ def test_excel_view_download_sum_field_value(  # noqa: C901
     # Use earlier date because fetching file fails if frozen date is in the future
     with freeze_time(date(employer_summer_voucher_creation_date.year, 1, 1)):
         response = staff_client.get(
-            f"{excel_download_url()}?download=annual&columns=talpa"
+            employer_excel_export_url("annual", ExcelColumns.TALPA.value)
         )
 
     workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
@@ -524,11 +535,8 @@ def test_youth_excel_download_content(staff_client):  # noqa: C901
 @pytest.mark.parametrize(
     "download_url",
     [
-        (
-            f"{excel_download_url()}?download={download}"
-            + ("" if columns is None else f"&columns={columns}")
-        )
-        for columns in ExcelColumns.values + [None]
+        employer_excel_export_url(download, columns)
+        for columns in ExcelColumns.values
         for download in ["unhandled", "annual"]
     ]
     + [youth_excel_download_url()],
@@ -607,6 +615,21 @@ def test_removable_reporting_field_titles():
 
 def test_removable_talpa_field_titles():
     check_removable_field_titles(REMOVABLE_TALPA_FIELD_TITLES)
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "export_url",
+    [
+        employer_excel_export_url("annual", "invalid-columns"),
+        employer_excel_export_url("not-a-real-kind", ExcelColumns.REPORTING.value),
+    ],
+)
+def test_employer_excel_export_rejects_invalid_parameters(staff_client, export_url):
+    response = staff_client.get(export_url)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db
