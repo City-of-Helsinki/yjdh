@@ -73,6 +73,7 @@ from applications.services.applications_power_bi_csv_report import (
 from applications.services.clone_application import clone_application_based_on_other
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
+    generate_handler_application_pdf,
     get_context_for_summary_context,
 )
 from calculator.enums import InstalmentStatus
@@ -1115,6 +1116,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return Response(
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+    @action(methods=["GET"], detail=True, url_path="application_pdf")
+    def application_pdf(self, request, pk=None) -> HttpResponse:
+        application = self.get_object()
+        pdf_bytes = generate_handler_application_pdf(application, request)
+        if not pdf_bytes:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response = HttpResponse(pdf_bytes, content_type="application/pdf")
+        response["Content-Disposition"] = (
+            f'attachment; filename="application_{application.application_number}.pdf"'
+        )
+        return response
 
     def _create_application_batch(self, status) -> QuerySet[Application]:
         """
