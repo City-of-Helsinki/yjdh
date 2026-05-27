@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% block title %}{{ application.application_number }}{% endblock %}
+{% block content %}
+{% load application_extras %}
+{% load i18n %}
+
+<main>
+    <div class="page-wrapper">
+        {% include "header.html" %}
+        <article>
+            <div class="two-col-sections">
+            <section>
+                <h3>{{ _("Employer information") }}</h3>
+                <div class="row">
+                    <div class="label">{{ _("Name of the employer") }}</div>
+                    <div class="value">{{application.company.name}}</div>
+                </div>
+
+                {% if application.company.industry_code %}
+                <div class="row">
+                    <div class="label">TOL-koodi</div>
+                    <div class="value">{{ application.company.industry_code }}{% if application.company.industry %} – {{ application.company.industry }}{% endif %}</div>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="label">{{ _("Business ID") }}</div>
+                    <div class="value">{{ application.company.business_id }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">{{ _("Street address") }}</div>
+                    <div class="value">{{ application.company.street_address }}<br>{{ application.company.postcode }} {{ application.company.city}}</div>
+                </div>
+
+                {% if application.alternative_company_street_address %}
+                <div class="row">
+                    <div class="label">{{ _("Delivery address") }}</div>
+                    <div class="value">
+                        {{ application.company_department }}<br>
+                        {{ application.alternative_company_street_address }}<br>
+                        {{ application.alternative_company_postcode }} {{ application.alternative_company_city }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="label">{{ _("Bank account number") }}</div>
+                    <div class="value">{{ application.company_bank_account_number | iban}}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">{{ _("Number of employees before the employed") }}</div>
+                    <div class="value">{{ application.company_number_of_employees }}</div>
+                </div>
+
+                <div class="row force-column">
+                    <div class="label">{{ _("Is service purchased by city of Helsinki") }}</div>
+                    <div class="value">
+                        {% if application.purchased_service %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+
+                {% if application.company.organization_type == 'association' %}
+                <div class="row force-column">
+                    <div class="label">{{ _("Does the employer engage in economic activity?") }}</div>
+                    <div class="value">
+                        {% if application.association_has_business_activities %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+                {% endif %}
+            </section>
+
+            <section>
+                <h3>{{ _("Contact person for the employer") }}</h3>
+                <div>
+                    <div class="row">
+                        <div class="label">{{ _("Name") }}</div>
+                        <div class="value">{{ application.company_contact_person_first_name}} {{ application.company_contact_person_last_name }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">{{ _("Telephone") }}</div>
+                        <div class="value">{{ application.company_contact_person_phone_number }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">{{ _("Email address") }}</div>
+                        <div class="value">{{ application.company_contact_person_email }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="label">{{ _("Preferred language of communication") }}</div>
+                        <div class="value">{% translate application.applicant_language %}</div>
+                    </div>
+                </div>
+            </section>
+            </div>
+
+            <div class="row force-column">
+                <div class="label">{{ _("Description of employer's business activities") }}</div>
+                <div class="value">{{ application.company_business_brief|linebreaksbr }}</div>
+            </div>
+
+            <section>
+                <h3 id="deminimis-heading">{{ _("De minimis aid received by the employer") }}</h3>
+
+                {% if de_minimis_aid_set %}
+                <table aria-describedby="deminimis-heading">
+                    <thead>
+                        <tr>
+                            <th>{{ _("Granter") }}</th>
+                            <th>{{ _("Amount") }}</th>
+                            <th>{{ _("Date") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aid in de_minimis_aid_set %}
+                        <tr>
+                            <td>{{ aid.granter }}</td>
+                            <td>{{ aid.amount | to_euro }}</td>
+                            <td>{{ aid.granted_at | date_fi }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="row force-column" style="margin-top: 10px;">
+                    <div class="label">{{ _("Total") }}</div>
+                    <div class="value">{{ de_minimis_amount | to_euro }}</div>
+                </div>
+                {% else %}
+                <p>{{ _("No, the applicant has not listed any previous de minimis aids.") }}</p>
+                {%endif%}
+            </section>
+            <section>
+                <h3>{{ _("Change negotiations or co-determination negotiations") }}</h3>
+                {% if application.co_operation_negotiations %}
+                <div class="row force-column">
+                    <div class="value">
+                        <p>{{ _("Yes, the organization has ongoing or completed change negotiations within the previous 12 months.") }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p>{{ _("No, the organization does not have change negotiations in progress or that have ended in the previous 12 months.") }}</p>
+                {% endif %}
+
+                {% if application.co_operation_negotiations %}
+                <div class="row">
+                    <div class="label">{{ _("Describe the situation") }}</div>
+                    <div class="value">{{ application.co_operation_negotiations_description }}</div>
+                </div>
+                {%endif%}
+            </section>
+        </article>
+        {% include "footer.html" with page="1" total=total_pages %}
+    </div>
+
+    <div class="page-start"></div>
+    <div class="page-wrapper">
+        {% include "header.html" %}
+        <article>
+            <div class="two-col-sections">
+            <section>
+                <h3>{{ _("Person to be hired") }}</h3>
+
+                <div class="row">
+                    <div class="label">{{ _("First name") }}</div>
+                    <div class="value">{{ application.employee.first_name }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Last name") }}</div>
+                    <div class="value">{{ application.employee.last_name }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Personal identity code") }}</div>
+                    <div class="value">{{ application.employee.social_security_number }}</div>
+                </div>
+                <div class="row force-column">
+                    <div class="label">{{ _("The subsidised employee's municipality of residence is Helsinki") }}</div>
+                    <div class="value">
+                        {% if application.employee.is_living_in_helsinki %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row force-column">
+                    <div class="label">{{ _("Are there other employees with pay subsidy") }}</div>
+                    <div class="value">
+                        {% if application.other_subsidised_employed %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+
+                {% if application.other_subsidised_employed %}
+                <div class="row">
+                    <div class="label">{{ _("Number of other subsidised employees") }}</div>
+                    <div class="value">{{ application.other_subsidised_number }}</div>
+                </div>
+                {% endif %}
+
+                <div class="row force-column">
+                    <div class="label">{{ _("Has other financial support been granted for employment?") }}</div>
+                    <div class="value">
+                        {% if application.other_financial_support_for_employment %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+
+                {% if application.company.organization_type == 'association' %}
+                <div class="row force-column">
+                    <div class="label">{{ _("Has the person who is being employed been assigned a job supervisor?") }}</div>
+                    <div class="value">
+                        {% if application.association_immediate_manager_check %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+                {% endif %}
+            </section>
+
+            <section>
+                <h3>{{ _("Employment relationship") }}</h3>
+                <div class="row">
+                    <div class="label">{{ _("Job title") }}</div>
+                    <div class="value">{{ application.employee.job_title }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Working hours per week") }}</div>
+                    <div class="value">{{application.employee.working_hours | dot_to_comma}}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Gross salary per month") }}</div>
+                    <div class="value">{{application.employee.monthly_pay | to_euro}}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Holiday pay per month") }}</div>
+                    <div class="value">{{ application.employee.vacation_money | to_euro}}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Indirect labour costs per month") }}</div>
+                    <div class="value">{{ application.employee.other_expenses | to_euro}}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("Applicable collective agreement") }}</div>
+                    <div class="value">{{ application.employee.collective_bargaining_agreement }}</div>
+                </div>
+
+                {% if application.association_has_business_activities%}
+                <div class="row">
+                    <div class="label">{{ _("Association has business activities") }}</div>
+                    <div class="value">{{ _("Yes") }}</div>
+                </div>
+                {%endif%}
+
+                <div class="row">
+                    <div class="label">{{ _("Is this an apprenticeship?") }}</div>
+                    <div class="value">{% if application.apprenticeship_program %}{{ _("Yes") }}{% else %}{{ _("No") }}{%endif%}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">{{ _("Received aid") }}</div>
+                    <div class="value">{% translate application.pay_subsidy_granted %}</div>
+                </div>
+            </section>
+            </div>
+
+            <div class="row force-column">
+                <div class="label">{{ _("A description of how the work tasks of the person hired with the support are related to the organization's operations") }}</div>
+                <div class="value">{{ application.role_of_employee_in_organization|linebreaksbr }}</div>
+            </div>
+
+            <section>
+                <h3>{{ _("Benefit is applied for the period") }}</h3>
+                <div class="row">
+                    <div class="label">{{ _("Applying for dates") }}</div>
+                    <div class="value">{{ application.start_date | date_fi }} - {{ application.end_date | date_fi }}</div>
+                </div>
+            </section>
+        </article>
+        {% include "footer.html" with page="2" total=total_pages %}
+    </div>
+
+    <div class="page-start"></div>
+    <div class="page-wrapper">
+        {% include "header.html" %}
+        <article>
+            <section>
+                <h3>{{ _("Attachments") }}</h3>
+                {% for attachment in attachments %}
+                <div class="row">
+                    <div class="label">{% if application.pay_subsidy_granted == "granted_aged" and attachment.attachment_type == "pay_subsidy_decision" %}{{ _("granted_aged") }}{% else %}{% translate attachment.attachment_type %}{% endif %}</div>
+                    <div class="value">{{ attachment.attachment_file }}</div>
+                </div>
+                {% endfor %}
+            </section>
+        </article>
+        {% include "footer.html" with page="3" total=total_pages %}
+    </div>
+    <div class="page-start"></div>
+    <div class="page-wrapper">
+        {% include "header.html" %}
+        <article>
+            <section>
+                <h3>Käsittelijän yhteenveto</h3>
+
+                {% if application.status == "accepted" %}
+                <div class="row">
+                    <div class="label">Päätös</div>
+                    <div class="value" style="font-weight: 600; color: #007a64;">{{ _("Accepted") }}</div>
+                </div>
+                {% elif application.status == "rejected" %}
+                <div class="row">
+                    <div class="label">Päätös</div>
+                    <div class="value" style="font-weight: 600; color: #b01038;">Hylätty</div>
+                </div>
+                {% endif %}
+
+                {% if application.ahjo_case_id %}
+                <div class="row">
+                    <div class="label">Diaarinumero</div>
+                    <div class="value">{{ application.ahjo_case_id }}</div>
+                </div>
+                {% endif %}
+
+                {% if batch %}
+                <div class="row">
+                    <div class="label">Päätöksen päivämäärä</div>
+                    <div class="value">{{ batch.decision_date | date_fi }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Päätöksentekijä</div>
+                    <div class="value">{{ batch.decision_maker_name }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Päätöksentekijän titteli</div>
+                    <div class="value">{{ batch.decision_maker_title }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Lain kohta</div>
+                    <div class="value">{{ batch.section_of_the_law }}</div>
+                </div>
+                {% endif %}
+                {% if batch and batch.handler %}
+                    <div class="row">
+                        <div class="label">Käsittelijä</div>
+                        <div class="value">{{ batch.handler.first_name }} {{ batch.handler.last_name }}</div>
+                    </div>
+                {% endif %}
+
+            </section>
+
+            {% if batch and batch.p2p_inspector_name %}
+            <section>
+                <h3>Kaksoistarkastus</h3>
+                <div class="row">
+                    <div class="label">Tarkastaja</div>
+                    <div class="value">{{ batch.p2p_inspector_name }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Tarkastajan sähköposti</div>
+                    <div class="value">{{ batch.p2p_inspector_email }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Hyväksyjä</div>
+                    <div class="value">{{ batch.p2p_checker_name }}</div>
+                </div>
+            </section>
+            {% endif %}
+
+            {% if benefit_total_row %}
+            <section>
+                <h3>Myönnettävä Helsinki-lisä</h3>
+                <div class="row">
+                    <div class="label">Tukiaika</div>
+                    <div class="value">{{ application.start_date | date_fi }} – {{ application.end_date | date_fi }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ benefit_total_row.description_fi }}</div>
+                    <div class="value" style="font-weight: 600;">{{ benefit_total_row.amount | to_euro }}</div>
+                </div>
+                {% if calculation %}
+                <div class="row force-column">
+                    <div class="label">Myönnetty de minimis -tukena</div>
+                    <div class="value">
+                        {% if calculation.granted_as_de_minimis_aid %}
+                        Kyllä
+                        {% else %}
+                        Ei
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </section>
+            {% endif %}
+
+            {% if instalments %}
+            <section>
+                <h3>Maksuaikataulu</h3>
+                {% for instalment in instalments %}
+                <div class="row">
+                    <div class="label">{% if instalment.instalment_number == 1 %}Ensimmäinen maksuerä{% elif instalment.instalment_number == 2 %}Toinen maksuerä{% else %}Maksuerä {{ instalment.instalment_number }}{% endif %}</div>
+                    <div class="value">{{ instalment.amount | to_euro }}{% if instalment.due_date %} – eräpäivä {{ instalment.due_date | date_fi }}{% endif %}</div>
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if alterations %}
+            <section>
+                <h3>Tukiajan muutokset</h3>
+                {% for alt in alterations %}
+                <div class="row">
+                    <div class="label">Muutostyyppi</div>
+                    <div class="value">{% if alt.alteration_type == "termination" %}Päättyminen{% elif alt.alteration_type == "suspension" %}Keskeytys{% else %}{{ alt.alteration_type }}{% endif %}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Uusi päättymispäivä</div>
+                    <div class="value">{{ alt.end_date | date_fi }}</div>
+                </div>
+                {% if alt.resume_date %}
+                <div class="row">
+                    <div class="label">Työn jatkumispäivä</div>
+                    <div class="value">{{ alt.resume_date | date_fi }}</div>
+                </div>
+                {% endif %}
+                {% if alt.reason %}
+                <div class="row">
+                    <div class="label">Syy</div>
+                    <div class="value">{{ alt.reason }}</div>
+                </div>
+                {% endif %}
+                {% if alt.is_recoverable and alt.recovery_amount %}
+                <div class="row">
+                    <div class="label">Palautettava summa</div>
+                    <div class="value">{{ alt.recovery_amount | to_euro }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Palautusaika</div>
+                    <div class="value">{{ alt.recovery_start_date | date_fi }} – {{ alt.recovery_end_date | date_fi }}</div>
+                </div>
+                {% endif %}
+                {% if alt.handled_at %}
+                <div class="row">
+                    <div class="label">Käsitelty</div>
+                    <div class="value">{{ alt.handled_at | date_fi }}</div>
+                </div>
+                {% endif %}
+                {% if not forloop.last %}<hr style="margin: 8px 0; border-color: #ccc;">{% endif %}
+                {% endfor %}
+            </section>
+            {% endif %}
+
+        </article>
+        {% include "footer.html" with page="4" total=total_pages %}
+    </div>
+
+    {% if calculation %}
+    <div class="page-start"></div>
+    <div class="page-wrapper">
+        {% include "header.html" %}
+        <article>
+            <section>
+                <h3 id="calculation-heading">Laskelma</h3>
+                {% if calculation_rows %}
+                <table aria-describedby="calculation-heading">
+                    <thead>
+                        <tr>
+                            <th>Kuvaus</th>
+                            <th>Summa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in calculation_rows %}
+                        <tr>
+                            <td>{{ row.description_fi }}</td>
+                            <td>{{ row.amount | to_euro }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </section>
+        </article>
+        {% include "footer.html" with page="5" total=total_pages %}
+    </div>
+    {% endif %}
+</main>
+</div>
+
+{% endblock %}

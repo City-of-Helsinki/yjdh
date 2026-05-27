@@ -191,4 +191,23 @@
         font-size: 1em;
         font-weight: 400;
     }
+
+    .two-col-sections {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .two-col-sections section {
+        display: table-cell;
+        width: 50%;
+        vertical-align: top;
+        padding-right: 16px;
+        box-sizing: border-box;
+    }
+
+    .two-col-sections section:last-child {
+        padding-right: 0;
+        padding-left: 16px;
+    }
 </style>

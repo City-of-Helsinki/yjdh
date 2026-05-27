@@ -3,6 +3,7 @@ from typing import Union
 
 import pdfkit
 from django.template import loader
+from django.utils import translation
 
 
 def get_context_for_summary_context(application):
@@ -47,6 +48,51 @@ def generate_application_summary_file(application, request=None) -> Union[bytes,
     except Exception as e:
         print(  # noqa: T201
             f"Cannot generate application summary PDF for application {application.id}",
+            e,
+        )
+        return None
+
+
+def get_handler_context_for_summary(application):
+    context = get_context_for_summary_context(application)
+    batch = getattr(application, "batch", None)
+    calculation = getattr(application, "calculation", None)
+    context["batch"] = batch
+    context["calculation"] = calculation
+    context["calculation_rows"] = (
+        calculation.rows.all().order_by("ordering") if calculation else []
+    )
+    context["benefit_total_row"] = (
+        calculation.rows.filter(row_type="helsinki_benefit_total_eur").first()
+        if calculation
+        else None
+    )
+    context["instalments"] = (
+        list(calculation.instalments.order_by("instalment_number"))
+        if calculation
+        else []
+    )
+    context["alterations"] = list(
+        application.alteration_set.exclude(state="cancelled").order_by("created_at")
+    )
+    # Pages 1-4 always; page 5 (Laskelma) only when calculation exists
+    context["total_pages"] = 5 if calculation else 4
+    return context
+
+
+def generate_handler_application_pdf(application, request=None) -> Union[bytes, None]:
+    def generate_pdf(context) -> bytes:
+        template = loader.get_template("application_handler.html")
+        rendered_template = template.render(context, request)
+        return pdfkit.from_string(rendered_template, False, None)
+
+    try:
+        context = get_handler_context_for_summary(application)
+        with translation.override("fi"):
+            return generate_pdf(context)
+    except Exception as e:
+        print(  # noqa: T201
+            f"Cannot generate handler PDF for application {application.id}",
             e,
         )
         return None
