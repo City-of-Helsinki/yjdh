@@ -99,6 +99,8 @@ from shared.vtj.signals import (
 )
 from shared.vtj.vtj_client import VTJClient
 
+SYSTEM_USER = "system"
+
 
 class AuthEventType(StrEnum):
     """Stable string identifiers for auth event types stored in log entry context.
@@ -164,7 +166,7 @@ def log_login_event(request, user):
         user: The authenticated Django ``User`` instance. ``user.backend`` is
             set by Django's auth framework immediately before the signal fires
             and contains the dotted path of the backend that authenticated the
-            user (e.g. ``shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend`` 
+            user (e.g. ``shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend``
             for Suomi.fi SAML2 logins).
     """
     ResilientLogSource.create(
@@ -220,7 +222,7 @@ def on_suomifi_mandate_queried(
     """
     user = getattr(request, "user", None)
     if not request_id:
-        return
+        raise ValueError("Missing request_id in suomifi_mandate_queried signal.")
 
     ResilientLogSource.create(
         level=logging.INFO,
@@ -277,7 +279,8 @@ def on_vtj_queried(sender, end_user, social_security_number, request_id=None, **
 
     Args:
         sender: The class that sent the signal.
-        end_user: The identifier of the handler (caseworker) who triggered the query.
+        end_user: The identifier of the handler (caseworker) who triggered the query,
+            or empty/None if triggered automatically by the system.
         social_security_number: The Finnish personal identity code queried.
         request_id: The unique ID generated for the query.
     """
@@ -286,7 +289,7 @@ def on_vtj_queried(sender, end_user, social_security_number, request_id=None, **
         message=AuthEventMessage.VTJ_QUERY,
         context={
             "event_type": AuthEventType.VTJ_QUERY,
-            "end_user": end_user,
+            "end_user": end_user or SYSTEM_USER,
             "social_security_number": social_security_number,
             "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": True,
@@ -307,7 +310,8 @@ def on_vtj_query_failed(
 
     Args:
         sender: The class that sent the signal.
-        end_user: The identifier of the handler who triggered the query.
+        end_user: The identifier of the handler who triggered the query,
+            or empty/None if triggered automatically by the system.
         social_security_number: The personal identity code that was being queried.
         error: The exception that caused the failure.
         request_id: The unique ID generated for the query.
@@ -317,7 +321,7 @@ def on_vtj_query_failed(
         message=AuthEventMessage.VTJ_QUERY_FAILED,
         context={
             "event_type": AuthEventType.VTJ_QUERY,
-            "end_user": end_user,
+            "end_user": end_user or SYSTEM_USER,
             "social_security_number": social_security_number,
             "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": False,

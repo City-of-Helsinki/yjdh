@@ -8,8 +8,8 @@ from resilient_logger.models import ResilientLogEntry
 
 from kesaseteli.auth_logging import (
     AuthEventType,
-    VtjQueryType,
     log_login_event,
+    VtjQueryType,
 )
 from shared.oidc.signals import (
     suomifi_mandate_queried,
@@ -200,3 +200,41 @@ def test_logging_disabled_creates_no_entry(user):
     )
 
     assert ResilientLogEntry.objects.count() == 0
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_suomifi_mandate_queried_missing_request_id_raises_value_error(user):
+    request = mock.Mock()
+    request.user = user
+    with pytest.raises(ValueError, match="Missing request_id"):
+        suomifi_mandate_queried.send(
+            sender=None,
+            request=request,
+            request_id=None,
+            organization_roles={},
+        )
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_vtj_queried_empty_end_user_defaults_to_system():
+    vtj_queried.send(
+        sender=None,
+        end_user="",
+        social_security_number="010101-123N",
+        request_id="req-vtj-123",
+    )
+    entry = ResilientLogEntry.objects.last()
+    assert entry.context["end_user"] == "system"
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+def test_vtj_query_failed_empty_end_user_defaults_to_system():
+    vtj_query_failed.send(
+        sender=None,
+        end_user="",
+        social_security_number="010101-123N",
+        error=Exception("fail"),
+        request_id="req-vtj-123-failed",
+    )
+    entry = ResilientLogEntry.objects.last()
+    assert entry.context["end_user"] == "system"
