@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.0.1...kesaseteli-handler-v2.1.0) (2026-05-27)
+
+
+### Features
+
+* **ks,handler:** Bump hds-react to 5.0.0 in Kesaseteli handler UI ([b110b8a](https://github.com/City-of-Helsinki/yjdh/commit/b110b8ad009cb2febe64c9f48520b154618f6993))
+
+
+### Bug Fixes
+
+* **shared-modal:** Use Extract for dialog-compatible variants ([7e1855d](https://github.com/City-of-Helsinki/yjdh/commit/7e1855d35298de8d8a61eaf3e38890b20860c40c))
+
 ## [2.0.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.0.0...kesaseteli-handler-v2.0.1) (2026-05-18)
 
 
