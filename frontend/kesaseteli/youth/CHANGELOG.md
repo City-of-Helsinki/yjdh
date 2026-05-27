@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.0.1...kesaseteli-youth-v2.1.0) (2026-05-27)
+
+
+### Features
+
+* **ks,youth:** Upgrade hds-react to 5.0.0 in kesaseteli youth UI ([d82241b](https://github.com/City-of-Helsinki/yjdh/commit/d82241b4d28f9943a870ed2309f815445d9992a1))
+* **youth:** Add school dropdown filtering and update tests ([11d0d6f](https://github.com/City-of-Helsinki/yjdh/commit/11d0d6f05f3c1e2d58fb0f30d13e110167d13978))
+
 ## [2.0.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.0.0...kesaseteli-youth-v2.0.1) (2026-05-18)
 
 
