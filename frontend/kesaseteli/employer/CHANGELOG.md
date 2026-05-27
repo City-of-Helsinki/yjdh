@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.1.0...kesaseteli-employer-v2.2.0) (2026-05-27)
+
+
+### Features
+
+* **ks,employer:** Upgrade hds-react to 5.0.0 in kesaseteli employer UI ([5663733](https://github.com/City-of-Helsinki/yjdh/commit/56637330e4e41cfe471f2f845a4b7e7be671d754))
+
+
+### Bug Fixes
+
+* **shared-modal:** Use Extract for dialog-compatible variants ([7e1855d](https://github.com/City-of-Helsinki/yjdh/commit/7e1855d35298de8d8a61eaf3e38890b20860c40c))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.0.0...kesaseteli-employer-v2.1.0) (2026-05-18)
 
 
