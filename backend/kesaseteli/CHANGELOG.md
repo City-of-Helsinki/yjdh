@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.14.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.13.0...kesaseteli-backend-v1.14.0) (2026-05-27)
+
+
+### Features
+
+* **ks:** Use SAS token safely with custom Azure blob storage class ([7a11aa2](https://github.com/City-of-Helsinki/yjdh/commit/7a11aa2b166c28a64e2d274195655aaa114e7849))
+
+
+### Bug Fixes
+
+* **ks:** Remove attachment_file (i.e. URL) from attachment API response ([aa03c3c](https://github.com/City-of-Helsinki/yjdh/commit/aa03c3c19b6c156e72f7479406a46a7898c1768e))
+
+
+### Dependencies
+
+* **kesaseteli:** Migrate database driver to psycopg v3 ([11c0991](https://github.com/City-of-Helsinki/yjdh/commit/11c0991e29138f45618f23b3c7cb10a7731b7895))
+
 ## [1.13.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.12.0...kesaseteli-backend-v1.13.0) (2026-05-18)
 
 
