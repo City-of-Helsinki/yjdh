@@ -448,6 +448,9 @@ SPECTACULAR_SETTINGS = {
         # Stops drf-spectacular from emitting hash-suffixed names like LanguageC70Enum.
         "ApplicationLanguageEnum": "applications.enums.APPLICATION_LANGUAGE_CHOICES",
     },
+    "PREPROCESSING_HOOKS": [
+        "common.openapi.preprocessing_filter_public_api_paths",
+    ],
     "DESCRIPTION": "REST API for Kesäseteli application management",
     "VERSION": APP_RELEASE or "0.0.1",
     "OAS_VERSION": "3.1.0",

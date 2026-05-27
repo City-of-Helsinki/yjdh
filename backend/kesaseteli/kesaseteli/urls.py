@@ -9,11 +9,12 @@ from drf_spectacular.views import (
 )
 from rest_framework import routers
 
-from applications.api.v1 import views as application_views
-from applications.views import (
-    EmployerApplicationExcelDownloadView,
+from applications.api.handler_excel_views import (
+    EmployerApplicationExcelExportView,
     YouthApplicationExcelExportViewSet,
 )
+from applications.api.v1 import views as application_views
+from applications.views import EmployerExcelDownloadPageView
 from common.views import healthz, readiness
 from companies.api.v1.views import GetCompanyView
 from shared.suomi_fi.views import (
@@ -48,8 +49,13 @@ urlpatterns = [
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(
         "excel-download/",
-        EmployerApplicationExcelDownloadView.as_view(),
+        EmployerExcelDownloadPageView.as_view(),
         name="excel-download",
+    ),
+    path(
+        "excel-download/employer-applications/<str:export_kind>/<str:columns>/",
+        EmployerApplicationExcelExportView.as_view(),
+        name="employer-excel-export",
     ),
     path(
         "excel-download/confirmed-youth-applications/",

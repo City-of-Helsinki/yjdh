@@ -814,8 +814,14 @@ def test_employer_application_detail_partially_unallowed_methods(
     "excel_download_url",
     [
         reverse("excel-download"),
-        f"{reverse('excel-download')}?download=annual",
-        f"{reverse('excel-download')}?download=unhandled",
+        reverse(
+            "employer-excel-export",
+            kwargs={"export_kind": "annual", "columns": "reporting"},
+        ),
+        reverse(
+            "employer-excel-export",
+            kwargs={"export_kind": "unhandled", "columns": "reporting"},
+        ),
         reverse("youth-excel-download"),
     ],
 )

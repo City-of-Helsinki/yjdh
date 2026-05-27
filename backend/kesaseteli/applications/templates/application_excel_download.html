@@ -56,18 +56,14 @@
                 </td>
 
                 <td>
-                    <form method="get" action="{% url 'excel-download' %}">
-                        <input type="hidden" name="download" value="unhandled">
-                        <input type="hidden" name="columns" value="reporting">
+                    <form method="get" action="{% url 'employer-excel-export' export_kind='unhandled' columns='reporting' %}">
                         <button type="submit" class="btn btn-primary btn-lg active w-100" aria-pressed="true">
                             {% trans 'Lataa ja merkitse käsitellyiksi' %}
                         </button>
                     </form>
                 </td>
                 <td>
-                    <form method="get" action="{% url 'excel-download' %}">
-                        <input type="hidden" name="download" value="unhandled">
-                        <input type="hidden" name="columns" value="talpa">
+                    <form method="get" action="{% url 'employer-excel-export' export_kind='unhandled' columns='talpa' %}">
                         <button type="submit" class="btn btn-primary btn-lg active w-100" aria-pressed="true">
                             {% trans 'Lataa ja merkitse käsitellyiksi' %}
                         </button>
@@ -79,18 +75,14 @@
                     {% trans 'Kaikki tämän vuoden (myös käsitellyt)' %}
                 </td>
                 <td class="text-center">
-                    <form method="get" action="{% url 'excel-download' %}">
-                        <input type="hidden" name="download" value="annual">
-                        <input type="hidden" name="columns" value="reporting">
+                    <form method="get" action="{% url 'employer-excel-export' export_kind='annual' columns='reporting' %}">
                         <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
                             {% trans 'Lataa' %}
                         </button>
                     </form>
                 </td>
                 <td class="text-center">
-                    <form method="get" action="{% url 'excel-download' %}">
-                        <input type="hidden" name="download" value="annual">
-                        <input type="hidden" name="columns" value="talpa">
+                    <form method="get" action="{% url 'employer-excel-export' export_kind='annual' columns='talpa' %}">
                         <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
                             {% trans 'Lataa' %}
                         </button>
@@ -102,18 +94,14 @@
                     {% trans 'Kaikki viime vuoden (myös käsitellyt)' %}
                 </td>
                 <td class="text-center">
-                    <form method="get" action="{% url 'excel-download' %}">
-                        <input type="hidden" name="download" value="annual-previous">
-                        <input type="hidden" name="columns" value="reporting">
+                    <form method="get" action="{% url 'employer-excel-export' export_kind='annual-previous' columns='reporting' %}">
                         <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
                             {% trans 'Lataa' %}
                         </button>
                     </form>
                 </td>
                 <td class="text-center">
-                    <form method="get" action="{% url 'excel-download' %}">
-                        <input type="hidden" name="download" value="annual-previous">
-                        <input type="hidden" name="columns" value="talpa">
+                    <form method="get" action="{% url 'employer-excel-export' export_kind='annual-previous' columns='talpa' %}">
                         <button type="submit" class="btn btn-secondary btn-lg active w-100" aria-pressed="true">
                             {% trans 'Lataa' %}
                         </button>
