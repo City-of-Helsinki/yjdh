@@ -1,5 +1,4 @@
 import logging
-import uuid
 from functools import cached_property
 
 from django.conf import settings
@@ -35,13 +34,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from applications.api.v1.openapi_serializers import (
-    EmployerSummerVoucherAttachmentUploadRequestSerializer,
-    YouthApplicationCreateWithoutSsnRequestSerializer,
-    YouthApplicationFetchEmployeeDataRequestSerializer,
-    YouthApplicationFetchEmployeeDataResponseSerializer,
-    YouthApplicationIdResponseSerializer,
-)
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
@@ -52,13 +44,18 @@ from applications.api.v1.permissions import (
 from applications.api.v1.serializers import (
     AttachmentSerializer,
     EmployerApplicationSerializer,
+    EmployerSummerVoucherAttachmentUploadInputSerializer,
     EmployerSummerVoucherSerializer,
     NonVtjYouthApplicationSerializer,
     SchoolSerializer,
     SummerVoucherConfigurationSerializer,
     TargetGroupSerializer,
     YouthApplicationAdditionalInfoSerializer,
+    YouthApplicationCreateWithoutSsnInputSerializer,
+    YouthApplicationFetchEmployeeDataInputSerializer,
+    YouthApplicationFetchEmployeeDataOutputSerializer,
     YouthApplicationHandlingSerializer,
+    YouthApplicationOutputSerializer,
     YouthApplicationSerializer,
     YouthApplicationStatusSerializer,
 )
@@ -161,7 +158,8 @@ class TargetGroupListView(ListAPIView):
 
     def list(self, request: Request, *args, **kwargs) -> Response:
         queryset = self.get_queryset()
-        return Response(queryset)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 @extend_schema_view(
@@ -295,9 +293,9 @@ class YouthApplicationViewSet(ModelViewSet):
             raise
 
     @extend_schema(
-        request=YouthApplicationFetchEmployeeDataRequestSerializer,
+        request=YouthApplicationFetchEmployeeDataInputSerializer,
         responses={
-            200: YouthApplicationFetchEmployeeDataResponseSerializer,
+            200: YouthApplicationFetchEmployeeDataOutputSerializer,
             400: OpenApiResponse(description="Bad request"),
             403: OpenApiResponse(description="Forbidden"),
             404: OpenApiResponse(description="Employee not found"),
@@ -314,25 +312,15 @@ class YouthApplicationViewSet(ModelViewSet):
         """
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        try:
-            employer_summer_voucher_id = uuid.UUID(
-                request.data.get("employer_summer_voucher_id", "")
-            )
-            employee_name = str(request.data.get("employee_name", "")).strip()
-            voucher_number = str(
-                request.data.get("summer_voucher_serial_number", "")
-            ).strip()
-        except (KeyError, ValueError, TypeError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        request_serializer = YouthApplicationFetchEmployeeDataRequestSerializer(
-            data={
-                "employer_summer_voucher_id": str(employer_summer_voucher_id),
-                "employee_name": employee_name,
-                "summer_voucher_serial_number": voucher_number,
-            }
+        request_serializer = YouthApplicationFetchEmployeeDataInputSerializer(
+            data=request.data
         )
         request_serializer.is_valid(raise_exception=True)
+        validated = request_serializer.validated_data
+        employer_summer_voucher_id = validated["employer_summer_voucher_id"]
+        employee_name = validated["employee_name"]
+        voucher_number = validated["summer_voucher_serial_number"]
 
         # Resolve the matching records and enforce the access checks.
         employer_summer_vouchers = EmployerSummerVoucher.objects.filter(
@@ -419,20 +407,12 @@ class YouthApplicationViewSet(ModelViewSet):
             additional_data=additional_data_for_access_audit_log,
         )
 
-        response_data = {
-            "employer_summer_voucher_id": str(employer_summer_voucher_id),
-            "employee_name": youth_application.name,
-            "employee_birthdate": youth_application.birthdate,
-            "employee_phone_number": youth_application.phone_number,
-            "employee_home_city": youth_application.home_municipality,
-            "employee_postcode": youth_application.postcode,
-            "employee_school": youth_application.school,
-        }
-        response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
-            data=response_data
+        response_serializer = (
+            YouthApplicationFetchEmployeeDataOutputSerializer.from_youth_application(
+                employer_summer_voucher_id, youth_application
+            )
         )
-        response_serializer.is_valid(raise_exception=True)
-        return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         request=YouthApplicationHandlingSerializer,
@@ -633,7 +613,7 @@ class YouthApplicationViewSet(ModelViewSet):
     @extend_schema(
         request=YouthApplicationSerializer,
         responses={
-            201: YouthApplicationIdResponseSerializer,
+            201: YouthApplicationOutputSerializer,
             400: OpenApiResponse(description="Validation rejected"),
             500: OpenApiResponse(description="Failed to send email"),
         },
@@ -738,11 +718,10 @@ class YouthApplicationViewSet(ModelViewSet):
                     )
 
             # Return success creating the object
-            headers = self.get_success_headers(serializer.data)
+            output_data = YouthApplicationOutputSerializer(serializer.instance).data
+            headers = self.get_success_headers(output_data)
             return Response(
-                data={"id": serializer.data["id"]},
-                status=status.HTTP_201_CREATED,
-                headers=headers,
+                output_data, status=status.HTTP_201_CREATED, headers=headers
             )
         except ValidationError as e:
             LOGGER.error(
@@ -752,9 +731,9 @@ class YouthApplicationViewSet(ModelViewSet):
             raise
 
     @extend_schema(
-        request=YouthApplicationCreateWithoutSsnRequestSerializer,
+        request=YouthApplicationCreateWithoutSsnInputSerializer,
         responses={
-            201: YouthApplicationIdResponseSerializer,
+            201: YouthApplicationOutputSerializer,
             400: OpenApiResponse(description="Validation rejected"),
             500: OpenApiResponse(description="Failed to send email"),
         },
@@ -775,6 +754,14 @@ class YouthApplicationViewSet(ModelViewSet):
             data = request.data.copy()
             if hasattr(data, "dict"):
                 data = data.dict()
+
+            # OpenAPI documents client fields only.
+            # Server-managed fields are injected below.
+            client_serializer = YouthApplicationCreateWithoutSsnInputSerializer(
+                data=data
+            )
+            client_serializer.is_valid(raise_exception=True)
+            data = dict(client_serializer.validated_data)
 
             # Add server-managed fields before the model serializer runs.
             data["is_unlisted_school"] = True
@@ -812,11 +799,10 @@ class YouthApplicationViewSet(ModelViewSet):
             )
 
             # Shape and return the documented success response.
-            headers = self.get_success_headers(serializer.data)
+            output_data = YouthApplicationOutputSerializer(app).data
+            headers = self.get_success_headers(output_data)
             return Response(
-                data={"id": app.id},
-                status=status.HTTP_201_CREATED,
-                headers=headers,
+                output_data, status=status.HTTP_201_CREATED, headers=headers
             )
         except ValidationError as e:
             LOGGER.error(
@@ -1046,7 +1032,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @extend_schema(
-        request=EmployerSummerVoucherAttachmentUploadRequestSerializer,
+        request=EmployerSummerVoucherAttachmentUploadInputSerializer,
         responses={
             201: AttachmentSerializer,
             400: OpenApiResponse(description="Invalid input"),
@@ -1078,13 +1064,18 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         if not user_company or obj.application.company != user_company:
             raise PermissionDenied("Only company members can post attachment to it")
 
-        # Validate request data
+        upload_serializer = EmployerSummerVoucherAttachmentUploadInputSerializer(
+            data=request.data
+        )
+        upload_serializer.is_valid(raise_exception=True)
+        uploaded = upload_serializer.validated_data
+
         serializer = AttachmentSerializer(
             data={
                 "summer_voucher": obj.id,
-                "attachment_file": request.data["attachment_file"],
-                "content_type": request.data["attachment_file"].content_type,
-                "attachment_type": request.data["attachment_type"],
+                "attachment_file": uploaded["attachment_file"],
+                "content_type": uploaded["attachment_file"].content_type,
+                "attachment_type": uploaded["attachment_type"],
             }
         )
         serializer.is_valid(raise_exception=True)
