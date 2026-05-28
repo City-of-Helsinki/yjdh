@@ -97,10 +97,18 @@ env = environ.Env(
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_BLOB_STORAGE_SAS_TOKEN=(str, ""),
     AZURE_CONTAINER=(str, ""),
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
+    # Should auth events be logged to resilient logger
+    ENABLE_AUTH_LOGGING=(bool, False),
+    # Should resilient logger submit unsent entries
+    RESILIENT_LOGGER_SUBMIT_UNSENT_ENTRIES=(bool, False),
+    AUDIT_LOG_ENV=(str, "development"),
     AUDIT_LOG_ORIGIN=(str, ""),
     AUDIT_LOG_ES_URL=(str, ""),
     AUDIT_LOG_ES_USERNAME=(str, ""),
     AUDIT_LOG_ES_PASSWORD=(str, ""),
+    AUDIT_LOG_ES_INDEX_AUTH=(str, ""),
+    AUDIT_LOG_ES_INDEX=(str, ""),
     # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in
     # staging/production
     # Always override this value from env variables
@@ -109,18 +117,6 @@ env = environ.Env(
         str,
         "",
     ),
-    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
-    AUDIT_LOG_ES_INDEX_AUTH=(str, ""),
-    AUDIT_LOG_ES_INDEX=(str, ""),
-    ELASTICSEARCH_HOST=(str, ""),
-    ELASTICSEARCH_PORT=(str, ""),
-    ELASTICSEARCH_USERNAME=(str, ""),
-    ELASTICSEARCH_PASSWORD=(str, ""),
-    # Should auth events be logged to resilient logger
-    ENABLE_AUTH_LOGGING=(bool, False),
-    # Should resilient logger submit unsent entries
-    RESILIENT_LOGGER_SUBMIT_UNSENT_ENTRIES=(bool, False),
-    AUDIT_LOG_ENV=(str, "development"),
     ENABLE_ADMIN=(bool, False),
     # Configuration for the staff admin group name (ADFS group). Default is None.
     AD_ADMIN_GROUP_NAME=(str, None),
@@ -355,38 +351,39 @@ OIDC_REDIRECT_ALLOWED_HOSTS = env.list(
 )
 OIDC_REDIRECT_REQUIRE_HTTPS = env.bool("OIDC_REDIRECT_REQUIRE_HTTPS", default=True)
 
-# Audit logging
-AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
-AUDIT_LOG_ES_INDEX = env("AUDIT_LOG_ES_INDEX") or env(
-    "ELASTICSEARCH_APP_AUDIT_LOG_INDEX"
-)
-AUDIT_LOG_ES_INDEX_AUTH = env("AUDIT_LOG_ES_INDEX_AUTH") or AUDIT_LOG_ES_INDEX
-ELASTICSEARCH_URL = env("AUDIT_LOG_ES_URL")
-ELASTICSEARCH_PORT = int(env("ELASTICSEARCH_PORT") or 9200)
-ELASTICSEARCH_USERNAME = env("AUDIT_LOG_ES_USERNAME")
-ELASTICSEARCH_PASSWORD = env("AUDIT_LOG_ES_PASSWORD")
-
 # Should auth events be logged to resilient logger
 ENABLE_AUTH_LOGGING = env("ENABLE_AUTH_LOGGING")
+AUDIT_LOG_ORIGIN = env("AUDIT_LOG_ORIGIN")
 
 # Resilient logger — ships compliance events and django-auditlog entries to ES
 RESILIENT_LOGGER = {
     "origin": AUDIT_LOG_ORIGIN,
     "environment": env("AUDIT_LOG_ENV"),
+    # Should resilient logger transfer entries to ES (with cronjob action)
     "submit_unsent_entries": env("RESILIENT_LOGGER_SUBMIT_UNSENT_ENTRIES"),
+    # Should resilient logger delete entries after transfer to ES (with cronjob action)
     "clear_sent_entries": True,
     "sources": [
+        # DVV auth logs
         {"class": "resilient_logger.sources.ResilientLogSource"},
+        # django-auditlog logs
         {"class": "resilient_logger.sources.DjangoAuditLogSource"},
     ],
     "targets": [
         {
+            # Use the custom Elasticsearch log target that routes entries to different
+            # indices
             "class": "kesaseteli.log_targets.RoutedElasticsearchLogTarget",
-            "es_url": ELASTICSEARCH_URL,
-            "es_username": ELASTICSEARCH_USERNAME,
-            "es_password": ELASTICSEARCH_PASSWORD,
-            "resilient_index": AUDIT_LOG_ES_INDEX_AUTH,
-            "auditlog_index": AUDIT_LOG_ES_INDEX,
+            "es_url": env("AUDIT_LOG_ES_URL"),
+            "es_username": env("AUDIT_LOG_ES_USERNAME"),
+            "es_password": env("AUDIT_LOG_ES_PASSWORD"),
+            # DVV auth logs → resilient_index
+            "resilient_index": env("AUDIT_LOG_ES_INDEX_AUTH")
+            or env("AUDIT_LOG_ES_INDEX")
+            or env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX"),
+            # django-auditlog logs → auditlog_index
+            "auditlog_index": env("AUDIT_LOG_ES_INDEX")
+            or env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX"),
             "required": True,
         }
     ],
