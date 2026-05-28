@@ -191,7 +191,7 @@ describe('useHandlerReviewActions', () => {
         industryCode: '62010',
         industry: 'Computer programming',
       },
-      { onSuccess: expect.any(Function) }
+      { onSettled: expect.any(Function) }
     );
     expect(mockUpdateStatus).not.toHaveBeenCalled();
   });
@@ -253,7 +253,7 @@ describe('useHandlerReviewActions', () => {
     expect(mockMutate).toHaveBeenCalled();
   });
 
-  it('setCalculationErrors receives 400 error data on client error', () => {
+  it('setCalculationErrors receives 4xx error data on client error', () => {
     const mockSetCalculationErrors = jest.fn();
     const errorResponse = {
       response: {

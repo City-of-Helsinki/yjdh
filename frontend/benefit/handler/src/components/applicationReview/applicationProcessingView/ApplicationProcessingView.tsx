@@ -8,9 +8,7 @@ import { TextArea, TextInput } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import {
-  $RadioButton,
-} from 'shared/components/forms/fields/Fields.sc';
+import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import {
   $Grid,
   $GridCell,
@@ -35,6 +33,11 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
     React.useContext(AppContext);
 
   const isNewAhjoMode = useDetermineAhjoMode();
+
+  const handledApplicationRef = React.useRef(handledApplication);
+  React.useEffect(() => {
+    handledApplicationRef.current = handledApplication;
+  }, [handledApplication]);
 
   const needsIndustryCode =
     handledApplication?.grantedAsDeMinimisAid === true &&
@@ -231,7 +234,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 </$GridCell>
               )}
             </$Grid>
-            <$Grid style={{ marginTop: theme.spacing.xl}}>
+            <$Grid style={{ marginTop: theme.spacing.xl }}>
               <$GridCell $colSpan={12}>
                 <$ViewField
                   isBold
@@ -257,7 +260,9 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   id="deminimisNo"
                   name="deminimisRadio"
                   value="no"
-                  label={t(`${translationsBase}.actions.grantedAsDeminimisAidNo`)}
+                  label={t(
+                    `${translationsBase}.actions.grantedAsDeminimisAidNo`
+                  )}
                   checked={handledApplication.grantedAsDeMinimisAid === false}
                   onChange={(value: boolean) => {
                     if (value) toggleGrantedAsDeMinimisAid(false);
@@ -275,17 +280,25 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                     )}
                     value={
                       handledApplication.industryDescription
-                        ? `${handledApplication.industryCode ?? ''} ${handledApplication.industryDescription}`
-                        : (handledApplication.industryCode ?? '')
+                        ? `${handledApplication.industryCode ?? ''} ${
+                            handledApplication.industryDescription
+                          }`
+                        : handledApplication.industryCode ?? ''
                     }
                     // We allow users to input both code and description in the same field to make it easier to
                     // understand which code they are selecting.
                     // We then split the input back to code and description when saving.
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const raw = e.target.value;
-                      const spaceIndex = raw.indexOf(' ');
-                      const code = spaceIndex === -1 ? raw : raw.slice(0, spaceIndex);
-                      const description = spaceIndex === -1 ? '' : raw.slice(spaceIndex + 1);
+                      const trimmed = e.target.value.trim();
+                      const spaceIndex = trimmed.search(/\s/);
+                      const code =
+                        spaceIndex === -1
+                          ? trimmed
+                          : trimmed.slice(0, spaceIndex).trim();
+                      const description =
+                        spaceIndex === -1
+                          ? ''
+                          : trimmed.slice(spaceIndex).trim();
                       setHandledApplication({
                         ...handledApplication,
                         industryCode: code,
@@ -294,7 +307,7 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                     }}
                     onBlur={() =>
                       setHandledApplication({
-                        ...handledApplication,
+                        ...handledApplicationRef.current,
                         industryCodeTouched: true,
                       })
                     }
