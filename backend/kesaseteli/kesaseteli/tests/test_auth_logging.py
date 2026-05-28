@@ -33,8 +33,9 @@ def test_log_login_event_creates_entry(user):
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.LOGIN
-    assert entry.context["user_id"] == str(user.pk)
+    assert entry.context["operation"] == AuthEventType.LOGIN
+    assert entry.context["actor"]["user_id"] == str(user.pk)
+    assert entry.context["target"]["user_id"] == str(user.pk)
     assert entry.context["ip_address"] == "1.2.3.4"
     assert entry.context["auth_backend"] == "django.contrib.auth.backends.ModelBackend"
     assert entry.level == logging.INFO
@@ -60,10 +61,11 @@ def test_log_mandate_query_creates_entry(user):
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.MANDATE_QUERY
-    assert entry.context["user_id"] == str(user.pk)
-    assert entry.context["company_identifier"] == "1234567-8"
-    assert entry.context["company_name"] == "Test Oy"
+    assert entry.context["operation"] == AuthEventType.MANDATE_QUERY
+    assert entry.context["actor"]["user_id"] == str(user.pk)
+    assert entry.context["target"]["user_id"] == str(user.pk)
+    assert entry.context["target"]["company_identifier"] == "1234567-8"
+    assert entry.context["target"]["company_name"] == "Test Oy"
     assert entry.context["roles"] == ["NIMKO"]
     assert entry.context["query_complete"] is True
     assert entry.context["success"] is True
@@ -86,7 +88,9 @@ def test_log_mandate_query_failure_creates_entry(user):
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.MANDATE_QUERY
+    assert entry.context["operation"] == AuthEventType.MANDATE_QUERY
+    assert entry.context["actor"]["user_id"] == str(user.pk)
+    assert entry.context["target"]["user_id"] == str(user.pk)
     assert entry.context["success"] is False
     assert entry.context["request_id"] == "req-123"
     assert "Connection refused" in entry.context["error"]
@@ -103,7 +107,9 @@ def test_user_logged_in_signal_creates_login_entry(user):
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.LOGIN
+    assert entry.context["operation"] == AuthEventType.LOGIN
+    assert entry.context["actor"]["user_id"] == str(user.pk)
+    assert entry.context["target"]["user_id"] == str(user.pk)
     assert entry.context["ip_address"] == "10.0.0.1"
 
 
@@ -132,9 +138,9 @@ def test_log_vtj_query_creates_entry():
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
-    assert entry.context["end_user"] == "handler-uuid-123"
-    assert entry.context["social_security_number"] == "010101-123N"
+    assert entry.context["operation"] == AuthEventType.VTJ_QUERY
+    assert entry.context["actor"]["user_id"] == "handler-uuid-123"
+    assert entry.context["target"]["social_security_number"] == "010101-123N"
     assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is True
     assert entry.context["request_id"] == "req-vtj-123"
@@ -155,9 +161,9 @@ def test_log_vtj_query_failure_creates_entry():
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
-    assert entry.context["end_user"] == "handler-uuid-123"
-    assert entry.context["social_security_number"] == "010101-123N"
+    assert entry.context["operation"] == AuthEventType.VTJ_QUERY
+    assert entry.context["actor"]["user_id"] == "handler-uuid-123"
+    assert entry.context["target"]["social_security_number"] == "010101-123N"
     assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is False
     assert entry.context["request_id"] == "req-vtj-123-failed"
@@ -224,7 +230,7 @@ def test_vtj_queried_empty_end_user_defaults_to_system():
         request_id="req-vtj-123",
     )
     entry = ResilientLogEntry.objects.last()
-    assert entry.context["end_user"] == "system"
+    assert entry.context["actor"]["user_id"] == "system"
 
 
 @override_settings(ENABLE_AUTH_LOGGING=True)
@@ -237,4 +243,4 @@ def test_vtj_query_failed_empty_end_user_defaults_to_system():
         request_id="req-vtj-123-failed",
     )
     entry = ResilientLogEntry.objects.last()
-    assert entry.context["end_user"] == "system"
+    assert entry.context["actor"]["user_id"] == "system"

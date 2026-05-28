@@ -47,8 +47,8 @@ The retained records must make the following facts recoverable after the fact:
 
 | Requirement | Logged field |
 |---|---|
-| Who acted (representative / *puolesta-asioija*) | `user_id` |
-| On whose behalf (principal company) | `company_identifier` (Y-tunnus) |
+| Who acted (representative / *puolesta-asioija*) | `actor.user_id` |
+| On whose behalf (principal company) | `target.company_identifier` (Y-tunnus), `target.company_name` |
 | When the query was made | Timestamp recorded automatically by `django-resilient-logger` |
 | When the response was received | Timestamp recorded automatically by `django-resilient-logger` |
 | What roles / authorizations were returned | `roles`, `query_complete` |
@@ -67,14 +67,14 @@ queries made to the Population Information System. Logs must be retained for
 
 | Requirement | Logged field |
 |---|---|
-| Who made the query (person level) | `end_user` |
-| What data was queried | `social_security_number`, `query_type` |
+| Who made the query (person level) | `actor.user_id` |
+| What data was queried | `target.social_security_number`, `query_type` |
 | When the query was made | Timestamp recorded automatically by `django-resilient-logger` |
 | Whether the query succeeded | `success` |
 
 Reference: https://dvv.fi/vtjkysely-rajapinta
 
-## Log entry structure
+## Log entry structure (context)
 
 ### LOGIN
 
@@ -82,8 +82,13 @@ Written on every successful Suomi.fi SAML2 authentication.
 
 ```json
 {
-  "event_type": "LOGIN",
-  "user_id": "<Django user PK>",
+  "operation": "LOGIN",
+  "actor": {
+    "user_id": "<Django user PK>"
+  },
+  "target": {
+    "user_id": "<Django user PK>"
+  },
   "auth_backend": "shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend",
   "ip_address": "1.2.3.4"
 }
@@ -95,8 +100,13 @@ Written on every manual or SAML Single Logout (SLO).
 
 ```json
 {
-  "event_type": "LOGOUT",
-  "user_id": "<Django user PK>",
+  "operation": "LOGOUT",
+  "actor": {
+    "user_id": "<Django user PK>"
+  },
+  "target": {
+    "user_id": "<Django user PK>"
+  },
   "ip_address": "1.2.3.4"
 }
 ```
@@ -107,13 +117,19 @@ Written after a successful Suomi.fi Valtuudet API call.
 
 ```json
 {
-  "event_type": "MANDATE_QUERY",
-  "user_id": "<Django user PK>",
-  "company_identifier": "1234567-8",
-  "company_name": "Example Oy",
+  "operation": "MANDATE_QUERY",
+  "actor": {
+    "user_id": "<Django user PK>"
+  },
+  "target": {
+    "user_id": "<Django user PK>",
+    "company_identifier": "1234567-8",
+    "company_name": "Example Oy"
+  },
   "roles": ["NIMKO"],
   "query_complete": true,
-  "success": true
+  "success": true,
+  "request_id": "req-123"
 }
 ```
 
@@ -123,10 +139,16 @@ Written when the Suomi.fi Valtuudet API call raises a `RequestException`.
 
 ```json
 {
-  "event_type": "MANDATE_QUERY",
-  "user_id": "<Django user PK>",
+  "operation": "MANDATE_QUERY",
+  "actor": {
+    "user_id": "<Django user PK>"
+  },
+  "target": {
+    "user_id": "<Django user PK>"
+  },
   "success": false,
-  "error": "Connection refused"
+  "error": "Connection refused",
+  "request_id": "req-123"
 }
 ```
 
@@ -136,11 +158,16 @@ Written after a successful VTJ personal information query.
 
 ```json
 {
-  "event_type": "VTJ_QUERY",
-  "end_user": "<handler UUID or user PK>",
-  "social_security_number": "010101-123N",
+  "operation": "VTJ_QUERY",
+  "actor": {
+    "user_id": "<handler UUID or 'system'>"
+  },
+  "target": {
+    "social_security_number": "010101-123N"
+  },
   "query_type": "PERUSSANOMA 1",
-  "success": true
+  "success": true,
+  "request_id": "req-vtj-123"
 }
 ```
 
@@ -150,12 +177,17 @@ Written when the VTJ API call raises a `RequestException`.
 
 ```json
 {
-  "event_type": "VTJ_QUERY",
-  "end_user": "<handler UUID or user PK>",
-  "social_security_number": "010101-123N",
+  "operation": "VTJ_QUERY",
+  "actor": {
+    "user_id": "<handler UUID or 'system'>"
+  },
+  "target": {
+    "social_security_number": "010101-123N"
+  },
   "query_type": "PERUSSANOMA 1",
   "success": false,
-  "error": "Connection refused"
+  "error": "Connection refused",
+  "request_id": "req-vtj-123"
 }
 ```
 

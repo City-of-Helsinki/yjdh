@@ -42,8 +42,8 @@ def test_get_or_create_company_logs_mandate_query(api_client, requests_mock):
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.MANDATE_QUERY
-    assert entry.context["company_identifier"] == "1234567-8"
+    assert entry.context["operation"] == AuthEventType.MANDATE_QUERY
+    assert entry.context["target"]["company_identifier"] == "1234567-8"
     assert entry.context["success"] is True
 
 
@@ -70,6 +70,6 @@ def test_get_or_create_company_logs_mandate_query_failure_on_api_error(
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.MANDATE_QUERY
+    assert entry.context["operation"] == AuthEventType.MANDATE_QUERY
     assert entry.context["success"] is False
     assert "Connection refused" in entry.context["error"]

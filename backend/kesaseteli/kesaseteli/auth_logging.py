@@ -105,9 +105,10 @@ SYSTEM_USER = "system"
 class AuthEventType(StrEnum):
     """Stable string identifiers for auth event types stored in log entry context.
 
-    These values are written to the ``event_type`` field of every
-    ``ResilientLogEntry`` produced by this module and will appear verbatim in
-    Elasticsearch. Do not rename existing members without a data migration.
+    These values are written to the ``operation`` field of every
+    ``ResilientLogEntry`` context produced by this module and will appear verbatim in
+    Elasticsearch as ``audit_event.operation``. Do not rename existing members
+    without a data migration.
     """
 
     LOGIN = "LOGIN"
@@ -169,12 +170,14 @@ def log_login_event(request, user):
             user (e.g. ``shared.suomi_fi.auth.SuomiFiSAML2AuthenticationBackend``
             for Suomi.fi SAML2 logins).
     """
-    ResilientLogSource.create(
+    user_id = str(user.pk)
+    ResilientLogSource.create_structured(
         level=logging.INFO,
         message=AuthEventMessage.LOGIN,
-        context={
-            "event_type": AuthEventType.LOGIN,
-            "user_id": str(user.pk),
+        operation=AuthEventType.LOGIN,
+        actor={"user_id": user_id},
+        target={"user_id": user_id},
+        extra={
             "auth_backend": getattr(user, "backend", "unknown"),
             "ip_address": request.META.get("REMOTE_ADDR"),
         },
@@ -191,12 +194,14 @@ def log_logout_event(request, user):
         request: The current Django ``HttpRequest``.
         user: The Django ``User`` instance that is logging out.
     """
-    ResilientLogSource.create(
+    user_id = str(user.pk) if user else "unknown"
+    ResilientLogSource.create_structured(
         level=logging.INFO,
         message=AuthEventMessage.LOGOUT,
-        context={
-            "event_type": AuthEventType.LOGOUT,
-            "user_id": str(user.pk) if user else "unknown",
+        operation=AuthEventType.LOGOUT,
+        actor={"user_id": user_id},
+        target={"user_id": user_id},
+        extra={
             "ip_address": request.META.get("REMOTE_ADDR"),
         },
     )
@@ -220,18 +225,23 @@ def on_suomifi_mandate_queried(
         request_id: The unique ID generated for the API query.
         organization_roles: The dict returned by the API containing roles.
     """
-    user = getattr(request, "user", None)
     if not request_id:
         raise ValueError("Missing request_id in suomifi_mandate_queried signal.")
 
-    ResilientLogSource.create(
+    user = getattr(request, "user", None)
+    user_id = str(user.pk) if user and user.is_authenticated else None
+
+    ResilientLogSource.create_structured(
         level=logging.INFO,
         message=AuthEventMessage.MANDATE_QUERY,
-        context={
-            "event_type": AuthEventType.MANDATE_QUERY,
-            "user_id": str(user.pk) if user and user.is_authenticated else None,
-            "company_identifier": organization_roles.get("identifier"),
+        actor={"user_id": user_id},
+        operation=AuthEventType.MANDATE_QUERY,
+        target={
+            "user_id": user_id,
             "company_name": organization_roles.get("name"),
+            "company_identifier": organization_roles.get("identifier"),
+        },
+        extra={
             "request_id": request_id,
             "roles": organization_roles.get("roles", []),
             "query_complete": organization_roles.get("complete"),
@@ -255,13 +265,14 @@ def on_suomifi_mandate_query_failed(sender, request, request_id, error, **kwargs
         error: The exception that caused the failure.
     """
     user = getattr(request, "user", None)
-
-    ResilientLogSource.create(
+    user_id = str(user.pk) if user and user.is_authenticated else None
+    ResilientLogSource.create_structured(
         level=logging.WARNING,
+        operation=AuthEventType.MANDATE_QUERY,
         message=AuthEventMessage.MANDATE_QUERY_FAILED,
-        context={
-            "event_type": AuthEventType.MANDATE_QUERY,
-            "user_id": str(user.pk) if user and user.is_authenticated else None,
+        actor={"user_id": user_id},
+        target={"user_id": user_id},
+        extra={
             "request_id": request_id,
             "success": False,
             "error": str(error),
@@ -284,13 +295,13 @@ def on_vtj_queried(sender, end_user, social_security_number, request_id=None, **
         social_security_number: The Finnish personal identity code queried.
         request_id: The unique ID generated for the query.
     """
-    ResilientLogSource.create(
+    ResilientLogSource.create_structured(
         level=logging.INFO,
         message=AuthEventMessage.VTJ_QUERY,
-        context={
-            "event_type": AuthEventType.VTJ_QUERY,
-            "end_user": end_user or SYSTEM_USER,
-            "social_security_number": social_security_number,
+        operation=AuthEventType.VTJ_QUERY,
+        actor={"user_id": str(end_user or SYSTEM_USER)},
+        target={"social_security_number": social_security_number},
+        extra={
             "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": True,
             "request_id": request_id,
@@ -316,13 +327,13 @@ def on_vtj_query_failed(
         error: The exception that caused the failure.
         request_id: The unique ID generated for the query.
     """
-    ResilientLogSource.create(
+    ResilientLogSource.create_structured(
         level=logging.WARNING,
         message=AuthEventMessage.VTJ_QUERY_FAILED,
-        context={
-            "event_type": AuthEventType.VTJ_QUERY,
-            "end_user": end_user or SYSTEM_USER,
-            "social_security_number": social_security_number,
+        operation=AuthEventType.VTJ_QUERY,
+        actor={"user_id": str(end_user or SYSTEM_USER)},
+        target={"social_security_number": social_security_number},
+        extra={
             "query_type": VtjQueryType.PERSONAL_DATA_QUERY,
             "success": False,
             "error": str(error),
