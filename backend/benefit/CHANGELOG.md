@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.19.0...benefit-backend-v2.19.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **benefit:** Query prefetching for HandlerApplicationAlterationViewSet ([7d95bd6](https://github.com/City-of-Helsinki/yjdh/commit/7d95bd6fd3760922ba4e75dda35cd3992597ced8))
+
 ## [2.19.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.18.0...benefit-backend-v2.19.0) (2026-05-27)
 
 
