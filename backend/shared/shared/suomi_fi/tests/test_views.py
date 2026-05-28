@@ -508,8 +508,8 @@ class TestSuomiFiViewsLogoutHARIntegration:
 
         saml_cookie = client.cookies.get(settings.SAML_SESSION_COOKIE_NAME)
         assert saml_cookie is not None, "SamlSessionMiddleware did not set cookie"
-        SessionStore = import_string(settings.SESSION_ENGINE)
-        saml_session = SessionStore(saml_cookie.value)
+        session_store = import_string(settings.SESSION_ENGINE).SessionStore
+        saml_session = session_store(saml_cookie.value)
         assert saml_session["saml2_logout_next_path"] == self.NEXT_URL_HAR
 
         # Step 2: IdP sends back real SAMLResponse and echoes the opaque RelayState.
@@ -565,8 +565,8 @@ class TestSuomiFiViewsLogoutHARIntegration:
         # Session does not have next_path.
         saml_cookie = client.cookies.get(settings.SAML_SESSION_COOKIE_NAME)
         if saml_cookie:
-            SessionStore = import_string(settings.SESSION_ENGINE)
-            saml_session = SessionStore(saml_cookie.value)
+            session_store = import_string(settings.SESSION_ENGINE).SessionStore
+            saml_session = session_store(saml_cookie.value)
             assert "saml2_logout_next_path" not in saml_session
 
         # Step 2: IdP sends back SAMLResponse.
