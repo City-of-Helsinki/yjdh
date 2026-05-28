@@ -1,5 +1,36 @@
 # Changelog
 
+## [4.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.0.0...benefit-applicant-v4.1.0) (2026-05-28)
+
+
+### Features
+
+* Add OpenInNewTabLink component ([ab1c5e1](https://github.com/City-of-Helsinki/yjdh/commit/ab1c5e12f5574acc74d253fcdf9234ca6b6c03ef))
+* **applicant:** Add unit tests for benefit applicant UI components ([65a02c1](https://github.com/City-of-Helsinki/yjdh/commit/65a02c14b76d9448da0172869762e678bf28fcc6))
+* **benefit,applicant:** Upgrade hds-react to 5.0.0 ([9be4197](https://github.com/City-of-Helsinki/yjdh/commit/9be41976231223e3958d524ba7c41bb819509cbb))
+* **benefit:** Applicant can send the payslips ([0418a52](https://github.com/City-of-Helsinki/yjdh/commit/0418a52c5e0e571046567e80dc5513d22c9d3130))
+* **benefit:** Applications with requested payslips ([4dc99a5](https://github.com/City-of-Helsinki/yjdh/commit/4dc99a5319abc4b96bb98530e83773cc87dbfaac))
+* **benefit:** Testing and translation changes ([e03ef22](https://github.com/City-of-Helsinki/yjdh/commit/e03ef220c3ee70e863468f00e9dad1a6cb7ceed8))
+* **benefit:** Tests for showing payslip request ([67d33b3](https://github.com/City-of-Helsinki/yjdh/commit/67d33b36eb993f62069eded4d0fab9d6fc84e22c))
+* **benefit:** Translations for new texts ([31b6c38](https://github.com/City-of-Helsinki/yjdh/commit/31b6c38b7f28f20900aad809a80702cc234e5764))
+* **shared:** Upgrade hds-react to 5.0.0 in shared components ([9f11b16](https://github.com/City-of-Helsinki/yjdh/commit/9f11b16c40f866e07c2c1a485db4c8dd5f2f2ff6))
+
+
+### Bug Fixes
+
+* **benefit:** Apprenticeship cannot be changed ([ff5391b](https://github.com/City-of-Helsinki/yjdh/commit/ff5391bbf6092ef46ac750584f0777698daf9bc6))
+* **benefit:** Fix accordion component styling and size prop ([5354f46](https://github.com/City-of-Helsinki/yjdh/commit/5354f46eedb0ce31e3f998f08635f9e2cb4475d8))
+* **benefit:** Fixes from copilot ([8e066ec](https://github.com/City-of-Helsinki/yjdh/commit/8e066ecf4011ac8c721b24b2de9f65bd905b53fe))
+* **benefit:** Fixes from sentry ([74b6c46](https://github.com/City-of-Helsinki/yjdh/commit/74b6c4677807b3a45ad9faad7bf933e6e54e2481))
+* **benefit:** Fixes to button and ordering ([c5de29c](https://github.com/City-of-Helsinki/yjdh/commit/c5de29cccb2e87963c5276bd5a541cccdb68125a))
+* **benefit:** Set APPLICATION_START_DATE to start of current date ([7007471](https://github.com/City-of-Helsinki/yjdh/commit/7007471c446ddcd602c4577b43336da0308636ee))
+* **shared-modal:** Use Extract for dialog-compatible variants ([7e1855d](https://github.com/City-of-Helsinki/yjdh/commit/7e1855d35298de8d8a61eaf3e38890b20860c40c))
+
+
+### Dependencies
+
+* Bump uuid from 8.3.2 to 14.0.0 in /frontend ([#4020](https://github.com/City-of-Helsinki/yjdh/issues/4020)) ([a7162b2](https://github.com/City-of-Helsinki/yjdh/commit/a7162b2e04aa8f2d93d6bf26b1c5613b5048a127))
+
 ## [4.0.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v3.20.0...benefit-applicant-v4.0.0) (2026-04-22)
 
 
