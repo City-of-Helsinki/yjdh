@@ -1,4 +1,7 @@
-"""Contract tests for Kesäseteli OpenAPI request and response serializers."""
+"""Tests that Kesäseteli API endpoints match their documented request and response formats.
+
+Those formats are defined by serializers in ``applications.api.v1.serializers``.
+"""
 
 import pytest
 from django.http import HttpResponse
@@ -6,13 +9,16 @@ from django.test import Client
 from rest_framework import serializers, status
 from rest_framework.reverse import reverse
 
-from applications.api.v1.openapi_serializers import (
-    YouthApplicationCreateWithoutSsnRequestSerializer,
-    YouthApplicationFetchEmployeeDataRequestSerializer,
-    YouthApplicationFetchEmployeeDataResponseSerializer,
-    YouthApplicationIdResponseSerializer,
+from applications.api.v1.serializers import (
+    YouthApplicationCreateWithoutSsnInputSerializer,
+    YouthApplicationFetchEmployeeDataInputSerializer,
+    YouthApplicationFetchEmployeeDataOutputSerializer,
+    YouthApplicationOutputSerializer,
 )
-from applications.target_groups import NinthGraderTargetGroup
+from applications.models import YouthApplication
+from applications.tests.data.create_without_ssn_examples import (
+    CREATE_WITHOUT_SSN_EXAMPLES,
+)
 from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_restricted_content,
@@ -23,19 +29,6 @@ from common.tests.factories import (
     EmployerSummerVoucherFactory,
 )
 from common.urls import get_create_without_ssn_url
-
-CREATE_WITHOUT_SSN_EXAMPLES: dict = {
-    "first_name": "Testi",
-    "last_name": "Testaaja",
-    "email": "test@example.org",
-    "school": "Testikoulu",
-    "phone_number": "+358-50-1234567",
-    "postcode": "00123",
-    "language": "sv",
-    "non_vtj_birthdate": "2012-12-31",
-    "additional_info_description": "Testilisätiedot",
-    "target_group": NinthGraderTargetGroup.identifier,
-}
 
 FETCH_EMPLOYEE_DATA_EXAMPLES: dict = {
     "employer_summer_voucher_id": "01234567-89ab-cdef-0123-456789abcdef",
@@ -81,11 +74,11 @@ def build_required_payload(
 def test_create_without_ssn_contract(staff_client: Client):
     """The create-without-SSN endpoint must accept and return the declared shapes."""
     payload: dict = build_required_payload(
-        YouthApplicationCreateWithoutSsnRequestSerializer,
+        YouthApplicationCreateWithoutSsnInputSerializer,
         CREATE_WITHOUT_SSN_EXAMPLES,
     )
 
-    request_serializer = YouthApplicationCreateWithoutSsnRequestSerializer(data=payload)
+    request_serializer = YouthApplicationCreateWithoutSsnInputSerializer(data=payload)
     assert request_serializer.is_valid(), request_serializer.errors
 
     response: HttpResponse = staff_client.post(
@@ -95,8 +88,9 @@ def test_create_without_ssn_contract(staff_client: Client):
     )
 
     assert response.status_code == status.HTTP_201_CREATED
-    response_serializer = YouthApplicationIdResponseSerializer(data=response.json())
+    response_serializer = YouthApplicationOutputSerializer(data=response.json())
     assert response_serializer.is_valid(), response_serializer.errors
+    assert YouthApplication.objects.filter(id=response.json()["id"]).exists()
 
 
 @pytest.mark.django_db
@@ -123,14 +117,12 @@ def test_fetch_employee_data_contract(user_client: Client):
     )
 
     payload: dict = build_required_payload(
-        YouthApplicationFetchEmployeeDataRequestSerializer,
+        YouthApplicationFetchEmployeeDataInputSerializer,
         FETCH_EMPLOYEE_DATA_EXAMPLES,
     )
     payload["employer_summer_voucher_id"] = str(employer_summer_voucher.id)
 
-    request_serializer = YouthApplicationFetchEmployeeDataRequestSerializer(
-        data=payload
-    )
+    request_serializer = YouthApplicationFetchEmployeeDataInputSerializer(data=payload)
     assert request_serializer.is_valid(), request_serializer.errors
 
     response: HttpResponse = user_client.post(
@@ -140,10 +132,12 @@ def test_fetch_employee_data_contract(user_client: Client):
     )
 
     assert response.status_code == status.HTTP_200_OK
-    response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
+    response_serializer = YouthApplicationFetchEmployeeDataOutputSerializer(
         data=response.json()
     )
     assert response_serializer.is_valid(), response_serializer.errors
+    assert response.json()["employee_name"] == "John Doe"
+    assert response.json()["employee_postcode"] == "00100"
 
 
 def test_fetch_employee_data_response_accepts_null_employee_home_city():
@@ -156,7 +150,7 @@ def test_fetch_employee_data_response_accepts_null_employee_home_city():
     Further context in PR #4089:
     https://github.com/City-of-Helsinki/yjdh/pull/4089
     """
-    serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
+    serializer = YouthApplicationFetchEmployeeDataOutputSerializer(
         data={
             "employer_summer_voucher_id": FETCH_EMPLOYEE_DATA_EXAMPLES[
                 "employer_summer_voucher_id"
@@ -218,8 +212,8 @@ def test_fetch_employee_data_contract_restricted_vtj_home_municipality(
 
     assert response.status_code == status.HTTP_200_OK
     response_body = response.json()
-    assert response_body["employee_home_city"] in (None, "")
-    response_serializer = YouthApplicationFetchEmployeeDataResponseSerializer(
+    assert response_body["employee_home_city"] is None
+    response_serializer = YouthApplicationFetchEmployeeDataOutputSerializer(
         data=response_body
     )
     assert response_serializer.is_valid(), response_serializer.errors

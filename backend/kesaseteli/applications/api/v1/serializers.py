@@ -14,6 +14,7 @@ from rest_framework import serializers
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
+    APPLICATION_LANGUAGE_CHOICES,
     AttachmentType,
     EmployerApplicationStatus,
     get_supported_languages,
@@ -1047,6 +1048,99 @@ class YouthApplicationHandlingSerializer(serializers.ModelSerializer):
         fields = [
             "encrypted_handler_vtj_json",
         ]
+
+
+# --- Public API wire shapes (OpenAPI + contract tests) ---
+# Input/Output suffixes mark HTTP request vs response contracts (not model CRUD).
+
+
+class YouthApplicationCreateWithoutSsnInputSerializer(serializers.Serializer):
+    """Request body (input) for creating a youth application without SSN."""
+
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
+    school = serializers.CharField()
+    phone_number = serializers.CharField()
+    postcode = serializers.CharField()
+    language = serializers.ChoiceField(choices=APPLICATION_LANGUAGE_CHOICES)
+    non_vtj_birthdate = serializers.DateField()
+    non_vtj_home_municipality = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
+    additional_info_description = serializers.CharField()
+    target_group = serializers.ChoiceField(choices=get_target_group_choices())
+
+
+class YouthApplicationFetchEmployeeDataInputSerializer(serializers.Serializer):
+    """Request body (input) for fetching employee data for a summer voucher."""
+
+    employer_summer_voucher_id = serializers.UUIDField()
+    employee_name = serializers.CharField()
+    summer_voucher_serial_number = serializers.CharField()
+
+
+class YouthApplicationFetchEmployeeDataOutputSerializer(serializers.Serializer):
+    """Response body (output) for employee data lookup."""
+
+    employer_summer_voucher_id = serializers.UUIDField()
+    employee_name = serializers.CharField()
+    employee_birthdate = serializers.DateField()
+    employee_phone_number = serializers.CharField(allow_blank=True)
+    employee_home_city = serializers.CharField(allow_blank=True, allow_null=True)
+    employee_postcode = serializers.CharField(allow_blank=True)
+    employee_school = serializers.CharField(allow_blank=True)
+
+    @classmethod
+    def from_youth_application(
+        cls,
+        employer_summer_voucher_id,
+        youth_application: YouthApplication,
+    ):
+        """Build serialized employee lookup response from a matched application.
+
+        Maps model fields to employer-facing API names.
+
+        NOTE: ``is_valid(raise_exception=True)`` validates the mapped response
+        against the public contract (catches mapping bugs), not client input.
+        Failures on this path indicate programming errors after a successful
+        lookup, not invalid request data.
+
+        Args:
+            employer_summer_voucher_id: Employer summer voucher identifier.
+            youth_application: Matched youth application.
+
+        Returns:
+            Serializer instance with employee lookup fields populated.
+        """
+        serializer = cls(
+            data={
+                "employer_summer_voucher_id": str(employer_summer_voucher_id),
+                "employee_name": youth_application.name,
+                "employee_birthdate": youth_application.birthdate,
+                "employee_phone_number": youth_application.phone_number,
+                "employee_home_city": youth_application.home_municipality,
+                "employee_postcode": youth_application.postcode,
+                "employee_school": youth_application.school,
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        return serializer
+
+
+class YouthApplicationOutputSerializer(serializers.Serializer):
+    """Response body (output) with the youth application ``id`` (HTTP 201)."""
+
+    id = serializers.UUIDField()
+
+
+class EmployerSummerVoucherAttachmentUploadInputSerializer(serializers.Serializer):
+    """Request body (input) for uploading an attachment to an employer voucher."""
+
+    attachment_file = serializers.FileField()
+    attachment_type = serializers.ChoiceField(choices=AttachmentType.choices)
 
 
 class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
