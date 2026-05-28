@@ -146,7 +146,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                     .filter(**{self.lookup_field: lookup_value})
                     .first()
                 )
-            except ValidationError:
+            except (ValidationError, ValueError):
                 # Converting the lookup value to the type of lookup field failed
                 return None
 
