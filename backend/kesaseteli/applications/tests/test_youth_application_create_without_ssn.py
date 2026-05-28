@@ -16,6 +16,9 @@ from applications.enums import (
 )
 from applications.models import YouthApplication
 from applications.target_groups import NinthGraderTargetGroup
+from applications.tests.data.create_without_ssn_examples import (
+    CREATE_WITHOUT_SSN_EXAMPLES,
+)
 from applications.tests.data.mock_vtj import mock_vtj_person_id_query_not_found_content
 from common.urls import (
     get_create_without_ssn_url,
@@ -28,20 +31,6 @@ from shared.common.tests.utils import utc_datetime
 
 FROZEN_TEST_TIME = utc_datetime(2023, 12, 31, 23, 59, 59)
 NON_TEST_TIME = utc_datetime(2022, 1, 1)
-
-VALID_TEST_DATA = {
-    "first_name": "Testi",
-    "last_name": "Testaaja",
-    "email": "test@example.org",
-    "school": "Testikoulu",
-    "phone_number": "+358-50-1234567",
-    "postcode": "00123",
-    "language": "sv",
-    "non_vtj_birthdate": "2012-12-31",
-    "non_vtj_home_municipality": "Kirkkonummi",
-    "additional_info_description": "Testilisätiedot",
-    "target_group": NinthGraderTargetGroup.identifier,
-}
 
 EXPECTED_PROCESSING_EMAIL_BODY_TEMPLATE = """
 Seuraava henkilö on pyytänyt Kesäseteliä:
@@ -82,7 +71,9 @@ def test_input_data_partitioning():
     assert len(REQUIRED_FIELDS) == len(set(REQUIRED_FIELDS))
     assert len(OPTIONAL_FIELDS) == len(set(OPTIONAL_FIELDS))
     assert set(REQUIRED_FIELDS).isdisjoint(set(OPTIONAL_FIELDS))
-    assert sorted(VALID_TEST_DATA.keys()) == sorted(REQUIRED_FIELDS + OPTIONAL_FIELDS)
+    assert sorted(CREATE_WITHOUT_SSN_EXAMPLES.keys()) == sorted(
+        REQUIRED_FIELDS + OPTIONAL_FIELDS
+    )
 
 
 @pytest.mark.django_db
@@ -91,7 +82,7 @@ def test_valid_post_returns_only_created_youth_application_id(staff_client):
 
     response = staff_client.post(
         get_create_without_ssn_url(),
-        data=VALID_TEST_DATA,
+        data=CREATE_WITHOUT_SSN_EXAMPLES,
         content_type="application/json",
     )
 
@@ -107,7 +98,7 @@ def test_valid_post_returns_only_created_youth_application_id(staff_client):
 def test_valid_post(staff_client):
     response = staff_client.post(
         get_create_without_ssn_url(),
-        data=VALID_TEST_DATA,
+        data=CREATE_WITHOUT_SSN_EXAMPLES,
         content_type="application/json",
     )
 
@@ -243,7 +234,7 @@ def test_valid_post_timestamps(staff_client, now):
     with freeze_time(now):
         response = staff_client.post(
             get_create_without_ssn_url(),
-            data=VALID_TEST_DATA,
+            data=CREATE_WITHOUT_SSN_EXAMPLES,
             content_type="application/json",
         )
 
@@ -262,7 +253,7 @@ def test_valid_post_timestamps(staff_client, now):
 def test_valid_post_with_optional_field_missing_uses_field_default(
     staff_client, field_to_remove
 ):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     del data[field_to_remove]
 
     response = staff_client.post(
@@ -285,7 +276,7 @@ def test_valid_post_with_optional_field_missing_uses_field_default(
 def test_valid_post_with_optional_field_empty_uses_field_default(
     staff_client, field_to_empty, empty_value
 ):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data[field_to_empty] = empty_value
 
     response = staff_client.post(
@@ -307,7 +298,7 @@ def test_valid_post_with_optional_field_empty_uses_field_default(
 def test_post_with_required_field_missing_returns_bad_request(
     staff_client, field_to_remove
 ):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     del data[field_to_remove]
 
     response = staff_client.post(
@@ -326,7 +317,7 @@ def test_post_with_required_field_missing_returns_bad_request(
 def test_post_with_required_field_empty_returns_bad_request(
     staff_client, field_to_empty, empty_value
 ):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data[field_to_empty] = empty_value
 
     response = staff_client.post(
@@ -360,7 +351,7 @@ def test_post_with_required_field_empty_returns_bad_request(
 def test_post_with_invalid_non_vtj_birthdate_returns_bad_request(
     staff_client, invalid_value
 ):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data["non_vtj_birthdate"] = invalid_value
 
     response = staff_client.post(
@@ -377,7 +368,7 @@ def test_post_with_invalid_non_vtj_birthdate_returns_bad_request(
 def test_valid_post_as_anonymous_redirects_to_adfs_login(client):
     response = client.post(
         get_create_without_ssn_url(),
-        data=VALID_TEST_DATA,
+        data=CREATE_WITHOUT_SSN_EXAMPLES,
         content_type="application/json",
     )
 
@@ -393,7 +384,7 @@ def test_valid_post_as_anonymous_redirects_to_adfs_login(client):
 def test_valid_post_as_non_handler_user_redirects_to_forbidden_page(user_client):
     response = user_client.post(
         get_create_without_ssn_url(),
-        data=VALID_TEST_DATA,
+        data=CREATE_WITHOUT_SSN_EXAMPLES,
         content_type="application/json",
     )
 
@@ -418,7 +409,7 @@ def test_valid_post_sends_finnish_plaintext_only_processing_email(
     staff_client, youth_application_language
 ):
     assert len(mail.outbox) == 0
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data["language"] = youth_application_language
     response = staff_client.post(
         get_create_without_ssn_url(),
@@ -455,7 +446,7 @@ def test_valid_post_rolls_back_transaction_if_email_sending_fails(staff_client):
     ) as send_mail_mock:
         response = staff_client.post(
             get_create_without_ssn_url(),
-            data=VALID_TEST_DATA,
+            data=CREATE_WITHOUT_SSN_EXAMPLES,
             content_type="application/json",
         )
         send_mail_mock.assert_called_once()
@@ -526,7 +517,7 @@ def test_valid_post_rolls_back_transaction_if_email_sending_fails(staff_client):
 def test_post_field_validation_failure(
     staff_client, field, invalid_value, expected_error_codes: List[str]
 ):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data[field] = invalid_value
 
     response = staff_client.post(
@@ -558,7 +549,7 @@ def test_post_field_validation_failure(
     ],
 )
 def test_post_field_max_length_validation_succeeds(staff_client, field, text_length):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data[field] = "x" * text_length
 
     response = staff_client.post(
@@ -594,7 +585,7 @@ def test_post_field_max_length_validation_succeeds(staff_client, field, text_len
     ],
 )
 def test_post_field_max_length_validation_fails(staff_client, field, text_length):
-    data = VALID_TEST_DATA.copy()
+    data = CREATE_WITHOUT_SSN_EXAMPLES.copy()
     data[field] = "x" * text_length
 
     response = staff_client.post(
