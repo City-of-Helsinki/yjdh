@@ -42,9 +42,12 @@ def test_fetch_vtj_json_logs_vtj_query():
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
-    assert entry.context["end_user"] == end_user
-    assert entry.context["social_security_number"] == application.social_security_number
+    assert entry.context["operation"] == AuthEventType.VTJ_QUERY
+    assert entry.context["actor"]["user_id"] == end_user
+    assert (
+        entry.context["target"]["social_security_number"]
+        == application.social_security_number
+    )
     assert entry.context["query_type"] == VtjQueryType.PERSONAL_DATA_QUERY
     assert entry.context["success"] is True
     assert entry.context["request_id"] is not None
@@ -73,9 +76,12 @@ def test_fetch_vtj_json_logs_vtj_query_failure_on_api_error():
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.VTJ_QUERY
-    assert entry.context["end_user"] == end_user
-    assert entry.context["social_security_number"] == application.social_security_number
+    assert entry.context["operation"] == AuthEventType.VTJ_QUERY
+    assert entry.context["actor"]["user_id"] == end_user
+    assert (
+        entry.context["target"]["social_security_number"]
+        == application.social_security_number
+    )
     assert entry.context["success"] is False
     assert entry.context["request_id"] is not None
     assert "Connection refused" in entry.context["error"]
@@ -113,8 +119,8 @@ def test_on_user_logged_in_logs_login():
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.LOGIN
-    assert entry.context["user_id"] == str(user.pk)
+    assert entry.context["operation"] == AuthEventType.LOGIN
+    assert entry.context["actor"]["user_id"] == str(user.pk)
 
 
 @override_settings(ENABLE_AUTH_LOGGING=True)
@@ -126,8 +132,8 @@ def test_on_user_logged_out_logs_logout():
 
     entry = ResilientLogEntry.objects.last()
     assert entry is not None
-    assert entry.context["event_type"] == AuthEventType.LOGOUT
-    assert entry.context["user_id"] == str(user.pk)
+    assert entry.context["operation"] == AuthEventType.LOGOUT
+    assert entry.context["actor"]["user_id"] == str(user.pk)
 
 
 @override_settings(
