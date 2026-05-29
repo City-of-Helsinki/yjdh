@@ -109,7 +109,9 @@ test('Fill form and submit', async (t: TestController) => {
    * Click through all applicant terms.
    * Assume terms are loaded from fixture default_terms.json using LOAD_DEFAULT_TERMS=1
    */
-  await t.click(Selector('[name="application_consent_0"]'));
+  const firstConsent = Selector('[name="application_consent_0"]');
+  await t.expect(firstConsent.exists).ok({ timeout: 10000 });
+  await t.click(firstConsent);
   await t.click(Selector('[name="application_consent_1"]'));
   await t.click(Selector('[name="application_consent_2"]'));
   await t.click(Selector('[name="application_consent_3"]'));
