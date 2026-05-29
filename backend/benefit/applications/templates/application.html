@@ -40,6 +40,16 @@
                     <div class="value">{{ application.company_bank_account_number | iban}}</div>
                 </div>
 
+                <div class="row">
+                    <div class="label">{{ _("Number of employees before the employed") }}</div>
+                    <div class="value">{{ application.company_number_of_employees }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="label">{{ _("Description of employer's business activities") }}</div>
+                    <div class="value">{{ application.company_business_brief|linebreaksbr }}</div>
+                </div>
+
                 {% if application.company.organization_type == 'association' %}
                 <div class="row force-column">
                     <div class="label">{{ _("Does the employer engage in economic activity?") }}</div>
@@ -162,6 +172,18 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="row force-column">
+                    <div class="label">{{ _("Has other financial support been granted for employment?") }}</div>
+                    <div class="value">
+                        {% if application.other_financial_support_for_employment %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+
                 {% if application.company.organization_type == 'association' %}
                 <div class="row force-column">
                     <div class="label">{{ _("Has the person who is being employed been assigned a job supervisor?") }}</div>
@@ -181,6 +203,10 @@
                 <div class="row">
                     <div class="label">{{ _("Job title") }}</div>
                     <div class="value">{{ application.employee.job_title }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">{{ _("A description of how the work tasks of the person hired with the support are related to the organization's operations") }}</div>
+                    <div class="value">{{ application.role_of_employee_in_organization|linebreaksbr }}</div>
                 </div>
                 <div class="row">
                     <div class="label">{{ _("Working hours per week") }}</div>
