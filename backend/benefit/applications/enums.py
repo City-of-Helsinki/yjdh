@@ -115,6 +115,8 @@ class AttachmentType(models.TextChoices):
         _("non-public decision text xml attachment"),
     )
     PAYSLIP = "payslip", _("payslip")
+    BUSINESS_BRIEF = "business_brief", _("business brief")
+
 
 class AttachmentRequirement(models.TextChoices):
     REQUIRED = "required", _("attachment is required")
