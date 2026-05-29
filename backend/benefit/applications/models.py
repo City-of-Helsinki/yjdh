@@ -382,6 +382,14 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("YTJ type code for company form")
     )
 
+    company_number_of_employees = models.IntegerField(
+        verbose_name=_("number of employees"), null=True, blank=True
+    )
+
+    company_business_brief = models.TextField(
+        verbose_name=_("company business brief"), blank=True
+    )
+
     company_department = models.CharField(
         max_length=256, blank=True, verbose_name=_("company department")
     )
@@ -465,6 +473,14 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     For "normal" businesses, this field has no effect and should always be set to None.
     """
     association_immediate_manager_check = models.BooleanField(null=True)
+
+    other_financial_support_for_employment = models.BooleanField(
+        verbose_name=_("other financial support for employment"), null=True
+    )
+
+    role_of_employee_in_organization = models.TextField(
+        verbose_name=_("role of employee in organization"), blank=True
+    )
 
     co_operation_negotiations = models.BooleanField(null=True)
     co_operation_negotiations_description = models.CharField(

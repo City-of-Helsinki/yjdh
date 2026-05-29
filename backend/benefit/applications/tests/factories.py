@@ -118,6 +118,12 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     co_operation_negotiations_description = factory.Maybe(
         "co_operation_negotiations", factory.Faker("paragraph"), ""
     )
+
+    company_number_of_employees = factory.Faker("random_int", min=1, max=1000)
+    company_business_brief = factory.Faker("paragraph")
+    other_financial_support_for_employment = False
+    role_of_employee_in_organization = factory.Faker("paragraph")
+
     pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     pay_subsidy_percent = None
 

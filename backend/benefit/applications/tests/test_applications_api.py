@@ -1610,6 +1610,10 @@ def test_apprenticeship_program_validation_on_submit(
     data["pay_subsidy_percent"] = None
     data["additional_pay_subsidy_percent"] = None
     data["apprenticeship_program"] = apprenticeship_program
+    data["company_number_of_employees"] = 12
+    data["company_business_brief"] = "Lorem ipsum"
+    data["other_financial_support_for_employment"] = False
+    data["role_of_employee_in_organization"] = "Lorem ipsum"
 
     response = api_client.put(
         get_detail_url(application),
@@ -2382,6 +2386,7 @@ def test_attachment_requirements(
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
         ["employment_contract", "required"],
         ["helsinki_benefit_voucher", "optional"],
+        ["business_brief", "optional"],
     ]
 
 
