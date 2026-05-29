@@ -606,6 +606,9 @@ msgstr "Työsopimus"
 msgid "pay_subsidy_decision"
 msgstr "Palkkatukipäätös"
 
+msgid "business_brief"
+msgstr "Toiminnan kuvaus"
+
 #, fuzzy
 #| msgid "commission contract"
 msgid "commission_contract"
@@ -1621,6 +1624,18 @@ msgstr "palveluehtojen hyväksynnät"
 
 msgid "Payment of the second installment of the Helsinki benefit requires measures"
 msgstr "Myönnetyn Helsinki-lisän toisen erän maksu edellyttää toimenpiteitä"
+
+msgid "Number of employees before the employed"
+msgstr "Henkilöstömäärä ennen työllistettyä"
+
+msgid "Description of employer's business activities"
+msgstr "Kuvaus työnantajan toiminnan luonteesta"
+
+msgid "Has other financial support been granted for employment?"
+msgstr "Onko työllistettävän palkkaukseen myönnetty muuta tukea?"
+
+msgid "A description of how the work tasks of the person hired with the support are related to the organization's operations"
+msgstr "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan"
 
 #~ msgid "e-invoice address"
 #~ msgstr "Verkkolaskuosoite"

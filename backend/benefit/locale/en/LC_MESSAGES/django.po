@@ -334,6 +334,9 @@ msgstr "Employment contract"
 msgid "pay subsidy decision"
 msgstr "Pay subsidy decision"
 
+msgid "business_brief"
+msgstr "Business description"
+
 #, fuzzy
 #| msgid "education_contract"
 msgid "commission contract"
@@ -1567,3 +1570,15 @@ msgstr ""
 
 msgid "Payment of the second installment of the Helsinki benefit requires measures"
 msgstr "Payment of the second installment of the Helsinki benefit requires measures"
+
+msgid "Number of employees before the employed"
+msgstr "Number of employees before the employed"
+
+msgid "Description of employer's business activities"
+msgstr "Description of employer's business activities"
+
+msgid "Has other financial support been granted for employment?"
+msgstr "Has other financial support been granted for employment?"
+
+msgid "A description of how the work tasks of the person hired with the support are related to the organization's operations"
+msgstr "A description of how the work tasks of the person hired with the support are related to the organization's operations"

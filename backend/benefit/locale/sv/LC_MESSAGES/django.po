@@ -613,6 +613,9 @@ msgstr "Arbetsavtal"
 msgid "pay_subsidy_decision"
 msgstr "Beslut om lönesubvention"
 
+msgid "business_brief"
+msgstr "Beskrivning av operationen"
+
 #, fuzzy
 #| msgid "commission contract"
 msgid "commission_contract"
@@ -1646,6 +1649,18 @@ msgstr "godkännanden av villkoren för tjänsten"
 
 msgid "Payment of the second installment of the Helsinki benefit requires measures"
 msgstr "Utbetalning av den andra raten av det beviljade Helsingforstillägget kräver åtgärder "
+
+msgid "Number of employees before the employed"
+msgstr "Antal anställda före de anställda"
+
+msgid "Description of employer's business activities"
+msgstr "Beskrivning av arbetsgivarens affärsverksamhet"
+
+msgid "Has other financial support been granted for employment?"
+msgstr "Har annat ekonomiskt stöd beviljats för anställning?"
+
+msgid "A description of how the work tasks of the person hired with the support are related to the organization's operations"
+msgstr "En beskrivning av hur arbetsuppgifterna för den person som anställts med stödet är relaterade till organisationens verksamhet."
 
 #, fuzzy
 #~| msgid "Delivery address"
