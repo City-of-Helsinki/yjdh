@@ -135,6 +135,8 @@ def _clone_business_brief_attachments(application_base, cloned_application):
                 base_attachment.attachment_file.read(),
                 name=base_attachment.attachment_file.name,
             )
+        except IOError:
+            continue
         finally:
             base_attachment.attachment_file.close()
 
