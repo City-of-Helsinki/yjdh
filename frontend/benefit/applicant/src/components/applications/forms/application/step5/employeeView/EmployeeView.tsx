@@ -35,6 +35,20 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
   const theme = useTheme();
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
+
+  const getOtherFinancialSupportText = (): string => {
+    if (
+      data.otherFinancialSupportForEmployment === null ||
+      data.otherFinancialSupportForEmployment === undefined
+    ) {
+      return '-';
+    }
+    const value = data.otherFinancialSupportForEmployment ? 'yes' : 'no';
+    return t(
+      `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.${value}`
+    );
+  };
+
   return (
     <>
       <SummarySection
@@ -110,14 +124,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 )}
               </$ApplicationDetailLabel>
               <$ApplicationDetailValue>
-                {data.otherFinancialSupportForEmployment === null ||
-                data.otherFinancialSupportForEmployment === undefined
-                  ? '-'
-                  : t(
-                      `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.${
-                        data.otherFinancialSupportForEmployment ? 'yes' : 'no'
-                      }`
-                    )}
+                {getOtherFinancialSupportText()}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
             {data.associationImmediateManagerCheck && (
