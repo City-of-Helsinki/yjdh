@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.15.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.14.0...kesaseteli-backend-v1.15.0) (2026-05-29)
+
+
+### Features
+
+* **ks,shared:** Add compliance logging for VTJ queries ([1f6816c](https://github.com/City-of-Helsinki/yjdh/commit/1f6816c8267ee6d75ebc2aba7e264275b756522d))
+* **ks,shared:** Add request ID to VTJ query client and logging ([28fc821](https://github.com/City-of-Helsinki/yjdh/commit/28fc8213efe21a59aa7392060f5a284d6253db99))
+* **ks,shared:** Compliance logging for login, logout, mandates ([1ac3df1](https://github.com/City-of-Helsinki/yjdh/commit/1ac3df1300f0a069ddc816fab3491640d33ad311))
+* **ks:** Add routed log targets for multi-index resilient logger ([51139ff](https://github.com/City-of-Helsinki/yjdh/commit/51139ff24ae2dd9f0a60f782115de238da58ea44))
+
+
+### Bug Fixes
+
+* **ks:** Create structured resilient log of auth events ([be3db97](https://github.com/City-of-Helsinki/yjdh/commit/be3db97bab051141e16b8fb3ad3d3c1e5388405e))
+* **ks:** Fix type hints and pyrefly issues ([91b6830](https://github.com/City-of-Helsinki/yjdh/commit/91b68309ae19c6e8b6a33b43a3303553bd1054ce))
+* **ks:** Improve DVV clients exception reporting ([3f49b25](https://github.com/City-of-Helsinki/yjdh/commit/3f49b252edc9128628127fae7b02ff6d03e146d1))
+
+
+### Dependencies
+
+* **ks:** Remove elasticsearch 7 from deps ([ea2c589](https://github.com/City-of-Helsinki/yjdh/commit/ea2c589e5818e8541180e47c540bfa3c51ae888d))
+* **ks:** Remove shared.audit_log from installed apps ([b97a944](https://github.com/City-of-Helsinki/yjdh/commit/b97a9449bcf7a81e046231c8e98d4f5b888458ba))
+
+
+### Documentation
+
+* **ks:** Document django-auditlog and django-auditlog-extra usage ([8ca2141](https://github.com/City-of-Helsinki/yjdh/commit/8ca2141d6af0682a5c3fd71f15077e47c11c6983))
+
 ## [1.14.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.13.0...kesaseteli-backend-v1.14.0) (2026-05-27)
 
 
