@@ -140,14 +140,11 @@
           "companyPostcode": "Postnummer",
           "companyCity": "Postort",
           "companyNumberOfEmployees": {
-            "label": "Antal anställda före anställning",
-            "placeholder": ""
+            "label": "Antal anställda före anställning"
           },
           "companyBusinessBrief": {
             "label": "Beskriv arten av arbetsgivarens verksamhet. Vid behov kommer vi att be om ytterligare information.",
-            "summaryLabel": "Beskrivning av arbetsgivarens verksamhets art",
-            "helperText": "",
-            "placeholder": ""
+            "summaryLabel": "Beskrivning av arbetsgivarens verksamhets art"
           },
           "useAlternativeAddress": {
             "label": "Använd en annan adress"
@@ -334,8 +331,7 @@
           },
           "roleOfEmployeeInOrganization": {
             "label": "Beskriv hur arbetsuppgifterna för den anställde med support är relaterade till organisationen",
-            "summaryLabel": "En beskrivning av hur arbetsuppgifterna för den person som anställts med stödet är relaterade till organisationens verksamhet.",
-            "placeholder": ""
+            "summaryLabel": "En beskrivning av hur arbetsuppgifterna för den person som anställts med stödet är relaterade till organisationens verksamhet."
           },
           "apprenticeshipProgram": {
             "label": "Handlar det om ett läroavtal?",
