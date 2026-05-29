@@ -140,14 +140,11 @@
           "companyPostcode": "Postinumero",
           "companyCity": "Postitoimipaikka",
           "companyNumberOfEmployees": {
-            "label": "Henkilöstömäärä ennen työllistettyä",
-            "placeholder": "Henkilöstömäärä"
+            "label": "Henkilöstömäärä ennen työllistettyä"
           },
           "companyBusinessBrief": {
             "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja.",
-            "summaryLabel": "Kuvaus työnantajan toiminnan luonteesta",
-            "helperText": "",
-            "placeholder": ""
+            "summaryLabel": "Kuvaus työnantajan toiminnan luonteesta"
           },
           "useAlternativeAddress": {
             "label": "Käytä toista osoitetta"
@@ -334,8 +331,7 @@
           },
           "roleOfEmployeeInOrganization": {
             "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
-            "summaryLabel": "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
-            "placeholder": ""
+            "summaryLabel": "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan"
           },
           "apprenticeshipProgram": {
             "label": "Onko kyseessä oppisopimus?",

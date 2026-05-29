@@ -140,14 +140,11 @@
           "companyPostcode": "Postal code",
           "companyCity": "City / town",
           "companyNumberOfEmployees": {
-            "label": "Number of employees before the employed",
-            "placeholder": ""
+            "label": "Number of employees before the employed"
           },
           "companyBusinessBrief": {
             "label": "Describe the nature of the employer's activities. We will ask for additional information if necessary.",
-            "summaryLabel": "Description of the employer's activities",
-            "helperText": "",
-            "placeholder": ""
+            "summaryLabel": "Description of the employer's activities"
           },
           "useAlternativeAddress": {
             "label": "Use a different address"
@@ -328,8 +325,7 @@
           },
           "roleOfEmployeeInOrganization": {
             "label": "Describe how the work tasks of the person hired with support are related to the organization",
-            "summaryLabel": "Description of how the work tasks of the person hired with support are related to the organization",
-            "placeholder": ""
+            "summaryLabel": "Description of how the work tasks of the person hired with support are related to the organization"
           },
           "paySubsidyPercent": {
             "label": "Pay subsidy percent in the decision"

@@ -501,13 +501,10 @@
           "placeholder": "IBAN-muodossa"
         },
         "companyNumberOfEmployees": {
-          "label": "Henkilöstömäärä ennen työllistettyä",
-          "placeholder": ""
+          "label": "Henkilöstömäärä ennen työllistettyä"
         },
         "companyBusinessBrief": {
-          "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja.",
-          "placeholder": "",
-          "helperText": ""
+          "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja."
         },
         "companyContactPersonFirstName": {
           "label": "Etunimi",
@@ -613,8 +610,7 @@
           "label": "Toisen myönnetyn palkkatuen palkkatukiprosentti"
         },
         "roleOfEmployeeInOrganization": {
-          "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan.",
-          "placeholder": ""
+          "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan."
         },
         "apprenticeshipProgram": {
           "label": "Onko kyseessä oppisopimus?",
