@@ -205,7 +205,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                void formik.setFieldValue(
+                formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -220,7 +220,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                void formik.setFieldValue(
+                formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -323,7 +323,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             id={fields.roleOfEmployeeInOrganization.name}
             name={fields.roleOfEmployeeInOrganization.name}
             label={fields.roleOfEmployeeInOrganization.label}
-            placeholder={fields.roleOfEmployeeInOrganization.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.roleOfEmployeeInOrganization || ''}
