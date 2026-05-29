@@ -326,6 +326,7 @@ const useFormActions = (
       changeReason,
       calculation,
       paySubsidies,
+      companyNumberOfEmployees,
     } = currentValues;
 
     const paySubsidyPercent =
@@ -369,6 +370,10 @@ const useFormActions = (
         paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
           ? null
           : apprenticeshipProgram,
+      companyNumberOfEmployees:
+        companyNumberOfEmployees === ''
+          ? null
+          : companyNumberOfEmployees,
     };
 
     return {
