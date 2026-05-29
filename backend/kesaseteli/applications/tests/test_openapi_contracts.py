@@ -10,6 +10,7 @@ from rest_framework import serializers, status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import (
+    NonVtjYouthApplicationSerializer,
     YouthApplicationCreateWithoutSsnInputSerializer,
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
@@ -68,6 +69,15 @@ def build_required_payload(
         payload[field_name] = examples[field_name]
 
     return payload
+
+
+def test_create_without_ssn_input_fields_match_non_vtj_client_fields():
+    """Input serializer fields must stay aligned with NonVtj client field set."""
+    input_fields = set(YouthApplicationCreateWithoutSsnInputSerializer().fields.keys())
+    non_vtj_client_fields = set(NonVtjYouthApplicationSerializer.Meta.fields) - set(
+        NonVtjYouthApplicationSerializer.Meta.read_only_fields
+    )
+    assert input_fields == non_vtj_client_fields
 
 
 @pytest.mark.django_db
