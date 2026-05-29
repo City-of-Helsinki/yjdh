@@ -195,12 +195,16 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "alternative_company_postcode",
             "company_department",
             "company_bank_account_number",
+            "company_number_of_employees",
+            "company_business_brief",
             "company_contact_person_first_name",
             "company_contact_person_last_name",
             "company_contact_person_phone_number",
             "company_contact_person_email",
             "association_has_business_activities",
             "association_immediate_manager_check",
+            "other_financial_support_for_employment",
+            "role_of_employee_in_organization",
             "applicant_language",
             "co_operation_negotiations",
             "co_operation_negotiations_description",
@@ -657,6 +661,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         return req
 
     @staticmethod
+    def _get_business_brief_attachment_requirements(application):
+        return [(AttachmentType.BUSINESS_BRIEF, AttachmentRequirement.OPTIONAL)]
+
+    @staticmethod
     def _get_handler_attachment_requirements(application):
         if application.application_origin == ApplicationOrigin.HANDLER:
             return [
@@ -681,6 +689,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 ]
                 + self._get_pay_subsidy_attachment_requirements(obj)
                 + self._get_handler_attachment_requirements(obj)
+                + self._get_business_brief_attachment_requirements(obj)
             )
         elif obj.benefit_type in [
             BenefitType.EMPLOYMENT_BENEFIT,
@@ -699,15 +708,23 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                 ]
                 + self._get_pay_subsidy_attachment_requirements(obj)
                 + self._get_handler_attachment_requirements(obj)
+                + self._get_business_brief_attachment_requirements(obj)
             )
         elif obj.benefit_type == BenefitType.COMMISSION_BENEFIT:
-            return [
-                (AttachmentType.COMMISSION_CONTRACT, AttachmentRequirement.REQUIRED),
-                (
-                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
-                    AttachmentRequirement.OPTIONAL,
-                ),
-            ] + self._get_handler_attachment_requirements(obj)
+            return (
+                [
+                    (
+                        AttachmentType.COMMISSION_CONTRACT,
+                        AttachmentRequirement.REQUIRED,
+                    ),
+                    (
+                        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                        AttachmentRequirement.OPTIONAL,
+                    ),
+                ]
+                + self._get_handler_attachment_requirements(obj)
+                + self._get_business_brief_attachment_requirements(obj)
+            )
         elif not obj.benefit_type:
             # applicant has not selected the value yet
             return []
@@ -735,7 +752,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                         )
                     }
                 )
-        elif association_immediate_manager_check not in [None, False]:
+        elif association_immediate_manager_check is not None:
             raise serializers.ValidationError(
                 {
                     "association_immediate_manager_check": _(
@@ -744,6 +761,13 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     )
                 }
             )
+
+    def _normalize_association_immediate_manager_check(self, company, data):
+        if (
+            OrganizationType.resolve_organization_type(company.company_form_code)
+            != OrganizationType.ASSOCIATION
+        ):
+            data["association_immediate_manager_check"] = None
 
     def _validate_de_minimis_aid_set(
         self,
@@ -880,10 +904,14 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     # must be filled before submitting the application for processing
     REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS = [
         "company_bank_account_number",
+        "company_number_of_employees",
+        "company_business_brief",
         "company_contact_person_phone_number",
         "company_contact_person_email",
         "company_contact_person_first_name",
         "company_contact_person_last_name",
+        "other_financial_support_for_employment",
+        "role_of_employee_in_organization",
         "co_operation_negotiations",
         "pay_subsidy_granted",
         "benefit_type",
@@ -934,12 +962,11 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     def _validate_association_has_business_activities(
         self, company, association_has_business_activities
     ):
-        if OrganizationType.resolve_organization_type(
-            company.company_form_code
-        ) == OrganizationType.COMPANY and association_has_business_activities not in [
-            None,
-            False,
-        ]:
+        if (
+            OrganizationType.resolve_organization_type(company.company_form_code)
+            == OrganizationType.COMPANY
+            and association_has_business_activities is not None
+        ):
             raise serializers.ValidationError(
                 {
                     "association_has_business_activities": _(
@@ -947,6 +974,13 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     )
                 }
             )
+
+    def _normalize_association_has_business_activities(self, company, data):
+        if (
+            OrganizationType.resolve_organization_type(company.company_form_code)
+            == OrganizationType.COMPANY
+        ):
+            data["association_has_business_activities"] = None
 
     @extend_schema_field(serializers.ChoiceField(choices=BenefitType.choices))
     def get_available_benefit_types(self, obj):
@@ -1102,6 +1136,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             raise PermissionDenied(_("You are not allowed to do this action"))
         company = self.get_company(data)
         self._handle_breaking_changes(company, data)
+        self._normalize_association_has_business_activities(company, data)
+        self._normalize_association_immediate_manager_check(company, data)
 
         self._validate_date_range(
             data.get("start_date"),
