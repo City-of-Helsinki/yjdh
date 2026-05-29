@@ -32,6 +32,9 @@ interface FormActions {
   onNext: (values: Application) => Promise<ApplicationData | void>;
   onBack: () => Promise<ApplicationData | void>;
   onSave: (values: Partial<Application>) => Promise<ApplicationData | void>;
+  onQuietSave: (
+    values: Partial<Application>
+  ) => Promise<ApplicationData | void>;
   onDelete: (id: string) => void;
 }
 
@@ -273,6 +276,39 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     return undefined;
   };
 
+  const onQuietSave = async (
+    currentValues: Application
+  ): Promise<ApplicationData | void> => {
+    const data = getData(getModifiedValues(currentValues), currentStep);
+
+    try {
+      const result = applicationId
+        ? await updateApplication(data)
+        : await createApplication(data);
+
+      // If this is a new application (no ID yet), update the router with the new ID
+      // Use shallow: true to prevent full page re-render and avoid extra GET requests
+      if (!applicationId && result?.id) {
+        await router.replace(
+          {
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              id: result.id,
+            },
+          },
+          undefined,
+          { shallow: true }
+        );
+      }
+
+      return result;
+    } catch (error) {
+      // useEffect will catch this error
+    }
+    return undefined;
+  };
+
   const onDelete = (id: string): void => {
     deleteApplication(id, {
       onSuccess: () => {
@@ -292,6 +328,7 @@ const useFormActions = (application: Partial<Application>): FormActions => {
     onNext,
     onBack,
     onSave,
+    onQuietSave,
     onDelete,
   };
 };

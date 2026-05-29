@@ -14,6 +14,20 @@ class Step1 extends WizardStep {
     ),
   });
 
+  private companyNumberOfEmployees = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyNumberOfEmployees.label
+    ),
+  });
+
+  private companyBusinessBrief = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyBusinessBrief.label
+    ),
+  });
+
   private firstName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
@@ -120,13 +134,20 @@ class Step1 extends WizardStep {
 
   public async fillEmployerInfo(
     iban: string,
-    isAssociation: boolean
+    isAssociation: boolean,
+    companyNumberOfEmployees: string,
+    companyBusinessBrief: string
   ): Promise<void> {
     if (isAssociation) {
       await this.clickSelectRadioButton(this.hasImmediateManagerCheckbox);
       await this.clickSelectRadioButton(this.businessActivitiesFalse);
     }
     await this.fillInput(this.bankAccountNumber, iban);
+    await this.fillInput(
+      this.companyNumberOfEmployees,
+      companyNumberOfEmployees
+    );
+    await this.fillInput(this.companyBusinessBrief, companyBusinessBrief);
   }
 
   public async fillContactPerson(

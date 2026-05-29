@@ -99,6 +99,27 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 )}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
+            <$ApplicationDetailRow
+              $alignItems="flex-start"
+              $forceColumn
+              data-testid="application-field-otherFinancialSupportForEmployment"
+            >
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data.otherFinancialSupportForEmployment === null ||
+                data.otherFinancialSupportForEmployment === undefined
+                  ? '-'
+                  : t(
+                      `${translationsBase}.employee.fields.otherFinancialSupportForEmployment.${
+                        data.otherFinancialSupportForEmployment ? 'yes' : 'no'
+                      }`
+                    )}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
             {data.associationImmediateManagerCheck && (
               <$ApplicationDetailRow
                 $alignItems="flex-start"
@@ -135,7 +156,28 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   {data.employee?.jobTitle || '-'}
                 </$ApplicationDetailValue>
               </$ApplicationDetailRow>
-
+              <$ApplicationDetailRow data-testid="application-field-roleOfEmployeeInOrganization">
+                <$ApplicationDetailLabel>
+                  {t(
+                    `${translationsBase}.employee.fields.roleOfEmployeeInOrganization.summaryLabel`
+                  )}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue $column={1}>
+                  {data?.roleOfEmployeeInOrganization &&
+                    data?.roleOfEmployeeInOrganization
+                      .split('\n')
+                      .map((line) => (
+                        <React.Fragment
+                          key={`role-of-employee-${line
+                            .slice(0, 20)
+                            .replace(/\s/g, '')}`}
+                        >
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
               <$ApplicationDetailRow data-testid="application-field-collectiveBargainingAgreement">
                 <$ApplicationDetailLabel>
                   {t(
