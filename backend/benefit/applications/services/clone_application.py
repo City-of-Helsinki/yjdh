@@ -1,5 +1,6 @@
 from io import BytesIO
 
+from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 
@@ -59,6 +60,8 @@ def clone_application_based_on_other(
         co_operation_negotiations=application_base.co_operation_negotiations,
         co_operation_negotiations_description=application_base.co_operation_negotiations_description,
         company_bank_account_number=application_base.company_bank_account_number,
+        company_number_of_employees=application_base.company_number_of_employees,
+        company_business_brief=application_base.company_business_brief,
         company_contact_person_email=application_base.company_contact_person_email,
         company_contact_person_first_name=application_base.company_contact_person_first_name,
         company_contact_person_last_name=application_base.company_contact_person_last_name,
@@ -72,6 +75,8 @@ def clone_application_based_on_other(
         official_company_street_address=company.street_address,
         official_company_city=application_base.official_company_city,
         official_company_postcode=application_base.official_company_postcode,
+        other_financial_support_for_employment=application_base.other_financial_support_for_employment,
+        role_of_employee_in_organization=application_base.role_of_employee_in_organization,
         use_alternative_address=application_base.use_alternative_address,
         employer_assurance=(
             application_base.employer_assurance if clone_all_data else None
@@ -107,9 +112,38 @@ def clone_application_based_on_other(
         employee.working_hours = None
         employee.collective_bargaining_agreement = ""
         employee.save()
+        cloned_application.role_of_employee_in_organization = ""
+        cloned_application.other_financial_support_for_employment = None
 
     cloned_application.save()
+    _clone_business_brief_attachments(application_base, cloned_application)
     return cloned_application
+
+
+def _clone_business_brief_attachments(application_base, cloned_application):
+    for base_attachment in application_base.attachments.filter(
+        attachment_type=AttachmentType.BUSINESS_BRIEF
+    ):
+        # If BUSINESS_BRIEF attachment does not exist, do not clone it
+        try:
+            base_attachment.attachment_file.open("rb")
+        except IOError:
+            return
+
+        try:
+            attachment_file = ContentFile(
+                base_attachment.attachment_file.read(),
+                name=base_attachment.attachment_file.name,
+            )
+        finally:
+            base_attachment.attachment_file.close()
+
+        Attachment.objects.create(
+            attachment_type=base_attachment.attachment_type,
+            application=cloned_application,
+            attachment_file=attachment_file,
+            content_type=base_attachment.content_type,
+        )
 
 
 def _clone_handler_data(application_base, cloned_application):
