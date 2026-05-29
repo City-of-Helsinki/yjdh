@@ -353,7 +353,7 @@ const CompanySection: React.FC<Props> = ({
             label={fields.companyNumberOfEmployees.label}
             onBlur={formik.handleBlur}
             onChange={(event) => {
-              void formik.setFieldValue(
+              formik.setFieldValue(
                 fields.companyNumberOfEmployees.name,
                 event.target.value.replace(/\D/g, '')
               );
@@ -373,10 +373,6 @@ const CompanySection: React.FC<Props> = ({
             id={fields.companyBusinessBrief.name}
             name={fields.companyBusinessBrief.name}
             label={fields.companyBusinessBrief.label}
-            placeholder={fields.companyBusinessBrief.placeholder}
-            helperText={t(
-              `${translationsBase}.fields.companyBusinessBrief.helperText`
-            )}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.companyBusinessBrief || ''}
