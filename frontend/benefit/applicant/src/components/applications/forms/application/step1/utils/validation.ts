@@ -82,7 +82,6 @@ export const getValidationSchema = (
           },
         }),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_NUMBER_OF_EMPLOYEES]: Yup.string()
-      .nullable()
       .matches(/^\d+$/, t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BUSINESS_BRIEF]: Yup.string()

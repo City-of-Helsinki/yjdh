@@ -190,8 +190,8 @@ const useFormActions = (application: Partial<Application>): FormActions => {
   const getData = (
     values: Partial<Application>,
     step: number
-  ): ApplicationData =>
-    snakecaseKeys(
+  ): ApplicationData => {
+    const data = snakecaseKeys(
       {
         ...values,
         applicationStep: getApplicationStepString(step),
@@ -214,6 +214,16 @@ const useFormActions = (application: Partial<Application>): FormActions => {
       },
       { deep: true }
     ) as ApplicationData;
+
+    // Normalize empty string to null for numeric fields
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((data as any).company_number_of_employees === '') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (data as any).company_number_of_employees = null;
+    }
+
+    return data;
+  };
 
   const onNext = async (
     currentValues: Application
