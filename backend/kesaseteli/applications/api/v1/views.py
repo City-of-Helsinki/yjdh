@@ -10,7 +10,7 @@ from django.db.models import F, Func
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
-from django.utils import timezone, translation
+from django.utils import translation
 from django.utils.decorators import method_decorator
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -60,7 +60,6 @@ from applications.api.v1.serializers import (
     YouthApplicationStatusSerializer,
 )
 from applications.enums import (
-    AdditionalInfoUserReason,
     EmployerApplicationStatus,
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
@@ -755,27 +754,9 @@ class YouthApplicationViewSet(ModelViewSet):
             if hasattr(data, "dict"):
                 data = data.dict()
 
-            # OpenAPI documents client fields only.
-            # Server-managed fields are injected below.
-            client_serializer = YouthApplicationCreateWithoutSsnInputSerializer(
-                data=data
-            )
-            client_serializer.is_valid(raise_exception=True)
-            data = dict(client_serializer.validated_data)
-
-            # Add server-managed fields before the model serializer runs.
-            data["is_unlisted_school"] = True
-            data["receipt_confirmed_at"] = timezone.now()
-            data["additional_info_provided_at"] = timezone.now()
-            data["additional_info_user_reasons"] = [
-                AdditionalInfoUserReason.OTHER.value
-            ]
-            data["status"] = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
-            data["creator"] = request.user.id
-            data["handler"] = None
-
             serializer = NonVtjYouthApplicationSerializer(
-                data=data, context=self.get_serializer_context()
+                data=data,
+                context=self.get_serializer_context(),
             )
             serializer.is_valid(raise_exception=True)
 

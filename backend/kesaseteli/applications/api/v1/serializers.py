@@ -14,6 +14,7 @@ from rest_framework import serializers
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
+    AdditionalInfoUserReason,
     APPLICATION_LANGUAGE_CHOICES,
     AttachmentType,
     EmployerApplicationStatus,
@@ -903,11 +904,10 @@ class YouthApplicationStatusSerializer(serializers.ModelSerializer):
 
 
 class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
-    """
-    Serializer for creating youth applications without VTJ data.
+    """Serializer for handler create-without-ssn youth applications (no Finnish SSN).
 
-    NOTE:
-        Use ONLY when applicant has no permanent Finnish personal identity code.
+    The client sends applicant fields only. Server-managed workflow fields are
+    read-only on input and set in ``create()``.
     """
 
     class Meta:
@@ -931,6 +931,15 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
             "additional_info_provided_at",
             "additional_info_user_reasons",
             "additional_info_description",
+        ]
+        read_only_fields = [
+            "is_unlisted_school",
+            "receipt_confirmed_at",
+            "additional_info_provided_at",
+            "additional_info_user_reasons",
+            "status",
+            "creator",
+            "handler",
         ]
 
     target_group = serializers.ChoiceField(
@@ -993,11 +1002,34 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
             data["non_vtj_home_municipality"] = ""
         return super().to_internal_value(data)
 
-    creator = serializers.PrimaryKeyRelatedField(
-        required=not HandlerPermission.allow_empty_handler(),
-        allow_null=HandlerPermission.allow_empty_handler(),
-        queryset=HandlerPermission.get_handler_users_queryset(),
-    )
+    def create(self, validated_data):
+        """Create a handler-entered application for an applicant without a Finnish SSN.
+
+        Handlers must not set workflow fields, so assignment, receipt timestamps, and
+        ``status`` are applied here.
+
+        ``is_unlisted_school`` is always True because the handler types the school name
+        manually. ``additional_info_user_reasons`` is always ``OTHER``. That is the
+        only reason that applies when there is no Finnish SSN or VTJ lookup.
+
+        ``status`` is set to ``YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED``.
+        The application is ready for manual handler review because the handler has
+        already entered the extra details that, in the public apply flow, the youth
+        would submit later.
+        """
+        request = self.context["request"]
+        validated_data["is_unlisted_school"] = True
+        validated_data["receipt_confirmed_at"] = timezone.now()
+        validated_data["additional_info_provided_at"] = timezone.now()
+        validated_data["additional_info_user_reasons"] = [
+            AdditionalInfoUserReason.OTHER.value
+        ]
+        validated_data["status"] = (
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+        )
+        validated_data["creator"] = request.user
+        validated_data["handler"] = None
+        return super().create(validated_data)
 
 
 class YouthApplicationAdditionalInfoSerializer(serializers.ModelSerializer):
@@ -1055,7 +1087,11 @@ class YouthApplicationHandlingSerializer(serializers.ModelSerializer):
 
 
 class YouthApplicationCreateWithoutSsnInputSerializer(serializers.Serializer):
-    """Request body (input) for creating a youth application without SSN."""
+    """Request body (input) for creating a youth application without SSN.
+
+    Field names must match the writable client subset of
+    ``NonVtjYouthApplicationSerializer``.
+    """
 
     first_name = serializers.CharField()
     last_name = serializers.CharField()
