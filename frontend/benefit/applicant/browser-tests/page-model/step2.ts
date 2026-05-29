@@ -1,4 +1,4 @@
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 
@@ -47,6 +47,14 @@ class Step2 extends WizardStep {
       .apprenticeshipProgram.no
   );
 
+  private otherFinancialSupportForEmploymentFalse = Selector(
+    'label[for="otherFinancialSupportForEmploymentFalse"]'
+  );
+
+  private otherFinancialSupportForEmploymentTrue = Selector(
+    'label[for="otherFinancialSupportForEmploymentTrue"]'
+  );
+
   private apprenticeshipProgramTrue = this.findRadioLabelWithGroupText(
     this.translations.applications.sections.employee.fields
       .apprenticeshipProgram.label,
@@ -69,6 +77,13 @@ class Step2 extends WizardStep {
   private jobTitle = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.jobTitle.label
+    ),
+  });
+
+  private roleOfEmployeeInOrganization = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields
+        .roleOfEmployeeInOrganization.label
     ),
   });
 
@@ -127,12 +142,22 @@ class Step2 extends WizardStep {
     await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
-  public async fillApprenticeshipProgram(apprenticeshipProgram: boolean): Promise<void> {
+  public async fillApprenticeshipProgram(
+    apprenticeshipProgram: boolean
+  ): Promise<void> {
     if (apprenticeshipProgram) {
       await this.clickSelectRadioButton(this.apprenticeshipProgramTrue);
       return;
     }
     await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
+  }
+
+  public async selectOtherFinancialSupport(yes: boolean): Promise<void> {
+    await this.clickSelectRadioButton(
+      yes
+        ? this.otherFinancialSupportForEmploymentTrue
+        : this.otherFinancialSupportForEmploymentFalse
+    );
   }
 
   public async fillBenefitPeriod(
@@ -145,6 +170,7 @@ class Step2 extends WizardStep {
 
   public async fillEmploymentInfo(
     jobTitle: string,
+    roleOfEmployeeInOrganization: string,
     workingHours: string,
     collectiveBargainingAgreement: string,
     monthlyPay: string,
@@ -152,6 +178,10 @@ class Step2 extends WizardStep {
     vacationMoney: string
   ): Promise<void> {
     await t.typeText(this.jobTitle, jobTitle);
+    await t.typeText(
+      this.roleOfEmployeeInOrganization,
+      roleOfEmployeeInOrganization
+    );
     await t.typeText(this.workingHours, workingHours);
     await t.typeText(
       this.collectiveBargainingAgreement,

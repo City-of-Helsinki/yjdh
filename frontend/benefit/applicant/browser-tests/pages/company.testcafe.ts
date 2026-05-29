@@ -40,12 +40,15 @@ const form: ApplicationFormData = {
     phone: '050001234',
     email: 'Raven_Stamm@example.net',
     coOperationNegotiationsDescription: 'Lorem ipsum dolor sit amet',
+    companyNumberOfEmployees: '10',
+    companyBusinessBrief: 'Lorem ipsum dolor sit amet'
   },
   employee: {
     firstName: 'Larry',
     lastName: 'Blick',
     ssn: '010101-150J',
     title: 'Kuljettaja',
+    roleOfEmployeeInOrganization: 'Kuljettajan tehtävät ja vastuaalueet',
     workHours: '30',
     collectiveBargainingAgreement: 'Logistiikka TES',
     monthlyPay: '2300',
@@ -76,7 +79,12 @@ test('New application', async () => {
   await step1.isLoaded(60_000);
   const step2 = new Step2();
 
-  await step1.fillEmployerInfo(form.organization.iban, false);
+  await step1.fillEmployerInfo(
+    form.organization.iban,
+    false,
+    form.organization.companyNumberOfEmployees,
+    form.organization.companyBusinessBrief
+  );
   await step1.fillContactPerson(
     form.organization.firstName,
     form.organization.lastName,
@@ -107,14 +115,17 @@ test('New application', async () => {
     form.employee.lastName,
     form.employee.ssn
   );
+  await step2.selectOtherFinancialSupport(false);
   await step2.fillEmploymentInfo(
     form.employee.title,
+    form.employee.roleOfEmployeeInOrganization,
     form.employee.workHours,
     form.employee.collectiveBargainingAgreement,
     form.employee.monthlyPay,
     form.employee.otherExpenses,
     form.employee.vacationMoney
   );
+
   await step2.fillApprenticeshipProgram(true);
 
   await step2.fillBenefitPeriod(form.employee.startDate, form.employee.endDate);

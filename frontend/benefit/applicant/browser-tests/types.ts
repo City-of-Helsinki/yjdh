@@ -6,12 +6,15 @@ export type ApplicationFormData = {
     phone: string;
     email: string;
     coOperationNegotiationsDescription: string;
+    companyNumberOfEmployees: string;
+    companyBusinessBrief: string;
   };
   employee: {
     firstName: string;
     lastName: string;
     ssn: string;
     title: string;
+    roleOfEmployeeInOrganization: string;
     workHours: string;
     collectiveBargainingAgreement: string;
     monthlyPay: string;

@@ -139,6 +139,16 @@
           "companyAddress": "Osoite",
           "companyPostcode": "Postinumero",
           "companyCity": "Postitoimipaikka",
+          "companyNumberOfEmployees": {
+            "label": "Henkilöstömäärä ennen työllistettyä",
+            "placeholder": "Henkilöstömäärä"
+          },
+          "companyBusinessBrief": {
+            "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja.",
+            "summaryLabel": "Kuvaus työnantajan toiminnan luonteesta",
+            "helperText": "",
+            "placeholder": ""
+          },
           "useAlternativeAddress": {
             "label": "Käytä toista osoitetta"
           },
@@ -303,6 +313,12 @@
             "label": "Onko työllistettävälle osoitettu työnjohdollinen esihenkilö?",
             "placeholder": "Kyllä, työllistettävällä on työnjohdollinen esihenkilö."
           },
+          "otherFinancialSupportForEmployment": {
+            "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
+            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä.",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
             "labelShort": "Myönnetyt tuet",
@@ -315,6 +331,11 @@
           },
           "additionalPaySubsidyPercent": {
             "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki,\nanna siinä oleva palkkatukiprosentti"
+          },
+          "roleOfEmployeeInOrganization": {
+            "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
+            "summaryLabel": "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
+            "placeholder": ""
           },
           "apprenticeshipProgram": {
             "label": "Onko kyseessä oppisopimus?",
@@ -387,6 +408,10 @@
           "employmentContract": {
             "title": "Työsopimus",
             "message": ""
+          },
+          "businessBrief": {
+            "title": "Toimintaa kuvaava liite",
+            "message": "Voit halutessasi liittää tähän toimintaanne kuvaavan liitteen"
           },
           "paySubsidyDecision": {
             "title": "Palkkatukipäätös",

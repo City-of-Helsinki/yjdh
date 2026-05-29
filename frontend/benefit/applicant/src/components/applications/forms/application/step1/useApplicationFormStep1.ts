@@ -32,6 +32,7 @@ type ExtendedComponentProps = {
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
   handleSave: () => void;
+  handleQuietSave: () => Promise<void>;
   handleDelete?: () => void;
   clearDeminimisAids: () => void;
   formik: FormikProps<Partial<Application>>;
@@ -92,7 +93,7 @@ const useApplicationFormStep1 = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-  const { onNext, onSave, onDelete } = useFormActions(application);
+  const { onNext, onSave, onQuietSave, onDelete } = useFormActions(application);
 
   const locale = useLocale();
   const translationsBase = 'common:applications.sections.company';
@@ -183,6 +184,10 @@ const useApplicationFormStep1 = (
       ? false
       : void onSave(values);
 
+  const handleQuietSave = async (): Promise<void> => {
+    await onQuietSave(values);
+  };
+
   const applicationId = String(values?.id);
   const handleDelete = applicationId
     ? () => {
@@ -226,6 +231,7 @@ const useApplicationFormStep1 = (
     getErrorMessage,
     handleSubmit,
     handleSave,
+    handleQuietSave,
     handleDelete,
     clearDeminimisAids,
     deMinimisAidSet: application.deMinimisAidSet || [],

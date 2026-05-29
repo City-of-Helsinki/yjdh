@@ -1,5 +1,6 @@
+import AttachmentsListView from 'benefit/applicant/components/applications/forms/application/step5/attachmentsListView/AttachmentsListView';
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
-import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { Application, DeMinimisAid } from 'benefit-shared/types/application';
 import { formatIBAN } from 'benefit-shared/utils/common';
 import { ButtonPresetTheme, ButtonVariant, IconPen } from 'hds-react';
@@ -116,6 +117,46 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                   formatIBAN(data.companyBankAccountNumber)}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
+
+            <$ApplicationDetailRow data-testid="application-field-companyNumberOfEmployees">
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyNumberOfEmployees.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {data?.companyNumberOfEmployees}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+
+            <$ApplicationDetailRow data-testid="application-field-companyBusinessBrief">
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.company.fields.companyBusinessBrief.summaryLabel`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue $column={1}>
+                {data?.companyBusinessBrief &&
+                  data?.companyBusinessBrief.split('\n').map((line) => (
+                    <React.Fragment
+                      key={`business-brief-${line
+                        .slice(0, 20)
+                        .replace(/\s/g, '')}`}
+                    >
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.BUSINESS_BRIEF}
+              title={t(
+                `${translationsBase}.attachments.types.businessBrief.title`
+              )}
+              attachments={data.attachments || []}
+            />
 
             {data?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
               <$ApplicationDetailRow

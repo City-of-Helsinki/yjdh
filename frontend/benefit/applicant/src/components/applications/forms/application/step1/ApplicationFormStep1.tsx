@@ -38,11 +38,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
 }) => {
   const [isUnfinishedDeMinimisAid, setUnfinishedDeMinimisAid] =
     React.useState(false);
+  const hasPerformedAutoSaveRef = React.useRef(false);
 
   const {
     t,
     handleSubmit,
     handleSave,
+    handleQuietSave,
     handleDelete,
     getErrorMessage,
     clearDeminimisAids,
@@ -56,6 +58,21 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   } = useApplicationFormStep1(data, Boolean(isUnfinishedDeMinimisAid));
 
   useAlertBeforeLeaving(formik.dirty);
+
+  // Auto-save quietly when application is opened and Step 1 is activated (for new applications without ID)
+  React.useEffect(() => {
+    const performAutoSave = async (): Promise<void> => {
+      // Only perform auto-save once, when there's no ID yet
+      if (!data?.id && !hasPerformedAutoSaveRef.current) {
+        hasPerformedAutoSaveRef.current = true;
+        await handleQuietSave();
+      }
+    };
+
+    void performAutoSave();
+    // Only depend on data?.id, not on handleQuietSave to avoid re-running
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.id]);
 
   useDependentFieldsEffect(
     {

@@ -139,6 +139,16 @@
           "companyAddress": "Street address",
           "companyPostcode": "Postal code",
           "companyCity": "City / town",
+          "companyNumberOfEmployees": {
+            "label": "Number of employees before the employed",
+            "placeholder": ""
+          },
+          "companyBusinessBrief": {
+            "label": "Describe the nature of the employer's activities. We will ask for additional information if necessary.",
+            "summaryLabel": "Description of the employer's activities",
+            "helperText": "",
+            "placeholder": ""
+          },
           "useAlternativeAddress": {
             "label": "Use a different address"
           },
@@ -303,12 +313,23 @@
             "label": "Has the person who is being employed been assigned a job supervisor?",
             "placeholder": "Yes, the person to be employed has a supervisor."
           },
+          "otherFinancialSupportForEmployment": {
+            "label": "Has any other support been granted for the employee's salary?",
+            "tooltip": "If other support has been applied for/received for the employee's salary, we will request an explanation.",
+            "yes": "Yes",
+            "no": "No"
+          },
           "paySubsidyGranted": {
             "label": "Has this employment relationship received any of the following aid?",
             "labelShort": "Received aid",
             "paySubsidyDefault": "Pay subsidy",
             "paySubsidyAged": "Employment aid for people aged 55 and above",
             "paySubsidyNone": "None of the previous subsidies have been granted for this employment relationship"
+          },
+          "roleOfEmployeeInOrganization": {
+            "label": "Describe how the work tasks of the person hired with support are related to the organization",
+            "summaryLabel": "Description of how the work tasks of the person hired with support are related to the organization",
+            "placeholder": ""
           },
           "paySubsidyPercent": {
             "label": "Pay subsidy percent in the decision"
@@ -387,6 +408,10 @@
           "employmentContract": {
             "title": "Employment contract",
             "message": ""
+          },
+          "businessBrief": {
+            "title": "Attachment describing the employer's activities",
+            "message": "If you wish, you can attach an attachment describing your activities here."
           },
           "paySubsidyDecision": {
             "title": "Pay subsidy decision",
