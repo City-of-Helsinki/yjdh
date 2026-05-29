@@ -356,6 +356,11 @@ export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_DEPARTMENT]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]?: string;
+  [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_NUMBER_OF_EMPLOYEES]?:
+    | number
+    | ''
+    | null;
+  [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BUSINESS_BRIEF]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE]?: ORGANIZATION_TYPES | null;
   [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]?:
     | boolean
@@ -375,6 +380,10 @@ export interface Step1 {
 }
 
 export interface Step2 {
+  [APPLICATION_FIELDS_STEP2_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]?:
+    | boolean
+    | null;
+  [APPLICATION_FIELDS_STEP2_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION]?: string;
   [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]?: PAY_SUBSIDY_GRANTED | null;
   [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]?: boolean | null;
   [APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE]?: BENEFIT_TYPES | '';
@@ -481,6 +490,8 @@ export type ApplicationData = {
   applicant_language?: SUPPORTED_LANGUAGES;
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
+  other_financial_support_for_employment?: boolean | null;
+  role_of_employee_in_organization?: string;
   pay_subsidy_granted?: PAY_SUBSIDY_GRANTED;
   pay_subsidy_percent?: PaySubsidyPercent | null;
   additional_pay_subsidy_percent?: PaySubsidyPercent;

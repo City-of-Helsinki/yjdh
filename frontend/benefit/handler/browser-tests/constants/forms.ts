@@ -2,6 +2,9 @@ export const NEW_FORM_DATA = {
   company: {
     id: '0201256-6',
     bankAccountNumber: 'FI81 4975 4587 0004 02',
+    companyNumberOfEmployees: '100',
+    companyBusinessBrief: 'Lorem ipsum dolor sit amet',
+    roleOfEmployeeInOrganization: 'Asiantuntijan rooli',
     firstName: 'Kuura',
     lastName: 'Massi-Päällikkö',
     phone: '050 000 0000',
