@@ -43,6 +43,21 @@ describe('useLeaveConfirm.utils', () => {
       anchor.href = 'http://localhost/other';
       expect(isInternalLink(anchor)).toBe(true);
     });
+
+    it('should return false for links starting with #', () => {
+      const anchor = document.createElement('a');
+      anchor.setAttribute('href', '#');
+      expect(isInternalLink(anchor)).toBe(false);
+
+      const anchor2 = document.createElement('a');
+      anchor2.setAttribute('href', '#some-section');
+      expect(isInternalLink(anchor2)).toBe(false);
+    });
+
+    it('should return false if href is missing', () => {
+      const anchor = document.createElement('a');
+      expect(isInternalLink(anchor)).toBe(false);
+    });
   });
 
   describe('isBypassUrl', () => {

@@ -30,6 +30,10 @@ export const getPathWithoutHash = (p: string): string => p.split('#')[0];
  * @returns True if the link is internal.
  */
 export const isInternalLink = (anchor: HTMLAnchorElement): boolean => {
+  const href = anchor.getAttribute('href');
+  if (!href || href.startsWith('#')) {
+    return false;
+  }
   try {
     const url = new URL(anchor.href, window.location.href);
     const isInternal = url.origin === window.location.origin;
