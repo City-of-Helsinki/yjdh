@@ -67,6 +67,8 @@ const fields = {
   ),
   companyContactPersonEmail: buildField('companyContactPersonEmail'),
   applicantLanguage: buildField('applicantLanguage'),
+  companyNumberOfEmployees: buildField('companyNumberOfEmployees'),
+  companyBusinessBrief: buildField('companyBusinessBrief'),
   deMinimisAid: buildField(APPLICATION_FIELD_KEYS.DE_MINIMIS_AID),
   coOperationNegotiations: buildField(
     APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS

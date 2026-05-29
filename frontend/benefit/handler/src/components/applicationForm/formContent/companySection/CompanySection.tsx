@@ -4,8 +4,8 @@ import {
   Application,
   ApplicationFields,
 } from 'benefit/handler/types/application';
-import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
-import { DeMinimisAid } from 'benefit-shared/types/application';
+import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import { ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import {
   IconCheckCircleFill,
@@ -31,6 +31,7 @@ import { OptionType } from 'shared/types/common';
 import { phoneToLocal } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
+import AttachmentsList from '../attachmentsList/AttachmentsList';
 import { $HelpText } from '../FormContent.sc';
 import {
   $CompanyInfoLabel,
@@ -51,6 +52,7 @@ type Props = {
   languageOptions: OptionType[];
   showDeminimisSection: boolean;
   deMinimisAidSet: DeMinimisAid[];
+  handleQuietSave?: () => Promise<ApplicationData | void>;
 };
 
 type WithCheckboxProps = {
@@ -83,6 +85,7 @@ const CompanySection: React.FC<Props> = ({
   languageOptions,
   showDeminimisSection,
   deMinimisAidSet,
+  handleQuietSave,
 }) => {
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
@@ -342,6 +345,54 @@ const CompanySection: React.FC<Props> = ({
             </SelectionGroup>
           </$GridCell>
         )}
+        <$GridCell $colSpan={8} $colStart={1}>
+          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
+          <TextInput
+            id={fields.companyNumberOfEmployees.name}
+            name={fields.companyNumberOfEmployees.name}
+            label={fields.companyNumberOfEmployees.label}
+            onBlur={formik.handleBlur}
+            onChange={(event) => {
+              void formik.setFieldValue(
+                fields.companyNumberOfEmployees.name,
+                event.target.value.replace(/\D/g, '')
+              );
+            }}
+            value={String(formik.values.companyNumberOfEmployees ?? '')}
+            invalid={!!getErrorMessage(fields.companyNumberOfEmployees.name)}
+            aria-invalid={
+              !!getErrorMessage(fields.companyNumberOfEmployees.name)
+            }
+            errorText={getErrorMessage(fields.companyNumberOfEmployees.name)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={12}>
+          {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
+          <TextArea
+            id={fields.companyBusinessBrief.name}
+            name={fields.companyBusinessBrief.name}
+            label={fields.companyBusinessBrief.label}
+            placeholder={fields.companyBusinessBrief.placeholder}
+            helperText={t(
+              `${translationsBase}.fields.companyBusinessBrief.helperText`
+            )}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.companyBusinessBrief || ''}
+            invalid={!!getErrorMessage(fields.companyBusinessBrief.name)}
+            aria-invalid={!!getErrorMessage(fields.companyBusinessBrief.name)}
+            errorText={getErrorMessage(fields.companyBusinessBrief.name)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={12}>
+          <AttachmentsList
+            attachments={formik.values.attachments}
+            attachmentType={ATTACHMENT_TYPES.BUSINESS_BRIEF}
+            handleQuietSave={handleQuietSave}
+          />
+        </$GridCell>
       </FormSection>
       <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>

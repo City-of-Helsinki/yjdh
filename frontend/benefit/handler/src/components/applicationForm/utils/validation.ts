@@ -7,6 +7,7 @@ import {
   MAX_LONG_STRING_LENGTH,
   MAX_PHONE_NUMBER_LENGTH,
   MAX_SHORT_STRING_LENGTH,
+  MAX_VERY_LONG_STRING_LENGTH,
   MIN_PHONE_NUMBER_LENGTH,
   SUPPORTED_LANGUAGES,
 } from 'benefit/handler/constants';
@@ -123,6 +124,19 @@ export const getValidationSchema = (
           return true;
         },
       }),
+    [APPLICATION_FIELD_KEYS.COMPANY_NUMBER_OF_EMPLOYEES]: Yup.string()
+      .nullable()
+      .matches(/^\d+$/, t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELD_KEYS.COMPANY_BUSINESS_BRIEF]: Yup.string()
+      .trim()
+      .max(
+        MAX_VERY_LONG_STRING_LENGTH,
+        t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
+          max: MAX_VERY_LONG_STRING_LENGTH,
+        })
+      )
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
       .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
       .max(
@@ -193,6 +207,8 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
       Yup.string(),
+    [APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]:
+      Yup.boolean().nullable().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]: Yup.mixed().oneOf(
       Object.values(PAY_SUBSIDY_GRANTED),
       t(VALIDATION_MESSAGE_KEYS.INVALID)
@@ -210,6 +226,15 @@ export const getValidationSchema = (
           .nullable()
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       }),
+    [APPLICATION_FIELD_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION]: Yup.string()
+      .trim()
+      .max(
+        MAX_VERY_LONG_STRING_LENGTH,
+        t(VALIDATION_MESSAGE_KEYS.STRING_MAX, {
+          max: MAX_VERY_LONG_STRING_LENGTH,
+        })
+      )
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.EMPLOYEE]: Yup.object().shape({
       [EMPLOYEE_KEYS.FIRST_NAME]: Yup.string()
         .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
