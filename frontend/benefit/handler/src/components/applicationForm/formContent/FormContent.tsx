@@ -176,6 +176,7 @@ const FormContent: React.FC<Props> = ({
         languageOptions={languageOptions}
         showDeminimisSection={showDeminimisSection}
         deMinimisAidSet={deMinimisAidSet}
+        handleQuietSave={handleQuietSave}
       />
 
       <FormSection header={t(`${translationsBase}.headings.employment1`)}>
@@ -325,7 +326,7 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                void formik.setFieldValue(
+                formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -340,7 +341,7 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                void formik.setFieldValue(
+                formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -432,7 +433,6 @@ const FormContent: React.FC<Props> = ({
               id={fields.roleOfEmployeeInOrganization.name}
               name={fields.roleOfEmployeeInOrganization.name}
               label={fields.roleOfEmployeeInOrganization.label}
-              placeholder={fields.roleOfEmployeeInOrganization.placeholder}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.roleOfEmployeeInOrganization || ''}
