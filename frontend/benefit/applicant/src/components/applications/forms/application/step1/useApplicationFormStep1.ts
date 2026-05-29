@@ -7,9 +7,9 @@ import {
   APPLICATION_FIELDS_STEP1_KEYS,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { Application, DeMinimisAid } from 'benefit-shared/types/application';
+import { Application, ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
-import { FormikErrors, FormikProps, FormikValues, useFormik } from 'formik';
+import { FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
@@ -87,6 +87,141 @@ const hasBusinessActivitiesOrIsCompany = (
   hasBusinessActivities === true ||
   organizationType === ORGANIZATION_TYPES.COMPANY;
 
+const createFormFields = (
+  t: TFunction,
+  translationsBase: string
+): Record<
+  APPLICATION_FIELDS_STEP1_KEYS,
+  Field<APPLICATION_FIELDS_STEP1_KEYS>
+> => {
+  const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
+    [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
+      format: 'FI99 9999 9999 9999 99',
+      stripVal: (val: string) => val.replace(/\s/g, ''),
+    },
+  };
+
+  const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
+  const fieldsPairs: [
+    APPLICATION_FIELDS_STEP1_KEYS,
+    Field<APPLICATION_FIELDS_STEP1_KEYS>
+  ][] = fieldsValues.map((fieldName) =>
+    mapFieldValues(fieldName, t, translationsBase, fieldMasks)
+  );
+
+  return fromPairs(fieldsPairs) as Record<
+    APPLICATION_FIELDS_STEP1_KEYS,
+    Field<APPLICATION_FIELDS_STEP1_KEYS>
+  >;
+};
+
+const useFormikInstance = (
+  application: Partial<Application>,
+  organizationType: ORGANIZATION_TYPES | undefined,
+  t: TFunction,
+  onNext: (values: Application) => Promise<ApplicationData | void>,
+  setDeMinimisAids: (aids: DeMinimisAid[]) => void
+): FormikProps<Partial<Application>> => {
+  const [initialValues, setInitialValues] = useState(application);
+  const isDirtyRef = React.useRef(false);
+
+  const onNextCallback = (values: FormikValues): Promise<void> =>
+    onNext(values as Application).then((submitOk): void => {
+      if (submitOk) setDeMinimisAids([]);
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      return undefined;
+    });
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: getValidationSchema(organizationType, t),
+    validateOnChange: true,
+    validateOnBlur: true,
+    enableReinitialize: false,
+    onSubmit: onNextCallback,
+  });
+
+  // Track dirty state in a ref
+  React.useEffect(() => {
+    isDirtyRef.current = formik.dirty;
+  }, [formik.dirty]);
+
+  // Update form values intelligently
+  React.useEffect(() => {
+    if (!isDirtyRef.current) {
+      setInitialValues(application);
+      formik.resetForm({ values: application });
+      return;
+    }
+
+    if (application.attachments !== formik.values.attachments) {
+      formik
+        .setFieldValue('attachments', application.attachments)
+        .catch((error) => {
+          console.error('Failed to update attachments:', error);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [application]);
+
+  return formik;
+};
+
+const useValidationHandlers = (
+  formik: FormikProps<Partial<Application>>,
+  isUnfinishedDeminimisAid: boolean,
+  translationsBase: string,
+  t: TFunction,
+  setIsSubmitted: (value: boolean) => void
+): {
+  checkDeMinimisError: () => boolean;
+  validateAndSubmit: () => Promise<void>;
+} => {
+  const checkDeMinimisError = React.useCallback(
+    (): boolean =>
+      shouldDisplayDeMinimisError(
+        isUnfinishedDeminimisAid,
+        translationsBase,
+        t
+      ),
+    [isUnfinishedDeminimisAid, translationsBase, t]
+  );
+
+  const focusOnFirstError = React.useCallback(
+    (errorFieldKey?: string): void => {
+      focusAndScroll(errorFieldKey || 'deMinimisAid');
+    },
+    []
+  );
+
+  const hasValidationErrors = React.useCallback(async (): Promise<boolean> => {
+    const errs = await formik.validateForm();
+    const errorFieldKey = Object.keys(errs)[0];
+    const hasDeMinimisError = checkDeMinimisError();
+
+    if (!errorFieldKey && !hasDeMinimisError) {
+      return false;
+    }
+
+    focusOnFirstError(errorFieldKey);
+    return true;
+  }, [formik, checkDeMinimisError, focusOnFirstError]);
+
+  const validateAndSubmit = React.useCallback(async (): Promise<void> => {
+    setIsSubmitted(true);
+
+    const hasErrors = await hasValidationErrors();
+    if (hasErrors) {
+      return;
+    }
+
+    await formik.validateForm();
+    await formik.submitForm();
+  }, [formik, hasValidationErrors, setIsSubmitted]);
+
+  return { checkDeMinimisError, validateAndSubmit };
+};
+
 const useApplicationFormStep1 = (
   application: Partial<Application>,
   isUnfinishedDeminimisAid: boolean
@@ -94,111 +229,68 @@ const useApplicationFormStep1 = (
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
   const { onNext, onSave, onQuietSave, onDelete } = useFormActions(application);
-
   const locale = useLocale();
   const translationsBase = 'common:applications.sections.company';
-  // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const { data } = useCompanyQuery();
   const organizationType = data?.organization_type;
 
-  const onNextCallback = (values: FormikValues): Promise<void> =>
-    onNext(values).then((submitOk): void => {
-      // Make sure context is cleared
-      if (submitOk) setDeMinimisAids([]);
-
-      // eslint-disable-next-line unicorn/no-useless-undefined
-      return undefined;
-    });
-
-  const formik = useFormik({
-    initialValues: application,
-    validationSchema: getValidationSchema(organizationType, t),
-    validateOnChange: true,
-    validateOnBlur: true,
-    enableReinitialize: true,
-    onSubmit: onNextCallback,
-  });
+  const formik = useFormikInstance(
+    application,
+    organizationType,
+    t,
+    onNext,
+    setDeMinimisAids
+  );
 
   const { values, touched, errors, setFieldValue } = formik;
 
-  const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
-    const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
-        format: 'FI99 9999 9999 9999 99',
-        stripVal: (val: string) => val.replace(/\s/g, ''),
-      },
-    };
-
-    const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
-    const fieldsPairs: [
-      APPLICATION_FIELDS_STEP1_KEYS,
-      Field<APPLICATION_FIELDS_STEP1_KEYS>
-    ][] = fieldsValues.map((fieldName) =>
-      mapFieldValues(fieldName, t, translationsBase, fieldMasks)
-    );
-
-    return fromPairs(fieldsPairs) as Record<
-      APPLICATION_FIELDS_STEP1_KEYS,
-      Field<APPLICATION_FIELDS_STEP1_KEYS>
-    >;
-  }, [t, translationsBase]);
+  const fields = React.useMemo(
+    () => createFormFields(t, translationsBase),
+    [t, translationsBase]
+  );
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
 
-  const checkForFieldValidity = (errs: FormikErrors<Application>): boolean => {
-    const errorFieldKey = Object.keys(errs)[0];
-
-    if (
-      errorFieldKey ||
-      shouldDisplayDeMinimisError(isUnfinishedDeminimisAid, translationsBase, t)
-    ) {
-      focusAndScroll(errorFieldKey || 'deMinimisAid');
-      return false;
-    }
-
-    void formik.validateForm();
-    return true;
-  };
-
-  const submitIfFormValid = (isFormValid: boolean): boolean => {
-    if (isFormValid) {
-      void formik.submitForm();
-      return true;
-    }
-    return false;
-  };
+  const { checkDeMinimisError, validateAndSubmit } = useValidationHandlers(
+    formik,
+    isUnfinishedDeminimisAid,
+    translationsBase,
+    t,
+    setIsSubmitted
+  );
 
   const handleSubmit = (): void => {
-    setIsSubmitted(true);
-    void formik
-      .validateForm()
-      .then((errs) => checkForFieldValidity(errs))
-      .then((isFormValid: boolean) => submitIfFormValid(isFormValid));
+    void validateAndSubmit();
   };
 
-  const handleSave = (): void | boolean =>
-    shouldDisplayDeMinimisError(isUnfinishedDeminimisAid, translationsBase, t)
-      ? false
-      : void onSave(values);
+  const canSaveApplication = React.useCallback(
+    (): boolean => !checkDeMinimisError(),
+    [checkDeMinimisError]
+  );
 
-  const handleQuietSave = async (): Promise<void> => {
+  const handleSave = React.useCallback(
+    (): void | boolean => (canSaveApplication() ? void onSave(values) : false),
+    [canSaveApplication, onSave, values]
+  );
+
+  const handleQuietSave = React.useCallback(async (): Promise<void> => {
     await onQuietSave(values);
-  };
+  }, [onQuietSave, values]);
 
-  const applicationId = String(values?.id);
+  const applicationId = values?.id ? String(values.id) : undefined;
   const handleDelete = applicationId
-    ? () => {
+    ? (): void => {
         void onDelete(applicationId);
       }
     : undefined;
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
-    void setFieldValue(fields.deMinimisAid.name, null);
-  }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
+    setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
+  }, [setDeMinimisAids, setFieldValue]);
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(
     Boolean(values.associationHasBusinessActivities),
