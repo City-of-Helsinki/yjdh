@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.2.0...kesaseteli-employer-v2.2.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* **ks,employer:** Welcome-paragraph translations ([275654a](https://github.com/City-of-Helsinki/yjdh/commit/275654a9bfd3ddf25798508fc3510dab61a659c9))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.1.0...kesaseteli-employer-v2.2.0) (2026-05-27)
 
 
