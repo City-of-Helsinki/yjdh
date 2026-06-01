@@ -326,15 +326,13 @@ def test_application_create_writes_audit_log(api_client, company):
 
     assert response.status_code == 201
 
-    audit_event = LogEntry.objects.first()
+    content_type = ContentType.objects.get_for_model(EmployerApplication)
+    audit_event = LogEntry.objects.filter(content_type=content_type).first()
     assert audit_event.remote_addr == "127.0.0.1"
     assert audit_event.actor_id == response.wsgi_request.user.id
     assert audit_event.actor_email == response.wsgi_request.user.email
     assert audit_event.action == LogEntry.Action.CREATE
     assert audit_event.object_pk == response.data["id"]
-    assert audit_event.content_type == ContentType.objects.get_for_model(
-        EmployerApplication
-    )
 
 
 @pytest.mark.django_db
@@ -355,15 +353,13 @@ def test_application_update_writes_audit_log(api_client, application):
     assert response.status_code == 200
     assert response.data["invoicer_name"] == "test2"
 
-    audit_event = LogEntry.objects.first()
+    content_type = ContentType.objects.get_for_model(EmployerApplication)
+    audit_event = LogEntry.objects.filter(content_type=content_type).first()
     assert audit_event.remote_addr == "127.0.0.1"
     assert audit_event.actor_id == response.wsgi_request.user.id
     assert audit_event.actor_email == response.wsgi_request.user.email
     assert audit_event.action == LogEntry.Action.UPDATE
     assert audit_event.object_pk == response.data["id"]
-    assert audit_event.content_type == ContentType.objects.get_for_model(
-        EmployerApplication
-    )
     assert audit_event.changes == {"invoicer_name": ["test1", "test2"]}
 
 
@@ -389,15 +385,14 @@ def test_application_update_writes_multichange_audit_log(api_client, application
     assert response.data["is_separate_invoicer"] is False
     assert response.data["contact_person_email"] == "new@example.org"
 
-    audit_event = LogEntry.objects.first()
+    content_type = ContentType.objects.get_for_model(EmployerApplication)
+    audit_event = LogEntry.objects.filter(content_type=content_type).first()
+
     assert audit_event.remote_addr == "127.0.0.1"
     assert audit_event.actor_id == response.wsgi_request.user.id
     assert audit_event.actor_email == response.wsgi_request.user.email
     assert audit_event.action == LogEntry.Action.UPDATE
     assert audit_event.object_pk == response.data["id"]
-    assert audit_event.content_type == ContentType.objects.get(
-        app_label="applications", model="employerapplication"
-    )
     assert audit_event.changes == {
         "contact_person_email": ["old@example.org", "new@example.org"],
         "invoicer_name": ["old name", "new name"],
@@ -439,7 +434,8 @@ def test_application_update_audit_log_excludes_summer_vouchers(api_client, appli
     assert response.status_code == 200
     assert len(response.data["summer_vouchers"]) == orig_summer_voucher_count + 1
 
-    audit_event = LogEntry.objects.first()
+    content_type = ContentType.objects.get_for_model(EmployerApplication)
+    audit_event = LogEntry.objects.filter(content_type=content_type).first()
 
     # Only the invoicer_name change is shown, no summer_vouchers changes:
     assert audit_event.changes == {
@@ -493,15 +489,14 @@ def test_application_delete_writes_audit_log(api_client, application):
 
     assert response.status_code == 204
 
-    audit_event = LogEntry.objects.first()
+    content_type = ContentType.objects.get_for_model(EmployerApplication)
+    audit_event = LogEntry.objects.filter(content_type=content_type).first()
+
     assert audit_event.remote_addr == "127.0.0.1"
     assert audit_event.actor_id == response.wsgi_request.user.id
     assert audit_event.actor_email == response.wsgi_request.user.email
     assert audit_event.action == LogEntry.Action.DELETE
     assert audit_event.object_pk == str(application.id)
-    assert audit_event.content_type == ContentType.objects.get_for_model(
-        EmployerApplication
-    )
 
 
 @pytest.mark.django_db

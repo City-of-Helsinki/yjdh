@@ -172,14 +172,17 @@ const useApplicationApi = <T = Application>(
          */
         onSuccess: (data) => {
           const { employer_summer_voucher_id, ...updatedData } = data;
-          updateEmployment(
-            draftApplication,
-            employmentIndex,
-            updatedData,
-            (app) => {
-              void onSuccess(app);
-            }
-          );
+          const summer_vouchers = [...(draftApplication.summer_vouchers ?? [])];
+          if (summer_vouchers.length > employmentIndex) {
+            summer_vouchers[employmentIndex] = {
+              ...summer_vouchers[employmentIndex],
+              ...updatedData,
+            };
+          }
+          void onSuccess({
+            ...draftApplication,
+            summer_vouchers,
+          } as unknown as Application);
         },
         /**
          * Error handler for fetching employment details.

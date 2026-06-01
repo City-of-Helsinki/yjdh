@@ -516,7 +516,15 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         validated_data["company"] = company
         validated_data["user"] = user
 
-        return super().create(validated_data)
+        application = super().create(validated_data)
+
+        # Create an empty summer voucher for the application.
+        # This ensures that the application always has at least one summer voucher.
+        # NOTE: This means simpler attachments handling in frontend.
+        if not application.summer_vouchers.exists():
+            EmployerSummerVoucher.objects.create(application=application)
+
+        return application
 
     def get_is_mine(self, obj):
         request = self.context.get("request")
