@@ -19,8 +19,13 @@ jest.mock('kesaseteli/employer/hooks/backend/useApplicationQuery', () =>
 jest.mock('kesaseteli/employer/hooks/backend/useDeleteApplicationQuery', () =>
   jest.fn()
 );
+const mockUpdateMutate = jest.fn();
+const mockUpdateMutateAsync = jest.fn();
 jest.mock('kesaseteli/employer/hooks/backend/useUpdateApplicationQuery', () =>
-  jest.fn()
+  jest.fn(() => ({
+    mutate: mockUpdateMutate,
+    mutateAsync: mockUpdateMutateAsync,
+  }))
 );
 
 jest.mock('shared/hooks/useErrorHandler', () => jest.fn(() => jest.fn()));
@@ -185,6 +190,45 @@ describe('useApplicationApi - fetchEmployment', () => {
     expect(showErrorToast).toHaveBeenCalledWith(
       'common:application.step1.employment_section.fetch_employment_error_title',
       'common:application.step1.employment_section.fetch_employment_error_message'
+    );
+  });
+
+  it('saves draft application first if voucher ID is missing, then fetches employment', async () => {
+    const { result } = renderHook(() => useApplicationApi());
+    const mockOnSuccess = jest.fn();
+    const draftApplication = {
+      summer_vouchers: [
+        { employee_name: 'John', summer_voucher_serial_number: '123' },
+      ],
+    } as Application;
+
+    mockUpdateMutateAsync.mockResolvedValueOnce({
+      ...draftApplication,
+      summer_vouchers: [
+        {
+          id: 'voucher-generated-id',
+          employee_name: 'John',
+          summer_voucher_serial_number: '123',
+        },
+      ],
+    });
+
+    await result.current.fetchEmployment(draftApplication, 0, mockOnSuccess);
+
+    expect(mockUpdateMutateAsync).toHaveBeenCalledTimes(1);
+    expect(mockUpdateMutateAsync).toHaveBeenCalledWith({
+      ...draftApplication,
+      status: 'draft',
+    });
+
+    expect(mockMutate).toHaveBeenCalledTimes(1);
+    expect(mockMutate).toHaveBeenCalledWith(
+      {
+        employee_name: 'John',
+        summer_voucher_serial_number: '123',
+        employer_summer_voucher_id: 'voucher-generated-id',
+      },
+      expect.anything()
     );
   });
 });

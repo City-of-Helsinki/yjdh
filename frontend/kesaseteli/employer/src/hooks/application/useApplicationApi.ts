@@ -40,7 +40,7 @@ export type ApplicationApi<T> = {
     application: DraftApplication,
     employmentIndex: number,
     onSuccess?: (app: Application) => void | Promise<void>
-  ) => void;
+  ) => void | Promise<void>;
   addEmployment: (
     application: DraftApplication,
     onSuccess?: (app: Application) => void | Promise<void>
@@ -149,18 +149,50 @@ const useApplicationApi = <T = Application>(
     );
   };
 
-  const fetchEmployment: ApplicationApi<T>['fetchEmployment'] = (
+  const fetchEmployment: ApplicationApi<T>['fetchEmployment'] = async (
     draftApplication: DraftApplication,
     employmentIndex: number,
     onSuccess = noop
   ) => {
-    const formDataVoucher = draftApplication.summer_vouchers?.[employmentIndex];
+    let currentApplication = draftApplication;
+    let formDataVoucher = currentApplication.summer_vouchers?.[employmentIndex];
+
+    // If the voucher does not have an ID yet (e.g. for drafts created prior to automatic
+    // empty voucher creation on the backend, or recovering client-only states), we must
+    // save the draft application first. This registers the voucher in the DB and returns
+    // a valid generated UUID, which the fetch endpoint requires to perform voucher validation.
+    if (!formDataVoucher?.id) {
+      try {
+        const savedApplication = await updateApplicationQuery.mutateAsync({
+          ...currentApplication,
+          status: 'draft',
+        });
+        currentApplication = getFormApplication(savedApplication);
+        formDataVoucher = currentApplication.summer_vouchers?.[employmentIndex];
+      } catch (error) {
+        handleUpdateError(error);
+        return;
+      }
+    }
+
+    if (!formDataVoucher?.id) {
+      showErrorToast(
+        t(
+          'common:application.step1.employment_section.fetch_employment_error_title'
+        ),
+        t(
+          'common:application.step1.employment_section.fetch_employment_error_message'
+        )
+      );
+      return;
+    }
+
     getEmploymentQuery.mutate(
       {
         employee_name: formDataVoucher?.employee_name ?? '',
         summer_voucher_serial_number:
           formDataVoucher?.summer_voucher_serial_number ?? '',
-        employer_summer_voucher_id: formDataVoucher?.id ?? '',
+        employer_summer_voucher_id: formDataVoucher.id,
       },
       {
         /**
@@ -172,7 +204,9 @@ const useApplicationApi = <T = Application>(
          */
         onSuccess: (data) => {
           const { employer_summer_voucher_id, ...updatedData } = data;
-          const summer_vouchers = [...(draftApplication.summer_vouchers ?? [])];
+          const summer_vouchers = [
+            ...(currentApplication.summer_vouchers ?? []),
+          ];
           if (summer_vouchers.length > employmentIndex) {
             summer_vouchers[employmentIndex] = {
               ...summer_vouchers[employmentIndex],
@@ -180,7 +214,7 @@ const useApplicationApi = <T = Application>(
             };
           }
           void onSuccess({
-            ...draftApplication,
+            ...currentApplication,
             summer_vouchers,
           } as unknown as Application);
         },
