@@ -1449,6 +1449,94 @@ def test_youth_application_fetch_employee_data_unallowed_methods(user_client):
     assert user_client.put(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
+def test_youth_application_fetch_employee_data_security_leak(user_client):
+    from applications.models import YouthSummerVoucher
+
+    # 1. Create a youth application/voucher that is accepted
+    youth_app_accepted = AcceptedYouthApplicationFactory(
+        first_name="John",
+        last_name="Doe",
+        youth_summer_voucher__summer_voucher_serial_number=123,
+    )
+    youth_voucher_accepted = youth_app_accepted.youth_summer_voucher
+
+    # Mark youth_voucher_accepted as used in another employer's application
+    EmployerSummerVoucherFactory(
+        youth_summer_voucher=youth_voucher_accepted,
+    )
+
+    # 2. Create a youth application/voucher that is NOT accepted (e.g. status is SUBMITTED)
+    # Note: YouthSummerVoucher is normally created only upon acceptance. Let's force-create one.
+    youth_app_submitted = YouthApplicationFactory(
+        status=YouthApplicationStatus.SUBMITTED,
+        first_name="Alice",
+        last_name="Smith",
+    )
+    YouthSummerVoucher.objects.create(
+        youth_application=youth_app_submitted,
+        summer_voucher_serial_number=456,
+    )
+
+    # 3. Create a new employer summer voucher for current user's request context
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
+
+    url = reverse("v1:youthapplication-fetch-employee-data")
+
+    # Scenario A: Wrong name + already used voucher (serial 123)
+    # -> Should return 404 (do not leak that the voucher is already used)
+    response = user_client.post(
+        url,
+        data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "Mary Jenkins",
+            "summer_voucher_serial_number": 123,
+        },
+    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    # Scenario B: Correct name + already used voucher (serial 123)
+    # -> Should return 400 with "summer_voucher_already_used" since they are authorized
+    response = user_client.post(
+        url,
+        data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "John Doe",
+            "summer_voucher_serial_number": 123,
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data == {"error_code": "summer_voucher_already_used"}
+
+    # Scenario C: Wrong name + not accepted application (serial 456)
+    # -> Should return 404 (do not leak that the application is not accepted)
+    response = user_client.post(
+        url,
+        data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "Mary Jenkins",
+            "summer_voucher_serial_number": 456,
+        },
+    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    # Scenario D: Correct name + not accepted application (serial 456)
+    # -> Should return 400 with "youth_application_not_accepted" since they are authorized
+    response = user_client.post(
+        url,
+        data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "Alice Smith",
+            "summer_voucher_serial_number": 456,
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data == {"error_code": "youth_application_not_accepted"}
+
+
 @pytest.mark.django_db
 def test_employer_application_list_no_company_lost_permission(api_client):
     """
