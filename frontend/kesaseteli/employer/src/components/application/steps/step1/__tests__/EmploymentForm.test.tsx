@@ -108,38 +108,6 @@ describe('EmploymentForm', () => {
       0,
       expect.any(Function)
     );
-    expect(mockUpdateApplication).not.toHaveBeenCalled();
-  });
-
-  it('updates application first and then fetches employee data when voucher id is missing', async () => {
-    const user = userEvent.setup();
-
-    mockUpdateApplication.mockImplementation(
-      (_currentValues: Application, onSuccess: (app: Application) => void) => {
-        onSuccess({
-          summer_vouchers: [{ id: 'server-voucher-id' }],
-        } as Application);
-      }
-    );
-
-    renderWithProviders(0, {
-      employee_name: 'Test',
-      summer_voucher_serial_number: '123',
-    });
-
-    await user.click(getFetchEmployeeDataButton());
-
-    expect(mockUpdateApplication).toHaveBeenCalledTimes(1);
-    expect(mockFetchEmployment).toHaveBeenCalledTimes(1);
-    expect(mockFetchEmployment).toHaveBeenCalledWith(
-      expect.objectContaining({
-        summer_vouchers: expect.arrayContaining([
-          expect.objectContaining({ id: 'server-voucher-id' }),
-        ]),
-      }),
-      0,
-      expect.any(Function)
-    );
   });
 
   it('applies updated voucher from fetch callback and marks employee data as fetched', async () => {

@@ -79,6 +79,36 @@ describe('useApplicationApi - fetchEmployment', () => {
     jest.clearAllMocks();
   });
 
+  it('calls onSuccess callback with updated application data on successful fetch', () => {
+    const { result } = renderHook(() => useApplicationApi());
+    const mockOnSuccess = jest.fn();
+    const draftApplication = {
+      summer_vouchers: [{ id: 'voucher-1', employee_name: 'John' }],
+    } as Application;
+
+    result.current.fetchEmployment(draftApplication, 0, mockOnSuccess);
+
+    expect(mockMutate).toHaveBeenCalledTimes(1);
+    const [, options] = mockMutate.mock.calls[0];
+
+    options.onSuccess({
+      employer_summer_voucher_id: 'voucher-1',
+      employee_name: 'John Doe',
+      employee_birthdate: '2000-01-01',
+    });
+
+    expect(mockOnSuccess).toHaveBeenCalledTimes(1);
+    expect(mockOnSuccess).toHaveBeenCalledWith({
+      summer_vouchers: [
+        {
+          id: 'voucher-1',
+          employee_name: 'John Doe',
+          employee_birthdate: '2000-01-01',
+        },
+      ],
+    });
+  });
+
   it('displays correct error toast when youth application is not accepted (400 - youth_application_not_accepted)', () => {
     const { result } = renderHook(() => useApplicationApi());
     const draftApplication = {

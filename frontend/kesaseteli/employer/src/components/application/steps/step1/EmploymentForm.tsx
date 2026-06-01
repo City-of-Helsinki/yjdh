@@ -22,7 +22,6 @@ import LinkText from 'shared/components/link-text/LinkText';
 import { POSTAL_CODE_REGEX } from 'shared/constants';
 import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
 import Application from 'shared/types/application';
-import DraftApplication from 'shared/types/draft-application';
 import Employment from 'shared/types/employment';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
@@ -74,7 +73,7 @@ const useFetchEmployeeData = (
   handleGetEmployeeData: () => void;
 } => {
   const { getValues, setValue, control } = useFormContext<Application>();
-  const { fetchEmployment, updateApplication } = useApplicationApi();
+  const { fetchEmployment } = useApplicationApi();
 
   // Use dedicated state instead of deriving from form values
   // This prevents the state from becoming false during form reset
@@ -100,35 +99,19 @@ const useFetchEmployeeData = (
   }, [employeePhoneNumber, employmentPostcode, employeeBirthdate]);
 
   const handleGetEmployeeData = useCallback((): void => {
-    const currentValues = getValues();
-    const voucher = currentValues.summer_vouchers[index];
-
-    const performFetch = (appData: DraftApplication | Application): void => {
-      const values = getValues();
-      // Ensure the voucher we are processing has the ID from the server (if it was just created)
-      const serverVoucherId = appData.summer_vouchers?.[index]?.id;
-      if (serverVoucherId) {
-        values.summer_vouchers[index].id = serverVoucherId;
+    const values = getValues();
+    void fetchEmployment(values, index, (app) => {
+      const updatedVoucher = app.summer_vouchers[index];
+      if (updatedVoucher) {
+        setValue(`summer_vouchers.${index}`, updatedVoucher, {
+          shouldDirty: true,
+          // Do not validate yet, since user has not had a chance to type anything.
+          shouldValidate: false, 
+        });
       }
-
-      void fetchEmployment(values, index, (app) => {
-        const updatedVoucher = app.summer_vouchers[index];
-        if (updatedVoucher) {
-          setValue(`summer_vouchers.${index}`, updatedVoucher, {
-            shouldDirty: true,
-            shouldValidate: true,
-          });
-        }
-        setIsEmployeeDataFetched(true);
-      });
-    };
-
-    if (voucher.id) {
-      performFetch(getValues());
-    } else {
-      updateApplication(currentValues, (app) => performFetch(app));
-    }
-  }, [getValues, fetchEmployment, index, setValue, updateApplication]);
+      setIsEmployeeDataFetched(true);
+    });
+  }, [getValues, fetchEmployment, index, setValue]);
 
   return {
     isEmployeeDataFetched,
