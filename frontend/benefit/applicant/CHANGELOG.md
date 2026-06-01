@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.1.0...benefit-applicant-v4.2.0) (2026-06-01)
+
+
+### Features
+
+* **benefit:** Applicant ui changes ([f49d08a](https://github.com/City-of-Helsinki/yjdh/commit/f49d08acc979f080daf6ddf784a2fb7b1d93ab53))
+* **benefit:** Jest tests for applicant ui ([90e0bc9](https://github.com/City-of-Helsinki/yjdh/commit/90e0bc99c335639240fb45f1da44b19f20339dc4))
+* **benefit:** Minor alterations to UI ([668937d](https://github.com/City-of-Helsinki/yjdh/commit/668937d769ab5cfb743e9f54e66c84076c25aeb4))
+
+
+### Bug Fixes
+
+* **benefit:** Business brief upload form reset fixed ([c179023](https://github.com/City-of-Helsinki/yjdh/commit/c179023959bdd658c8118027fac453aa17d801bb))
+* **benefit:** Empty strings removed from new translations ([436af21](https://github.com/City-of-Helsinki/yjdh/commit/436af217611f8566e588885e11bc3f0f44b0b8e2))
+* **benefit:** Number of employees validation and normalization ([c70586b](https://github.com/City-of-Helsinki/yjdh/commit/c70586b9f0b66e8b340527dbd94d1086f424bb71))
+* **benefit:** Refactoring other financial support ([43ebe65](https://github.com/City-of-Helsinki/yjdh/commit/43ebe658bedd82c562efb121f49e56cc084623ce))
+* **benefit:** Void operators and placeholders removed from applicant ([830a33a](https://github.com/City-of-Helsinki/yjdh/commit/830a33ad7dac6b8538e09199e812f9c6b2037ddb))
+
 ## [4.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.0.0...benefit-applicant-v4.1.0) (2026-05-28)
 
 
