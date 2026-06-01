@@ -94,6 +94,8 @@
         "fetch_employment_error_title": "Fel uppstod!",
         "fetch_employment_error_message": "Kunde inte hämta arbetstagarens uppgifter.",
         "fetch_employment_not_found_error_message": "Arbetstagarens information hittades inte.",
+        "fetch_employment_not_accepted_error_message": "Sommarsedeln är inte giltig ännu. Dess status måste vara godkänd.",
+        "fetch_employment_already_used_error_message": "Denna sommarsedel har redan använts i en annan ansökan.",
         "foreign_iban_note": "Finskt företag, men utländskt kontonummer? Då behöver vi tilläggsinformation för utbetalningen av ersättningen. Fyll i uppgifterna nedan:",
         "foreign_iban_notification_label": "Meddelande om utländskt kontonummer"
       }

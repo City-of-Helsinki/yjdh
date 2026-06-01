@@ -94,6 +94,8 @@
         "fetch_employment_error_title": "Error occured!",
         "fetch_employment_error_message": "Could not fetch the info of the employee.",
         "fetch_employment_not_found_error_message": "Employee's information was not found.",
+        "fetch_employment_not_accepted_error_message": "The summer voucher is not yet valid for attachment. Its status must be accepted.",
+        "fetch_employment_already_used_error_message": "This summer voucher has already been used in another application.",
         "foreign_iban_note": "Finnish company, but foreign account number? In that case we need more information for the payment of compensation. Please, fill in the information below:",
         "foreign_iban_notification_label": "Notice regarding foreign IBAN"
       }

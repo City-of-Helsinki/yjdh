@@ -83,6 +83,13 @@ const useApplicationApi = <T = Application>(
   const updateApplicationQuery = useUpdateApplicationQuery(applicationId);
   const deleteApplicationQuery = useDeleteApplicationQuery();
 
+  /**
+   * Handles errors occurring during application updates.
+   * If the error is a 400 validation error from Axios, maps the backend validation
+   * errors to the form fields. Otherwise, delegates to the default onError handler.
+   *
+   * @param error - The encountered error object.
+   */
   const handleUpdateError = (error: unknown): void => {
     if (
       setBackendValidationError &&
@@ -156,6 +163,13 @@ const useApplicationApi = <T = Application>(
         employer_summer_voucher_id: formDataVoucher?.id ?? '',
       },
       {
+        /**
+         * Success handler for fetching employment details.
+         * Updates the employment data in the draft application and calls the
+         * provided success callback.
+         *
+         * @param data - The employment data.
+         */
         onSuccess: (data) => {
           const { employer_summer_voucher_id, ...updatedData } = data;
           updateEmployment(
@@ -167,30 +181,46 @@ const useApplicationApi = <T = Application>(
             }
           );
         },
+        /**
+         * Error handler for fetching employment details.
+         * Maps specific Axios/HTTP error status codes and error codes to localized
+         * toast notification messages.
+         */
         onError: (error: unknown) => {
           // eslint-disable-next-line no-console
           console.error(error);
-          if (Axios.isAxiosError(error) && error.response?.status === 404) {
-            // Not found error
-            showErrorToast(
-              t(
-                'common:application.step1.employment_section.fetch_employment_error_title'
-              ),
-              t(
-                'common:application.step1.employment_section.fetch_employment_not_found_error_message'
-              )
-            );
-          } else {
-            // General error
-            showErrorToast(
-              t(
-                'common:application.step1.employment_section.fetch_employment_error_title'
-              ),
-              t(
-                'common:application.step1.employment_section.fetch_employment_error_message'
-              )
-            );
+
+          let errorSuffix = 'error_message';
+
+          if (Axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const errorCode = (
+              error.response?.data as Record<string, unknown> | undefined
+            )?.error_code;
+
+            if (
+              status === 400 &&
+              errorCode === 'youth_application_not_accepted'
+            ) {
+              errorSuffix = 'not_accepted_error_message';
+            } else if (
+              status === 400 &&
+              errorCode === 'summer_voucher_already_used'
+            ) {
+              errorSuffix = 'already_used_error_message';
+            } else if (status === 404) {
+              errorSuffix = 'not_found_error_message';
+            }
           }
+
+          showErrorToast(
+            t(
+              'common:application.step1.employment_section.fetch_employment_error_title'
+            ),
+            t(
+              `common:application.step1.employment_section.fetch_employment_${errorSuffix}`
+            )
+          );
         },
       }
     );

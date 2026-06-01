@@ -291,10 +291,12 @@ class YouthApplicationViewSet(ModelViewSet):
             youth_summer_voucher.youth_application if youth_summer_voucher else None
         )
 
+        # Check if employee name is a fuzzy match with the youth application's last name
         found_match = youth_application and is_last_name_fuzzy_match_in_full_name(
             last_name=youth_application.last_name, full_name=employee_name
         )
 
+        # Log access because of access to sensitive information:
         additional_data_for_access_audit_log = {
             "method": f"{self.__class__.__name__}.fetch_employee_data",
             "parameters": {
@@ -304,13 +306,51 @@ class YouthApplicationViewSet(ModelViewSet):
             },
         }
 
+        if (
+            youth_application
+            and youth_application.status != YouthApplicationStatus.ACCEPTED
+        ):
+            # YouthApplication is not yet accepted by handler.
+            LOGGER.warning(
+                f"YouthApplication {youth_application.pk} not yet accepted by handler"
+                f" - Cannot set employee data."
+            )
+            return Response(
+                data={"error_code": "youth_application_not_accepted"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if youth_summer_voucher:
+            # Check if already used in another employer's application
+            used_in_other = EmployerSummerVoucher.objects.filter(
+                youth_summer_voucher=youth_summer_voucher,
+            ).exclude(application__id=employer_summer_vouchers.first().application_id)
+
+            if used_in_other.exists():
+                LOGGER.warning(
+                    f"Summer voucher {youth_summer_voucher.pk} already used in other"
+                    f" application - Cannot set employee data."
+                )
+                return Response(
+                    data={"error_code": "summer_voucher_already_used"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         if not found_match:
-            # Manually log access because of access to sensitive information:
+            # No match found for employee name in YouthApplication
+
+            # Log access because no match was found:
             AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
                 actor=request.user,
                 actor_email=request.user.email,
                 content_type=ContentType.objects.get_for_model(YouthApplication),
                 additional_data=additional_data_for_access_audit_log,
+            )
+            youth_application_pk = youth_application.pk if youth_application else "None"
+            LOGGER.warning(
+                f"No match for employee name {employee_name} with voucher"
+                f" {voucher_number} in YouthApplication {youth_application_pk}"
+                f" - Cannot set employee data."
             )
             return Response(status=status.HTTP_404_NOT_FOUND)
 

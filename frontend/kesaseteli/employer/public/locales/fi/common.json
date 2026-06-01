@@ -94,6 +94,8 @@
         "fetch_employment_error_title": "Sattui virhe!",
         "fetch_employment_error_message": "Ei pystytty hakemaan työntekijän tietoja.",
         "fetch_employment_not_found_error_message": "Työntekijän tietoja ei löytynyt.",
+        "fetch_employment_not_accepted_error_message": "Kesäseteli ei ole vielä voimassa. Sen tilan on oltava hyväksytty.",
+        "fetch_employment_already_used_error_message": "Tämä kesäseteli on jo käytetty toisessa hakemuksessa.",
         "foreign_iban_note": "Suomalainen yritys, mutta ulkomaalainen tilinumero? Silloin tarvitsemme korvauksen maksua varten lisätietoa, täytä alla olevat tiedot:",
         "foreign_iban_notification_label": "Huomioitavaa ulkomaisesta tilinumerosta"
       }
