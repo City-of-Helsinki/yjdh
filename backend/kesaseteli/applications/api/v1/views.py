@@ -306,6 +306,24 @@ class YouthApplicationViewSet(ModelViewSet):
             },
         }
 
+        if not found_match:
+            # No match found for employee name in YouthApplication
+
+            # Log access because no match was found:
+            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+                actor=request.user,
+                actor_email=request.user.email,
+                content_type=ContentType.objects.get_for_model(YouthApplication),
+                additional_data=additional_data_for_access_audit_log,
+            )
+            youth_application_pk = youth_application.pk if youth_application else "None"
+            LOGGER.warning(
+                f"No match for employee name {employee_name} with voucher"
+                f" {voucher_number} in YouthApplication {youth_application_pk}"
+                f" - Cannot set employee data."
+            )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         if (
             youth_application
             and youth_application.status != YouthApplicationStatus.ACCEPTED
@@ -335,24 +353,6 @@ class YouthApplicationViewSet(ModelViewSet):
                     data={"error_code": "summer_voucher_already_used"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
-        if not found_match:
-            # No match found for employee name in YouthApplication
-
-            # Log access because no match was found:
-            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
-                actor=request.user,
-                actor_email=request.user.email,
-                content_type=ContentType.objects.get_for_model(YouthApplication),
-                additional_data=additional_data_for_access_audit_log,
-            )
-            youth_application_pk = youth_application.pk if youth_application else "None"
-            LOGGER.warning(
-                f"No match for employee name {employee_name} with voucher"
-                f" {voucher_number} in YouthApplication {youth_application_pk}"
-                f" - Cannot set employee data."
-            )
-            return Response(status=status.HTTP_404_NOT_FOUND)
 
         # Manually log access because of access to sensitive information:
         AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
