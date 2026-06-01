@@ -286,6 +286,13 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
 
         if not status or status == EmployerApplicationStatus.DRAFT:
             # newly created applications are always DRAFT
+            LOGGER.debug(
+                "Application is in DRAFT state, skipping validation",
+                extra={
+                    "data": data,
+                    "status": status,
+                },
+            )
             return
 
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS[:]
@@ -319,10 +326,22 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         """
         serial_number = data.get("summer_voucher_serial_number")
         if not serial_number:
+            LOGGER.debug(
+                "No summer voucher serial number provided.",
+                extra={
+                    "data": data,
+                },
+            )
             return
 
         voucher = YouthSummerVoucher.objects.get_by_serial_number(serial_number)
         if not voucher:
+            LOGGER.debug(
+                "No summer voucher found for serial number.",
+                extra={
+                    "serial_number": serial_number,
+                },
+            )
             return
 
         user_provided_name = data.get("employee_name")
@@ -497,6 +516,13 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         summer_vouchers_data = validated_data.pop("summer_vouchers", []) or []
         if request and request.method == "PUT":
+            LOGGER.debug(
+                "Updating employer application with PUT.",
+                extra={
+                    "application_id": instance.pk,
+                    "summer_vouchers_data": summer_vouchers_data,
+                },
+            )
             self._update_summer_vouchers(summer_vouchers_data, instance)
 
         new_status = validated_data.get("status")
@@ -504,6 +530,13 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             new_status == EmployerApplicationStatus.SUBMITTED
             and instance.status == EmployerApplicationStatus.DRAFT
         ):
+            LOGGER.debug(
+                "Changing application status from DRAFT to SUBMITTED. "
+                "Setting submitted_at.",
+                extra={
+                    "application_id": instance.pk,
+                },
+            )
             validated_data["submitted_at"] = timezone.now()
 
         return super().update(instance, validated_data)
@@ -518,10 +551,18 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
         application = super().create(validated_data)
 
+        LOGGER.debug(
+            "Created a new application.", extra={"application_id": application.pk}
+        )
+
         # Create an empty summer voucher for the application.
         # This ensures that the application always has at least one summer voucher.
         # NOTE: This means simpler attachments handling in frontend.
         if not application.summer_vouchers.exists():
+            LOGGER.debug(
+                "Creating an empty summer voucher for the application.",
+                extra={"application_id": application.pk},
+            )
             EmployerSummerVoucher.objects.create(application=application)
 
         return application
@@ -543,6 +584,13 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         )
 
         if not serializer.is_valid():
+            LOGGER.debug(
+                "Summer voucher serializer validation failed.",
+                extra={
+                    "summer_vouchers_data": summer_vouchers_data,
+                    "errors": serializer.errors,
+                },
+            )
             raise serializers.ValidationError(
                 format_lazy(
                     _("Reading summer voucher data failed: {errors}"),
@@ -556,6 +604,14 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             summer_voucher_item["ordering"] = (
                 idx  # use the ordering defined in the JSON sent by the client
             )
+
+        LOGGER.debug(
+            "Saving employer application summer vouchers - validated.",
+            extra={
+                "application_id": application.pk,
+                "summer_vouchers": serializer.validated_data,
+            },
+        )
         serializer.save()
 
     def validate(self, data):
@@ -583,6 +639,13 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         if not data.get("status") or data["status"] == EmployerApplicationStatus.DRAFT:
             # newly created applications are always DRAFT
             return
+
+        LOGGER.debug(
+            "Validating required fields for submitted application.",
+            extra={
+                "application": data,
+            },
+        )
 
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if data.get("is_separate_invoicer"):
@@ -621,6 +684,12 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
           the backend would not know that it's meant to be a single document.
         * This validator makes sure that there is at least one of each attachment type.
         """
+        LOGGER.debug(
+            "Validating attachments for application.",
+            extra={
+                "application": self.instance,
+            },
+        )
         for summer_voucher in self.instance.summer_vouchers.all():
             if not summer_voucher.attachments.exists():
                 raise serializers.ValidationError(
@@ -639,6 +708,18 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
                         attachment_types=", ".join(required_attachment_types),
                     )
                 )
+            LOGGER.debug(
+                "Attachments validated successfully for summer voucher.",
+                extra={
+                    "summer_voucher": summer_voucher,
+                },
+            )
+        LOGGER.debug(
+            "All attachments validated successfully for application.",
+            extra={
+                "application": self.instance,
+            },
+        )
 
 
 class SchoolSerializer(serializers.ModelSerializer):
