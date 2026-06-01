@@ -1,5 +1,32 @@
 # Changelog
 
+## [5.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.1.0...benefit-handler-v5.2.0) (2026-06-01)
+
+
+### Features
+
+* **benefit,handler:** Upgrade hds-react to 5.0.0 ([10b7e32](https://github.com/City-of-Helsinki/yjdh/commit/10b7e32e305985862ae9d0896ad3d09eccaaf697))
+* **benefit:** Applications with requested payslips ([4dc99a5](https://github.com/City-of-Helsinki/yjdh/commit/4dc99a5319abc4b96bb98530e83773cc87dbfaac))
+* **benefit:** Handler ui changes for new fields ([0d5e791](https://github.com/City-of-Helsinki/yjdh/commit/0d5e791ed728bab089f035ebd8a4f89402ddb38f))
+* **benefit:** Minor alterations to UI ([668937d](https://github.com/City-of-Helsinki/yjdh/commit/668937d769ab5cfb743e9f54e66c84076c25aeb4))
+
+
+### Bug Fixes
+
+* **benefit:** Empty strings removed from new translations ([436af21](https://github.com/City-of-Helsinki/yjdh/commit/436af217611f8566e588885e11bc3f0f44b0b8e2))
+* **benefit:** Fix accordion component styling and size prop ([5354f46](https://github.com/City-of-Helsinki/yjdh/commit/5354f46eedb0ce31e3f998f08635f9e2cb4475d8))
+* **benefit:** Fixes from copilot ([8e066ec](https://github.com/City-of-Helsinki/yjdh/commit/8e066ecf4011ac8c721b24b2de9f65bd905b53fe))
+* **benefit:** Handler number of employees normalization ([04383f2](https://github.com/City-of-Helsinki/yjdh/commit/04383f2f3d0bd3c5fa2801507b8b1be6540b50aa))
+* **benefit:** Set APPLICATION_START_DATE to start of current date ([7007471](https://github.com/City-of-Helsinki/yjdh/commit/7007471c446ddcd602c4577b43336da0308636ee))
+* **benefit:** Small fixes to handler ui ([0c305c2](https://github.com/City-of-Helsinki/yjdh/commit/0c305c2bd58037895fe1a160002654f5540ec7ff))
+* **benefit:** Update tag selector styles for HDS CSS modules ([a575f12](https://github.com/City-of-Helsinki/yjdh/commit/a575f123a07c0620537810fa664674600cd6fb2e))
+* **shared-modal:** Use Extract for dialog-compatible variants ([7e1855d](https://github.com/City-of-Helsinki/yjdh/commit/7e1855d35298de8d8a61eaf3e38890b20860c40c))
+
+
+### Dependencies
+
+* Bump uuid from 8.3.2 to 14.0.0 in /frontend ([#4020](https://github.com/City-of-Helsinki/yjdh/issues/4020)) ([a7162b2](https://github.com/City-of-Helsinki/yjdh/commit/a7162b2e04aa8f2d93d6bf26b1c5613b5048a127))
+
 ## [5.1.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.0.1...benefit-handler-v5.1.0) (2026-04-29)
 
 
