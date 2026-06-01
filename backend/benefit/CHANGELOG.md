@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.20.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.19.1...benefit-backend-v2.20.0) (2026-06-01)
+
+
+### Features
+
+* **benefit:** Add attachment for company business brief ([42747e3](https://github.com/City-of-Helsinki/yjdh/commit/42747e3029f95382d991261a1dc1cb7b328921e3))
+* **benefit:** Applicant pdf summary printout ([ba8763c](https://github.com/City-of-Helsinki/yjdh/commit/ba8763c7ce6b0a3193b1d694a9e1a47f0294dc55))
+* **benefit:** Application cloning functionality ([86ca7eb](https://github.com/City-of-Helsinki/yjdh/commit/86ca7eb5561c26751e418b487237e723f5b12b31))
+* **benefit:** Minor alterations to UI ([668937d](https://github.com/City-of-Helsinki/yjdh/commit/668937d769ab5cfb743e9f54e66c84076c25aeb4))
+* **benefit:** Models and tests for new fields ([695d33b](https://github.com/City-of-Helsinki/yjdh/commit/695d33be0eb819a2246ae7e336f75cce07903b1b))
+
+
+### Bug Fixes
+
+* **benefit:** Cloning fixed to continue on read errors ([3abcb1d](https://github.com/City-of-Helsinki/yjdh/commit/3abcb1dc56c40da4fc35a7609e45c3f3b73e101e))
+
 ## [2.19.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.19.0...benefit-backend-v2.19.1) (2026-05-28)
 
 
