@@ -2,7 +2,7 @@
   "backend/benefit": "2.19.1",
   "backend/kesaseteli": "1.15.0",
   "frontend/benefit/handler": "5.1.0",
-  "frontend/benefit/applicant": "4.1.0",
+  "frontend/benefit/applicant": "4.2.0",
   "frontend/kesaseteli/employer": "2.2.0",
   "frontend/kesaseteli/handler": "2.1.0",
   "frontend/kesaseteli/youth": "2.1.0"
