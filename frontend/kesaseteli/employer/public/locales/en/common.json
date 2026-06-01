@@ -43,7 +43,7 @@
   },
   "dashboard": {
     "header": "Employer summer voucher applications",
-    "welcome": "Welcome to the employer interface of the Summer Job Voucher service. Here you can track the status of your applications and make new ones.",
+    "welcome": "Welcome to the employer´s e-service of the Summer Job Voucher. Here you can track the status of your applications and make new ones.",
     "info": "Read more about the service <lnk href=\"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/\" target=\"_blank\" rel=\"noopener noreferrer\">here</lnk>.",
     "noApplications": "No previous applications.",
     "createApplicationGuidance": "Here you can create a new application to request a summer voucher.",
