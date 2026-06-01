@@ -69,6 +69,32 @@ type Options<T> = {
   select?: (application: Application) => T;
 };
 
+/**
+ * Maps Axios/HTTP errors to their corresponding localized translation error message key suffixes.
+ *
+ * @param error - The encountered error object.
+ * @returns The message translation suffix.
+ */
+const getFetchEmploymentErrorSuffix = (error: unknown): string => {
+  if (Axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    const errorCode = (
+      error.response?.data as Record<string, unknown> | undefined
+    )?.error_code;
+
+    if (status === 400 && errorCode === 'youth_application_not_accepted') {
+      return 'not_accepted_error_message';
+    }
+    if (status === 400 && errorCode === 'summer_voucher_already_used') {
+      return 'already_used_error_message';
+    }
+    if (status === 404) {
+      return 'not_found_error_message';
+    }
+  }
+  return 'error_message';
+};
+
 const useApplicationApi = <T = Application>(
   options?: Options<T>
 ): ApplicationApi<T> => {
@@ -227,28 +253,7 @@ const useApplicationApi = <T = Application>(
           // eslint-disable-next-line no-console
           console.error(error);
 
-          let errorSuffix = 'error_message';
-
-          if (Axios.isAxiosError(error)) {
-            const status = error.response?.status;
-            const errorCode = (
-              error.response?.data as Record<string, unknown> | undefined
-            )?.error_code;
-
-            if (
-              status === 400 &&
-              errorCode === 'youth_application_not_accepted'
-            ) {
-              errorSuffix = 'not_accepted_error_message';
-            } else if (
-              status === 400 &&
-              errorCode === 'summer_voucher_already_used'
-            ) {
-              errorSuffix = 'already_used_error_message';
-            } else if (status === 404) {
-              errorSuffix = 'not_found_error_message';
-            }
-          }
+          const errorSuffix = getFetchEmploymentErrorSuffix(error);
 
           showErrorToast(
             t(

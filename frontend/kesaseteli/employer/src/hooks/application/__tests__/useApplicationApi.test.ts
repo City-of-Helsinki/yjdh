@@ -84,14 +84,14 @@ describe('useApplicationApi - fetchEmployment', () => {
     jest.clearAllMocks();
   });
 
-  it('calls onSuccess callback with updated application data on successful fetch', () => {
+  it('calls onSuccess callback with updated application data on successful fetch', async () => {
     const { result } = renderHook(() => useApplicationApi());
     const mockOnSuccess = jest.fn();
     const draftApplication = {
       summer_vouchers: [{ id: 'voucher-1', employee_name: 'John' }],
     } as Application;
 
-    result.current.fetchEmployment(draftApplication, 0, mockOnSuccess);
+    await result.current.fetchEmployment(draftApplication, 0, mockOnSuccess);
 
     expect(mockMutate).toHaveBeenCalledTimes(1);
     const [, options] = mockMutate.mock.calls[0];
@@ -114,13 +114,13 @@ describe('useApplicationApi - fetchEmployment', () => {
     });
   });
 
-  it('displays correct error toast when youth application is not accepted (400 - youth_application_not_accepted)', () => {
+  it('displays correct error toast when youth application is not accepted (400 - youth_application_not_accepted)', async () => {
     const { result } = renderHook(() => useApplicationApi());
     const draftApplication = {
       summer_vouchers: [{ id: 'v-1' }],
     } as Application;
 
-    result.current.fetchEmployment(draftApplication, 0);
+    await result.current.fetchEmployment(draftApplication, 0);
     const [, options] = mockMutate.mock.calls[0];
 
     options.onError(createAxiosError(400, 'youth_application_not_accepted'));
@@ -131,13 +131,13 @@ describe('useApplicationApi - fetchEmployment', () => {
     );
   });
 
-  it('displays correct error toast when summer voucher is already used (400 - summer_voucher_already_used)', () => {
+  it('displays correct error toast when summer voucher is already used (400 - summer_voucher_already_used)', async () => {
     const { result } = renderHook(() => useApplicationApi());
     const draftApplication = {
       summer_vouchers: [{ id: 'v-1' }],
     } as Application;
 
-    result.current.fetchEmployment(draftApplication, 0);
+    await result.current.fetchEmployment(draftApplication, 0);
     const [, options] = mockMutate.mock.calls[0];
 
     options.onError(createAxiosError(400, 'summer_voucher_already_used'));
@@ -148,13 +148,13 @@ describe('useApplicationApi - fetchEmployment', () => {
     );
   });
 
-  it('displays correct error toast when employee info is not found (404)', () => {
+  it('displays correct error toast when employee info is not found (404)', async () => {
     const { result } = renderHook(() => useApplicationApi());
     const draftApplication = {
       summer_vouchers: [{ id: 'v-1' }],
     } as Application;
 
-    result.current.fetchEmployment(draftApplication, 0);
+    await result.current.fetchEmployment(draftApplication, 0);
     const [, options] = mockMutate.mock.calls[0];
 
     options.onError(createAxiosError(404));
@@ -165,13 +165,13 @@ describe('useApplicationApi - fetchEmployment', () => {
     );
   });
 
-  it('displays generic error toast for other Axios errors or general errors', () => {
+  it('displays generic error toast for other Axios errors or general errors', async () => {
     const { result } = renderHook(() => useApplicationApi());
     const draftApplication = {
       summer_vouchers: [{ id: 'v-1' }],
     } as Application;
 
-    result.current.fetchEmployment(draftApplication, 0);
+    await result.current.fetchEmployment(draftApplication, 0);
     const [, options] = mockMutate.mock.calls[0];
 
     // Generic Axios error
