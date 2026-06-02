@@ -33,12 +33,15 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ file, scale }) => {
 
   const theme = useTheme();
 
+  const pdfOptions = React.useMemo(() => ({ withCredentials: true }), []);
+
   return (
     <>
       <$ViewerWrapper>
         <Document
           onLoadSuccess={handleDocumentLoadSuccess}
           file={file}
+          options={pdfOptions}
           className="Document"
         >
           <Page pageNumber={currentPage} scale={scale} />
