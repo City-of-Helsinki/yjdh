@@ -690,6 +690,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
                 ApplicationBatchStatus.DECIDED_ACCEPTED,
                 ApplicationBatchStatus.DECIDED_REJECTED,
                 ApplicationBatchStatus.SENT_TO_TALPA,
+                ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA,
                 ApplicationBatchStatus.COMPLETED,
             ]
         else:
