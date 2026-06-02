@@ -16,7 +16,7 @@ import {
   $Avatar,
   $DataColumn,
   $DataHeader,
-  $DataValue,
+  $DataValue, $ItemActions,
   $ItemContent,
   $ListItem,
   $ListItemWrapper,
@@ -86,7 +86,8 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
               </$StatusText>
             </$StatusDataValue>
           </$StatusDataColumn>
-
+        </$ItemContent>
+        <$ItemActions>
           <$DataColumn>
             <Button
               iconStart={<IconPen />}
@@ -99,7 +100,7 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
               {t(`${translationBase}.secondInstalments.button`)}
             </Button>
           </$DataColumn>
-        </$ItemContent>
+        </$ItemActions>
       </$ListItem>
     </$ListItemWrapper>
   );
