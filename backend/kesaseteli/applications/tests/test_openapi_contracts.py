@@ -185,8 +185,9 @@ def test_fetch_employee_data_contract_restricted_vtj_home_municipality(
     Regression test that employee lookup works when home municipality is missing.
 
     Employers find accepted applicants by last name and summer voucher number.
-    With turvakielto, we may not know the home municipality. The API must still
-    return 200 and the other employee details.
+    With turvakielto, VTJ withholds home municipality and the model exposes that
+    as an empty string. The API must still return 200 and the other employee
+    details.
 
     Further context in PR #4089:
     https://github.com/City-of-Helsinki/yjdh/pull/4089
@@ -222,7 +223,7 @@ def test_fetch_employee_data_contract_restricted_vtj_home_municipality(
 
     assert response.status_code == status.HTTP_200_OK
     response_body = response.json()
-    assert response_body["employee_home_city"] is None
+    assert response_body["employee_home_city"] == ""
     response_serializer = YouthApplicationFetchEmployeeDataOutputSerializer(
         data=response_body
     )
