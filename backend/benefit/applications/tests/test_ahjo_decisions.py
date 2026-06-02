@@ -39,8 +39,8 @@ def test_replace_accepted_decision_template_placeholders(
 
     assert range_1 in replaced_template
     assert range_2 in replaced_template
-    assert (str(sum_1) + " euroa") in replaced_template
-    assert (str(sum_2) + " euroa") in replaced_template
+    assert (str(int(sum_1)) + " euroa") in replaced_template
+    assert (str(int(sum_2)) + " euroa") in replaced_template
 
 
 @pytest.mark.django_db

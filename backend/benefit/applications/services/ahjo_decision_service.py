@@ -51,9 +51,9 @@ def replace_decision_template_placeholders(
             ),
             benefit_date_range=f"{start_date_str} - {end_date_str}",
             benefit_instalment1_range=benefit_instalment1_range,
-            benefit_instalment1_sum=benefit_instalment1_sum,
+            benefit_instalment1_sum=int(benefit_instalment1_sum),
             benefit_instalment2_range=benefit_instalment2_range,
-            benefit_instalment2_sum=benefit_instalment2_sum,
+            benefit_instalment2_sum=int(benefit_instalment2_sum),
         )
     except AhjoDecisionError as e:
         raise ValueError(f"Error in preparing the decision proposal template: {e}")
