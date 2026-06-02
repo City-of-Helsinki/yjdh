@@ -123,7 +123,7 @@ COPY --chown=default:root --from=staticbuilder app/next.config.js ./
 COPY --chown=default:root --from=staticbuilder app/shared/src/server/next-server.js shared/src/server/
 
 # Copy public directory
-COPY --chown=default:root $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
+COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
