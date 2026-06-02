@@ -142,6 +142,8 @@ const restoreVoucherData = (
     });
   }
 
+  const isFetched = Boolean(restoredSerialNumber || restoredEmployeeName);
+
   const employeeFields = [
     'employee_phone_number',
     'employee_home_city',
@@ -154,7 +156,10 @@ const restoreVoucherData = (
 
   employeeFields.forEach((key) => {
     updatedFields[key] =
-      v[key] || requestVoucher?.[key] || MOCKED_EMPLOYEE_DATA[key] || '';
+      v[key] ||
+      requestVoucher?.[key] ||
+      (isFetched ? MOCKED_EMPLOYEE_DATA[key] : '') ||
+      '';
   });
 
   return {
