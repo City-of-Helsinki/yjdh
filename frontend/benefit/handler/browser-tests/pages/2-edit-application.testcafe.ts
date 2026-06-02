@@ -121,7 +121,6 @@ test('Open form and edit fields, then submit', async (t: TestController) => {
     form.employee.otherExpenses
   );
 
-  await t.click('[for="paySubsidyGranted.null"]');
 
   await clearAndFill(
     t,

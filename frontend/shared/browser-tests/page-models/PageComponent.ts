@@ -44,13 +44,13 @@ abstract class PageComponent {
   );
 
   protected constructor(datatestId?: string) {
-    this.componentSelector = this.screen.findByTestId(
-      datatestId ?? MAIN_CONTENT_ID
+    this.componentSelector = Selector(
+      `[data-testid="${datatestId ?? MAIN_CONTENT_ID}"]`
     );
     this.component = this.within(this.componentSelector);
   }
 
-  loadingSpinners = this.screen.findAllByTestId('hidden-loading-indicator');
+  loadingSpinners = Selector('[data-testid="hidden-loading-indicator"]');
 
   public async isLoadingSpinnerNoMorePresent(timeout?: number): Promise<void> {
     return (
@@ -67,7 +67,7 @@ abstract class PageComponent {
    */
   public async isLoaded(timeout?: number): Promise<void> {
     await this.isLoadingSpinnerNoMorePresent(timeout);
-    return this.expect(this.componentSelector);
+    return this.expect(this.componentSelector, timeout);
   }
 
   /** expectation utility */
@@ -76,10 +76,12 @@ abstract class PageComponent {
     selector: Selector | SelectorPromise,
     timeout?: number
   ): Promise<void> {
+    const exists = await selector.exists;
+
     return (
       t
         // eslint-disable-next-line security/detect-non-literal-fs-filename
-        .expect(selector.exists)
+        .expect(exists)
         .ok(await getErrorMessage(t), { timeout })
     );
   }
@@ -88,10 +90,12 @@ abstract class PageComponent {
     selector: Selector | SelectorPromise,
     timeout?: number
   ): Promise<void> {
+    const exists = await selector.exists;
+
     return (
       t
         // eslint-disable-next-line security/detect-non-literal-fs-filename
-        .expect(selector.exists)
+        .expect(exists)
         .notOk(await getErrorMessage(t), { timeout })
     );
   }

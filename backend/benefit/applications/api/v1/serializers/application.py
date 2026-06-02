@@ -769,6 +769,11 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ):
             data["association_immediate_manager_check"] = None
 
+    def _normalize_pay_subsidy_granted(self, pay_subsidy_granted, data):
+        data["pay_subsidy_granted"] = PaySubsidyGranted.NOT_GRANTED
+        data["pay_subsidy_percent"] = None
+        data["additional_pay_subsidy_percent"] = None
+
     def _validate_de_minimis_aid_set(
         self,
         company,

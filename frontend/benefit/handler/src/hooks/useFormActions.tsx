@@ -11,7 +11,6 @@ import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
   PAY_SUBSIDY_GRANTED,
-  PAY_SUBSIDY_OPTIONS,
 } from 'benefit-shared/constants';
 import {
   ApplicationData,
@@ -318,7 +317,6 @@ const useFormActions = (
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
 
     const {
-      paySubsidyGranted,
       startDate,
       endDate,
       apprenticeshipProgram,
@@ -328,11 +326,6 @@ const useFormActions = (
       paySubsidies,
       companyNumberOfEmployees,
     } = currentValues;
-
-    const paySubsidyPercent =
-      paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
-        ? null
-        : PAY_SUBSIDY_OPTIONS[0];
 
     if (employee) {
       employee.commissionAmount = employee.commissionAmount
@@ -354,7 +347,8 @@ const useFormActions = (
 
     const normalizedValues = {
       ...currentValues,
-      paySubsidyPercent,
+      paySubsidyGranted: PAY_SUBSIDY_GRANTED.NOT_GRANTED,
+      paySubsidyPercent: null,
       deMinimisAid: deMinimisAids.length > 0,
       employee: employee || {},
       startDate: startDate
@@ -366,10 +360,7 @@ const useFormActions = (
       paperApplicationDate: paperApplicationDate
         ? convertToBackendDateFormat(parseDate(paperApplicationDate))
         : undefined,
-      apprenticeshipProgram:
-        paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
-          ? null
-          : apprenticeshipProgram,
+      apprenticeshipProgram,
       companyNumberOfEmployees:
         companyNumberOfEmployees === ''
           ? null
