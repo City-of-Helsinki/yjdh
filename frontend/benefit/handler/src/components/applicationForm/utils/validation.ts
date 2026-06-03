@@ -16,7 +16,6 @@ import {
   EMPLOYEE_KEYS,
   MAX_MONTHLY_PAY,
   ORGANIZATION_TYPES,
-  PAY_SUBSIDY_GRANTED,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit-shared/constants';
 import {
@@ -209,23 +208,9 @@ export const getValidationSchema = (
       Yup.string(),
     [APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]:
       Yup.boolean().nullable().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-    [APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED]: Yup.mixed().oneOf(
-      Object.values(PAY_SUBSIDY_GRANTED),
-      t(VALIDATION_MESSAGE_KEYS.INVALID)
-    ),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
-      .when(APPLICATION_FIELD_KEYS.PAY_SUBSIDY_GRANTED, {
-        is: (value?: PAY_SUBSIDY_GRANTED) =>
-          value &&
-          [
-            PAY_SUBSIDY_GRANTED.GRANTED,
-            PAY_SUBSIDY_GRANTED.GRANTED_AGED,
-          ].includes(value),
-        then: Yup.boolean()
-          .nullable()
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-      }),
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION]: Yup.string()
       .trim()
       .max(

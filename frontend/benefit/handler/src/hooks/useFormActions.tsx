@@ -304,8 +304,7 @@ const useFormActions = (
     values: Partial<Application>
   ): TrainingCompensation[] => {
     if (
-      values.apprenticeshipProgram &&
-      values.paySubsidyGranted !== PAY_SUBSIDY_GRANTED.NOT_GRANTED
+      values.apprenticeshipProgram
     ) {
       // Return the training compensation values as they are
       return values?.trainingCompensations || [];
@@ -329,8 +328,13 @@ const useFormActions = (
       companyNumberOfEmployees,
     } = currentValues;
 
+    const normalizedPaySubsidyGranted =
+      paySubsidyGranted === null
+        ? PAY_SUBSIDY_GRANTED.NOT_GRANTED
+        : paySubsidyGranted;
+
     const paySubsidyPercent =
-      paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
+      normalizedPaySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
         ? null
         : PAY_SUBSIDY_OPTIONS[0];
 
@@ -354,6 +358,7 @@ const useFormActions = (
 
     const normalizedValues = {
       ...currentValues,
+      paySubsidyGranted: normalizedPaySubsidyGranted,
       paySubsidyPercent,
       deMinimisAid: deMinimisAids.length > 0,
       employee: employee || {},
@@ -366,10 +371,7 @@ const useFormActions = (
       paperApplicationDate: paperApplicationDate
         ? convertToBackendDateFormat(parseDate(paperApplicationDate))
         : undefined,
-      apprenticeshipProgram:
-        paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
-          ? null
-          : apprenticeshipProgram,
+      apprenticeshipProgram,
       companyNumberOfEmployees:
         companyNumberOfEmployees === ''
           ? null
