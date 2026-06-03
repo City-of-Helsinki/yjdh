@@ -76,7 +76,9 @@ const buildApplication = (overrides: Partial<Application> = {}): Application =>
 
 const buildContextValue = (
   handledApplication: HandledAplication | null = null,
-  setHandledApplication: (app: HandledAplication | null) => void = noop
+  setHandledApplication: React.Dispatch<
+    React.SetStateAction<HandledAplication | null>
+  > = noop
 ): AppContextType => ({
   isNavigationVisible: false,
   isFooterVisible: true,
@@ -103,7 +105,9 @@ const validHandledApplication: HandledAplication = {
 type MakeComponentOptions = {
   props?: Partial<Props>;
   handledApplication?: HandledAplication | null;
-  setHandledApplication?: (app: HandledAplication | null) => void;
+  setHandledApplication?: React.Dispatch<
+    React.SetStateAction<HandledAplication | null>
+  >;
 };
 
 const makeComponent = ({

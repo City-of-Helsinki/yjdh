@@ -34,11 +34,6 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
 
   const isNewAhjoMode = useDetermineAhjoMode();
 
-  const handledApplicationRef = React.useRef(handledApplication);
-  React.useEffect(() => {
-    handledApplicationRef.current = handledApplication;
-  }, [handledApplication]);
-
   const needsIndustryCode =
     handledApplication?.grantedAsDeMinimisAid === true &&
     !data?.company?.industryCode;
@@ -299,17 +294,17 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                         spaceIndex === -1
                           ? ''
                           : trimmed.slice(spaceIndex).trim();
-                      setHandledApplication({
-                        ...handledApplication,
+                      setHandledApplication((prev) => ({
+                        ...prev,
                         industryCode: code,
                         industryDescription: description || undefined,
-                      });
+                      }));
                     }}
                     onBlur={() =>
-                      setHandledApplication({
-                        ...handledApplicationRef.current,
+                      setHandledApplication((prev) => ({
+                        ...prev,
                         industryCodeTouched: true,
-                      })
+                      }))
                     }
                     required
                     invalid={
