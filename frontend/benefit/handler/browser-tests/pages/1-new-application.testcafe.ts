@@ -92,7 +92,6 @@ test('Fill form and submit', async (t: TestController) => {
     form.employee.otherExpenses
   );
 
-  await t.click('[for="paySubsidyGranted.granted"]');
   await t.click('[for="apprenticeshipProgramTrue"]');
 
   await t.typeText(
@@ -103,7 +102,6 @@ test('Fill form and submit', async (t: TestController) => {
   await uploadFileAttachment(t, '#upload_attachment_full_application');
   await uploadFileAttachment(t, '#upload_attachment_employment_contract');
   await uploadFileAttachment(t, '#upload_attachment_education_contract');
-  await uploadFileAttachment(t, '#upload_attachment_pay_subsidy_decision');
 
   /**
    * Click through all applicant terms.
