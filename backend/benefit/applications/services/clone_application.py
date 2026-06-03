@@ -62,6 +62,7 @@ def clone_application_based_on_other(
         company_bank_account_number=application_base.company_bank_account_number,
         company_number_of_employees=application_base.company_number_of_employees,
         company_business_brief=application_base.company_business_brief,
+        purchased_service=application_base.purchased_service,
         company_contact_person_email=application_base.company_contact_person_email,
         company_contact_person_first_name=application_base.company_contact_person_first_name,
         company_contact_person_last_name=application_base.company_contact_person_last_name,
@@ -76,6 +77,8 @@ def clone_application_based_on_other(
         official_company_city=application_base.official_company_city,
         official_company_postcode=application_base.official_company_postcode,
         other_financial_support_for_employment=application_base.other_financial_support_for_employment,
+        other_subsidised_employed=application_base.other_subsidised_employed,
+        other_subsidised_number=application_base.other_subsidised_number,
         role_of_employee_in_organization=application_base.role_of_employee_in_organization,
         use_alternative_address=application_base.use_alternative_address,
         employer_assurance=(
@@ -114,6 +117,8 @@ def clone_application_based_on_other(
         employee.save()
         cloned_application.role_of_employee_in_organization = ""
         cloned_application.other_financial_support_for_employment = None
+        cloned_application.other_subsidised_employed = None
+        cloned_application.other_subsidised_number = None
 
     cloned_application.save()
     _clone_business_brief_attachments(application_base, cloned_application)

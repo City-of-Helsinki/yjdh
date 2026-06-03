@@ -3310,6 +3310,47 @@ def test_change_employer_assurance(handler_api_client, assurance, expected_assur
     assert application.employer_assurance == expected_assurance
 
 
+@pytest.mark.django_db
+def test_validate_subsidised_number(api_client, application):
+    data = ApplicantApplicationSerializer(application).data
+    data["other_subsidised_employed"] = True
+    data["other_subsidised_number"] = "12"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    application.refresh_from_db()
+    assert response.status_code == 200
+    assert application.other_subsidised_number == 12
+
+
+@pytest.mark.django_db
+def test_validate_subsidised_number_is_sent(api_client, application):
+    data = ApplicantApplicationSerializer(application).data
+    data["other_subsidised_employed"] = True
+    data["other_subsidised_number"] = None
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    application.refresh_from_db()
+    assert response.status_code == 400
+    assert "other_subsidised_number" in response.data
+
+
+@pytest.mark.django_db
+def test_validate_subsidised_number_no_subsidised(api_client, application):
+    data = ApplicantApplicationSerializer(application).data
+    data["other_subsidised_employed"] = False
+    data["other_subsidised_number"] = "12"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 400
+    assert "other_subsidised_number" in response.data
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [

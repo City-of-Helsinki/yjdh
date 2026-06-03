@@ -197,6 +197,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "company_bank_account_number",
             "company_number_of_employees",
             "company_business_brief",
+            "purchased_service",
             "company_contact_person_first_name",
             "company_contact_person_last_name",
             "company_contact_person_phone_number",
@@ -204,6 +205,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             "association_has_business_activities",
             "association_immediate_manager_check",
             "other_financial_support_for_employment",
+            "other_subsidised_employed",
+            "other_subsidised_number",
             "role_of_employee_in_organization",
             "applicant_language",
             "co_operation_negotiations",
@@ -769,6 +772,30 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         ):
             data["association_immediate_manager_check"] = None
 
+    def _validate_other_subsidised_employed(self, data):
+        if data.get("other_subsidised_employed") is True:
+            if data.get("other_subsidised_number") is None:
+                raise serializers.ValidationError(
+                    {
+                        "other_subsidised_number": _(
+                            "other_subsidised_number is required when "
+                            "other_subsidised_employed is true"
+                        )
+                    }
+                )
+            else:
+                data["other_subsidised_number"] = int(data["other_subsidised_number"])
+        else:
+            if data.get("other_subsidised_number") is not None:
+                raise serializers.ValidationError(
+                    {
+                        "other_subsidised_number": _(
+                            "other_subsidised_number is not allowed when "
+                            "other_subsidised_employed is false"
+                        )
+                    }
+                )
+
     def _validate_de_minimis_aid_set(
         self,
         company,
@@ -1174,6 +1201,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             data.get("status"),
         )
         self._validate_non_draft_required_fields(data)
+        self._validate_other_subsidised_employed(data)
         return data
 
     def handle_status_transition(

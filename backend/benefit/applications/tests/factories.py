@@ -122,7 +122,10 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     company_number_of_employees = factory.Faker("random_int", min=1, max=1000)
     company_business_brief = factory.Faker("paragraph")
     other_financial_support_for_employment = False
+    other_subsidised_employed = False
+    other_subsidised_number = None
     role_of_employee_in_organization = factory.Faker("paragraph")
+    purchased_service = False
 
     pay_subsidy_granted = PaySubsidyGranted.NOT_GRANTED
     pay_subsidy_percent = None
