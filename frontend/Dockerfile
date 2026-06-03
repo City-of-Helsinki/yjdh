@@ -55,7 +55,7 @@ ARG NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE
 ARG NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE
 ARG NEXT_PUBLIC_CSP_REPORT_URI
 ARG NEXT_PUBLIC_CSP_POLICY
-ARG NEXT_PUBLIC_SENTRY_DEDBUG
+ARG NEXT_PUBLIC_SENTRY_DEBUG
 ARG NEXT_PUBLIC_SENTRY_TRACE_SAMPLE_RATE
 ARG NEXTJS_SENTRY_TRACING
 ARG NEXT_PUBLIC_LINKEDEVENTS_URL
@@ -103,10 +103,10 @@ WORKDIR /app
 USER root
 
 RUN rm -rf $PROJECT/$FOLDER/node_modules \
-           $PROJECT/shared/node_modules \
-           $PROJECT/node_modules \
-           shared/node_modules \
-           node_modules
+    $PROJECT/shared/node_modules \
+    $PROJECT/node_modules \
+    shared/node_modules \
+    node_modules
 
 # Install production dependencies
 RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --frozen-lockfile --ignore-scripts --prefer-offline && yarn cache clean --force
