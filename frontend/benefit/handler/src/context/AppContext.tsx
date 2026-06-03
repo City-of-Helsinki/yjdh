@@ -13,7 +13,9 @@ export type AppContextType = {
   setIsNavigationVisible: (value: boolean) => void;
   setIsFooterVisible: (value: boolean) => void;
   setLayoutBackgroundColor: (value: string) => void;
-  setHandledApplication: (handledApplication: HandledAplication | null) => void;
+  setHandledApplication: React.Dispatch<
+    React.SetStateAction<HandledAplication | null>
+  >;
   setIsSidebarVisible: (value: boolean) => void;
 };
 

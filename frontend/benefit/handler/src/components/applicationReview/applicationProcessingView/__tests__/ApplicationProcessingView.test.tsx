@@ -147,12 +147,15 @@ describe('ApplicationProcessingView', () => {
     // Simulate pasting the full TOL code + description at once
     fireEvent.change(input, { target: { value: '62010 Ohjelmistot' } });
 
-    expect(setHandledApplication).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        industryCode: '62010',
-        industryDescription: 'Ohjelmistot',
-      })
-    );
+    const updater = setHandledApplication.mock.calls.at(-1)?.[0] as (
+      prev: HandledAplication
+    ) => HandledAplication;
+    expect(typeof updater).toBe('function');
+    const result = updater(handledApplication);
+    expect(result).toMatchObject({
+      industryCode: '62010',
+      industryDescription: 'Ohjelmistot',
+    });
   });
 
   it('should NOT show de minimis section when status is REJECTED', () => {
