@@ -2,8 +2,8 @@ type SupportedLanguage = 'fi' | 'sv' | 'en';
 
 // Duplicate literal constants
 const MATOMO_DESCRIPTION: Record<SupportedLanguage, string> = {
-  fi: 'Matomo-tilastointijarjestelman evaste.',
-  sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen anvands.',
+  fi: 'Matomo-tilastointijärjestelmän eväste.',
+  sv: 'Matomo-statistiksystemets kaka samlar information om hur webbplatsen används.',
   en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
 };
 
@@ -14,26 +14,26 @@ const STATISTICS_GROUP_TITLE: Record<SupportedLanguage, string> = {
 };
 
 const STATISTICS_GROUP_DESCRIPTION: Record<SupportedLanguage, string> = {
-  fi: 'Tilastointievasteiden keraamaa tietoa kaytetaan verkkosivuston kehittamiseen.',
-  sv: 'Data fran statistikkakorna anvands for att utveckla webbplatsen.',
+  fi: 'Tilastointievästeiden keräämää tietoa käytetään verkkosivuston kehittämiseen.',
+  sv: 'Data från statistikkakorna används för att utveckla webbplatsen.',
   en: 'The information collected by statistics cookies is used to develop the website.',
 };
 
 const SHARED_CONSENT_DESCRIPTION: Record<SupportedLanguage, string> = {
-  fi: 'Helsingin kaupungin palvelut kayttavat yhteisia evasteita. Tallennamme nama suostumukset, jottei sinun tarvitse hyvaksy samoja evasteita uudelleen kaupungin muissa palveluissa.',
-  sv: 'Helsingfors stads tjanster anvander gemensamma kakor. Vi lagrar dessa samtycken sa att du inte behover godkanna samma kakor igen i stadens andra tjanster.',
+  fi: 'Helsingin kaupungin palvelut käyttävät yhteisiä evästeitä. Tallennamme nämä suostumukset, jottei sinun tarvitse hyväksyä samoja evästeitä uudelleen kaupungin muissa palveluissa.',
+  sv: 'Helsingfors stads tjänster använder gemensamma kakor. Vi lagrar dessa samtycken så att du inte behöver godkänna samma kakor igen i stadens andra tjänster.',
   en: 'City of Helsinki services use shared consent. We will store these consents so that you do not have to accept the same cookies again on other City services.',
 };
 
 const ASKEM_COOKIE_DESCRIPTION: Record<SupportedLanguage, string> = {
-  fi: 'Askem-reaktionappien toimintaan liittyva tietue.',
+  fi: 'Askem-reaktionappien toimintaan liittyvä tietue.',
   sv: 'En post relaterad till driften av reaktionsknappen Askem.',
   en: 'A record related to the operation of the Askem react buttons.',
 };
 
 const ONE_YEAR_EXPIRATION: Record<SupportedLanguage, string> = {
   fi: '1 vuosi',
-  sv: 'Ett ar',
+  sv: 'Ett år',
   en: '1 year',
 };
 
@@ -44,13 +44,13 @@ const HELFI_COOKIE_CONSENTS_NAME = 'helfi-cookie-consents';
 const REACT_AND_SHARE_HOST = 'reactandshare.com';
 
 const HELFI_COOKIE_CONSENTS_DESCRIPTION: Record<SupportedLanguage, string> = {
-  fi: 'Sivusto kayttaa tata evastetta tietojen tallentamiseen siita, ovatko kavijat antaneet hyvaksyntansa tai kieltaytyneet evasteiden kaytosta.',
-  sv: 'Webbplatsen anvander denna kaka for att lagra information om huruvida besokare har godkant anvandningen av kakor eller inte.',
+  fi: 'Sivusto käyttää tätä evästettä tietojen tallentamiseen siitä, ovatko kävijät antaneet hyväksyntänsä tai kieltäytyneet evästeiden käytöstä.',
+  sv: 'Webbplatsen använder denna kaka för att lagra information om huruvida besökare har godkänt användningen av kakor eller inte.',
   en: 'Used to store information about whether visitors have given or declined the use of cookie categories used on the site.',
 };
 
 const SHARED_CONSENT_TITLE: Record<SupportedLanguage, string> = {
-  fi: 'Yhteiset evasteet',
+  fi: 'Yhteiset evästeet',
   sv: 'Gemensamma kakor',
   en: 'Shared consent',
 };
@@ -108,9 +108,9 @@ type GetCookieConsentSiteSettingsOptions = {
 
 const DEFAULT_SITE_NAMES_BY_APP: Record<CookieConsentApp, LocalizedSiteName> = {
   kesaseteli: {
-    fi: 'Kesaseteli',
-    sv: 'Kesaseteli',
-    en: 'Kesaseteli',
+    fi: 'Kesäseteli',
+    sv: 'Kesäseteli',
+    en: 'Kesäseteli',
   },
   benefit: {
     fi: 'Helsinki-lisä',
@@ -163,8 +163,8 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
       en: 'Login',
     },
     description: {
-      fi: 'Kirjautumisevasteita kaytetaan kayttajan kirjautuessa palveluun.',
-      sv: 'Inloggningskakor anvands nar anvandaren loggar in pa tjansten.',
+      fi: 'Kirjautumisevästeitä käytetään käyttäjän kirjautuessa palveluun.',
+      sv: 'Inloggningskakor används när användaren loggar in på tjänsten.',
       en: 'Login cookies are used when the user logs in to the service.',
     },
     cookies: [
@@ -172,8 +172,8 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
         name: 'sessionid',
         host: hostName,
         description: {
-          fi: 'Tunnistautumisistunnon sailymiseksi vaadittu evaste.',
-          sv: 'Cookie som kravs for att bevara autentiseringssession.',
+          fi: 'Tunnistautumisistunnon säilymiseksi vaadittu eväste.',
+          sv: 'Cookie som krävs för att bevara autentiseringssession.',
           en: 'Required to persist the authentication session.',
         },
         expiration: ONE_HOUR_EXPIRATION,
@@ -184,7 +184,7 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
         host: hostName,
         description: {
           fi: 'Tietoturvakontrolli',
-          sv: 'Datasakerhetskontroll',
+          sv: 'Datasäkerhetskontroll',
           en: 'A security control',
         },
         expiration: '-',
@@ -196,21 +196,21 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
     groupId: 'essential',
     title: {
       en: 'Essential cookies',
-      fi: 'Valttamattomat evasteet',
-      sv: 'Nodvandiga kakor',
+      fi: 'Välttämättömät evästeet',
+      sv: 'Nödvändiga kakor',
     },
     description: {
       en: 'Essential cookies are necessary for the website to function properly. These cookies do not collect any personal information.',
-      fi: 'Valttamattomat evasteet ovat tarpeellisia sivuston toiminnan kannalta. Nama evasteet eivat keraa henkilotietoja.',
-      sv: 'Nodvandiga kakor kravs for att webbplatsen ska fungera korrekt. Dessa kakor samlar inte in personuppgifter.',
+      fi: 'Välttämättömät evästeet ovat tarpeellisia sivuston toiminnan kannalta. Nämä evästeet eivät kerää henkilötietoja.',
+      sv: 'Nödvändiga kakor krävs för att webbplatsen ska fungera korrekt. Dessa kakor samlar inte in personuppgifter.',
     },
     cookies: [
       {
         name: 'django_language',
         host: hostName,
         description: {
-          fi: 'Evaste vaaditaan jotta kayttajan kielivalinta sailyisi.',
-          sv: 'Kakan kravs for att spara anvandarens sprakval.',
+          fi: 'Eväste vaaditaan jotta käyttäjän kielivalinta säilyisi.',
+          sv: 'Kakan krävs för att spara användarens språkval.',
           en: "Required to persist the user's chosen language.",
         },
         expiration: {
@@ -224,8 +224,8 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
         name: 'isTermsOfServiceApproved',
         host: hostName,
         description: {
-          fi: 'Evaste vaaditaan kayttoehtojen hyvaksymisen tallentamiseen.',
-          sv: 'Kakan kravs for att spara anvandarens godkannande av anvandarvillkoren.',
+          fi: 'Eväste vaaditaan käyttöehtojen hyväksymisen tallentamiseen.',
+          sv: 'Kakan krävs för att spara användarens godkännande av användarvillkoren.',
           en: 'Required to store the acceptance of the terms of service.',
         },
         expiration: '-',
@@ -250,8 +250,8 @@ const buildBenefitRequiredGroups = (hostName: string): RequiredGroups => [
         host: hostName,
         storageType: 1,
         description: {
-          fi: 'Tahan evasteeseen tallennetaan kayttajan hyvaksyma evasteselosteen versio.',
-          sv: 'Anvands for att lagra information om versionen av cookies samtycke som anvandaren har godkant.',
+          fi: 'Tähän evästeeseen tallennetaan käyttäjän hyväksymä evästeselosteen versio.',
+          sv: 'Används för att lagra information om versionen av cookies samtycke som användaren har godkänt.',
           en: 'Used to store information about what version of the cookie consent the user has agreed to.',
         },
         expiration: ONE_YEAR_EXPIRATION,
@@ -280,8 +280,8 @@ export const getDefaultKesaseteliRequiredGroups = (
         host: hostName,
         storageType: 1,
         description: {
-          fi: 'Tahan evasteeseen tallennetaan kayttajan hyvaksyma evasteselosteen versio.',
-          sv: 'Anvands for att lagra information om versionen av cookies samtycke som anvandaren har godkant.',
+          fi: 'Tähän evästeeseen tallennetaan käyttäjän hyväksymä evästeselosteen versio.',
+          sv: 'Används för att lagra information om versionen av cookies samtycke som användaren har godkänt.',
           en: 'Used to store information about what version of the cookie consent the user has agreed to.',
         },
         expiration: ONE_YEAR_EXPIRATION,
@@ -307,7 +307,7 @@ export const getDefaultKesaseteliOptionalGroups = (
         host: hostName,
         description: MATOMO_DESCRIPTION,
         expiration: {
-          fi: '393 paivaa',
+          fi: '393 päivää',
           sv: '393 dagar',
           en: '393 days',
         },
@@ -337,7 +337,7 @@ export const getDefaultBenefitOptionalGroups = (
         host: hostName,
         description: MATOMO_DESCRIPTION,
         expiration: {
-          fi: '393 paivaa',
+          fi: '393 päivää',
           sv: '393 dagar',
           en: '393 days',
         },
@@ -429,62 +429,62 @@ export const getCookieConsentSiteSettings = ({
     ],
     translations: {
       bannerAriaLabel: {
-        fi: 'Evasteasetukset',
-        sv: 'Installningar for kakor',
+        fi: 'Evästeasetukset',
+        sv: 'Inställningar för kakor',
         en: 'Cookie settings',
       },
       heading: {
-        fi: '{{siteName}} kayttaa evasteita',
-        sv: '{{siteName}} anvander kakor',
+        fi: '{{siteName}} käyttää evästeitä',
+        sv: '{{siteName}} använder kakor',
         en: '{{siteName}} uses cookies',
       },
       description: {
-        fi: 'Tama sivusto kayttaa valttamattomia evasteita sivun perustoimintojen ja suorituskyvyn varmistamiseksi. Lisaksi kaytamme kohdennusevasteita kayttajakokemuksen parantamiseksi, analytiikkaan ja yksiloidyn sisallon nayttamiseen.',
-        sv: 'Denna webbplats anvander obligatoriska kakor for att sakerstalla de grundlaggande funktionerna och prestandan. Dessutom anvander vi inriktningskakor for battre anvandarupplevelse, analytik och individualiserat innehall.',
+        fi: 'Tämä sivusto käyttää välttämättömiä evästeitä sivun perustoimintojen ja suorituskyvyn varmistamiseksi. Lisäksi käytämme kohdennusevästeitä käyttökokemuksen parantamiseksi, analytiikkaan ja yksilöidyn sisällön näyttämiseen.',
+        sv: 'Denna webbplats använder obligatoriska kakor för att säkerställa de grundläggande funktionerna och prestandan. Dessutom använder vi inriktningskakor för bättre användarupplevelse, analytik och individualiserat innehåll.',
         en: 'This website uses required cookies to ensure the basic functionality and performance. In addition, we use targeting cookies to improve the user experience, perform analytics and display personalised content.',
       },
       showDetails: {
-        fi: 'Nayta yksityiskohdat',
+        fi: 'Näytä yksityiskohdat',
         sv: 'Visa detaljer',
         en: 'Show details',
       },
       hideDetails: {
         fi: 'Piilota yksityiskohdat',
-        sv: 'Stanga detaljer',
+        sv: 'Stänga detaljer',
         en: 'Hide details',
       },
       formHeading: {
-        fi: 'Tietoa sivustolla kaytetyista evasteista',
-        sv: 'Information om kakor som anvands pa webbplatsen',
+        fi: 'Tietoa sivustolla käytetyistä evästeistä',
+        sv: 'Information om kakor som används på webbplatsen',
         en: 'About the cookies used on the website',
       },
       formText: {
-        fi: 'Sivustolla kaytetyt evasteet on luokiteltu kayttotarkoituksen mukaan. Alla voit lukea eri luokista ja sallia tai kieltää evasteiden kayton.',
-        sv: 'Kakorna som anvands pa webbplatsen har klassificerats enligt anvandningsandamal. Du kan lasa om de olika klasserna och acceptera eller forbjuda anvandningen av kakor.',
+        fi: 'Sivustolla käytetyt evästeet on luokiteltu käyttötarkoituksen mukaan. Alla voit lukea eri luokista ja sallia tai kieltää evästeiden käytön.',
+        sv: 'Kakorna som används på webbplatsen har klassificerats enligt användningsändamål. Du kan läsa om de olika klasserna och acceptera eller förbjuda användningen av kakor.',
         en: 'The cookies used on the website have been classified according to their intended use. Below, you can read about the various categories and accept or reject the use of cookies.',
       },
       highlightedGroup: {
-        fi: 'Sinun on hyvaksyttava tama kategoria, jotta voit nayttaa valitsemasi sisallon.',
-        sv: 'Du maste acceptera den har kategorin for att visa innehallet du har valt.',
+        fi: 'Sinun on hyväksyttävä tämä kategoria, jotta voit näyttää valitsemasi sisällön.',
+        sv: 'Du måste acceptera den här kategorin för att visa innehållet du har valt.',
         en: 'You need to accept this category to display the content you have selected.',
       },
       highlightedGroupAria: {
-        fi: 'Hyva tietaa kategorialle: {{title}}',
-        sv: 'Bra att veta for kategorin: {{title}}',
+        fi: 'Hyvä tietää kategorialle: {{title}}',
+        sv: 'Bra att veta för kategorin: {{title}}',
         en: 'Good to know for category: {{title}}',
       },
       showCookieSettings: {
-        fi: 'Nayta evasteasetukset',
-        sv: 'Visa kakinstallningarna',
+        fi: 'Näytä evästeasetukset',
+        sv: 'Visa kakinställningarna',
         en: 'Show cookie settings',
       },
       hideCookieSettings: {
-        fi: 'Piilota evasteasetukset',
-        sv: 'Stanga kakinstallningarna',
+        fi: 'Piilota evästeasetukset',
+        sv: 'Stänga kakinställningarna',
         en: 'Hide cookie settings',
       },
       acceptedAt: {
-        fi: 'Olet hyvaksynt taman kategorian: {{date}} klo {{time}}.',
+        fi: 'Olet hyväksynyt tämän kategorian: {{date}} klo {{time}}.',
         sv: 'Du har accepterat denna kategori: {{date}} kl. {{time}}.',
         en: 'You have accepted this category: {{date}} at {{time}}.',
       },
@@ -494,13 +494,13 @@ export const getCookieConsentSiteSettings = ({
         en: 'Name',
       },
       tableHeadingsHostName: {
-        fi: 'Evasteen asettaja',
+        fi: 'Evästeen asettaja',
         sv: 'Den som lagrat kakan',
         en: 'Cookie set by',
       },
       tableHeadingsDescription: {
-        fi: 'Kayttotarkoitus',
-        sv: 'Anvandning',
+        fi: 'Käyttötarkoitus',
+        sv: 'Användning',
         en: 'Purpose of use',
       },
       tableHeadingsExpiration: {
@@ -514,23 +514,23 @@ export const getCookieConsentSiteSettings = ({
         en: 'Type',
       },
       approveAllConsents: {
-        fi: 'Hyvaksy kaikki evasteet',
+        fi: 'Hyväksy kaikki evästeet',
         sv: 'Acceptera alla kakor',
         en: 'Accept all cookies',
       },
       approveRequiredAndSelectedConsents: {
-        fi: 'Hyvaksy valitut evasteet',
+        fi: 'Hyväksy valitut evästeet',
         sv: 'Acceptera valda kakor',
         en: 'Accept selected cookies',
       },
       approveOnlyRequiredConsents: {
-        fi: 'Hyvaksy vain valttamattomat evasteet',
-        sv: 'Acceptera endast nodvandiga',
+        fi: 'Hyväksy vain välttämättömät evästeet',
+        sv: 'Acceptera endast nödvändiga',
         en: 'Accept required cookies only',
       },
       settingsSaved: {
         fi: 'Asetukset tallennettu!',
-        sv: 'Installningar sparade!',
+        sv: 'Inställningar sparade!',
         en: 'Settings saved!',
       },
       notificationAriaLabel: {
@@ -539,7 +539,7 @@ export const getCookieConsentSiteSettings = ({
         en: 'Announcement',
       },
       storageType1: {
-        fi: 'Evaste',
+        fi: 'Eväste',
         sv: 'Kakan',
         en: 'Cookie',
       },
