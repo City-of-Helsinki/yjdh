@@ -15,8 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "@frontend/shared": "*",
-    "@sentry/nextjs": "^10.27.0",
-    "axios": "^1.13.5",
+    "@sentry/nextjs": "^10.56.0",
+    "axios": "^1.17.0",
     "camelcase-keys": "^7.0.1",
     "date-fns": "^2.24.0",
     "formik": "^2.2.9",
