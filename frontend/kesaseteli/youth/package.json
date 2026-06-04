@@ -21,9 +21,9 @@
   "dependencies": {
     "@frontend/kesaseteli-shared": "*",
     "@frontend/shared": "*",
-    "@sentry/browser": "^8.40.0",
-    "@sentry/nextjs": "^8.40.0",
-    "axios": "^1.13.5",
+    "@sentry/browser": "^8.55.2",
+    "@sentry/nextjs": "^8.55.2",
+    "axios": "^1.17.0",
     "dotenv": "^16.0.0",
     "finnish-ssn": "^2.1.2",
     "hds-design-tokens": "^5.0.0",
