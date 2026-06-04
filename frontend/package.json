@@ -142,5 +142,13 @@
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^27.1.3",
     "typescript": "^5.9.3"
+  },
+  "resolutions": {
+    "js-cookie": "^3.0.8",
+    "underscore": "^1.13.8",
+    "tmp": "^0.2.6",
+    "tar": "^7.5.11",
+    "minimatch": "^3.1.4",
+    "picomatch": "^2.3.2"
   }
 }
