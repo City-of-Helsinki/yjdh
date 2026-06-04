@@ -11,6 +11,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
+from rest_framework.exceptions import APIException
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
@@ -1162,7 +1163,15 @@ class YouthApplicationFetchEmployeeDataOutputSerializer(serializers.Serializer):
                 "employee_school": youth_application.school,
             }
         )
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except serializers.ValidationError as exc:
+            LOGGER.exception(
+                "Invalid fetch_employee_data response for YouthApplication %s: %s",
+                youth_application.pk,
+                exc.detail,
+            )
+            raise APIException("Invalid employee lookup response data") from exc
         return serializer
 
 
