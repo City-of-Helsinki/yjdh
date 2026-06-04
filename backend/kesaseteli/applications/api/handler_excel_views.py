@@ -26,6 +26,7 @@ from applications.api.v1.serializers import YouthApplicationExcelExportSerialize
 from applications.employer_excel_export import (
     EmployerExcelExportError,
     EmployerExcelExportService,
+    excel_download_error_redirect,
     parse_export_parameters,
 )
 from applications.models import EmployerSummerVoucher, YouthApplication
@@ -55,12 +56,12 @@ class EmployerApplicationExcelExportView(APIView):
             columns: Column layout from the URL path (reporting or talpa).
 
         Returns:
-            Spreadsheet download or plain-text error response.
+            Spreadsheet download or redirect to the landing page with an error.
         """
         try:
             parameters = parse_export_parameters(export_kind, columns)
         except EmployerExcelExportError as error:
-            return HttpResponse(error.message, status=error.status_code)
+            return excel_download_error_redirect(error.code)
 
         AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
             actor=request.user,
@@ -79,7 +80,7 @@ class EmployerApplicationExcelExportView(APIView):
         try:
             return service.export(parameters)
         except EmployerExcelExportError as error:
-            return HttpResponse(error.message, status=error.status_code)
+            return excel_download_error_redirect(error.code)
 
 
 @openapi_youth_excel_export_viewset_schema

@@ -6,9 +6,12 @@ from functools import partial
 
 import xlsx_streaming
 from django.conf import settings
+from django.db import models
 from django.db.models import F, QuerySet, Window
 from django.db.models.functions import RowNumber
-from django.http import HttpRequest, StreamingHttpResponse
+from django.http import HttpRequest, HttpResponseRedirect, StreamingHttpResponse
+from django.urls import reverse
+from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from applications.enums import (
@@ -25,13 +28,94 @@ from applications.exporters.excel_exporter import (
 from applications.models import EmployerSummerVoucher
 
 
+class EmployerExcelExportErrorCode(models.TextChoices):
+    """
+    Stable error codes for employer Excel export failures shown on the landing page.
+    """
+
+    NO_UNHANDLED = "no_unhandled"
+    NO_APPLICATIONS = "no_applications"
+    INVALID_EXPORT_KIND = "invalid_export_kind"
+    INVALID_COLUMNS = "invalid_columns"
+
+
 class EmployerExcelExportError(Exception):
     """Invalid export parameters or no rows to export."""
 
-    def __init__(self, message: str, *, status_code: int = 400):
-        super().__init__(message)
-        self.message = message
-        self.status_code = status_code
+    def __init__(self, code: EmployerExcelExportErrorCode):
+        super().__init__(code.value)
+        self.code = code
+
+
+def get_excel_download_error_message(
+    code: EmployerExcelExportErrorCode,
+) -> str:
+    """Return the handler-facing error message for a landing-page error code.
+
+    Handler Excel tooling is Finnish-only, matching youth export column headers.
+
+    Args:
+        code: Parsed allowlisted error code.
+
+    Returns:
+        Finnish message shown in the landing page alert.
+
+    Raises:
+        ValueError: If code has no mapped message.
+    """
+    with translation.override("fi"):
+        match code:
+            case EmployerExcelExportErrorCode.NO_UNHANDLED:
+                return str(_("Ei uusia käsittelemättömiä hakemuksia."))
+            case EmployerExcelExportErrorCode.NO_APPLICATIONS:
+                return str(_("Hakemuksia ei löytynyt."))
+            case EmployerExcelExportErrorCode.INVALID_EXPORT_KIND:
+                return str(
+                    _("Virheellinen vientitapa. Sallitut arvot: %(values)s.")
+                    % {"values": ", ".join(EmployerExcelExportKind.values)}
+                )
+            case EmployerExcelExportErrorCode.INVALID_COLUMNS:
+                return str(
+                    _("Virheellinen saraketyyppi. Sallitut arvot: %(values)s.")
+                    % {"values": ", ".join(ExcelColumns.values)}
+                )
+            case _:
+                raise ValueError(
+                    f"Unhandled employer Excel export error code: {code!r}"
+                )
+
+
+def parse_excel_download_error_code(
+    value: str | None,
+) -> EmployerExcelExportErrorCode | None:
+    """Parse a landing-page error query parameter if it matches a known code.
+
+    Args:
+        value: Raw error query string value.
+
+    Returns:
+        Matching error code, or None for unknown or missing values.
+    """
+    if not value:
+        return None
+    try:
+        return EmployerExcelExportErrorCode(value)
+    except ValueError:
+        return None
+
+
+def excel_download_error_redirect(
+    code: EmployerExcelExportErrorCode,
+) -> HttpResponseRedirect:
+    """Redirect back to the handler Excel landing page with an error code.
+
+    Args:
+        code: Allowlisted error code shown after redirect.
+
+    Returns:
+        Redirect response to excel-download with ?error=... query parameter.
+    """
+    return HttpResponseRedirect(f"{reverse('excel-download')}?error={code.value}")
 
 
 @dataclass(frozen=True)
@@ -59,16 +143,10 @@ def parse_export_parameters(
         EmployerExcelExportError: If kind or columns are not supported.
     """
     if export_kind not in EmployerExcelExportKind.values:
-        raise EmployerExcelExportError(
-            _("Invalid export type. Supported values: %(values)s.")
-            % {"values": ", ".join(EmployerExcelExportKind.values)}
-        )
+        raise EmployerExcelExportError(EmployerExcelExportErrorCode.INVALID_EXPORT_KIND)
 
     if columns not in ExcelColumns.values:
-        raise EmployerExcelExportError(
-            _("Invalid columns value. Supported values: %(values)s.")
-            % {"values": ", ".join(ExcelColumns.values)}
-        )
+        raise EmployerExcelExportError(EmployerExcelExportErrorCode.INVALID_COLUMNS)
 
     return EmployerExcelExportParameters(
         export_kind=EmployerExcelExportKind(export_kind),
@@ -175,7 +253,7 @@ class EmployerExcelExportService:
         queryset_pks = set(queryset_without_pks.values_list("pk", flat=True))
 
         if not queryset_pks:
-            raise EmployerExcelExportError(_("Ei uusia käsittelemättömiä hakemuksia."))
+            raise EmployerExcelExportError(EmployerExcelExportErrorCode.NO_UNHANDLED)
 
         queryset_with_pks = self.base_queryset(filter_pks=queryset_pks).filter(
             application__status=EmployerApplicationStatus.SUBMITTED
@@ -192,6 +270,6 @@ class EmployerExcelExportService:
             .exclude(application__status=EmployerApplicationStatus.DRAFT)
         )
         if not queryset.exists():
-            raise EmployerExcelExportError(_("Hakemuksia ei löytynyt."))
+            raise EmployerExcelExportError(EmployerExcelExportErrorCode.NO_APPLICATIONS)
 
         return self.build_xlsx_response(queryset, columns)

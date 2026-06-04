@@ -7,6 +7,7 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
+from applications.employer_excel_export import EmployerExcelExportErrorCode
 from applications.enums import EmployerExcelExportKind, ExcelColumns
 
 _EXCEL_MEDIA_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -59,7 +60,15 @@ openapi_employer_excel_export_schema = extend_schema(
     parameters=[_EXPORT_KIND_PARAMETER, _COLUMNS_PARAMETER],
     responses={
         200: _SPREADSHEET_RESPONSE,
-        400: OpenApiResponse(description="Invalid export kind or columns value."),
+        302: OpenApiResponse(
+            description=(
+                "Redirect to the Excel landing page (/excel-download/) with an "
+                "error query parameter when export parameters are invalid or there "
+                "is nothing to export. Query parameter: ``error``. Supported "
+                "values: "
+                f"{', '.join(EmployerExcelExportErrorCode.values)}."
+            ),
+        ),
         401: OpenApiResponse(description="Authentication required."),
         403: OpenApiResponse(description="Handler permission required."),
     },

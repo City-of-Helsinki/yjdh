@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal
 from io import BytesIO
 from typing import List
+from urllib.parse import parse_qs, urlparse
 
 import openpyxl
 import pytest
@@ -17,6 +18,10 @@ from freezegun import freeze_time
 from rest_framework import status
 
 from applications.api.handler_excel_views import YouthApplicationExcelExportViewSet
+from applications.employer_excel_export import (
+    EmployerExcelExportErrorCode,
+    get_excel_download_error_message,
+)
 from applications.enums import (
     EmployerApplicationStatus,
     ExcelColumns,
@@ -65,6 +70,36 @@ from shared.common.tests.utils import utc_datetime
 
 def excel_download_url():
     return reverse("excel-download")
+
+
+# Shared with youth export inline empty response (handler_excel_views.py).
+NO_APPLICATIONS_FINNISH = "Hakemuksia ei löytynyt."
+
+
+def assert_redirects_to_landing_page_with_error(
+    response,
+    expected_error_code: EmployerExcelExportErrorCode,
+):
+    """Assert the export endpoint redirected with an allowlisted ``error`` code."""
+    assert response.status_code == status.HTTP_302_FOUND
+    assert urlparse(response.url).path == excel_download_url()
+    query = parse_qs(urlparse(response.url).query)
+    assert query.get("error") == [expected_error_code.value], query
+
+
+def assert_landing_page_shows_export_error(
+    staff_client,
+    redirect_response,
+    expected_error_code: EmployerExcelExportErrorCode,
+):
+    """Follow the export redirect and verify the landing page shows the mapped alert."""
+    assert_redirects_to_landing_page_with_error(redirect_response, expected_error_code)
+    landing_response = staff_client.get(redirect_response.url)
+    assert landing_response.status_code == status.HTTP_200_OK
+    assert (
+        get_excel_download_error_message(expected_error_code)
+        in landing_response.content.decode()
+    )
 
 
 def employer_excel_export_url(
@@ -140,18 +175,21 @@ def test_excel_view_download_unhandled(
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_view_download_no_unhandled_applications(staff_client):
+    """Empty unhandled export redirects to the landing page with ``no_unhandled``."""
     response = staff_client.get(
         employer_excel_export_url("unhandled", ExcelColumns.REPORTING.value)
     )
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "Ei uusia käsittelemättömiä hakemuksia." in response.content.decode()
+    assert_landing_page_shows_export_error(
+        staff_client, response, EmployerExcelExportErrorCode.NO_UNHANDLED
+    )
 
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize("columns", ExcelColumns.values)
 def test_excel_view_download_no_annual_applications(staff_client, columns):
+    """Empty annual export redirects to the landing page with ``no_applications``."""
     # Create draft applications with/without voucher, these should not be returned
     EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory(status=EmployerApplicationStatus.DRAFT)
@@ -160,16 +198,18 @@ def test_excel_view_download_no_annual_applications(staff_client, columns):
 
     response = staff_client.get(employer_excel_export_url("annual", columns))
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "Hakemuksia ei löytynyt." in response.content.decode()
+    assert_landing_page_shows_export_error(
+        staff_client, response, EmployerExcelExportErrorCode.NO_APPLICATIONS
+    )
 
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_youth_excel_download_no_youth_applications(staff_client):
+    """Youth empty export returns 200 with inline text, not a landing-page redirect."""
     response = staff_client.get(youth_excel_download_url())
     assert response.status_code == 200
-    assert "Hakemuksia ei löytynyt." in response.content.decode()
+    assert NO_APPLICATIONS_FINNISH in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -620,16 +660,45 @@ def test_removable_talpa_field_titles():
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
-    "export_url",
+    ("export_url", "expected_error_code"),
     [
-        employer_excel_export_url("annual", "invalid-columns"),
-        employer_excel_export_url("not-a-real-kind", ExcelColumns.REPORTING.value),
+        (
+            employer_excel_export_url("annual", "invalid-columns"),
+            EmployerExcelExportErrorCode.INVALID_COLUMNS,
+        ),
+        (
+            employer_excel_export_url("not-a-real-kind", ExcelColumns.REPORTING.value),
+            EmployerExcelExportErrorCode.INVALID_EXPORT_KIND,
+        ),
     ],
 )
-def test_employer_excel_export_rejects_invalid_parameters(staff_client, export_url):
+def test_employer_excel_export_rejects_invalid_parameters(
+    staff_client, export_url, expected_error_code
+):
+    """Invalid export paths redirect to the landing page with a stable error code."""
     response = staff_client.get(export_url)
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert_landing_page_shows_export_error(staff_client, response, expected_error_code)
+
+
+def test_excel_download_error_messages_are_unique():
+    """Each export error code must map to a distinct landing-page message."""
+    messages = [
+        get_excel_download_error_message(code) for code in EmployerExcelExportErrorCode
+    ]
+    assert len(messages) == len(set(messages))
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_excel_download_landing_page_ignores_unknown_error_code(staff_client):
+    """Unknown error query values must not show a landing-page alert."""
+    response = staff_client.get(f"{excel_download_url()}?error=not-a-code")
+
+    assert response.status_code == status.HTTP_200_OK
+    content = response.content.decode()
+    for code in EmployerExcelExportErrorCode:
+        assert get_excel_download_error_message(code) not in content
 
 
 @pytest.mark.django_db
