@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.20.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.20.0...benefit-backend-v2.20.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* **benefit:** Remove fields from required fields ([375d733](https://github.com/City-of-Helsinki/yjdh/commit/375d733b607728b57767ca5f0a4af7f34b0b8658))
+
 ## [2.20.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.19.1...benefit-backend-v2.20.0) (2026-06-01)
 
 
