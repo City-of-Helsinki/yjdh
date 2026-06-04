@@ -224,7 +224,9 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         );
 
         await Promise.all(
-          validFields.map(async (field) => indexPageApi.expectations.textInputIsValid(field))
+          validFields.map(async (field) =>
+            indexPageApi.expectations.textInputIsValid(field)
+          )
         );
       });
       it('shows invalid unlisted school field when unlistedSchool in the error repsonse', async () => {
@@ -248,6 +250,30 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           'unlistedSchool',
           'pattern'
         );
+      });
+    });
+
+    describe('getIndexPageApi helper edge cases', () => {
+      it('handles selectedSchool combobox correctly in textInputIsValid helper', async () => {
+        expectToGetSchoolsFromBackend();
+        renderPage(YouthIndex);
+        const indexPageApi = getIndexPageApi();
+        await indexPageApi.expectations.pageIsLoaded();
+        // Verify helper routes 'selectedSchool' combobox to selectedSchoolIsValid() instead of text input checks
+        await indexPageApi.expectations.textInputIsValid('selectedSchool');
+      });
+
+      it('exercises selectTargetGroup with label and handles missing radio buttons', async () => {
+        expectToGetSchoolsFromBackend();
+        renderPage(YouthIndex);
+        const indexPageApi = getIndexPageApi();
+        await indexPageApi.expectations.pageIsLoaded();
+
+        await indexPageApi.actions.selectTargetGroup(/9th graders/i);
+
+        await expect(
+          indexPageApi.actions.selectTargetGroup('non-existent-label')
+        ).rejects.toThrow();
       });
     });
   });

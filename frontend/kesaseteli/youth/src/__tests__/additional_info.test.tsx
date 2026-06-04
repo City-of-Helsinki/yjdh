@@ -196,6 +196,48 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         },
         SLOW_JEST_TIMEOUT
       );
+
+      it(
+        `redirects to 500 -error page when backend returns unexpected error on submit`,
+        async () => {
+          expectToGetSummerVoucherConfigurationFromBackend();
+          expectToGetYouthApplicationStatus(APPLICATION_ID, {
+            status: 'additional_information_requested',
+          });
+          const spyPush = jest.fn();
+          renderPage(AdditionalInfoPage, {
+            query: { id: APPLICATION_ID },
+            push: spyPush,
+          });
+          const { additional_info_description, additional_info_user_reasons } =
+            fakeAdditionalInfoApplication();
+          const additionalInfoPageApi =
+            getAdditionalInfoPageApi(APPLICATION_ID);
+          await additionalInfoPageApi.expectations.formIsPresent();
+          await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(
+            additional_info_user_reasons
+          );
+          await additionalInfoPageApi.actions.inputDescription(
+            additional_info_description
+          );
+          await additionalInfoPageApi.actions.clickSendButton(500);
+          await waitFor(() =>
+            expect(spyPush).toHaveBeenCalledWith(
+              `/${DEFAULT_LANGUAGE}/500`,
+              undefined,
+              { shallow: false }
+            )
+          );
+        },
+        SLOW_JEST_TIMEOUT
+      );
+
+      it('throws an error if clicking send button without application id', async () => {
+        const additionalInfoPageApi = getAdditionalInfoPageApi();
+        await expect(
+          additionalInfoPageApi.actions.clickSendButton()
+        ).rejects.toThrow('you forgot to give application id');
+      });
     });
   });
 });
