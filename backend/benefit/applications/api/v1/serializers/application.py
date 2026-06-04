@@ -904,14 +904,10 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     # must be filled before submitting the application for processing
     REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS = [
         "company_bank_account_number",
-        "company_number_of_employees",
-        "company_business_brief",
         "company_contact_person_phone_number",
         "company_contact_person_email",
         "company_contact_person_first_name",
         "company_contact_person_last_name",
-        "other_financial_support_for_employment",
-        "role_of_employee_in_organization",
         "co_operation_negotiations",
         "pay_subsidy_granted",
         "benefit_type",
