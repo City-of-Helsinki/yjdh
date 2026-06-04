@@ -106,11 +106,13 @@ type GetCookieConsentSiteSettingsOptions = {
   optionalGroups?: OptionalGroups;
 };
 
+const KESASETELI_SITE_NAME = 'Kesäseteli';
+
 const DEFAULT_SITE_NAMES_BY_APP: Record<CookieConsentApp, LocalizedSiteName> = {
   kesaseteli: {
-    fi: 'Kesäseteli',
-    sv: 'Kesäseteli',
-    en: 'Kesäseteli',
+    fi: KESASETELI_SITE_NAME,
+    sv: KESASETELI_SITE_NAME,
+    en: KESASETELI_SITE_NAME,
   },
   benefit: {
     fi: 'Helsinki-lisä',
