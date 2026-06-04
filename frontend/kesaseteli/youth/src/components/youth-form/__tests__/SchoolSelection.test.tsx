@@ -7,13 +7,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
-jest.mock('next-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-    i18n: { language: 'fi' },
-  }),
-}));
-
 jest.mock('kesaseteli/youth/hooks/backend/useSchoolListQuery');
 
 type YouthFormDataForTest = {
@@ -50,14 +43,14 @@ const renderSchoolSelection = (): ReturnType<typeof render> => {
 
 const getSchoolSelector = (): HTMLElement => {
   const byCombobox = screen.queryByRole('combobox', {
-    name: /selectedschool/i,
+    name: /koulu/i,
   });
 
   if (byCombobox) {
     return byCombobox;
   }
 
-  const byButton = screen.queryByRole('button', { name: /selectedschool/i });
+  const byButton = screen.queryByRole('button', { name: /koulu/i });
 
   if (byButton) {
     return byButton;
