@@ -1409,6 +1409,45 @@ def test_youth_application_fetch_employee_data_success_writes_audit_log(
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
+def test_fetch_employee_data_invalid_response_is_server_error(
+    user_client,
+):
+    """Ensure response serialization failures are treated as server errors.
+
+    The request is valid and matches an accepted youth application, but the
+    application has inconsistent server-side data: no SSN and no fallback
+    birthdate. The output serializer must not let that response-contract
+    validation failure escape as a client-side HTTP 400.
+    """
+    employer_summer_voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory()
+    )
+    youth_application = AcceptedYouthApplicationFactory(
+        first_name="Franklin",
+        last_name="Doe",
+        social_security_number="",
+        non_vtj_birthdate=None,
+        youth_summer_voucher__summer_voucher_serial_number=123,
+    )
+    url = reverse("v1:youthapplication-fetch-employee-data")
+    user_client.raise_request_exception = False
+
+    response = user_client.post(
+        url,
+        data={
+            "employer_summer_voucher_id": str(employer_summer_voucher.id),
+            "employee_name": "Peter Doe",
+            "summer_voucher_serial_number": (
+                youth_application.youth_summer_voucher.user_showable_serial_number
+            ),
+        },
+    )
+
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.django_db
 def test_youth_application_fetch_employee_data_not_found_writes_audit_log(user_client):
     employer_summer_voucher = EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory()
