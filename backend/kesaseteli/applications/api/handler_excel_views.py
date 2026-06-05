@@ -8,7 +8,6 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, StreamingHttpResponse
 from django.utils import timezone, translation
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -34,7 +33,6 @@ from applications.services import AuditAccessLogService
 from common.decorators import enforce_handler_view_adfs_login
 
 
-@method_decorator(enforce_handler_view_adfs_login, name="dispatch")
 class EmployerApplicationExcelExportView(APIView):
     """Handler Excel download for employer applications (one export kind per URL)."""
 
@@ -42,6 +40,7 @@ class EmployerApplicationExcelExportView(APIView):
     permission_classes = [AllowAny]
 
     @openapi_employer_excel_export_schema
+    @enforce_handler_view_adfs_login
     def get(
         self,
         request: Request,
