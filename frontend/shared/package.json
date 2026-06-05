@@ -14,8 +14,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@sentry/browser": "^8.55.2",
-    "@sentry/nextjs": "^8.55.2",
+    "@sentry/browser": "^10.56.0",
+    "@sentry/nextjs": "^10.56.0",
     "axios": "^1.17.0",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
