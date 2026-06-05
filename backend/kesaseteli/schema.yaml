@@ -1,0 +1,1909 @@
+openapi: 3.1.0
+info:
+  title: Kesäseteli API
+  version: 0.0.1
+  description: REST API for Kesäseteli application management
+paths:
+  /excel-download/confirmed-youth-applications/:
+    get:
+      operationId: confirmed_youth_applications_list
+      description: Download all active confirmed youth summer voucher applications
+        as Excel. Requires an authenticated handler session (ADFS). Unauthenticated
+        browser requests are redirected to login.
+      tags:
+      - excel-download
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+                    schema:
+                      type: string
+                      format: binary
+          description: Excel spreadsheet download.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Handler permission required.
+      summary: confirmed youth applications list
+  /excel-download/employer-applications/{export_kind}/{columns}/:
+    get:
+      operationId: employer_applications_retrieve
+      description: Download employer summer voucher applications as Excel. Requires
+        an authenticated handler session (ADFS). Unauthenticated browser requests
+        are redirected to login.
+      parameters:
+      - in: path
+        name: columns
+        schema:
+          type: string
+          enum:
+          - reporting
+          - talpa
+        description: 'Column layout for the spreadsheet. Supported values: reporting,
+          talpa.'
+        required: true
+      - in: path
+        name: export_kind
+        schema:
+          type: string
+          enum:
+          - annual
+          - annual-previous
+          - unhandled
+        description: 'Export set: unhandled (mark submitted as exported), annual (current
+          year), or annual-previous (previous calendar year).'
+        required: true
+      tags:
+      - excel-download
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+                  schema:
+                    type: string
+                    format: binary
+          description: Excel spreadsheet download.
+        '302':
+          description: 'Redirect to the Excel landing page (/excel-download/) with
+            an error query parameter when export parameters are invalid or there is
+            nothing to export. Query parameter: ``error``. Supported values: no_unhandled,
+            no_applications, invalid_export_kind, invalid_columns.'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Handler permission required.
+      summary: employer applications retrieve
+  /v1/company/:
+    get:
+      operationId: retrieve
+      description: Return the company profile for the authenticated user.
+      tags:
+      - company
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+          description: ''
+      summary: retrieve
+  /v1/employerapplications/:
+    get:
+      operationId: list
+      parameters:
+      - in: query
+        name: company__business_id
+        schema:
+          type: string
+      - in: query
+        name: company__business_id__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: company_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: company_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: created_at__date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at__date__gt
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at__date__gte
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at__date__lt
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at__date__lte
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__year
+        schema:
+          type: number
+      - in: query
+        name: created_at__year__gt
+        schema:
+          type: number
+      - in: query
+        name: created_at__year__gte
+        schema:
+          type: number
+      - in: query
+        name: created_at__year__lt
+        schema:
+          type: number
+      - in: query
+        name: created_at__year__lte
+        schema:
+          type: number
+      - in: query
+        name: created_at_after
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at_before
+        schema:
+          type: string
+          format: date-time
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: modified_at__date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: modified_at__date__gt
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: modified_at__date__gte
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: modified_at__date__lt
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: modified_at__date__lte
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: modified_at__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: modified_at__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: modified_at__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: modified_at__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: modified_at__year
+        schema:
+          type: number
+      - in: query
+        name: modified_at__year__gt
+        schema:
+          type: number
+      - in: query
+        name: modified_at__year__gte
+        schema:
+          type: number
+      - in: query
+        name: modified_at__year__lt
+        schema:
+          type: number
+      - in: query
+        name: modified_at__year__lte
+        schema:
+          type: number
+      - in: query
+        name: modified_at_after
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: modified_at_before
+        schema:
+          type: string
+          format: date-time
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: only_mine
+        schema:
+          type: boolean
+      - in: query
+        name: ordering
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - -company__business_id
+            - -company__name
+            - -company_id
+            - -created_at
+            - -id
+            - -modified_at
+            - -status
+            - -user__first_name
+            - -user__last_name
+            - -user_id
+            - company__business_id
+            - company__name
+            - company_id
+            - created_at
+            - id
+            - modified_at
+            - status
+            - user__first_name
+            - user__last_name
+            - user_id
+        description: |-
+          Järjestys
+
+          * `company__business_id` - Company  business id
+          * `-company__business_id` - Company  business id (descending)
+          * `company__name` - Company  name
+          * `-company__name` - Company  name (descending)
+          * `company_id` - Company id
+          * `-company_id` - Company id (descending)
+          * `created_at` - Created at
+          * `-created_at` - Created at (descending)
+          * `id` - Id
+          * `-id` - Id (descending)
+          * `modified_at` - Modified at
+          * `-modified_at` - Modified at (descending)
+          * `status` - Status
+          * `-status` - Status (descending)
+          * `user__first_name` - User  first name
+          * `-user__first_name` - User  first name (descending)
+          * `user__last_name` - User  last name
+          * `-user__last_name` - User  last name (descending)
+          * `user_id` - User id
+          * `-user_id` - User id (descending)
+        explode: false
+        style: form
+      - in: query
+        name: status
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - accepted
+            - additional_information_provided
+            - additional_information_requested
+            - deleted_by_customer
+            - draft
+            - rejected
+            - submitted
+        description: |-
+          * `draft` - Draft
+          * `submitted` - Submitted
+          * `additional_information_requested` - Additional information requested
+          * `additional_information_provided` - Additional information provided
+          * `accepted` - Accepted
+          * `rejected` - Rejected
+          * `deleted_by_customer` - Deleted by customer
+        explode: true
+        style: form
+      - in: query
+        name: status__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+      - in: query
+        name: user_id__in
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      tags:
+      - employerapplications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmployerApplicationList'
+          description: ''
+      summary: list
+    post:
+      operationId: create
+      description: Allow only 1 (DRAFT) application per user & company.
+      tags:
+      - employerapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployerApplication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployerApplication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployerApplication'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerApplication'
+          description: ''
+      summary: create
+  /v1/employerapplications/{id}/:
+    get:
+      operationId: retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer application.
+        required: true
+      tags:
+      - employerapplications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerApplication'
+          description: ''
+      summary: retrieve
+    put:
+      operationId: update
+      description: Allow to update only DRAFT status applications.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer application.
+        required: true
+      tags:
+      - employerapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployerApplication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployerApplication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployerApplication'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerApplication'
+          description: ''
+      summary: update
+    patch:
+      operationId: partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer application.
+        required: true
+      tags:
+      - employerapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployerApplication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployerApplication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployerApplication'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerApplication'
+          description: ''
+      summary: partial update
+    delete:
+      operationId: destroy
+      description: Allow to delete only DRAFT status applications.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer application.
+        required: true
+      tags:
+      - employerapplications
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+      summary: destroy
+  /v1/employersummervouchers/{id}/attachments/:
+    post:
+      operationId: attachments_create
+      description: Upload a single file as attachment.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer summer voucher.
+        required: true
+      tags:
+      - employersummervouchers
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployerSummerVoucherAttachmentUploadInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+          description: ''
+        '400':
+          description: Invalid input
+        '403':
+          description: Forbidden
+        '404':
+          description: Voucher not found
+      summary: attachments create
+  /v1/employersummervouchers/{id}/attachments/{attachment_pk}/:
+    get:
+      operationId: attachments_retrieve
+      description: Download or delete a single attachment identified by its UUID.
+      parameters:
+      - in: path
+        name: attachment_pk
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this attachment.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer summer voucher.
+        required: true
+      tags:
+      - employersummervouchers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+        '204':
+          description: Attachment deleted
+        '404':
+          description: File not found
+      summary: attachments retrieve
+    delete:
+      operationId: attachments_destroy
+      description: Download or delete a single attachment identified by its UUID.
+      parameters:
+      - in: path
+        name: attachment_pk
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this attachment.
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this employer summer voucher.
+        required: true
+      tags:
+      - employersummervouchers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+        '204':
+          description: Attachment deleted
+        '404':
+          description: File not found
+      summary: attachments destroy
+  /v1/schools/:
+    get:
+      operationId: list_2
+      tags:
+      - schools
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/School'
+          description: ''
+      summary: list
+  /v1/summer_voucher_configuration/:
+    get:
+      operationId: list_3
+      tags:
+      - summer_voucher_configuration
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SummerVoucherConfiguration'
+          description: ''
+      summary: list
+  /v1/target_groups/:
+    get:
+      operationId: list_4
+      description: |-
+        DEPRECATED: This view is preserved for backward compatibility but is no
+        longer used by the frontend. New code should use SummerVoucherConfiguration
+        instead.
+      tags:
+      - target_groups
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TargetGroup'
+          description: ''
+      summary: list
+  /v1/youthapplications/:
+    post:
+      operationId: create_2
+      description: Create a VTJ-backed youth application and notify the applicant.
+      tags:
+      - youthapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/YouthApplication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/YouthApplication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/YouthApplication'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthApplicationOutput'
+          description: ''
+        '400':
+          description: Validation rejected
+        '500':
+          description: Failed to send email
+      summary: create
+  /v1/youthapplications/{id}/:
+    get:
+      operationId: retrieve_3
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthApplication'
+          description: ''
+      summary: retrieve
+  /v1/youthapplications/{id}/accept/:
+    patch:
+      operationId: accept_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedYouthApplicationHandling'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedYouthApplicationHandling'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedYouthApplicationHandling'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: Application accepted
+        '400':
+          description: Application was not accepted
+      summary: accept partial update
+  /v1/youthapplications/{id}/activate/:
+    get:
+      operationId: activate_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '302':
+          description: Redirect to the relevant application status page
+        '401':
+          description: Unable to activate application
+        '500':
+          description: Failed to send email
+      summary: activate retrieve
+  /v1/youthapplications/{id}/additional_info/:
+    post:
+      operationId: additional_info_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/YouthApplicationAdditionalInfo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/YouthApplicationAdditionalInfo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/YouthApplicationAdditionalInfo'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthApplicationAdditionalInfo'
+          description: ''
+        '400':
+          description: Invalid input or status
+        '500':
+          description: Failed to send email
+      summary: additional info create
+  /v1/youthapplications/{id}/process/:
+    get:
+      operationId: process_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '302':
+          description: Redirect to handler processing page
+      summary: process retrieve
+  /v1/youthapplications/{id}/reject/:
+    patch:
+      operationId: reject_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedYouthApplicationHandling'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedYouthApplicationHandling'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedYouthApplicationHandling'
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: Application rejected
+        '400':
+          description: Application was not rejected
+      summary: reject partial update
+  /v1/youthapplications/{id}/status/:
+    get:
+      operationId: status_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this youth application.
+        required: true
+      tags:
+      - youthapplications
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthApplication'
+          description: ''
+      summary: status retrieve
+  /v1/youthapplications/create-without-ssn/:
+    post:
+      operationId: create_without_ssn_create
+      description: |-
+        Create a YouthApplication without a social security number.
+
+        NOTE:
+            - Handles request.data conversion from QueryDict to dict to ensure
+              JSONField (additional_info_user_reasons) values are handled correctly
+              as lists, preventing "Invalid JSON" validation errors.
+      tags:
+      - youthapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NonVtjYouthApplication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NonVtjYouthApplication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NonVtjYouthApplication'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthApplicationOutput'
+          description: ''
+        '400':
+          description: Validation rejected
+        '500':
+          description: Failed to send email
+      summary: create without ssn create
+  /v1/youthapplications/fetch_employee_data/:
+    post:
+      operationId: fetch_employee_data_create
+      description: |-
+        Fetch employee data to a particular EmployerSummerVoucher using the
+        employee's name and their YouthSummerVoucher's
+        summer_voucher_serial_number.
+      tags:
+      - youthapplications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/YouthApplicationFetchEmployeeDataInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/YouthApplicationFetchEmployeeDataInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/YouthApplicationFetchEmployeeDataInput'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthApplicationFetchEmployeeDataOutput'
+          description: ''
+        '400':
+          description: Bad request
+        '403':
+          description: Forbidden
+        '404':
+          description: Employee not found
+      summary: fetch employee data create
+components:
+  schemas:
+    ApplicationLanguageEnum:
+      enum:
+      - fi
+      - sv
+      - en
+      type: string
+      description: |-
+        * `fi` - suomi
+        * `sv` - svenska
+        * `en` - english
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        summer_voucher:
+          type: string
+          format: uuid
+          title: Employer summer voucher
+        attachment_file:
+          type: string
+          format: uri
+          writeOnly: true
+        attachment_type:
+          allOf:
+          - $ref: '#/components/schemas/AttachmentTypeEnum'
+          title: Attachment type in business rules
+        attachment_file_name:
+          type: string
+          readOnly: true
+          description: Name of the uploaded file
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentTypeEnum'
+          title: Technical content type of the attachment
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time created
+      required:
+      - attachment_file
+      - attachment_file_name
+      - attachment_type
+      - content_type
+      - created_at
+      - id
+      - summer_voucher
+    AttachmentTypeEnum:
+      enum:
+      - employment_contract
+      - payslip
+      type: string
+      description: |-
+        * `employment_contract` - employment contract
+        * `payslip` - payslip
+    BlankEnum:
+      enum:
+      - ''
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          title: Nimi
+          maxLength: 256
+        business_id:
+          type: string
+          maxLength: 64
+        organization_type:
+          oneOf:
+          - $ref: '#/components/schemas/OrganizationTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        company_form:
+          type: string
+          maxLength: 64
+        industry:
+          type: string
+          maxLength: 256
+        street_address:
+          type: string
+          maxLength: 256
+        postcode:
+          type: string
+          maxLength: 256
+        city:
+          type: string
+          maxLength: 256
+      required:
+      - business_id
+      - id
+      - name
+    ContentTypeEnum:
+      enum:
+      - application/pdf
+      - image/png
+      - image/jpeg
+      type: string
+      description: |-
+        * `application/pdf` - pdf
+        * `image/png` - png
+        * `image/jpeg` - jpeg
+    EmployerApplication:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time created
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time modified
+        status:
+          allOf:
+          - $ref: '#/components/schemas/EmployerApplicationStatusEnum'
+          description: |-
+            Status of the application, visible to the applicant
+
+            * `draft` - Draft
+            * `submitted` - Submitted
+            * `additional_information_requested` - Additional information requested
+            * `additional_information_provided` - Additional information provided
+            * `accepted` - Accepted
+            * `rejected` - Rejected
+            * `deleted_by_customer` - Deleted by customer
+        street_address:
+          type: string
+          title: Company postal address
+          description: Enter the whole company postal address including street address,
+            postcode and city.
+          maxLength: 256
+        bank_account_number:
+          type: string
+          maxLength: 34
+        contact_person_name:
+          type: string
+          maxLength: 256
+        contact_person_email:
+          type: string
+          format: email
+          maxLength: 254
+        contact_person_phone_number:
+          type: string
+          maxLength: 64
+        is_separate_invoicer:
+          type: boolean
+          description: invoicing is not handled by the contact person
+        invoicer_name:
+          type: string
+          maxLength: 256
+        invoicer_email:
+          type: string
+          format: email
+          maxLength: 254
+        invoicer_phone_number:
+          type: string
+          maxLength: 64
+        payee_name:
+          type: string
+          maxLength: 256
+        payee_address:
+          type: string
+          maxLength: 512
+        bank_swift_bic_code:
+          type: string
+          title: Bank SWIFT/BIC code
+          maxLength: 11
+        bank_name:
+          type: string
+          maxLength: 256
+        bank_address:
+          type: string
+          maxLength: 512
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Company'
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+          title: Käyttäjä
+        summer_vouchers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployerSummerVoucher'
+        language:
+          $ref: '#/components/schemas/ApplicationLanguageEnum'
+        submitted_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Timestamp when employer application was submitted
+        is_mine:
+          type: boolean
+          readOnly: true
+      required:
+      - company
+      - created_at
+      - id
+      - is_mine
+      - modified_at
+      - submitted_at
+      - user
+    EmployerApplicationStatusEnum:
+      enum:
+      - draft
+      - submitted
+      - additional_information_requested
+      - additional_information_provided
+      - accepted
+      - rejected
+      - deleted_by_customer
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `submitted` - Submitted
+        * `additional_information_requested` - Additional information requested
+        * `additional_information_provided` - Additional information provided
+        * `accepted` - Accepted
+        * `rejected` - Rejected
+        * `deleted_by_customer` - Deleted by customer
+    EmployerSummerVoucher:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        summer_voucher_serial_number:
+          type: string
+          maxLength: 256
+        employee_name:
+          type: string
+          maxLength: 256
+        employee_school:
+          type: string
+          readOnly: true
+        employee_birthdate:
+          type:
+          - string
+          - 'null'
+          format: date
+          description: Return the employee's birthdate from the linked youth application.
+          readOnly: true
+        employee_phone_number:
+          type: string
+          maxLength: 64
+        employee_home_city:
+          type: string
+          readOnly: true
+        employee_postcode:
+          type: string
+          readOnly: true
+        employment_postcode:
+          type: string
+          maxLength: 256
+        employment_start_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        employment_end_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        employment_work_hours:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        employment_salary_paid:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        employment_description:
+          type: string
+        hired_without_voucher_assessment:
+          description: |-
+            Whether the employee would have been hired without a summer voucher.
+
+            * `yes` - kyllä
+            * `no` - ei
+            * `maybe` - ehkä
+          oneOf:
+          - $ref: '#/components/schemas/HiredWithoutVoucherAssessmentEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          readOnly: true
+          description: Attachments of the application (read-only)
+        ordering:
+          type: integer
+          readOnly: true
+      required:
+      - attachments
+      - employee_birthdate
+      - employee_home_city
+      - employee_postcode
+      - employee_school
+      - ordering
+    EmployerSummerVoucherAttachmentUploadInput:
+      type: object
+      description: Request body (input) for uploading an attachment to an employer
+        voucher.
+      properties:
+        attachment_file:
+          type: string
+          format: uri
+        attachment_type:
+          $ref: '#/components/schemas/AttachmentTypeEnum'
+      required:
+      - attachment_file
+      - attachment_type
+    HiredWithoutVoucherAssessmentEnum:
+      enum:
+      - 'yes'
+      - 'no'
+      - maybe
+      type: string
+      description: |-
+        * `yes` - kyllä
+        * `no` - ei
+        * `maybe` - ehkä
+    NonVtjYouthApplication:
+      type: object
+      description: |-
+        Serializer for handler create-without-ssn youth applications (no Finnish SSN).
+
+        The client sends applicant fields only. Server-managed workflow fields are
+        read-only on input and set in ``create()``.
+      properties:
+        first_name:
+          type: string
+          title: Etunimi
+          maxLength: 128
+        last_name:
+          type: string
+          title: Sukunimi
+          maxLength: 128
+        non_vtj_birthdate:
+          type: string
+          format: date
+        non_vtj_home_municipality:
+          type: string
+          description: Home municipality of person who has no permanent Finnish personal
+            identity code, and thus no data obtainable through the VTJ integration
+          maxLength: 64
+        school:
+          type: string
+          maxLength: 256
+        is_unlisted_school:
+          type: boolean
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone_number:
+          type: string
+          maxLength: 64
+        postcode:
+          type: string
+          maxLength: 5
+        language:
+          $ref: '#/components/schemas/NonVtjYouthApplicationLanguageEnum'
+        target_group:
+          $ref: '#/components/schemas/TargetGroupEnum'
+        receipt_confirmed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Timestamp of receipt confirmation
+        status:
+          allOf:
+          - $ref: '#/components/schemas/YouthApplicationStatusEnum'
+          readOnly: true
+        creator:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        handler:
+          type:
+          - integer
+          - 'null'
+          readOnly: true
+        additional_info_provided_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Time additional info was provided
+        additional_info_user_reasons:
+          readOnly: true
+        additional_info_description:
+          type: string
+          maxLength: 4096
+      required:
+      - additional_info_description
+      - additional_info_provided_at
+      - additional_info_user_reasons
+      - creator
+      - email
+      - first_name
+      - handler
+      - is_unlisted_school
+      - language
+      - last_name
+      - non_vtj_birthdate
+      - phone_number
+      - postcode
+      - receipt_confirmed_at
+      - school
+      - status
+      - target_group
+    NonVtjYouthApplicationLanguageEnum:
+      enum:
+      - fi
+      - sv
+      - en
+      type: string
+      description: |-
+        * `fi` - fi
+        * `sv` - sv
+        * `en` - en
+    NullEnum:
+      type: 'null'
+    OrganizationTypeEnum:
+      enum:
+      - company
+      - association
+      - parish
+      - other
+      type: string
+      description: |-
+        * `company` - Company
+        * `association` - Association
+        * `parish` - Parish
+        * `other` - Other
+    PaginatedEmployerApplicationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerApplication'
+    PatchedEmployerApplication:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time created
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time modified
+        status:
+          allOf:
+          - $ref: '#/components/schemas/EmployerApplicationStatusEnum'
+          description: |-
+            Status of the application, visible to the applicant
+
+            * `draft` - Draft
+            * `submitted` - Submitted
+            * `additional_information_requested` - Additional information requested
+            * `additional_information_provided` - Additional information provided
+            * `accepted` - Accepted
+            * `rejected` - Rejected
+            * `deleted_by_customer` - Deleted by customer
+        street_address:
+          type: string
+          title: Company postal address
+          description: Enter the whole company postal address including street address,
+            postcode and city.
+          maxLength: 256
+        bank_account_number:
+          type: string
+          maxLength: 34
+        contact_person_name:
+          type: string
+          maxLength: 256
+        contact_person_email:
+          type: string
+          format: email
+          maxLength: 254
+        contact_person_phone_number:
+          type: string
+          maxLength: 64
+        is_separate_invoicer:
+          type: boolean
+          description: invoicing is not handled by the contact person
+        invoicer_name:
+          type: string
+          maxLength: 256
+        invoicer_email:
+          type: string
+          format: email
+          maxLength: 254
+        invoicer_phone_number:
+          type: string
+          maxLength: 64
+        payee_name:
+          type: string
+          maxLength: 256
+        payee_address:
+          type: string
+          maxLength: 512
+        bank_swift_bic_code:
+          type: string
+          title: Bank SWIFT/BIC code
+          maxLength: 11
+        bank_name:
+          type: string
+          maxLength: 256
+        bank_address:
+          type: string
+          maxLength: 512
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Company'
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+          title: Käyttäjä
+        summer_vouchers:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployerSummerVoucher'
+        language:
+          $ref: '#/components/schemas/ApplicationLanguageEnum'
+        submitted_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Timestamp when employer application was submitted
+        is_mine:
+          type: boolean
+          readOnly: true
+    PatchedYouthApplicationHandling:
+      type: object
+      properties:
+        encrypted_handler_vtj_json:
+          writeOnly: true
+    School:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+    SummerVoucherConfiguration:
+      type: object
+      properties:
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: 2020
+        voucher_value_in_euros:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        min_work_compensation_in_euros:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Minimum work compensation in euros
+        min_work_hours:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Minimum work hours
+        target_groups:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - min_work_compensation_in_euros
+      - min_work_hours
+      - target_groups
+      - voucher_value_in_euros
+      - year
+    TargetGroup:
+      type: object
+      description: Serializer for TargetGroup. Decoupled from any model.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+      required:
+      - description
+      - id
+      - name
+    TargetGroupEnum:
+      enum:
+      - hki_15
+      - primary_target_group
+      - secondary_target_group
+      - hki_18
+      type: string
+      description: |-
+        * `hki_15` - 8. luokkalainen
+        * `primary_target_group` - 9. luokkalainen
+        * `secondary_target_group` - Toisen asteen ensimmäisen vuoden opiskelija
+        * `hki_18` - Toisen asteen toisen vuoden opiskelija
+    YouthApplication:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        creator:
+          type:
+          - integer
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time created
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Time modified
+        receipt_confirmed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Timestamp of receipt confirmation
+        status:
+          allOf:
+          - $ref: '#/components/schemas/YouthApplicationStatusEnum'
+          readOnly: true
+        handler:
+          type:
+          - integer
+          - 'null'
+        handled_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Time handled
+        additional_info_user_reasons:
+          readOnly: true
+        additional_info_description:
+          type: string
+          readOnly: true
+        additional_info_provided_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          title: Time additional info was provided
+        non_vtj_birthdate:
+          type:
+          - string
+          - 'null'
+          format: date
+          readOnly: true
+          description: Birthdate of person who has no permanent Finnish personal identity
+            code, and thus no data obtainable through the VTJ integration
+        non_vtj_home_municipality:
+          type: string
+          readOnly: true
+          description: Home municipality of person who has no permanent Finnish personal
+            identity code, and thus no data obtainable through the VTJ integration
+        is_vtj_data_restricted:
+          type: boolean
+          readOnly: true
+          description: The Population Information System (VTJ) has restricted data
+            disclosure (a non-disclosure of personal data / turvakielto). This prevents
+            automatic retrieval of municipality and address data, requiring manual
+            application processing.
+        encrypted_original_vtj_json:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        encrypted_handler_vtj_json:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        first_name:
+          type: string
+          title: Etunimi
+          maxLength: 128
+        last_name:
+          type: string
+          title: Sukunimi
+          maxLength: 128
+        social_security_number:
+          type:
+          - string
+          - 'null'
+          maxLength: 66
+        school:
+          type: string
+          maxLength: 256
+        is_unlisted_school:
+          type: boolean
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone_number:
+          type: string
+          maxLength: 64
+        postcode:
+          type: string
+          maxLength: 5
+        language:
+          $ref: '#/components/schemas/ApplicationLanguageEnum'
+        request_additional_information:
+          type: boolean
+          writeOnly: true
+          default: false
+        target_group:
+          $ref: '#/components/schemas/TargetGroupEnum'
+      required:
+      - additional_info_description
+      - additional_info_provided_at
+      - additional_info_user_reasons
+      - created_at
+      - email
+      - encrypted_handler_vtj_json
+      - encrypted_original_vtj_json
+      - first_name
+      - handled_at
+      - id
+      - is_unlisted_school
+      - is_vtj_data_restricted
+      - last_name
+      - modified_at
+      - non_vtj_birthdate
+      - non_vtj_home_municipality
+      - phone_number
+      - postcode
+      - receipt_confirmed_at
+      - school
+      - status
+      - target_group
+    YouthApplicationAdditionalInfo:
+      type: object
+      properties:
+        additional_info_user_reasons: {}
+        additional_info_description:
+          type: string
+          maxLength: 4096
+    YouthApplicationFetchEmployeeDataInput:
+      type: object
+      description: Request body (input) for fetching employee data for a summer voucher.
+      properties:
+        employer_summer_voucher_id:
+          type: string
+          format: uuid
+        employee_name:
+          type: string
+        summer_voucher_serial_number:
+          type: string
+      required:
+      - employee_name
+      - employer_summer_voucher_id
+      - summer_voucher_serial_number
+    YouthApplicationFetchEmployeeDataOutput:
+      type: object
+      description: Response body (output) for employee data lookup.
+      properties:
+        employer_summer_voucher_id:
+          type: string
+          format: uuid
+        employee_name:
+          type: string
+        employee_birthdate:
+          type: string
+          format: date
+        employee_phone_number:
+          type: string
+        employee_home_city:
+          type:
+          - string
+          - 'null'
+        employee_postcode:
+          type: string
+        employee_school:
+          type: string
+      required:
+      - employee_birthdate
+      - employee_home_city
+      - employee_name
+      - employee_phone_number
+      - employee_postcode
+      - employee_school
+      - employer_summer_voucher_id
+    YouthApplicationOutput:
+      type: object
+      description: Response body (output) with the youth application ``id`` (HTTP
+        201).
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+      - id
+    YouthApplicationStatusEnum:
+      enum:
+      - submitted
+      - awaiting_manual_processing
+      - additional_information_requested
+      - additional_information_provided
+      - accepted
+      - rejected
+      type: string
+      description: |-
+        * `submitted` - Submitted
+        * `awaiting_manual_processing` - Awaiting manual processing
+        * `additional_information_requested` - Additional information requested
+        * `additional_information_provided` - Additional information provided
+        * `accepted` - Accepted
+        * `rejected` - Rejected
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

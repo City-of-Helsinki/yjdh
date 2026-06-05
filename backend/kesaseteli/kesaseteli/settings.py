@@ -451,6 +451,10 @@ SPECTACULAR_SETTINGS = {
     "PREPROCESSING_HOOKS": [
         "common.openapi.preprocessing_filter_public_api_paths",
     ],
+    "POSTPROCESSING_HOOKS": [
+        "common.openapi.replace_underscores_with_spaces",
+        "drf_spectacular.hooks.postprocess_schema_enums",
+    ],
     "DESCRIPTION": "REST API for Kesäseteli application management",
     "VERSION": APP_RELEASE or "0.0.1",
     "OAS_VERSION": "3.1.0",
