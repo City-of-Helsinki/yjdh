@@ -299,6 +299,7 @@ class YouthApplicationViewSet(ModelViewSet):
             403: OpenApiResponse(description="Forbidden"),
             404: OpenApiResponse(description="Employee not found"),
         },
+        operation_id="fetch employee data",
     )
     @transaction.atomic
     @method_decorator(csrf_protect)
@@ -517,9 +518,15 @@ class YouthApplicationViewSet(ModelViewSet):
             401: OpenApiResponse(description="Unable to activate application"),
             500: OpenApiResponse(description="Failed to send email"),
         },
+        operation_id="activate youth application",
+        summary="Activate youth application",
+        description="""
+        Activate youth application and send email with summer voucher.
+        """,
     )
     @transaction.atomic
     @action(methods=["get"], detail=True)
+    # TODO: Only POST in "activate" should be allowed, since it has side-effects.
     def activate(self, request, *args, **kwargs) -> HttpResponse:  # noqa: C901
         youth_application: YouthApplication = self.get_object()
 
@@ -736,6 +743,7 @@ class YouthApplicationViewSet(ModelViewSet):
             400: OpenApiResponse(description="Validation rejected"),
             500: OpenApiResponse(description="Failed to send email"),
         },
+        operation_id="create without SSN",
     )
     @transaction.atomic
     @enforce_handler_view_adfs_login
