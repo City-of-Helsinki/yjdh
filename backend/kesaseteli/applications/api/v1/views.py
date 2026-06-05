@@ -9,7 +9,7 @@ from django.db import transaction
 from django.db.models import F, Func
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils import translation
 from django.utils.decorators import method_decorator
 from django.utils.text import format_lazy
@@ -25,13 +25,14 @@ from drf_spectacular.utils import (
 )
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from applications.api.v1.permissions import (
@@ -44,15 +45,13 @@ from applications.api.v1.permissions import (
 from applications.api.v1.serializers import (
     AttachmentSerializer,
     EmployerApplicationSerializer,
-    EmployerSummerVoucherAttachmentUploadInputSerializer,
     EmployerSummerVoucherSerializer,
     NonVtjYouthApplicationSerializer,
     SchoolSerializer,
     SummerVoucherConfigurationSerializer,
     TargetGroupSerializer,
     YouthApplicationAdditionalInfoSerializer,
-    YouthApplicationFetchEmployeeDataInputSerializer,
-    YouthApplicationFetchEmployeeDataOutputSerializer,
+    YouthApplicationFetchEmployeeDataSerializer,
     YouthApplicationHandlingSerializer,
     YouthApplicationOutputSerializer,
     YouthApplicationSerializer,
@@ -160,464 +159,23 @@ class TargetGroupListView(ListAPIView):
         return Response(serializer.data)
 
 
-@extend_schema_view(
-    list=extend_schema(exclude=True),
-    update=extend_schema(exclude=True),
-    partial_update=extend_schema(exclude=True),
-    destroy=extend_schema(exclude=True),
+# --- Youth Application Views ---
+
+@extend_schema(
+    request=YouthApplicationSerializer,
+    responses={
+        201: YouthApplicationOutputSerializer,
+        400: OpenApiResponse(description="Validation rejected"),
+        500: OpenApiResponse(description="Failed to send email"),
+    },
 )
-class YouthApplicationViewSet(ModelViewSet):
-    permission_classes = [AllowAny]  # Permissions are handled per function
-    queryset = YouthApplication.objects.all()
+class YouthApplicationCreateView(GenericAPIView):
+    permission_classes = [AllowAny]
     serializer_class = YouthApplicationSerializer
 
-    def get_serializer_class(self):
-        """
-        Return the serializer class that should be used for the current action.
-
-        Returns NonVtjYouthApplicationSerializer for the 'create_without_ssn'
-        action, YouthApplicationFetchEmployeeDataInputSerializer for the
-        'fetch_employee_data' action, and falls back to the default serializer
-        class for all other actions.
-        """
-        if self.action == "create_without_ssn":
-            return NonVtjYouthApplicationSerializer
-        elif self.action == "fetch_employee_data":
-            return YouthApplicationFetchEmployeeDataInputSerializer
-        return super().get_serializer_class()
-
-    def list(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def update(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def partial_update(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def destroy(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @action(methods=["get"], detail=True)
-    @extend_schema(responses=YouthApplicationStatusSerializer)
-    def status(self, request, *args, **kwargs) -> HttpResponse:
-        # Not audit logging anything here as this is open to everyone,
-        # also to anonymous users. The returned data is relatively
-        # innocuous and only accessible if the youth application's
-        # random generated UUID v4 ID is known.
-        serializer = YouthApplicationStatusSerializer(
-            self.get_object(),
-            context=self.get_serializer_context(),
-        )
-        return Response(serializer.data)
-
-    @transaction.atomic
-    @enforce_handler_view_adfs_login
-    @extend_schema(responses=YouthApplicationSerializer)
-    def retrieve(self, request: Request, *args, **kwargs) -> Response | HttpResponse:
-        youth_application: YouthApplication = self.get_object().lock_for_update()
-        # Update unhandled youth applications' encrypted_handler_vtj_json so
-        # handlers can accept/reject using it
-        if (
-            youth_application.has_social_security_number
-            and not youth_application.is_handled
-        ):
-            # Fetch VTJ data and update encrypted_handler_vtj_json
-            youth_application.encrypted_handler_vtj_json = VTJService.fetch_vtj_json(
-                youth_application, end_user=VTJClient.get_end_user(request)
-            )
-
-            # Update VTJ data restriction status
-            youth_application.update_vtj_restriction_status(
-                youth_application.encrypted_handler_vtj_json
-            )
-
-            youth_application.save(
-                update_fields=["encrypted_handler_vtj_json", "is_vtj_data_restricted"]
-            )
-        return super().retrieve(request, *args, **kwargs)
-
-    @extend_schema(
-        responses={
-            302: OpenApiResponse(description="Redirect to handler processing page"),
-        },
-    )
-    @action(methods=["get"], detail=True)
-    @enforce_handler_view_adfs_login
-    def process(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object()
-        return redirect(youth_application.handler_processing_url())
-
-    @extend_schema(
-        request=YouthApplicationAdditionalInfoSerializer,
-        responses={
-            201: YouthApplicationAdditionalInfoSerializer,
-            400: OpenApiResponse(description="Invalid input or status"),
-            500: OpenApiResponse(description="Failed to send email"),
-        },
-    )
-    @transaction.atomic
-    @action(methods=["post"], detail=True)
-    def additional_info(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object().lock_for_update()
-
-        if not youth_application.can_set_additional_info:
-            return Response(
-                data={
-                    "detail": (
-                        _("Invalid status %(status)s for setting additional info")
-                        % {"status": youth_application.status}
-                    )
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            serializer = YouthApplicationAdditionalInfoSerializer(
-                data=request.data, context=self.get_serializer_context()
-            )
-            serializer.is_valid(raise_exception=True)
-
-            youth_application.set_additional_info(**serializer.validated_data)
-
-            LOGGER.info(
-                f"Set additional info to youth application {youth_application.pk}: "
-                "Sending application to be processed by a handler"
-            )
-            was_email_sent = youth_application.send_processing_email_to_handler(request)
-            if not was_email_sent:
-                transaction.set_rollback(True)
-                with translation.override(youth_application.language):
-                    return HttpResponse(
-                        _("Failed to send manual processing email to handler"),
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    )
-
-            # Return success setting the additional info
-            headers = self.get_success_headers(serializer.data)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED, headers=headers
-            )
-        except ValidationError as e:
-            LOGGER.error(
-                "Youth application additional info rejected because of "
-                f"validation error. Validation error codes: {str(e.get_codes())}"
-            )
-            raise
-
-    @extend_schema(
-        request=YouthApplicationFetchEmployeeDataInputSerializer,
-        responses={
-            200: YouthApplicationFetchEmployeeDataOutputSerializer,
-            400: OpenApiResponse(description="Bad request"),
-            403: OpenApiResponse(description="Forbidden"),
-            404: OpenApiResponse(description="Employee not found"),
-        },
-        operation_id="fetch employee data",
-    )
-    @transaction.atomic
-    @method_decorator(csrf_protect)
-    @action(methods=["post"], detail=False)
-    def fetch_employee_data(self, request, *args, **kwargs) -> HttpResponse:
-        """
-        Fetch employee data to a particular EmployerSummerVoucher using the
-        employee's name and their YouthSummerVoucher's
-        summer_voucher_serial_number.
-        """
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        request_serializer = self.get_serializer(data=request.data)
-        request_serializer.is_valid(raise_exception=True)
-        validated = request_serializer.validated_data
-
-        employer_voucher = self._get_employer_voucher(
-            validated["employer_summer_voucher_id"]
-        )
-        if not employer_voucher:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        youth_app, youth_voucher = self._resolve_and_match_youth_app(
-            validated["summer_voucher_serial_number"], validated["employee_name"]
-        )
-
-        audit_params = {
-            "employer_summer_voucher_id": str(employer_voucher.id),
-            "employee_name": validated["employee_name"],
-            "summer_voucher_serial_number": validated["summer_voucher_serial_number"],
-        }
-
-        if not youth_app:
-            self._log_audit_access(request, None, audit_params)
-            LOGGER.warning(
-                f"No match for employee name {validated['employee_name']} with voucher"
-                f" {validated['summer_voucher_serial_number']} in YouthApplication None"
-                f" - Cannot set employee data."
-            )
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        error_code = self._check_voucher_business_rules(
-            youth_app, youth_voucher, employer_voucher
-        )
-        if error_code:
-            LOGGER.warning(
-                f"YouthApplication {youth_app.pk} check failed: {error_code}"
-                f" - Cannot set employee data."
-            )
-            return Response(
-                data={"error_code": error_code}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        self._log_audit_access(request, youth_app, audit_params)
-        response_serializer = (
-            YouthApplicationFetchEmployeeDataOutputSerializer.from_youth_application(
-                employer_voucher.id, youth_app
-            )
-        )
-        return Response(response_serializer.data, status=status.HTTP_200_OK)
-
-    def _get_employer_voucher(self, voucher_id) -> EmployerSummerVoucher | None:
-        return EmployerSummerVoucher.objects.filter(id=voucher_id).first()
-
-    def _resolve_and_match_youth_app(
-        self, serial, name
-    ) -> tuple[YouthApplication | None, YouthSummerVoucher | None]:
-        youth_voucher = YouthSummerVoucher.objects.get_by_serial_number(serial)
-        youth_app = youth_voucher.youth_application if youth_voucher else None
-
-        if youth_app and is_last_name_fuzzy_match_in_full_name(
-            last_name=youth_app.last_name, full_name=name
-        ):
-            return youth_app, youth_voucher
-        return None, None
-
-    def _check_voucher_business_rules(
-        self, app, youth_voucher, employer_voucher
-    ) -> str | None:
-        if app.status != YouthApplicationStatus.ACCEPTED:
-            return "youth_application_not_accepted"
-
-        # Check if already used in another employer's application
-        already_used = (
-            EmployerSummerVoucher.objects.filter(youth_summer_voucher=youth_voucher)
-            .exclude(application__id=employer_voucher.application_id)
-            .exists()
-        )
-
-        if already_used:
-            return "summer_voucher_already_used"
-        return None
-
-    def _log_audit_access(self, request, accessed_instance, parameters):
-        audit_data = {
-            "method": f"{self.__class__.__name__}.fetch_employee_data",
-            "parameters": parameters,
-        }
-        if accessed_instance:
-            AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
-                accessed_instance=accessed_instance,
-                actor=request.user,
-                actor_email=request.user.email,
-                additional_data=audit_data,
-            )
-        else:
-            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
-                actor=request.user,
-                actor_email=request.user.email,
-                content_type=ContentType.objects.get_for_model(YouthApplication),
-                additional_data=audit_data,
-            )
-
-    @extend_schema(
-        request=YouthApplicationHandlingSerializer,
-        responses={
-            200: OpenApiResponse(description="Application accepted"),
-            400: OpenApiResponse(description="Application was not accepted"),
-        },
-    )
-    @transaction.atomic
-    @action(methods=["patch"], detail=True)
-    @enforce_handler_view_adfs_login
-    def accept(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object().lock_for_update()
-
-        if (
-            settings.NEXT_PUBLIC_DISABLE_VTJ
-            or not youth_application.has_social_security_number
-        ):
-            encrypted_handler_vtj_json = None
-        else:
-            try:
-                serializer = YouthApplicationHandlingSerializer(
-                    data=request.data, context=self.get_serializer_context()
-                )
-                serializer.is_valid(raise_exception=True)
-            except ValidationError as e:
-                LOGGER.error(
-                    "Youth application was not changed to accepted state because of "
-                    f"validation error. Validation error codes: {str(e.get_codes())}"
-                )
-                raise
-
-            encrypted_handler_vtj_json = serializer.validated_data[
-                "encrypted_handler_vtj_json"
-            ]
-
-        if not youth_application.is_accepted and youth_application.accept_manually(
-            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
-        ):
-            was_email_sent = (
-                youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
-                    language=youth_application.language
-                )
-            )
-            if not was_email_sent:
-                transaction.set_rollback(True)
-                with translation.override(youth_application.language):
-                    return HttpResponse(
-                        _("Failed to send youth summer voucher email"),
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    )
-            return HttpResponse(status=status.HTTP_200_OK)
-        else:
-            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
-    @extend_schema(
-        request=YouthApplicationHandlingSerializer,
-        responses={
-            200: OpenApiResponse(description="Application rejected"),
-            400: OpenApiResponse(description="Application was not rejected"),
-        },
-    )
-    @transaction.atomic
-    @action(methods=["patch"], detail=True)
-    @enforce_handler_view_adfs_login
-    def reject(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object().lock_for_update()
-
-        if (
-            settings.NEXT_PUBLIC_DISABLE_VTJ
-            or not youth_application.has_social_security_number
-        ):
-            encrypted_handler_vtj_json = None
-        else:
-            try:
-                serializer = YouthApplicationHandlingSerializer(
-                    data=request.data, context=self.get_serializer_context()
-                )
-                serializer.is_valid(raise_exception=True)
-            except ValidationError as e:
-                LOGGER.error(
-                    "Youth application was not changed to rejected state because of "
-                    f"validation error. Validation error codes: {str(e.get_codes())}"
-                )
-                raise
-
-            encrypted_handler_vtj_json = serializer.validated_data[
-                "encrypted_handler_vtj_json"
-            ]
-
-        if not youth_application.is_rejected and youth_application.reject(
-            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
-        ):
-            return HttpResponse(status=status.HTTP_200_OK)
-        else:
-            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
-    @extend_schema(
-        responses={
-            302: OpenApiResponse(
-                description="Redirect to the relevant application status page"
-            ),
-            401: OpenApiResponse(description="Unable to activate application"),
-            500: OpenApiResponse(description="Failed to send email"),
-        },
-        operation_id="activate youth application",
-        summary="Activate youth application",
-        description="""
-        Activate youth application and send email with summer voucher.
-        """,
-    )
-    @transaction.atomic
-    @action(methods=["get"], detail=True)
-    # TODO: Only POST in "activate" should be allowed, since it has side-effects.
-    def activate(self, request, *args, **kwargs) -> HttpResponse:  # noqa: C901
-        youth_application: YouthApplication = self.get_object()
-
-        # Lock same person's this year's applications to prevent multiple activations
-        same_persons_this_year_apps = (
-            YouthApplication.objects.filter(
-                social_security_number=youth_application.social_security_number
-            )
-            .created_this_year()
-            .select_for_update()
-        )
-        list(same_persons_this_year_apps)  # Force evaluation to lock queryset's rows
-
-        if same_persons_this_year_apps.active().non_rejected().exists():
-            if (
-                youth_application.is_active
-                and not youth_application.is_rejected
-                and youth_application.can_set_additional_info
-            ):
-                return HttpResponseRedirect(
-                    youth_application.additional_info_page_url(pk=youth_application.pk)
-                )
-            else:  # not the active non-rejected one or does not need additional info
-                return HttpResponseRedirect(
-                    youth_application.already_activated_page_url()
-                )
-        elif youth_application.has_activation_link_expired:
-            return HttpResponseRedirect(youth_application.expired_page_url())
-        elif youth_application.activate():
-            if youth_application.accept_automatically():
-                LOGGER.info(
-                    f"Activated youth application {youth_application.pk}: "
-                    "Youth application was accepted automatically using data from VTJ"
-                )
-                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(  # noqa: E501
-                    language=youth_application.language
-                )
-                if not was_email_sent:
-                    transaction.set_rollback(True)
-                    with translation.override(youth_application.language):
-                        return HttpResponse(
-                            _("Failed to send youth summer voucher email"),
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        )
-                return HttpResponseRedirect(youth_application.accepted_page_url())
-            elif youth_application.need_additional_info:
-                return self._set_application_needs_additional_info(
-                    youth_application=youth_application
-                )
-
-            return HttpResponseRedirect(youth_application.activated_page_url())
-
-        return HttpResponse(
-            status=status.HTTP_401_UNAUTHORIZED,
-            content="Unable to activate youth application",
-        )
-
     @staticmethod
-    def _set_application_needs_additional_info(
-        youth_application: YouthApplication,
-    ) -> HttpResponse:
-        """Move the application into the additional-info flow and redirect."""
-        LOGGER.info(
-            f"Activated youth application {youth_application.pk}: "
-            "Additional info is needed, redirecting user to page to provide it"
-        )
-        youth_application.status = (
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
-        )
-        youth_application.save()
-        return HttpResponseRedirect(
-            youth_application.additional_info_page_url(pk=youth_application.pk)
-        )
-
-    @classmethod
     def error_response_with_logging(
-        cls, reason: YouthApplicationRejectedReason
+        reason: YouthApplicationRejectedReason
     ) -> JsonResponse:
         """Return a logged 400 response with the given rejection reason."""
         response_status = status.HTTP_400_BAD_REQUEST
@@ -630,16 +188,7 @@ class YouthApplicationViewSet(ModelViewSet):
         return JsonResponse(status=response_status, data=response_data)
 
     @transaction.atomic
-    @extend_schema(
-        request=YouthApplicationSerializer,
-        responses={
-            201: YouthApplicationOutputSerializer,
-            400: OpenApiResponse(description="Validation rejected"),
-            500: OpenApiResponse(description="Failed to send email"),
-        },
-    )
-    def create(self, request: Request, *args, **kwargs):  # noqa: C901
-        """Create a VTJ-backed youth application and notify the applicant."""
+    def post(self, request, *args, **kwargs) -> HttpResponse:
         try:
             # Validate the incoming application payload first.
             serializer = self.get_serializer(data=request.data, hide_vtj_data=True)
@@ -649,7 +198,7 @@ class YouthApplicationViewSet(ModelViewSet):
             email = serializer.validated_data["email"]
             social_security_number = serializer.validated_data["social_security_number"]
 
-            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(  # noqa: E501
+            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(
                 email, social_security_number
             ):
                 return self.error_response_with_logging(
@@ -661,8 +210,7 @@ class YouthApplicationViewSet(ModelViewSet):
                 )
 
             # Data was valid and other criteria passed too, so let's create the object
-            self.perform_create(serializer)
-
+            serializer.save()
             youth_application = serializer.instance
 
             # Fetch the VTJ JSON data and save it
@@ -705,7 +253,7 @@ class YouthApplicationViewSet(ModelViewSet):
 
                 if not request_additional_info:
                     if (
-                        not youth_application.is_social_security_number_valid_according_to_vtj  # noqa: E501
+                        not youth_application.is_social_security_number_valid_according_to_vtj
                         or youth_application.is_applicant_dead_according_to_vtj
                     ):
                         transaction.set_rollback(True)
@@ -739,10 +287,7 @@ class YouthApplicationViewSet(ModelViewSet):
 
             # Return success creating the object
             output_data = YouthApplicationOutputSerializer(serializer.instance).data
-            headers = self.get_success_headers(output_data)
-            return Response(
-                output_data, status=status.HTTP_201_CREATED, headers=headers
-            )
+            return Response(output_data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             LOGGER.error(
                 "Youth application submission rejected because of validation error. "
@@ -750,7 +295,42 @@ class YouthApplicationViewSet(ModelViewSet):
             )
             raise
 
+
+@extend_schema(responses=YouthApplicationSerializer)
+class YouthApplicationDetailView(RetrieveAPIView):
+    permission_classes = [AllowAny]
+    queryset = YouthApplication.objects.all()
+    serializer_class = YouthApplicationSerializer
+
+    @transaction.atomic
+    @enforce_handler_view_adfs_login
+    def retrieve(self, request: Request, *args, **kwargs) -> Response | HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+        if (
+            youth_application.has_social_security_number
+            and not youth_application.is_handled
+        ):
+            youth_application.encrypted_handler_vtj_json = VTJService.fetch_vtj_json(
+                youth_application, end_user=VTJClient.get_end_user(request)
+            )
+            youth_application.update_vtj_restriction_status(
+                youth_application.encrypted_handler_vtj_json
+            )
+            youth_application.save(
+                update_fields=["encrypted_handler_vtj_json", "is_vtj_data_restricted"]
+            )
+        serializer = self.get_serializer(youth_application)
+        return Response(serializer.data)
+
+
+class YouthApplicationCreateWithoutSsnView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = NonVtjYouthApplicationSerializer
+
+    @transaction.atomic
+    @enforce_handler_view_adfs_login
     @extend_schema(
+        request=NonVtjYouthApplicationSerializer,
         responses={
             201: YouthApplicationOutputSerializer,
             400: OpenApiResponse(description="Validation rejected"),
@@ -758,10 +338,7 @@ class YouthApplicationViewSet(ModelViewSet):
         },
         operation_id="create without SSN",
     )
-    @transaction.atomic
-    @enforce_handler_view_adfs_login
-    @action(methods=["post"], detail=False, url_path="create-without-ssn")
-    def create_without_ssn(self, request: Request, *args, **kwargs) -> HttpResponse:
+    def post(self, request, *args, **kwargs) -> HttpResponse:
         """
         Create a YouthApplication without a social security number.
 
@@ -779,7 +356,7 @@ class YouthApplicationViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
 
             # Create the application and persist its initial state.
-            self.perform_create(serializer)
+            serializer.save()
             app: YouthApplication = serializer.instance
 
             # Trigger the side effect that accompanies successful creation.
@@ -799,9 +376,8 @@ class YouthApplicationViewSet(ModelViewSet):
 
             # Shape and return the documented success response.
             output_data = YouthApplicationOutputSerializer(app).data
-            headers = self.get_success_headers(output_data)
             return Response(
-                output_data, status=status.HTTP_201_CREATED, headers=headers
+                output_data, status=status.HTTP_201_CREATED
             )
         except ValidationError as e:
             LOGGER.error(
@@ -810,6 +386,415 @@ class YouthApplicationViewSet(ModelViewSet):
                 f"Validation error codes: {str(e.get_codes())}"
             )
             raise
+
+
+@extend_schema(responses=YouthApplicationStatusSerializer)
+class YouthApplicationStatusView(RetrieveAPIView):
+    permission_classes = [AllowAny]
+    queryset = YouthApplication.objects.all()
+    serializer_class = YouthApplicationStatusSerializer
+
+
+
+@extend_schema(
+    responses={
+        302: OpenApiResponse(description="Redirect to handler processing page"),
+    },
+)
+class YouthApplicationProcessView(APIView):
+    permission_classes = [AllowAny]
+
+    @enforce_handler_view_adfs_login
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application = get_object_or_404(YouthApplication, pk=self.kwargs["pk"])
+        return redirect(youth_application.handler_processing_url())
+
+
+@extend_schema(
+    request=YouthApplicationAdditionalInfoSerializer,
+    responses={
+        201: YouthApplicationAdditionalInfoSerializer,
+        400: OpenApiResponse(description="Invalid input or status"),
+        500: OpenApiResponse(description="Failed to send email"),
+    },
+)
+class YouthApplicationAdditionalInfoView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = YouthApplicationAdditionalInfoSerializer
+    queryset = YouthApplication.objects.all()
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if not youth_application.can_set_additional_info:
+            return Response(
+                data={
+                    "detail": (
+                        _("Invalid status %(status)s for setting additional info")
+                        % {"status": youth_application.status}
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            youth_application.set_additional_info(**serializer.validated_data)
+
+            LOGGER.info(
+                f"Set additional info to youth application {youth_application.pk}: "
+                "Sending application to be processed by a handler"
+            )
+            was_email_sent = youth_application.send_processing_email_to_handler(request)
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send manual processing email to handler"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
+
+            return Response(
+                serializer.data, status=status.HTTP_201_CREATED
+            )
+        except ValidationError as e:
+            LOGGER.error(
+                "Youth application additional info rejected because of "
+                f"validation error. Validation error codes: {str(e.get_codes())}"
+            )
+            raise
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class YouthApplicationFetchEmployeeDataView(GenericAPIView):
+    serializer_class = YouthApplicationFetchEmployeeDataSerializer
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    @extend_schema(
+        request=YouthApplicationFetchEmployeeDataSerializer,
+        responses={
+            200: YouthApplicationFetchEmployeeDataSerializer,
+            400: OpenApiResponse(description="Bad request"),
+            403: OpenApiResponse(description="Forbidden"),
+            404: OpenApiResponse(description="Employee not found"),
+        },
+        operation_id="fetch employee data",
+    )
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated = serializer.validated_data
+
+        employer_voucher = self._get_employer_voucher(
+            validated["employer_summer_voucher_id"]
+        )
+        if not employer_voucher:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        youth_app, youth_voucher = self._resolve_and_match_youth_app(
+            validated["summer_voucher_serial_number"], validated["employee_name"]
+        )
+
+        audit_params = {
+            "employer_summer_voucher_id": str(employer_voucher.id),
+            "employee_name": validated["employee_name"],
+            "summer_voucher_serial_number": validated["summer_voucher_serial_number"],
+        }
+
+        if not youth_app:
+            self._log_audit_access(request, None, audit_params)
+            LOGGER.warning(
+                f"No match for employee name {validated['employee_name']} with voucher"
+                f" {validated['summer_voucher_serial_number']} in YouthApplication None"
+                f" - Cannot set employee data."
+            )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        error_code = self._check_voucher_business_rules(
+            youth_app, youth_voucher, employer_voucher
+        )
+        if error_code:
+            LOGGER.warning(
+                f"YouthApplication {youth_app.pk} check failed: {error_code}"
+                f" - Cannot set employee data."
+            )
+            return Response(
+                data={"error_code": error_code}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        self._log_audit_access(request, youth_app, audit_params)
+        
+        response_data = {
+            "employer_summer_voucher_id": employer_voucher.id,
+            "employee_name": youth_app.name,
+            "employee_birthdate": youth_app.birthdate,
+            "employee_phone_number": youth_app.phone_number,
+            "employee_home_city": youth_app.home_municipality,
+            "employee_postcode": youth_app.postcode,
+            "employee_school": youth_app.school,
+        }
+        response_serializer = self.serializer_class(data=response_data)
+        try:
+            response_serializer.is_valid(raise_exception=True)
+        except ValidationError as exc:
+            LOGGER.exception(
+                "Invalid fetch_employee_data response for YouthApplication %s: %s",
+                youth_app.pk,
+                exc.detail,
+            )
+            from rest_framework.exceptions import APIException
+            raise APIException("Invalid employee lookup response data") from exc
+
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+    def _get_employer_voucher(self, voucher_id) -> EmployerSummerVoucher | None:
+        return EmployerSummerVoucher.objects.filter(id=voucher_id).first()
+
+    def _resolve_and_match_youth_app(
+        self, serial, name
+    ) -> tuple[YouthApplication | None, YouthSummerVoucher | None]:
+        youth_voucher = YouthSummerVoucher.objects.get_by_serial_number(serial)
+        youth_app = youth_voucher.youth_application if youth_voucher else None
+
+        if youth_app and is_last_name_fuzzy_match_in_full_name(
+            last_name=youth_app.last_name, full_name=name
+        ):
+            return youth_app, youth_voucher
+        return None, None
+
+    def _check_voucher_business_rules(
+        self, app, youth_voucher, employer_voucher
+    ) -> str | None:
+        if app.status != YouthApplicationStatus.ACCEPTED:
+            return "youth_application_not_accepted"
+
+        already_used = (
+            EmployerSummerVoucher.objects.filter(youth_summer_voucher=youth_voucher)
+            .exclude(application__id=employer_voucher.application_id)
+            .exists()
+        )
+
+        if already_used:
+            return "summer_voucher_already_used"
+        return None
+
+    def _log_audit_access(self, request, accessed_instance, parameters):
+        audit_data = {
+            "method": "YouthApplicationViewSet.fetch_employee_data",
+            "parameters": parameters,
+        }
+        if accessed_instance:
+            AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
+                accessed_instance=accessed_instance,
+                actor=request.user,
+                actor_email=request.user.email,
+                additional_data=audit_data,
+            )
+        else:
+            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+                actor=request.user,
+                actor_email=request.user.email,
+                content_type=ContentType.objects.get_for_model(YouthApplication),
+                additional_data=audit_data,
+            )
+
+
+@extend_schema(
+    request=YouthApplicationHandlingSerializer,
+    responses={
+        200: OpenApiResponse(description="Application accepted"),
+        400: OpenApiResponse(description="Application was not accepted"),
+    },
+)
+class YouthApplicationAcceptView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = YouthApplicationHandlingSerializer
+    queryset = YouthApplication.objects.all()
+
+    @transaction.atomic
+    @enforce_handler_view_adfs_login
+    def patch(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if (
+            settings.NEXT_PUBLIC_DISABLE_VTJ
+            or not youth_application.has_social_security_number
+        ):
+            encrypted_handler_vtj_json = None
+        else:
+            try:
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                LOGGER.error(
+                    "Youth application was not changed to accepted state because of "
+                    f"validation error. Validation error codes: {str(e.get_codes())}"
+                )
+                raise
+
+            encrypted_handler_vtj_json = serializer.validated_data[
+                "encrypted_handler_vtj_json"
+            ]
+
+        if not youth_application.is_accepted and youth_application.accept_manually(
+            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
+        ):
+            was_email_sent = (
+                youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                    language=youth_application.language
+                )
+            )
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send youth summer voucher email"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
+            return HttpResponse(status=status.HTTP_200_OK)
+        else:
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(
+    request=YouthApplicationHandlingSerializer,
+    responses={
+        200: OpenApiResponse(description="Application rejected"),
+        400: OpenApiResponse(description="Application was not rejected"),
+    },
+)
+class YouthApplicationRejectView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = YouthApplicationHandlingSerializer
+    queryset = YouthApplication.objects.all()
+
+    @transaction.atomic
+    @enforce_handler_view_adfs_login
+    def patch(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if (
+            settings.NEXT_PUBLIC_DISABLE_VTJ
+            or not youth_application.has_social_security_number
+        ):
+            encrypted_handler_vtj_json = None
+        else:
+            try:
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                LOGGER.error(
+                    "Youth application was not changed to rejected state because of "
+                    f"validation error. Validation error codes: {str(e.get_codes())}"
+                )
+                raise
+
+            encrypted_handler_vtj_json = serializer.validated_data[
+                "encrypted_handler_vtj_json"
+            ]
+
+        if not youth_application.is_rejected and youth_application.reject(
+            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
+        ):
+            return HttpResponse(status=status.HTTP_200_OK)
+        else:
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+
+class YouthApplicationActivateView(APIView):
+    permission_classes = [AllowAny]
+
+    @transaction.atomic
+    @extend_schema(
+        responses={
+            302: OpenApiResponse(
+                description="Redirect to the relevant application status page"
+            ),
+            401: OpenApiResponse(description="Unable to activate application"),
+            500: OpenApiResponse(description="Failed to send email"),
+        },
+        operation_id="activate youth application",
+        summary="Activate youth application",
+        description="Activate youth application and send email with summer voucher.",
+    )
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application = get_object_or_404(YouthApplication, pk=self.kwargs["pk"])
+
+        # Lock same person's this year's applications to prevent multiple activations
+        same_persons_this_year_apps = (
+            YouthApplication.objects.filter(
+                social_security_number=youth_application.social_security_number
+            )
+            .created_this_year()
+            .select_for_update()
+        )
+        list(same_persons_this_year_apps)  # Force evaluation to lock queryset's rows
+
+        if same_persons_this_year_apps.active().non_rejected().exists():
+            if (
+                youth_application.is_active
+                and not youth_application.is_rejected
+                and youth_application.can_set_additional_info
+            ):
+                return HttpResponseRedirect(
+                    youth_application.additional_info_page_url(pk=youth_application.pk)
+                )
+            else:  # not the active non-rejected one or does not need additional info
+                return HttpResponseRedirect(
+                    youth_application.already_activated_page_url()
+                )
+        elif youth_application.has_activation_link_expired:
+            return HttpResponseRedirect(youth_application.expired_page_url())
+        elif youth_application.activate():
+            if youth_application.accept_automatically():
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "Youth application was accepted automatically using data from VTJ"
+                )
+                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                    language=youth_application.language
+                )
+                if not was_email_sent:
+                    transaction.set_rollback(True)
+                    with translation.override(youth_application.language):
+                        return HttpResponse(
+                            _("Failed to send youth summer voucher email"),
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        )
+                return HttpResponseRedirect(youth_application.accepted_page_url())
+            elif youth_application.need_additional_info:
+                return self._set_application_needs_additional_info(
+                    youth_application=youth_application
+                )
+
+            return HttpResponseRedirect(youth_application.activated_page_url())
+
+        return HttpResponse(
+            status=status.HTTP_401_UNAUTHORIZED,
+            content="Unable to activate youth application",
+        )
+
+    @staticmethod
+    def _set_application_needs_additional_info(
+        youth_application: YouthApplication,
+    ) -> HttpResponse:
+        """Move the application into the additional-info flow and redirect."""
+        LOGGER.info(
+            f"Activated youth application {youth_application.pk}: "
+            "Additional info is needed, redirecting user to page to provide it"
+        )
+        youth_application.status = (
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+        )
+        youth_application.save()
+        return HttpResponseRedirect(
+            youth_application.additional_info_page_url(pk=youth_application.pk)
+        )
+
 
 
 class EmployerApplicationFilter(filters.FilterSet):
@@ -969,34 +954,23 @@ class EmployerApplicationViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-@extend_schema_view(
-    create=extend_schema(exclude=True),
-    update=extend_schema(exclude=True),
-    partial_update=extend_schema(exclude=True),
-    retrieve=extend_schema(exclude=True),
-    list=extend_schema(exclude=True),
-    destroy=extend_schema(exclude=True),
+# --- Employer Summer Voucher Attachment Views ---
+
+@extend_schema(
+    responses={
+        201: AttachmentSerializer,
+        400: OpenApiResponse(description="Invalid input"),
+        403: OpenApiResponse(description="Forbidden"),
+        404: OpenApiResponse(description="Voucher not found"),
+    },
 )
-class EmployerSummerVoucherViewSet(ModelViewSet):
-    queryset = EmployerSummerVoucher.objects.all()
-    serializer_class = EmployerSummerVoucherSerializer
-    permission_classes = [
-        IsAuthenticated,
-        HandlerPermission | EmployerSummerVoucherPermission,
-    ]
+class EmployerSummerVoucherAttachmentView(CreateAPIView):
+    serializer_class = AttachmentSerializer
+    permission_classes = [IsAuthenticated, EmployerSummerVoucherPermission]
+    parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
-        """
-        Fetch summer vouchers of DRAFT/SUBMITTED status applications
-        of the user's company.
-        """
-        queryset = (
-            super()
-            .get_queryset()
-            .select_related("application")
-            .prefetch_related("attachments")
-        )
-
+        queryset = EmployerSummerVoucher.objects.all()
         user = self.request.user
         if user.is_staff or user.is_superuser:
             return queryset
@@ -1004,171 +978,118 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             return queryset.none()
 
         user_company = get_user_company(self.request)
-
         if user_company:
             return queryset.filter(
                 application__company=user_company,
                 application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
             )
-
-        # If the user does not represent an organization (e.g. lost permissions),
-        # they should not see any summer vouchers.
         return queryset.none()
 
-    def create(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def create(self, request, *args, **kwargs):
+        summer_voucher = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
 
-    def update(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def retrieve(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def list(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def destroy(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @extend_schema(
-        request=EmployerSummerVoucherAttachmentUploadInputSerializer,
-        responses={
-            201: AttachmentSerializer,
-            400: OpenApiResponse(description="Invalid input"),
-            403: OpenApiResponse(description="Forbidden"),
-            404: OpenApiResponse(description="Voucher not found"),
-        },
-    )
-    @action(
-        methods=("POST",),
-        detail=True,
-        url_path="attachments",
-        parser_classes=(MultiPartParser,),
-    )
-    def post_attachment(self, request: Request, *args, **kwargs) -> Response:
-        """
-        Upload a single file as attachment.
-        """
-        obj = self.get_object()
-
-        if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+        if summer_voucher.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
             raise ValidationError(
                 "Attachments can be uploaded only for DRAFT applications"
             )
 
-        # Ensure that visibility and modification are strictly tied to the
-        # organization the user currently represents. Even the original creator
-        # must have an active organization association to post an attachment.
         user_company = get_user_company(request)
-        if not user_company or obj.application.company != user_company:
+        if not user_company or summer_voucher.application.company != user_company:
             raise PermissionDenied("Only company members can post attachment to it")
 
-        upload_serializer = EmployerSummerVoucherAttachmentUploadInputSerializer(
-            data=request.data
-        )
-        upload_serializer.is_valid(raise_exception=True)
-        uploaded = upload_serializer.validated_data
+        return super().create(request, *args, **kwargs)
 
-        serializer = AttachmentSerializer(
-            data={
-                "summer_voucher": obj.id,
-                "attachment_file": uploaded["attachment_file"],
-                "content_type": uploaded["attachment_file"].content_type,
-                "attachment_type": uploaded["attachment_type"],
-            }
+    def perform_create(self, serializer):
+        summer_voucher = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
+        serializer.save(
+            summer_voucher=summer_voucher,
+            content_type=self.request.data["attachment_file"].content_type,
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="attachment_pk",
-                type=OpenApiTypes.UUID,
-                location=OpenApiParameter.PATH,
-                description="A UUID string identifying this attachment.",
-            ),
-        ],
-        responses={
-            200: OpenApiTypes.BINARY,
-            204: OpenApiResponse(description="Attachment deleted"),
-            404: OpenApiResponse(description="File not found"),
-        },
-    )
-    @action(
-        methods=(
-            "GET",
-            "DELETE",
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        summer_voucher = get_object_or_404(self.get_queryset(), pk=self.kwargs["pk"])
+        context["summer_voucher"] = summer_voucher
+        return context
+
+
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="attachment_pk",
+            type=OpenApiTypes.UUID,
+            location=OpenApiParameter.PATH,
+            description="A UUID string identifying this attachment.",
         ),
-        detail=True,
-        url_path="attachments/(?P<attachment_pk>[^/.]+)",
-    )
-    def handle_attachment(
-        self, request: Request, attachment_pk: str, *args, **kwargs
-    ) -> HttpResponse | Response:
-        """Download or delete a single attachment identified by its UUID."""
-        obj = self.get_object()
+    ],
+    responses={
+        200: OpenApiTypes.BINARY,
+        204: OpenApiResponse(description="Attachment deleted"),
+        404: OpenApiResponse(description="File not found"),
+    },
+)
+class EmployerSummerVoucherAttachmentDetailView(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        HandlerPermission | EmployerSummerVoucherPermission,
+    ]
 
-        if request.method == "GET":
-            """
-            Read a single attachment as file.
-            """
-            attachment = obj.attachments.filter(pk=attachment_pk).first()
-            if not attachment or not attachment.attachment_file:
-                return Response(
-                    {
-                        "detail": format_lazy(
-                            _("File not found."),
-                        )
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            return FileResponse(attachment.attachment_file)
+    def get(self, request: Request, pk: str, attachment_pk: str, *args, **kwargs) -> HttpResponse | Response:
+        """Download a single attachment identified by its UUID."""
+        summer_voucher = get_object_or_404(EmployerSummerVoucher, pk=pk)
 
-        elif request.method == "DELETE":
-            """
-            Delete a single attachment as file.
-            """
-            # 1. Visibility Check (404 Not Found):
-            # Unauthorized users from different companies are already filtered out
-            # by get_queryset() and will receive a 404 from self.get_object() above.
-
-            # 2. Identity Check (403 Permission Denied):
-            # Deny if the user is not representing the organization associated
-            # with the application. This ensures that even the original creator
-            # cannot delete attachments if they no longer represent the company.
+        user = request.user
+        if not (user.is_staff or user.is_superuser):
             user_company = get_user_company(request)
-            if not user_company or obj.application.company != user_company:
-                raise PermissionDenied(
-                    "Only company members can delete attachment from it"  # noqa: E501
-                )
+            if not user_company or summer_voucher.application.company != user_company:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            if summer_voucher.application.status not in ALLOWED_APPLICATION_VIEW_STATUSES:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
-            # 3. Status Check (403 Permission Denied):
-            # Deny if the application is NOT in a modifiable state (must be DRAFT or
-            # requested for info). Consolidates both identity and status under 403 for
-            # consistent security testing.
-            if (
-                obj.application.status
-                not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-            ):
-                raise PermissionDenied(
-                    "Operation not allowed for this application status."
-                )
+        attachment = summer_voucher.attachments.filter(pk=attachment_pk).first()
+        if not attachment or not attachment.attachment_file:
+            return Response(
+                {
+                    "detail": format_lazy(
+                        _("File not found."),
+                    )
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return FileResponse(attachment.attachment_file)
 
-            try:
-                instance = obj.attachments.get(id=attachment_pk)
-            except exceptions.ObjectDoesNotExist:
-                return Response(
-                    {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
-                )
-            instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request: Request, pk: str, attachment_pk: str, *args, **kwargs) -> Response:
+        """Delete a single attachment identified by its UUID."""
+        summer_voucher = get_object_or_404(EmployerSummerVoucher, pk=pk)
 
-        return Response(
-            {"detail": format_lazy(_("Method not allowed."))},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED,
-        )
+        user = request.user
+        if not (user.is_staff or user.is_superuser):
+            user_company = get_user_company(request)
+            if not user_company or summer_voucher.application.company != user_company:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            if summer_voucher.application.status not in ALLOWED_APPLICATION_VIEW_STATUSES:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+        user_company = get_user_company(request)
+        if not user_company or summer_voucher.application.company != user_company:
+            raise PermissionDenied("Only company members can delete attachment from it")
+
+        if (
+            summer_voucher.application.status
+            not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
+        ):
+            raise PermissionDenied(
+                "Operation not allowed for this application status."
+            )
+
+        try:
+            instance = summer_voucher.attachments.get(id=attachment_pk)
+        except exceptions.ObjectDoesNotExist:
+            return Response(
+                {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
+            )
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema(responses=SummerVoucherConfigurationSerializer(many=True))
