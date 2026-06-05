@@ -11,7 +11,6 @@ from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import (
     NonVtjYouthApplicationSerializer,
-    YouthApplicationCreateWithoutSsnInputSerializer,
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
     YouthApplicationOutputSerializer,
@@ -71,24 +70,15 @@ def build_required_payload(
     return payload
 
 
-def test_create_without_ssn_input_fields_match_non_vtj_client_fields():
-    """Input serializer fields must stay aligned with NonVtj client field set."""
-    input_fields = set(YouthApplicationCreateWithoutSsnInputSerializer().fields.keys())
-    non_vtj_client_fields = set(NonVtjYouthApplicationSerializer.Meta.fields) - set(
-        NonVtjYouthApplicationSerializer.Meta.read_only_fields
-    )
-    assert input_fields == non_vtj_client_fields
-
-
 @pytest.mark.django_db
 def test_create_without_ssn_contract(staff_client: Client):
     """The create-without-SSN endpoint must accept and return the declared shapes."""
     payload: dict = build_required_payload(
-        YouthApplicationCreateWithoutSsnInputSerializer,
+        NonVtjYouthApplicationSerializer,
         CREATE_WITHOUT_SSN_EXAMPLES,
     )
 
-    request_serializer = YouthApplicationCreateWithoutSsnInputSerializer(data=payload)
+    request_serializer = NonVtjYouthApplicationSerializer(data=payload)
     assert request_serializer.is_valid(), request_serializer.errors
 
     response: HttpResponse = staff_client.post(
