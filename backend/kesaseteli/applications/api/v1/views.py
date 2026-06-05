@@ -51,7 +51,6 @@ from applications.api.v1.serializers import (
     SummerVoucherConfigurationSerializer,
     TargetGroupSerializer,
     YouthApplicationAdditionalInfoSerializer,
-    YouthApplicationCreateWithoutSsnInputSerializer,
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
     YouthApplicationHandlingSerializer,
@@ -171,6 +170,21 @@ class YouthApplicationViewSet(ModelViewSet):
     permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
+
+    def get_serializer_class(self):
+        """
+        Return the serializer class that should be used for the current action.
+
+        Returns NonVtjYouthApplicationSerializer for the 'create_without_ssn'
+        action, YouthApplicationFetchEmployeeDataInputSerializer for the
+        'fetch_employee_data' action, and falls back to the default serializer
+        class for all other actions.
+        """
+        if self.action == "create_without_ssn":
+            return NonVtjYouthApplicationSerializer
+        elif self.action == "fetch_employee_data":
+            return YouthApplicationFetchEmployeeDataInputSerializer
+        return super().get_serializer_class()
 
     def list(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -313,106 +327,106 @@ class YouthApplicationViewSet(ModelViewSet):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        request_serializer = YouthApplicationFetchEmployeeDataInputSerializer(
-            data=request.data
-        )
+        request_serializer = self.get_serializer(data=request.data)
         request_serializer.is_valid(raise_exception=True)
         validated = request_serializer.validated_data
-        employer_summer_voucher_id = validated["employer_summer_voucher_id"]
-        employee_name = validated["employee_name"]
-        voucher_number = validated["summer_voucher_serial_number"]
 
-        # Resolve the matching records and enforce the access checks.
-        employer_summer_vouchers = EmployerSummerVoucher.objects.filter(
-            id=employer_summer_voucher_id
+        employer_voucher = self._get_employer_voucher(
+            validated["employer_summer_voucher_id"]
         )
-        if employer_summer_vouchers.count() != 1:
+        if not employer_voucher:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        youth_summer_voucher = YouthSummerVoucher.objects.get_by_serial_number(
-            voucher_number
-        )
-        youth_application = (
-            youth_summer_voucher.youth_application if youth_summer_voucher else None
+        youth_app, youth_voucher = self._resolve_and_match_youth_app(
+            validated["summer_voucher_serial_number"], validated["employee_name"]
         )
 
-        # Check if employee name is a fuzzy match with the youth application's last name
-        found_match = youth_application and is_last_name_fuzzy_match_in_full_name(
-            last_name=youth_application.last_name, full_name=employee_name
-        )
-
-        # Log access because of access to sensitive information:
-        additional_data_for_access_audit_log = {
-            "method": f"{self.__class__.__name__}.fetch_employee_data",
-            "parameters": {
-                "employer_summer_voucher_id": str(employer_summer_voucher_id),
-                "employee_name": employee_name,
-                "summer_voucher_serial_number": voucher_number,
-            },
+        audit_params = {
+            "employer_summer_voucher_id": str(employer_voucher.id),
+            "employee_name": validated["employee_name"],
+            "summer_voucher_serial_number": validated["summer_voucher_serial_number"],
         }
 
-        if not found_match:
-            # No match found for employee name in YouthApplication
-
-            # Log access because no match was found:
-            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
-                actor=request.user,
-                actor_email=request.user.email,
-                content_type=ContentType.objects.get_for_model(YouthApplication),
-                additional_data=additional_data_for_access_audit_log,
-            )
-            youth_application_pk = youth_application.pk if youth_application else "None"
+        if not youth_app:
+            self._log_audit_access(request, None, audit_params)
             LOGGER.warning(
-                f"No match for employee name {employee_name} with voucher"
-                f" {voucher_number} in YouthApplication {youth_application_pk}"
+                f"No match for employee name {validated['employee_name']} with voucher"
+                f" {validated['summer_voucher_serial_number']} in YouthApplication None"
                 f" - Cannot set employee data."
             )
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if (
-            youth_application
-            and youth_application.status != YouthApplicationStatus.ACCEPTED
-        ):
-            # YouthApplication is not yet accepted by handler.
+        error_code = self._check_voucher_business_rules(
+            youth_app, youth_voucher, employer_voucher
+        )
+        if error_code:
             LOGGER.warning(
-                f"YouthApplication {youth_application.pk} not yet accepted by handler"
+                f"YouthApplication {youth_app.pk} check failed: {error_code}"
                 f" - Cannot set employee data."
             )
             return Response(
-                data={"error_code": "youth_application_not_accepted"},
-                status=status.HTTP_400_BAD_REQUEST,
+                data={"error_code": error_code}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        if youth_summer_voucher:
-            # Check if already used in another employer's application
-            used_in_other = EmployerSummerVoucher.objects.filter(
-                youth_summer_voucher=youth_summer_voucher,
-            ).exclude(application__id=employer_summer_vouchers.first().application_id)
-
-            if used_in_other.exists():
-                LOGGER.warning(
-                    f"Summer voucher {youth_summer_voucher.pk} already used in other"
-                    f" application - Cannot set employee data."
-                )
-                return Response(
-                    data={"error_code": "summer_voucher_already_used"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        # Manually log access because of access to sensitive information:
-        AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
-            accessed_instance=youth_application,
-            actor=request.user,
-            actor_email=request.user.email,
-            additional_data=additional_data_for_access_audit_log,
-        )
-
+        self._log_audit_access(request, youth_app, audit_params)
         response_serializer = (
             YouthApplicationFetchEmployeeDataOutputSerializer.from_youth_application(
-                employer_summer_voucher_id, youth_application
+                employer_voucher.id, youth_app
             )
         )
         return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+    def _get_employer_voucher(self, voucher_id) -> EmployerSummerVoucher | None:
+        return EmployerSummerVoucher.objects.filter(id=voucher_id).first()
+
+    def _resolve_and_match_youth_app(
+        self, serial, name
+    ) -> tuple[YouthApplication | None, YouthSummerVoucher | None]:
+        youth_voucher = YouthSummerVoucher.objects.get_by_serial_number(serial)
+        youth_app = youth_voucher.youth_application if youth_voucher else None
+
+        if youth_app and is_last_name_fuzzy_match_in_full_name(
+            last_name=youth_app.last_name, full_name=name
+        ):
+            return youth_app, youth_voucher
+        return None, None
+
+    def _check_voucher_business_rules(
+        self, app, youth_voucher, employer_voucher
+    ) -> str | None:
+        if app.status != YouthApplicationStatus.ACCEPTED:
+            return "youth_application_not_accepted"
+
+        # Check if already used in another employer's application
+        already_used = (
+            EmployerSummerVoucher.objects.filter(youth_summer_voucher=youth_voucher)
+            .exclude(application__id=employer_voucher.application_id)
+            .exists()
+        )
+
+        if already_used:
+            return "summer_voucher_already_used"
+        return None
+
+    def _log_audit_access(self, request, accessed_instance, parameters):
+        audit_data = {
+            "method": f"{self.__class__.__name__}.fetch_employee_data",
+            "parameters": parameters,
+        }
+        if accessed_instance:
+            AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
+                accessed_instance=accessed_instance,
+                actor=request.user,
+                actor_email=request.user.email,
+                additional_data=audit_data,
+            )
+        else:
+            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+                actor=request.user,
+                actor_email=request.user.email,
+                content_type=ContentType.objects.get_for_model(YouthApplication),
+                additional_data=audit_data,
+            )
 
     @extend_schema(
         request=YouthApplicationHandlingSerializer,
@@ -737,7 +751,6 @@ class YouthApplicationViewSet(ModelViewSet):
             raise
 
     @extend_schema(
-        request=YouthApplicationCreateWithoutSsnInputSerializer,
         responses={
             201: YouthApplicationOutputSerializer,
             400: OpenApiResponse(description="Validation rejected"),
@@ -762,10 +775,7 @@ class YouthApplicationViewSet(ModelViewSet):
             if hasattr(data, "dict"):
                 data = data.dict()
 
-            serializer = NonVtjYouthApplicationSerializer(
-                data=data,
-                context=self.get_serializer_context(),
-            )
+            serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
 
             # Create the application and persist its initial state.
