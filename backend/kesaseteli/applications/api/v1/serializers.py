@@ -16,7 +16,6 @@ from rest_framework.exceptions import APIException
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
     AdditionalInfoUserReason,
-    APPLICATION_LANGUAGE_CHOICES,
     AttachmentType,
     EmployerApplicationStatus,
     get_supported_languages,
@@ -947,12 +946,19 @@ class NonVtjYouthApplicationSerializer(serializers.ModelSerializer):
         choices=get_target_group_choices(),
         required=True,
     )
+    additional_info_description = serializers.CharField(
+        required=True,
+        max_length=4096,
+    )
+    language = serializers.ChoiceField(
+        choices=get_supported_languages(),
+        required=True,
+    )
+    non_vtj_birthdate = serializers.DateField(required=True)
 
     def validate_additional_info_description(self, value):
         if value is None or str(value).strip() == "":
-            raise serializers.ValidationError(
-                {"additional_info_description": _("Must be set")}
-            )
+            raise serializers.ValidationError(_("Must be set"))
         return value
 
     def validate_language(self, value):
@@ -1085,30 +1091,6 @@ class YouthApplicationHandlingSerializer(serializers.ModelSerializer):
 
 # --- Public API wire shapes (OpenAPI + contract tests) ---
 # Input/Output suffixes mark HTTP request vs response contracts (not model CRUD).
-
-
-class YouthApplicationCreateWithoutSsnInputSerializer(serializers.Serializer):
-    """Request body (input) for creating a youth application without SSN.
-
-    Field names must match the writable client subset of
-    ``NonVtjYouthApplicationSerializer``.
-    """
-
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    email = serializers.EmailField()
-    school = serializers.CharField()
-    phone_number = serializers.CharField()
-    postcode = serializers.CharField()
-    language = serializers.ChoiceField(choices=APPLICATION_LANGUAGE_CHOICES)
-    non_vtj_birthdate = serializers.DateField()
-    non_vtj_home_municipality = serializers.CharField(
-        required=False,
-        allow_blank=True,
-        allow_null=True,
-    )
-    additional_info_description = serializers.CharField()
-    target_group = serializers.ChoiceField(choices=get_target_group_choices())
 
 
 class YouthApplicationFetchEmployeeDataInputSerializer(serializers.Serializer):
