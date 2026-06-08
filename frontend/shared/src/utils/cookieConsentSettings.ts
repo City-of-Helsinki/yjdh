@@ -7,6 +7,18 @@ const MATOMO_DESCRIPTION: Record<SupportedLanguage, string> = {
   en: 'Matomo Analytics - used to store a few details about the user such as the unique visitor ID',
 };
 
+const MATOMO_CONSENT_DESCRIPTION: Record<SupportedLanguage, string> = {
+  fi: 'Matomo-tilastointijärjestelmän eväste suostumuksen tallentamiseen.',
+  sv: 'Matomo-statistiksystemets kaka för att lagra samtycke.',
+  en: "Matomo Analytics - used to store details about the user's cookie consent preference.",
+};
+
+const THIRTY_YEARS_EXPIRATION: Record<SupportedLanguage, string> = {
+  fi: '30 vuotta',
+  sv: '30 år',
+  en: '30 years',
+};
+
 const STATISTICS_GROUP_TITLE: Record<SupportedLanguage, string> = {
   fi: 'Tilastointi',
   sv: 'Statistik',
@@ -322,6 +334,13 @@ export const getDefaultKesaseteliOptionalGroups = (
         expiration: ONE_HOUR_EXPIRATION,
         storageType: 1,
       },
+      {
+        name: 'mtm_cookie_consent',
+        host: hostName,
+        description: MATOMO_CONSENT_DESCRIPTION,
+        expiration: THIRTY_YEARS_EXPIRATION,
+        storageType: 1,
+      },
     ],
   },
 ];
@@ -350,6 +369,13 @@ export const getDefaultBenefitOptionalGroups = (
         host: hostName,
         description: MATOMO_DESCRIPTION,
         expiration: ONE_HOUR_EXPIRATION,
+        storageType: 1,
+      },
+      {
+        name: 'mtm_cookie_consent',
+        host: hostName,
+        description: MATOMO_CONSENT_DESCRIPTION,
+        expiration: THIRTY_YEARS_EXPIRATION,
         storageType: 1,
       },
       {

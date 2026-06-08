@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import { initMatomo } from 'shared/utils/matomo';
+import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
+import { initMatomo, trackPageView } from 'shared/utils/matomo';
 
 const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED === 'true';
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
@@ -16,8 +17,16 @@ export type UseMatomoProps = {
 };
 
 /**
- * Use Matomo tracking
- * @returns True if Matomo is enabled and has URL & site ID, false otherwise.
+ * Custom hook to initialize Matomo analytics and track client-side page views.
+ *
+ * It registers two effects:
+ * 1. Initializer Effect: Runs once to load the Matomo analytics script into the DOM
+ *    if Matomo is fully configured (enabled, valid URL, and site ID).
+ * 2. Route Tracker Effect: Listens to Next.js route transitions (`router.asPath`)
+ *    and triggers client-side page-view tracking. To avoid duplicate tracking, the initial
+ *    mount load is skipped (since the loaded Matomo script tracks the initial page view).
+ *
+ * @returns True if Matomo is enabled and configured, false otherwise.
  */
 const useMatomo = ({
   enabled = MATOMO_ENABLED,
@@ -27,12 +36,28 @@ const useMatomo = ({
   phpTrackerFile = MATOMO_PHP_TRACKER_FILE,
 }: UseMatomoProps = {}): boolean => {
   const isMatomoConfigured = !!(enabled && url && siteId);
+  const router = useRouter();
 
+  // Effect to initialize Matomo tracking scripts on mount
   useEffect(() => {
     if (isMatomoConfigured) {
       initMatomo({ url, siteId, jsTrackerFile, phpTrackerFile });
     }
   }, [isMatomoConfigured, url, siteId, jsTrackerFile, phpTrackerFile]);
+
+  const isInitialLoad = useRef(true);
+
+  // Effect to track client-side page transitions in Next.js.
+  // Skips the initial page load tracking to prevent duplicate hits.
+  useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
+    if (isMatomoConfigured) {
+      trackPageView();
+    }
+  }, [isMatomoConfigured, router.asPath]);
 
   return isMatomoConfigured;
 };
