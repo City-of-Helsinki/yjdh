@@ -1,6 +1,7 @@
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import useLogout from 'kesaseteli/employer/hooks/backend/useLogout';
 import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
+import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -36,11 +37,11 @@ const Header: React.FC = () => {
   const login = useLogin();
   const userQuery = useUserQuery({
     // Allow cookie settings page to be accessed without login:
-    enabled: !asPath?.includes('/cookie-settings'),
+    enabled: !asPath?.includes(ROUTES.COOKIE_SETTINGS),
   });
   const logout = useLogout();
 
-  const isLoginPage = asPath?.includes('/login');
+  const isLoginPage = asPath?.includes(ROUTES.LOGIN);
 
   return (
     <BaseHeader

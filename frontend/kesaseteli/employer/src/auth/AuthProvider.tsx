@@ -1,4 +1,6 @@
 import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
+import { ROUTES } from 'kesaseteli-shared/constants/routes';
+import { useRouter } from 'next/router';
 import React from 'react';
 import type { AuthContextType } from 'shared/auth/AuthContext';
 import AuthContext from 'shared/auth/AuthContext';
@@ -9,9 +11,11 @@ const FIVE_MINUTES = 5 * 60 * 1000;
 const AuthProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
+  const router = useRouter();
   const userQuery = useUserQuery<boolean>({
     select: (user) => Boolean(user),
     refetchInterval: FIVE_MINUTES,
+    enabled: router.route !== ROUTES.COOKIE_SETTINGS,
   });
 
   const authContextProps = React.useMemo(
