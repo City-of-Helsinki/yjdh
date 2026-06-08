@@ -1,3 +1,4 @@
+import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
@@ -14,7 +15,7 @@ const withEmployerAuth = <P extends JSX.IntrinsicAttributes>(
   const AuthenticatedComponent = withAuth(withOrganisation(WrappedComponent));
   return function Wrapped(props: P) {
     const { pathname } = useRouter();
-    if (pathname === '/login' || pathname === '/no-organisation') {
+    if (pathname === ROUTES.LOGIN || pathname === ROUTES.NO_ORGANISATION) {
       return <WrappedComponent {...props} />;
     }
     return <AuthenticatedComponent {...props} />;

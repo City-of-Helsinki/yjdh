@@ -6,6 +6,7 @@ import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-consent';
+import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import useMatomo from 'kesaseteli-shared/hooks/useMatomo';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
 import { AppProps } from 'next/app';
@@ -32,7 +33,7 @@ const App: React.FC<AppProps> = (appProps) => {
   const showCookieBanner =
     (isMatomoConfigured ||
       process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1') &&
-    router.route !== '/cookie-settings';
+    router.route !== ROUTES.COOKIE_SETTINGS;
 
   return (
     <BackendAPIProvider baseURL={getBackendDomain()}>
