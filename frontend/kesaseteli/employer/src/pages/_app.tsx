@@ -11,6 +11,7 @@ import createQueryClient from 'kesaseteli-shared/query-client/create-query-clien
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { appWithTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
@@ -26,13 +27,19 @@ const CookieConsent = dynamic(
 
 const App: React.FC<AppProps> = (appProps) => {
   const isMatomoConfigured = useMatomo();
+  const router = useRouter();
+
+  const showCookieBanner =
+    (isMatomoConfigured ||
+      process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1') &&
+    router.route !== '/cookie-settings';
 
   return (
     <BackendAPIProvider baseURL={getBackendDomain()}>
       <QueryClientProvider client={createQueryClient()}>
         <AuthProvider>
           <DialogContextProvider>
-            {isMatomoConfigured && (
+            {showCookieBanner && (
               <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
             )}
             <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
