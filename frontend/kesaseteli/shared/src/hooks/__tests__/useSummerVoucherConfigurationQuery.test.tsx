@@ -1,15 +1,14 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useTranslation } from 'next-i18next';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
+import nock from 'nock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
-import nock from 'nock';
-
-import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
-import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
+
+import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
 
 const API_BASE_TEST_URL = 'http://kesaseteli-api';
 
@@ -50,7 +49,8 @@ jest.mock('shared/hooks/useErrorHandler', () => ({
 
 jest.mock('shared/hooks/useLocale', () => jest.fn());
 
-const mockUseTranslation = useTranslation as jest.Mock;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const mockUseTranslation = jest.requireMock('next-i18next').useTranslation;
 const mockUseErrorHandler = useErrorHandler as jest.Mock;
 const mockUseLocale = useLocale as jest.Mock;
 const mockErrorHandler = jest.fn();
@@ -110,7 +110,7 @@ describe('useSummerVoucherConfigurationQuery', () => {
     expect(nock.isDone()).toBe(true);
 
     // Test remaining languages
-    for (let i = 1; i < languages.length; i++) {
+    for (let i = 1; i < languages.length; i += 1) {
       const lang = languages[i];
       mockUseTranslation.mockReturnValue({
         i18n: { language: lang },

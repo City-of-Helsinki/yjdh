@@ -1,3 +1,5 @@
+/* eslint-disable scanjs-rules/identifier_localStorage */
+
 import { clearLocalStorage } from './localstorage.utils';
 
 describe('clearLocalStorage', () => {
@@ -20,3 +22,5 @@ describe('clearLocalStorage', () => {
     expect(localStorage.getItem('other-key2')).toBe('val2');
   });
 });
+
+/* eslint-enable scanjs-rules/identifier_localStorage */
