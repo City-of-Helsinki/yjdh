@@ -1107,6 +1107,11 @@
       "saveAndContinue": "Tallenna ja sulje",
       "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
+      "downloadPdf": "Lataa hakemus PDF",
+      "downloadPdfError": {
+        "title": "PDF-lataus epäonnistui",
+        "message": "Hakemuksen PDF-tiedostoa ei voitu luoda. Yritä uudelleen."
+      },
       "search": "Hae arkistosta",
       "cancel": "Peruuta hakemus",
       "clone": "Kopioi hakemus",

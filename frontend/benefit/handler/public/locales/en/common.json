@@ -1107,6 +1107,11 @@
       "saveAndContinue": "Tallenna ja sulje",
       "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
+      "downloadPdf": "Download application PDF",
+      "downloadPdfError": {
+        "title": "PDF download failed",
+        "message": "Could not generate the application PDF. Please try again."
+      },
       "search": "Hae arkistosta",
       "cancel": "Peruuta hakemus",
       "clone": "Kopioi hakemus",
