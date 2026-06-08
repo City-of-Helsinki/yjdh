@@ -1093,6 +1093,11 @@
       "saveAndContinue": "Tallenna ja sulje",
       "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
+      "downloadPdf": "Ladda ner ansökan PDF",
+      "downloadPdfError": {
+        "title": "PDF-nedladdning misslyckades",
+        "message": "Det gick inte att skapa PDF-filen för ansökan. Försök igen."
+      },
       "search": "Hae arkistosta",
       "cancel": "Peruuta hakemus",
       "clone": "Kopioi hakemus",

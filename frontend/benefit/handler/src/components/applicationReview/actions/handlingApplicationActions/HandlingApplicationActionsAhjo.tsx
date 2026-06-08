@@ -8,6 +8,7 @@ import {
 } from 'benefit/handler/hooks/applicationHandling/useHandlingStepper';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import useCloneApplicationMutation from 'benefit/handler/hooks/useCloneApplicationMutation';
+import useDownloadApplicationPdf from 'benefit/handler/hooks/useDownloadApplicationPdf';
 import useUpdateCompanyIndustryCode from 'benefit/handler/hooks/useUpdateCompanyIndustryCode';
 import { Application as HandlerApplication } from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
@@ -18,6 +19,7 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconCopy,
+  IconDownload,
   IconInfoCircle,
   IconLock,
   IconPen,
@@ -360,6 +362,9 @@ const HandlingApplicationActions: React.FC<Props> = ({
   const { data: clonedData, mutate: cloneApplication } =
     useCloneApplicationMutation();
 
+  const { mutate: downloadPdf, isLoading: isDownloadingPdf } =
+    useDownloadApplicationPdf();
+
   React.useEffect(() => {
     if (clonedData?.id) void router.push(`/application?id=${clonedData.id}`);
   }, [clonedData?.id, router]);
@@ -448,6 +453,19 @@ const HandlingApplicationActions: React.FC<Props> = ({
         >
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
+
+        {application.archived && (
+          <Button
+            onClick={() => application.id && downloadPdf(application.id)}
+            disabled={!application.id}
+            theme={ButtonPresetTheme.Black}
+            variant={ButtonVariant.Secondary}
+            iconStart={<IconDownload />}
+            isLoading={isDownloadingPdf}
+          >
+            {t(`${translationsBase}.downloadPdf`)}
+          </Button>
+        )}
 
         {application.status &&
           process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT !== 'production' &&
