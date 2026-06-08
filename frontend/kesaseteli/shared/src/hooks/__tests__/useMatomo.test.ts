@@ -1,8 +1,9 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import singletonRouter from 'next-router-mock';
 import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider';
-import useMatomo from '../useMatomo';
 import { initMatomo, trackPageView } from 'shared/utils/matomo';
+
+import useMatomo from '../useMatomo';
 
 jest.mock('shared/utils/matomo', () => ({
   initMatomo: jest.fn(),
@@ -47,8 +48,8 @@ describe('useMatomo', () => {
 
     expect(trackPageView).not.toHaveBeenCalled();
 
-    act(() => {
-      singletonRouter.push('/new-path');
+    void act(() => {
+      void singletonRouter.push('/new-path');
     });
 
     expect(trackPageView).toHaveBeenCalledTimes(1);
