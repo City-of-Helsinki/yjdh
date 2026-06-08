@@ -1,11 +1,13 @@
 import { Footer, Logo, logoFiDark, LogoSize } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import useLocale from 'shared/hooks/useLocale';
 
 import { $FooterWrapper } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
+  const locale = useLocale();
   return (
     <$FooterWrapper>
       <Footer title={t('common:appName')} theme="dark">
@@ -20,7 +22,13 @@ const FooterSection: React.FC = () => {
               alt="Helsingin kaupunki"
             />
           }
-        />
+        >
+          <Footer.Link
+            as="a"
+            href={`/${locale}/cookie-settings`}
+            label={t('common:cookieSettings')}
+          />
+        </Footer.Base>
       </Footer>
     </$FooterWrapper>
   );

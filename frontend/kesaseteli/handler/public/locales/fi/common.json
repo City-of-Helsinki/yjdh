@@ -1,5 +1,6 @@
 {
   "appName": "Kesäsetelin käsittelijäliittymä",
+  "cookieSettings": "Evästeasetukset",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
