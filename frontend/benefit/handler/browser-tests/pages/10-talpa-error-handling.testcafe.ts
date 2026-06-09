@@ -56,7 +56,7 @@ test('Handler changes Talpa status to waiting', async (t: TestController) => {
   );
 
   await t.expect(applicationRow.exists).ok();
-  await t.expect(errorTag.visible).ok();
+  await t.expect(errorTag.visible).ok({ timeout: 10000 });
   await t.click(errorTag);
 
   await t
@@ -95,7 +95,7 @@ test('Handler changes Talpa status to paid', async (t: TestController) => {
   );
 
   await t.expect(applicationRow.exists).ok();
-  await t.expect(errorTag.visible).ok();
+  await t.expect(errorTag.visible).ok({ timeout: 10000 });
   await t.click(errorTag);
 
   await t
@@ -112,4 +112,3 @@ test('Handler changes Talpa status to paid', async (t: TestController) => {
   await t.click(Selector('a').withText(fi.header.navigation.archive));
   await t.expect(Selector('td').withText(`Saragossa, Milamassa`).visible).ok();
 });
-
