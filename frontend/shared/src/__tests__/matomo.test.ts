@@ -86,16 +86,26 @@ describe('matomo', () => {
   });
 
   describe('trackPageView', () => {
-    it('should push trackPageView command', () => {
+    it('should push setCustomUrl, setDocumentTitle and trackPageView', () => {
       window._paq = [];
       trackPageView();
+      expect(window._paq).toContainEqual([
+        'setCustomUrl',
+        window.location.href,
+      ]);
+      expect(window._paq).toContainEqual(['setDocumentTitle', document.title]);
       expect(window._paq).toContainEqual(['trackPageView']);
     });
 
-    it('should set custom url when provided', () => {
+    it('should set referrer url and custom url on subsequent navigations', () => {
       window._paq = [];
-      trackPageView('/custom-page');
-      expect(window._paq).toContainEqual(['setCustomUrl', '/custom-page']);
+      trackPageView('/new-page');
+      expect(window._paq).toContainEqual([
+        'setReferrerUrl',
+        expect.any(String),
+      ]);
+      expect(window._paq).toContainEqual(['setCustomUrl', '/new-page']);
+      expect(window._paq).toContainEqual(['setDocumentTitle', document.title]);
       expect(window._paq).toContainEqual(['trackPageView']);
     });
 

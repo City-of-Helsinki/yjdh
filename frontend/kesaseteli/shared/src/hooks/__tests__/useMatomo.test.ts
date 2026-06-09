@@ -35,7 +35,7 @@ describe('useMatomo', () => {
     });
   });
 
-  it('should track page views on route changes but skip initial load', () => {
+  it('should track page views on route changes but skip initial load', async () => {
     renderHook(
       () =>
         useMatomo({
@@ -48,10 +48,12 @@ describe('useMatomo', () => {
 
     expect(trackPageView).not.toHaveBeenCalled();
 
-    void act(() => {
-      void singletonRouter.push('/new-path');
+    await act(async () => {
+      await singletonRouter.push('/new-path');
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(trackPageView).toHaveBeenCalledTimes(1);
+    expect(trackPageView).toHaveBeenCalledWith('/new-path');
   });
 });
