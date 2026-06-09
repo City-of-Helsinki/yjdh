@@ -273,7 +273,7 @@ The `docker-entrypoint.sh` script can automatically run this command on startup 
 
 Cleans up draft employer applications and expired youth applications.
 
-By default, this command complies with the information management plan and does not remove any applications newer than 5 years (their age must be over 5 years). You can bypass this restriction using the `--ignore-5-years-restriction` flag.
+By default, this command complies with the information management plan and does not remove any applications newer than 5 years (their age must be at least 5 years old, which includes records at the 5-year cutoff matching `created_at__lte` semantics). You can bypass this restriction using the `--ignore-5-years-restriction` flag.
 
 Note: Although youth applications expire in a much shorter time (defined by `NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS` / activation link expiration), by default they will still be kept for 5 years before being purged. The `--ignore-5-years-restriction` flag can be used to bypass this retention period and immediately purge youth applications as soon as they expire.
 
@@ -284,11 +284,11 @@ Note: Although youth applications expire in a much shorter time (defined by `NEX
 *   `--dry-run`: Dry run mode, prints the count of applications that would be deleted without actually deleting anything.
 *   `--ignore-5-years-restriction`: Bypass the 5-year retention restriction and delete matching applications regardless of their creation time.
 
-**Cronjob:**
+**Cron job:**
 
-This command is intended to be run as a monthly cronjob to automatically purge old draft/expired applications.
+This command is intended to be run as a monthly cron job to automatically purge old draft/expired applications.
 
-Example cronjob configuration (runs once a month, e.g., on the 1st of the month at 3:00 AM):
+Example cron job configuration (runs once a month, e.g., on the 1st of the month at 3:00 AM):
 ```cron
 0 3 1 * * python manage.py cleanup_applications --employer-drafts --youth-expired
 ```
