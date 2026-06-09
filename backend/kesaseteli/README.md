@@ -24,6 +24,7 @@
   - [Summer Voucher Configuration](#summer-voucher-configuration)
   - [Management Commands](#management-commands)
     - [Create Summer Voucher Configuration](#create-summer-voucher-configuration)
+    - [Cleanup Applications](#cleanup-applications)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -265,3 +266,29 @@ The `docker-entrypoint.sh` script can automatically run this command on startup 
 
 *   `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR=1`: Creates configuration for the current year.
 *   `CREATE_SUMMERVOUCHER_CONFIGURATION_2026=1`: Creates configuration for the year 2026.
+
+#### Cleanup Applications
+
+`python manage.py cleanup_applications`
+
+Cleans up draft employer applications and expired youth applications.
+
+By default, this command complies with the information management plan and does not remove any applications newer than 5 years (their age must be over 5 years). You can bypass this restriction using the `--ignore-5-years-restriction` flag.
+
+Note: Although youth applications expire in a much shorter time (defined by `NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS` / activation link expiration), by default they will still be kept for 5 years before being purged. The `--ignore-5-years-restriction` flag can be used to bypass this retention period and immediately purge youth applications as soon as they expire.
+
+**Arguments:**
+
+*   `--employer-drafts`: Purge employer applications in draft mode.
+*   `--youth-expired`: Purge youth applications that have not been activated and whose activation link has expired.
+*   `--dry-run`: Dry run mode, prints the count of applications that would be deleted without actually deleting anything.
+*   `--ignore-5-years-restriction`: Bypass the 5-year retention restriction and delete matching applications regardless of their creation time.
+
+**Cronjob:**
+
+This command is intended to be run as a monthly cronjob to automatically purge old draft/expired applications.
+
+Example cronjob configuration (runs once a month, e.g., on the 1st of the month at 3:00 AM):
+```cron
+0 3 1 * * python manage.py cleanup_applications --employer-drafts --youth-expired
+```
