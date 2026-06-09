@@ -59,11 +59,11 @@ describe('_app.tsx CookieConsent rendering', () => {
     route: '/',
   };
 
-  const dummyPageProps = {
+  const dummyPageProps: AppProps = {
     Component: () => <div data-testid="dummy-page">Page Content</div>,
     pageProps: {},
-    router: mockRouter as unknown as AppProps['router'],
-  } as unknown as AppProps;
+    router: mockRouter as AppProps['router'],
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();

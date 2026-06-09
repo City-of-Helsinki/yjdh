@@ -88,11 +88,11 @@ describe('useFormActions - onQuietSave', () => {
 
   it('should create a new application and update router with shallow routing when no applicationId exists', async () => {
     const newApplicationId = '12345';
-    const mockResult = {
+    const mockResult: Partial<ApplicationData> = {
       id: newApplicationId,
-      application_number: 'APP-001',
+      application_number: 1,
       benefit_type: BENEFIT_TYPES.SALARY,
-    } as unknown as ApplicationData;
+    };
 
     mockRouter.query = {};
     mockCreateApplication.mockResolvedValue(mockResult);
@@ -134,11 +134,11 @@ describe('useFormActions - onQuietSave', () => {
 
   it('should update an existing application without modifying the router', async () => {
     const existingApplicationId = '67890';
-    const mockResult = {
+    const mockResult: Partial<ApplicationData> = {
       id: existingApplicationId,
-      application_number: 'APP-002',
+      application_number: 2,
       benefit_type: BENEFIT_TYPES.SALARY,
-    } as unknown as ApplicationData;
+    };
 
     mockRouter.query = { id: existingApplicationId };
     mockUpdateApplication.mockResolvedValue(mockResult);
@@ -171,15 +171,26 @@ describe('useFormActions - onQuietSave', () => {
   });
 
   it('should return the created/updated application data on successful save', async () => {
-    const mockResult = {
+    const mockResult: Partial<ApplicationData> = {
       id: '11111',
-      application_number: 'APP-003',
+      application_number: 3,
       benefit_type: BENEFIT_TYPES.SALARY,
       employee: {
         first_name: 'Test',
         last_name: 'User',
+        social_security_number: '',
+        employee_language: undefined,
+        job_title: '',
+        monthly_pay: '',
+        vacation_money: '',
+        other_expenses: '',
+        working_hours: '',
+        collective_bargaining_agreement: '',
+        is_living_in_helsinki: false,
+        commission_amount: '',
+        commission_description: '',
       },
-    } as unknown as ApplicationData;
+    };
 
     mockRouter.query = { id: '11111' };
     mockUpdateApplication.mockResolvedValue(mockResult);
@@ -217,10 +228,10 @@ describe('useFormActions - onQuietSave', () => {
   });
 
   it('should not update router if application creation succeeds but returns no ID', async () => {
-    const mockResult = {
-      application_number: 'APP-004',
+    const mockResult: Partial<ApplicationData> = {
+      application_number: 4,
       benefit_type: BENEFIT_TYPES.SALARY,
-    } as unknown as ApplicationData;
+    };
 
     mockRouter.query = {};
     mockCreateApplication.mockResolvedValue(mockResult);

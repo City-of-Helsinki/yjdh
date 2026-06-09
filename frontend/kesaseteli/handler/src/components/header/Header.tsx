@@ -25,7 +25,7 @@ const Header: React.FC = () => {
   const login = useLogin();
   const logout = useLogout();
   const userQuery = useUserQuery({
-    enabled: !router.asPath?.includes(ROUTES.COOKIE_SETTINGS),
+    enabled: router.route !== ROUTES.COOKIE_SETTINGS,
   });
 
   return (

@@ -13,4 +13,13 @@ describe('Footer', () => {
     expect(screen.getByText(/helsingin kaupunki/i)).toBeInTheDocument();
     expect(await axe(footer)).toHaveNoViolations();
   });
+
+  it('renders the cookie settings link with the correct locale and route prefix', () => {
+    renderComponent(<Footer />);
+    const cookieSettingsLink = screen.getByRole('link', {
+      name: /evästeasetukset/i,
+    });
+    expect(cookieSettingsLink).toBeInTheDocument();
+    expect(cookieSettingsLink).toHaveAttribute('href', '/fi/cookie-settings');
+  });
 });

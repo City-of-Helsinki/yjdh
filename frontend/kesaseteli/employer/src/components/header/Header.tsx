@@ -14,7 +14,7 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
-  const { asPath } = router;
+  const { asPath, route } = router;
 
   const languageOptions = React.useMemo(
     (): OptionType<Language>[] =>
@@ -37,11 +37,11 @@ const Header: React.FC = () => {
   const login = useLogin();
   const userQuery = useUserQuery({
     // Allow cookie settings page to be accessed without login:
-    enabled: !asPath?.includes(ROUTES.COOKIE_SETTINGS),
+    enabled: route !== ROUTES.COOKIE_SETTINGS,
   });
   const logout = useLogout();
 
-  const isLoginPage = asPath?.includes(ROUTES.LOGIN);
+  const isLoginPage = route === ROUTES.LOGIN;
 
   return (
     <BaseHeader
