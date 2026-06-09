@@ -17,11 +17,11 @@ import {
   $DataColumn,
   $DataHeader,
   $DataValue,
+  $ItemActions,
   $ItemContent,
   $ListItem,
-  $ListItemWrapper,
+  $ListItemWrapper, $SecondInstalmentStatusDataValue,
   $StatusDataColumn,
-  $StatusDataValue,
 } from './ListItem.sc';
 
 export type SecondInstalmentListItemProps = ApplicationListItemData;
@@ -75,7 +75,7 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
 
           <$StatusDataColumn>
             <$DataHeader>{t(`${translationBase}.common.status`)}</$DataHeader>
-            <$StatusDataValue>
+            <$SecondInstalmentStatusDataValue>
               <$StatusText>
                 <IconAlertCircleFill aria-hidden="true" />
                 <span>
@@ -84,22 +84,21 @@ const SecondInstalmentListItem: React.FC<SecondInstalmentListItemProps> = ({
                   {t(`${translationBase}.secondInstalments.prompt2`)}
                 </span>
               </$StatusText>
-            </$StatusDataValue>
+            </$SecondInstalmentStatusDataValue>
           </$StatusDataColumn>
-
-          <$DataColumn>
-            <Button
-              iconStart={<IconPen />}
-              variant={ButtonVariant.Primary}
-              theme={ButtonPresetTheme.Coat}
-              onClick={() =>
-                router.push(`${ROUTES.SECOND_INSTALMENT_UPLOAD}?id=${id ?? ''}`)
-              }
-            >
-              {t(`${translationBase}.secondInstalments.button`)}
-            </Button>
-          </$DataColumn>
         </$ItemContent>
+        <$ItemActions>
+          <Button
+            iconStart={<IconPen />}
+            variant={ButtonVariant.Primary}
+            theme={ButtonPresetTheme.Coat}
+            onClick={() =>
+              router.push(`${ROUTES.SECOND_INSTALMENT_UPLOAD}?id=${id ?? ''}`)
+            }
+          >
+            {t(`${translationBase}.secondInstalments.button`)}
+          </Button>
+        </$ItemActions>
       </$ListItem>
     </$ListItemWrapper>
   );
