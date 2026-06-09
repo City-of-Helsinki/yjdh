@@ -1578,7 +1578,16 @@ msgid "Description of employer's business activities"
 msgstr "Description of employer's business activities"
 
 msgid "Has other financial support been granted for employment?"
-msgstr "Has other financial support been granted for employment?"
+msgstr "Has any other support been granted for the employee's salary?"
 
 msgid "A description of how the work tasks of the person hired with the support are related to the organization's operations"
-msgstr "A description of how the work tasks of the person hired with the support are related to the organization's operations"
+msgstr "Description of how the work tasks of the person hired with support are related to the organization"
+
+msgid "Is service purchased by city of Helsinki"
+msgstr "Does the City of Helsinki acquire the operation as purchased service?"
+
+msgid "Are there other employees with pay subsidy"
+msgstr "Are there other people employed with similar support working in the organization at the same time (e.g. wage subsidy, Helsinki benefit, youth recruitment subsidy)?"
+
+msgid "Number of other subsidised employees"
+msgstr "Please indicate how many"
