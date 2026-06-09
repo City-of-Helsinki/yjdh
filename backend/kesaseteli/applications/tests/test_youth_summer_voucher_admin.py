@@ -159,3 +159,13 @@ def test_serial_number_search(
         request, YouthSummerVoucher.objects.all(), search_term
     )
     assert list(result_qs.values_list("pk", flat=True)) == [voucher.pk]
+
+
+def test_has_add_permission(youth_summer_voucher_admin):
+    request = RequestFactory().get("/")
+    assert youth_summer_voucher_admin.has_add_permission(request) is False
+
+
+def test_has_change_permission(youth_summer_voucher_admin):
+    request = RequestFactory().get("/")
+    assert youth_summer_voucher_admin.has_change_permission(request) is False
