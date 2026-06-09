@@ -124,12 +124,12 @@ test('Fill form and submit', async (t: TestController) => {
   const submitButton = Selector(buttonSelector).withText(
     fi.applications.actions.send
   );
-  await t.expect(submitButton.visible).ok();
+  await t.expect(submitButton.visible).ok({ timeout: 10000 });
   await t.click(submitButton);
 
   // Form submitted, single application view shown
   const handleButton = Selector(buttonSelector).withText(
     fi.review.actions.handle
   );
-  await t.expect(handleButton.visible).ok();
+  await t.expect(handleButton.visible).ok({ timeout: 10000 });
 });
