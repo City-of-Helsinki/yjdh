@@ -45,19 +45,25 @@ const useMatomo = ({
     }
   }, [isMatomoConfigured, url, siteId, jsTrackerFile, phpTrackerFile]);
 
-  const isInitialLoad = useRef(true);
-
   // Effect to track client-side page transitions in Next.js.
-  // Skips the initial page load tracking to prevent duplicate hits.
+  // Uses router events to ensure page title and URL are updated in the DOM.
   useEffect(() => {
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
+    if (!isMatomoConfigured) {
       return;
     }
-    if (isMatomoConfigured) {
-      trackPageView();
-    }
-  }, [isMatomoConfigured, router.asPath]);
+
+    const handleRouteChange = (url: string) => {
+      setTimeout(() => {
+        trackPageView(url);
+      }, 0);
+    };
+
+    router.events?.on('routeChangeComplete', handleRouteChange);
+
+    return () => {
+      router.events?.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [isMatomoConfigured, router.events]);
 
   return isMatomoConfigured;
 };

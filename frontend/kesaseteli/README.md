@@ -13,6 +13,8 @@
     - [`yarn start`](#yarn-start)
     - [`yarn test`](#yarn-test)
   - [Learn More](#learn-more)
+  - [Matomo Analytics](#matomo-analytics)
+    - [References](#references)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -79,3 +81,14 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+## Matomo Analytics
+
+Kesäseteli apps track client-side page views on Single Page Application (SPA) navigation.
+
+Because SPAs do not trigger full browser reloads, standard page-view tracking is not automatic. To handle SPA tracking correctly:
+1. The Matomo utility updates the cached page parameters by pushing `setReferrerUrl`, `setCustomUrl`, and `setDocumentTitle` to the tracking queue before triggering `trackPageView`.
+2. The `useMatomo` hook listens to Next.js `routeChangeComplete` router events and executes the page-view tracking within a `setTimeout(..., 0)` callback to ensure the DOM's `<title>` tag has updated before the title is tracked.
+
+### References
+- [Matomo Developer Guide: Tracking Single-Page Applications (SPA)](https://developer.matomo.org/guides/spa-tracking)

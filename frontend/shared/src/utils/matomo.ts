@@ -33,8 +33,10 @@ export function initMatomo(config: MatomoConfig): void {
   const u = url.endsWith('/') ? url : `${url}/`;
   window._paq.push(
     ['setTrackerUrl', `${u}${phpTrackerFile}`],
-    ['setSiteId', siteId]
-    , ['trackPageView'], ['enableLinkTracking']);
+    ['setSiteId', siteId],
+    ['trackPageView'],
+    ['enableLinkTracking']
+  );
 
   const script = document.createElement('script');
   script.type = 'text/javascript';
@@ -47,16 +49,24 @@ export function initMatomo(config: MatomoConfig): void {
   firstScript.parentNode?.insertBefore(script, firstScript);
 }
 
+let previousUrl =
+  typeof window !== 'undefined' ? window.location.href : undefined;
+
 export function trackPageView(url?: string): void {
   if (typeof window === 'undefined' || !window._paq) {
     return;
   }
 
-  if (url) {
-    window._paq.push(['setCustomUrl', url]);
-  }
+  const currentUrl = url ?? window.location.href;
 
+  if (previousUrl && previousUrl !== currentUrl) {
+    window._paq.push(['setReferrerUrl', previousUrl]);
+  }
+  window._paq.push(['setCustomUrl', currentUrl]);
+  window._paq.push(['setDocumentTitle', document.title]);
   window._paq.push(['trackPageView']);
+
+  previousUrl = currentUrl;
 }
 
 export function trackEvent(
