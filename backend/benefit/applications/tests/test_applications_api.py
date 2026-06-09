@@ -3351,6 +3351,19 @@ def test_validate_subsidised_number_no_subsidised(api_client, application):
     assert "other_subsidised_number" in response.data
 
 
+@pytest.mark.django_db
+def test_validate_subsidised_number_no_subsidised_none(api_client, application):
+    data = ApplicantApplicationSerializer(application).data
+    data["other_subsidised_employed"] = None
+    data["other_subsidised_number"] = "12"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 400
+    assert "other_subsidised_number" in response.data
+
+
 def _create_random_applications():
     f = faker.Faker()
     combos = [

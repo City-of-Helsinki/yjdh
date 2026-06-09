@@ -773,8 +773,17 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             data["association_immediate_manager_check"] = None
 
     def _validate_other_subsidised_employed(self, data):
-        if data.get("other_subsidised_employed") is True:
-            if data.get("other_subsidised_number") is None:
+        other_subsidised_employed = data.get(
+            "other_subsidised_employed",
+            getattr(self.instance, "other_subsidised_employed", None),
+        )
+        other_subsidised_number = data.get(
+            "other_subsidised_number",
+            getattr(self.instance, "other_subsidised_number", None),
+        )
+
+        if other_subsidised_employed is True:
+            if other_subsidised_number is None:
                 raise serializers.ValidationError(
                     {
                         "other_subsidised_number": _(
@@ -783,18 +792,19 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                         )
                     }
                 )
-            else:
-                data["other_subsidised_number"] = int(data["other_subsidised_number"])
-        else:
-            if data.get("other_subsidised_number") is not None:
-                raise serializers.ValidationError(
-                    {
-                        "other_subsidised_number": _(
-                            "other_subsidised_number is not allowed when "
-                            "other_subsidised_employed is false"
-                        )
-                    }
-                )
+        elif (
+            other_subsidised_employed in [None, False]
+            and other_subsidised_number is not None
+        ):
+            raise serializers.ValidationError(
+                {
+                    "other_subsidised_number": _(
+                        "other_subsidised_number is not allowed when "
+                        "other_subsidised_employed is false or none"
+                    )
+                }
+            )
+        return
 
     def _validate_de_minimis_aid_set(
         self,
