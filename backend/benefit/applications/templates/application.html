@@ -50,6 +50,17 @@
                     <div class="value">{{ application.company_business_brief|linebreaksbr }}</div>
                 </div>
 
+                <div class="row">
+                    <div class="label">{{ _("Is service purchased by city of Helsinki") }}</div>
+                    <div class="value">
+                        {% if application.purchased_service %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {% endif %}
+                    </div>
+                </div>
+
                 {% if application.company.organization_type == 'association' %}
                 <div class="row force-column">
                     <div class="label">{{ _("Does the employer engage in economic activity?") }}</div>
@@ -111,7 +122,6 @@
                     <div class="label">{{ _("Total") }}</div>
                     <div class="value">{{ de_minimis_amount | to_euro }}</div>
                 </div>
-                </table>
                 {% else %}
                 <p>{{ _("No, the applicant has not listed any previous de minimis aids.") }}</p>
                 {%endif%}
@@ -184,6 +194,24 @@
                     </div>
                 </div>
 
+                <div class="row force-column">
+                    <div class="label">{{ _("Are there other employees with pay subsidy") }}</div>
+                    <div class="value">
+                        {% if application.other_subsidised_employed %}
+                        {{ _("Yes") }}
+                        {% else %}
+                        {{ _("No") }}
+                        {%endif%}
+                    </div>
+                </div>
+
+                {% if application.other_subsidised_employed %}
+                <div class="row">
+                    <div class="label">{{ _("Number of other subsidised employees") }}</div>
+                    <div class="value">{{ application.other_subsidised_number }}</div>
+                </div>
+                {% endif %}
+
                 {% if application.company.organization_type == 'association' %}
                 <div class="row force-column">
                     <div class="label">{{ _("Has the person who is being employed been assigned a job supervisor?") }}</div>
@@ -197,7 +225,13 @@
                 </div>
                 {% endif %}
             </section>
-
+        </article>
+        {% include "footer.html" with page="2" %}
+    </div>
+    <div class="page-start"></div>
+    <div class="page-wrapper">
+        {% include "header.html" %}
+        <article>
             <section>
                 <h3>{{ _("Employment relationship") }}</h3>
                 <div class="row">
@@ -296,7 +330,7 @@
             {% endcomment %}
             </section>
         </article>
-        {% include "footer.html" with page="2" %}
+        {% include "footer.html" with page="3" %}
 
     </div>
 
@@ -318,9 +352,8 @@
                 {% endfor %}
             </section>
         </article>
-        {% include "footer.html" with page="3" %}
+        {% include "footer.html" with page="4" %}
     </div>
 </main>
-</div>
 
 {% endblock %}

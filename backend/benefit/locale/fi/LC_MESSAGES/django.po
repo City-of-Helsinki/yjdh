@@ -1637,6 +1637,15 @@ msgstr "Onko työllistettävän palkkaukseen myönnetty muuta tukea?"
 msgid "A description of how the work tasks of the person hired with the support are related to the organization's operations"
 msgstr "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan"
 
+msgid "Is service purchased by city of Helsinki"
+msgstr "Hankkiiko Helsingin kaupunki toimintaa ostopalveluna?"
+
+msgid "Are there other employees with pay subsidy"
+msgstr "Työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä (esim. palkkatuki, Helsinki-lisä, nuorten rekrytointituki)?"
+
+msgid "Number of other subsidised employees"
+msgstr "Ilmoita montako"
+
 #~ msgid "e-invoice address"
 #~ msgstr "Verkkolaskuosoite"
 
