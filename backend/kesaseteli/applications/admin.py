@@ -553,6 +553,14 @@ class YouthSummerVoucherAdmin(
     readonly_fields = ["user_showable_serial_number"]
     actions = ["resend_voucher"]
 
+    def has_add_permission(self, request):
+        """Disable add permission."""
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        """Disable change permission."""
+        return False
+
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("youth_application")
 
