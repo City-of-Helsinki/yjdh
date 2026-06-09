@@ -427,6 +427,51 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           attachmentType={ATTACHMENT_TYPES.BUSINESS_BRIEF}
         />
       </$GridCell>
+      <$GridCell $colSpan={12}>
+        <SelectionGroup
+          label={fields.purchasedService.label}
+          direction="vertical"
+          required
+          errorText={getErrorMessage(
+            fields.purchasedService.name
+          )}
+        >
+          <$RadioButton
+            id={`${fields.purchasedService.name}False`}
+            name={fields.purchasedService.name}
+            value="false"
+            label={t(
+              'common:utility.no'
+            )}
+            onChange={() => {
+              formik.setFieldValue(
+                fields.purchasedService.name,
+                false
+              );
+            }}
+            checked={
+              formik.values.purchasedService === false
+            }
+          />
+          <$RadioButton
+            id={`${fields.purchasedService.name}True`}
+            name={fields.purchasedService.name}
+            value="true"
+            label={t(
+              'common:utility.yes'
+            )}
+            onChange={() =>
+              formik.setFieldValue(
+                fields.purchasedService.name,
+                true
+              )
+            }
+            checked={
+              formik.values.purchasedService === true
+            }
+          />
+        </SelectionGroup>
+      </$GridCell>
     </FormSection>
   );
 };

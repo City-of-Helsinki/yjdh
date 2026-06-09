@@ -33,9 +33,20 @@ export const getValidationSchema = (
 ) =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP2_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]:
-      Yup.boolean()
-        .nullable()
-        .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      Yup.boolean().nullable().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELDS_STEP2_KEYS.OTHER_SUBSIDISED_EMPLOYED]: Yup.boolean()
+      .nullable()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELDS_STEP2_KEYS.OTHER_SUBSIDISED_NUMBER]: Yup.string()
+      .nullable()
+      .when(APPLICATION_FIELDS_STEP2_KEYS.OTHER_SUBSIDISED_EMPLOYED, {
+        is: true,
+        then: (schema) =>
+          schema
+            .matches(/^\d+$/, t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+        otherwise: (schema) => schema.nullable(),
+      }),
     [APPLICATION_FIELDS_STEP2_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION]:
       Yup.string()
         .trim()

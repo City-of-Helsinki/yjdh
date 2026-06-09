@@ -40,6 +40,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     clearBenefitValues,
     clearCommissionValues,
     clearPaySubsidyValues,
+    clearOtherSubsidisedNumber,
     handleSubmit,
     handleSave,
     handleBack,
@@ -61,6 +62,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       paySubsidyGranted: formik.values.paySubsidyGranted,
       associationHasBusinessActivities:
         formik.values.associationHasBusinessActivities,
+      otherSubsidisedEmployed: formik.values.otherSubsidisedEmployed,
       startDate: formik.values.startDate,
     },
     {
@@ -68,6 +70,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       clearBenefitValues,
       clearCommissionValues,
       clearPaySubsidyValues,
+      clearOtherSubsidisedNumber,
     }
   );
 
@@ -132,7 +135,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         </$GridCell>
         <$GridCell
           $colStart={1}
-          $colSpan={6}
+          $colSpan={8}
           css={`
             margin-top: ${theme.spacing.l};
           `}
@@ -179,7 +182,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             />
           </$GridCell>
         )}
-        <$GridCell $colSpan={8}>
+        <$GridCell $colSpan={32} $colStart={1}>
           <SelectionGroup
             id={fields.otherFinancialSupportForEmployment.name}
             label={fields.otherFinancialSupportForEmployment.label}
@@ -230,6 +233,66 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               }
             />
           </SelectionGroup>
+        </$GridCell>
+        <$GridCell $colSpan={8} $colStart={1}>
+          <SelectionGroup
+            label={fields.otherSubsidisedEmployed.label}
+            id={fields.otherSubsidisedEmployed.name}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(fields.otherSubsidisedEmployed.name)}
+          >
+            <$RadioButton
+              id={`${fields.otherSubsidisedEmployed.name}False`}
+              name={fields.otherSubsidisedEmployed.name}
+              value="false"
+              label={t('common:utility.no')}
+              onChange={() => {
+                formik.setFieldValue(
+                  fields.otherSubsidisedEmployed.name,
+                  false
+                );
+              }}
+              checked={formik.values.otherSubsidisedEmployed === false}
+            />
+            <$RadioButton
+              id={`${fields.otherSubsidisedEmployed.name}True`}
+              name={fields.otherSubsidisedEmployed.name}
+              value="true"
+              label={t('common:utility.yes')}
+              onChange={() => {
+                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
+              }}
+              checked={formik.values.otherSubsidisedEmployed === true}
+            />
+          </SelectionGroup>
+          {formik.values.otherSubsidisedEmployed && (
+            <$GridCell
+              $colSpan={8}
+              css={`
+                margin-top: ${theme.spacing.s};
+                margin-bottom: ${theme.spacing.s};
+                border-left: ${theme.spacing.xs} solid ${theme.colors.black50};
+                padding-left: ${theme.spacing.m};
+              `}
+            >
+              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
+              <TextInput
+                id={fields.otherSubsidisedNumber.name}
+                name={fields.otherSubsidisedNumber.name}
+                label={fields.otherSubsidisedNumber.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.otherSubsidisedNumber ?? ''}
+                invalid={!!getErrorMessage(fields.otherSubsidisedNumber.name)}
+                aria-invalid={
+                  !!getErrorMessage(fields.otherSubsidisedNumber.name)
+                }
+                errorText={getErrorMessage(fields.otherSubsidisedNumber.name)}
+                required
+              />
+            </$GridCell>
+          )}
         </$GridCell>
       </FormSection>
       <FormSection
@@ -323,6 +386,16 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             id={fields.roleOfEmployeeInOrganization.name}
             name={fields.roleOfEmployeeInOrganization.name}
             label={fields.roleOfEmployeeInOrganization.label}
+            tooltip={
+              <Tooltip
+                tooltipLabel={t(`common:tooltip.ariaLabel`)}
+                buttonLabel={t(`common:tooltip.ariaButtonLabel`)}
+              >
+                {t(
+                  `${translationsBase}.fields.roleOfEmployeeInOrganization.tooltip`
+                )}
+              </Tooltip>
+            }
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.roleOfEmployeeInOrganization || ''}

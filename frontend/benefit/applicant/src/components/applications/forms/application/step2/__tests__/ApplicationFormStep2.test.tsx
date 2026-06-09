@@ -164,6 +164,15 @@ const fields = {
   roleOfEmployeeInOrganization: {
     name: 'roleOfEmployeeInOrganization',
     label: 'Työntekijän rooli yrityksessä',
+  },
+  otherSubsidisedEmployed: {
+    name: 'otherSubsidisedEmployed',
+    label:
+      'Työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä (esim. palkkatuki, Helsinki-lisä, nuorten rekrytointituki)?',
+  },
+  otherSubsidisedNumber: {
+    name: 'otherSubsidisedNumber',
+    label: 'Ilmoita montako',
   }
 };
 
@@ -187,7 +196,9 @@ const createHookReturn = (
       associationImmediateManagerCheck: false,
       startDate: '2026-06-01',
       endDate: '2026-09-01',
-      apprenticeshipProgram: null,
+      otherFinancialSupportForEmployment: false,
+      otherSubsidisedEmployed: false,
+      otherSubsidisedNumber: null,
       benefitType: BENEFIT_TYPES.EMPLOYMENT,
       paySubsidyGranted: false,
       associationHasBusinessActivities: false,
@@ -225,6 +236,7 @@ const createHookReturn = (
     clearBenefitValues: jest.fn(),
     clearCommissionValues: jest.fn(),
     clearPaySubsidyValues: jest.fn(),
+    clearOtherSubsidisedNumber: jest.fn(),
     handleSubmit: jest.fn(),
     handleSave: jest.fn(),
     handleBack: jest.fn(),
@@ -313,6 +325,7 @@ describe('ApplicationFormStep2', () => {
         values: {
           paySubsidyGranted: true,
           associationHasBusinessActivities: true,
+          otherSubsidisedEmployed: false,
           startDate: '2026-07-01',
         },
         dirty: true,
@@ -326,6 +339,7 @@ describe('ApplicationFormStep2', () => {
       {
         paySubsidyGranted: true,
         associationHasBusinessActivities: true,
+        otherSubsidisedEmployed: false,
         startDate: '2026-07-01',
       },
       {
@@ -333,6 +347,7 @@ describe('ApplicationFormStep2', () => {
         clearBenefitValues: hookReturn.clearBenefitValues,
         clearCommissionValues: hookReturn.clearCommissionValues,
         clearPaySubsidyValues: hookReturn.clearPaySubsidyValues,
+        clearOtherSubsidisedNumber: hookReturn.clearOtherSubsidisedNumber,
       }
     );
     expect(mockUseAlertBeforeLeaving).toHaveBeenCalledWith(true);
@@ -486,5 +501,145 @@ describe('ApplicationFormStep2', () => {
       'data-status',
       APPLICATION_STATUSES.DRAFT
     );
+  });
+
+  it('renders otherSubsidisedEmployed radio group', () => {
+    renderForm();
+
+    expect(
+      screen.getByRole('group', {
+        name: /työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä/i,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('checks otherSubsidisedEmployed no radio when value is false', () => {
+    mockUseApplicationFormStep2.mockReturnValue(
+      createHookReturn({
+        formik: {
+          values: {
+            otherSubsidisedEmployed: false,
+          },
+        },
+      })
+    );
+
+    renderForm();
+
+    const group = screen.getByRole('group', {
+      name: /työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä/i,
+    });
+
+    expect(within(group).getByRole('radio', { name: 'Ei' })).toBeChecked();
+    expect(
+      within(group).getByRole('radio', { name: 'Kyllä' })
+    ).not.toBeChecked();
+  });
+
+  it('checks otherSubsidisedEmployed yes radio when value is true', () => {
+    mockUseApplicationFormStep2.mockReturnValue(
+      createHookReturn({
+        formik: {
+          values: {
+            otherSubsidisedEmployed: true,
+          },
+        },
+      })
+    );
+
+    renderForm();
+
+    const group = screen.getByRole('group', {
+      name: /työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä/i,
+    });
+
+    expect(within(group).getByRole('radio', { name: 'Kyllä' })).toBeChecked();
+    expect(within(group).getByRole('radio', { name: 'Ei' })).not.toBeChecked();
+  });
+
+  it('shows otherSubsidisedNumber input when otherSubsidisedEmployed is true', () => {
+    mockUseApplicationFormStep2.mockReturnValue(
+      createHookReturn({
+        formik: {
+          values: {
+            otherSubsidisedEmployed: true,
+            otherSubsidisedNumber: '3',
+          },
+        },
+      })
+    );
+
+    renderForm();
+
+    expect(
+      screen.getByRole('textbox', {
+        name: /ilmoita montako/i,
+      })
+    ).toHaveValue('3');
+  });
+
+  it('hides otherSubsidisedNumber input when otherSubsidisedEmployed is false', () => {
+    mockUseApplicationFormStep2.mockReturnValue(
+      createHookReturn({
+        formik: {
+          values: {
+            otherSubsidisedEmployed: false,
+            otherSubsidisedNumber: '3',
+          },
+        },
+      })
+    );
+
+    renderForm();
+
+    expect(
+      screen.queryByRole('textbox', {
+        name: /ilmoita montako/i,
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  it('updates otherSubsidisedEmployed to true when yes radio button is selected', async () => {
+    const hookReturn = createHookReturn({
+      formik: {
+        values: {
+          otherSubsidisedEmployed: false,
+        },
+      },
+    });
+    mockUseApplicationFormStep2.mockReturnValue(hookReturn);
+    const user = setupUserAndRender(() => renderForm());
+
+    const group = screen.getByRole('group', {
+      name: /työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä/i,
+    });
+
+    await user.click(within(group).getByRole('radio', { name: 'Kyllä' }));
+
+    expect(
+      (hookReturn.formik as Record<string, unknown>).setFieldValue
+    ).toHaveBeenCalledWith(fields.otherSubsidisedEmployed.name, true);
+  });
+
+  it('updates otherSubsidisedEmployed to false when no radio button is selected', async () => {
+    const hookReturn = createHookReturn({
+      formik: {
+        values: {
+          otherSubsidisedEmployed: true,
+        },
+      },
+    });
+    mockUseApplicationFormStep2.mockReturnValue(hookReturn);
+    const user = setupUserAndRender(() => renderForm());
+
+    const group = screen.getByRole('group', {
+      name: /työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä/i,
+    });
+
+    await user.click(within(group).getByRole('radio', { name: 'Ei' }));
+
+    expect(
+      (hookReturn.formik as Record<string, unknown>).setFieldValue
+    ).toHaveBeenCalledWith(fields.otherSubsidisedEmployed.name, false);
   });
 });

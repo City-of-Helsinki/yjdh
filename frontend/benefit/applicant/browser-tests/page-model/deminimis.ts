@@ -51,6 +51,7 @@ class DeMinimisAid {
       '050001234',
       'tester@example.com'
     );
+    await this.step1.selectPurchasedService(false);
     await this.step1.selectCoOperationNegotiations(false);
   };
 

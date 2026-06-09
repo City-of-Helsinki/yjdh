@@ -55,6 +55,14 @@ class Step2 extends WizardStep {
     'label[for="otherFinancialSupportForEmploymentTrue"]'
   );
 
+  private otherSubsidisedEmployedFalse = Selector(
+    'label[for="otherSubsidisedEmployedFalse"]'
+  );
+
+  private otherSubsidisedEmployedTrue = Selector(
+    'label[for="otherSubsidisedEmployedTrue"]'
+  );
+
   private apprenticeshipProgramTrue = this.findRadioLabelWithGroupText(
     this.translations.applications.sections.employee.fields
       .apprenticeshipProgram.label,
@@ -157,6 +165,12 @@ class Step2 extends WizardStep {
       yes
         ? this.otherFinancialSupportForEmploymentTrue
         : this.otherFinancialSupportForEmploymentFalse
+    );
+  }
+
+  public async selectOtherSubsidisedEmployed(yes: boolean): Promise<void> {
+    await this.clickSelectRadioButton(
+      yes ? this.otherSubsidisedEmployedTrue : this.otherSubsidisedEmployedFalse
     );
   }
 

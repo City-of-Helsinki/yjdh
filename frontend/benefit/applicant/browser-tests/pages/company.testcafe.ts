@@ -85,6 +85,7 @@ test('New application', async () => {
     form.organization.companyNumberOfEmployees,
     form.organization.companyBusinessBrief
   );
+  await step1.selectPurchasedService(false);
   await step1.fillContactPerson(
     form.organization.firstName,
     form.organization.lastName,
@@ -116,6 +117,7 @@ test('New application', async () => {
     form.employee.ssn
   );
   await step2.selectOtherFinancialSupport(false);
+  await step2.selectOtherSubsidisedEmployed(false);
   await step2.fillEmploymentInfo(
     form.employee.title,
     form.employee.roleOfEmployeeInOrganization,

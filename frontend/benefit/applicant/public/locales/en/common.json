@@ -146,6 +146,9 @@
             "label": "Describe the nature of the employer's activities. We will ask for additional information if necessary.",
             "summaryLabel": "Description of the employer's activities"
           },
+          "purchasedService": {
+            "label": "Does the City of Helsinki acquire the operation as purchased service?"
+          },
           "useAlternativeAddress": {
             "label": "Use a different address"
           },
@@ -237,7 +240,7 @@
         "heading3": "Type of benefit applied for",
         "heading3Long": "Form and date of the applied benefit",
         "heading4": "Helsinki benefit is applied for the period?",
-        "heading4Sub1": "You can apply for the Helsinki benefit for the duration of the employment relationship, but only up to 12 months.",
+        "heading4Sub1": "Helsinki benefit can be granted for a fixed-term or indefinite employment relationship. Benefit is not granted for an employment relationship lasting less than a month. You can apply for Helsinki benefit for the duration of the employment relationship, but for a maximum of 12 months.",
         "heading5Employment": "Employment relationship",
         "heading5EmploymentSub1": "Salary costs",
         "salaryExpensesExplanation": "Please report gross salary, Indirect labour costs and holiday pay in euros per month. If holiday pay is not paid, mark 0 in the field.",
@@ -312,9 +315,15 @@
           },
           "otherFinancialSupportForEmployment": {
             "label": "Has any other support been granted for the employee's salary?",
-            "tooltip": "If other support has been applied for/received for the employee's salary, we will request an explanation.",
+            "tooltip": "The application must state if the employer receives any other support for hiring the same person. If other support has been applied for/received for the employee's salary, we will request an explanation.",
             "yes": "Yes",
             "no": "No"
+          },
+          "otherSubsidisedEmployed": {
+            "label": "Are there other people employed with similar support working in the organization at the same time (e.g. wage subsidy, Helsinki benefit, youth recruitment subsidy)?"
+          },
+          "otherSubsidisedNumber": {
+            "label": "Please indicate how many"
           },
           "paySubsidyGranted": {
             "label": "Has this employment relationship received any of the following aid?",
@@ -324,8 +333,9 @@
             "paySubsidyNone": "None of the previous subsidies have been granted for this employment relationship"
           },
           "roleOfEmployeeInOrganization": {
-            "label": "Describe how the work tasks of the person hired with support are related to the organization",
-            "summaryLabel": "Description of how the work tasks of the person hired with support are related to the organization"
+            "label": "Describe how the work tasks of the person hired with support are related to the organization.",
+            "summaryLabel": "Description of how the work tasks of the person hired with support are related to the organization.",
+            "tooltip": "Describe the work tasks of the person hired with the subsidy in more detail and how they and how they relate to the organization's operations."
           },
           "paySubsidyPercent": {
             "label": "Pay subsidy percent in the decision"
