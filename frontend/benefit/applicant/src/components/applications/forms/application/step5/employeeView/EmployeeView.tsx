@@ -49,6 +49,18 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
     );
   };
 
+  const getOtherSubsidisedEmployedText = (): string => {
+    if (
+      data.otherSubsidisedEmployed === null ||
+      data.otherSubsidisedEmployed === undefined
+    ) {
+      return '-';
+    }
+    return data.otherSubsidisedEmployed
+      ? t('common:utility.yes')
+      : t('common:utility.no');
+  };
+
   return (
     <>
       <SummarySection
@@ -127,6 +139,39 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 {getOtherFinancialSupportText()}
               </$ApplicationDetailValue>
             </$ApplicationDetailRow>
+
+            <$ApplicationDetailRow
+              $alignItems="flex-start"
+              $forceColumn
+              data-testid="application-field-otherSubsidisedEmployed"
+            >
+              <$ApplicationDetailLabel>
+                {t(
+                  `${translationsBase}.employee.fields.otherSubsidisedEmployed.label`
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {getOtherSubsidisedEmployedText()}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
+
+            {data.otherSubsidisedEmployed && (
+              <$ApplicationDetailRow
+                $alignItems="flex-start"
+                $forceColumn
+                data-testid="application-field-otherSubsidisedNumber"
+              >
+                <$ApplicationDetailLabel>
+                  {t(
+                    `${translationsBase}.employee.fields.otherSubsidisedNumber.label`
+                  )}
+                </$ApplicationDetailLabel>
+                <$ApplicationDetailValue>
+                  {data.otherSubsidisedNumber}
+                </$ApplicationDetailValue>
+              </$ApplicationDetailRow>
+            )}
+
             {data.associationImmediateManagerCheck && (
               <$ApplicationDetailRow
                 $alignItems="flex-start"
@@ -153,7 +198,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           withoutDivider
           header={t(`${translationsBase}.employee.heading5Employment`)}
         >
-          <$GridCell $colSpan={5}>
+          <$GridCell $colSpan={12}>
             <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
               <$ApplicationDetailRow data-testid="application-field-jobTitle">
                 <$ApplicationDetailLabel>

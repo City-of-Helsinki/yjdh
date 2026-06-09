@@ -38,6 +38,19 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   const theme = useTheme();
+
+  const getPurchasedServiceText = (): string => {
+    if (
+      data.purchasedService === null ||
+      data.purchasedService === undefined
+    ) {
+      return '-';
+    }
+    return data.purchasedService
+      ? t('common:utility.yes')
+      : t('common:utility.no');
+  };
+
   return (
     <>
       <SummarySection
@@ -56,7 +69,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         header={t(`${translationsBase}.company.heading1`)}
         withoutDivider
       >
-        <$GridCell $colSpan={5}>
+        <$GridCell $colSpan={12}>
           <$ApplicationDetailWrapper $fontSize={theme.fontSize.body.m}>
             <$ApplicationDetailRow data-testid="application-field-companyName">
               <$ApplicationDetailLabel>
@@ -159,6 +172,21 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               )}
               attachments={data.attachments || []}
             />
+
+            <$ApplicationDetailRow
+              $alignItems="flex-start"
+              $forceColumn
+              data-testid="application-field-purchasedService"
+            >
+              <$ApplicationDetailLabel>
+                {t(
+                  'applications.sections.company.fields.purchasedService.label'
+                )}
+              </$ApplicationDetailLabel>
+              <$ApplicationDetailValue>
+                {getPurchasedServiceText()}
+              </$ApplicationDetailValue>
+            </$ApplicationDetailRow>
 
             {data?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
               <$ApplicationDetailRow
