@@ -37,7 +37,7 @@ const createWrapper = (): {
 describe('useUserQuery error handling', () => {
   const mockGoToPage = jest.fn();
   const mockRouter = {
-    pathname: '',
+    route: '',
   };
 
   beforeEach(() => {
@@ -65,10 +65,9 @@ describe('useUserQuery error handling', () => {
       ['/', true],
       ['/dashboard', true],
     ])(
-      'when pathname is %s, should call goToPage: %s',
-      (pathname, shouldRedirect) => {
-        // eslint-disable-next-line scanjs-rules/assign_to_pathname
-        mockRouter.pathname = pathname;
+      'when route is %s, should call goToPage: %s',
+      (route, shouldRedirect) => {
+        mockRouter.route = route;
         const { wrapper } = createWrapper();
         renderHook(() => useUserQuery(), { wrapper });
 

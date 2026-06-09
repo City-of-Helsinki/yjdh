@@ -25,10 +25,11 @@ const useUserQuery = <T = User>({
     onError: useErrorHandler({
       onServerError: () => goToPage(`${ROUTES.LOGIN}?error=true`),
       onAuthError: () => {
-        if (
-          router.pathname !== ROUTES.LOGIN &&
-          router.pathname !== ROUTES.COOKIE_SETTINGS
-        ) {
+        const skipRedirectRoutes: string[] = [
+          ROUTES.LOGIN,
+          ROUTES.COOKIE_SETTINGS,
+        ];
+        if (!skipRedirectRoutes.includes(router.route)) {
           goToPage(`${ROUTES.LOGIN}?sessionExpired=true`);
         }
       },

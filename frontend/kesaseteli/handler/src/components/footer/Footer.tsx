@@ -1,4 +1,5 @@
 import { Footer, Logo, logoFiDark, LogoSize } from 'hds-react';
+import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
@@ -25,7 +26,7 @@ const FooterSection: React.FC = () => {
         >
           <Footer.Link
             as="a"
-            href={`/${locale}/cookie-settings`}
+            href={`/${locale}${ROUTES.COOKIE_SETTINGS}`}
             label={t('common:cookieSettings')}
           />
         </Footer.Base>
