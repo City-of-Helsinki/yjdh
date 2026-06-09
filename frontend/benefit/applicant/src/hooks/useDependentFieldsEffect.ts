@@ -5,6 +5,7 @@ interface FieldValues {
   useAlternativeAddress?: boolean | null;
   paySubsidyGranted?: PAY_SUBSIDY_GRANTED | null;
   associationHasBusinessActivities?: boolean | null;
+  otherSubsidisedEmployed?: boolean | null;
   startDate?: string;
 }
 
@@ -15,6 +16,7 @@ interface Options {
   clearBenefitValues?: () => void;
   clearPaySubsidyValues?: () => void;
   clearDeminimisAids?: () => void;
+  clearOtherSubsidisedNumber?: () => void;
   setEndDate?: () => void;
 }
 
@@ -36,6 +38,7 @@ enum EFFECTS {
   CLEAR_BENEFIT_VALUES = 'clearBenefitValues',
   CLEAR_PAY_SUBSIDY_VALUES = 'clearPaySubsidyValues',
   CLEAR_DE_MINIMIS_AIDS = 'clearDeMinimisAids',
+  CLEAR_OTHER_SUBSIDISED_NUMBER = 'clearOtherSubsidisedNumber',
   SET_END_DATE = 'setEndDate',
 }
 
@@ -46,6 +49,7 @@ export const useDependentFieldsEffect = (
     useAlternativeAddress,
     paySubsidyGranted,
     associationHasBusinessActivities,
+    otherSubsidisedEmployed,
     startDate,
   }: FieldValues,
   {
@@ -55,6 +59,7 @@ export const useDependentFieldsEffect = (
     clearBenefitValues,
     clearPaySubsidyValues,
     clearDeminimisAids,
+    clearOtherSubsidisedNumber,
     setEndDate,
   }: Options
 ): void => {
@@ -91,6 +96,11 @@ export const useDependentFieldsEffect = (
   }, [state, clearDeminimisAids]);
 
   React.useEffect(() => {
+    if (state.includes(EFFECTS.CLEAR_OTHER_SUBSIDISED_NUMBER))
+      clearOtherSubsidisedNumber?.();
+  }, [state, clearOtherSubsidisedNumber]);
+
+  React.useEffect(() => {
     if (state.includes(EFFECTS.SET_END_DATE)) setEndDate?.();
   }, [state, setEndDate]);
 
@@ -121,6 +131,13 @@ export const useDependentFieldsEffect = (
       dispatch(createUpdateAction([EFFECTS.CLEAR_DE_MINIMIS_AIDS]));
     }
   }, [associationHasBusinessActivities]);
+
+  // Effects when otherSubsidisedEmployed changes
+  React.useEffect(() => {
+    if (otherSubsidisedEmployed === false) {
+      dispatch(createUpdateAction([EFFECTS.CLEAR_OTHER_SUBSIDISED_NUMBER]));
+    }
+  }, [otherSubsidisedEmployed]);
 
   // Effects when startDate changes
   React.useEffect(() => {

@@ -49,6 +49,7 @@ type UseApplicationFormStep2Props = {
   clearBenefitValues: () => void;
   clearCommissionValues: () => void;
   clearPaySubsidyValues: () => void;
+  clearOtherSubsidisedNumber: () => void;
   organizationType: ORGANIZATION_TYPES;
   formik: FormikProps<Partial<Application>>;
 };
@@ -191,6 +192,10 @@ const useApplicationFormStep2 = (
     setFieldValue,
   ]);
 
+  const clearOtherSubsidisedNumber = React.useCallback((): void => {
+    setFieldValue(fields.otherSubsidisedNumber.name, null).catch(() => {});
+  }, [fields.otherSubsidisedNumber.name, setFieldValue]);
+
   const minEndDate = getMinEndDate(values.startDate);
   const maxEndDate = getMaxEndDate(values.startDate);
 
@@ -220,6 +225,7 @@ const useApplicationFormStep2 = (
     clearBenefitValues,
     clearCommissionValues,
     clearPaySubsidyValues,
+    clearOtherSubsidisedNumber,
     getErrorMessage,
     organizationType: organizationType ?? ORGANIZATION_TYPES.COMPANY,
     handleSubmit,

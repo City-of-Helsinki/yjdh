@@ -146,6 +146,9 @@
             "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja.",
             "summaryLabel": "Kuvaus työnantajan toiminnan luonteesta"
           },
+          "purchasedService": {
+            "label": "Hankkiiko Helsingin kaupunki toimintaa ostopalveluna?"
+          },
           "useAlternativeAddress": {
             "label": "Käytä toista osoitetta"
           },
@@ -237,7 +240,7 @@
         "heading3": "Haettava tukimuoto",
         "heading3Long": "Haettava tukimuoto ja ajankohta",
         "heading4": "Mille ajalle haet Helsinki-lisää?",
-        "heading4Sub1": "Voit hakea Helsinki-lisää työsuhteen keston ajaksi, mutta enintään 12 kuukaudeksi.",
+        "heading4Sub1": "Helsinki-lisää voidaan myöntää määräaikaiseen tai toistaiseksi voimassa olevaan työsuhteeseen. Tukea ei myönnetä alle kuukauden mittaiseen työsuhteeseen. Voit hakea Helsinki-lisää työsuhteen keston ajaksi, mutta enintään 12 kuukaudeksi.",
         "heading5Employment": "Työsuhde",
         "heading5EmploymentSub1": "Palkkauskustannukset",
         "salaryExpensesExplanation": "Ilmoita bruttopalkka, sivukulut ja lomaraha euroina kuukaudessa. Jos lomarahaa ei makseta, merkitse kenttään 0.",
@@ -312,9 +315,15 @@
           },
           "otherFinancialSupportForEmployment": {
             "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
-            "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä.",
+            "tooltip": "Hakemuksessa on ilmoitettava, jos työnantaja saa saman henkilön palkkaamiseen muuta tukea. Jos työllistettävän palkkaukseen on haettu/ssatu muuta tukea, tulemme pyytämään selvitystä.",
             "yes": "Kyllä",
             "no": "Ei"
+          },
+          "otherSubsidisedEmployed": {
+            "label": "Työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä (esim. palkkatuki, Helsinki-lisä, nuorten rekrytointituki)?"
+          },
+          "otherSubsidisedNumber": {
+            "label": "Ilmoita montako"
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
@@ -331,7 +340,8 @@
           },
           "roleOfEmployeeInOrganization": {
             "label": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
-            "summaryLabel": "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan"
+            "summaryLabel": "Kuvaus, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan",
+            "tooltip": "Kuvaa tuella palkattavan työtehtäviä tarkemmin ja miten ne liittyvät organisaation toimintaan."
           },
           "apprenticeshipProgram": {
             "label": "Onko kyseessä oppisopimus?",

@@ -28,6 +28,20 @@ class Step1 extends WizardStep {
     ),
   });
 
+  public async selectPurchasedService(yes: boolean): Promise<void> {
+    await this.clickSelectRadioButton(
+      yes
+        ? this.purchasedServiceTrue
+        : this.purchasedServiceFalse
+    );
+  }
+
+  private purchasedServiceFalse = Selector(
+    'label[for="purchasedServiceFalse"]'
+  );
+
+  private purchasedServiceTrue = Selector('label[for="purchasedServiceTrue"]');
+
   private firstName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields

@@ -93,6 +93,9 @@ export const getValidationSchema = (
         })
       )
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELDS_STEP1_KEYS.PURCHASED_SERVICE]: Yup.boolean()
+      .nullable()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]:
       Yup.string()
         .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))

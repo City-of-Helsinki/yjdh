@@ -92,6 +92,10 @@ describe('CompanyInfo', () => {
       name: 'companyBusinessBrief',
       label: 'companyBusinessBrief',
     },
+    purchasedService: {
+      name: 'purchasedService',
+      label: 'purchasedService',
+    },
   };
 
   const getComponent = (
@@ -218,11 +222,19 @@ describe('CompanyInfo', () => {
         getComponent(formik);
       });
 
-      await user.click(
-        screen.getByRole('radio', {
+      const associationBusinessActivitiesRadio = screen
+        .getAllByRole('radio', {
           name: optionLabel,
         })
-      );
+        .find(
+          (radio) =>
+            radio.getAttribute('name') ===
+            defaultFields.associationHasBusinessActivities.name
+        );
+
+      expect(associationBusinessActivitiesRadio).toBeDefined();
+
+      await user.click(associationBusinessActivitiesRadio as HTMLElement);
 
       expect(setFieldValueSpy).toHaveBeenCalledWith(
         'associationHasBusinessActivities',
@@ -230,4 +242,87 @@ describe('CompanyInfo', () => {
       );
     }
   );
+
+  it('renders purchasedService radio buttons', () => {
+    getComponent(
+      getFormik({
+        useAlternativeAddress: false,
+        companyBankAccountNumber: '',
+        purchasedService: null,
+      })
+    );
+
+    const purchasedServiceRadios = screen
+      .getAllByRole('radio')
+      .filter(
+        (radio) =>
+          radio.getAttribute('name') === defaultFields.purchasedService.name
+      );
+
+    expect(purchasedServiceRadios).toHaveLength(2);
+    expect(
+      purchasedServiceRadios.some(
+        (radio) => radio.getAttribute('value') === 'false'
+      )
+    ).toBe(true);
+    expect(
+      purchasedServiceRadios.some(
+        (radio) => radio.getAttribute('value') === 'true'
+      )
+    ).toBe(true);
+  });
+
+  it('sets purchasedService to false when selecting Ei option', async () => {
+    const formik = getFormik({
+      useAlternativeAddress: false,
+      companyBankAccountNumber: '',
+      purchasedService: null,
+    });
+    const setFieldValueSpy = jest.spyOn(formik, 'setFieldValue');
+    const user = setupUserAndRender(() => {
+      getComponent(formik);
+    });
+
+    const purchasedServiceFalseRadio = screen
+      .getAllByRole('radio', {
+        name: 'Ei',
+      })
+      .find(
+        (radio) =>
+          radio.getAttribute('name') === defaultFields.purchasedService.name
+      );
+
+    expect(purchasedServiceFalseRadio).toBeDefined();
+
+    await user.click(purchasedServiceFalseRadio as HTMLElement);
+
+    expect(setFieldValueSpy).toHaveBeenCalledWith('purchasedService', false);
+  });
+
+  it('sets purchasedService to true when selecting Kyllä option', async () => {
+    const formik = getFormik({
+      useAlternativeAddress: false,
+      companyBankAccountNumber: '',
+      purchasedService: null,
+    });
+    const setFieldValueSpy = jest.spyOn(formik, 'setFieldValue');
+    const user = setupUserAndRender(() => {
+      getComponent(formik);
+    });
+
+    const purchasedServiceTrueRadio = screen
+      .getAllByRole('radio', {
+        name: 'Kyllä',
+      })
+      .find(
+        (radio) =>
+          radio.getAttribute('name') === defaultFields.purchasedService.name
+      );
+
+    expect(purchasedServiceTrueRadio).toBeDefined();
+
+    await user.click(purchasedServiceTrueRadio as HTMLElement);
+
+    expect(setFieldValueSpy).toHaveBeenCalledWith('purchasedService', true);
+  });
 });
