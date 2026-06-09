@@ -94,6 +94,19 @@ export const $StatusDataValue = styled($DataValue)`
   }
 `;
 
+export const $SecondInstalmentStatusDataValue = styled($StatusDataValue)`
+  align-items: center;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs3};
+  width: 200%;
+  ${respondAbove('sm')`
+     grid-column: span 2;
+   `};
+
+  .list-item-status--${APPLICATION_STATUSES.INFO_REQUIRED} & {
+    color: ${(props: { theme: DefaultTheme }) => props.theme.colors.alertDark};
+  }
+`;
+
 export const $ItemActions = styled.div`
   display: grid;
   justify-content: stretch;
