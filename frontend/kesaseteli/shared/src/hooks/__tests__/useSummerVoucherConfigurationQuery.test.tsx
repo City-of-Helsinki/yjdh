@@ -49,8 +49,9 @@ jest.mock('shared/hooks/useErrorHandler', () => ({
 
 jest.mock('shared/hooks/useLocale', () => jest.fn());
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const mockUseTranslation = jest.requireMock('next-i18next').useTranslation;
+const mockUseTranslation = jest.requireMock<{
+  useTranslation: jest.Mock;
+}>('next-i18next').useTranslation;
 const mockUseErrorHandler = useErrorHandler as jest.Mock;
 const mockUseLocale = useLocale as jest.Mock;
 const mockErrorHandler = jest.fn();

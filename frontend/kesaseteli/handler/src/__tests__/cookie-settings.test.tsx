@@ -6,7 +6,7 @@ import { TextDecoder, TextEncoder } from 'util';
 
 Object.assign(global, { TextEncoder, TextDecoder });
 
-function mockMockDynamicComponent(): React.ReactElement {
+function mockDynamicComponent(): React.ReactElement {
   return React.createElement(
     'div',
     { 'data-testid': 'cookie-consent-mock' },
@@ -17,7 +17,7 @@ function mockMockDynamicComponent(): React.ReactElement {
 // Mock next/dynamic to render synchronously during testing
 jest.mock('next/dynamic', () => ({
   __esModule: true,
-  default: () => mockMockDynamicComponent,
+  default: () => mockDynamicComponent,
 }));
 
 describe('frontend/kesaseteli/handler/src/pages/cookie-settings.tsx', () => {

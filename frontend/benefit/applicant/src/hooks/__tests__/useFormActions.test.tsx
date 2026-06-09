@@ -50,7 +50,7 @@ const mockUseDeleteApplicationQuery =
 describe('useFormActions - onQuietSave', () => {
   const mockApplication: Partial<Application> = {
     applicationStep: 'step_1',
-    company: { name: 'Test Company' },
+    company: { name: 'Test Company' } as unknown as Application['company'],
   };
 
   const mockCreateApplication = jest.fn();
@@ -88,11 +88,11 @@ describe('useFormActions - onQuietSave', () => {
 
   it('should create a new application and update router with shallow routing when no applicationId exists', async () => {
     const newApplicationId = '12345';
-    const mockResult: ApplicationData = {
+    const mockResult = {
       id: newApplicationId,
       application_number: 'APP-001',
       benefit_type: BENEFIT_TYPES.SALARY,
-    } as ApplicationData;
+    } as unknown as ApplicationData;
 
     mockRouter.query = {};
     mockCreateApplication.mockResolvedValue(mockResult);
@@ -134,11 +134,11 @@ describe('useFormActions - onQuietSave', () => {
 
   it('should update an existing application without modifying the router', async () => {
     const existingApplicationId = '67890';
-    const mockResult: ApplicationData = {
+    const mockResult = {
       id: existingApplicationId,
       application_number: 'APP-002',
       benefit_type: BENEFIT_TYPES.SALARY,
-    } as ApplicationData;
+    } as unknown as ApplicationData;
 
     mockRouter.query = { id: existingApplicationId };
     mockUpdateApplication.mockResolvedValue(mockResult);
@@ -171,7 +171,7 @@ describe('useFormActions - onQuietSave', () => {
   });
 
   it('should return the created/updated application data on successful save', async () => {
-    const mockResult: ApplicationData = {
+    const mockResult = {
       id: '11111',
       application_number: 'APP-003',
       benefit_type: BENEFIT_TYPES.SALARY,
@@ -179,7 +179,7 @@ describe('useFormActions - onQuietSave', () => {
         first_name: 'Test',
         last_name: 'User',
       },
-    } as ApplicationData;
+    } as unknown as ApplicationData;
 
     mockRouter.query = { id: '11111' };
     mockUpdateApplication.mockResolvedValue(mockResult);
@@ -217,10 +217,10 @@ describe('useFormActions - onQuietSave', () => {
   });
 
   it('should not update router if application creation succeeds but returns no ID', async () => {
-    const mockResult: ApplicationData = {
+    const mockResult = {
       application_number: 'APP-004',
       benefit_type: BENEFIT_TYPES.SALARY,
-    } as ApplicationData;
+    } as unknown as ApplicationData;
 
     mockRouter.query = {};
     mockCreateApplication.mockResolvedValue(mockResult);

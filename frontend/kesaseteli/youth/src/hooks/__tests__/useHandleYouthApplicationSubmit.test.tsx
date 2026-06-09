@@ -3,6 +3,7 @@ import {
   isYouthApplicationCreationError,
   isYouthApplicationValidationError,
 } from 'kesaseteli/youth/utils/type-guards';
+import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { useRouter } from 'next/router';
 import { useFormContext } from 'react-hook-form';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
@@ -53,7 +54,9 @@ describe('useHandleYouthApplicationSubmit', () => {
     const { result } = renderHook(() => useHandleYouthApplicationSubmit());
 
     act(() => {
-      result.current.handleSaveSuccess({ id: '123' } as any);
+      result.current.handleSaveSuccess({
+        id: '123',
+      } as CreatedYouthApplication);
     });
 
     expect(mockGoToPage).toHaveBeenCalledWith('/thankyou');
