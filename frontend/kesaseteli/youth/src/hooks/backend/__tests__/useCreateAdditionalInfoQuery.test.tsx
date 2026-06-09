@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -63,7 +64,7 @@ describe('useCreateAdditionalInfoQuery', () => {
       result.current.mutate({
         additional_info_user_reasons: ['reason_1'],
         additional_info_description: 'Description text',
-      } as any);
+      } as unknown as AdditionalInfoFormData);
     });
 
     await waitFor(() => result.current.isSuccess);
