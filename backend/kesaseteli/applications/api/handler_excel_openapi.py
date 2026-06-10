@@ -1,5 +1,6 @@
 """OpenAPI schema for handler Excel export endpoints (see handler_excel_views)."""
 
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -38,11 +39,7 @@ _EXCEL_DOWNLOAD_TAG = "excel-download"
 
 _SPREADSHEET_RESPONSE = OpenApiResponse(
     description="Excel spreadsheet download.",
-    response={
-        _EXCEL_MEDIA_TYPE: {
-            "schema": {"type": "string", "format": "binary"},
-        }
-    },
+    response=OpenApiTypes.BINARY,
 )
 
 _AUTH_DESCRIPTION = (
@@ -59,7 +56,7 @@ openapi_employer_excel_export_schema = extend_schema(
     ),
     parameters=[_EXPORT_KIND_PARAMETER, _COLUMNS_PARAMETER],
     responses={
-        200: _SPREADSHEET_RESPONSE,
+        (200, _EXCEL_MEDIA_TYPE): _SPREADSHEET_RESPONSE,
         302: OpenApiResponse(
             description=(
                 "Redirect to the Excel landing page (/excel-download/) with an "
@@ -87,7 +84,7 @@ openapi_youth_excel_export_viewset_schema = extend_schema_view(
             f"{_AUTH_DESCRIPTION}"
         ),
         responses={
-            200: _SPREADSHEET_RESPONSE,
+            (200, _EXCEL_MEDIA_TYPE): _SPREADSHEET_RESPONSE,
             401: OpenApiResponse(description="Authentication required."),
             403: OpenApiResponse(description="Handler permission required."),
         },
