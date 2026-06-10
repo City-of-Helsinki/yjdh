@@ -65,7 +65,7 @@ describe('useUserQuery error handling', () => {
       ['/', true],
       ['/dashboard', true],
     ])(
-      'when route is %s, should call goToPage: %s',
+      'when route is %s, should redirect to login page: %s',
       (route, shouldRedirect) => {
         mockRouter.route = route;
         const { wrapper } = createWrapper();
