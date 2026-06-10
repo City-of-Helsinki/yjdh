@@ -1,5 +1,6 @@
 import { CookieConsentChangeEvent, CookieConsentContextProps } from 'hds-react';
 import { useMemo } from 'react';
+import { trackPageView } from '../utils/matomo';
 
 const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED;
 const COOKIE_CONSENT_GROUP = {
@@ -21,6 +22,10 @@ const onChange = (changeEvent: CookieConsentChangeEvent): void => {
       // Start Matomo only after statistics consent is granted.
       if (window._paq) {
         window._paq.push(['setConsentGiven'], ['rememberConsentGiven']);
+        // The trackPageView queued during initMatomo() is discarded by Matomo
+        // when requireConsent is active. Track the current page explicitly now
+        // so the first visit is not lost for users who just granted consent.
+        trackPageView();
       }
     } else if (window._paq) {
       // Tell Matomo to forget consent when statistics consent is removed.
