@@ -1082,6 +1082,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @extend_schema(
+        methods=["GET"],
         parameters=[
             OpenApiParameter(
                 name="attachment_pk",
@@ -1091,7 +1092,21 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             ),
         ],
         responses={
-            200: OpenApiTypes.BINARY,
+            (200, "application/octet-stream"): OpenApiTypes.BINARY,
+            404: OpenApiResponse(description="File not found"),
+        },
+    )
+    @extend_schema(
+        methods=["DELETE"],
+        parameters=[
+            OpenApiParameter(
+                name="attachment_pk",
+                type=OpenApiTypes.UUID,
+                location=OpenApiParameter.PATH,
+                description="A UUID string identifying this attachment.",
+            ),
+        ],
+        responses={
             204: OpenApiResponse(description="Attachment deleted"),
             404: OpenApiResponse(description="File not found"),
         },

@@ -9,6 +9,8 @@ from django.db import transaction
 from django.utils import timezone, translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
@@ -1163,10 +1165,15 @@ class YouthApplicationOutputSerializer(serializers.Serializer):
     id = serializers.UUIDField()
 
 
+@extend_schema_field(OpenApiTypes.BINARY)
+class BinaryFileField(serializers.FileField):
+    pass
+
+
 class EmployerSummerVoucherAttachmentUploadInputSerializer(serializers.Serializer):
     """Request body (input) for uploading an attachment to an employer voucher."""
 
-    attachment_file = serializers.FileField()
+    attachment_file = BinaryFileField()
     attachment_type = serializers.ChoiceField(choices=AttachmentType.choices)
 
 
