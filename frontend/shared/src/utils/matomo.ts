@@ -57,7 +57,10 @@ export function trackPageView(url?: string): void {
     return;
   }
 
-  const currentUrl = url ?? window.location.href;
+  let currentUrl = url ?? window.location.href;
+  if (currentUrl.startsWith('/')) {
+    currentUrl = `${window.location.origin}${currentUrl}`;
+  }
 
   if (previousUrl && previousUrl !== currentUrl) {
     window._paq.push(['setReferrerUrl', previousUrl]);

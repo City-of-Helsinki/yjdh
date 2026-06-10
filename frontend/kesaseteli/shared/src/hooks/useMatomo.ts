@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { initMatomo, trackPageView } from 'shared/utils/matomo';
 
 const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED === 'true';
