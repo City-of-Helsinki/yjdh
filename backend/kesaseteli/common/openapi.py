@@ -17,18 +17,13 @@ def preprocessing_filter_public_api_paths(endpoints: list) -> list:
 
 
 def replace_underscores_with_spaces(result, generator, **kwargs):
-    """Post-processing hook to normalize operation IDs and summaries for OpenAPI
-    documentation.
+    """Post-processing hook to normalize OpenAPI summaries for documentation.
 
-    This hook modifies the generated schema in two ways:
-    1. Strips the path/resource name prefix from the operation ID (e.g., stripping
-        `youthapplications_` from `youthapplications_status_retrieve` to yield
-        `status_retrieve`). This removes the redundant view/resource prefixes
-        from generated client method names.
-    2. Populates the `summary` field (which ReDoc uses for operation headers) by
-       replacing underscores with spaces (e.g., `status retrieve`). ReDoc does not
-       automatically wrap snake_case words, causing long operation names to break the
-       sidebar layout; using space-delimited text resolves this.
+    This hook keeps the generated operation IDs stable for clients and only
+    populates the `summary` field (which ReDoc uses for operation headers) when
+    it is missing. The summary is derived from a cleaned local display id with
+    underscores replaced by spaces so long snake_case names render cleanly in the
+    sidebar.
 
     Args:
         result: The generated OpenAPI schema dictionary.
@@ -54,7 +49,6 @@ def replace_underscores_with_spaces(result, generator, **kwargs):
                 op_id = operation["operationId"]
                 if prefix and op_id.startswith(prefix):
                     op_id = op_id[len(prefix) :]
-                    operation["operationId"] = op_id
 
                 # If a summary isn't explicitly defined, Redoc falls back to
                 # operationId. Giving it a clean summary with spaces fixes
