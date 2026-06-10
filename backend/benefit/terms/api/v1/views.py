@@ -75,16 +75,40 @@ class ApproveTermsOfServiceView(APIView):
 class TermsPdfDownloadView(APIView):
     permission_classes = [BFIsAuthenticated]
 
-    LANGUAGE_FIELD_MAP = {
-        "fi": "terms_pdf_fi",
-        "en": "terms_pdf_en",
-        "sv": "terms_pdf_sv",
+    LANGUAGES = ["fi", "en", "sv"]
+
+    TERMS_FIELD_MAP = {
+        1: {
+            "fi": "terms_pdf_fi",
+            "en": "terms_pdf_en",
+            "sv": "terms_pdf_sv",
+        },
+        2: {
+            "fi": "terms_pdf_2_fi",
+            "en": "terms_pdf_2_en",
+            "sv": "terms_pdf_2_sv",
+        },
+        3: {
+            "fi": "terms_pdf_3_fi",
+            "en": "terms_pdf_3_en",
+            "sv": "terms_pdf_3_sv",
+        },
+        4: {
+            "fi": "terms_pdf_4_fi",
+            "en": "terms_pdf_4_en",
+            "sv": "terms_pdf_4_sv",
+        },
     }
 
-    def get(self, request, terms_id, language):
-        if language not in self.LANGUAGE_FIELD_MAP:
+    def get(self, request, terms_id, language, number=1):
+        if language not in self.LANGUAGES:
             return Response(
                 {"detail": "Invalid language. Use fi, en or sv."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if number not in self.TERMS_FIELD_MAP:
+            return Response(
+                {"detail": "Invalid number. Use 1-4."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
@@ -92,7 +116,7 @@ class TermsPdfDownloadView(APIView):
         except Terms.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        pdf_file = getattr(terms, self.LANGUAGE_FIELD_MAP[language])
+        pdf_file = getattr(terms, self.TERMS_FIELD_MAP[number][language])
         if not pdf_file:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

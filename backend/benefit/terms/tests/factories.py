@@ -33,6 +33,15 @@ class TermsFactory(factory.django.DjangoModelFactory):
     terms_pdf_fi = "terms_fi.pdf"
     terms_pdf_en = "terms_en.pdf"
     terms_pdf_sv = "terms_sv.pdf"
+    terms_pdf_2_fi = "terms_2_fi.pdf"
+    terms_pdf_2_en = "terms_2_en.pdf"
+    terms_pdf_2_sv = "terms_2_sv.pdf"
+    terms_pdf_3_fi = "terms_3_fi.pdf"
+    terms_pdf_3_en = "terms_3_en.pdf"
+    terms_pdf_3_sv = "terms_3_sv.pdf"
+    terms_pdf_4_fi = "terms_4_fi.pdf"
+    terms_pdf_4_en = "terms_4_en.pdf"
+    terms_pdf_4_sv = "terms_4_sv.pdf"
 
     terms_md_fi = markdown_content
     terms_md_en = markdown_content
