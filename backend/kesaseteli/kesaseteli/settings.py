@@ -434,7 +434,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-# Keep the exported schema aligned with the Kesäseteli API surface and the
+# Keep the generated schema aligned with the Kesäseteli API surface and the
 # environments we actively deploy to.
 SPECTACULAR_SETTINGS = {
     "TITLE": "Kesäseteli API",
