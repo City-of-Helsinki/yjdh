@@ -26,9 +26,9 @@ export function initMatomo(config: MatomoConfig): void {
 
   window._paq = window._paq || [];
 
-  // Require cookie consent before tracking — consent is granted
+  // Require consent before tracking — consent is granted
   // via useCookieConsent hook when user accepts cookies
-  window._paq.push(['requireConsent'], ['requireCookieConsent']);
+  window._paq.push(['requireConsent']);
 
   const u = url.endsWith('/') ? url : `${url}/`;
   window._paq.push(

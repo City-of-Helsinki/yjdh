@@ -61,7 +61,7 @@ describe('matomo', () => {
       expect(script).toBeTruthy();
     });
 
-    it('should push requireConsent and requireCookieConsent', () => {
+    it('should push requireConsent', () => {
       initMatomo({
         url: '//matomo.example.com/',
         siteId: '1',
@@ -69,7 +69,7 @@ describe('matomo', () => {
 
       const commands = window._paq.flat();
       expect(commands).toContain('requireConsent');
-      expect(commands).toContain('requireCookieConsent');
+      expect(commands).not.toContain('requireCookieConsent');
     });
 
     it('should insert script tag into document', () => {

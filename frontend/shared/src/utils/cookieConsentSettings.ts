@@ -335,7 +335,7 @@ export const getDefaultKesaseteliOptionalGroups = (
         storageType: 1,
       },
       {
-        name: 'mtm_cookie_consent',
+        name: 'mtm_consent',
         host: hostName,
         description: MATOMO_CONSENT_DESCRIPTION,
         expiration: THIRTY_YEARS_EXPIRATION,
@@ -372,7 +372,7 @@ export const getDefaultBenefitOptionalGroups = (
         storageType: 1,
       },
       {
-        name: 'mtm_cookie_consent',
+        name: 'mtm_consent',
         host: hostName,
         description: MATOMO_CONSENT_DESCRIPTION,
         expiration: THIRTY_YEARS_EXPIRATION,
