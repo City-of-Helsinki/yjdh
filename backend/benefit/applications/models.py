@@ -690,6 +690,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
                 ApplicationBatchStatus.DECIDED_ACCEPTED,
                 ApplicationBatchStatus.DECIDED_REJECTED,
                 ApplicationBatchStatus.SENT_TO_TALPA,
+                ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA,
                 ApplicationBatchStatus.COMPLETED,
             ]
         else:
@@ -1001,6 +1002,7 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
         ApplicationBatchStatus.DECIDED_REJECTED: AhjoDecision.DECIDED_REJECTED,
         # If the batch is rejected, it can not move to SENT_TO_TALPA status
         ApplicationBatchStatus.SENT_TO_TALPA: AhjoDecision.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.PARTIALLY_SENT_TO_TALPA: AhjoDecision.DECIDED_ACCEPTED,
         # If the batch is rejected, it can not move to COMPLETED status
         ApplicationBatchStatus.COMPLETED: AhjoDecision.DECIDED_ACCEPTED,
     }
