@@ -62,6 +62,36 @@ class Terms(UUIDModel, TimeStampedModel):
         verbose_name=_("swedish terms (pdf file)"), blank=True
     )
 
+    terms_pdf_2_fi = models.FileField(
+        verbose_name=_("finnish terms 2 (pdf file)"), blank=True
+    )
+    terms_pdf_2_en = models.FileField(
+        verbose_name=_("english terms 2 (pdf file)"), blank=True
+    )
+    terms_pdf_2_sv = models.FileField(
+        verbose_name=_("swedish terms 2 (pdf file)"), blank=True
+    )
+
+    terms_pdf_3_fi = models.FileField(
+        verbose_name=_("finnish terms 3 (pdf file)"), blank=True
+    )
+    terms_pdf_3_en = models.FileField(
+        verbose_name=_("english terms 3 (pdf file)"), blank=True
+    )
+    terms_pdf_3_sv = models.FileField(
+        verbose_name=_("swedish terms 3 (pdf file)"), blank=True
+    )
+
+    terms_pdf_4_fi = models.FileField(
+        verbose_name=_("finnish terms 4 (pdf file)"), blank=True
+    )
+    terms_pdf_4_en = models.FileField(
+        verbose_name=_("english terms 4 (pdf file)"), blank=True
+    )
+    terms_pdf_4_sv = models.FileField(
+        verbose_name=_("swedish terms 4 (pdf file)"), blank=True
+    )
+
     def clean(self):
         required_fields_pdf = [
             self.terms_pdf_en,
@@ -73,6 +103,25 @@ class Terms(UUIDModel, TimeStampedModel):
             self.terms_md_fi,
             self.terms_md_sv,
         ]
+
+        required_fields_pdf_new = [
+            [
+                self.terms_pdf_2_en,
+                self.terms_pdf_2_fi,
+                self.terms_pdf_2_sv,
+            ],
+            [
+                self.terms_pdf_3_en,
+                self.terms_pdf_3_fi,
+                self.terms_pdf_3_sv,
+            ],
+            [
+                self.terms_pdf_4_en,
+                self.terms_pdf_4_fi,
+                self.terms_pdf_4_sv,
+            ],
+        ]
+
         if not all(required_fields_md) and not all(required_fields_pdf):
             raise ValidationError(
                 _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
@@ -85,6 +134,13 @@ class Terms(UUIDModel, TimeStampedModel):
             raise ValidationError(
                 _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
             )
+
+        # Check that if any PDF is filled in, all are filled in
+        for pdfs in required_fields_pdf_new:
+            if any(pdfs) and not all(pdfs):
+                raise ValidationError(
+                    _("PDFs are missing for FI/EN/SV! Fill in all or none")
+                )
 
     @property
     def is_editable(self):
@@ -115,13 +171,13 @@ class ApplicantConsent(UUIDModel, TimeStampedModel):
         on_delete=models.CASCADE,
     )
     text_fi = models.CharField(
-        max_length=256, verbose_name=_("finnish text for the consent checkbox")
+        max_length=2048, verbose_name=_("finnish text for the consent checkbox")
     )
     text_en = models.CharField(
-        max_length=256, verbose_name=_("english text for the consent checkbox")
+        max_length=2048, verbose_name=_("english text for the consent checkbox")
     )
     text_sv = models.CharField(
-        max_length=256, verbose_name=_("swedish text for the consent checkbox")
+        max_length=2048, verbose_name=_("swedish text for the consent checkbox")
     )
     ordering = models.IntegerField(default=0)
 

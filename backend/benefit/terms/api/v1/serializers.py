@@ -29,25 +29,64 @@ class TermsSerializer(serializers.ModelSerializer):
     terms_pdf_fi = serializers.SerializerMethodField()
     terms_pdf_en = serializers.SerializerMethodField()
     terms_pdf_sv = serializers.SerializerMethodField()
+    terms_pdf_2_fi = serializers.SerializerMethodField()
+    terms_pdf_2_en = serializers.SerializerMethodField()
+    terms_pdf_2_sv = serializers.SerializerMethodField()
+    terms_pdf_3_fi = serializers.SerializerMethodField()
+    terms_pdf_3_en = serializers.SerializerMethodField()
+    terms_pdf_3_sv = serializers.SerializerMethodField()
+    terms_pdf_4_fi = serializers.SerializerMethodField()
+    terms_pdf_4_en = serializers.SerializerMethodField()
+    terms_pdf_4_sv = serializers.SerializerMethodField()
 
-    def _pdf_download_url(self, obj, language):
-        if not getattr(obj, f"terms_pdf_{language}"):
+    def _pdf_download_url(self, obj, number, language):
+        if number == 1:
+            if not getattr(obj, f"terms_pdf_{language}"):
+                return None
+        elif not getattr(obj, f"terms_pdf_{number}_{language}"):
             return None
         request = self.context.get("request")
         return reverse(
             "terms-pdf-download",
-            kwargs={"terms_id": obj.id, "language": language},
+            kwargs={"terms_id": obj.id, "number": number, "language": language},
             request=request,
         )
 
     def get_terms_pdf_fi(self, obj):
-        return self._pdf_download_url(obj, "fi")
+        return self._pdf_download_url(obj, 1, "fi")
 
     def get_terms_pdf_en(self, obj):
-        return self._pdf_download_url(obj, "en")
+        return self._pdf_download_url(obj, 1, "en")
 
     def get_terms_pdf_sv(self, obj):
-        return self._pdf_download_url(obj, "sv")
+        return self._pdf_download_url(obj, 1, "sv")
+
+    def get_terms_pdf_2_fi(self, obj):
+        return self._pdf_download_url(obj, 2, "fi")
+
+    def get_terms_pdf_2_en(self, obj):
+        return self._pdf_download_url(obj, 2, "en")
+
+    def get_terms_pdf_2_sv(self, obj):
+        return self._pdf_download_url(obj, 2, "sv")
+
+    def get_terms_pdf_3_fi(self, obj):
+        return self._pdf_download_url(obj, 3, "fi")
+
+    def get_terms_pdf_3_en(self, obj):
+        return self._pdf_download_url(obj, 3, "en")
+
+    def get_terms_pdf_3_sv(self, obj):
+        return self._pdf_download_url(obj, 3, "sv")
+
+    def get_terms_pdf_4_fi(self, obj):
+        return self._pdf_download_url(obj, 4, "fi")
+
+    def get_terms_pdf_4_en(self, obj):
+        return self._pdf_download_url(obj, 4, "en")
+
+    def get_terms_pdf_4_sv(self, obj):
+        return self._pdf_download_url(obj, 4, "sv")
 
     class Meta:
         model = Terms
@@ -58,6 +97,15 @@ class TermsSerializer(serializers.ModelSerializer):
             "terms_pdf_fi",
             "terms_pdf_en",
             "terms_pdf_sv",
+            "terms_pdf_2_fi",
+            "terms_pdf_2_en",
+            "terms_pdf_2_sv",
+            "terms_pdf_3_fi",
+            "terms_pdf_3_en",
+            "terms_pdf_3_sv",
+            "terms_pdf_4_fi",
+            "terms_pdf_4_en",
+            "terms_pdf_4_sv",
             "terms_md_fi",
             "terms_md_en",
             "terms_md_sv",

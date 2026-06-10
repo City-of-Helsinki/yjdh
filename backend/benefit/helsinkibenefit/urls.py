@@ -155,6 +155,11 @@ urlpatterns = [
     path(
         "v1/terms/<uuid:terms_id>/download/<str:language>/",
         TermsPdfDownloadView.as_view(),
+        name="terms-pdf-download-default",
+    ),
+    path(
+        "v1/terms/<uuid:terms_id>/download/<int:number>/<str:language>/",
+        TermsPdfDownloadView.as_view(),
         name="terms-pdf-download",
     ),
     path("v1/company/", GetUsersOrganizationView.as_view()),
