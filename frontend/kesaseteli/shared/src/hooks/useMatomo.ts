@@ -22,7 +22,7 @@ export type UseMatomoProps = {
  * It registers two effects:
  * 1. Initializer Effect: Runs once to load the Matomo analytics script into the DOM
  *    if Matomo is fully configured (enabled, valid URL, and site ID).
- * 2. Route Tracker Effect: Listens to Next.js route transitions (`router.asPath`)
+ * 2. Route Tracker Effect: Listens to Next.js route transitions (`routeChangeComplete` event)
  *    and triggers client-side page-view tracking. To avoid duplicate tracking, the initial
  *    mount load is skipped (since the loaded Matomo script tracks the initial page view).
  *
