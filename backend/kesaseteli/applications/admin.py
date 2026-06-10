@@ -517,9 +517,88 @@ class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
         return False
 
 
+class YouthEmployerSummerVoucherInline(admin.TabularInline):
+    """
+    Django Admin Inline View for Employer Summer Vouchers
+
+    Display employer summer vouchers in the YouthSummerVoucher admin view.
+    Shows related employer application and voucher details in a tabular format
+    with links to the respective admin pages.
+
+    Features:
+        - Read-only fields to prevent direct modifications
+        - Links to employer application and voucher admin
+        - Shows key employment information
+        - No add/delete permissions
+    """
+
+    model = EmployerSummerVoucher
+    fk_name = "youth_summer_voucher"
+    verbose_name = _("employer summer voucher")
+    verbose_name_plural = _("employer summer vouchers")
+    extra = 0
+    show_change_link = True
+    can_delete = False
+
+    fields = [
+        "employer_summer_voucher_link",
+        "employer_application_link",
+        "company_name",
+        "employment_start_date",
+        "employment_end_date",
+    ]
+    readonly_fields = fields
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("application", "application__company")
+        )
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def employer_summer_voucher_link(self, obj):
+        if not obj.pk or obj._state.adding:
+            return ""
+        url = reverse(
+            "admin:applications_employersummervoucher_change",
+            args=[obj.pk],
+        )
+        return mark_safe(f'<a href="{url}">{obj.pk}</a>')
+
+    employer_summer_voucher_link.short_description = _("employer summer voucher")
+
+    def employer_application_link(self, obj):
+        if not obj.application or obj._state.adding:
+            return ""
+        url = reverse(
+            "admin:applications_employerapplication_change",
+            args=[obj.application.pk],
+        )
+        return mark_safe(f'<a href="{url}">{obj.application.pk}</a>')
+
+    employer_application_link.short_description = _("employer application")
+
+    def company_name(self, obj):
+        if not obj.application or not obj.application.company:
+            return ""
+        return obj.application.company.name
+
+    company_name.short_description = _("company")
+
+
 class YouthSummerVoucherAdmin(
     AuditlogAdminViewAccessLogMixin, SerialNumberDecodingSearchMixin, admin.ModelAdmin
 ):
+    inlines = [YouthEmployerSummerVoucherInline]
     list_display = [
         "id",
         "summer_voucher_serial_number",
@@ -562,7 +641,16 @@ class YouthSummerVoucherAdmin(
         return False
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("youth_application")
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("youth_application")
+            .prefetch_related(
+                "employer_summer_vouchers",
+                "employer_summer_vouchers__application",
+                "employer_summer_vouchers__application__company",
+            )
+        )
 
     def target_group_display(self, obj):
         return obj.get_target_group_display()
@@ -627,7 +715,84 @@ class YouthSummerVoucherAdmin(
             )
 
 
+class EmployerSummerVoucherInline(admin.TabularInline):
+    """
+    Django Admin Inline View for Employer Summer Vouchers.
+
+    Display employer summer vouchers in the EmployerApplication admin view.
+    Shows related youth summer voucher and employee details in a tabular format
+    with links to the respective admin pages.
+
+    Features:
+        - Read-only fields to prevent direct modifications
+        - Links to youth summer voucher and employer summer voucher admin
+        - Shows key employee information
+        - No add, change, or delete permissions
+    """
+
+    model = EmployerSummerVoucher
+    verbose_name = _("employer summer voucher")
+    verbose_name_plural = _("employer summer vouchers")
+    extra = 0
+    show_change_link = True
+    can_delete = False
+
+    fields = [
+        "employer_summer_voucher_link",
+        "youth_summer_voucher_link",
+        "employee_name",
+        "employee_ssn_display",
+        "employee_school",
+    ]
+    readonly_fields = fields
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("youth_summer_voucher__youth_application")
+        )
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def employer_summer_voucher_link(self, obj):
+        if not obj.pk or obj._state.adding:
+            return ""
+        url = reverse(
+            "admin:applications_employersummervoucher_change",
+            args=[obj.pk],
+        )
+        return mark_safe(f'<a href="{url}">{obj.pk}</a>')
+
+    employer_summer_voucher_link.short_description = _("employer summer voucher")
+
+    def youth_summer_voucher_link(self, obj):
+        if obj._state.adding or not obj.youth_summer_voucher:
+            return ""
+        url = reverse(
+            "admin:applications_youthsummervoucher_change",
+            args=[obj.youth_summer_voucher.pk],
+        )
+        serial = obj.youth_summer_voucher.user_showable_serial_number
+        return mark_safe(f'<a href="{url}">{serial}</a>')
+
+    youth_summer_voucher_link.short_description = _("youth summer voucher")
+
+    def employee_ssn_display(self, obj):
+        return mask_social_security_number(obj.employee_ssn)
+
+    employee_ssn_display.short_description = _("employee social security number")
+
+
 class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
+    inlines = [EmployerSummerVoucherInline]
     list_display = [
         "id",
         "company__name",
@@ -739,8 +904,12 @@ class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin
         return (
             super()
             .get_queryset(request)
-            .select_related("company")
-            .select_related("user")
+            .select_related("company", "user")
+            .prefetch_related(
+                "summer_vouchers",
+                "summer_vouchers__youth_summer_voucher",
+                "summer_vouchers__youth_summer_voucher__youth_application",
+            )
         )
 
 
