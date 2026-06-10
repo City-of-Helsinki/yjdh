@@ -7,9 +7,12 @@ from django.core import mail
 from django.test import RequestFactory
 from django.urls import reverse
 
-from applications.admin import YouthSummerVoucherAdmin
+from applications.admin import YouthEmployerSummerVoucherInline, YouthSummerVoucherAdmin
 from applications.models import YouthSummerVoucher
-from common.tests.factories import YouthSummerVoucherFactory
+from common.tests.factories import (
+    EmployerSummerVoucherFactory,
+    YouthSummerVoucherFactory,
+)
 
 
 @pytest.fixture
@@ -169,3 +172,37 @@ def test_has_add_permission(youth_summer_voucher_admin):
 def test_has_change_permission(youth_summer_voucher_admin):
     request = RequestFactory().get("/")
     assert youth_summer_voucher_admin.has_change_permission(request) is False
+
+
+@pytest.mark.django_db
+def test_youth_employer_summer_voucher_inline_defined(youth_summer_voucher_admin):
+    assert YouthEmployerSummerVoucherInline in youth_summer_voucher_admin.inlines
+
+
+@pytest.mark.django_db
+def test_youth_employer_summer_voucher_inline_permissions():
+    inline = YouthEmployerSummerVoucherInline(YouthSummerVoucher, AdminSite())
+    request = RequestFactory().get("/")
+    assert not inline.has_add_permission(request)
+    assert not inline.has_change_permission(request)
+    assert not inline.has_delete_permission(request)
+
+
+@pytest.mark.django_db
+def test_youth_employer_summer_voucher_inline_links():
+    inline = YouthEmployerSummerVoucherInline(YouthSummerVoucher, AdminSite())
+
+    # Create a test employer summer voucher
+    voucher = EmployerSummerVoucherFactory()
+
+    # Test link for employer summer voucher
+    emp_link = inline.employer_summer_voucher_link(voucher)
+    assert f"/{voucher.pk}/change/" in emp_link
+
+    # Test link for employer application
+    app_link = inline.employer_application_link(voucher)
+    assert f"/{voucher.application.pk}/change/" in app_link
+
+    # Test company name display
+    comp_name = inline.company_name(voucher)
+    assert comp_name == voucher.application.company.name
