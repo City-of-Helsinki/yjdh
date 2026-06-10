@@ -104,7 +104,10 @@ describe('matomo', () => {
         'setReferrerUrl',
         expect.any(String),
       ]);
-      expect(window._paq).toContainEqual(['setCustomUrl', '/new-page']);
+      expect(window._paq).toContainEqual([
+        'setCustomUrl',
+        `${window.location.origin}/new-page`,
+      ]);
       expect(window._paq).toContainEqual(['setDocumentTitle', document.title]);
       expect(window._paq).toContainEqual(['trackPageView']);
     });
