@@ -185,6 +185,9 @@ class AhjoDecisionDetailsResponseHandler:
         batch_status_to_update = ApplicationBatchStatus.DECIDED_ACCEPTED
         if application.status == ApplicationStatus.REJECTED:
             batch_status_to_update = ApplicationBatchStatus.DECIDED_REJECTED
+            if not application.archived:
+                application.archived = True
+                application.save(update_fields=["archived"])
 
         batch = application.batch
         batch.update_batch_after_details_request(batch_status_to_update, details)
