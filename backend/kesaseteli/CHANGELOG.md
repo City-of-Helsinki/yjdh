@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.16.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.15.0...kesaseteli-backend-v1.16.0) (2026-06-11)
+
+
+### Features
+
+* **ks,employer:** Improve friendly errors for employee data fetch ([9b1014f](https://github.com/City-of-Helsinki/yjdh/commit/9b1014f67107c035419c778f8c4696cf035c665f))
+* **ks,employer:** Single submit flow without intermediate saves ([a2d2132](https://github.com/City-of-Helsinki/yjdh/commit/a2d21329659ad69c6e35f6bc86a70fc02833b283))
+* **ks:** Disable youth summer voucher creation and updates in admin ([2689f8e](https://github.com/City-of-Helsinki/yjdh/commit/2689f8ee4fc6963aaf5f726963b2aec9dc3d2478))
+* **ks:** Display related summer vouchers inline in admin ([1b7fb4d](https://github.com/City-of-Helsinki/yjdh/commit/1b7fb4d946b0a1abea5037f8251c64bb407d489b))
+
+
+### Dependencies
+
+* **ks,backend:** Upgrade all dependencies but django-resilient-logger ([0ffd964](https://github.com/City-of-Helsinki/yjdh/commit/0ffd9647cd60b6d5f6d8460d10e9675c5b320d43))
+
 ## [1.15.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.14.0...kesaseteli-backend-v1.15.0) (2026-05-29)
 
 
