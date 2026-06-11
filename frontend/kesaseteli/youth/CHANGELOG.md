@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.1.0...kesaseteli-youth-v2.2.0) (2026-06-11)
+
+
+### Features
+
+* **ks,youth:** Integrate matomo to youth UI ([7589d6a](https://github.com/City-of-Helsinki/yjdh/commit/7589d6a1ca617d46c7931900186921d9bb73322a))
+
+
+### Bug Fixes
+
+* **ks,shared:** Fix ESLint errors in Matomo-related files ([e947011](https://github.com/City-of-Helsinki/yjdh/commit/e947011dbb65223699c9e93b8317a01a47324329))
+
+
+### Dependencies
+
+* **ks,shared:** Upgrade direct dependencies for security ([c7bd7af](https://github.com/City-of-Helsinki/yjdh/commit/c7bd7af3effcbc7e9cc4cb5a22d73cdd0973a48e))
+* **ks:** Upgrade Sentry to v10 ([b269101](https://github.com/City-of-Helsinki/yjdh/commit/b269101eed021836b3dc23f82667d81ec2a72eda))
+* **shared:** Upgrade nextjs to secure version 15.5.19 ([35e894b](https://github.com/City-of-Helsinki/yjdh/commit/35e894b33940c1477ea4e429eff9809ac801dc3d))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.0.1...kesaseteli-youth-v2.1.0) (2026-05-27)
 
 
