@@ -1,6 +1,6 @@
 {
   "name": "@frontend/ks-handler",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "license": "MIT",
   "scripts": {
     "dev": "cross-env PORT=3200 node ../../shared/src/server/next-server.js",
