@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.2.1...kesaseteli-employer-v2.3.0) (2026-06-11)
+
+
+### Features
+
+* **ks,employer:** Allow unauthorized access to cookie settings ([cff679f](https://github.com/City-of-Helsinki/yjdh/commit/cff679f192b80542c13f3b5796dc00577060ec93))
+* **ks,employer:** Improve friendly errors for employee data fetch ([9b1014f](https://github.com/City-of-Helsinki/yjdh/commit/9b1014f67107c035419c778f8c4696cf035c665f))
+* **ks,employer:** Integrate matomo to employer UI ([6f45dec](https://github.com/City-of-Helsinki/yjdh/commit/6f45dec80b3f65281cb9db9439b146b9e6d0f7fe))
+* **ks,employer:** Single submit flow without intermediate saves ([a2d2132](https://github.com/City-of-Helsinki/yjdh/commit/a2d21329659ad69c6e35f6bc86a70fc02833b283))
+
+
+### Bug Fixes
+
+* **ks,employer:** Cognitive complexity and async linter issues ([44ae020](https://github.com/City-of-Helsinki/yjdh/commit/44ae020f8fc0ceefbb18e54a8b32d6149f36a3f1))
+* **ks,employer:** Potentially missing employer summer voucher id ([898b912](https://github.com/City-of-Helsinki/yjdh/commit/898b912abef9c17e4e9d892b042221ff24994410))
+* **ks,shared:** Fix ESLint errors in Matomo-related files ([e947011](https://github.com/City-of-Helsinki/yjdh/commit/e947011dbb65223699c9e93b8317a01a47324329))
+* **ks:** Align route checks & fix test types ([62f19d3](https://github.com/City-of-Helsinki/yjdh/commit/62f19d3a5d8edce4cb5ac8a2eadc67681b4e5cf3))
+
+
+### Dependencies
+
+* **ks,shared:** Upgrade direct dependencies for security ([c7bd7af](https://github.com/City-of-Helsinki/yjdh/commit/c7bd7af3effcbc7e9cc4cb5a22d73cdd0973a48e))
+* **ks:** Upgrade Sentry to v10 ([b269101](https://github.com/City-of-Helsinki/yjdh/commit/b269101eed021836b3dc23f82667d81ec2a72eda))
+* **shared:** Upgrade nextjs to secure version 15.5.19 ([35e894b](https://github.com/City-of-Helsinki/yjdh/commit/35e894b33940c1477ea4e429eff9809ac801dc3d))
+
 ## [2.2.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.2.0...kesaseteli-employer-v2.2.1) (2026-06-01)
 
 
