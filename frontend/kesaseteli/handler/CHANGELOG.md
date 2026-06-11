@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.1.0...kesaseteli-handler-v2.2.0) (2026-06-11)
+
+
+### Features
+
+* **ks,handler:** Allow unauthorized access to cookie settings ([a5682a0](https://github.com/City-of-Helsinki/yjdh/commit/a5682a00c6b07c1861e98b26e822f566d9f08113))
+* **ks,handler:** Integrate matomo to handler UI ([a71fc01](https://github.com/City-of-Helsinki/yjdh/commit/a71fc0193c1f81fe3c255529bcb91adf36286839))
+
+
+### Bug Fixes
+
+* **ks,shared:** Fix ESLint errors in Matomo-related files ([e947011](https://github.com/City-of-Helsinki/yjdh/commit/e947011dbb65223699c9e93b8317a01a47324329))
+* **ks:** Align route checks & fix test types ([62f19d3](https://github.com/City-of-Helsinki/yjdh/commit/62f19d3a5d8edce4cb5ac8a2eadc67681b4e5cf3))
+
+
+### Dependencies
+
+* **ks,shared:** Upgrade direct dependencies for security ([c7bd7af](https://github.com/City-of-Helsinki/yjdh/commit/c7bd7af3effcbc7e9cc4cb5a22d73cdd0973a48e))
+* **ks:** Upgrade Sentry to v10 ([b269101](https://github.com/City-of-Helsinki/yjdh/commit/b269101eed021836b3dc23f82667d81ec2a72eda))
+* **shared:** Upgrade nextjs to secure version 15.5.19 ([35e894b](https://github.com/City-of-Helsinki/yjdh/commit/35e894b33940c1477ea4e429eff9809ac801dc3d))
+
+
+### Documentation
+
+* **ks,shared:** Update useMatomo docs and test description ([b1a259c](https://github.com/City-of-Helsinki/yjdh/commit/b1a259c2c46b8c4eef4bf12133e029bd0ee6562e))
+
 ## [2.1.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.0.1...kesaseteli-handler-v2.1.0) (2026-05-27)
 
 
