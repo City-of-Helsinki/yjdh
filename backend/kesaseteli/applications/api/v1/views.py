@@ -349,11 +349,7 @@ class YouthApplicationViewSet(ModelViewSet):
 
         if not youth_app:
             self._log_audit_access(request, None, audit_params)
-            LOGGER.warning(
-                f"No match for employee name {validated['employee_name']} with voucher"
-                f" {validated['summer_voucher_serial_number']} in YouthApplication None"
-                f" - Cannot set employee data."
-            )
+            LOGGER.warning("No match found while setting employee data.")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         error_code = self._check_voucher_business_rules(
