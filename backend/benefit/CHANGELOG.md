@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.21.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.20.1...benefit-backend-v2.21.0) (2026-06-12)
+
+
+### Features
+
+* **benefit:** Applicant pdf printout ([05bac12](https://github.com/City-of-Helsinki/yjdh/commit/05bac12960f755b1e5f0e1576a7a61d961cd8f00))
+* **benefit:** Fixes to validation logic ([7376591](https://github.com/City-of-Helsinki/yjdh/commit/7376591a518491ffdae1ed57009954e7f530006f))
+* **benefit:** New fields added to the backend ([edfe8d0](https://github.com/City-of-Helsinki/yjdh/commit/edfe8d0d707773702a26a6e3ae54ffa479cd026c))
+
+
+### Bug Fixes
+
+* **benefit:** No decimals in ahjo decisions ([862974a](https://github.com/City-of-Helsinki/yjdh/commit/862974a3f700d9ce7be2116323d51c100d5a3e17))
+* **benefit:** Rejected applications are shown in archive ([df3dfd7](https://github.com/City-of-Helsinki/yjdh/commit/df3dfd725d80c86176fc213b4d1db25129b289cb))
+* **benefit:** Wrong status for responded application ([e6adff7](https://github.com/City-of-Helsinki/yjdh/commit/e6adff7340ca07f27fe2a2ac97fdbc99c9c6777e))
+
 ## [2.20.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.20.0...benefit-backend-v2.20.1) (2026-06-04)
 
 
