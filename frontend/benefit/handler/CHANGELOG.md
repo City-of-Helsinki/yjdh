@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.2.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.2.0...benefit-handler-v5.2.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **benefit:** Apprenticeship decoupling from pay subsidy ([1f546c5](https://github.com/City-of-Helsinki/yjdh/commit/1f546c5980b0472af4ef21c8c9f7695e0f3ae1c7))
+* **benefit:** Normalize undefined granted subsidy ([db6ff35](https://github.com/City-of-Helsinki/yjdh/commit/db6ff3570c386725b134307df85462fd9991be25))
+
+
+### Dependencies
+
+* **benefit,shared:** Upgrade direct dependencies ([f107e93](https://github.com/City-of-Helsinki/yjdh/commit/f107e938b5c6fdbd08d12cc370db4d85bd0d8e48))
+* **shared:** Upgrade nextjs to secure version 15.5.19 ([35e894b](https://github.com/City-of-Helsinki/yjdh/commit/35e894b33940c1477ea4e429eff9809ac801dc3d))
+
 ## [5.2.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.1.0...benefit-handler-v5.2.0) (2026-06-01)
 
 
