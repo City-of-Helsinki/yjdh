@@ -876,6 +876,32 @@ class EmployerApplicationFilter(filters.FilterSet):
         }
 
 
+@extend_schema_view(
+    list=extend_schema(
+        description="List employer summer voucher applications.",
+        responses=EmployerApplicationSerializer(many=True),
+    ),
+    retrieve=extend_schema(
+        description="Retrieve a single employer summer voucher application.",
+        responses=EmployerApplicationSerializer,
+    ),
+    create=extend_schema(
+        description="Create a new employer summer voucher application.",
+        responses=EmployerApplicationSerializer,
+    ),
+    update=extend_schema(
+        description="Update an employer summer voucher application.",
+        responses=EmployerApplicationSerializer,
+    ),
+    partial_update=extend_schema(
+        description="Partially update an employer summer voucher application.",
+        responses=EmployerApplicationSerializer,
+    ),
+    destroy=extend_schema(
+        description="Delete an employer summer voucher application.",
+        responses=OpenApiResponse(description="Application deleted."),
+    ),
+)
 class EmployerApplicationViewSet(ModelViewSet):
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
