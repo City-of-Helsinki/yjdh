@@ -2,28 +2,17 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
+from resilient_logger.models import ResilientLogEntry
+from resilient_logger.sources.resilient_log_source_entry import ResilientLogSourceEntry
 
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation, Status
 
-try:
-    from resilient_logger.models import ResilientLogEntry
-    from resilient_logger.sources import ResilientLogSource
-
-    LOGGER_IMPORTED = True
-except ImportError:
-    LOGGER_IMPORTED = False
-
-resilient_logger_configured = pytest.mark.skipif(
-    not LOGGER_IMPORTED, reason="Resilient logger not available"
-)
-
 
 @pytest.fixture(autouse=True)
 def set_resilient_settings(settings):
-    if LOGGER_IMPORTED:
-        settings.RESILIENT_LOGGER["origin"] = "yjdh-test"
-        settings.RESILIENT_LOGGER["environment"] = "unittesting"
+    settings.RESILIENT_LOGGER["origin"] = "yjdh-test"
+    settings.RESILIENT_LOGGER["environment"] = "unittesting"
 
 
 FIXED_TIMESTAMP = "2020-06-01T00:00:00.000Z"
@@ -51,7 +40,6 @@ _common_fields = {
 }
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 @pytest.mark.parametrize("operation", list(Operation))
@@ -59,7 +47,7 @@ def test_log_owner_operation(user, operation):
     audit_logging.log(user, "", operation, user, ip_address="192.168.1.1")
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document == {
         **_common_fields,
@@ -80,7 +68,6 @@ def test_log_owner_operation(user, operation):
     }
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 def test_log_anonymous_role(user):
@@ -89,7 +76,7 @@ def test_log_anonymous_role(user):
     )
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document == {
         **_common_fields,
@@ -109,14 +96,13 @@ def test_log_anonymous_role(user):
     }
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 def test_log_user_role(user, other_user):
     audit_logging.log(user, "", Operation.READ, other_user, ip_address="192.168.1.1")
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document == {
         **_common_fields,
@@ -133,7 +119,6 @@ def test_log_user_role(user, other_user):
     }
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 @pytest.mark.parametrize("operation", list(Operation))
@@ -141,7 +126,7 @@ def test_log_system_operation(user, operation):
     audit_logging.log(None, "", operation, user, ip_address="192.168.1.1")
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document == {
         **_common_fields,
@@ -162,7 +147,6 @@ def test_log_system_operation(user, operation):
     }
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 @pytest.mark.parametrize("status", list(Status))
@@ -170,7 +154,7 @@ def test_log_status(user, status):
     audit_logging.log(user, "", Operation.READ, user, status, ip_address="192.168.1.1")
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document == {
         **_common_fields,
@@ -191,18 +175,16 @@ def test_log_status(user, status):
     }
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 def test_log_origin(user):
     audit_logging.log(user, "", Operation.READ, user, ip_address="192.168.1.1")
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
     assert document["audit_event"]["origin"] == "yjdh-test"
 
 
-@resilient_logger_configured
 @pytest.mark.django_db
 def test_log_current_timestamp(user):
     tolerance = timedelta(seconds=1)
@@ -211,7 +193,7 @@ def test_log_current_timestamp(user):
     date_after_logging = datetime.now(tz=timezone.utc) + tolerance
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     logged_date_from_date_time = datetime.strptime(
         document["audit_event"]["date_time"], "%Y-%m-%dT%H:%M:%S.%f%z"
@@ -219,7 +201,6 @@ def test_log_current_timestamp(user):
     assert date_before_logging <= logged_date_from_date_time <= date_after_logging
 
 
-@resilient_logger_configured
 @pytest.mark.django_db
 def test_log_additional_information(user):
     audit_logging.log(
@@ -231,12 +212,11 @@ def test_log_additional_information(user):
     )
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document["audit_event"]["extra"]["additional_information"] == "test"
 
 
-@resilient_logger_configured
 @pytest.mark.freeze_time(FIXED_TIMESTAMP)
 @pytest.mark.django_db
 def test_log_user_with_backend(user):
@@ -249,7 +229,7 @@ def test_log_user_with_backend(user):
     )
 
     log_entry = ResilientLogEntry.objects.first()
-    document = ResilientLogSource(log_entry).get_document()
+    document = ResilientLogSourceEntry(log_entry).get_document()
 
     assert document == {
         **_common_fields,

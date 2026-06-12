@@ -1,7 +1,9 @@
 from unittest import mock
 
-from resilient_logger.sources.django_audit_log_source import DjangoAuditLogSource
-from resilient_logger.sources.resilient_log_source import ResilientLogSource
+from resilient_logger.sources.django_audit_log_source_entry import (
+    DjangoAuditLogSourceEntry,
+)
+from resilient_logger.sources.resilient_log_source_entry import ResilientLogSourceEntry
 
 from kesaseteli.log_targets import RoutedElasticsearchLogTarget
 
@@ -19,8 +21,8 @@ def test_routed_elasticsearch_log_target_routes_correctly(mock_es):
     mock_client = mock_es.return_value
     mock_client.index.return_value = {"result": "created"}
 
-    # 1. ResilientLogSource -> resilient-index-name
-    resilient_entry = mock.Mock(spec=ResilientLogSource)
+    # 1. ResilientLogSourceEntry -> resilient-index-name
+    resilient_entry = mock.Mock(spec=ResilientLogSourceEntry)
     resilient_entry.get_document.return_value = {"audit_event": {"message": "auth log"}}
 
     success = target.submit(resilient_entry)
@@ -32,8 +34,8 @@ def test_routed_elasticsearch_log_target_routes_correctly(mock_es):
         op_type="create",
     )
 
-    # 2. DjangoAuditLogSource -> auditlog-index-name
-    audit_entry = mock.Mock(spec=DjangoAuditLogSource)
+    # 2. DjangoAuditLogSourceEntry -> auditlog-index-name
+    audit_entry = mock.Mock(spec=DjangoAuditLogSourceEntry)
     audit_entry.get_document.return_value = {"audit_event": {"message": "audit log"}}
 
     success = target.submit(audit_entry)

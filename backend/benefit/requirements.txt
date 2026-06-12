@@ -104,7 +104,7 @@ django-logger-extra==1.1.2
     # via -r requirements.in
 django-phonenumber-field==8.3.0
     # via -r requirements.in
-django-resilient-logger==1.2.0
+django-resilient-logger==2.3.0
     # via -r requirements.in
 django-searchable-encrypted-fields==0.2.1
     # via -r requirements.in

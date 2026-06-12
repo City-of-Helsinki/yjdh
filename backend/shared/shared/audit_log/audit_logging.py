@@ -1,4 +1,3 @@
-from django.core.exceptions import ImproperlyConfigured
 import logging
 from datetime import datetime, timezone
 from typing import Callable, Optional, Union
@@ -6,16 +5,13 @@ from typing import Callable, Optional, Union
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 from django.db.models.base import ModelBase
-
-try:
-    from resilient_logger.sources.resilient_log_source import (
-        ResilientLogSource,
-        StructuredResilientLogEntryData,
-    )
-except ImportError:
-    pass
+from resilient_logger.sources.resilient_log_source import (
+    ResilientLogSource,
+    StructuredResilientLogEntryData,
+)
 
 from shared.audit_log.enums import Operation, Role, Status
 from shared.audit_log.mappings import DJANGO_BACKEND_MAPPING

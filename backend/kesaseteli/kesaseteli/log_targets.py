@@ -1,7 +1,9 @@
 import logging
 
-from resilient_logger.sources.django_audit_log_source import DjangoAuditLogSource
-from resilient_logger.sources.resilient_log_source import ResilientLogSource
+from resilient_logger.sources.django_audit_log_source_entry import (
+    DjangoAuditLogSourceEntry,
+)
+from resilient_logger.sources.resilient_log_source_entry import ResilientLogSourceEntry
 from resilient_logger.targets.elasticsearch_log_target import ElasticsearchLogTarget
 
 logger = logging.getLogger(__name__)
@@ -38,9 +40,9 @@ class RoutedElasticsearchLogTarget(ElasticsearchLogTarget):
             bool: True if the log entry was submitted successfully, False otherwise.
         """
         # Dynamically switch the index based on the source class type
-        if isinstance(entry, ResilientLogSource):
+        if isinstance(entry, ResilientLogSourceEntry):
             self._index = self._resilient_index
-        elif isinstance(entry, DjangoAuditLogSource):
+        elif isinstance(entry, DjangoAuditLogSourceEntry):
             self._index = self._auditlog_index
         else:
             logger.warning(

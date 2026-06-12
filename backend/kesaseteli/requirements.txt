@@ -85,7 +85,7 @@ drf-spectacular==0.29.0
     # via -r requirements.in
 django-localflavor==5.0
     # via -r requirements.in
-django-resilient-logger==2.1.0
+django-resilient-logger==2.3.0
     # via -r requirements.in
 django-searchable-encrypted-fields==0.2.1
     # via -r requirements.in
