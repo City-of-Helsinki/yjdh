@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.2.1...benefit-applicant-v4.3.0) (2026-06-12)
+
+
+### Features
+
+* **benefit:** Applicant summary page ([b9bb9f3](https://github.com/City-of-Helsinki/yjdh/commit/b9bb9f313114e69775edeaa87935f990dadcdb54))
+* **benefit:** New fields added to the frontend ([8f063e1](https://github.com/City-of-Helsinki/yjdh/commit/8f063e1374c4569f37439d594b23610aa7c70bf7))
+
+
+### Bug Fixes
+
+* **benefit:** Application list formatting ([3a59de6](https://github.com/City-of-Helsinki/yjdh/commit/3a59de60cc3a244b4d6bd4e52fe6cce2241a3a14))
+* **benefit:** Wrong error message in a field ([c09763f](https://github.com/City-of-Helsinki/yjdh/commit/c09763f7fb85570d75737fb7f062303ceb0fa82f))
+* **ks:** Align route checks & fix test types ([62f19d3](https://github.com/City-of-Helsinki/yjdh/commit/62f19d3a5d8edce4cb5ac8a2eadc67681b4e5cf3))
+
+
+### Dependencies
+
+* **benefit,shared:** Upgrade direct dependencies ([f107e93](https://github.com/City-of-Helsinki/yjdh/commit/f107e938b5c6fdbd08d12cc370db4d85bd0d8e48))
+* **shared:** Upgrade nextjs to secure version 15.5.19 ([35e894b](https://github.com/City-of-Helsinki/yjdh/commit/35e894b33940c1477ea4e429eff9809ac801dc3d))
+
 ## [4.2.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.2.0...benefit-applicant-v4.2.1) (2026-06-04)
 
 
