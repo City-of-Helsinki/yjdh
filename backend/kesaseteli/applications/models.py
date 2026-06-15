@@ -207,6 +207,22 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         )
 
 
+def get_social_security_number_hash_key():
+    """
+    Return the hash key for the YouthApplication.social_security_number SearchField.
+
+    Passing a function to SearchField keeps the secret out of migration files,
+    see related django-searchable-encrypted-fields PRs & work items:
+    - "Values of hash_keys are visible in migrations" (Resolved in v0.2.1 release):
+      https://gitlab.com/guywillett/django-searchable-encrypted-fields/-/work_items/18
+    - "Allow a string or callable for SearchField.hash_key":
+      https://gitlab.com/guywillett/django-searchable-encrypted-fields/-/merge_requests/15
+    - "Add tests for callable hash_key":
+      https://gitlab.com/guywillett/django-searchable-encrypted-fields/-/merge_requests/16
+    """
+    return settings.SOCIAL_SECURITY_NUMBER_HASH_KEY
+
+
 class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
         max_length=128,
@@ -223,7 +239,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         verbose_name=_("social security number"),
     )
     social_security_number = SearchField(
-        hash_key=settings.SOCIAL_SECURITY_NUMBER_HASH_KEY,
+        hash_key=get_social_security_number_hash_key,
         encrypted_field_name="encrypted_social_security_number",
         validators=[validate_optional_finnish_social_security_number],
     )
