@@ -76,6 +76,18 @@ def test_readiness_returns_503_when_db_down(mock_connection, client):
     assert set(data) == {"status", "packageVersion", "release", "buildTime", "database"}
 
 
+@pytest.mark.parametrize("url", ["/healthz", "/readiness"])
+def test_probe_endpoints_return_no_csp_header(client, url):
+    """Verify probe endpoints do not emit a Content-Security-Policy header.
+
+    Args:
+        client: Django test client for unauthenticated requests.
+        url: Probe endpoint URL under test.
+    """
+    response = client.get(url)
+    assert "Content-Security-Policy" not in response.headers
+
+
 def test_readiness_rejects_post(client):
     """Readiness only accepts GET and HEAD requests."""
     response = client.post("/readiness")
