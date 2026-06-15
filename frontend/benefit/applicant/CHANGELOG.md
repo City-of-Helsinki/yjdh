@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.3.0...benefit-applicant-v4.4.0) (2026-06-15)
+
+
+### Features
+
+* **benefit:** Frontend changes for new terms ([9771826](https://github.com/City-of-Helsinki/yjdh/commit/97718263e6b339058dd2b2a099b86806d2ad4f89))
+
 ## [4.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.2.1...benefit-applicant-v4.3.0) (2026-06-12)
 
 
