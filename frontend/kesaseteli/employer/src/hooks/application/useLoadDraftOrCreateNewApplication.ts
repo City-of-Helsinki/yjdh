@@ -75,10 +75,10 @@ const useLoadDraftOrCreateNewApplication = (): void => {
   const { createApplication, goToApplicationPage, createApplicationQuery } =
     useCreateApplication();
 
-  const draftApplicationQuery = useApplicationsQuery<Application | undefined>(
-    undefined,
-    (applications) => applications.find((app) => app.status === 'draft')
-  );
+  const draftApplicationQuery = useApplicationsQuery<Application | undefined>({
+    select: (applications) =>
+      applications.find((app) => app.status === 'draft'),
+  });
 
   React.useEffect(() => {
     if (draftApplicationQuery.isSuccess) {

@@ -54,7 +54,9 @@
       "ariaLabel": "My applications filter",
       "tooltipLabel": "Filter",
       "tooltipText": "On: Show only my applications. Off: Show organisation applications.",
-      "tooltipButtonLabel": "Open applications filter instructions"
+      "tooltipButtonLabel": "Open applications filter instructions",
+      "yearFilterLabel": "Filter by year",
+      "yearFilterAll": "All years"
     }
   },
   "application": {
@@ -282,5 +284,8 @@
     "instructions": "Request your organization to grant you the necessary authorizations in the Suomi.fi service.",
     "linkText": "Read more about authorizations <lnk href=\"https://nuorten.hel.fi/en/studies-and-work/the-summer-job-voucher/\" target=\"_blank\">here</lnk>.",
     "logoutButton": "Logout"
+  },
+  "utility": {
+    "pagination": "Pagination"
   }
 }
