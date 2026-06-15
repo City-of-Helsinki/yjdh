@@ -121,6 +121,22 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             )}
           </$ViewField>
         </$GridCell>
+        <$GridCell $colSpan={12} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.roleOfEmployeeInOrganization.label`)}
+          </$ViewFieldBold>
+          <$ViewField>
+            {data.roleOfEmployeeInOrganization == null ? (
+              '-'
+            ) : (
+              <>
+                {data.roleOfEmployeeInOrganization.split(/\n+/g).map((paragraph: string) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </>
+            )}
+          </$ViewField>
+        </$GridCell>
       </SummarySection>
 
       <SummarySection

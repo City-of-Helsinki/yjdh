@@ -40,6 +40,8 @@ test('Fill form and submit', async (t: TestController) => {
     form.company.companyNumberOfEmployees
   );
   await t.typeText('#companyBusinessBrief', form.company.companyBusinessBrief);
+  await t.click('[for="purchasedServiceFalse"]');
+
   await t.typeText('#companyContactPersonFirstName', form.company.firstName);
   await t.typeText('#companyContactPersonLastName', form.company.lastName);
   await t.typeText('#companyContactPersonPhoneNumber', form.company.phone);
@@ -68,6 +70,7 @@ test('Fill form and submit', async (t: TestController) => {
   await t.click('[for="employee.isLivingInHelsinki"]');
 
   await t.click('[for="otherFinancialSupportForEmploymentFalse"]');
+  await t.click('[for="otherSubsidisedEmployedFalse"]');
   await t.typeText('[name="employee.jobTitle"]', form.employee.jobTitle);
   await t.typeText(
     '[name="employee.workingHours"]',

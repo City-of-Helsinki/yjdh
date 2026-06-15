@@ -65,6 +65,49 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
           </$ViewField>
         </$GridCell>
       )}
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.otherFinancialSupportForEmployment.label`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {data.otherFinancialSupportForEmployment == null
+            ?
+            '-'
+            :
+            t(
+            `${translationsBase}.fields.otherFinancialSupportForEmployment.${
+              data.otherFinancialSupportForEmployment ? 'yes' : 'no'
+            }`
+          )}
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.otherSubsidisedEmployed.label`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {data.otherSubsidisedEmployed == null
+            ?
+            '-'
+            :
+            t(
+            `${translationsBase}.fields.otherSubsidisedEmployed.${
+              data.otherSubsidisedEmployed ? 'yes' : 'no'
+            }`
+          )}
+        </$ViewField>
+      </$GridCell>
+      {data?.otherSubsidisedEmployed && (
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.otherSubsidisedNumber.label`)}
+          </$ViewFieldBold>
+          <$ViewField>
+            {data?.otherSubsidisedNumber}
+          </$ViewField>
+        </$GridCell>
+        )
+      }
     </SummarySection>
   );
 };

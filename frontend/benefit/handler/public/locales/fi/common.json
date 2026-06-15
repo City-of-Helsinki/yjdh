@@ -504,7 +504,12 @@
           "label": "Henkilöstömäärä ennen työllistettyä"
         },
         "companyBusinessBrief": {
-          "label": "Kuvaa työnantajan toiminnan luonne. Tarvittaessa pyydämme lisätietoja."
+          "label": "Kuvaa työnantajan toiminnan luonne."
+        },
+        "purchasedService": {
+          "label": "Hankkiiko Helsingin kaupunki toimintaa ostopalveluna?",
+          "yes": "Kyllä",
+          "no": "Ei"
         },
         "companyContactPersonFirstName": {
           "label": "Etunimi",
@@ -594,7 +599,16 @@
         },
         "otherFinancialSupportForEmployment": {
           "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
-          "tooltip": "Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä."
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "otherSubsidisedEmployed": {
+          "label": "Työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä (esim. palkkatuki, Helsinki-lisä, nuorten rekrytointituki)?",
+          "yes": "Kyllä",
+          "no": "Ei"
+        },
+        "otherSubsidisedNumber": {
+          "label": "Ilmoita montako"
         },
         "paySubsidyGranted": {
           "label": "Onko työsuhteeseen myönnetty jokin seuraavista tuista?",
@@ -1157,6 +1171,13 @@
       "coOperationNegotiations": "Onko organisaatiolla käynnissä tai edellisen 12 aikana päättynyt muutosneuvottelut?",
       "coOperationNegotiationsDescription": "Selvitys",
       "isLivingInHelsinki": "Onko työllistettävän kotikunta Helsinki työsuhteen alkaessa?",
+      "companyBusinessBrief": "Työnantajan toiminnan luonne",
+      "companyNumberOfEmployees": "Henkilöstömäärä ennen työllistettyä",
+      "purchasedService": "Hankkiiko Helsingin kaupunki toimintaa ostopalveluna?",
+      "otherFinancialSupport": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
+      "otherSubsidisedEmployed": "Työskenteleekö organisaatiossa samaan aikaan muita vastaavalla tuella työllistettyjä (esim. palkkatuki, Helsinki-lisä, nuorten rekrytointituki)?",
+      "otherSubsidisedNumber":"Ilmoita montako",
+      "roleOfEmployeeInOrganization": "Kuvaa, miten tuella palkattavan henkilön työtehtävät liittyvät organisaation toimintaan.",
       "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
       "benefitType": "Tukimuoto",
       "startDate": "Aloituspäivä",
@@ -1478,6 +1499,9 @@
     "types": {
       "employmentContract": {
         "title": "Työsopimus"
+      },
+      "businessBrief": {
+        "title": "Toimintaa kuvaava liite"
       },
       "paySubsidyDecision": {
         "title": "Palkkatukipäätös"
@@ -1889,6 +1913,27 @@
       },
       "paySubsidyGranted": {
         "label": "Palkkatuki"
+      },
+      "roleOfInOrganization": {
+        "label": "Työntekijän rooli organisaatiossa"
+      },
+      "companyBusinessBrief": {
+        "label": "Toiminnan kuvaus"
+      },
+      "companyNumberOfS": {
+        "label": "Työntekijöiden määrä ennen työllistettyä"
+      },
+      "purchasedService": {
+        "label": "Hankkiiko Helsingin kaupunki toimintaa ostopalveluna?"
+      },
+      "otherFinancialSupportForEmployment": {
+        "label": "Onko palkkaukseen saatu muuta tukea?"
+      },
+      "otherSubsidisedEmployed": {
+        "label": "Työskenteleekö organisaatiossa muita tuella palkattuja?"
+      },
+      "otherSubsidisedNumber": {
+        "label": "Tuella palkattujen määrä"
       },
       "apprenticeshipProgram": {
         "label": "Oppisopimus"
