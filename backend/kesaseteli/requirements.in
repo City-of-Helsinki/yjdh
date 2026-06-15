@@ -1,5 +1,5 @@
 -e file:../shared
-base32-lib@https://github.com/inveniosoftware/base32-lib/archive/254311bba7aaa7e5b9e0e364adfdb7c057e252d2.zip
+base32-lib@https://github.com/inveniosoftware/base32-lib/archive/bf1b3b188660eecb127031f6d5db1c877b6ab127.zip
 django-auditlog
 django-auditlog-extra@https://github.com/City-of-Helsinki/django-auditlog-extra/archive/64476c69a68023f78e423be466ac16723b1c8b92.zip
 django-resilient-logger
