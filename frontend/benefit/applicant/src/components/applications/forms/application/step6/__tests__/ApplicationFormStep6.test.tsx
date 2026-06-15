@@ -80,8 +80,18 @@ const mockHookReturn = {
   textLocale: 'Fi',
   applicantTermsInEffectUrl: 'https://example.com/terms.pdf',
   applicantTermsInEffectMd: '# Terms markdown',
+  applicantTerms2InEffectUrl: 'https://example.com/terms2.pdf',
+  applicantTerms3InEffectUrl: 'https://example.com/terms3.pdf',
+  applicantTerms4InEffectUrl: 'https://example.com/terms4.pdf',
   checkedArray: [false, true],
 };
+
+const allApplicantTermsInEffectUrls = [
+  mockHookReturn.applicantTermsInEffectUrl,
+  mockHookReturn.applicantTerms2InEffectUrl,
+  mockHookReturn.applicantTerms3InEffectUrl,
+  mockHookReturn.applicantTerms4InEffectUrl,
+];
 
 const renderForm = (): ReturnType<typeof renderComponent> =>
   renderComponent(
@@ -102,7 +112,9 @@ describe('ApplicationFormStep6', () => {
     renderForm();
 
     expect(screen.getByText('# Terms markdown')).toBeInTheDocument();
-    expect(screen.getByTestId('pdf-viewer')).toBeInTheDocument();
+    expect(screen.getAllByTestId('pdf-viewer')).toHaveLength(
+      allApplicantTermsInEffectUrls.length
+    );
     expect(screen.getAllByTestId('application-terms-consent')).toHaveLength(2);
   });
 
@@ -111,14 +123,20 @@ describe('ApplicationFormStep6', () => {
       renderForm();
     });
 
-    await user.click(
-      screen.getByRole('button', {
-        name: 'common:applications.actions.openTermsAsPDF',
-      })
-    );
+    for (const [index, url] of allApplicantTermsInEffectUrls.entries()) {
+      await user.click(
+        screen.getByRole('button', {
+          name: `common:applications.sections.applicantTerms.openTerms.${
+            index + 1
+          }`,
+        })
+      );
 
-    expect(mockOpenFileInNewTab).toHaveBeenCalledWith(
-      'https://example.com/terms.pdf'
+      expect(mockOpenFileInNewTab).toHaveBeenCalledWith(url);
+    }
+
+    expect(mockOpenFileInNewTab).toHaveBeenCalledTimes(
+      allApplicantTermsInEffectUrls.length
     );
   });
 

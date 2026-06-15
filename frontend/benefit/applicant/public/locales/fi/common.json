@@ -472,6 +472,15 @@
       },
       "send": {
         "heading1": "Ehdot"
+      },
+      "applicantTerms": {
+        "explanation": "Hae Helsinki-lisää viimeistään 4 kuukauden kuluessa työsuhteen alkamisesta. Määräajan jälkeen saapuneisiin hakemuksiin tukea voidaan myöntää enintään 4 kuukautta takautuvasti saapumispäivästä.\nTyövoimaviranomainen tarkastaa työnantajan tietoja hakemuksen lisäksi kaupallisista tietokannoista. Tarkistettavia tietoja ovat esimerkiksi työnantajan ja vastuuhenkilöiden mahdolliset pakotelistakytkennät ja organisaation taloudellinen tilanne.\nPerehdy alla oleviin Helsinki-lisää koskeviin ehtoihin. Voit myös ladata ne pdf muodossa.",
+        "openTerms": {
+          "1": "Avaa Helsinki-lisän myöntämisen ehdot pdf-tiedostona",
+          "2": "Avaa Helsinki-lisän myöntämisen ja maksamisen reunaehdot 1.5.2026 pdf-tiedostona",
+          "3": "Avaa järjestöyhteistyön ja avustustoiminnan eettiset kumppanuusperiaatteet pdf-tiedostona",
+          "4": "Avaa Helsingin kaupungin avustusten yleisohjeet pdf-tiedostona"
+        }
       }
     },
     "errors": {

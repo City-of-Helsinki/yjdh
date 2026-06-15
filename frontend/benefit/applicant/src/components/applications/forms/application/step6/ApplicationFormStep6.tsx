@@ -33,6 +33,9 @@ const ApplicationFormStep6: React.FC<
     cbPrefix,
     textLocale,
     applicantTermsInEffectUrl,
+    applicantTerms2InEffectUrl,
+    applicantTerms3InEffectUrl,
+    applicantTerms4InEffectUrl,
     applicantTermsInEffectMd,
     checkedArray,
   } = useApplicationFormStep6(
@@ -41,10 +44,24 @@ const ApplicationFormStep6: React.FC<
     setIsResubmission
   );
 
+  const allApplicantTermsInEffect = [
+    applicantTermsInEffectUrl,
+    applicantTerms2InEffectUrl,
+    applicantTerms3InEffectUrl,
+    applicantTerms4InEffectUrl,
+  ]
+
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormSection>
         <>
+          <$GridCell $colSpan={12}>
+            {t('common:applications.sections.applicantTerms.explanation')
+              .split(/\n+/)
+              .map((line) => (
+                <p key={line.replace(/^[A-Za-z]/, '')}>{line}</p>
+              ))}
+          </$GridCell>
           {data && (
             <>
               {applicantTermsInEffectMd ? (
@@ -52,40 +69,56 @@ const ApplicationFormStep6: React.FC<
                   <$Markdown>{applicantTermsInEffectMd}</$Markdown>
                 </$GridCell>
               ) : null}
-              {applicantTermsInEffectUrl &&
-              applicantTermsInEffectUrl.length > 0 ? (
-                <>
-                  <$GridCell $colSpan={12}>
-                    <PdfViewer file={applicantTermsInEffectUrl} scale={1.8} />
-                  </$GridCell>
-
-                  <$GridCell
-                    $colSpan={5}
-                    css={`
-                      margin-bottom: var(--spacing-l);
-                    `}
-                  >
-                    <Button
-                      theme={ButtonPresetTheme.Black}
-                      variant={ButtonVariant.Secondary}
-                      onClick={() =>
-                        openFileInNewTab(applicantTermsInEffectUrl)
-                      }
+              {allApplicantTermsInEffect.map((url, index) =>
+                url && url.length > 0 ? (
+                  <React.Fragment key={url}>
+                    <$GridCell
+                      $colSpan={12}
+                      css={`
+                        margin-bottom: var(--spacing-5-xl);
+                      `}
                     >
-                      {t('common:applications.actions.openTermsAsPDF')}
-                    </Button>
-                  </$GridCell>
-                </>
-              ) : null}
+                      <PdfViewer file={url} scale={1} />
+                    </$GridCell>
+
+                    <$GridCell
+                      $colSpan={6}
+                      css={`
+                        margin-bottom: var(--spacing-l);
+                      `}
+                    >
+                      <Button
+                        theme={ButtonPresetTheme.Black}
+                        variant={ButtonVariant.Secondary}
+                        onClick={() => openFileInNewTab(url)}
+                      >
+                        {t(
+                          `common:applications.sections.applicantTerms.openTerms.${
+                            index + 1
+                          }`
+                        )}
+                      </Button>
+                    </$GridCell>
+                  </React.Fragment>
+                ) : null
+              )}
             </>
           )}
+
           {data?.applicantTermsInEffect?.applicantConsents.map((consent, i) => (
             <$GridCell $colSpan={12} key={consent.id}>
               <$Checkbox
                 data-testid="application-terms-consent"
                 id={`${cbPrefix}_${consent.id}`}
                 name={`${cbPrefix}_${i}`}
-                label={consent[`text${textLocale}` as TextProp] || ''}
+                label={(consent[`text${textLocale}` as TextProp] || '')
+                  .split(/\\n/)
+                  .map((line) => (
+                    <React.Fragment key={`${consent.id}-${line}`}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
                 required
                 checked={checkedArray[i]}
                 errorText={getErrorText(i)}
