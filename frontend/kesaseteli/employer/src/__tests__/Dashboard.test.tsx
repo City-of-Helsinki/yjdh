@@ -1,11 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Dashboard from 'kesaseteli/employer/components/dashboard/Dashboard';
+import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
-import { DashboardVoucher } from 'kesaseteli/employer/types/types';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import Application from 'shared/types/application';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 const mockPush = jest.fn();
@@ -26,29 +27,37 @@ jest.mock('kesaseteli/employer/hooks/backend/useCreateApplicationQuery', () =>
   jest.fn()
 );
 
+jest.mock('kesaseteli/employer/hooks/backend/useApplicationsQuery', () =>
+  jest.fn()
+);
+
 jest.mock('shared/hooks/useErrorHandler', () => jest.fn());
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
 jest.mock('shared/hooks/useLocale', () => () => 'fi');
 
-const mockVouchers: DashboardVoucher[] = [
+const mockApplications: Application[] = [
   {
-    id: 'v1',
-    employee_name: 'Testi Teppo',
-    summer_voucher_serial_number: '123456',
-    applicationId: 'app1',
-    applicationStatus: 'submitted',
+    id: 'app1',
+    status: 'submitted',
     modified_at: '2026-02-26T10:00:00Z',
-  } as Partial<DashboardVoucher> as DashboardVoucher,
+    summer_vouchers: [
+      {
+        id: 'v1',
+        employee_name: 'Testi Teppo',
+        summer_voucher_serial_number: '123456',
+      },
+    ],
+  } as unknown as Application,
 ];
 
-const [voucher1] = mockVouchers;
+const [app1] = mockApplications;
 
 const getCreateApplicationButton = (): HTMLElement =>
   screen.getByRole('button', { name: /tee uusi hakemus/i });
 
 type RenderOptions = {
-  vouchers?: DashboardVoucher[];
+  applications?: Application[];
   organisationName?: string;
   draftApplicationId?: string;
 };
@@ -62,15 +71,37 @@ type SetupOptions = RenderOptions & {
 };
 
 const renderWithProviders = ({
-  vouchers = [],
+  applications = [],
   organisationName,
   draftApplicationId,
 }: RenderOptions = {}): void => {
+  (useApplicationsQuery as jest.Mock).mockImplementation(
+    (options?: { limit?: number; offset?: number; onlyMine?: boolean }) => {
+      if (
+        options &&
+        options.limit !== undefined &&
+        options.offset !== undefined
+      ) {
+        const { limit, offset } = options;
+        return {
+          data: {
+            count: applications.length,
+            results: applications.slice(offset, offset + limit),
+          },
+          isLoading: false,
+          error: null,
+        };
+      }
+      return {
+        data: applications,
+        isLoading: false,
+        error: null,
+      };
+    }
+  );
+
   renderComponent(
     <Dashboard
-      vouchers={vouchers}
-      showOnlyMine={false}
-      onToggleOnlyMine={jest.fn()}
       organisationName={organisationName}
       draftApplicationId={draftApplicationId}
     />
@@ -124,13 +155,18 @@ describe('Dashboard', () => {
   });
 
   it('renders vouchers in the table', () => {
-    setupDashboard({ vouchers: mockVouchers });
-    expect(screen.getByText(voucher1.employee_name ?? '')).toBeInTheDocument();
+    setupDashboard({ applications: mockApplications });
+    const voucher = app1.summer_vouchers[0];
+    expect(screen.getByText(voucher.employee_name ?? '')).toBeInTheDocument();
     expect(
-      screen.getByText(voucher1.summer_voucher_serial_number)
+      screen.getByText(voucher.summer_voucher_serial_number)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(convertToUIDateAndTimeFormat(voucher1.modified_at))
+      screen.getByText(
+        convertToUIDateAndTimeFormat(
+          (app1 as typeof app1 & { modified_at?: string }).modified_at || ''
+        )
+      )
     ).toBeInTheDocument();
     // Status label renders the i18n translation
     expect(screen.getByText('Lähetetty')).toBeInTheDocument();
