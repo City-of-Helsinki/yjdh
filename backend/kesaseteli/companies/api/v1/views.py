@@ -30,7 +30,7 @@ class GetCompanyView(APIView):
             )
             company_data = CompanySerializer(company).data
         else:
-            company = Company(**DUMMY_COMPANY_DATA)
+            company = get_or_create_company_using_organization_roles(request)
             company_data = CompanySerializer(company).data
 
         return Response(company_data)
