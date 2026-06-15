@@ -4,6 +4,7 @@ Kubernetes liveness and readiness probe endpoints.
 These endpoints are used by OpenShift/Kubernetes to determine pod health.
 """
 
+from csp.decorators import csp_exempt
 from django.conf import settings
 from django.db import connection
 from django.http import HttpResponse, JsonResponse
@@ -26,6 +27,7 @@ def _check_database() -> str:
         return "error"
 
 
+@csp_exempt()
 @require_http_methods(["GET", "HEAD"])
 def healthz(request):
     """
@@ -36,6 +38,7 @@ def healthz(request):
     return HttpResponse(status=200)
 
 
+@csp_exempt()
 @require_http_methods(["GET", "HEAD"])
 def readiness(request):
     """

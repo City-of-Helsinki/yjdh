@@ -53,6 +53,7 @@ django==5.2.15
     #   django-auditlog-extra
     #   django-auth-adfs
     #   django-cors-headers
+    #   django-csp
     #   django-extensions
     #   django-filter
     #   django-localflavor
@@ -75,6 +76,8 @@ django-auth-adfs==1.16.0
     #   -r requirements.in
     #   yjdh-backend-shared
 django-cors-headers==4.9.0
+    # via -r requirements.in
+django-csp==4.0
     # via -r requirements.in
 django-environ==0.13.0
     # via -r requirements.in
@@ -138,6 +141,8 @@ mozilla-django-oidc==5.0.2
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
+packaging==26.2
+    # via django-csp
 parso==0.8.7
     # via jedi
 pexpect==4.9.0

@@ -9,6 +9,7 @@ import environ
 import saml2
 import saml2.saml
 import sentry_sdk
+from csp.constants import SELF, UNSAFE_INLINE
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -268,6 +269,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "csp",
     "rest_framework",
     "mozilla_django_oidc",
     "django_extensions",
@@ -294,6 +296,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "csp.middleware.CSPMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -337,6 +340,14 @@ NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = env.int(
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
+
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": [SELF],
+        "style-src": [SELF, UNSAFE_INLINE, "cdn.jsdelivr.net"],
+    }
+}
+
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = convert_to_django_4_2_csrf_trusted_origins(
     env.list("CSRF_TRUSTED_ORIGINS")
