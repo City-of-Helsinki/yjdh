@@ -389,6 +389,41 @@ const CompanySection: React.FC<Props> = ({
             handleQuietSave={handleQuietSave}
           />
         </$GridCell>
+        <$GridCell $colSpan={6}>
+          <SelectionGroup
+            id={`${fields.purchasedService.name}`}
+            label={fields.purchasedService.label}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(fields.purchasedService.name)}
+          >
+            <$RadioButton
+              id={`${fields.purchasedService.name}False`}
+              name={fields.purchasedService.name}
+              value="false"
+              label={t(
+                `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.PURCHASED_SERVICE}.no`
+              )}
+              onChange={() => {
+                formik.setFieldValue(fields.purchasedService.name, false);
+              }}
+              // 3 states: null (none is selected), true, false
+              checked={formik.values.purchasedService === false}
+            />
+            <$RadioButton
+              id={`${fields.purchasedService.name}True`}
+              name={fields.purchasedService.name}
+              value="true"
+              label={t(
+                `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.PURCHASED_SERVICE}.yes`
+              )}
+              onChange={() =>
+                formik.setFieldValue(fields.purchasedService.name, true)
+              }
+              checked={formik.values.purchasedService === true}
+            />
+          </SelectionGroup>
+        </$GridCell>
       </FormSection>
       <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>

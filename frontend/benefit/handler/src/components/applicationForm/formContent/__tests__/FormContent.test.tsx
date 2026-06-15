@@ -39,11 +39,14 @@ jest.mock('styled-components', () => {
     default: actual.default ?? actual,
     useTheme: () => ({
       spacing: {
+        xs: '4px',
         s: '8px',
+        m: '16px',
         l: '24px',
         xl: '32px',
       },
       colors: {
+        black50: '#808080',
         silver: '#dedfe1',
       },
     }),
@@ -73,6 +76,10 @@ jest.mock('../useFormContent', () => ({
         ? 'other financial support error'
         : fieldName === APPLICATION_FIELD_KEYS.ROLE_OF_EMPLOYEE_IN_ORGANIZATION
         ? 'role error'
+        : fieldName === APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED
+        ? 'other subsidised employed error'
+        : fieldName === APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_NUMBER
+        ? 'other subsidised number error'
         : undefined,
     displayPastApplicationDatesWarning: () => false,
     dateInputLimits: {
@@ -388,6 +395,8 @@ const createFormik = (
         otherExpenses: '',
       },
       otherFinancialSupportForEmployment: null,
+      otherSubsidisedEmployed: null,
+      otherSubsidisedNumber: null,
       roleOfEmployeeInOrganization: '',
       benefitType: BENEFIT_TYPES.SALARY,
       ...values,
@@ -426,6 +435,20 @@ const renderComponent = (
   return render(<FormContent {...defaultProps} {...props} />);
 };
 
+const getRadioByLabelAndName = (label: string, name: string): HTMLElement => {
+  const radio = screen
+    .getAllByRole('radio', { name: label })
+    .find((element) => element.getAttribute('name') === name);
+
+  if (!radio) {
+    throw new Error(
+      `Radio with label "${label}" and name "${name}" was not found`
+    );
+  }
+
+  return radio;
+};
+
 describe('FormContent new fields', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -437,11 +460,21 @@ describe('FormContent new fields', () => {
     expect(
       screen.getByText('otherFinancialSupportForEmployment.label')
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('common:utility.no')).toHaveAttribute(
+    expect(
+      getRadioByLabelAndName(
+        'common:utility.no',
+        APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
+      )
+    ).toHaveAttribute(
       'name',
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
     );
-    expect(screen.getByLabelText('common:utility.yes')).toHaveAttribute(
+    expect(
+      getRadioByLabelAndName(
+        'common:utility.yes',
+        APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
+      )
+    ).toHaveAttribute(
       'name',
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
     );
@@ -451,7 +484,12 @@ describe('FormContent new fields', () => {
     const formik = createFormik();
     renderComponent({ formik });
 
-    fireEvent.click(screen.getByLabelText('common:utility.no'));
+    fireEvent.click(
+      getRadioByLabelAndName(
+        'common:utility.no',
+        APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
+      )
+    );
 
     expect(formik.setFieldValue).toHaveBeenCalledWith(
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT,
@@ -463,12 +501,111 @@ describe('FormContent new fields', () => {
     const formik = createFormik();
     renderComponent({ formik });
 
-    fireEvent.click(screen.getByLabelText('common:utility.yes'));
+    fireEvent.click(
+      getRadioByLabelAndName(
+        'common:utility.yes',
+        APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT
+      )
+    );
 
     expect(formik.setFieldValue).toHaveBeenCalledWith(
       APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT,
       true
     );
+  });
+
+  it('renders otherSubsidisedEmployed radio group with no and yes options', () => {
+    renderComponent();
+
+    expect(
+      screen.getByText('otherSubsidisedEmployed.label')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('other subsidised employed error')
+    ).toBeInTheDocument();
+
+    expect(
+      getRadioByLabelAndName(
+        'common:utility.no',
+        APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED
+      )
+    ).toHaveAttribute('name', APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED);
+    expect(
+      getRadioByLabelAndName(
+        'common:utility.yes',
+        APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED
+      )
+    ).toHaveAttribute('name', APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED);
+  });
+
+  it('sets otherSubsidisedEmployed to true when yes is selected', () => {
+    const formik = createFormik();
+    renderComponent({ formik });
+
+    fireEvent.click(
+      getRadioByLabelAndName(
+        'common:utility.yes',
+        APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED
+      )
+    );
+
+    expect(formik.setFieldValue).toHaveBeenCalledWith(
+      APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED,
+      true
+    );
+  });
+
+  it('sets otherSubsidisedEmployed to false and clears otherSubsidisedNumber when no is selected', () => {
+    const formik = createFormik({
+      otherSubsidisedEmployed: true,
+      otherSubsidisedNumber: "12",
+    });
+    renderComponent({ formik });
+
+    fireEvent.click(
+      getRadioByLabelAndName(
+        'common:utility.no',
+        APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED
+      )
+    );
+
+    expect(formik.setFieldValue).toHaveBeenCalledWith(
+      APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED,
+      false
+    );
+    expect(formik.setFieldValue).toHaveBeenCalledWith(
+      APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_NUMBER,
+      null
+    );
+  });
+
+  it('renders otherSubsidisedNumber field when otherSubsidisedEmployed is true', () => {
+    renderComponent({
+      formik: createFormik({
+        otherSubsidisedEmployed: true,
+        otherSubsidisedNumber: '12',
+      }),
+    });
+
+    expect(screen.getByLabelText('otherSubsidisedNumber.label')).toHaveValue(
+      '12'
+    );
+    expect(
+      screen.getByText('other subsidised number error')
+    ).toBeInTheDocument();
+  });
+
+  it('does not render otherSubsidisedNumber field when otherSubsidisedEmployed is false', () => {
+    renderComponent({
+      formik: createFormik({
+        otherSubsidisedEmployed: false,
+        otherSubsidisedNumber: '12',
+      }),
+    });
+
+    expect(
+      screen.queryByLabelText('otherSubsidisedNumber.label')
+    ).not.toBeInTheDocument();
   });
 
   it('renders roleOfEmployeeInOrganization textarea with current value and error text', () => {

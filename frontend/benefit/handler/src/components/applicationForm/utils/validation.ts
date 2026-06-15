@@ -136,6 +136,9 @@ export const getValidationSchema = (
         })
       )
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELD_KEYS.PURCHASED_SERVICE]: Yup.boolean()
+      .nullable()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELD_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
       .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
       .max(
@@ -208,6 +211,19 @@ export const getValidationSchema = (
       Yup.string(),
     [APPLICATION_FIELD_KEYS.OTHER_FINANCIAL_SUPPORT_FOR_EMPLOYMENT]:
       Yup.boolean().nullable().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED]: Yup.boolean()
+      .nullable()
+      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+    [APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_NUMBER]: Yup.string()
+      .nullable()
+      .when(APPLICATION_FIELD_KEYS.OTHER_SUBSIDISED_EMPLOYED,
+      {
+        is: true,
+        then: Yup.string()
+          .matches(/^\d+$/, t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
+          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      }
+    ),
     [APPLICATION_FIELD_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),

@@ -350,6 +350,69 @@ const FormContent: React.FC<Props> = ({
             />
           </SelectionGroup>
         </$GridCell>
+        <$GridCell $colSpan={8}>
+          <SelectionGroup
+            id={fields.otherSubsidisedEmployed.name}
+            label={fields.otherSubsidisedEmployed.label}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(fields.otherSubsidisedEmployed.name)}
+          >
+            <$RadioButton
+              id={`${fields.otherSubsidisedEmployed.name}False`}
+              name={fields.otherSubsidisedEmployed.name}
+              value="false"
+              label={t('common:utility.no')}
+              onChange={() => {
+                formik.setFieldValue(
+                  fields.otherSubsidisedEmployed.name,
+                  false
+                );
+                formik.setFieldValue(
+                  fields.otherSubsidisedNumber.name,
+                  null
+                );
+              }}
+              checked={formik.values.otherSubsidisedEmployed === false}
+            />
+            <$RadioButton
+              id={`${fields.otherSubsidisedEmployed.name}True`}
+              name={fields.otherSubsidisedEmployed.name}
+              value="true"
+              label={t('common:utility.yes')}
+              onChange={() => {
+                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
+              }}
+              checked={formik.values.otherSubsidisedEmployed === true}
+            />
+          </SelectionGroup>
+          {formik.values.otherSubsidisedEmployed === true && (
+            <$GridCell
+              $colSpan={6}
+              css={`
+                margin-top: ${theme.spacing.s};
+                margin-bottom: ${theme.spacing.s};
+                border-left: ${theme.spacing.xs} solid ${theme.colors.black50};
+                padding-left: ${theme.spacing.m};
+              `}
+            >
+              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
+              <TextInput
+                id={fields.otherSubsidisedNumber.name}
+                name={fields.otherSubsidisedNumber.name}
+                label={fields.otherSubsidisedNumber.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.otherSubsidisedNumber ?? ''}
+                invalid={!!getErrorMessage(fields.otherSubsidisedNumber.name)}
+                aria-invalid={
+                  !!getErrorMessage(fields.otherSubsidisedNumber.name)
+                }
+                errorText={getErrorMessage(fields.otherSubsidisedNumber.name)}
+              />
+            </$GridCell>
+          )}
+        </$GridCell>
       </FormSection>
       <FormSection
         header={t(`${translationsBase}.headings.employment5Employment`)}
@@ -551,10 +614,7 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(
-                  fields.apprenticeshipProgram.name,
-                  false
-                );
+                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -566,10 +626,7 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                formik.setFieldValue(
-                  fields.apprenticeshipProgram.name,
-                  true
-                );
+                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />

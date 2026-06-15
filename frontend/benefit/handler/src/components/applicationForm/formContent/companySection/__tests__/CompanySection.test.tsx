@@ -69,6 +69,7 @@ const fields = {
   applicantLanguage: buildField('applicantLanguage'),
   companyNumberOfEmployees: buildField('companyNumberOfEmployees'),
   companyBusinessBrief: buildField('companyBusinessBrief'),
+  purchasedService: buildField(APPLICATION_FIELD_KEYS.PURCHASED_SERVICE),
   deMinimisAid: buildField(APPLICATION_FIELD_KEYS.DE_MINIMIS_AID),
   coOperationNegotiations: buildField(
     APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS
@@ -106,6 +107,7 @@ const buildFormik = (
       companyContactPersonLastName: '',
       companyContactPersonPhoneNumber: '',
       companyContactPersonEmail: '',
+      purchasedService: null,
       deMinimisAid: false,
       coOperationNegotiations: false,
       coOperationNegotiationsDescription: '',
@@ -298,6 +300,60 @@ describe('CompanySection', () => {
         'associationHasBusinessActivities',
         true
       );
+    });
+  });
+
+  describe('purchased service', () => {
+    it('renders purchased service radio group with no and yes options', () => {
+      renderSubject();
+
+      const group = screen.getByRole('group', {
+        name: /purchasedservice/i,
+      });
+
+      expect(group).toBeInTheDocument();
+      expect(within(group).getByRole('radio', { name: /ei/i })).toHaveAttribute(
+        'name',
+        APPLICATION_FIELD_KEYS.PURCHASED_SERVICE
+      );
+      expect(
+        within(group).getByRole('radio', { name: /kyllä/i })
+      ).toHaveAttribute('name', APPLICATION_FIELD_KEYS.PURCHASED_SERVICE);
+    });
+
+    it('calls setFieldValue when "No" is selected', async () => {
+      const { setFieldValue } = renderSubject({
+        formikOverrides: { purchasedService: true },
+      });
+
+      const group = screen.getByRole('group', {
+        name: /purchasedservice/i,
+      });
+      await userEvent.click(within(group).getByRole('radio', { name: /ei/i }));
+
+      expect(setFieldValue).toHaveBeenCalledWith(
+        APPLICATION_FIELD_KEYS.PURCHASED_SERVICE,
+        false
+      );
+    });
+
+    it('calls setFieldValue when "Yes" is selected', async () => {
+      const { setFieldValue, setDeMinimisAids } = renderSubject({
+        formikOverrides: { purchasedService: false },
+      });
+
+      const group = screen.getByRole('group', {
+        name: /purchasedservice/i,
+      });
+      await userEvent.click(
+        within(group).getByRole('radio', { name: /kyllä/i })
+      );
+
+      expect(setFieldValue).toHaveBeenCalledWith(
+        APPLICATION_FIELD_KEYS.PURCHASED_SERVICE,
+        true
+      );
+      expect(setDeMinimisAids).not.toHaveBeenCalled();
     });
   });
 
