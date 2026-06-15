@@ -55,7 +55,7 @@ const ThankYouPage: NextPage = () => {
     data: applications,
     isLoading: isApplicationsLoading,
     isFetching: isApplicationsFetching,
-  } = useApplicationsQuery(false);
+  } = useApplicationsQuery({ onlyMine: false });
   const draftApplication = applications?.find(
     (app) => app.status === 'draft' && app.is_mine
   );

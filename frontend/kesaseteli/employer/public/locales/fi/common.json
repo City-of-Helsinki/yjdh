@@ -54,7 +54,9 @@
       "ariaLabel": "Omat hakemukset -suodatin",
       "tooltipLabel": "Suodatin",
       "tooltipText": "Aktivoitu: Näytä vain omat hakemukset. Pois: Näytä kaikki organisaation puolesta tehdyt hakemukset.",
-      "tooltipButtonLabel": "Avaa hakemukset-suodattimen ohjeistus"
+      "tooltipButtonLabel": "Avaa hakemukset-suodattimen ohjeistus",
+      "yearFilterLabel": "Hae vuoden mukaan",
+      "yearFilterAll": "Kaikki vuodet"
     }
   },
   "application": {
@@ -282,5 +284,8 @@
     "instructions": "Pyydä organisaatiotasi myöntämään sinulle tarvittava valtuus Suomi.fi-palvelussa.",
     "linkText": "Lue lisää valtuuksista <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/\" target=\"_blank\">täältä</lnk>.",
     "logoutButton": "Kirjaudu ulos"
+  },
+  "utility": {
+    "pagination": "Sivut"
   }
 }

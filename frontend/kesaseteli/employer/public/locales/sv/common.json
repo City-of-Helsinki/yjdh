@@ -54,7 +54,9 @@
       "ariaLabel": "Filter för egna ansökningar",
       "tooltipLabel": "Filter",
       "tooltipText": "På: Visa bara mina ansökningar. Av: Visa organisationens ansökningar.",
-      "tooltipButtonLabel": "Öppna instruktioner för ansökningsfilter"
+      "tooltipButtonLabel": "Öppna instruktioner för ansökningsfilter",
+      "yearFilterLabel": "Filtrera enligt år",
+      "yearFilterAll": "Alla år"
     }
   },
   "application": {
@@ -282,5 +284,8 @@
     "instructions": "Be din organisation bevilja dig nödvändiga fullmakter i tjänsten Suomi.fi.",
     "linkText": "Läs mer om fullmakter <lnk href=\"https://nuorten.hel.fi/sv/studier-och-jobb/sommarsedeln/\" target=\"_blank\">här</lnk>.",
     "logoutButton": "Logga ut"
+  },
+  "utility": {
+    "pagination": "Sidor"
   }
 }

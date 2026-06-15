@@ -1,6 +1,5 @@
 import { IconPlus } from 'hds-react';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
-import { DashboardVoucher } from 'kesaseteli/employer/types/types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
@@ -51,18 +50,12 @@ const $ButtonContainer = styled.div`
 `;
 
 type Props = {
-  vouchers: DashboardVoucher[];
   draftApplicationId?: string;
-  showOnlyMine: boolean;
-  onToggleOnlyMine: () => void;
   organisationName?: string;
 };
 
 const Dashboard = ({
-  vouchers,
   draftApplicationId,
-  showOnlyMine,
-  onToggleOnlyMine,
   organisationName,
 }: Props): React.ReactElement => {
   const { t } = useTranslation('common');
@@ -130,12 +123,13 @@ const Dashboard = ({
           </Button>
         </$ButtonContainer>
       </$HeaderGrid>
-      <h2>{t('common:dashboard.previousApplications')}</h2>
-      <ApplicationTable
-        vouchers={vouchers}
-        showOnlyMine={showOnlyMine}
-        onToggleOnlyMine={onToggleOnlyMine}
-      />
+      <ApplicationTable itemsPerPage={15}>
+        <ApplicationTable.Header>
+          {t('common:dashboard.previousApplications')}
+        </ApplicationTable.Header>
+        <ApplicationTable.FilterBar />
+        <ApplicationTable.Table />
+      </ApplicationTable>
     </Container>
   ) as React.ReactElement;
 };
