@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.22.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.21.0...benefit-backend-v2.22.0) (2026-06-15)
+
+
+### Features
+
+* **benefit:** Backend changes for new terms ([3a7e31a](https://github.com/City-of-Helsinki/yjdh/commit/3a7e31a6d9b55bf400e94fb8682f923bb71cfe9a))
+
+
+### Dependencies
+
+* **kesaseteli,benefit,shared:** Update to django-resilient-logger 2.3.0 ([15a1b5f](https://github.com/City-of-Helsinki/yjdh/commit/15a1b5f92a75b7931f4f7a318d6aff4d6245f4e3))
+
 ## [2.21.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.20.1...benefit-backend-v2.21.0) (2026-06-12)
 
 
