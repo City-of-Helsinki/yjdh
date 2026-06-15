@@ -31,6 +31,9 @@ type ExtendedComponentProps = {
   textLocale: string;
   checkedArray: boolean[];
   applicantTermsInEffectUrl?: string;
+  applicantTerms2InEffectUrl?: string;
+  applicantTerms3InEffectUrl?: string;
+  applicantTerms4InEffectUrl?: string;
   applicantTermsInEffectMd?: string;
 };
 
@@ -160,11 +163,51 @@ const useApplicationFormStep6 = (
 
   const applicantTermsInEffectUrl = React.useMemo(() => {
     if (
-      application.applicantTermsInEffect &&
-      application.applicantTermsInEffect[`termsPdf${textLocale}` as TermsProp]
+      application.applicantTermsInEffect?.[
+        `termsPdf${textLocale}` as TermsProp
+      ]
     )
       return application.applicantTermsInEffect[
         `termsPdf${textLocale}` as TermsProp
+      ];
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    return undefined;
+  }, [application.applicantTermsInEffect, textLocale]);
+
+  const applicantTerms2InEffectUrl = React.useMemo(() => {
+    if (
+      application.applicantTermsInEffect?.[
+        `termsPdf2${textLocale}` as TermsProp
+      ]
+    )
+      return application.applicantTermsInEffect[
+        `termsPdf2${textLocale}` as TermsProp
+      ];
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    return undefined;
+  }, [application.applicantTermsInEffect, textLocale]);
+
+  const applicantTerms3InEffectUrl = React.useMemo(() => {
+    if (
+      application.applicantTermsInEffect?.[
+        `termsPdf3${textLocale}` as TermsProp
+      ]
+    )
+      return application.applicantTermsInEffect[
+        `termsPdf3${textLocale}` as TermsProp
+      ];
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    return undefined;
+  }, [application.applicantTermsInEffect, textLocale]);
+
+  const applicantTerms4InEffectUrl = React.useMemo(() => {
+    if (
+      application.applicantTermsInEffect?.[
+        `termsPdf4${textLocale}` as TermsProp
+      ]
+    )
+      return application.applicantTermsInEffect[
+        `termsPdf4${textLocale}` as TermsProp
       ];
     // eslint-disable-next-line unicorn/no-useless-undefined
     return undefined;
@@ -183,6 +226,9 @@ const useApplicationFormStep6 = (
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
+    applicantTerms2InEffectUrl,
+    applicantTerms3InEffectUrl,
+    applicantTerms4InEffectUrl,
     applicantTermsInEffectMd,
   };
 };

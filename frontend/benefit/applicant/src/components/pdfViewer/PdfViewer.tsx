@@ -54,7 +54,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ file, scale }) => {
             margin-bottom: ${theme.spacing.xl};
           `}
         >
-          <$GridCell>
+          <$GridCell $colSpan={2}>
             <Button
               disabled={currentPage === 1}
               theme={ButtonPresetTheme.Black}
@@ -64,12 +64,12 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ file, scale }) => {
               {t('common:pdfViewer.previous')}
             </Button>
           </$GridCell>
-          <$GridCell>
+          <$GridCell $colSpan={1}>
             <$ActionsWrapper>
               {`${t('common:pdfViewer.page')} ${currentPage} / ${pagesCount}`}
             </$ActionsWrapper>
           </$GridCell>
-          <$GridCell>
+          <$GridCell $colSpan={2}>
             <Button
               disabled={currentPage === pagesCount}
               theme={ButtonPresetTheme.Black}

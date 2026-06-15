@@ -462,6 +462,15 @@
       },
       "send": {
         "heading1": "Villkoren"
+      },
+      "applicantTerms": {
+        "explanation": "Sök Helsingforstillägget senast inom 4 månader från det att anställningsförhållandet inleddes. I fråga om ansökningar som kommit in efter tidsfristen kan stöd beviljas retroaktivt för högst 4 månader från den dag då ansökan kommit in.\nUtöver ansökan kontrollerar arbetsförmedlingen arbetsgivarens uppgifter från kommersiella databaser. Informationen som ska kontrolleras inkluderar till exempel eventuella sanktionslistor för arbetsgivaren och de ansvariga personerna samt organisationens ekonomiska situation.\nLäs igenom villkoren för Helsingforstillägget nedan. Du kan också ladda ner dem i pdf-format.",
+        "openTerms": {
+          "1": "Öppna villkor för beviljande av Helsingforstillägget som pdf-fil",
+          "2": "Öppna de allmänna villkoren för beviljande och utbetalning av Helsingforstillägg från och med 1 maj 2026 som pdf-fil",
+          "3": "Öppna etiska partnerskaps principer för samarbete med organisationer och bidragsverksamhet som pdf-fil",
+          "4": "Öppna Helsingfors stads allmänna anvisningar för bidrag pdf-fil"
+        }
       }
     },
     "errors": {

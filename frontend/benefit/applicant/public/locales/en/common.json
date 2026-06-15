@@ -462,6 +462,15 @@
       },
       "send": {
         "heading1": "Terms"
+      },
+      "applicantTerms": {
+        "explanation": "The Helsinki benefit must be applied for no later than within four (4) months of the start of the employment relationship. If the application is submitted after this deadline, the benefit can be granted retroactively for up to four (4) months from the arrival date of the application.\nIn addition to the application, the employment authority checks the employer's information from commercial databases. The information to be checked includes, for example, any sanctions list of the employer and the person responsible and the financial situation of the organization.\nPlease read the terms and conditions for the Helsinki benefit below. You can also download them in pdf format.",
+        "openTerms": {
+          "1": "Open the Helsinki benefit for employer conditions as a pdf file",
+          "2": "Open the preconditions of the Helsinki benefit from 1 May 2026 as a pdf file",
+          "3": "Open the ethical partnership principles for cooperation with organizations and grant activities as a pdf file",
+          "4": "Open the City of Helsinki's general guidelines for grants as a pdf file"
+        }
       }
     },
     "errors": {

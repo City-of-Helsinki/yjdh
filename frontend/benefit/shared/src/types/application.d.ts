@@ -136,6 +136,15 @@ export type ApplicantTerms = {
   termsMdEn?: string;
   termsMdFi?: string;
   termsMdSv?: string;
+  termsPdf2En?: string;
+  termsPdf2Fi?: string;
+  termsPdf2Sv?: string;
+  termsPdf3En?: string;
+  termsPdf3Fi?: string;
+  termsPdf3Sv?: string;
+  termsPdf4En?: string;
+  termsPdf4Fi?: string;
+  termsPdf4Sv?: string;
   termsType: ATTACHMENT_TYPES;
 };
 
@@ -642,7 +651,19 @@ export type ApplicationListItemData = {
 };
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';
-export type TermsProp = 'termsPdfFi' | 'termsPdfEn' | 'termsPdfSv';
+export type TermsProp =
+  | 'termsPdfFi'
+  | 'termsPdfEn'
+  | 'termsPdfSv'
+  | 'termsPdf2Fi'
+  | 'termsPdf2En'
+  | 'termsPdf2Sv'
+  | 'termsPdf3Fi'
+  | 'termsPdf3En'
+  | 'termsPdf3Sv'
+  | 'termsPdf4Fi'
+  | 'termsPdf4En'
+  | 'termsPdf4Sv';
 
 export type ApplicantConsentsData = {
   id: string;
@@ -656,6 +677,15 @@ export type TermsOfServiceInEffectData = {
   terms_pdf_fi: string;
   terms_pdf_en: string;
   terms_pdf_sv: string;
+  terms_pdf_2_fi?: string;
+  terms_pdf_2_en?: string;
+  terms_pdf_2_sv?: string;
+  terms_pdf_3_fi?: string;
+  terms_pdf_3_en?: string;
+  terms_pdf_3_sv?: string;
+  terms_pdf_4_fi?: string;
+  terms_pdf_4_en?: string;
+  terms_pdf_4_sv?: string;
   applicant_consents: ApplicantConsentsData[];
 };
 
@@ -680,6 +710,15 @@ export type TermsOfServiceInEffect = {
   termsPdfFi?: string;
   termsPdfEn?: string;
   termsPdfSv?: string;
+  termsPdf2Fi?: string;
+  termsPdf2En?: string;
+  termsPdf2Sv?: string;
+  termsPdf3Fi?: string;
+  termsPdf3En?: string;
+  termsPdf3Sv?: string;
+  termsPdf4Fi?: string;
+  termsPdf4En?: string;
+  termsPdf4Sv?: string;
   termsMdFi?: string;
   termsMdEn?: string;
   termsMdSv?: string;
