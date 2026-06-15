@@ -32,7 +32,9 @@ def test_get_mock_company(api_client):
 
     assert response.status_code == 200
 
-    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
+    company = Company.objects.first()
+    assert response.data["business_id"] == company.business_id
+    assert response.data["name"] == company.name
 
 
 @pytest.mark.django_db
