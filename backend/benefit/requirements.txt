@@ -205,9 +205,10 @@ pycparser==2.23
     # via cffi
 pycryptodome==3.23.0
     # via django-searchable-encrypted-fields
-pyjwt==2.12.0
+pyjwt==2.13.0
     # via
     #   django-auth-adfs
+    #   pyjwt
     #   social-auth-core
 pyopenssl==24.2.1
     # via pysaml2
