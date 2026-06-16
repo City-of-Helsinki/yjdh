@@ -11,6 +11,11 @@ jest.mock('kesaseteli/employer/hooks/backend/useApplicationsQuery', () =>
   jest.fn()
 );
 
+const mockPush = jest.fn();
+jest.mock('next/router', () => ({
+  useRouter: () => ({ push: mockPush }),
+}));
+
 const mockApplications: Application[] = [
   {
     id: 'app1',
@@ -72,6 +77,10 @@ describe('ApplicationTable', () => {
     expect(screen.getByText('Kesäsetelin sarjanumero')).toBeInTheDocument();
     expect(screen.getByText('Viimeksi päivitetty')).toBeInTheDocument();
     expect(screen.getByText('Tila')).toBeInTheDocument();
+    // empty message row should span all 5 columns
+    expect(
+      screen.getByRole('cell', { name: /ei aiempia hakemuksia/i })
+    ).toHaveAttribute('colspan', '5');
   });
 
   it('renders voucher data correctly', () => {
@@ -154,5 +163,26 @@ describe('ApplicationTable', () => {
         await screen.findByRole('option', { name: String(year) })
       ).toBeInTheDocument();
     }
+  });
+
+  it('renders edit button for draft applications and navigates when clicked', async () => {
+    renderWithTheme(mockApplications);
+
+    const user = userEvent.setup();
+    // Only the draft application (app2) should have an edit button
+    const editButton = screen.getByRole('button', {
+      name: /muokkaa hakemusta: matti meikäläinen/i,
+    });
+    expect(editButton).toBeInTheDocument();
+
+    // submitted application (app1) should NOT have an edit button
+    expect(
+      screen.queryByRole('button', { name: /muokkaa hakemusta: testi teppo/i })
+    ).not.toBeInTheDocument();
+
+    await user.click(editButton);
+    expect(mockPush).toHaveBeenCalledWith(
+      expect.stringContaining('/application?id=app2')
+    );
   });
 });

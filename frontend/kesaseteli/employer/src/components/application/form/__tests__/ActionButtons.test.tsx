@@ -57,13 +57,28 @@ jest.mock('shared/hooks/useGoToPage', () => jest.fn());
 jest.mock('shared/hooks/useLeaveConfirm', () => ({
   setLeaveConfirmBypassed: jest.fn(),
 }));
+jest.mock('react-query', () => ({
+  ...jest.requireActual('react-query'),
+  useQueryClient: () => ({ invalidateQueries: jest.fn() }),
+}));
+jest.mock('kesaseteli/employer/utils/localstorage.utils', () => ({
+  clearLocalStorage: jest.fn(),
+}));
+jest.mock('kesaseteli/employer/services/ApplicationPersistenceService', () => ({
+  __esModule: true,
+  default: { clearAll: jest.fn() },
+}));
 
 const getActionButtons = (): {
   cancelButton: HTMLElement;
+  deleteButton: HTMLElement;
   nextButton: HTMLElement;
 } => ({
   cancelButton: screen.getByRole('button', {
     name: /keskeytä/i,
+  }),
+  deleteButton: screen.getByRole('button', {
+    name: /poista/i,
   }),
   nextButton: screen.getByRole('button', {
     name: /tallenna ja jatka|lähetä hakemus/i,
@@ -105,6 +120,7 @@ describe('ActionButtons', () => {
   ): {
     user: ReturnType<typeof userEvent.setup>;
     cancelButton: HTMLElement;
+    deleteButton: HTMLElement;
     nextButton: HTMLElement;
   } => {
     const user = userEvent.setup();
@@ -120,6 +136,7 @@ describe('ActionButtons', () => {
   }: TestSetupOptions = {}): {
     user: ReturnType<typeof userEvent.setup>;
     cancelButton: HTMLElement;
+    deleteButton: HTMLElement;
     nextButton: HTMLElement;
   } => {
     (useFormContext as jest.Mock).mockReturnValue(
@@ -164,15 +181,30 @@ describe('ActionButtons', () => {
     expect(mockGoToPage).not.toHaveBeenCalled();
   });
 
-  it('deletes application and navigates away when user confirms cancel', async () => {
+  it('navigates to dashboard without deleting when user confirms cancel', async () => {
+    mockConfirm.mockResolvedValue(true);
+
+    const { user, cancelButton } = setupActionButtons();
+
+    await user.click(cancelButton);
+
+    await waitFor(() => {
+      expect(mockGoToPage).toHaveBeenCalledWith('/');
+    });
+
+    expect(mockDeleteApplication).not.toHaveBeenCalled();
+    expect(setLeaveConfirmBypassed).toHaveBeenCalledWith(true);
+  });
+
+  it('deletes application and navigates when user confirms delete', async () => {
     mockConfirm.mockResolvedValue(true);
     mockDeleteApplication.mockImplementation((onSuccess: () => void) => {
       onSuccess();
     });
 
-    const { user, cancelButton } = setupActionButtons();
+    const { user, deleteButton } = setupActionButtons();
 
-    await user.click(cancelButton);
+    await user.click(deleteButton);
 
     await waitFor(() => {
       expect(mockDeleteApplication).toHaveBeenCalledTimes(1);
@@ -180,6 +212,21 @@ describe('ActionButtons', () => {
 
     expect(setLeaveConfirmBypassed).toHaveBeenCalledWith(true);
     expect(mockGoToPage).toHaveBeenCalledWith('/');
+  });
+
+  it('does not delete application when user declines delete confirmation', async () => {
+    mockConfirm.mockResolvedValue(false);
+
+    const { user, deleteButton } = setupActionButtons();
+
+    await user.click(deleteButton);
+
+    await waitFor(() => {
+      expect(mockConfirm).toHaveBeenCalled();
+    });
+
+    expect(mockDeleteApplication).not.toHaveBeenCalled();
+    expect(mockGoToPage).not.toHaveBeenCalled();
   });
 
   it('clears step history when form submission is invalid', async () => {
