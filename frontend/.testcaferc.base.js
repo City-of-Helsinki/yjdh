@@ -76,6 +76,21 @@ module.exports = (envPath) => {
     clientScripts: [
       { module: '@testing-library/dom/dist/@testing-library/dom.umd.js' },
       path.join(__dirname, 'testcafeClientErrorHandler.js'),
+      ...(envPath && envPath.includes('kesaseteli')
+        ? [
+            {
+              content: `
+                const consent = {
+                  groups: {
+                    shared: { checksum: '469450fd', timestamp: Date.now() },
+                    statistics: { checksum: 'bb93b63a', timestamp: Date.now() }
+                  }
+                };
+                document.cookie = 'helfi-cookie-consents=' + encodeURIComponent(JSON.stringify(consent)) + '; path=/;';
+              `,
+            },
+          ]
+        : []),
     ],
     screenshots: {
       takeOnFails: true,
