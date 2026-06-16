@@ -2,11 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, reverse_lazy
 from django.views.generic import RedirectView
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
+from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
 
 from applications.api.handler_excel_views import (
@@ -15,6 +11,7 @@ from applications.api.handler_excel_views import (
 )
 from applications.api.v1 import views as application_views
 from applications.views import EmployerExcelDownloadPageView
+from common.openapi_views import KesaseteliRedocView, KesaseteliSwaggerView
 from common.views import healthz, readiness
 from companies.api.v1.views import GetCompanyView
 from shared.suomi_fi.views import (
@@ -72,12 +69,12 @@ urlpatterns = [
     path("openapi/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api_docs/swagger/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
+        KesaseteliSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
         "api_docs/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
+        KesaseteliRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
 ]
