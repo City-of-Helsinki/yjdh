@@ -89,7 +89,11 @@ const useResetApplicationFormValuesEffect = ({
       applicationQuery.data
     ) as Application;
     const vouchers = ensureVoucherExists(application.summer_vouchers ?? []);
-    application.summer_vouchers = vouchers;
+    // The UI only displays and edits the last voucher (vouchers[length - 1]).
+    // Historical applications may have multiple vouchers, but sending them all
+    // in PUT requests causes backend validation errors on the stale ones.
+    // Keep only the last voucher so the payload matches what the user is editing.
+    application.summer_vouchers = [vouchers[vouchers.length - 1]];
 
     // Comparison Hierarchy:
     // 1. On Initial Load (isDirty === false): We trust (Server Data + SessionStorage Data).
