@@ -50,7 +50,7 @@ export const $ApplicationDetailRow = styled.div<$ApplicationDetailRowProps>`
     ${(props: $ApplicationDetailRowProps) => props.theme.spacing.xl} / 2
   );
   align-items: ${(props: $ApplicationDetailRowProps) =>
-    props.$alignItems ? props.$alignItems : 'flex-start'};
+    props.$alignItems || 'flex-start'};
   flex-flow: column wrap;
 
   // Could not figure out syntax to use respondAbove('xs') with props :(

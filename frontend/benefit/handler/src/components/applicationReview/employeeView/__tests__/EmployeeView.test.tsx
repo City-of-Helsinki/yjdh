@@ -32,7 +32,9 @@ describe('EmployeeView', () => {
   });
 
   it('opens archive search page with application number', async () => {
-    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = jest
+      .spyOn(globalThis, 'open')
+      .mockImplementation(() => null);
 
     const user = setupUserAndRender(() => {
       getComponent();

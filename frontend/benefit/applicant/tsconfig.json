@@ -2,6 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../../",
+    "types": [
+      "jest",
+      "@testing-library/jest-dom"
+    ],
     "paths": {
       "benefit/applicant/*": ["benefit/applicant/src/*"],
       "benefit-shared/*": ["benefit/shared/src/*"],
@@ -10,6 +14,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "**/*.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "../../shared/src/types/*.d.ts",

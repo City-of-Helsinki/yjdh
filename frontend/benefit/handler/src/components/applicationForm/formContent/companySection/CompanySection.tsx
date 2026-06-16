@@ -5,7 +5,10 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
-import { ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
+import {
+  ApplicationData,
+  DeMinimisAid,
+} from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import {
   IconCheckCircleFill,
@@ -267,7 +270,7 @@ const CompanySection: React.FC<Props> = ({
               const value =
                 fields.companyBankAccountNumber.mask?.stripVal(initValue) ??
                 initValue;
-              return formik.setFieldValue(
+              void formik.setFieldValue(
                 fields.companyBankAccountNumber.name,
                 value
               );
@@ -315,7 +318,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
                 )}
                 onChange={() => {
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     false
                   );
@@ -333,7 +336,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
                 )}
                 onChange={() =>
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     true
                   )
@@ -353,9 +356,9 @@ const CompanySection: React.FC<Props> = ({
             label={fields.companyNumberOfEmployees.label}
             onBlur={formik.handleBlur}
             onChange={(event) => {
-              formik.setFieldValue(
+              void formik.setFieldValue(
                 fields.companyNumberOfEmployees.name,
-                event.target.value.replace(/\D/g, '')
+                event.target.value.replaceAll(/\D/g, '')
               );
             }}
             value={String(formik.values.companyNumberOfEmployees ?? '')}
@@ -405,7 +408,7 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.PURCHASED_SERVICE}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.purchasedService.name, false);
+                void formik.setFieldValue(fields.purchasedService.name, false);
               }}
               // 3 states: null (none is selected), true, false
               checked={formik.values.purchasedService === false}
@@ -548,7 +551,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.DE_MINIMIS_AID}.no`
                 )}
                 onChange={() => {
-                  formik.setFieldValue(fields.deMinimisAid.name, false);
+                  void formik.setFieldValue(fields.deMinimisAid.name, false);
                   setDeMinimisAids([]);
                 }}
                 // 3 states: null (none is selected), true, false
@@ -562,7 +565,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.DE_MINIMIS_AID}.yes`
                 )}
                 onChange={() =>
-                  formik.setFieldValue(fields.deMinimisAid.name, true)
+                  void formik.setFieldValue(fields.deMinimisAid.name, true)
                 }
                 checked={formik.values.deMinimisAid === true}
               />
@@ -594,11 +597,11 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.coOperationNegotiations.name,
                   false
                 );
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
                   ''
                 );
@@ -613,7 +616,10 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
               onChange={() =>
-                formik.setFieldValue(fields.coOperationNegotiations.name, true)
+                void formik.setFieldValue(
+                  fields.coOperationNegotiations.name,
+                  true
+                )
               }
               checked={formik.values.coOperationNegotiations === true}
             />

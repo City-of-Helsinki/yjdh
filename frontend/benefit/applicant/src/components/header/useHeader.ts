@@ -34,7 +34,7 @@ const isTabActive = (pathname: string): boolean => {
     const stripLocale = (path: string): string =>
       path.replace(/\/(fi|en|sv)/, '') || '/';
     const pathnameWithoutLocale = stripLocale(pathname);
-    const locationWithoutLocale = stripLocale(window.location.pathname);
+    const locationWithoutLocale = stripLocale(globalThis.location.pathname);
     if (locationWithoutLocale === '/' && pathnameWithoutLocale === '/') {
       return true;
     }

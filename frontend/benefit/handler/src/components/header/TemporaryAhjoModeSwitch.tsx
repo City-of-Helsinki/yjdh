@@ -11,18 +11,18 @@ const toggleNewAhjoMode = (isNewMode: boolean): void => {
   // eslint-disable-next-line no-alert
   const confirm = isNewMode
     ? // eslint-disable-next-line no-alert
-      window.confirm(
+      globalThis.confirm(
         'Haluatko palata vanhaan koontipohjaiseen käyttöliittymään?'
       )
     : // eslint-disable-next-line no-alert
-      window.confirm('Ota Ahjo-integraation käyttöliittymä käyttöön?');
+      globalThis.confirm('Ota Ahjo-integraation käyttöliittymä käyttöön?');
   if (!confirm) return;
-  if (!isNewMode) {
-    setLocalStorageItem('newAhjoMode', '1');
-  } else {
+  if (isNewMode) {
     removeLocalStorageItem('newAhjoMode');
+  } else {
+    setLocalStorageItem('newAhjoMode', '1');
   }
-  window.location.reload();
+  globalThis.location.reload();
 };
 
 const TemporaryAhjoModeSwitch: React.FC = () => {

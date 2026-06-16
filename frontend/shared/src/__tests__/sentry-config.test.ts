@@ -50,7 +50,7 @@ describe('sentryConfig', () => {
   it('should ignore errors with matching URL and status code 0', () => {
     sentryConfig([{ url: '/oidc/userinfo', status: 0 }]);
     const initSpy = Sentry.init as jest.Mock;
-    const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+    const lastCall = initSpy.mock.calls.at(-1);
     const config = lastCall?.[0] as Sentry.BrowserOptions;
     const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -81,7 +81,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors matching status code if URL is not specified in the ignore rule', () => {
       sentryConfig([{ status: 401 }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -99,7 +99,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors when status code and error message are not specified in the ignore rule (matching URL only)', () => {
       sentryConfig([{ url: '/oidc/userinfo' }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -117,7 +117,7 @@ describe('sentryConfig', () => {
     it('should ignore errors when the URL string matches as a substring (in the middle of a URL)', () => {
       sentryConfig([{ url: '/oidc/userinfo', status: 401 }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -137,7 +137,7 @@ describe('sentryConfig', () => {
     it('should ignore errors when status matches error status code and URL matches', () => {
       sentryConfig([{ url: '/custom-url', status: 403 }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -155,7 +155,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors when error message is specified in the ignore rule but URL is not specified', () => {
       sentryConfig([{ errorMessage: 'timeout' }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -170,7 +170,7 @@ describe('sentryConfig', () => {
     it('should ignore errors when error message contains specified errorMessage and URL matches', () => {
       sentryConfig([{ url: '/oidc/userinfo', errorMessage: 'timeout' }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -188,7 +188,7 @@ describe('sentryConfig', () => {
     it('should ignore errors when url matches specified RegExp and status matches', () => {
       sentryConfig([{ url: /\/oidc\/userinfo.*/, status: 401 }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -206,7 +206,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors when url does not match specified RegExp even if status matches', () => {
       sentryConfig([{ url: /\/oidc\/userinfo$/, status: 401 }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -224,7 +224,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors when error message does not contain specified errorMessage even if URL matches RegExp', () => {
       sentryConfig([{ url: /\/oidc\/userinfo.*/, errorMessage: 'timeout' }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -242,7 +242,7 @@ describe('sentryConfig', () => {
     it('should ignore errors when error message contains specified errorMessage and URL matches RegExp', () => {
       sentryConfig([{ url: /\/oidc\/userinfo.*/, errorMessage: 'timeout' }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -260,7 +260,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors when error message does not contain specified errorMessage even if URL matches', () => {
       sentryConfig([{ url: '/oidc/userinfo', errorMessage: 'timeout' }]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -282,7 +282,7 @@ describe('sentryConfig', () => {
         { url: '/api/v1', status: 502, errorMessage: 'Bad Gateway' },
       ]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -305,7 +305,7 @@ describe('sentryConfig', () => {
         { url: '/api/v1', status: 502, errorMessage: 'Bad Gateway' },
       ]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 
@@ -324,7 +324,7 @@ describe('sentryConfig', () => {
     it('should NOT ignore errors when rule has no properties defined', () => {
       sentryConfig([{}]);
       const initSpy = Sentry.init as jest.Mock;
-      const lastCall = initSpy.mock.calls[initSpy.mock.calls.length - 1];
+      const lastCall = initSpy.mock.calls.at(-1);
       const config = lastCall?.[0] as Sentry.BrowserOptions;
       const customBeforeSend = config.beforeSend as typeof beforeSend;
 

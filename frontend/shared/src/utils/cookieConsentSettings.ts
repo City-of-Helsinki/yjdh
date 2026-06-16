@@ -160,8 +160,8 @@ const getSiteNameMap = (
 };
 
 const getCurrentPageHostName = (app: CookieConsentApp): string => {
-  if (typeof window !== 'undefined' && window.location?.hostname) {
-    return window.location.hostname;
+  if (globalThis.window !== undefined && globalThis.location?.hostname) {
+    return globalThis.location.hostname;
   }
 
   // SSR cannot read window.location, so use the app's canonical host here.

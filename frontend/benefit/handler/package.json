@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@types/dompurify": "^3.2.0",
-    "eslint-config-adjunct": "^4.11.1",
+    "eslint-config-adjunct": "4.11.1",
     "typescript": "^5.9.3"
   }
 }

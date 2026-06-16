@@ -127,7 +127,7 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
             (option) => getOptionValue(option) === selectedOption.value
           )
         )
-        .filter((option): option is O => Boolean(option)),
+        .filter(Boolean),
     [getOptionValue, options]
   );
 

@@ -24,7 +24,7 @@ type IconType = {
 export const $IconWrapper = styled.span<IconType>`
   svg {
     margin-left: ${(props: IconType) =>
-      !props.$isBeginning ? props.theme.spacing.xs2 : 0};
+      props.$isBeginning ? 0 : props.theme.spacing.xs2};
     margin-right: ${(props: IconType) =>
       props.$isBeginning ? props.theme.spacing.xs2 : 0};
     position: relative;

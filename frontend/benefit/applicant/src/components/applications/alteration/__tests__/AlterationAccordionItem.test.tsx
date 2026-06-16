@@ -215,7 +215,7 @@ describe('AlterationAccordionItem', () => {
     await screen.findByRole('button', { name: /peruuta/i });
 
     const deleteButtons = screen.getAllByRole('button', { name: /poista/i });
-    await user.click(deleteButtons[deleteButtons.length - 1]);
+    await user.click(deleteButtons.at(-1));
 
     expect(mockMutate).toHaveBeenCalledWith(
       { id: String(baseAlteration.id), applicationId: baseApplication.id },
@@ -254,7 +254,7 @@ describe('AlterationAccordionItem', () => {
     await screen.findByRole('button', { name: /peruuta/i });
 
     const deleteButtons = screen.getAllByRole('button', { name: /poista/i });
-    await user.click(deleteButtons[deleteButtons.length - 1]);
+    await user.click(deleteButtons.at(-1));
 
     const callbacks = mockMutate.mock.calls[0][1];
     callbacks.onError({ response: { data: '<html>error</html>' } });

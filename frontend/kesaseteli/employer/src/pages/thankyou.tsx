@@ -104,7 +104,7 @@ const ThankYouPage: NextPage = () => {
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
     const vouchers = applicationQuery.data?.summer_vouchers || [];
-    const lastVoucher = vouchers[vouchers.length - 1];
+    const lastVoucher = vouchers.at(-1);
     const employeeName = lastVoucher?.employee_name || '';
     if (applicationId && application.status === 'draft') {
       goToPage(`/application?id=${applicationId}`, 'replace');

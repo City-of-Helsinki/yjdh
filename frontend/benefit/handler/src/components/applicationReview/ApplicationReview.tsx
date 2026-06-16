@@ -93,7 +93,7 @@ const ApplicationReview: React.FC = () => {
 
   const renderMainContent = (): React.ReactNode => {
     switch (stepState.activeStepIndex) {
-      case 0:
+      case 0: {
         return (
           <ApplicationReviewStep1
             application={application}
@@ -103,15 +103,19 @@ const ApplicationReview: React.FC = () => {
             isRecalculationRequired={isRecalculationRequired}
           />
         );
+      }
 
-      case 1:
+      case 1: {
         return <ApplicationReviewStep2 application={application} />;
+      }
 
-      case 2:
+      case 2: {
         return <ApplicationReviewStep3 application={application} />;
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   };
 

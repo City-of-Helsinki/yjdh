@@ -4,7 +4,7 @@ import {
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import TestController, { ClientFunction } from 'testcafe';
 
-const goBack = ClientFunction(() => window.history.back());
+const goBack = ClientFunction(() => globalThis.history.back());
 
 export const getFrontendUrl = (path = ''): string =>
   getUrl(process.env.YOUTH_URL ?? 'https://localhost:3100', path);

@@ -263,8 +263,7 @@ TableProps<D>): React.ReactElement => {
       autoResetFilters: !skipPageResetRef.current,
       autoResetExpanded: !skipPageResetRef.current,
       getRowId: useCallback(
-        (row: D, relativeIndex: number) =>
-          row.id ? row.id : `${relativeIndex}`,
+        (row: D, relativeIndex: number) => row.id || `${relativeIndex}`,
         []
       ),
     },

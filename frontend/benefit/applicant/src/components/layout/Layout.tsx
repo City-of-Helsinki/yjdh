@@ -22,17 +22,21 @@ type Props = { children: React.ReactNode };
 
 const selectBgColor = (pathname: string): keyof DefaultTheme['colors'] => {
   switch (pathname) {
-    case ROUTES.LOGIN:
+    case ROUTES.LOGIN: {
       return theme.colors.silverLight as keyof DefaultTheme['colors'];
+    }
 
-    case ROUTES.HOME:
+    case ROUTES.HOME: {
       return theme.colors.silverLight as keyof DefaultTheme['colors'];
+    }
 
-    case ROUTES.DECISIONS:
+    case ROUTES.DECISIONS: {
       return theme.colors.silverLight as keyof DefaultTheme['colors'];
+    }
 
-    default:
+    default: {
       return theme.colors.white as keyof DefaultTheme['colors'];
+    }
   }
 };
 

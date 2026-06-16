@@ -53,10 +53,10 @@ const NotificationView: React.FC<Props> = ({ data }) => {
       <$Notification>
         <$Grid>
           <$GridCell $colSpan={2}>
-            {translationKey !== 'error' ? (
-              <$IconCheckCircle size={IconSize.ExtraLarge} />
-            ) : (
+            {translationKey === 'error' ? (
               <$IconAlertCircle size={IconSize.ExtraLarge} />
+            ) : (
+              <$IconCheckCircle size={IconSize.ExtraLarge} />
             )}
           </$GridCell>
           <$GridCell $colSpan={10}>

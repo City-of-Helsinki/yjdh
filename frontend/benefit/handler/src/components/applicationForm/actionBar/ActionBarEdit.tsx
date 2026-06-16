@@ -85,7 +85,7 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
                   const alert =
                     formik.dirty &&
                     // eslint-disable-next-line no-alert
-                    !window.confirm(
+                    !globalThis.confirm(
                       t(
                         'common:applications.actions.backWithoutSavingDescription'
                       )

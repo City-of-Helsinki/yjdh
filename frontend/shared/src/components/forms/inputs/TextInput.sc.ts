@@ -10,5 +10,5 @@ export const $TextInput = styled(TextInput)<
   NumberInputProps | TextInputProps | TextAreaProps
 >`
   ${(props) =>
-    !props.errorText ? `margin-bottom: ${props.theme.spacing.m};` : ''}
+    props.errorText ? '' : `margin-bottom: ${props.theme.spacing.m};`}
 `;

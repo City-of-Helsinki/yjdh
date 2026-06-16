@@ -15,47 +15,54 @@ const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
   const label = t(`common:applications.statuses.${status}`);
 
   switch (status) {
-    case 'accepted':
+    case 'accepted': {
       return (
         <StatusLabel type="success" iconStart={<IconCheckCircle aria-hidden />}>
           {label}
         </StatusLabel>
       );
+    }
 
-    case 'rejected':
+    case 'rejected': {
       return (
         <StatusLabel type="error" iconStart={<IconAlertCircle aria-hidden />}>
           {label}
         </StatusLabel>
       );
+    }
 
     case 'submitted':
-    case 'additional_information_provided':
+    case 'additional_information_provided': {
       return (
         <StatusLabel type="alert" iconStart={<IconClock aria-hidden />}>
           {label}
         </StatusLabel>
       );
+    }
 
-    case 'additional_information_requested':
+    case 'additional_information_requested': {
       return (
         <StatusLabel type="info" iconStart={<IconAlertCircle aria-hidden />}>
           {label}
         </StatusLabel>
       );
+    }
 
-    case 'draft':
+    case 'draft': {
       return (
         <StatusLabel iconStart={<IconPen aria-hidden />}>{label}</StatusLabel>
       );
+    }
 
-    case 'deleted_by_customer':
+    case 'deleted_by_customer': {
       return (
         <StatusLabel iconStart={<IconTrash aria-hidden />}>{label}</StatusLabel>
       );
+    }
 
-    default:
+    default: {
       return <StatusLabel>{label}</StatusLabel>;
+    }
   }
 };
 

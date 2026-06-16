@@ -106,7 +106,7 @@ describe('ApplicationFormStep4', () => {
   it('opens employee consent pdf when print button is clicked', async () => {
     const focus = jest.fn();
     const openSpy = jest
-      .spyOn(window, 'open')
+      .spyOn(globalThis, 'open')
       .mockReturnValue({ focus } as unknown as Window);
     const user = setupUserAndRender(() => {
       renderStep4();
@@ -129,7 +129,7 @@ describe('ApplicationFormStep4', () => {
     const handleRemoveAttachment = jest.fn();
     const focus = jest.fn();
     const openSpy = jest
-      .spyOn(window, 'open')
+      .spyOn(globalThis, 'open')
       .mockReturnValue({ focus } as unknown as Window);
     mockHookWithAttachment({ handleRemoveAttachment });
     const user = setupUserAndRender(() => {

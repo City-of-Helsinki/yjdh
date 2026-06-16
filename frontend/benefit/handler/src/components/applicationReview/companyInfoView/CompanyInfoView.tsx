@@ -109,14 +109,14 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`${translationsBase}.fields.companyBusinessBrief`)}
         </$ViewFieldBold>
         <$ViewField>
-          {!data.companyBusinessBrief ? (
-            '-'
-          ) : (
+          {data.companyBusinessBrief ? (
             <>
               {data.companyBusinessBrief.split(/\n+/g).map((paragraph: string) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </>
+          ) : (
+            '-'
           )}
         </$ViewField>
       </$GridCell>

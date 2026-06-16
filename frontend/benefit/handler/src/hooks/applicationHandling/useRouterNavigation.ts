@@ -33,26 +33,33 @@ export const useRouterNavigation = (
     }
 
     switch (status) {
-      case APPLICATION_STATUSES.DRAFT:
+      case APPLICATION_STATUSES.DRAFT: {
         return APPLICATION_LIST_TABS.DRAFT;
+      }
 
-      case APPLICATION_STATUSES.RECEIVED:
+      case APPLICATION_STATUSES.RECEIVED: {
         return APPLICATION_LIST_TABS.RECEIVED;
+      }
 
-      case APPLICATION_STATUSES.HANDLING:
+      case APPLICATION_STATUSES.HANDLING: {
         return APPLICATION_LIST_TABS.HANDLING;
+      }
 
-      case APPLICATION_STATUSES.INFO_REQUIRED:
+      case APPLICATION_STATUSES.INFO_REQUIRED: {
         return APPLICATION_LIST_TABS.HANDLING;
+      }
 
-      case APPLICATION_STATUSES.ACCEPTED:
+      case APPLICATION_STATUSES.ACCEPTED: {
         return APPLICATION_LIST_TABS.ACCEPTED;
+      }
 
-      case APPLICATION_STATUSES.REJECTED:
+      case APPLICATION_STATUSES.REJECTED: {
         return APPLICATION_LIST_TABS.REJECTED;
+      }
 
-      default:
+      default: {
         return 0;
+      }
     }
   }, [status, batchStatus, router.query]);
 

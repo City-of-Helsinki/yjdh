@@ -44,7 +44,7 @@
     "ts-node": "^10.0.0"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
+    "eslint-config-adjunct": "4.11.1",
     "typescript": "^5.9.3"
   }
 }

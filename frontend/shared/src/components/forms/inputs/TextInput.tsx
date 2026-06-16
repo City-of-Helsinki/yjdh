@@ -24,15 +24,17 @@ const getComponentType = <T extends FieldValues>(
 ): typeof HdsTextInput | typeof HdsNumberInput | typeof HdsTextArea => {
   switch (type) {
     case 'number':
-    case 'decimal':
+    case 'decimal': {
       return HdsNumberInput;
+    }
 
-    case 'textArea':
+    case 'textArea': {
       return HdsTextArea;
+    }
 
-    case 'text':
-    default:
+    default: {
       return HdsTextInput;
+    }
   }
 };
 

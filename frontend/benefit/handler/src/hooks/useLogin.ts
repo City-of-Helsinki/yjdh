@@ -10,8 +10,10 @@ const REDIRECT_FIELD_NAME = 'next';
 const useLogin = (): (() => Promise<boolean>) => {
   const router = useRouter();
   return React.useCallback(() => {
-    const nextUrl = encodeURIComponent(window.location.origin);
-    const loginUrl = `${getBackendUrl(BackendEndpoint.OAUTH_LOGIN)}?${REDIRECT_FIELD_NAME}=${nextUrl}`;
+    const nextUrl = encodeURIComponent(globalThis.location.origin);
+    const loginUrl = `${getBackendUrl(
+      BackendEndpoint.OAUTH_LOGIN
+    )}?${REDIRECT_FIELD_NAME}=${nextUrl}`;
     return router.push(loginUrl);
   }, [router]);
 };

@@ -7,5 +7,5 @@ type $DropdownWrapperProps = {
 
 export const $DropdownWrapper = styled.div<$DropdownWrapperProps>`
   ${(props: $DropdownWrapperProps) =>
-    !props.errorText ? `margin-bottom: ${props.theme.spacing.m};` : ''}
+    props.errorText ? '' : `margin-bottom: ${props.theme.spacing.m};`}
 `;

@@ -7,7 +7,11 @@ import {
   APPLICATION_FIELDS_STEP1_KEYS,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { Application, ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
+import {
+  Application,
+  ApplicationData,
+  DeMinimisAid,
+} from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import { FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
@@ -97,7 +101,7 @@ const createFormFields = (
   const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
       format: 'FI99 9999 9999 9999 99',
-      stripVal: (val: string) => val.replace(/\s/g, ''),
+      stripVal: (val: string) => val.replaceAll(/\s/g, ''),
     },
   };
 
@@ -158,6 +162,7 @@ const useFormikInstance = (
       formik
         .setFieldValue('attachments', application.attachments)
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.error('Failed to update attachments:', error);
         });
     }
@@ -289,7 +294,7 @@ const useApplicationFormStep1 = (
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
-    setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
+    void setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
   }, [setDeMinimisAids, setFieldValue]);
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(

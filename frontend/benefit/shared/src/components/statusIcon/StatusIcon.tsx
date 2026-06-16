@@ -15,36 +15,44 @@ type Props = {
 const StatusIcon = ({ status }: Props): JSX.Element => {
   let Component: React.ElementType | null = null;
   switch (status) {
-    case APPLICATION_STATUSES.DRAFT:
+    case APPLICATION_STATUSES.DRAFT: {
       Component = () => <span />;
       break;
+    }
 
-    case APPLICATION_STATUSES.INFO_REQUIRED:
+    case APPLICATION_STATUSES.INFO_REQUIRED: {
       Component = IconAlertCircleFill;
       break;
+    }
 
-    case APPLICATION_STATUSES.RECEIVED:
+    case APPLICATION_STATUSES.RECEIVED: {
       Component = IconCheckCircle;
       break;
+    }
 
-    case APPLICATION_STATUSES.ACCEPTED:
+    case APPLICATION_STATUSES.ACCEPTED: {
       Component = IconCheckCircleFill;
       break;
+    }
 
-    case APPLICATION_STATUSES.REJECTED:
+    case APPLICATION_STATUSES.REJECTED: {
       Component = IconCrossCircleFill;
       break;
+    }
 
-    case APPLICATION_STATUSES.CANCELLED:
+    case APPLICATION_STATUSES.CANCELLED: {
       Component = IconCrossCircleFill;
       break;
+    }
 
-    case APPLICATION_STATUSES.HANDLING:
+    case APPLICATION_STATUSES.HANDLING: {
       Component = IconCheckCircle;
       break;
+    }
 
-    default:
+    default: {
       return <span />;
+    }
   }
 
   return (

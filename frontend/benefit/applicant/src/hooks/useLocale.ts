@@ -8,11 +8,13 @@ const useLocale = (): Language => {
   switch (language) {
     case 'en':
     case 'fi':
-    case 'sv':
+    case 'sv': {
       return language;
+    }
 
-    default:
+    default: {
       return 'fi';
+    }
   }
 };
 

@@ -64,7 +64,7 @@ const useApplicationStepper = (
     (stepsTotal: number) =>
     (state: StepStateType, action: UpdateAction): StepStateType => {
       switch (action.type) {
-        case 'completeStep':
+        case 'completeStep': {
           return {
             activeStepIndex:
               action.payload === stepsTotal - 1
@@ -74,8 +74,9 @@ const useApplicationStepper = (
               mapCompleteStep(step, stepsTotal, index, action, queryClient)
             ),
           };
+        }
 
-        case 'setActive':
+        case 'setActive': {
           return {
             activeStepIndex: action.payload,
             steps: state.steps.map((step, index: number) => {
@@ -89,9 +90,11 @@ const useApplicationStepper = (
               return step;
             }),
           };
+        }
 
-        default:
+        default: {
           throw new Error('Cannot render stepper. Invalid action type.');
+        }
       }
     };
   const reducer = commonReducer(3);

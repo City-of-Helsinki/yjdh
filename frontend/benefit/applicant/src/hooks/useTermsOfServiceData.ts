@@ -53,17 +53,21 @@ const useTermsOfServiceData = (
       return '';
     }
     switch (locale) {
-      case 'fi':
+      case 'fi': {
         return String(user.termsOfServiceInEffect?.termsMdFi);
+      }
 
-      case 'sv':
+      case 'sv': {
         return String(user.termsOfServiceInEffect?.termsMdSv);
+      }
 
-      case 'en':
+      case 'en': {
         return String(user.termsOfServiceInEffect?.termsMdEn);
+      }
 
-      default:
+      default: {
         return '';
+      }
     }
   };
 

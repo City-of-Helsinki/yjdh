@@ -15,17 +15,20 @@ type Step = {
  * Common wizard component allowing steps added as child components.
  * Loosely based on https://github.com/devrnt/react-use-wizard
  */
-const Wizard: React.FC<WizardProps> = React.memo(
+const Wizard: React.FC<React.PropsWithChildren<WizardProps>> = React.memo(
   // eslint-disable-next-line sonarjs/cognitive-complexity
   ({ initialStep = 0, header, children, footer }) => {
+    const childArray = React.useMemo(
+      () => React.Children.toArray(children),
+      [children]
+    );
     const [step, setStep] = React.useState<Step>({
       active: initialStep,
       lastCompleted: initialStep - 1,
     });
     const [isLoading, setIsLoading] = React.useState(false);
     const nextStepHandler = React.useRef<Handler>(() => {});
-    const hasNextStep =
-      step.active < React.Children.toArray(children).length - 1;
+    const hasNextStep = step.active < childArray.length - 1;
     const hasPreviousStep = step.active > 0;
 
     const clearStepHistory = React.useCallback(() => {
@@ -81,10 +84,7 @@ const Wizard: React.FC<WizardProps> = React.memo(
       }
     }, [hasNextStep, nextStepHandler, setIsLoading, goToNextStep]);
 
-    const steps = React.useMemo(
-      () => React.Children.toArray(children).length,
-      [children]
-    );
+    const steps = childArray.length;
     const wizardValue = React.useMemo(
       () => ({
         goToStep,
@@ -113,10 +113,10 @@ const Wizard: React.FC<WizardProps> = React.memo(
       ]
     );
 
-    const activeStepContent = React.useMemo(() => {
-      const reactChildren = React.Children.toArray(children);
-      return reactChildren[step.active];
-    }, [step, children]);
+    const activeStepContent = React.useMemo(
+      () => childArray[step.active],
+      [childArray, step.active]
+    );
     return (
       <WizardContext.Provider value={wizardValue}>
         {header}

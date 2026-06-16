@@ -18,7 +18,7 @@ export const mapMessages = (data: MessageData[] | undefined): Message[] =>
  * Used to prevent SSR-rendered unstyled HTML-elements from popping when performing page load
  */
 export const setAppLoaded = (): void => {
-  if (typeof window !== 'undefined') {
+  if (globalThis.window !== undefined) {
     const loader = document.querySelector('#app-loader');
     if (loader) {
       loader.classList.remove('app-waits-for-client');

@@ -77,29 +77,35 @@ const App: React.FC<AppProps> = (appProps) => {
   useEffect(() => {
     setAppLoaded();
     switch (router.route) {
-      case ROUTES.HOME:
+      case ROUTES.HOME: {
         document.title = t('common:pageTitles.home');
         break;
+      }
 
-      case ROUTES.DECISIONS:
+      case ROUTES.DECISIONS: {
         document.title = t('common:pageTitles.decisions');
         break;
+      }
 
-      case ROUTES.LOGIN:
+      case ROUTES.LOGIN: {
         document.title = t('common:pageTitles.login');
         break;
+      }
 
-      case ROUTES.ACCESSIBILITY_STATEMENT:
+      case ROUTES.ACCESSIBILITY_STATEMENT: {
         document.title = t('common:pageTitles.accessibilityStatement');
         break;
+      }
 
-      case ROUTES.COOKIE_SETTINGS:
+      case ROUTES.COOKIE_SETTINGS: {
         document.title = t('common:pageTitles.cookieSettings');
         break;
+      }
 
-      default:
+      default: {
         document.title = t('common:pageTitles.home');
         break;
+      }
     }
   }, [router, t]);
 
@@ -115,7 +121,7 @@ const App: React.FC<AppProps> = (appProps) => {
             {showCookieBanner && <CookieConsent />}
             <BaseApp
               layout={Layout as React.FunctionComponent}
-              title={!isServerSide() ? document.title : undefined}
+              title={isServerSide() ? undefined : document.title}
               {...appProps}
             />
           </AuthProvider>

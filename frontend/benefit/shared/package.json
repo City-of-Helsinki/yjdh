@@ -31,7 +31,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
+    "eslint-config-adjunct": "4.11.1",
     "i18next": "*",
     "typescript": "^5.9.3"
   }

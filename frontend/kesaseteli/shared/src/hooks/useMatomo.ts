@@ -52,14 +52,15 @@ const useMatomo = ({
       return;
     }
 
-    const handleRouteChange = (url: string) => {
+    const handleRouteChange = (routeUrl: string): void => {
       setTimeout(() => {
-        trackPageView(url);
+        trackPageView(routeUrl);
       }, 0);
     };
 
     router.events?.on('routeChangeComplete', handleRouteChange);
 
+    // eslint-disable-next-line consistent-return
     return () => {
       router.events?.off('routeChangeComplete', handleRouteChange);
     };

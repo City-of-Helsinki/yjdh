@@ -68,21 +68,25 @@ export const $Tag = styled(Tag)<TagExtraProps>`
 
     switch (props.$state) {
       case ALTERATION_STATE.RECEIVED:
-      case ALTERATION_STATE.OPENED:
+      case ALTERATION_STATE.OPENED: {
         background = props.theme.colors.alert;
         break;
+      }
 
-      case ALTERATION_STATE.HANDLED:
+      case ALTERATION_STATE.HANDLED: {
         background = props.theme.colors.success;
         color = 'white';
         break;
+      }
 
-      case ALTERATION_STATE.CANCELLED:
+      case ALTERATION_STATE.CANCELLED: {
         background = props.theme.colors.silverDark;
         break;
+      }
 
-      default:
+      default: {
         break;
+      }
     }
 
     return `
