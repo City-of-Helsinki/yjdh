@@ -1,3 +1,4 @@
+import Axios from 'axios';
 import Step1EmployerAndEmployment from 'kesaseteli/employer/components/application/steps/step1/Step1EmployerAndEmployment';
 import Step2Summary from 'kesaseteli/employer/components/application/steps/step2/Step2Summary';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
@@ -20,6 +21,17 @@ const ApplicationPage: NextPage = () => {
     goToPage('/', 'replace');
     return null;
   }
+
+  if (applicationQuery.isError && 
+      Axios.isAxiosError(applicationQuery.error) &&
+      applicationQuery.error.response?.status === 404
+    ) {
+      goToPage('/404', 'replace');
+      return null;
+    }
+    // Non-404 errors (5xx, network failures, etc.) are handled by
+    // useApplicationQuery's onError, which redirects to /500 or /login.
+    // Show the spinner while that redirect is in progress.
 
   if (applicationQuery.isSuccess) {
     if (applicationQuery.data.status !== 'draft' && applicationId) {
