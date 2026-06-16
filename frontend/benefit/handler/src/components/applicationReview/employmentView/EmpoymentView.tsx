@@ -117,14 +117,14 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`${translationsBase}.fields.roleOfEmployeeInOrganization`)}
         </$ViewFieldBold>
         <$ViewField>
-          {!data.roleOfEmployeeInOrganization ? (
-            '-'
-          ) : (
+          {data.roleOfEmployeeInOrganization ? (
             <>
               {data.roleOfEmployeeInOrganization.split(/\n+/g).map((paragraph: string) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </>
+          ) : (
+            '-'
           )}
         </$ViewField>
       </$GridCell>

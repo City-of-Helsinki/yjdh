@@ -107,13 +107,9 @@ const useSalaryBenefitCalculatorData = (
         application?.calculation?.overrideMonthlyBenefitAmount,
       [CALCULATION_SALARY_KEYS.OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT]:
         application?.calculation?.overrideMonthlyBenefitAmountComment,
-      [CALCULATION_SALARY_KEYS.PAY_SUBSIDIES]: application?.paySubsidies
-        ? application?.paySubsidies
-        : [],
+      [CALCULATION_SALARY_KEYS.PAY_SUBSIDIES]: application?.paySubsidies || [],
       [CALCULATION_SALARY_KEYS.TRAINING_COMPENSATIONS]:
-        application?.trainingCompensations
-          ? application?.trainingCompensations
-          : [],
+        application?.trainingCompensations || [],
     },
     validationSchema: isManualCalculator
       ? getManualValidationSchema(t)
@@ -143,9 +139,8 @@ const useSalaryBenefitCalculatorData = (
   }, [t]);
 
   const addNewTrainingCompensation = (): void => {
-    const currentTrainingCompensations = formik.values.trainingCompensations
-      ? formik.values.trainingCompensations
-      : [];
+    const currentTrainingCompensations =
+      formik.values.trainingCompensations || [];
     void formik.setFieldValue(fields.trainingCompensations.name, [
       ...currentTrainingCompensations,
       {
@@ -157,9 +152,8 @@ const useSalaryBenefitCalculatorData = (
   };
 
   const removeTrainingCompensation = (id: string): void => {
-    const currentTrainingCompensations = formik.values.trainingCompensations
-      ? formik.values.trainingCompensations
-      : [];
+    const currentTrainingCompensations =
+      formik.values.trainingCompensations || [];
     void formik.setFieldValue(
       fields.trainingCompensations.name,
       currentTrainingCompensations.filter((item) => item.id !== id)

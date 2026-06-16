@@ -88,15 +88,18 @@ const useApplicationFormField = <V extends Value>(
         return message;
       }
       switch (fieldName) {
-        case 'hired_without_voucher_assessment':
+        case 'hired_without_voucher_assessment': {
           return t(`common:application.form.errors.selectionGroups`);
+        }
 
         case 'employment_contract':
-        case 'payslip':
+        case 'payslip': {
           return t(`common:application.form.errors.attachments`);
+        }
 
-        default:
+        default: {
           return t(`common:application.form.errors.${error.type}`);
+        }
       }
     },
     setError: (error: ErrorOption) => setErrorF(id, error),

@@ -110,7 +110,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           <Button
             theme={ButtonPresetTheme.Coat}
             disabled={disabledNext}
-            iconEnd={!lastStep ? <IconArrowRight /> : null}
+            iconEnd={lastStep ? null : <IconArrowRight />}
             onClick={handleSubmit}
             data-testid="nextButton"
           >

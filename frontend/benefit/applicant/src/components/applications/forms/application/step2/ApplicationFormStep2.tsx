@@ -8,7 +8,13 @@ import {
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { DateInput, SelectionGroup, TextArea, TextInput, Tooltip } from 'hds-react';
+import {
+  DateInput,
+  SelectionGroup,
+  TextArea,
+  TextInput,
+  Tooltip,
+} from 'hds-react';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -208,7 +214,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -223,7 +229,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -248,7 +254,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherSubsidisedEmployed.name,
                   false
                 );
@@ -261,7 +267,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
+                void formik.setFieldValue(
+                  fields.otherSubsidisedEmployed.name,
+                  true
+                );
               }}
               checked={formik.values.otherSubsidisedEmployed === true}
             />
@@ -570,7 +579,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             invalid={!!getErrorMessage(fields.endDate.name)}
             aria-invalid={!!getErrorMessage(fields.endDate.name)}
             errorText={getErrorMessage(fields.endDate.name)}
-            initialMonth={!formik.values.endDate ? minEndDate : undefined}
+            initialMonth={formik.values.endDate ? undefined : minEndDate}
             minDate={minEndDate}
             maxDate={maxEndDate}
             required
@@ -595,7 +604,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  false
+                );
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -607,7 +619,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  true
+                );
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />

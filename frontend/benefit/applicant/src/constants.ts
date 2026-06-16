@@ -7,7 +7,7 @@ import {
 import startOfDay from 'date-fns/startOfDay';
 import subMonths from 'date-fns/subMonths';
 
-export const IS_CLIENT = typeof window !== 'undefined';
+export const IS_CLIENT = globalThis.window !== undefined;
 
 export enum ROUTES {
   HOME = '/',

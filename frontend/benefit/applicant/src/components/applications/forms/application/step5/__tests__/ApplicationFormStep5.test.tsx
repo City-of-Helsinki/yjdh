@@ -288,7 +288,9 @@ describe('ApplicationFormStep5', () => {
   });
 
   it('opens print view in a new tab when print button is clicked', async () => {
-    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = jest
+      .spyOn(globalThis, 'open')
+      .mockImplementation(() => null);
     const user = setupUserAndRender(() => {
       renderForm(baseApplication, { isReadOnly: true });
     });

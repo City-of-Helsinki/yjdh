@@ -141,7 +141,7 @@ const targetGroupForSSN = (ssn: string): string => {
   const { ageInYears } = FinnishSSN.parse(ssn);
   const index = TARGET_GROUP_AGES.indexOf(ageInYears);
   return (
-    (index >= 0 ? fakeTargetGroups[index]?.id : null) ??
+    (index === -1 ? null : fakeTargetGroups[index]?.id) ??
     faker.random.arrayElement(fakeTargetGroups).id
   );
 };

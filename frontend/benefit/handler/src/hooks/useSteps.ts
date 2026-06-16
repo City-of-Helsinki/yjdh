@@ -67,14 +67,17 @@ const setActive = (
 const commonReducer =
   (stepsTotal: number) => (state: StepStateType, action: StepActionType) => {
     switch (action.type) {
-      case 'completeStep':
+      case 'completeStep': {
         return completeStep(stepsTotal, state, action);
+      }
 
-      case 'setActive':
+      case 'setActive': {
         return setActive(state, action);
+      }
 
-      default:
+      default: {
         throw new Error('Invalid action');
+      }
     }
   };
 

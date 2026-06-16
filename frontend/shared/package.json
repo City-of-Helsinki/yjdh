@@ -39,7 +39,7 @@
     "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
+    "eslint-config-adjunct": "4.11.1",
     "lodash": "^4.17.21",
     "typescript": "^5.9.3"
   }

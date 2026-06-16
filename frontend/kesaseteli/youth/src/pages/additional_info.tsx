@@ -42,28 +42,29 @@ const AdditionalInfo: NextPage = () => {
         {isSuccess &&
           (() => {
             switch (applicationStatusQuery.data.status) {
-              case 'additional_information_requested':
+              case 'additional_information_requested': {
                 return <AdditionalInfoForm applicationId={applicationId} />;
+              }
 
               case 'additional_information_provided':
               case 'accepted':
-              case 'rejected':
+              case 'rejected': {
                 return (
                   <$Notification
                     label={t('common:additionalInfo.notification.sent')}
                     type="info"
                   />
                 );
+              }
 
-              case 'submitted':
-              case 'awaiting_manual_processing':
-              default:
+              default: {
                 return (
                   <$Notification
                     label={t('common:additionalInfo.notification.notFound')}
                     type="alert"
                   />
                 );
+              }
             }
           })()}
         {notFound && (

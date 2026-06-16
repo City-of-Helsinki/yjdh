@@ -35,8 +35,8 @@ export const isInternalLink = (anchor: HTMLAnchorElement): boolean => {
     return false;
   }
   try {
-    const url = new URL(anchor.href, window.location.href);
-    const isInternal = url.origin === window.location.origin;
+    const url = new URL(anchor.href, globalThis.location.href);
+    const isInternal = url.origin === globalThis.location.origin;
     const isDownload = anchor.hasAttribute('download');
     const isBlank = anchor.target === '_blank';
     return isInternal && !isDownload && !isBlank;
@@ -56,7 +56,7 @@ export const isInternalLink = (anchor: HTMLAnchorElement): boolean => {
  */
 export const isBypassUrl = (url: string): boolean => {
   try {
-    const urlObj = new URL(url, window.location.origin);
+    const urlObj = new URL(url, globalThis.location.origin);
     return (
       urlObj.searchParams.get('sessionExpired') === 'true' ||
       urlObj.searchParams.get('error') === 'true' ||
@@ -124,6 +124,6 @@ export const getAnchorPath = (e: MouseEvent): string | null => {
     return null;
   }
 
-  const url = new URL(anchor.href, window.location.href);
+  const url = new URL(anchor.href, globalThis.location.href);
   return url.pathname + url.search + url.hash;
 };

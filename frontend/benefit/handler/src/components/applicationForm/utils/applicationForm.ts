@@ -74,14 +74,14 @@ const getApplication = (
                 ),
                 override_monthly_benefit_amount:
                   applicationData.calculation
-                    .override_monthly_benefit_amount !== undefined
-                    ? String(
+                    .override_monthly_benefit_amount === undefined
+                    ? null
+                    : String(
                         stringToFloatValue(
                           applicationData.calculation
                             .override_monthly_benefit_amount
                         )
-                      )
-                    : null,
+                      ),
                 rows: (applicationData.calculation.rows || []).map((row) => ({
                   ...row,
                   description_type: row.description_type || null,
@@ -108,7 +108,7 @@ const getFields = (t: TFunction, tSections: string): ApplicationFields => {
   const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
     [APPLICATION_FIELD_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
       format: 'FI99 9999 9999 9999 99',
-      stripVal: (val: string) => val.replace(/\s/g, ''),
+      stripVal: (val: string) => val.replaceAll(/\s/g, ''),
     },
   };
 

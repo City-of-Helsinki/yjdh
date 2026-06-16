@@ -11,11 +11,11 @@ const useApplicationQuery = (
   return useQuery<ApplicationData, Error>(
     ['applications', id],
     () =>
-      !id
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<ApplicationData>(
+      id
+        ? handleResponse<ApplicationData>(
             axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
-          ),
+          )
+        : Promise.reject(new Error('Missing application id')),
     {
       enabled: Boolean(id),
       staleTime: Infinity,

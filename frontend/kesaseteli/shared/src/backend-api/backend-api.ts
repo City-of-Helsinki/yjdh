@@ -37,7 +37,8 @@ export const BackendEndpoint = {
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
 
-export type BackendPath = typeof BackendEndpoint[keyof typeof BackendEndpoint];
+export type BackendPath =
+  (typeof BackendEndpoint)[keyof typeof BackendEndpoint];
 
 export const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
@@ -55,4 +56,4 @@ export const getAdditionalInfoQueryKey = (id: string): string =>
   `${getYouthApplicationQueryKey(id)}additional_info/`;
 
 export const getLogoutRedirectUrl = (locale?: string): string =>
-  new URL(locale ?? '', window.location.origin).toString();
+  new URL(locale ?? '', globalThis.location.origin).toString();

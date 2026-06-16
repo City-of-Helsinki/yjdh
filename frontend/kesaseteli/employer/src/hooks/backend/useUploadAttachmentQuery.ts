@@ -17,9 +17,8 @@ const useUploadAttachmentQuery = (): UseMutationResult<
   return useMutation(
     BackendEndpoint.ATTACHMENTS,
     ({ summer_voucher, data }: UploadAttachmentData) =>
-      !summer_voucher
-        ? Promise.reject(new Error('Missing summer_voucher id'))
-        : handleResponse<KesaseteliAttachment>(
+      summer_voucher
+        ? handleResponse<KesaseteliAttachment>(
             axios.post(
               `${BackendEndpoint.EMPLOYER_SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}`,
               data,
@@ -30,6 +29,7 @@ const useUploadAttachmentQuery = (): UseMutationResult<
               }
             )
           )
+        : Promise.reject(new Error('Missing summer_voucher id'))
   );
 };
 

@@ -19,7 +19,7 @@ const Step2Summary: React.FC = () => {
     () => applicationQuery.data?.summer_vouchers || [],
     [applicationQuery.data?.summer_vouchers]
   );
-  const lastVoucher = vouchers[vouchers.length - 1];
+  const lastVoucher = vouchers.at(-1);
 
   React.useEffect(() => {
     if (applicationQuery.isSuccess && vouchers.length === 0) {

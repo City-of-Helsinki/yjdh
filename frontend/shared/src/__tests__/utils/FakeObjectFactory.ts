@@ -119,7 +119,7 @@ class FakeObjectFactory {
       // for example dots are not allowed in city name, so let's remove them (St. Louis -> St Louis)
       employee_home_city: faker.address
         .cityName()
-        .replace(/[^ A-Za-zÄÅÖäåö-]/g, ''),
+        .replaceAll(/[^ A-Za-zÄÅÖäåö-]/g, ''),
       employee_postcode: faker.address.zipCode('#####'),
       employment_postcode: faker.address.zipCode('#####'),
       employment_start_date: convertToBackendDateFormat(faker.date.past()),

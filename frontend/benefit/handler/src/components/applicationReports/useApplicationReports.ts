@@ -62,22 +62,14 @@ const useApplicationReports = (): ExtendedComponentProps => {
     useReportsApplicationBatchesQuery(PROPOSALS_FOR_DECISION.ACCEPTED);
   const lastAcceptedApplicationsExportDate =
     lastAcceptedApplicationBatches && lastAcceptedApplicationBatches.length > 0
-      ? convertToUIDateFormat(
-          lastAcceptedApplicationBatches[
-            lastAcceptedApplicationBatches.length - 1
-          ].created_at
-        )
+      ? convertToUIDateFormat(lastAcceptedApplicationBatches.at(-1).created_at)
       : '';
 
   const { data: lastRejectedApplicationBatches } =
     useReportsApplicationBatchesQuery(PROPOSALS_FOR_DECISION.REJECTED);
   const lastRejectedApplicationsExportDate =
     lastRejectedApplicationBatches && lastRejectedApplicationBatches.length > 0
-      ? convertToUIDateFormat(
-          lastRejectedApplicationBatches[
-            lastRejectedApplicationBatches.length - 1
-          ].created_at
-        )
+      ? convertToUIDateFormat(lastRejectedApplicationBatches.at(-1).created_at)
       : '';
 
   const exportApplications = useCallback(

@@ -55,8 +55,7 @@ export const $SubHeader = styled.h3<$SubHeaderProps>`
   margin-bottom: 1em;
   font-size: ${(props: { theme: DefaultTheme }) =>
     props.theme.fontSize.heading.xxs};
-  font-weight: ${(props: $SubHeaderProps) =>
-    props.weight ? props.weight : '600'};
+  font-weight: ${(props: $SubHeaderProps) => props.weight || '600'};
 `;
 
 export const $Grid = styled.div.attrs<
@@ -90,10 +89,10 @@ export const $Grid = styled.div.attrs<
     &::before {
       content: '';
       position: absolute;
-      top: calc(-1 * ${String(bgVerticalPadding ? (gap ?? '0px') : '0px')});
-      left: calc(-1 * ${String(bgHorizontalPadding ? (gap ?? '0px') : '0px')});
-      right: calc(-1 * ${String(bgHorizontalPadding ? (gap ?? '0px') : '0px')});
-      bottom: calc(-1 * ${String(bgVerticalPadding ? (gap ?? '0px') : '0px')});
+      top: calc(-1 * ${String(bgVerticalPadding ? gap ?? '0px' : '0px')});
+      left: calc(-1 * ${String(bgHorizontalPadding ? gap ?? '0px' : '0px')});
+      right: calc(-1 * ${String(bgHorizontalPadding ? gap ?? '0px' : '0px')});
+      bottom: calc(-1 * ${String(bgVerticalPadding ? gap ?? '0px' : '0px')});
       background-color: ${
         typeof bgColor === 'boolean' ? theme.colors.black5 : bgColor
       };
@@ -101,7 +100,7 @@ export const $Grid = styled.div.attrs<
   `}
 
   @media (max-width: ${(props: { theme: DefaultTheme }) =>
-      props.theme.breakpoints.m}) {
+    props.theme.breakpoints.m}) {
     & {
       display: flex;
       flex-direction: column;

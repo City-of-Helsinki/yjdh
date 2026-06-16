@@ -4,10 +4,10 @@ import { AccordionProps } from './accordion.d';
 
 export const $Accordion = styled.div<AccordionProps>`
   ${(props: AccordionProps) =>
-    !props.card
-      ? `
-    border-bottom: 1px solid var(--color-black-60)`
-      : ''}
+    props.card
+      ? ''
+      : `
+    border-bottom: 1px solid var(--color-black-60)`}
   ${(props: AccordionProps) =>
     props.card
       ? `
@@ -16,7 +16,8 @@ export const $Accordion = styled.div<AccordionProps>`
     padding-right: var(--spacing-m);
     `
       : ''};
-  ${(props: AccordionProps) => (props.border ? `border: 2px solid var(--color-black-60)` : '')};
+  ${(props: AccordionProps) =>
+    props.border ? `border: 2px solid var(--color-black-60)` : ''};
 `;
 
 export const $AccordionHeader = styled.div<AccordionProps>`

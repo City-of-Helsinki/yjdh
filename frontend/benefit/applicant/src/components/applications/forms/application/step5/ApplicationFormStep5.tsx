@@ -77,7 +77,7 @@ const ApplicationFormStep5: React.FC<
     if (clonedData?.id && data?.id) {
       void router.push(
         `${
-          router.locale !== SUPPORTED_LANGUAGES.FI ? router.locale : ''
+          router.locale === SUPPORTED_LANGUAGES.FI ? '' : router.locale
         }${router.asPath.replace(data?.id, clonedData.id)}`
       );
     }

@@ -197,12 +197,12 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
 
   useEffect(() => {
     window.addEventListener('beforeunload', unloadHandler);
-    window.addEventListener('click', clickHandler, true);
+    globalThis.addEventListener('click', clickHandler, true);
     Router.events.on('routeChangeStart', routeHandler);
 
     return () => {
       window.removeEventListener('beforeunload', unloadHandler);
-      window.removeEventListener('click', clickHandler, true);
+      globalThis.removeEventListener('click', clickHandler, true);
       Router.events.off('routeChangeStart', routeHandler);
       isConfirmedRef.current = false;
     };

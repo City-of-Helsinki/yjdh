@@ -27,7 +27,7 @@ export const $DeMinimisGrid = styled($Grid)<DeMinimisGridProps>`
     ${(props: DeMinimisGridProps) => props.theme.spacing.m};
   margin-bottom: ${(props: DeMinimisGridProps) => props.theme.spacing.xs2};
   background: ${(props: DeMinimisGridProps) =>
-    props.$bgColor ? props.$bgColor : props.theme.colors.black10};
+    props.$bgColor || props.theme.colors.black10};
 
   justify-content: space-between;
 
@@ -47,5 +47,5 @@ export const $DeMinimisGridForm = styled($DeMinimisGrid)<DeMinimisGridProps>`
     -1 * ${(props: DeMinimisGridProps) => props.theme.spacing.s}
   );
   background: ${(props: DeMinimisGridProps) =>
-    props.$bgColor ? props.$bgColor : props.theme.colors.black10};
+    props.$bgColor || props.theme.colors.black10};
 `;

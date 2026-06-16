@@ -50,7 +50,9 @@ describe('useMatomo', () => {
 
     await act(async () => {
       await singletonRouter.push('/new-path');
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
     });
 
     expect(trackPageView).toHaveBeenCalledTimes(1);

@@ -269,7 +269,7 @@ describe('HandlingStep1', () => {
 
       const renderedBenefitAmount = formatFloatToEvenEuros(
         calculatedBenefitAmount
-      ).replaceAll(/\s+/g, '\\s*');
+      ).replaceAll(/\s+/g, String.raw`\s*`);
       expect(
         screen.getByText(new RegExp(`^${renderedBenefitAmount}$`))
       ).toBeInTheDocument();

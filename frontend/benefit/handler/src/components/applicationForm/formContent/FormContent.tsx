@@ -1,7 +1,5 @@
 import { APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit/applicant/src/constants';
-import {
-  APPLICATION_START_DATE,
-} from 'benefit/handler/constants';
+import { APPLICATION_START_DATE } from 'benefit/handler/constants';
 import { useAlertBeforeLeaving } from 'benefit/handler/hooks/useAlertBeforeLeaving';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import { useDependentFieldsEffect } from 'benefit/handler/hooks/useDependentFieldsEffect';
@@ -38,9 +36,7 @@ import {
 } from 'shared/components/forms/fields/Fields.sc';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
-import {
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { BenefitAttachment } from 'shared/types/attachment';
 import {
   formatStringFloatValue,
@@ -278,7 +274,7 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.no`
                 )}
                 onChange={() => {
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     false
                   );
@@ -296,7 +292,7 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.yes`
                 )}
                 onChange={() =>
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     true
                   )
@@ -324,7 +320,7 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -339,7 +335,7 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -364,11 +360,11 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherSubsidisedEmployed.name,
                   false
                 );
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherSubsidisedNumber.name,
                   null
                 );
@@ -381,7 +377,10 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
+                void formik.setFieldValue(
+                  fields.otherSubsidisedEmployed.name,
+                  true
+                );
               }}
               checked={formik.values.otherSubsidisedEmployed === true}
             />
@@ -614,7 +613,10 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  false
+                );
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -626,7 +628,10 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  true
+                );
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />
@@ -681,7 +686,7 @@ const FormContent: React.FC<Props> = ({
             invalid={!!getErrorMessage(fields.endDate.name)}
             aria-invalid={!!getErrorMessage(fields.endDate.name)}
             errorText={getErrorMessage(fields.endDate.name)}
-            initialMonth={!formik.values.endDate ? minEndDate : undefined}
+            initialMonth={formik.values.endDate ? undefined : minEndDate}
             minDate={minEndDate}
             maxDate={maxEndDate}
             required

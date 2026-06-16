@@ -70,16 +70,16 @@ describe('common utils', () => {
     });
 
     it('does nothing when window is undefined', () => {
-      const originalWindow = global.window;
+      const originalWindow = globalThis.window;
 
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         value: undefined,
         configurable: true,
       });
 
       expect(() => setAppLoaded()).not.toThrow();
 
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         value: originalWindow,
         configurable: true,
       });

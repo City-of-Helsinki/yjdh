@@ -33,7 +33,11 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
           sender={
             message.messageType === MESSAGE_TYPES.NOTE
               ? message.sender ?? ''
-              : t(`common:messenger.titles.${camelCase(message.messageType)}`)
+              : t(
+                  `common:messenger.titles.${camelCase(
+                    String(message.messageType)
+                  )}`
+                )
           }
           date={message.modifiedAt || ''}
           text={message.content}

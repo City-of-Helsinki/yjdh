@@ -40,7 +40,7 @@ const App: React.FC<AppProps> = (appProps) => {
   }, [router.pathname, router.isReady]);
 
   useEffect(() => {
-    const pathname = window.location.pathname + window.location.search;
+    const pathname = globalThis.location.pathname + globalThis.location.search;
     const history = getSessionStorageItem('history');
     const historyArray = history ? history.split(',') : [];
     const samePage = historyArray.at(-1) === pathname;

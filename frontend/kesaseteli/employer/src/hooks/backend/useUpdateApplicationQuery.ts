@@ -16,14 +16,14 @@ const useUpdateApplicationQuery = (
   return useMutation(
     `${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`,
     (application: DraftApplication) =>
-      !id
-        ? Promise.reject(new Error('Missing id'))
-        : handleResponse<Application>(
+      id
+        ? handleResponse<Application>(
             axios.put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/`, {
               ...application,
               language,
             })
-          ),
+          )
+        : Promise.reject(new Error('Missing id')),
     {
       onSuccess: (application) => {
         onSuccess(application);

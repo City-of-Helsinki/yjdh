@@ -4,7 +4,7 @@ import React from 'react';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { TextDecoder, TextEncoder } from 'util';
 
-Object.assign(global, { TextEncoder, TextDecoder });
+Object.assign(globalThis, { TextEncoder, TextDecoder });
 
 function mockDynamicComponent(): React.ReactElement {
   return React.createElement(

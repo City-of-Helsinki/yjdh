@@ -394,9 +394,9 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={fields.companyNumberOfEmployees.label}
           onBlur={formik.handleBlur}
           onChange={(event) => {
-            formik.setFieldValue(
+            void formik.setFieldValue(
               fields.companyNumberOfEmployees.name,
-              event.target.value.replace(/\D/g, '')
+              event.target.value.replaceAll(/\D/g, '')
             );
           }}
           value={formik.values.companyNumberOfEmployees?.toString() || ''}
@@ -432,43 +432,27 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={fields.purchasedService.label}
           direction="vertical"
           required
-          errorText={getErrorMessage(
-            fields.purchasedService.name
-          )}
+          errorText={getErrorMessage(fields.purchasedService.name)}
         >
           <$RadioButton
             id={`${fields.purchasedService.name}False`}
             name={fields.purchasedService.name}
             value="false"
-            label={t(
-              'common:utility.no'
-            )}
+            label={t('common:utility.no')}
             onChange={() => {
-              formik.setFieldValue(
-                fields.purchasedService.name,
-                false
-              );
+              void formik.setFieldValue(fields.purchasedService.name, false);
             }}
-            checked={
-              formik.values.purchasedService === false
-            }
+            checked={formik.values.purchasedService === false}
           />
           <$RadioButton
             id={`${fields.purchasedService.name}True`}
             name={fields.purchasedService.name}
             value="true"
-            label={t(
-              'common:utility.yes'
-            )}
+            label={t('common:utility.yes')}
             onChange={() =>
-              formik.setFieldValue(
-                fields.purchasedService.name,
-                true
-              )
+              void formik.setFieldValue(fields.purchasedService.name, true)
             }
-            checked={
-              formik.values.purchasedService === true
-            }
+            checked={formik.values.purchasedService === true}
           />
         </SelectionGroup>
       </$GridCell>

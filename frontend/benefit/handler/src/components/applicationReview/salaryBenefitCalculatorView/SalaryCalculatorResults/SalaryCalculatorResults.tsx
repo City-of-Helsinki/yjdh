@@ -90,9 +90,9 @@ const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
                 <$CalculatorTableRow
                   isNewSection={isDateRange}
                   style={{
-                    backgroundColor: !isDescriptionRowType
-                      ? theme.colors.silverMediumLight
-                      : 'transparent',
+                    backgroundColor: isDescriptionRowType
+                      ? 'transparent'
+                      : theme.colors.silverMediumLight,
                     marginBottom: '7px',
                   }}
                 >

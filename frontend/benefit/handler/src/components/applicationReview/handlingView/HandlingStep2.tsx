@@ -35,7 +35,7 @@ type HandlingStepProps = {
 const replaceDecisionTemplatePlaceholders = (
   text: string | null | undefined,
   role: string
-): string => (text || '').replace(/@role/gi, role);
+): string => (text || '').replaceAll(/@role/gi, role);
 
 type SignerSectionProps = {
   signerOptions: AhjoSigner[] | undefined;

@@ -145,17 +145,21 @@ const useApplicationFormStep6 = (
   const getTermsMarkdownByLanguage = (): string | undefined => {
     if (!application.applicantTermsInEffect) return undefined;
     switch (locale) {
-      case 'fi':
+      case 'fi': {
         return application.applicantTermsInEffect?.termsMdFi;
+      }
 
-      case 'sv':
+      case 'sv': {
         return application.applicantTermsInEffect?.termsMdSv;
+      }
 
-      case 'en':
+      case 'en': {
         return application.applicantTermsInEffect?.termsMdEn;
+      }
 
-      default:
+      default: {
         return undefined;
+      }
     }
   };
 
@@ -163,9 +167,7 @@ const useApplicationFormStep6 = (
 
   const applicantTermsInEffectUrl = React.useMemo(() => {
     if (
-      application.applicantTermsInEffect?.[
-        `termsPdf${textLocale}` as TermsProp
-      ]
+      application.applicantTermsInEffect?.[`termsPdf${textLocale}` as TermsProp]
     )
       return application.applicantTermsInEffect[
         `termsPdf${textLocale}` as TermsProp

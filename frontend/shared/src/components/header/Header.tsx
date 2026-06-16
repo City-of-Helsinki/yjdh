@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
       (event?: Event | MouseEvent) => {
         event?.preventDefault();
         closeMenu();
-        goToPage(url as string);
+        goToPage(url);
       },
     [closeMenu, goToPage]
   );

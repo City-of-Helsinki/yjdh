@@ -68,7 +68,7 @@ const HandlerIndexManual: React.FC<ApplicationListProps> = ({
       : getHeadingTranslation(headingStatus);
 
   const updateTabToUrl = (tabNumber: APPLICATION_LIST_TABS): void =>
-    window.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
+    globalThis.history.pushState({ tab }, '', `/?tab=${tabNumber}`);
 
   return (
     <FrontPageProvider>

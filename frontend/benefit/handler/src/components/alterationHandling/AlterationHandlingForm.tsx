@@ -173,7 +173,7 @@ const AlterationHandlingForm = ({
                   value="1"
                   onBlur={formik.handleBlur}
                   onChange={() => {
-                    formik.setFieldValue('isRecoverable', true);
+                    void formik.setFieldValue('isRecoverable', true);
                   }}
                   checked={formik.values.isRecoverable === true}
                 />
@@ -184,7 +184,7 @@ const AlterationHandlingForm = ({
                   value="0"
                   onBlur={formik.handleBlur}
                   onChange={() => {
-                    formik.setFieldValue('isRecoverable', false);
+                    void formik.setFieldValue('isRecoverable', false);
                   }}
                   checked={formik.values.isRecoverable === false}
                 />

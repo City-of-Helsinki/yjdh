@@ -371,7 +371,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
 
   const handleClone = (): void => {
     // eslint-disable-next-line no-alert
-    if (window.confirm('Haluatko varmasti kloonata tämän hakemuksen?')) {
+    if (globalThis.confirm('Haluatko varmasti kloonata tämän hakemuksen?')) {
       cloneApplication(application.id || '');
     }
   };
@@ -524,7 +524,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
             disabled={isApplicationReadOnly}
             style={{ minWidth: '158px' }}
             onClick={() =>
-              !validateNextStep(stepState.activeStepIndex) ? handleNext() : null
+              validateNextStep(stepState.activeStepIndex) ? null : handleNext()
             }
             iconEnd={lastStep ? undefined : <IconArrowRight />}
           >

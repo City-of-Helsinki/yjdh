@@ -56,7 +56,7 @@ const sentryCaptureExceptionFailsafe = (
  * Possible causes vary, but the most common is that the request is blocked by ad-blockers or csrf rules.
  */
 const sentryFlushServerSide = async (flushAfter: number): Promise<void> => {
-  if (typeof window === 'undefined') {
+  if (globalThis.window === undefined) {
     try {
       await sentryFlush(flushAfter);
     } catch (error) {

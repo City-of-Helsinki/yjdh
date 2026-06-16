@@ -116,7 +116,11 @@ const ApplicationsHandled: React.FC<Props> = ({
 
   return (
     <$TableContainer data-testid="application-list-archived">
-      {!shouldHideList ? (
+      {shouldHideList ? (
+        <$EmptyHeading>
+          {t(`${translationsBase}.messages.empty.${status}`)}
+        </$EmptyHeading>
+      ) : (
         <>
           <Table
             theme={{ '--header-background-color': theme.colors.coatOfArms }}
@@ -159,10 +163,6 @@ const ApplicationsHandled: React.FC<Props> = ({
             </Button>
           </$TableFooter>
         </>
-      ) : (
-        <$EmptyHeading>
-          {t(`${translationsBase}.messages.empty.${status}`)}
-        </$EmptyHeading>
       )}
     </$TableContainer>
   );

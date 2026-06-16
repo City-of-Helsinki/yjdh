@@ -78,7 +78,9 @@ describe('DecisionSummary', () => {
 
   it('renders summary details and opens decision link with transformed case id', async () => {
     const user = userEvent.setup();
-    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = jest
+      .spyOn(globalThis, 'open')
+      .mockImplementation(() => null);
 
     renderSubject();
 

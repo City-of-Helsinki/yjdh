@@ -8,7 +8,7 @@ export const getCurrentPathname = ClientFunction(
   () => document.location.pathname
 );
 export const getUrlParam = ClientFunction((param: string) => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(globalThis.location.search);
   return urlParams.get(param);
 });
 

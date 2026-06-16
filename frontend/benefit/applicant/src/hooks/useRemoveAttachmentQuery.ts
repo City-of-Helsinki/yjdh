@@ -14,13 +14,13 @@ const useRemoveAttachmentQuery = (): UseMutationResult<
   return useMutation<RemoveAttachmentData, ErrorResponse, RemoveAttachmentData>(
     ['attachment'],
     (attachment: RemoveAttachmentData) =>
-      !attachment?.applicationId
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<RemoveAttachmentData>(
+      attachment?.applicationId
+        ? handleResponse<RemoveAttachmentData>(
             axios.delete(
               `${BackendEndpoint.APPLICATIONS}${attachment?.applicationId}/attachments/${attachment?.attachmentId}/`
             )
-          ),
+          )
+        : Promise.reject(new Error('Missing application id')),
     {
       onSuccess: () => {
         void queryClient.invalidateQueries('applications');

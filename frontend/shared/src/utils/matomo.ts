@@ -1,9 +1,6 @@
 // Matomo analytics utility compatible with Next.js 15
-declare global {
-  interface Window {
-    _paq: [string, ...unknown[]][];
-  }
-}
+type MatomoCommand = [string, ...unknown[]];
+type MatomoQueue = MatomoCommand[];
 
 export interface MatomoConfig {
   url: string;
@@ -12,8 +9,25 @@ export interface MatomoConfig {
   phpTrackerFile?: string;
 }
 
+const getPaq = (): MatomoQueue | undefined => {
+  if (globalThis.window === undefined) {
+    return undefined;
+  }
+
+  const globalObject = globalThis as typeof globalThis & {
+    _paq?: MatomoQueue;
+  };
+
+  if (!globalObject._paq) {
+    globalObject._paq = [];
+  }
+
+  return globalObject._paq;
+};
+
 export function initMatomo(config: MatomoConfig): void {
-  if (typeof window === 'undefined') {
+  const paq = getPaq();
+  if (!paq) {
     return; // Don't run on server
   }
 
@@ -24,14 +38,12 @@ export function initMatomo(config: MatomoConfig): void {
     phpTrackerFile = 'matomo.php',
   } = config;
 
-  window._paq = window._paq || [];
-
   // Require consent before tracking — consent is granted
   // via useCookieConsent hook when user accepts cookies
-  window._paq.push(['requireConsent']);
+  paq.push(['requireConsent']);
 
   const u = url.endsWith('/') ? url : `${url}/`;
-  window._paq.push(
+  paq.push(
     ['setTrackerUrl', `${u}${phpTrackerFile}`],
     ['setSiteId', siteId],
     ['trackPageView'],
@@ -50,24 +62,31 @@ export function initMatomo(config: MatomoConfig): void {
 }
 
 let previousUrl =
-  typeof window !== 'undefined' ? window.location.href : undefined;
+  globalThis.window === undefined ? undefined : globalThis.location.href;
 
 export function trackPageView(url?: string): void {
-  if (typeof window === 'undefined' || !window._paq) {
+  if (globalThis.window === undefined) {
     return;
   }
 
-  let currentUrl = url ?? window.location.href;
+  const paq = getPaq();
+  if (!paq) {
+    return;
+  }
+
+  let currentUrl = url ?? globalThis.location.href;
   if (currentUrl.startsWith('/')) {
-    currentUrl = `${window.location.origin}${currentUrl}`;
+    currentUrl = `${globalThis.location.origin}${currentUrl}`;
   }
 
   if (previousUrl && previousUrl !== currentUrl) {
-    window._paq.push(['setReferrerUrl', previousUrl]);
+    paq.push(['setReferrerUrl', previousUrl]);
   }
-  window._paq.push(['setCustomUrl', currentUrl]);
-  window._paq.push(['setDocumentTitle', document.title]);
-  window._paq.push(['trackPageView']);
+  paq.push(
+    ['setCustomUrl', currentUrl],
+    ['setDocumentTitle', document.title],
+    ['trackPageView']
+  );
 
   previousUrl = currentUrl;
 }
@@ -78,12 +97,13 @@ export function trackEvent(
   name?: string,
   value?: number
 ): void {
-  if (typeof window === 'undefined' || !window._paq) {
+  const paq = getPaq();
+  if (!paq) {
     return;
   }
 
   const params = [category, action, name, value].filter(
-    (param) => param !== undefined
+    (param): param is string | number => param !== undefined
   );
-  window._paq.push(['trackEvent', ...params]);
+  paq.push(['trackEvent', ...params]);
 }

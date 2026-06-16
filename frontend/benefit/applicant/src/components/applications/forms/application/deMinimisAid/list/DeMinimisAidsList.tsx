@@ -40,7 +40,7 @@ const DeMinimisAidsList: React.FC = () => {
           key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER] ?? ''}${
             grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
           }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}-${
-            grant.id ? grant.id : unsavedAidRowKey()
+            grant.id || unsavedAidRowKey()
           }`}
         >
           <$GridCell

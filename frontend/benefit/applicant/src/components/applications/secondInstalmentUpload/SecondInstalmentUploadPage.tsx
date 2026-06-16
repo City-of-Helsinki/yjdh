@@ -31,7 +31,7 @@ import {
 } from 'shared/utils/date.utils';
 
 const getFileNameFromPath = (path?: string): string =>
-  path?.split('/').filter(Boolean).at(-1) ?? '';
+  path?.split('/').findLast(Boolean) ?? '';
 
 const normalizeAttachmentFileNames = (
   attachments: BenefitAttachment[] = []
@@ -221,7 +221,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
               </span>
             </$GridCell>
             <$GridCell $colSpan={6} justifySelf="end">
-              <span css={{ color: 'var(--color-fog)' }}>
+              <span style={{ color: 'var(--color-fog)' }}>
                 {t(
                   'common:applications.secondInstalmentUpload.applicationNumber'
                 )}
@@ -236,7 +236,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
               </span>
             </$GridCell>
           </$Grid>
-          <hr css={{ marginTop: '6px', marginBottom: '6px' }} />
+          <hr style={{ marginTop: '6px', marginBottom: '6px' }} />
         </>
       )}
 

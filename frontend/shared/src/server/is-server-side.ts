@@ -1,3 +1,3 @@
-const isServerSide = (): boolean => typeof window === 'undefined';
+const isServerSide = (): boolean => globalThis.window === undefined;
 
 export default isServerSide;

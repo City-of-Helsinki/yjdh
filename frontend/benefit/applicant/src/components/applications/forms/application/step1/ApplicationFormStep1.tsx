@@ -245,8 +245,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.no`
                 )}
                 onChange={() => {
-                  formik.setFieldValue(fields.deMinimisAid.name, false);
-                  formik.setFieldValue(fields.deMinimisAidSet.name, []);
+                  void formik.setFieldValue(fields.deMinimisAid.name, false);
+                  void formik.setFieldValue(fields.deMinimisAidSet.name, []);
                   setUnfinishedDeMinimisAid(false);
                   setDeMinimisAids([]);
                 }}
@@ -261,7 +261,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.yes`
                 )}
                 onChange={() =>
-                  formik.setFieldValue(fields.deMinimisAid.name, true)
+                  void formik.setFieldValue(fields.deMinimisAid.name, true)
                 }
                 checked={formik.values.deMinimisAid === true}
               />
@@ -307,7 +307,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.coOperationNegotiations.name,
                   false
                 );
@@ -322,7 +322,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
               onChange={() =>
-                formik.setFieldValue(fields.coOperationNegotiations.name, true)
+                void formik.setFieldValue(
+                  fields.coOperationNegotiations.name,
+                  true
+                )
               }
               checked={formik.values.coOperationNegotiations === true}
             />
