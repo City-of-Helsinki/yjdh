@@ -57,7 +57,10 @@
       "tooltipButtonLabel": "Öppna instruktioner för ansökningsfilter",
       "yearFilterLabel": "Filtrera enligt år",
       "yearFilterAll": "Alla år"
-    }
+    },
+    "actions": "Åtgärder",
+    "editApplication": "Redigera ansökan: {{name}}",
+    "editApplicationFallback": "Redigera ansökan"
   },
   "application": {
     "new": "Ny ansökan",
@@ -115,10 +118,14 @@
       "last": "Skicka ansökan",
       "cancel": "Avbryt",
       "discard": "Släng ändringar",
+      "edit": "Redigera",
+      "delete": "Ta bort",
       "cancel_confirmation_title": "Är du säker på att du vill avbryta ifyllandet av ansökan?",
       "cancel_confirmation_description": "All information som har fyllts i hittills kommer att raderas och du kommer att flyttas tillbaka till framsidan.",
       "leave_confirmation": "Vill du lämna sidan?",
-      "leave_confirmation_description": "Osparade ändringar kan gå förlorade."
+      "leave_confirmation_description": "Osparade ändringar kan gå förlorade.",
+      "delete_confirmation": "Vill du ta bort ansökan?",
+      "delete_confirmation_description": "Ansökan tas bort permanent och kan inte återställas."
     },
     "form": {
       "selectionGroups": {

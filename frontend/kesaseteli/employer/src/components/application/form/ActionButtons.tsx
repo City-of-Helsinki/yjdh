@@ -4,12 +4,17 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconCross,
+  IconTrash,
 } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
@@ -46,16 +51,36 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     deleteApplication,
     updateApplicationQuery,
     deleteApplicationQuery,
+    applicationId,
   } = useApplicationApi({ setBackendValidationError: setError });
 
   const { confirm } = useConfirm();
   const goToPage = useGoToPage();
+  const queryClient = useQueryClient();
 
   const handleCancel = React.useCallback(async () => {
     const isConfirmed = await confirm({
       header: t('common:application.buttons.leave_confirmation'),
       content: t('common:application.buttons.leave_confirmation_description'),
       submitButtonLabel: t('common:application.buttons.discard'),
+      submitButtonVariant: ButtonVariant.Danger,
+    });
+    if (isConfirmed) {
+      if (applicationId) {
+        clearLocalStorage(`application-${applicationId}`);
+      }
+      ApplicationPersistenceService.clearAll();
+      void queryClient.invalidateQueries(BackendEndpoint.EMPLOYER_APPLICATIONS);
+      setLeaveConfirmBypassed(true);
+      goToPage('/');
+    }
+  }, [confirm, applicationId, queryClient, goToPage, t]);
+
+  const handleDelete = React.useCallback(async () => {
+    const isConfirmed = await confirm({
+      header: t('common:application.buttons.delete_confirmation'),
+      content: t('common:application.buttons.delete_confirmation_description'),
+      submitButtonLabel: t('common:application.buttons.delete'),
       submitButtonVariant: ButtonVariant.Danger,
     });
     if (isConfirmed) {
@@ -107,17 +132,30 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   return (
     <$ButtonSection columns={3} withoutDivider>
       <$GridCell justifySelf="start">
-        <Button
-          variant={ButtonVariant.Supplementary}
-          theme={ButtonPresetTheme.Black}
-          data-testid="cancel-button"
-          iconStart={<IconCross />}
-          onClick={handleCancel}
-          isLoading={isLoading}
-          disabled={isLoading}
-        >
-          {t(`common:application.buttons.cancel`)}
-        </Button>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <Button
+            variant={ButtonVariant.Supplementary}
+            theme={ButtonPresetTheme.Black}
+            data-testid="cancel-button"
+            iconStart={<IconCross />}
+            onClick={handleCancel}
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            {t(`common:application.buttons.cancel`)}
+          </Button>
+          <Button
+            variant={ButtonVariant.Supplementary}
+            theme={ButtonPresetTheme.Black}
+            data-testid="delete-button"
+            iconStart={(<IconTrash />) as React.ReactElement}
+            onClick={handleDelete}
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            {t(`common:application.buttons.delete`)}
+          </Button>
+        </div>
       </$GridCell>
       <$GridCell justifySelf="center">
         {!isFirstStep && (

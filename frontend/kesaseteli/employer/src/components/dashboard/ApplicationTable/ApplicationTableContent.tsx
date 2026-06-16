@@ -1,6 +1,14 @@
-import { Pagination } from 'hds-react';
+import {
+  ButtonPresetTheme,
+  ButtonSize,
+  ButtonVariant,
+  IconPen,
+  Pagination,
+} from 'hds-react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/application';
@@ -49,6 +57,9 @@ type ApplicationTableRowProps = {
 const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
   application,
 }) => {
+  const { t } = useTranslation();
+  const locale = useLocale();
+  const router = useRouter();
   const employeeNames =
     (application.summer_vouchers || [])
       .map((v) => v.employee_name)
@@ -64,6 +75,11 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
       .modified_at ||
     application.submitted_at ||
     '';
+
+  const handleEdit = React.useCallback(() => {
+    void router.push(`/${locale}/application?id=${application.id}`);
+  }, [router, locale, application.id]);
+
   return (
     <tr>
       <td>{employeeNames}</td>
@@ -71,6 +87,24 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
       <td>{convertToUIDateAndTimeFormat(modifiedAt)}</td>
       <td>
         <StatusTag status={application.status} />
+      </td>
+      <td>
+        {application.status === 'draft' && (
+          <Button
+            variant={ButtonVariant.Supplementary}
+            theme={ButtonPresetTheme.Black}
+            size={ButtonSize.Small}
+            iconStart={(<IconPen aria-hidden />) as React.ReactElement}
+            onClick={handleEdit}
+            aria-label={
+              employeeNames && employeeNames !== '-'
+                ? t('common:dashboard.editApplication', { name: employeeNames })
+                : t('common:dashboard.editApplicationFallback')
+            }
+          >
+            {t('common:application.buttons.edit')}
+          </Button>
+        )}
       </td>
     </tr>
   );
@@ -115,12 +149,15 @@ const ApplicationTableContent: React.FC = () => {
             </th>
             <th>{t('common:application.form.inputs.modified_at')}</th>
             <th>{t('common:application.form.inputs.status')}</th>
+            <th>
+              <span className="sr-only">{t('common:dashboard.actions')}</span>
+            </th>
           </tr>
         </thead>
         <tbody>
           {applications.length === 0 ? (
             <tr>
-              <td colSpan={4} style={{ textAlign: 'center' }}>
+              <td colSpan={5} style={{ textAlign: 'center' }}>
                 {t('common:dashboard.noApplications')}
               </td>
             </tr>

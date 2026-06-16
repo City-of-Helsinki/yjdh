@@ -57,7 +57,10 @@
       "tooltipButtonLabel": "Open applications filter instructions",
       "yearFilterLabel": "Filter by year",
       "yearFilterAll": "All years"
-    }
+    },
+    "actions": "Actions",
+    "editApplication": "Edit application: {{name}}",
+    "editApplicationFallback": "Edit application"
   },
   "application": {
     "new": "Application",
@@ -115,10 +118,14 @@
       "last": "Send the application",
       "cancel": "Cancel",
       "discard": "Discard changes",
+      "edit": "Edit",
+      "delete": "Delete",
       "cancel_confirmation_title": "Are you sure you want to cancel the application?",
       "cancel_confirmation_description": "All information entered so far will be deleted and you will be returned to the front page.",
       "leave_confirmation": "Do you want to leave the page?",
-      "leave_confirmation_description": "Unsaved changes may be lost."
+      "leave_confirmation_description": "Unsaved changes may be lost.",
+      "delete_confirmation": "Do you want to delete the application?",
+      "delete_confirmation_description": "The application will be permanently deleted and cannot be restored."
     },
     "form": {
       "selectionGroups": {

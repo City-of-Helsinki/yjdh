@@ -57,7 +57,10 @@
       "tooltipButtonLabel": "Avaa hakemukset-suodattimen ohjeistus",
       "yearFilterLabel": "Hae vuoden mukaan",
       "yearFilterAll": "Kaikki vuodet"
-    }
+    },
+    "actions": "Toiminnot",
+    "editApplication": "Muokkaa hakemusta: {{name}}",
+    "editApplicationFallback": "Muokkaa hakemusta"
   },
   "application": {
     "new": "Uusi hakemus",
@@ -115,10 +118,14 @@
       "last": "Lähetä hakemus",
       "cancel": "Keskeytä",
       "discard": "Hylkää muutokset",
+      "edit": "Muokkaa",
+      "delete": "Poista",
       "cancel_confirmation_title": "Haluatko poistua sivulta?",
       "cancel_confirmation_description": "Tallentamattomat muutokset menetetään.",
       "leave_confirmation": "Haluatko poistua sivulta?",
-      "leave_confirmation_description": "Tallentamattomat muutokset menetetään."
+      "leave_confirmation_description": "Tallentamattomat muutokset menetetään.",
+      "delete_confirmation": "Haluatko poistaa hakemuksen?",
+      "delete_confirmation_description": "Hakemus poistetaan pysyvästi eikä sitä voi palauttaa."
     },
     "form": {
       "selectionGroups": {
