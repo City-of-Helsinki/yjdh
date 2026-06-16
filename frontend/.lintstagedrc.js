@@ -16,7 +16,7 @@ module.exports = {
     (changedFiles) =>
       'eslint --fix --max-warnings=0 ' +
       changedFiles.filter((file) => !eslint.isPathIgnored(file)).join(' '),
-    () => 'yarn typecheck',
-    'yarn test:staged',
+    () => 'pnpm run typecheck',
+    'pnpm run test:staged',
   ],
 };

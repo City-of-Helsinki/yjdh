@@ -9,8 +9,8 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../.lintstagedrc.js",
     "test": "cross-env TZ=Europe/Helsinki jest",
-    "test:staged": "cross-env TZ=Europe/Helsinki yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "cross-env TZ=Europe/Helsinki yarn test --verbose --coverage"
+    "test:staged": "cross-env TZ=Europe/Helsinki pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "cross-env TZ=Europe/Helsinki pnpm run test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
