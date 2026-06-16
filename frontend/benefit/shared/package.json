@@ -9,12 +9,12 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage"
+    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "pnpm run test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
-    "@frontend/shared": "*",
+    "@frontend/shared": "workspace:*",
     "@sentry/nextjs": "^10.56.0",
     "axios": "^1.17.0",
     "camelcase-keys": "^7.0.1",

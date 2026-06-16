@@ -6,11 +6,11 @@
 - [Requirements](#requirements)
   - [Install NodeJS](#install-nodejs)
 - [Available Scripts](#available-scripts)
-  - [`yarn dev`](#yarn-dev)
-  - [`yarn build`](#yarn-build)
-  - [`yarn benefit-applicant:start`](#yarn-benefit-applicantstart)
-  - [`yarn test`](#yarn-test)
-  - [`yarn audit`](#yarn-audit)
+  - [`pnpm dev`](#pnpm-dev)
+  - [`pnpm build`](#pnpm-build)
+  - [`pnpm benefit-applicant:start`](#pnpm-benefit-applicantstart)
+  - [`pnpm test`](#pnpm-test)
+  - [`pnpm audit`](#pnpm-audit)
     - [how to fix audit errors](#how-to-fix-audit-errors)
 - [Learn More](#learn-more)
 
@@ -28,8 +28,8 @@ Project is automatically deployed to testing environment when merging a PR to ma
 ## Requirements
 
 - Node 22.x
-- Lerna  
-- Yarn
+- Lerna
+- pnpm 11.5.0
 - Git
 - Docker
 
@@ -46,7 +46,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 In the project directory, you can run:
 
-### `yarn dev`
+### `pnpm dev`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -54,20 +54,20 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console (TODO).
 
-### `yarn build`
+### `pnpm build`
 
 Builds the app for production to the `build` folder.
 
-### `yarn benefit-applicant:start`
+### `pnpm benefit-applicant:start`
 
 Runs the built app in the production mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `yarn test`
+### `pnpm test`
 
 Launches the test runner in the interactive watch mode.
 
-### `yarn audit`
+### `pnpm audit`
 
 Audit report for npm packages.
 
@@ -91,8 +91,8 @@ For example if you got something like this:
 This can be fixed usually by:
 Adding `"browserslist" : "^4.16.5"`
 to the `"resolutions"` part of the [package.json](./package.json)
-Run `yarn`
-Then `yarn audit` again and error should be vanished :)
+Run `pnpm install`
+Then `pnpm audit` again and error should be vanished :)
 
 More info: https://stackoverflow.com/questions/51699564/how-to-fix-npm-audit-fix-issues
 

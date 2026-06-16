@@ -8,10 +8,10 @@
   - [Requirements](#requirements)
     - [install node with nvm](#install-node-with-nvm)
   - [Available Scripts](#available-scripts)
-    - [`yarn dev`](#yarn-dev)
-    - [`yarn build`](#yarn-build)
-    - [`yarn start`](#yarn-start)
-    - [`yarn test`](#yarn-test)
+    - [`pnpm dev`](#pnpm-dev)
+    - [`pnpm build`](#pnpm-build)
+    - [`pnpm start`](#pnpm-start)
+    - [`pnpm test`](#pnpm-test)
   - [Learn More](#learn-more)
   - [Matomo Analytics](#matomo-analytics)
     - [References](#references)
@@ -41,7 +41,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 - Node 22.x
 - Lerna
-- Yarn
+- pnpm 11.5.0
 - Git
 - Docker
 
@@ -54,7 +54,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 In the project directory, you can run:
 
-### `yarn dev`
+### `pnpm dev`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -62,16 +62,16 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console (TODO).
 
-### `yarn build`
+### `pnpm build`
 
 Builds the app for production to the `build` folder.
 
-### `yarn start`
+### `pnpm start`
 
 Runs the built app in the production mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `yarn test`
+### `pnpm test`
 
 Launches the test runner in the interactive watch mode.
 
