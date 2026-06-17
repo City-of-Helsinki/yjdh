@@ -38,12 +38,14 @@ class CompanySearchSerializer(serializers.Serializer):
     business_id = serializers.CharField(max_length=20)
 
 
-class UpdateCompanyIndustryCodeSerializer(serializers.Serializer):
-    industry_code = serializers.CharField(max_length=10)
-    industry = serializers.CharField(max_length=255, allow_blank=True, default="")
-
-    def update(self, instance, validated_data):
-        instance.industry_code = validated_data["industry_code"]
-        instance.industry = validated_data["industry"]
-        instance.save(update_fields=["industry_code", "industry"])
-        return instance
+class UpdateCompanyIndustryCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = [
+            "industry",
+            "industry_code",
+        ]
+        extra_kwargs = {
+            "industry": {"required": True},
+            "industry_code": {"required": True, "allow_blank": False},
+        }
