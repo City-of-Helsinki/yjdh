@@ -18,7 +18,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsxImportSource": "react",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": ["jest"]
   },
   "exclude": [
     "**/node_modules",

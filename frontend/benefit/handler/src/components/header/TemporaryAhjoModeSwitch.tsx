@@ -1,5 +1,5 @@
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
-import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonSize, ButtonVariant } from 'hds-react';
 import React from 'react';
 import Button from 'shared/components/button/Button';
 import {
@@ -33,11 +33,13 @@ const TemporaryAhjoModeSwitch: React.FC = () => {
       onClick={() => toggleNewAhjoMode(isNewAhjoMode)}
       theme={ButtonPresetTheme.Coat}
       variant={ButtonVariant.Supplementary}
-      size="small"
+      size={ButtonSize.Small}
     >
-      Ahjo-integraatio
-      <br />
-      {isNewAhjoMode ? 'on päällä' : 'on pois päältä'}
+      <span>
+        Ahjo-integraatio
+        <br />
+        {isNewAhjoMode ? 'on päällä' : 'on pois päältä'}
+      </span>
     </Button>
   );
 };

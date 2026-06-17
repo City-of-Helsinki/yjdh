@@ -22,6 +22,7 @@ import {
 } from 'benefit-shared/constants';
 import {
   ButtonPresetTheme,
+  ButtonSize,
   ButtonVariant,
   IconArrowLeft,
   LoadingSpinner,
@@ -80,7 +81,7 @@ const AlterationPage = (): JSX.Element => {
           variant={ButtonVariant.Supplementary}
           iconStart={<IconArrowLeft />}
           onClick={returnToApplication}
-          size="small"
+          size={ButtonSize.Small}
         >
           {t(`common:applications.actions.back`)}
         </Button>

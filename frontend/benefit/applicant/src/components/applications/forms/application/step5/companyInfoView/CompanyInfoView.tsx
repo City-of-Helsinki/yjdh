@@ -143,7 +143,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                   `${translationsBase}.company.fields.companyBusinessBrief.summaryLabel`
                 )}
               </$ApplicationDetailLabel>
-              <$ApplicationDetailValue $column={1}>
+              <$ApplicationDetailValue $column>
                 {data?.companyBusinessBrief &&
                   data?.companyBusinessBrief
                     .split(/\n/)

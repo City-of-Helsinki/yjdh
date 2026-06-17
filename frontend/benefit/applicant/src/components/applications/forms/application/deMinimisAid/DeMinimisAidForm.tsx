@@ -76,7 +76,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
       </$GridCell>
       <$DeMinimisGridForm>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.granter.name}
             name={fields.granter.name}
@@ -94,7 +93,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.amount.name}
             name={fields.amount.name}
@@ -120,7 +118,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
           <DateInput
             id={fields.grantedAt.name}
             name={fields.grantedAt.name}

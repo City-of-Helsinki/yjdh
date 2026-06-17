@@ -3,7 +3,6 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": "../../",
-    "types": ["jest", "node", "@testing-library/jest-dom"],
     "paths": {
       "benefit-shared/*": ["benefit/shared/src/*"],
       "shared/*": ["shared/src/*","shared/browser-tests/*"]

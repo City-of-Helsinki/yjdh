@@ -1,4 +1,4 @@
-import { ButtonPresetTheme, IconSignin } from 'hds-react';
+import { ButtonPresetTheme, IconSignin, NotificationSize } from 'hds-react';
 import useLogin from 'kesaseteli/handler/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -52,7 +52,7 @@ const Login: NextPage = () => {
       <$Notification
         label={t(notificationLabelKey)}
         type={notificationType}
-        size="large"
+        size={NotificationSize.Large}
       >
         {notificationContent}
       </$Notification>

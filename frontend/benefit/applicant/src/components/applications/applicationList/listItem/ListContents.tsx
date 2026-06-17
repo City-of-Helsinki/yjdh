@@ -7,7 +7,7 @@ import {
 import ListItem from 'benefit/applicant/components/applications/applicationList/listItem/ListItem';
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/useApplicationList';
 import ApplicationListProvider from 'benefit/applicant/context/ApplicationListProvider';
-import { Select } from 'hds-react';
+import { Option, Select } from 'hds-react';
 import React, { useEffect } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
@@ -54,6 +54,25 @@ const ListContents = ({
     [t]
   );
 
+  const hdsOrderByOptions = React.useMemo(
+    () =>
+      orderByOptions?.map((option) => ({
+        label: option.label,
+        value: option.value?.toString(),
+      })) || [],
+    [orderByOptions]
+  );
+  const hdsOrderByValue = React.useMemo(
+    () =>
+      orderBy
+        ? ({
+            label: orderBy?.label,
+            value: orderBy?.value?.toString(),
+          } as Option)
+        : undefined,
+    [orderBy]
+  );
+
   if (shouldHideList && !noItemsText) return null;
 
   return (
@@ -76,9 +95,9 @@ const ListContents = ({
               {(orderByOptions?.length ?? 0) > 1 && (
                 <Select
                   id={`application-list-${status.join('-')}-order-by`}
-                  options={orderByOptions || []}
-                  defaultValue={orderBy}
-                  value={[orderBy].filter(Boolean)}
+                  options={hdsOrderByOptions}
+                  defaultValue={hdsOrderByValue?.value}
+                  value={[hdsOrderByValue].filter(Boolean) as Option[]}
                   onChange={(selectedOptions: OptionType[]) =>
                     setOrderBy(selectedOptions[0])
                   }

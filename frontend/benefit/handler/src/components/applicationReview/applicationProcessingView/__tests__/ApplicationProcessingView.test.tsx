@@ -1,7 +1,10 @@
 import { fireEvent, RenderResult, screen } from '@testing-library/react';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
 import AppContext, { AppContextType } from 'benefit/handler/context/AppContext';
-import { HandledAplication } from 'benefit/handler/types/application';
+import {
+  Application,
+  HandledAplication,
+} from 'benefit/handler/types/application';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { axe } from 'jest-axe';
 import noop from 'lodash/noop';
@@ -57,8 +60,7 @@ const getComponent = (
     <AppContext.Provider
       value={buildAppContext(handledApplication, setHandledApplication)}
     >
-      {/* @ts-expect-error: partial application data sufficient for unit testing */}
-      <ApplicationProcessingView data={data} />
+      <ApplicationProcessingView data={data as Application} />
     </AppContext.Provider>
   ).renderResult;
 

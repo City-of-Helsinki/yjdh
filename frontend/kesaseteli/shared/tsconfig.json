@@ -16,6 +16,7 @@
   "include": [
     "src",
     "browser-tests",
-    "../../shared/src/types/styled-components.d.ts"
+    "../../shared/src/types/styled-components.d.ts",
+    "../../shared/src/types/jest-dom.d.ts"
   ]
 }

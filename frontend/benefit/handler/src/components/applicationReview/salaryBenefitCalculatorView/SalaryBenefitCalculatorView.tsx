@@ -152,7 +152,6 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
 
           {item.paySubsidyPercent === 100 && (
             <$GridCell $colStart={3} $colSpan={2}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.workTimePercent.name}
                 name={fields.workTimePercent.name}
@@ -174,7 +173,6 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
             $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
             $colSpan={3}
           >
-            {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
             <DateInput
               label={t(`${translationsBase}.salarySupportPeriod`, {
                 period: formatStringFloatValue(
@@ -203,7 +201,6 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
             $colStart={item.paySubsidyPercent === 100 ? 9 : 6}
             $colSpan={3}
           >
-            {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
             <DateInput
               label={fields.endDate.label}
               id={fields.endDate.name}
@@ -376,7 +373,6 @@ const TrainingCompensationInputSection: React.FC<
       />
 
       <$GridCell $colStart={1} $colSpan={1}>
-        {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
         <TextInput
           id={fields.monthlyAmount.name}
           name={fields.monthlyAmount.name}
@@ -396,7 +392,6 @@ const TrainingCompensationInputSection: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={3} $colSpan={3}>
-        {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
         <DateInput
           id={fields.trainingCompensationStartDate.name}
           name={fields.trainingCompensationStartDate.name}
@@ -421,7 +416,6 @@ const TrainingCompensationInputSection: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={6} $colSpan={3}>
-        {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
         <DateInput
           id={fields.trainingCompensationEndDate.name}
           name={fields.trainingCompensationEndDate.name}
@@ -569,7 +563,6 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colSpan={3}>
-        {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
         <TextInput
           id={fields.monthlyPay.name}
           name={fields.monthlyPay.name}
@@ -586,7 +579,6 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colSpan={3}>
-        {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
         <TextInput
           id={fields.otherExpenses.name}
           name={fields.otherExpenses.name}
@@ -603,7 +595,6 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colSpan={3}>
-        {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
         <TextInput
           id={fields.vacationMoney.name}
           name={fields.vacationMoney.name}
@@ -727,7 +718,6 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={2}>
-        {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
         <DateInput
           id={fields.startDate.name}
           name={fields.startDate.name}
@@ -745,7 +735,6 @@ const SalaryBenefitCalculatorView: React.FC<
 
       <$GridCell $colStart={3} $colSpan={3}>
         {/* TODO: MAX DATE */}
-        {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
         <DateInput
           id={fields.endDate.name}
           name={fields.endDate.name}
