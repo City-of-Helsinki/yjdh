@@ -26,12 +26,24 @@ export const getWizardComponents = async (t: TestController) => {
       screen.findByRole('button', {
         name: /keskeytä|cancel|avbryt/i,
       }),
+    deleteButton: () =>
+      screen.findByRole('button', {
+        name: /poista|delete|ta bort/i,
+      }),
     confirmationDialog: () =>
       screen.findByRole('dialog', {
         name: /haluatko poistua sivulta\?|do you want to leave the page\?|vill du lämna sidan\?/i,
       }),
+    deleteConfirmationDialog: () =>
+      screen.findByRole('dialog', {
+        name: /haluatko poistaa hakemuksen\?|do you want to delete the application\?|vill du ta bort ansökan\?/i,
+      }),
     confirmCancelButton: () => {
       const dialog = selectors.confirmationDialog();
+      return withinContext(t)(dialog).findByTestId('modalSubmit');
+    },
+    confirmDeleteButton: () => {
+      const dialog = selectors.deleteConfirmationDialog();
       return withinContext(t)(dialog).findByTestId('modalSubmit');
     },
     step1Button: () =>
@@ -72,6 +84,12 @@ export const getWizardComponents = async (t: TestController) => {
     },
     clickConfirmCancelButton() {
       return t.click(selectors.confirmCancelButton());
+    },
+    clickDeleteButton() {
+      return t.click(selectors.deleteButton());
+    },
+    clickConfirmDeleteButton() {
+      return t.click(selectors.confirmDeleteButton());
     },
   };
 
