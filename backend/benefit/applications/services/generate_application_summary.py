@@ -1,5 +1,4 @@
 from datetime import date
-from typing import Union
 
 import pdfkit
 from django.template import loader
@@ -36,7 +35,7 @@ def get_context_for_summary_context(application):
     }
 
 
-def generate_application_summary_file(application, request=None) -> Union[bytes, None]:
+def generate_application_summary_file(application, request=None) -> bytes | None:
     def generate_summary_pdf(context) -> bytes:
         template = loader.get_template("application.html")
         rendered_template = template.render(context, request)
@@ -80,7 +79,7 @@ def get_handler_context_for_summary(application):
     return context
 
 
-def generate_handler_application_pdf(application, request=None) -> Union[bytes, None]:
+def generate_handler_application_pdf(application, request=None) -> bytes | None:
     def generate_pdf(context) -> bytes:
         template = loader.get_template("application_handler.html")
         rendered_template = template.render(context, request)

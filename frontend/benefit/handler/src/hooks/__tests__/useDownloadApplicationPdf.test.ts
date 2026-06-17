@@ -62,8 +62,6 @@ describe('useDownloadApplicationPdf', () => {
   });
 
   it('triggers a file download with the correct filename on success', () => {
-    const createObjectURL = jest.fn(() => 'blob:fake-url');
-    const revokeObjectURL = jest.fn();
     const click = jest.fn();
     const anchorElement = {
       href: '',
@@ -77,8 +75,13 @@ describe('useDownloadApplicationPdf', () => {
         tag === 'a' ? anchorElement : originalCreateElement(tag)
       );
 
-    global.URL.createObjectURL = createObjectURL;
-    global.URL.revokeObjectURL = revokeObjectURL;
+    // JSDOM does not define URL.createObjectURL/revokeObjectURL, so assign directly
+    const createObjectURL = jest.fn(() => 'blob:fake-url');
+    const revokeObjectURL = jest.fn();
+    const originalCreateObjectURL = URL.createObjectURL?.bind(URL);
+    const originalRevokeObjectURL = URL.revokeObjectURL?.bind(URL);
+    URL.createObjectURL = createObjectURL;
+    URL.revokeObjectURL = revokeObjectURL;
 
     renderHook(() => useDownloadApplicationPdf());
 
@@ -93,6 +96,8 @@ describe('useDownloadApplicationPdf', () => {
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:fake-url');
 
     createElement.mockRestore();
+    URL.createObjectURL = originalCreateObjectURL;
+    URL.revokeObjectURL = originalRevokeObjectURL;
   });
 
   it('shows an error toast on failure', () => {
