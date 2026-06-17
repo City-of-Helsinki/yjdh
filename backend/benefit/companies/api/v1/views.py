@@ -8,6 +8,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from requests.exceptions import HTTPError
 from rest_framework import status
+from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
@@ -124,23 +125,21 @@ class GetUsersOrganizationView(APIView):
         return Response(company_data)
 
 
-class UpdateCompanyIndustryCodeView(APIView):
+class UpdateCompanyIndustryCodeView(UpdateAPIView):
     """Handler-only endpoint to set the industry (TOL) code on a company."""
 
     permission_classes = [BFIsHandler]
+    queryset = Company.objects.all()
+    serializer_class = UpdateCompanyIndustryCodeSerializer
 
     @transaction.atomic
-    def patch(self, request: HttpRequest, id: str) -> Response:
-        try:
-            company = Company.objects.get(pk=id)
-        except (Company.DoesNotExist, ValueError):
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-        serializer = UpdateCompanyIndustryCodeSerializer(company, data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
-        return Response(CompanySerializer(company).data)
+    @transaction.atomic
+    def patch(self, request, *args, **kwargs):
+        # Don't allow partial updates
+        return self.update(request, *args, **kwargs)
 
 
 class SearchOrganisationsView(APIView):
