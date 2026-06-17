@@ -397,3 +397,60 @@ test.requestHooks(
     } as Application);
   }
 );
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'can cancel application filling and then resume editing from dashboard',
+  async (t: TestController) => {
+    const application = await loginAndfillApplication(
+      t,
+      1,
+      FULLY_MOCKED_FORM_DATA
+    );
+    const wizard = await getWizardComponents(t);
+
+    await wizard.actions.clickCancelButton();
+    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+    await wizard.actions.clickConfirmCancelButton();
+
+    const dashboard = getDashboardComponents(t);
+    await dashboard.expectations.isLoaded();
+    await urlUtils.expectations.urlChangedToLandingPage();
+
+    const employeeName = application.summer_vouchers[0].employee_name ?? '';
+    await dashboard.expectations.hasApplication(employeeName);
+
+    // Edit the application
+    await dashboard.actions.clickEditApplication(employeeName);
+
+    // Verify it navigates back to the application form page and step 1 is loaded with correct data
+    const wizardOnReturn = await getWizardComponents(t);
+    await wizardOnReturn.expectations.isPresent();
+
+    const step1Form = await step1Components.form();
+    await step1Form.expectations.isPresent();
+    await step1Form.expectations.isFulFilledWith(application);
+  }
+);
+
+test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  'can delete application from wizard',
+  async (t: TestController) => {
+    const application = await loginAndfillApplication(
+      t,
+      1,
+      FULLY_MOCKED_FORM_DATA
+    );
+    const wizard = await getWizardComponents(t);
+
+    await wizard.actions.clickDeleteButton();
+    await t.expect(wizard.selectors.deleteConfirmationDialog().exists).ok();
+    await wizard.actions.clickConfirmDeleteButton();
+
+    const dashboard = getDashboardComponents(t);
+    await dashboard.expectations.isLoaded();
+    await urlUtils.expectations.urlChangedToLandingPage();
+
+    const employeeName = application.summer_vouchers[0].employee_name ?? '';
+    await dashboard.expectations.hasNoApplication(employeeName);
+  }
+);

@@ -239,6 +239,44 @@ const handleEmployerApplicationsGet = async (
   }
 };
 
+const handleEmployerApplicationsListGet = async (
+  req: MockRequest,
+  res: MockResponse
+): Promise<void> => {
+  try {
+    const response = await axios.get<{
+      results?: Array<{ summer_vouchers?: VoucherData[] }>;
+    }>(req.url, { headers: req.headers, httpsAgent });
+
+    const responseBody = response.data;
+
+    if (responseBody.results) {
+      responseBody.results = responseBody.results.map((app) => {
+        if (app.summer_vouchers) {
+          return {
+            ...app,
+            summer_vouchers: app.summer_vouchers.map((v) =>
+              restoreVoucherData(v)
+            ),
+          };
+        }
+        return app;
+      });
+    }
+
+    res.headers = getTestCafeHeaders(response.headers as AxiosResponseHeaders);
+    res.statusCode = response.status;
+    res.setBody(responseBody as object);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      res.statusCode = error.response?.status || 500;
+      res.setBody((error.response?.data as object) || {});
+    } else {
+      res.statusCode = 500;
+    }
+  }
+};
+
 export const getFetchEmployeeDataMock: (
   mockData: Partial<Employment>
 ) => RequestMock = (mockData: Partial<Employment> = MOCKED_EMPLOYEE_DATA) =>
@@ -254,7 +292,12 @@ export const getFetchEmployeeDataMock: (
       url: /employerapplications\/[\da-f-]+\/$/,
       method: 'GET',
     })
-    .respond(handleEmployerApplicationsGet);
+    .respond(handleEmployerApplicationsGet)
+    .onRequestTo({
+      url: /employerapplications\/(\?|$)/,
+      method: 'GET',
+    })
+    .respond(handleEmployerApplicationsListGet);
 
 export const attachmentsMock = RequestMock()
   .onRequestTo({
