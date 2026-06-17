@@ -214,7 +214,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                     `${translationsBase}.employee.fields.roleOfEmployeeInOrganization.summaryLabel`
                   )}
                 </$ApplicationDetailLabel>
-                <$ApplicationDetailValue $column={1}>
+                <$ApplicationDetailValue $colSpan={12} $colStart={1}>
                   {data?.roleOfEmployeeInOrganization &&
                     data?.roleOfEmployeeInOrganization
                       .split('\n')
