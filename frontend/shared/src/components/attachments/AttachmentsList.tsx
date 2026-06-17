@@ -1,4 +1,4 @@
-import { ButtonVariant, IconPlus } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant, IconPlus } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
@@ -86,7 +86,7 @@ const AttachmentsList = <T extends Attachment>({
       <UploadAttachment
         buttonRef={buttonRef}
         name={name}
-        theme="coat"
+        theme={ButtonPresetTheme.Coat}
         variant={ButtonVariant.Primary}
         onUpload={onUpload}
         isUploading={isUploading}

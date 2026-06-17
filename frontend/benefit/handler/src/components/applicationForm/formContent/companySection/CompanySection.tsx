@@ -101,6 +101,14 @@ const CompanySection: React.FC<Props> = ({
     }),
     [getErrorMessage, fields, t]
   );
+  const hdsLanguageOptions = React.useMemo(
+    () =>
+      languageOptions.map((option) => ({
+        label: option.label,
+        value: option.value?.toString(),
+      })),
+    [languageOptions]
+  );
 
   return (
     <>
@@ -181,7 +189,6 @@ const CompanySection: React.FC<Props> = ({
         {formik.values.useAlternativeAddress && (
           <$GridCell as={$Grid} $colSpan={12}>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.companyDepartment.name}
                 name={fields.companyDepartment.name}
@@ -196,7 +203,6 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colStart={1} $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyStreetAddress.name}
                 name={fields.alternativeCompanyStreetAddress.name}
@@ -218,7 +224,6 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyPostcode.name}
                 name={fields.alternativeCompanyPostcode.name}
@@ -240,7 +245,6 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyCity.name}
                 name={fields.alternativeCompanyCity.name}
@@ -278,7 +282,6 @@ const CompanySection: React.FC<Props> = ({
           >
             {
               (() => (
-                // @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here.
                 <TextInput
                   id={fields.companyBankAccountNumber.name}
                   name={fields.companyBankAccountNumber.name}
@@ -349,7 +352,6 @@ const CompanySection: React.FC<Props> = ({
           </$GridCell>
         )}
         <$GridCell $colSpan={8} $colStart={1}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyNumberOfEmployees.name}
             name={fields.companyNumberOfEmployees.name}
@@ -371,7 +373,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-          {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
           <TextArea
             id={fields.companyBusinessBrief.name}
             name={fields.companyBusinessBrief.name}
@@ -430,7 +431,6 @@ const CompanySection: React.FC<Props> = ({
       </FormSection>
       <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -452,7 +452,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonLastName.name}
             name={fields.companyContactPersonLastName.name}
@@ -474,7 +473,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonPhoneNumber.name}
             name={fields.companyContactPersonPhoneNumber.name}
@@ -496,7 +494,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonEmail.name}
             name={fields.companyContactPersonEmail.name}
@@ -516,19 +513,17 @@ const CompanySection: React.FC<Props> = ({
         <$GridCell $colSpan={3}>
           <Select
             texts={languageTexts}
-            onChange={(lang: Option[]) =>
-              formik.setFieldValue(fields.applicantLanguage.name, lang[0].value)
-            }
-            options={languageOptions}
+            onChange={(lang: Option[]) => {
+              void formik.setFieldValue(
+                fields.applicantLanguage.name,
+                lang[0]?.value
+              );
+            }}
+            options={hdsLanguageOptions}
             id={fields.applicantLanguage.name}
             invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
-            value={[
-              formik.values.applicantLanguage ?? {
-                label: 'Suomi',
-                value: 'fi',
-              },
-            ].filter(Boolean)}
+            value={[formik.values.applicantLanguage ?? 'fi'].filter(Boolean)}
             required
           />
         </$GridCell>
@@ -632,7 +627,6 @@ const CompanySection: React.FC<Props> = ({
               margin-top: ${theme.spacing.s};
             `}
           >
-            {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
             <TextArea
               id={fields.coOperationNegotiationsDescription.name}
               name={fields.coOperationNegotiationsDescription.name}

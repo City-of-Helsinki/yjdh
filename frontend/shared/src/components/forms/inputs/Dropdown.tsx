@@ -14,8 +14,6 @@ type Option = {
   name: string;
 };
 
-type SelectTexts = NonNullable<React.ComponentProps<typeof Select>['texts']>;
-
 export type HdsOption = {
   label: string;
   value: string;
@@ -70,8 +68,8 @@ const Dropdown = <T extends FieldValues, O extends Option>({
   };
 
   const texts = useMemo(() => {
-    const baseTexts: Partial<SelectTexts> = {
-      label: label || '',
+    const baseTexts: Record<string, string | undefined> = {
+      label: label as string,
       placeholder,
     };
     if (filterLabel) {
@@ -80,7 +78,7 @@ const Dropdown = <T extends FieldValues, O extends Option>({
     if (filterPlaceholder) {
       baseTexts.filterPlaceholder = filterPlaceholder;
     }
-    return baseTexts;
+    return baseTexts as React.ComponentProps<typeof Select>['texts'];
   }, [label, placeholder, filterLabel, filterPlaceholder]);
 
   const sharedSelectProps = {

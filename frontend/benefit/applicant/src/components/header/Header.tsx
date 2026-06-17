@@ -88,12 +88,13 @@ const Header: React.FC = () => {
                   theme={ButtonPresetTheme.Coat}
                   onClick={() => setMessagesDrawerVisiblity(true)}
                 >
-                  {t('common:header.messages')}
-                  {unreadMessagesCount
-                    ? ` (${t('common:applications.list.common.newMessages', {
-                        count: unreadMessagesCount,
-                      })})`
-                    : ''}
+                  {`${t('common:header.messages')}${
+                    unreadMessagesCount
+                      ? ` (${t('common:applications.list.common.newMessages', {
+                          count: unreadMessagesCount,
+                        })})`
+                      : ''
+                  }`}
                 </Button>,
               ]
             : undefined

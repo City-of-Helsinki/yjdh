@@ -6,7 +6,13 @@ import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import AlterationFormContext from 'benefit-shared/context/AlterationFormContext';
 import { Application } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
-import { DateInput, RadioButton, SelectionGroup, TextInput } from 'hds-react';
+import {
+  DateInput,
+  RadioButton,
+  SelectionGroup,
+  TextInput,
+  Tooltip,
+} from 'hds-react';
 import React, { useContext, useMemo } from 'react';
 import {
   $Grid,
@@ -114,7 +120,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
         {alterationType !== null && (
           <>
             <$GridCell $colSpan={3}>
-              {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
               <DateInput
                 label={t(`${translationBase}.fields.endDate.label`)}
                 helperText={t(`${translationBase}.fields.date.helpText`)}
@@ -135,7 +140,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             </$GridCell>
             {alterationType === ALTERATION_TYPE.SUSPENSION && (
               <$GridCell $colSpan={3}>
-                {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
                 <DateInput
                   label={t(`${translationBase}.fields.resumeDate.label`)}
                   helperText={t(`${translationBase}.fields.date.helpText`)}
@@ -159,7 +163,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             )}
             <$GridCell $colSpan={6} />
             <$GridCell $colSpan={6}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={
                   alterationType === ALTERATION_TYPE.SUSPENSION
@@ -190,7 +193,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
           <$H2>{t(`${translationBase}.billing`)}</$H2>
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             label={t(`${translationBase}.fields.contactPersonName.label`)}
             helperText={t(
@@ -246,7 +248,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
         {useEinvoice && (
           <>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={t(
                   `${translationBase}.fields.einvoiceProviderName.label`
@@ -267,7 +268,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             </$GridCell>
             <$GridCell $colSpan={8} />
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={t(
                   `${translationBase}.fields.einvoiceProviderIdentifier.label`
@@ -288,15 +288,16 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             </$GridCell>
             <$GridCell $colSpan={8} />
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={t(`${translationBase}.fields.einvoiceAddress.label`)}
                 placeholder={t(
                   `${translationBase}.fields.einvoiceAddress.placeholder`
                 )}
-                tooltipText={t(
-                  `${translationBase}.fields.einvoiceAddress.tooltip`
-                )}
+                tooltip={
+                  <Tooltip>
+                    {t(`${translationBase}.fields.einvoiceAddress.tooltip`)}
+                  </Tooltip>
+                }
                 value={formik.values.einvoiceAddress}
                 id="alteration-einvoice-address"
                 name="einvoiceAddress"

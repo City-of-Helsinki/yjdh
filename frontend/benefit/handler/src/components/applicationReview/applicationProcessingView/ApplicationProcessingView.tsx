@@ -91,8 +91,8 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 checked={
                   handledApplication?.status === APPLICATION_STATUSES.REJECTED
                 }
-                onChange={(value: boolean) => {
-                  if (value) {
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.checked) {
                     setHandledApplication({
                       ...handledApplication,
                       logEntryComment: '',
@@ -120,7 +120,6 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
             </$Grid>
             <$Grid>
               <$GridCell $colSpan={6}>
-                {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
                 <TextArea
                   id="proccessRejectedComments"
                   name="proccessRejectedComments"
@@ -147,8 +146,8 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                 checked={
                   handledApplication?.status === APPLICATION_STATUSES.ACCEPTED
                 }
-                onChange={(value: boolean) => {
-                  if (value) {
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.checked) {
                     setHandledApplication({
                       ...handledApplication,
                       logEntryComment: '',
@@ -214,7 +213,6 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   $colStart={1}
                   style={{ paddingTop: theme.spacing.l }}
                 >
-                  {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
                   <TextArea
                     id="proccessAcceptedComments"
                     name="proccessAcceptedComments"
@@ -245,8 +243,8 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                   value="yes"
                   label={t(`${translationsBase}.actions.grantedAsDeminimisAid`)}
                   checked={handledApplication.grantedAsDeMinimisAid === true}
-                  onChange={(value: boolean) => {
-                    if (value) toggleGrantedAsDeMinimisAid(true);
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    if (event.target.checked) toggleGrantedAsDeMinimisAid(true);
                   }}
                 />
               </$GridCell>
@@ -259,14 +257,15 @@ const ApplicationProcessingView: React.FC<{ data: Application }> = ({
                     `${translationsBase}.actions.grantedAsDeminimisAidNo`
                   )}
                   checked={handledApplication.grantedAsDeMinimisAid === false}
-                  onChange={(value: boolean) => {
-                    if (value) toggleGrantedAsDeMinimisAid(false);
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    if (event.target.checked) {
+                      toggleGrantedAsDeMinimisAid(false);
+                    }
                   }}
                 />
               </$GridCell>
               {needsIndustryCode && (
                 <$GridCell $colSpan={6}>
-                  {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                   <TextInput
                     id="industryCodeInput"
                     label={t(`${translationsBase}.fields.industryCode`)}

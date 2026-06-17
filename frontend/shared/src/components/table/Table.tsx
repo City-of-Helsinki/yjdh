@@ -5,6 +5,7 @@ import LoadingSkeleton from 'react-loading-skeleton';
 import {
   actions,
   Cell,
+  CellProps,
   Column as ColumnType,
   HeaderProps,
   Row,
@@ -22,6 +23,7 @@ import {
   UseGlobalFiltersOptions,
   usePagination,
   useRowSelect,
+  UseRowSelectInstanceProps,
   useSortBy,
   UseSortByColumnOptions,
   useTable,
@@ -112,7 +114,7 @@ const Table = <D extends { id: string }>({
 TableProps<D>): React.ReactElement => {
   const selectorCol: Column<D> = React.useMemo(
     () => ({
-      Cell: ({ row }: { row: Row }) => {
+      Cell: ({ row }: CellProps<D>) => {
         const { title, style, checked, onChange } =
           row.getToggleRowSelectedProps();
         return (
@@ -151,11 +153,7 @@ TableProps<D>): React.ReactElement => {
         row,
         toggleAllRowsSelected,
         toggleRowSelected,
-      }: {
-        row: Row;
-        toggleAllRowsSelected: (selected: boolean) => void;
-        toggleRowSelected: (rowId: string) => void;
-      }) => {
+      }: CellProps<D> & UseRowSelectInstanceProps<D>) => {
         const { title, style, checked } = row.getToggleRowSelectedProps();
         return (
           <RadioButton
@@ -179,7 +177,7 @@ TableProps<D>): React.ReactElement => {
 
   const expanderCol: Column<D> = React.useMemo(
     () => ({
-      Cell: ({ row }: { row: Row }) => (
+      Cell: ({ row }: CellProps<D>) => (
         <div {...row.getToggleRowExpandedProps()}>
           <IconAngleDown size={IconSize.Medium} />
         </div>

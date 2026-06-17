@@ -174,7 +174,7 @@ const Header: React.FC<HeaderProps> = ({
 
           {languages && onLanguageChange && (
             <HdsHeader.LanguageSelector
-              ariaLabel={t('common:header.languageMenuButtonAriaLabel')}
+              aria-label={t('common:header.languageMenuButtonAriaLabel')}
             />
           )}
         </HdsHeader.ActionBar>

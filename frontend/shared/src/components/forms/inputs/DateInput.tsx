@@ -44,7 +44,7 @@ const DateInput = <T extends FieldValues>({
   const locale = useLocale();
   const { register } = useFormContext<T>();
   const validate = React.useCallback(
-    (value) => isString(value) && isValidDate(parseDate(value)),
+    (value: unknown) => isString(value) && isValidDate(parseDate(value)),
     []
   );
   const reactHookFormProps = register(id, {

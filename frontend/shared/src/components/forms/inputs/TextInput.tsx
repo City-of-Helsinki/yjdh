@@ -43,7 +43,7 @@ const TextInput = <T extends FieldValues>({
   type = 'text',
   placeholder,
   initialValue,
-  label,
+  label = '',
   errorText,
   registerOptions = {},
   onChange,
@@ -83,7 +83,9 @@ const TextInput = <T extends FieldValues>({
     <$GridCell {...$gridCellProps}>
       <$TextInput
         {...registerEvents}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange={(
+          e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        ) => {
           void registerEvents.onChange(e);
           if (onChange) {
             onChange(e.target.value);
@@ -97,18 +99,14 @@ const TextInput = <T extends FieldValues>({
             onBlur(e);
           }
         }}
-        as={getComponentType(type)}
+        as={getComponentType(type) as React.ElementType}
         key={id}
         id={id}
         data-testid={id}
         name={id}
         placeholder={placeholder}
         required={Boolean(registerOptions.required)}
-        max={
-          registerOptions.maxLength
-            ? String(registerOptions.maxLength)
-            : undefined
-        }
+        max={(registerOptions.maxLength as number) ?? undefined}
         helperText={helperText ?? lengthIndicator}
         defaultValue={initialValue}
         onWheel={preventScrolling}

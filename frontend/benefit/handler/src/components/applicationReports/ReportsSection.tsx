@@ -61,7 +61,7 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
                 `}
                 onClick={() => onDownloadButtonClick(exportFileType, false)}
               >
-                {buttonText} {String(exportFileType).toUpperCase()}
+                {`${buttonText} ${String(exportFileType).toUpperCase()}`}
               </Button>
             </$GridCell>
             <$GridCell>

@@ -324,7 +324,6 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               )}
             />
             <Dialog.Content>
-              {/* @ts-expect-error -- HDS DateInput types are overly strict with TS 5.9 */}
               <DateInput
                 id="instalment-change-date-dateinput"
                 label={t(

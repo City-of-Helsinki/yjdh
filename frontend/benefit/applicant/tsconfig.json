@@ -2,10 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../../",
-    "types": [
-      "jest",
-      "@testing-library/jest-dom"
-    ],
     "paths": {
       "benefit/applicant/*": ["benefit/applicant/src/*"],
       "benefit-shared/*": ["benefit/shared/src/*"],

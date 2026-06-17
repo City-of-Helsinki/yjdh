@@ -1,4 +1,8 @@
-import { ButtonVariant, IconCheckCircleFill } from 'hds-react';
+import {
+  ButtonVariant,
+  IconCheckCircleFill,
+  NotificationSize,
+} from 'hds-react';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
@@ -121,7 +125,7 @@ const ThankYouPage: NextPage = () => {
         <$Notification
           label={t('common:thankyouPage.thankyouMessageLabel')}
           type="success"
-          size="large"
+          size={NotificationSize.Large}
         >
           {t(`common:thankyouPage.thankyouMessageContent`)}
         </$Notification>

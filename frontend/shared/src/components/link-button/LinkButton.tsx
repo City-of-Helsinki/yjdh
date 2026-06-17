@@ -1,10 +1,13 @@
-import { ButtonProps, ButtonVariant, LoadingSpinner } from 'hds-react';
+import { ButtonVariant, LoadingSpinner } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import $LinkButton from './LinkButton.sc';
 
-type Props = Omit<ButtonProps, 'size' | 'variant'> & {
+type Props = Omit<
+  React.ComponentProps<typeof $LinkButton>,
+  'size' | 'variant'
+> & {
   isLoading?: boolean;
   loadingText?: string;
 };

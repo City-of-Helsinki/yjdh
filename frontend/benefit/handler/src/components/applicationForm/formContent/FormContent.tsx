@@ -140,7 +140,6 @@ const FormContent: React.FC<Props> = ({
             </$DateHeader>
           </$GridCell>
           <$GridCell $colStart={1} $colSpan={4}>
-            {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
             <DateInput
               id={fields.paperApplicationDate.name}
               name={fields.paperApplicationDate.name}
@@ -175,7 +174,6 @@ const FormContent: React.FC<Props> = ({
 
       <FormSection header={t(`${translationsBase}.headings.employment1`)}>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.employee.firstName.name}
             name={fields.employee.firstName.name}
@@ -190,7 +188,6 @@ const FormContent: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.employee.lastName.name}
             name={fields.employee.lastName.name}
@@ -205,7 +202,6 @@ const FormContent: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.employee.socialSecurityNumber.name}
             name={fields.employee.socialSecurityNumber.name}
@@ -395,7 +391,6 @@ const FormContent: React.FC<Props> = ({
                 padding-left: ${theme.spacing.m};
               `}
             >
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.otherSubsidisedNumber.name}
                 name={fields.otherSubsidisedNumber.name}
@@ -418,7 +413,6 @@ const FormContent: React.FC<Props> = ({
       >
         <>
           <$GridCell $colSpan={4}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.jobTitle.name}
               name={fields.employee.jobTitle.name}
@@ -433,7 +427,6 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.workingHours.name}
               name={fields.employee.workingHours.name}
@@ -460,7 +453,6 @@ const FormContent: React.FC<Props> = ({
             </$HelpText>
           </$GridCell>
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.collectiveBargainingAgreement.name}
               name={fields.employee.collectiveBargainingAgreement.name}
@@ -488,7 +480,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
 
           <$GridCell $colSpan={12}>
-            {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
             <TextArea
               id={fields.roleOfEmployeeInOrganization.name}
               name={fields.roleOfEmployeeInOrganization.name}
@@ -524,7 +515,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
 
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.monthlyPay.name}
               name={fields.employee.monthlyPay.name}
@@ -545,7 +535,6 @@ const FormContent: React.FC<Props> = ({
             <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
           </$GridCell>
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.vacationMoney.name}
               name={fields.employee.vacationMoney.name}
@@ -570,7 +559,6 @@ const FormContent: React.FC<Props> = ({
             <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
           </$GridCell>
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.otherExpenses.name}
               name={fields.employee.otherExpenses.name}
@@ -646,7 +634,6 @@ const FormContent: React.FC<Props> = ({
           <$DateHeader>{t(`${translationsBase}.dateExplanation`)}</$DateHeader>
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={6}>
-          {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
           <DateInput
             id={fields.startDate.name}
             name={fields.startDate.name}
@@ -670,7 +657,6 @@ const FormContent: React.FC<Props> = ({
           —
         </$GridCell>
         <$GridCell $colSpan={6}>
-          {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
           <DateInput
             id={fields.endDate.name}
             name={fields.endDate.name}

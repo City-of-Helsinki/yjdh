@@ -30,7 +30,7 @@ export const $ChangeRowLabel = styled.dt`
 `;
 
 type $ChangeSetProps = {
-  isChangeByStaff: boolean;
+  isChangeByStaff?: boolean;
   theme: DefaultTheme;
 };
 export const $ChangeSet = styled.div<$ChangeSetProps>`

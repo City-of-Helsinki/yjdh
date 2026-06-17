@@ -22,6 +22,7 @@ import {
   Fieldset,
   Notification,
   TextInput,
+  Tooltip,
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -261,12 +262,13 @@ const AlterationCalculator = ({
           <$GridCell $colSpan={6}>
             <Fieldset
               heading={t(`${translationBase}.fields.recoveryPeriod.label`)}
-              tooltipText={t(
-                `${translationBase}.fields.recoveryPeriod.helpText`
-              )}
+              tooltip={
+                <Tooltip>
+                  {t(`${translationBase}.fields.recoveryPeriod.helpText`)}
+                </Tooltip>
+              }
             >
               <$DateRange>
-                {/* @ts-expect-error TS2740: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
                 <DateInput
                   label={t(`${translationBase}.fields.recoveryStartDate.label`)}
                   value={formik.values.recoveryStartDate}
@@ -285,7 +287,6 @@ const AlterationCalculator = ({
                   hideLabel
                 />
                 <$DateRangeSeparator aria-hidden>—</$DateRangeSeparator>
-                {/* @ts-expect-error TS2740: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
                 <DateInput
                   label={t(`${translationBase}.fields.recoveryEndDate.label`)}
                   value={formik.values.recoveryEndDate}
@@ -312,7 +313,6 @@ const AlterationCalculator = ({
           {formik.values.isManual && (
             <>
               <$GridCell $colSpan={3}>
-                {/* @ts-expect-error TS2740: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   label={t(`${translationBase}.fields.recoveryAmount.label`)}
                   id="manual-recovery-amount"
