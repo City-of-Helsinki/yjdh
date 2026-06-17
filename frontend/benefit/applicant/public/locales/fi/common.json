@@ -315,7 +315,7 @@
           },
           "otherFinancialSupportForEmployment": {
             "label": "Onko työllistettävän palkkaukseen myönnetty muuta tukea?",
-            "tooltip": "Hakemuksessa on ilmoitettava, jos työnantaja saa saman henkilön palkkaamiseen muuta tukea. Jos työllistettävän palkkaukseen on haettu/ssatu muuta tukea, tulemme pyytämään selvitystä.",
+            "tooltip": "Hakemuksessa on ilmoitettava, jos työnantaja saa saman henkilön palkkaamiseen muuta tukea. Jos työllistettävän palkkaukseen on haettu/saatu muuta tukea, tulemme pyytämään selvitystä.",
             "yes": "Kyllä",
             "no": "Ei"
           },

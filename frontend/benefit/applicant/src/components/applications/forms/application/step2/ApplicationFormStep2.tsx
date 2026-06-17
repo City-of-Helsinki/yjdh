@@ -111,7 +111,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             required
           />
         </$GridCell>
-        <$GridCell $colSpan={2}>
+        <$GridCell $colSpan={3}>
           {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.employee.socialSecurityNumber.name}
@@ -160,7 +160,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         </$GridCell>
 
         {organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
-          <$GridCell $colSpan={8}>
+          <$GridCell $colSpan={8} $colStart={1}>
             <FieldLabel
               value={fields.associationImmediateManagerCheck.label}
               required
@@ -182,7 +182,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             />
           </$GridCell>
         )}
-        <$GridCell $colSpan={32} $colStart={1}>
+        <$GridCell $colSpan={8} $colStart={1}>
           <SelectionGroup
             id={fields.otherFinancialSupportForEmployment.name}
             label={fields.otherFinancialSupportForEmployment.label}
