@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as __
@@ -133,7 +134,7 @@ class UpdateCompanyIndustryCodeView(APIView):
     def patch(self, request: HttpRequest, id: str) -> Response:
         try:
             company = Company.objects.get(pk=id)
-        except (Company.DoesNotExist, ValueError):
+        except (Company.DoesNotExist, ValueError, DjangoValidationError):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = UpdateCompanyIndustryCodeSerializer(company, data=request.data)
