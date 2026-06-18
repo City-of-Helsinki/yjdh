@@ -22,7 +22,7 @@ describe('withKesaseteliSecurityHeaders', () => {
 
     expect(headers).toEqual([
       {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
           {
             key: 'Content-Security-Policy',
