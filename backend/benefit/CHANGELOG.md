@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.23.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.22.0...benefit-backend-v2.23.0) (2026-06-18)
+
+
+### Features
+
+* **benefit:** Endpoint to set company TOL code ([78fa61a](https://github.com/City-of-Helsinki/yjdh/commit/78fa61a81b9a3332bb88fe0772cc1111dc6cda15))
+* **benefit:** Error toast for failing tol code ([1489c62](https://github.com/City-of-Helsinki/yjdh/commit/1489c6210f3336d76129fbd74a6c6b171972b1d6))
+* **benefit:** Test for manual industrycode update ([1dc82f1](https://github.com/City-of-Helsinki/yjdh/commit/1dc82f16a7f6d6edcfbdb6b680fd6628fd43d663))
+
+
+### Bug Fixes
+
+* Make company TOL code endpoint use drf ([a2fbad0](https://github.com/City-of-Helsinki/yjdh/commit/a2fbad01d1099115cb77d11a55ec90e47d6a27cb))
+
+
+### Dependencies
+
+* Bump pyjwt from 2.12.0 to 2.13.0 in /backend/benefit ([d079353](https://github.com/City-of-Helsinki/yjdh/commit/d0793530dad3437b343cc5a9248203e44a776f6b))
+
 ## [2.22.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.21.0...benefit-backend-v2.22.0) (2026-06-15)
 
 
