@@ -7,11 +7,13 @@ from drf_spectacular.views import SpectacularRedocView, SpectacularSwaggerView
 
 # CDN requirements for drf-spectacular's default Swagger UI and ReDoc templates.
 # https://drf-spectacular.readthedocs.io/en/latest/faq.html#my-swagger-ui-and-or-redoc-page-is-blank
+CDN_JSDELIVR = "cdn.jsdelivr.net"
 API_DOCS_CSP = {
-    "script-src": [SELF, UNSAFE_INLINE, "cdn.jsdelivr.net"],
+    "script-src": [SELF, UNSAFE_INLINE, CDN_JSDELIVR],
+    "connect-src": [SELF, CDN_JSDELIVR],
     "worker-src": [SELF, "blob:"],
-    "img-src": [SELF, "data:", "cdn.jsdelivr.net", "cdn.redoc.ly"],
-    "style-src": [SELF, UNSAFE_INLINE, "cdn.jsdelivr.net", "fonts.googleapis.com"],
+    "img-src": [SELF, "data:", CDN_JSDELIVR, "cdn.redoc.ly"],
+    "style-src": [SELF, UNSAFE_INLINE, CDN_JSDELIVR, "fonts.googleapis.com"],
     "font-src": [SELF, "fonts.gstatic.com"],
 }
 
