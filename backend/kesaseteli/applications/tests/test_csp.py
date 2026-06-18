@@ -7,9 +7,11 @@ from applications.models import EmailTemplate
 
 
 def assert_expected_csp(response):
+    assert "Content-Security-Policy" in response.headers, "CSP header missing from response"
     csp_header = response.headers["Content-Security-Policy"]
     assert "default-src 'self'" in csp_header
-    assert "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net" in csp_header
+    assert "style-src 'self' 'unsafe-inline'" in csp_header
+    assert "img-src 'self' data:" in csp_header
 
 
 @pytest.mark.django_db

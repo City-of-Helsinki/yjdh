@@ -344,7 +344,8 @@ CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
         "default-src": [SELF],
-        "style-src": [SELF, UNSAFE_INLINE, "cdn.jsdelivr.net"],
+        "style-src": [SELF, UNSAFE_INLINE],
+        "img-src": [SELF, "data:"],
     }
 }
 
