@@ -112,6 +112,22 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`common:utility.${data.apprenticeshipProgram ? 'yes' : 'no'}`)}
         </$ViewField>
       </$GridCell>
+      <$GridCell $colSpan={12} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.roleOfEmployeeInOrganization`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {!data.roleOfEmployeeInOrganization ? (
+            '-'
+          ) : (
+            <>
+              {data.roleOfEmployeeInOrganization.split(/\n+/g).map((paragraph: string) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </>
+          )}
+        </$ViewField>
+      </$GridCell>
       <AttachmentsListView
         title={t(
           'common:applications.sections.attachments.types.employmentContract.title'

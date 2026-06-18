@@ -2,10 +2,11 @@ import {
   $ViewField,
   $ViewFieldBold,
 } from 'benefit/handler/components/applicationForm/ApplicationForm.sc';
+import AttachmentsListView from "benefit/handler/components/attachmentsListView/AttachmentsListView";
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ACTIONLESS_STATUSES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
-import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
+import {ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import { friendlyFormatIBAN } from 'ibantools';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -95,6 +96,53 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$ViewField>
         </$GridCell>
       )}
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.companyNumberOfEmployees`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {data.companyNumberOfEmployees}
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={12} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.companyBusinessBrief`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {!data.companyBusinessBrief ? (
+            '-'
+          ) : (
+            <>
+              {data.companyBusinessBrief.split(/\n+/g).map((paragraph: string) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </>
+          )}
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <AttachmentsListView
+          type={ATTACHMENT_TYPES.BUSINESS_BRIEF}
+          title={t(
+            `${translationsBase}.fields.companyBusinessBrief`
+          )}
+          attachments={data.attachments || []}
+        />
+      </$GridCell>
+      <$GridCell $colStart={1} $colSpan={6}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.purchasedService`)}
+        </$ViewFieldBold>
+        <$ViewField>
+          {data?.purchasedService == null ? '-'
+            :
+            (data?.purchasedService
+            ?
+            t(`common:utility.yes`)
+            :
+            t(`common:utility.no`))}
+        </$ViewField>
+      </$GridCell>
     </ReviewSection>
   );
 };

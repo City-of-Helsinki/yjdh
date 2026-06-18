@@ -65,6 +65,46 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$ViewField>
         </$GridCell>
       )}
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.otherFinancialSupport`)}
+        </$ViewFieldBold>
+        <$ViewField large>
+          {data.otherFinancialSupportForEmployment == null ?
+            '-'
+            :
+            t(
+            `common:utility.${
+              data.otherFinancialSupportForEmployment ? 'yes' : 'no'
+            }`
+          )}
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={6} $colStart={1}>
+        <$ViewFieldBold>
+          {t(`${translationsBase}.fields.otherSubsidisedEmployed`)}
+        </$ViewFieldBold>
+        <$ViewField large>
+          {data.otherSubsidisedEmployed == null ?
+            '-'
+            :
+            t(
+            `common:utility.${
+              data.otherSubsidisedEmployed ? 'yes' : 'no'
+            }`
+          )}
+        </$ViewField>
+      </$GridCell>
+      {data?.otherSubsidisedEmployed && (
+        <$GridCell $colSpan={6} $colStart={1}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.fields.otherSubsidisedNumber`)}
+          </$ViewFieldBold>
+          <$ViewField large>
+            {data.otherSubsidisedNumber}
+          </$ViewField>
+        </$GridCell>
+      )}
       <$GridCell $colSpan={12} $colStart={1}>
         <AttachmentsListView
           title={t('common:attachments.types.helsinkiBenefitVoucher.title')}
