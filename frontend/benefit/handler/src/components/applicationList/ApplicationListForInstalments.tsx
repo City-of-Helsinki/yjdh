@@ -166,12 +166,9 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
           const amountAfterRecoveries = parseFloat(
             String(secondInstalment?.amountAfterRecoveries || 0)
           );
-          const amount = parseFloat(String(secondInstalment?.amount || 0));
           return amountAfterRecoveries > 0 ? (
             <>
               {formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}
-              {' / '}
-              {formatFloatToEvenEuros(amount)}
             </>
           ) : (
             <$Wrapper>
