@@ -1,7 +1,7 @@
 {
   "backend/benefit": "2.23.0",
   "backend/kesaseteli": "1.16.0",
-  "frontend/benefit/handler": "5.2.1",
+  "frontend/benefit/handler": "5.3.0",
   "frontend/benefit/applicant": "4.4.0",
   "frontend/kesaseteli/employer": "2.3.0",
   "frontend/kesaseteli/handler": "2.2.0",
