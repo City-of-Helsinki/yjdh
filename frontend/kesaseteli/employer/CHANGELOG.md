@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.3.0...kesaseteli-employer-v2.3.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* **ks,shared:** Upgrade ibantools & validate IBAN ([eb9eba0](https://github.com/City-of-Helsinki/yjdh/commit/eb9eba0a1ebce0615ba038ee4dc13379d04434bd))
+* **ks:** Add missing and fix wrong favicons ([0d116d0](https://github.com/City-of-Helsinki/yjdh/commit/0d116d0054b160abca1e6fede0c34404ef9e28f8))
+
 ## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.2.1...kesaseteli-employer-v2.3.0) (2026-06-11)
 
 
