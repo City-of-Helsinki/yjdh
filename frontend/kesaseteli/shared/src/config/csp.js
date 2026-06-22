@@ -38,7 +38,7 @@ const buildKesaseteliCspPolicy = () => {
 
   return [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} ${matomoOrigins.join(' ')}`,
+    `script-src 'self'${isDev ? " 'unsafe-eval'" : ''} ${matomoOrigins.join(' ')}`,
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' blob: data: ${matomoOrigins.join(' ')}`,
     `font-src 'self' data: ${fontOrigins.join(' ')}`,

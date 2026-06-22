@@ -35,7 +35,7 @@ describe('withKesaseteliSecurityHeaders', () => {
     ]);
     expect(csp).not.toContain('unsafe-eval');
     expect(csp).toContain(
-      "script-src 'self' 'unsafe-inline' https://webanalytics.digiaiiris.com"
+      "script-src 'self' https://webanalytics.digiaiiris.com"
     );
     expect(csp).toContain(
       "img-src 'self' blob: data: https://webanalytics.digiaiiris.com"
