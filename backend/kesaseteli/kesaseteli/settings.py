@@ -346,6 +346,8 @@ CONTENT_SECURITY_POLICY = {
         "default-src": [SELF],
         "style-src": [SELF, UNSAFE_INLINE],
         "img-src": [SELF, "data:"],
+        "base-uri": [SELF],
+        "object-src": ["'none'"],
     }
 }
 
