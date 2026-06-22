@@ -26,7 +26,7 @@
     "dotenv": "^16.0.0",
     "hds-design-tokens": "^5.0.0",
     "hds-react": "^5.0.0",
-    "ibantools": "^4.1.5",
+    "ibantools": "^4.5.4",
     "lodash": "^4.17.21",
     "next": "15.5.19",
     "next-i18next": "^15.3.0",

@@ -40,10 +40,20 @@ const IbanInput: React.FC<IbanInputProps> = ({
   }, [inputRef, cursor]);
 
   const validateBankAccount = (value: string): boolean => {
-    const { errorCodes, valid } = validateIBAN(
-      electronicFormatIBAN(value ?? undefined) ?? undefined
-    );
+    const electronicIBAN =
+      electronicFormatIBAN(value ?? undefined) ?? undefined;
+    const { errorCodes, valid } = validateIBAN(electronicIBAN ?? undefined);
     if (!valid) {
+      if (process.env.NODE_ENV !== 'production') {
+        const maskedIban = electronicIBAN
+          ? `****${electronicIBAN.slice(-4)}`
+          : undefined;
+        console.error('Invalid IBAN', {
+          valid,
+          errorCodes,
+          maskedIban,
+        });
+      }
       setErrorText(
         t(
           `common:application.form.errors.${
