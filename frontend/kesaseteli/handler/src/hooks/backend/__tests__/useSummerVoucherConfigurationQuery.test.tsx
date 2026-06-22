@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
@@ -60,12 +60,11 @@ describe('useSummerVoucherConfigurationQuery', () => {
       .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
       .reply(200, mockConfigurationData);
 
-    const { result, waitFor } = renderHook(
-      () => useSummerVoucherConfigurationQuery(),
-      { wrapper }
-    );
+    const { result } = renderHook(() => useSummerVoucherConfigurationQuery(), {
+      wrapper,
+    });
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockConfigurationData);
     expect(nock.isDone()).toBe(true);
   });
@@ -75,12 +74,11 @@ describe('useSummerVoucherConfigurationQuery', () => {
       .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
       .reply(500);
 
-    const { result, waitFor } = renderHook(
-      () => useSummerVoucherConfigurationQuery(),
-      { wrapper }
-    );
+    const { result } = renderHook(() => useSummerVoucherConfigurationQuery(), {
+      wrapper,
+    });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(mockErrorHandler).toHaveBeenCalled();
     expect(nock.isDone()).toBe(true);
   });

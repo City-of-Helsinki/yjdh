@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import AppContext, { AppContextType } from 'benefit/handler/context/AppContext';
 import { useRouterNavigation } from 'benefit/handler/hooks/applicationHandling/useRouterNavigation';
 import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';

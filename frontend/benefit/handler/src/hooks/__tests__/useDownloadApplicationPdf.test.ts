@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import '../../../test/i18n/i18n-test';
 
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useMutation } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';

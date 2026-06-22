@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { fakeCreatedYouthApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import mockRouter from 'next-router-mock';
 import React from 'react';
