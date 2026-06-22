@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.formats import date_format
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
@@ -384,6 +384,55 @@ class SchoolFilter(admin.SimpleListFilter):
         return queryset
 
 
+class YouthSummerVoucherInline(admin.TabularInline):
+    """
+    Django Admin Inline View for Youth Summer Vouchers.
+
+    Display youth summer vouchers in the YouthApplication admin view.
+    Shows related youth summer voucher details in a tabular format
+    with a link to the respective admin page.
+
+    Features:
+        - Read-only fields to prevent direct modifications
+        - Link to youth summer voucher admin
+        - No add, change, or delete permissions
+    """
+
+    model = YouthSummerVoucher
+    verbose_name = _("youth summer voucher")
+    verbose_name_plural = _("youth summer vouchers")
+    extra = 0
+    show_change_link = True
+    can_delete = False
+
+    fields = [
+        "youth_summer_voucher_link",
+        "summer_voucher_serial_number",
+        "user_showable_serial_number",
+    ]
+    readonly_fields = fields
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def youth_summer_voucher_link(self, obj):
+        if not obj.pk or obj._state.adding:
+            return ""
+        url = reverse(
+            "admin:applications_youthsummervoucher_change",
+            args=[obj.pk],
+        )
+        return format_html('<a href="{}">{}</a>', url, obj.pk)
+
+    youth_summer_voucher_link.short_description = _("youth summer voucher")
+
+
 class IsValidSchoolFilter(admin.SimpleListFilter):
     title = _("is in school list")
     parameter_name = "is_valid_school"
@@ -407,6 +456,7 @@ class IsValidSchoolFilter(admin.SimpleListFilter):
 
 
 class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
+    inlines = [YouthSummerVoucherInline]
     list_display = [
         "id",
         "first_name",
@@ -516,6 +566,9 @@ class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
             return True
         return False
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("youth_summer_voucher")
+
 
 class YouthEmployerSummerVoucherInline(admin.TabularInline):
     """
@@ -572,7 +625,7 @@ class YouthEmployerSummerVoucherInline(admin.TabularInline):
             "admin:applications_employersummervoucher_change",
             args=[obj.pk],
         )
-        return mark_safe(f'<a href="{url}">{obj.pk}</a>')
+        return format_html('<a href="{}">{}</a>', url, obj.pk)
 
     employer_summer_voucher_link.short_description = _("employer summer voucher")
 
@@ -583,7 +636,7 @@ class YouthEmployerSummerVoucherInline(admin.TabularInline):
             "admin:applications_employerapplication_change",
             args=[obj.application.pk],
         )
-        return mark_safe(f'<a href="{url}">{obj.application.pk}</a>')
+        return format_html('<a href="{}">{}</a>', url, obj.application.pk)
 
     employer_application_link.short_description = _("employer application")
 
@@ -674,7 +727,7 @@ class YouthSummerVoucherAdmin(
             args=[obj.youth_application.id],
         )
         link_text = obj.youth_application.name or obj.youth_application.email
-        return mark_safe(f'<a href="{url}">{link_text}</a>')
+        return format_html('<a href="{}">{}</a>', url, link_text)
 
     youth_application_link.short_description = _("youth application")
 
@@ -769,7 +822,7 @@ class EmployerSummerVoucherInline(admin.TabularInline):
             "admin:applications_employersummervoucher_change",
             args=[obj.pk],
         )
-        return mark_safe(f'<a href="{url}">{obj.pk}</a>')
+        return format_html('<a href="{}">{}</a>', url, obj.pk)
 
     employer_summer_voucher_link.short_description = _("employer summer voucher")
 
@@ -781,7 +834,7 @@ class EmployerSummerVoucherInline(admin.TabularInline):
             args=[obj.youth_summer_voucher.pk],
         )
         serial = obj.youth_summer_voucher.user_showable_serial_number
-        return mark_safe(f'<a href="{url}">{serial}</a>')
+        return format_html('<a href="{}">{}</a>', url, serial)
 
     youth_summer_voucher_link.short_description = _("youth summer voucher")
 
