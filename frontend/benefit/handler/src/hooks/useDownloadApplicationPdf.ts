@@ -36,10 +36,13 @@ const useDownloadApplicationPdf = (): UseMutationResult<
         const blob = new Blob([data], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
+        // eslint-disable-next-line scanjs-rules/assign_to_href
         a.href = url;
         a.download = `hakemus_${applicationId}.pdf`;
+        document.body.append(a);
         a.click();
-        URL.revokeObjectURL(url);
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
       },
       onError: () => handleError(),
     }

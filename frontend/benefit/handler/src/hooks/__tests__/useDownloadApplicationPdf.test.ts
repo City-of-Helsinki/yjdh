@@ -62,11 +62,14 @@ describe('useDownloadApplicationPdf', () => {
   });
 
   it('triggers a file download with the correct filename on success', () => {
+    jest.useFakeTimers();
     const click = jest.fn();
+    const remove = jest.fn();
     const anchorElement = {
       href: '',
       download: '',
       click,
+      remove,
     } as unknown as HTMLAnchorElement;
     const originalCreateElement = document.createElement.bind(document);
     const createElement = jest
@@ -74,6 +77,9 @@ describe('useDownloadApplicationPdf', () => {
       .mockImplementation((tag: string) =>
         tag === 'a' ? anchorElement : originalCreateElement(tag)
       );
+    const appendSpy = jest
+      .spyOn(document.body, 'append')
+      .mockImplementation(() => {});
 
     // JSDOM does not define URL.createObjectURL/revokeObjectURL, so assign directly
     const createObjectURL = jest.fn(() => 'blob:fake-url');
@@ -92,12 +98,19 @@ describe('useDownloadApplicationPdf', () => {
       new Blob([data], { type: 'application/pdf' })
     );
     expect(anchorElement.download).toBe('hakemus_abc-123.pdf');
+    expect(appendSpy).toHaveBeenCalledWith(anchorElement);
     expect(click).toHaveBeenCalled();
+    expect(remove).toHaveBeenCalled();
+
+    // revokeObjectURL is deferred via setTimeout
+    jest.runAllTimers();
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:fake-url');
 
     createElement.mockRestore();
+    appendSpy.mockRestore();
     URL.createObjectURL = originalCreateObjectURL;
     URL.revokeObjectURL = originalRevokeObjectURL;
+    jest.useRealTimers();
   });
 
   it('shows an error toast on failure', () => {
