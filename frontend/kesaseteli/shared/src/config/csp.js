@@ -59,7 +59,10 @@ const buildKesaseteliCspPolicy = () => {
 const withKesaseteliSecurityHeaders = (config) => ({
   ...config,
   async headers() {
+    const existing = (await config.headers?.()) ?? [];
+
     return [
+      ...existing,
       {
         source: '/:path*',
         headers: [

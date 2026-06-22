@@ -41,4 +41,34 @@ describe('withKesaseteliSecurityHeaders', () => {
       "img-src 'self' blob: data: https://webanalytics.digiaiiris.com"
     );
   });
+
+  it('should preserve pre-existing headers from the wrapped config', async () => {
+    const config = withKesaseteliSecurityHeaders({
+      async headers() {
+        return [
+          {
+            source: '/foo',
+            headers: [{ key: 'X-Custom', value: '1' }],
+          },
+        ];
+      },
+    });
+    const headers = await config.headers();
+
+    expect(headers).toEqual([
+      {
+        source: '/foo',
+        headers: [{ key: 'X-Custom', value: '1' }],
+      },
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: expect.stringContaining("default-src 'self'"),
+          },
+        ],
+      },
+    ]);
+  });
 });
