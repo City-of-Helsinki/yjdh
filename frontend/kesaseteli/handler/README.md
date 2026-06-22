@@ -49,7 +49,7 @@ The easiest way to spin up the Handler UI along with its backend stack is using 
 
 ### Local Development (Without Docker)
 
-To run the Next.js server locally without Docker (requires Node.js `>=22.13.1 <23.11.0`):
+To run the Next.js server locally without Docker (requires Node.js `>=24.17.0`):
 
 1. Install frontend dependencies from the repository root:
    ```bash

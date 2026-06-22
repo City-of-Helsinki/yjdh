@@ -28,14 +28,14 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 22.x (match with dockerfile: registry.access.redhat.com/ubi9/nodejs-22)
+- Node 24.x (match with dockerfile: registry.access.redhat.com/ubi9/nodejs-24)
 - pnpm 11.5.0
 - Git
 - Docker
 
 ### install node with nvm
 
-    nvm install 22 --lts
+    nvm install 24 --lts
 
 
 ## Available Scripts

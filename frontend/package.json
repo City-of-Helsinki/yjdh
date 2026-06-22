@@ -11,7 +11,7 @@
     "shared"
   ],
   "engines": {
-    "node": ">=22.13.1",
+    "node": ">=24.17.0",
     "pnpm": "11.5.0"
   },
   "scripts": {
@@ -74,7 +74,7 @@
     "@types/jest-axe": "^3.5.3",
     "@types/leaflet": "^1.7.9",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^22.13.1",
+    "@types/node": "^24.13.2",
     "@types/pretty": "^2.0.1",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",

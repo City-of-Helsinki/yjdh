@@ -99,7 +99,7 @@ Before starting, ensure you have the following installed:
 
 * Docker@^19.03.0 (or higher)
 * Docker Compose@^2.20.0 (or higher)
-* NodeJS `>=22.13.1 <23.11.0`
+* NodeJS `>=24.17.0
 * pnpm@11.5.0
 * [pre-commit](https://pre-commit.com/) `>=4.5.1`
 

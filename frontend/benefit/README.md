@@ -27,7 +27,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 22.x
+- Node 24.x
 - Lerna
 - pnpm 11.5.0
 - Git
@@ -36,8 +36,8 @@ Project is automatically deployed to testing environment when merging a PR to ma
 ### Install NodeJS
 
     # Use node manager (n or nvm, for example)
-    n 22
-    nvm install 22 --lts
+    n 24
+    nvm install 24 --lts
     # Alternative methods
     https://nodejs.org/dist/
     https://nodejs.org/en/download/package-manager
