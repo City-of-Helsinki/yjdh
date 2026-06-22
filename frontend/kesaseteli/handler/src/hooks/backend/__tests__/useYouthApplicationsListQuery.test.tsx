@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
@@ -48,7 +48,7 @@ describe('useYouthApplicationsListQuery', () => {
       .query({ status: 'submitted', limit: '20', offset: '0' })
       .reply(200, mockListResponse);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useYouthApplicationsListQuery({
           status: ['submitted'],
@@ -57,7 +57,7 @@ describe('useYouthApplicationsListQuery', () => {
         }),
       { wrapper }
     );
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
@@ -79,7 +79,7 @@ describe('useYouthApplicationsListQuery', () => {
       })
       .reply(200, mockListResponse);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useYouthApplicationsListQuery({
           status: ['submitted', 'additional_information_provided'],
@@ -89,7 +89,7 @@ describe('useYouthApplicationsListQuery', () => {
         }),
       { wrapper }
     );
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
@@ -100,11 +100,11 @@ describe('useYouthApplicationsListQuery', () => {
       .query(true)
       .reply(500, 'server error');
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useYouthApplicationsListQuery({ limit: 20, offset: 0 }),
       { wrapper }
     );
-    await waitFor(() => result.current.isError);
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(mockErrorHandler).toHaveBeenCalled();
   });
 
@@ -119,7 +119,7 @@ describe('useYouthApplicationsListQuery', () => {
       )
       .reply(200, mockListResponse);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useYouthApplicationsListQuery({
           status: [],
@@ -128,7 +128,7 @@ describe('useYouthApplicationsListQuery', () => {
         }),
       { wrapper }
     );
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });

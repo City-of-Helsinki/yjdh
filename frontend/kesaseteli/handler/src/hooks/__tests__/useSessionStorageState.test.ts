@@ -1,5 +1,5 @@
 /* eslint-disable scanjs-rules/property_sessionStorage, scanjs-rules/identifier_sessionStorage */
-import { act,renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 
 import useSessionStorageState from '../useSessionStorageState';
 

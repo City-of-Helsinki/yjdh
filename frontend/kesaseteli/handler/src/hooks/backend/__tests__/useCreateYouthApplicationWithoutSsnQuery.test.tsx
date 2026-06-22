@@ -1,5 +1,5 @@
 // Integration test: Verifies request payloads are mapped correctly and endpoints are called using nock
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
@@ -72,14 +72,14 @@ describe('useCreateYouthApplicationWithoutSsnQuery (Integration)', () => {
       })
       .reply(200, mockCreatedResponse);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useCreateYouthApplicationWithoutSsnQuery(),
       { wrapper }
     );
 
     result.current.mutate(formData);
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockCreatedResponse);
     expect(nock.isDone()).toBe(true);
   });

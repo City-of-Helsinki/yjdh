@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import '../../../test/i18n/i18n-test';
 
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useQuery } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 

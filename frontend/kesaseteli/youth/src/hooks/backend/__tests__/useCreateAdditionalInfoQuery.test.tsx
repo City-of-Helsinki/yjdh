@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import nock from 'nock';
 import React from 'react';
@@ -52,7 +52,7 @@ describe('useCreateAdditionalInfoQuery', () => {
       .post(`/v1/youthapplications/${applicationId}/additional_info/`)
       .reply(200, { id: 'info-123' });
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useCreateAdditionalInfoQuery(applicationId, {
           onSuccess: mockOnSuccess,
@@ -67,7 +67,7 @@ describe('useCreateAdditionalInfoQuery', () => {
       } as unknown as AdditionalInfoFormData);
     });
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(mockOnSuccess).toHaveBeenCalled();
   });

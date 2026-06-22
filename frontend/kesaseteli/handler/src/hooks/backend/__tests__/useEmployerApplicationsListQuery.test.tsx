@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
@@ -54,7 +54,7 @@ describe('useEmployerApplicationsListQuery', () => {
       })
       .reply(200, mockListResponse);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useEmployerApplicationsListQuery({
           status: ['submitted', 'handling'],
@@ -64,7 +64,7 @@ describe('useEmployerApplicationsListQuery', () => {
         }),
       { wrapper }
     );
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
@@ -75,11 +75,11 @@ describe('useEmployerApplicationsListQuery', () => {
       .query(true) // match any query params
       .reply(500, 'server error');
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useEmployerApplicationsListQuery({ limit: 20, offset: 0 }),
       { wrapper }
     );
-    await waitFor(() => result.current.isError);
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(mockErrorHandler).toHaveBeenCalled();
   });
 
@@ -94,7 +94,7 @@ describe('useEmployerApplicationsListQuery', () => {
       )
       .reply(200, mockListResponse);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () =>
         useEmployerApplicationsListQuery({
           status: [],
@@ -103,7 +103,7 @@ describe('useEmployerApplicationsListQuery', () => {
         }),
       { wrapper }
     );
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });

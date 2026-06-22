@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useFormContext } from 'react-hook-form';
 
 import useValidateEmploymentsNotEmpty from '../useValidateEmploymentsNotEmpty';

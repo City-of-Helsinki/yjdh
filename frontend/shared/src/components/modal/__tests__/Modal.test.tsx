@@ -4,6 +4,14 @@ import { render, RenderResult } from 'shared/__tests__/utils/test-utils';
 
 import Modal, { ModalProps } from '../Modal';
 
+jest.mock('react-i18next', () => ({
+  useTranslation: jest.fn(() => ({
+    t: (key: string) => key,
+    i18n: { language: 'fi' },
+  })),
+  initReactI18next: { type: '3rdParty', init: jest.fn() },
+}));
+
 describe('Modal', () => {
   const initialProps: ModalProps = {
     id: 'modal-id',

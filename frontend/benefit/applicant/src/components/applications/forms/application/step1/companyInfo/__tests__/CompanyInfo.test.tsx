@@ -1,5 +1,4 @@
-import { RenderResult, screen } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, RenderResult, screen } from '@testing-library/react';
 import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
 import { setupUserAndRender } from 'benefit/applicant/__tests__/utils/user-render-helper';
 import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
