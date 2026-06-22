@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.2.1...benefit-handler-v5.3.0) (2026-06-22)
+
+
+### Features
+
+* **benefit:** De minimis with radio buttons ([4e031a0](https://github.com/City-of-Helsinki/yjdh/commit/4e031a031f33460d5d41a146464f896f3ea50a23))
+* **benefit:** Error toast for failing tol code ([1489c62](https://github.com/City-of-Helsinki/yjdh/commit/1489c6210f3336d76129fbd74a6c6b171972b1d6))
+* **benefit:** Test for manual industrycode update ([1dc82f1](https://github.com/City-of-Helsinki/yjdh/commit/1dc82f16a7f6d6edcfbdb6b680fd6628fd43d663))
+* **benefit:** Tol-code helper text ([3bfb97a](https://github.com/City-of-Helsinki/yjdh/commit/3bfb97a21e6f4af1b8461b58cc231fca7dd8f9ed))
+* **benefit:** Tol-code type and handler API endpoint ([9c45021](https://github.com/City-of-Helsinki/yjdh/commit/9c45021c625788dc02bde910bf8128e4b593e31a))
+* **benefit:** Trim tol code input ([e7a4850](https://github.com/City-of-Helsinki/yjdh/commit/e7a48500356a25c62af7b02668087f46e1c1c6d0))
+
+
+### Bug Fixes
+
+* **benefit:** Add delay to failing test ([f1f06d2](https://github.com/City-of-Helsinki/yjdh/commit/f1f06d225063c8ed7c772b24e4808d51dc2303a2))
+* **benefit:** OnChange/onBlur race condition fix ([fdfa72f](https://github.com/City-of-Helsinki/yjdh/commit/fdfa72f46826255fa3428798ab38fff6bffceff4))
+
 ## [5.2.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.2.0...benefit-handler-v5.2.1) (2026-06-12)
 
 
