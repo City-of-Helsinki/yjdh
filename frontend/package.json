@@ -54,7 +54,9 @@
     "ks-shared:test": "pnpm --dir kesaseteli/shared run test"
   },
   "dependencies": {
-    "lerna-update-wizard": "^1.1.2"
+    "@sentry/nextjs": "^10.56.0",
+    "lerna-update-wizard": "^1.1.2",
+    "picocolors": "1.0.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.3.2",
@@ -141,7 +143,6 @@
     "next": "15.5.19",
     "next-router-mock": "0.9.12",
     "nock": "^13.5.0",
-    "picocolors": "1.0.0",
     "prettier": "^2.5.1",
     "pretty": "^2.0.0",
     "react-i18next": "^15.6.0",
@@ -149,18 +150,5 @@
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^27.1.3",
     "typescript": "^5.9.3"
-  },
-  "resolutions": {
-    "js-cookie": "^3.0.8",
-    "underscore": "^1.13.8",
-    "tmp": "^0.2.6",
-    "tar": "^7.5.11",
-    "minimatch": "^3.1.4",
-    "picomatch": "^2.3.2",
-    "decode-uri-component": "^0.2.2",
-    "semver": "^5.7.2 || ^6.3.1 || ^7.5.3",
-    "rollup": "^3.30.0",
-    "@sentry/browser": "^10.56.0",
-    "@sentry/nextjs": "^10.56.0"
   }
 }
