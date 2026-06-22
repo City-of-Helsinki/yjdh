@@ -1,6 +1,5 @@
 """Django views for handler-facing HTML pages in the applications app."""
 
-from csp.constants import SELF
 from csp.decorators import csp_update
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
@@ -15,7 +14,6 @@ from common.urls import handler_create_application_without_ssn_url
 # Bootstrap 5.1 CSS on application_excel_download.html is loaded from jsDelivr.
 EXCEL_DOWNLOAD_CSP = {
     "style-src": ["cdn.jsdelivr.net"],
-    "connect-src": [SELF, "cdn.jsdelivr.net"],
 }
 
 @method_decorator(csp_update(EXCEL_DOWNLOAD_CSP), name="dispatch")
