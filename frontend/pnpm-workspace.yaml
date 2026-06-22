@@ -6,6 +6,12 @@ packages:
 # Do not allow dependencies to be used before they have been released for at least 1 week.
 minimumReleaseAge: 10080
 
+# Don't run the deps status check before `pnpm <script>`. In the dev Docker
+# container there is no TTY to confirm purging node_modules, which otherwise
+# crashes with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY. Dependencies are
+# installed from the frozen lockfile, so the pre-run check is unnecessary.
+verifyDepsBeforeRun: false
+
 # Keep this empty to avoid warning noise for intentionally ignored build scripts.
 ignoredBuiltDependencies: []
 
