@@ -15,9 +15,10 @@ on:
 
 jobs:
   common:
-    uses: City-of-Helsinki/.github/.github/workflows/ci-node.yml@main
+    uses: City-of-Helsinki/.github/.github/workflows/ci-pnpm-node.yml@main
     secrets: inherit
     with:
-      node-version: 22.x
-      working-directory: ./frontend/benefit/handler
-      extra-commands: echo 'NEXTJS_DISABLE_SENTRY=true' >> .env
+      node-version: 24.x
+      working-directory: ./frontend
+      app-directory: ./frontend/benefit/handler
+      extra-commands: echo 'NEXTJS_DISABLE_SENTRY=true' >> benefit/handler/.env
