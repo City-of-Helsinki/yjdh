@@ -1,4 +1,5 @@
 .next
+.pnpm-store
 node_modules
 screenshots
 tsconfig.tsbuildinfo
