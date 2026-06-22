@@ -40,28 +40,14 @@ const mockApplications: Application[] = [
 
 const renderWithTheme = (apps: Application[]): void => {
   (useApplicationsQuery as jest.Mock).mockImplementation(
-    (options?: { limit?: number; offset?: number }) => {
-      if (
-        options &&
-        options.limit !== undefined &&
-        options.offset !== undefined
-      ) {
-        const { limit, offset } = options;
-        return {
-          data: {
-            count: apps.length,
-            results: apps.slice(offset, offset + limit),
-          },
-          isLoading: false,
-          error: null,
-        };
-      }
-      return {
-        data: apps,
-        isLoading: false,
-        error: null,
-      };
-    }
+    ({ limit, offset }: { limit: number; offset: number }) => ({
+      data: {
+        count: apps.length,
+        results: apps.slice(offset, offset + limit),
+      },
+      isLoading: false,
+      error: null,
+    })
   );
 
   renderComponent(
@@ -150,50 +136,23 @@ describe('ApplicationTable', () => {
     expect(screen.getByRole('navigation')).toBeInTheDocument();
   });
 
-  it('uses current year as fallback in availableYears when allApplications query returns no data', () => {
-    (useApplicationsQuery as jest.Mock).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null,
-    });
+  it('populates year dropdown with every year from PROGRAMME_START_YEAR to the current year', async () => {
+    renderWithTheme([]);
 
-    renderComponent(
-      <ApplicationTable>
-        <ApplicationTable.FilterBar />
-      </ApplicationTable>
-    );
-
-    // Expect year selector to default to current year option
-    const currentYear = new Date().getFullYear().toString();
+    const currentYear = new Date().getFullYear();
     const combobox = screen.getByRole('combobox');
-    expect(combobox).toHaveTextContent(currentYear);
-  });
 
-  it('extracts year from created_at when submitted_at is not available', async () => {
-    const mockApp = {
-      id: 'app1',
-      status: 'draft',
-      created_at: '2024-05-15T12:00:00Z',
-      summer_vouchers: [],
-    };
+    // Default selection is the current year
+    expect(combobox).toHaveTextContent(String(currentYear));
 
-    (useApplicationsQuery as jest.Mock).mockReturnValue({
-      data: [mockApp],
-      isLoading: false,
-      error: null,
-    });
-
-    renderComponent(
-      <ApplicationTable>
-        <ApplicationTable.FilterBar />
-      </ApplicationTable>
-    );
-
+    // All years from 2022 to currentYear must be present as options
     const user = userEvent.setup();
-    const combobox = screen.getByRole('combobox');
     await user.click(combobox);
 
-    const option = await screen.findByRole('option', { name: '2024' });
-    expect(option).toBeInTheDocument();
+    for (let year = currentYear; year >= 2022; year -= 1) {
+      expect(
+        await screen.findByRole('option', { name: String(year) })
+      ).toBeInTheDocument();
+    }
   });
 });
