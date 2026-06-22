@@ -20,9 +20,9 @@ API_DOCS_CSP = {
 
 @method_decorator(csp_update(API_DOCS_CSP), name="dispatch")
 class KesaseteliSwaggerView(SpectacularSwaggerView):
-    pass
+    """Swagger UI with CSP allowances for drf-spectacular CDN assets."""
 
 
 @method_decorator(csp_update(API_DOCS_CSP), name="dispatch")
 class KesaseteliRedocView(SpectacularRedocView):
-    pass
+    """ReDoc with CSP allowances for drf-spectacular CDN assets."""
