@@ -1,4 +1,5 @@
 import logging
+import os
 from itertools import chain
 
 from auditlog_extra.mixins import AuditlogAdminViewAccessLogMixin
@@ -7,7 +8,13 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import helpers
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (
+    FileResponse,
+    Http404,
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+)
 from django.shortcuts import render
 from django.urls import path, reverse
 from django.utils import timezone
@@ -18,6 +25,7 @@ from django.utils.translation import ngettext
 
 from applications.admin_forms import SchoolImportForm
 from applications.models import (
+    Attachment,
     EmailTemplate,
     EmployerApplication,
     EmployerSummerVoucher,
@@ -26,7 +34,11 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.services import EmailTemplateService, SchoolService
+from applications.services import (
+    AuditAccessLogService,
+    EmailTemplateService,
+    SchoolService,
+)
 from applications.target_groups import get_target_group_choices
 from common.utils import mask_social_security_number
 
@@ -88,6 +100,53 @@ class TargetGroupFilter(admin.SimpleListFilter):
         if value:
             return queryset.filter(target_group__contains=[value])
         return queryset
+
+
+class ReadOnlyAdminMixin:
+    """Mixin that disables add, change, and delete permissions."""
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class SuperuserDeleteAdminMixin:
+    """Mixin that disables add/change; only superusers can delete."""
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+
+class AttachmentDownloadLinkMixin:
+    """Mixin that provides a download_link method for Attachment objects."""
+
+    def download_link(self, obj):
+        if not obj.pk or not obj.attachment_file:
+            return ""
+        url = reverse("admin:applications_attachment_download", args=[obj.pk])
+        filename = getattr(obj.attachment_file, "name", "")
+        if filename:
+            filename = os.path.basename(filename)
+        else:
+            filename = _("Download")
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener noreferrer">{}</a>',
+            url,
+            filename,
+        )
+
+    download_link.short_description = _("download link")
 
 
 class SummerVoucherConfigurationAdmin(
@@ -570,7 +629,7 @@ class YouthApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
         return super().get_queryset(request).select_related("youth_summer_voucher")
 
 
-class YouthEmployerSummerVoucherInline(admin.TabularInline):
+class YouthEmployerSummerVoucherInline(ReadOnlyAdminMixin, admin.TabularInline):
     """
     Django Admin Inline View for Employer Summer Vouchers
 
@@ -608,15 +667,6 @@ class YouthEmployerSummerVoucherInline(admin.TabularInline):
             .get_queryset(request)
             .select_related("application", "application__company")
         )
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
     def employer_summer_voucher_link(self, obj):
         if not obj.pk or obj._state.adding:
@@ -768,7 +818,7 @@ class YouthSummerVoucherAdmin(
             )
 
 
-class EmployerSummerVoucherInline(admin.TabularInline):
+class EmployerSummerVoucherInline(ReadOnlyAdminMixin, admin.TabularInline):
     """
     Django Admin Inline View for Employer Summer Vouchers.
 
@@ -805,15 +855,6 @@ class EmployerSummerVoucherInline(admin.TabularInline):
             .get_queryset(request)
             .select_related("youth_summer_voucher__youth_application")
         )
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
     def employer_summer_voucher_link(self, obj):
         if not obj.pk or obj._state.adding:
@@ -966,9 +1007,182 @@ class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin
         )
 
 
+class AttachmentInline(
+    SuperuserDeleteAdminMixin, AttachmentDownloadLinkMixin, admin.TabularInline
+):
+    model = Attachment
+    verbose_name = _("attachment")
+    verbose_name_plural = _("attachments")
+    extra = 0
+    # Delete from inline needs a save to whole form, which is not desired.
+    # Instead, delete should happen from attachemtn admin view with delete permission.
+    # Use "attachment_admin_link" to link to attachment admin change page.
+    can_delete = False
+
+    fields = [
+        "attachment_admin_link",
+        "attachment_type",
+        "content_type",
+        "download_link",
+        "created_at",
+    ]
+    readonly_fields = fields
+
+    def attachment_admin_link(self, obj):
+        if not obj.pk:
+            return ""
+        url = reverse("admin:applications_attachment_change", args=[obj.pk])
+        return format_html('<a href="{}">{}</a>', url, obj.pk)
+
+    attachment_admin_link.short_description = _("attachment")
+
+
+class AttachmentAdmin(
+    AuditlogAdminViewAccessLogMixin,
+    SuperuserDeleteAdminMixin,
+    AttachmentDownloadLinkMixin,
+    admin.ModelAdmin,
+):
+    list_display = [
+        "id",
+        "summer_voucher_link",
+        "employer_application_link",
+        "company_name",
+        "attachment_type",
+        "content_type",
+        "download_link",
+        "created_at",
+    ]
+    list_filter = ["attachment_type", "created_at", "content_type"]
+    search_fields = [
+        "id",
+        "summer_voucher__id",
+        "summer_voucher__youth_summer_voucher__summer_voucher_serial_number",
+        "summer_voucher__application__company__name",
+        "summer_voucher__application__company__business_id",
+    ]
+    readonly_fields = [
+        "summer_voucher",
+        "attachment_type",
+        "content_type",
+        "attachment_file",
+        "created_at",
+    ]
+    date_hierarchy = "created_at"
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related(
+                "summer_voucher",
+                "summer_voucher__application",
+                "summer_voucher__application__company",
+                "summer_voucher__youth_summer_voucher",
+            )
+        )
+
+    def summer_voucher_link(self, obj):
+        if not obj.summer_voucher:
+            return ""
+        url = reverse(
+            "admin:applications_employersummervoucher_change",
+            args=[obj.summer_voucher.pk],
+        )
+        return format_html('<a href="{}">{}</a>', url, obj.summer_voucher.pk)
+
+    summer_voucher_link.short_description = _("employer summer voucher")
+
+    def employer_application_link(self, obj):
+        if not obj.summer_voucher or not obj.summer_voucher.application:
+            return ""
+        app = obj.summer_voucher.application
+        url = reverse(
+            "admin:applications_employerapplication_change",
+            args=[app.pk],
+        )
+        return format_html('<a href="{}">{}</a>', url, app.pk)
+
+    employer_application_link.short_description = _("employer application")
+
+    def company_name(self, obj):
+        if (
+            not obj.summer_voucher
+            or not obj.summer_voucher.application
+            or not obj.summer_voucher.application.company
+        ):
+            return ""
+        return obj.summer_voucher.application.company.name
+
+    company_name.short_description = _("company")
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "<uuid:pk>/download/",
+                self.admin_site.admin_view(self.download_view),
+                name="applications_attachment_download",
+            ),
+        ]
+        return custom_urls + urls
+
+    def download_view(self, request, pk):
+        try:
+            attachment = Attachment.objects.get(pk=pk)
+        except Attachment.DoesNotExist:
+            raise Http404(_("Attachment not found"))
+
+        if not self.has_view_permission(request, attachment):
+            return HttpResponseForbidden(
+                _("You do not have permission to download this file")
+            )
+
+        if not attachment.attachment_file:
+            raise Http404(_("Attachment file not found"))
+
+        try:
+            file_handle = attachment.attachment_file.open("rb")
+        except OSError as exc:
+            raise Http404(_("Attachment file not found")) from exc
+
+        # Defensive fallback: if os.path.basename returns a falsy value (e.g.,
+        # directory/empty path), we fall back to a translated "attachment" to ensure
+        # FileResponse has a valid filename string. Explicit str() coercion is used
+        # because gettext_lazy (_) returns a proxy object that can cause
+        # TypeError/serialization issues when formatted into response headers.
+        filename = os.path.basename(attachment.attachment_file.name) or str(
+            _("attachment")
+        )
+        try:
+            response = FileResponse(
+                file_handle,
+                as_attachment=True,
+                filename=filename,
+                content_type=attachment.content_type,
+            )
+            response["X-Content-Type-Options"] = "nosniff"
+        except OSError as exc:
+            file_handle.close()
+            raise Http404(_("Attachment file not found")) from exc
+
+        AuditAccessLogService.create_access_log_entry_with_related_object_and_additional_data(
+            accessed_instance=attachment,
+            actor=request.user,
+            actor_email=request.user.email,
+            additional_data={
+                "method": "AttachmentAdmin.download_view",
+                "request_path": request.path,
+            },
+        )
+
+        return response
+
+
 class EmployerSummerVoucherAdmin(
     AuditlogAdminViewAccessLogMixin, SerialNumberDecodingSearchMixin, admin.ModelAdmin
 ):
+    inlines = [AttachmentInline]
     list_display = [
         "id",
         "youth_summer_voucher_id",
@@ -1082,6 +1296,7 @@ class EmployerSummerVoucherAdmin(
             .select_related("application")
             .select_related("application__company")
             .select_related("youth_summer_voucher")
+            .prefetch_related("attachments")
         )
 
     def has_migrated_obsolete_serial_number(self, obj):
@@ -1114,3 +1329,4 @@ if apps.is_installed("django.contrib.admin"):
     admin.site.register(YouthSummerVoucher, YouthSummerVoucherAdmin)
     admin.site.register(EmployerApplication, EmployerApplicationAdmin)
     admin.site.register(EmployerSummerVoucher, EmployerSummerVoucherAdmin)
+    admin.site.register(Attachment, AttachmentAdmin)
