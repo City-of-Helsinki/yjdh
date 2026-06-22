@@ -1,4 +1,4 @@
-name: Scheduled Yarn audit
+name: Scheduled pnpm audit
 on:
   schedule:
     # Once a day at 5 o-clock
@@ -16,22 +16,16 @@ jobs:
     name: Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
-          node-version: "22"
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 24.x
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
       - name: Install dependencies
-        run: yarn --prefer-offline --frozen-lockfile --check-files
+        run: pnpm install --frozen-lockfile
       - name: Run audit
-        run: yarn audit-ci --config audit-ci.jsonc
+        run: pnpm exec audit-ci --config audit-ci.jsonc
