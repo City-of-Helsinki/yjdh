@@ -19,8 +19,11 @@ def test_redoc_includes_api_docs_csp(client: Client):
     assert response.status_code == 200
 
     csp_header = response.headers["Content-Security-Policy"]
-    assert "fonts.googleapis.com" in csp_header
-    assert "fonts.gstatic.com" in csp_header
+    assert (
+        "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com"
+        in csp_header
+    )
+    assert "font-src 'self' fonts.gstatic.com" in csp_header
     assert "cdn.redoc.ly" in csp_header
 
 
