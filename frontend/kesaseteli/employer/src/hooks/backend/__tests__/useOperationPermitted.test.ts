@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 import useAuth from 'shared/hooks/useAuth';
 import useIsRouting from 'shared/hooks/useIsRouting';

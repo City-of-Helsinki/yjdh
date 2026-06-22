@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
@@ -48,9 +48,12 @@ describe('useHandlerNotesQuery', () => {
       .get(BackendEndpoint.HANDLER_NOTES)
       .reply(200, []);
 
-    const { result } = renderHook(() => useHandlerNotesQuery(TEST_TARGET_TYPE), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useHandlerNotesQuery(TEST_TARGET_TYPE),
+      {
+        wrapper,
+      }
+    );
 
     expect(result.current.isIdle).toBe(true);
     expect(interceptor.isDone()).toBe(false);
@@ -63,11 +66,11 @@ describe('useHandlerNotesQuery', () => {
       .query({ target_type: TEST_TARGET_TYPE, target_id: TEST_TARGET_ID })
       .reply(200, mockData);
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useHandlerNotesQuery(TEST_TARGET_TYPE, TEST_TARGET_ID),
       { wrapper }
     );
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockData);
     expect(nock.isDone()).toBe(true);
   });
@@ -78,11 +81,11 @@ describe('useHandlerNotesQuery', () => {
       .query({ target_type: TEST_TARGET_TYPE, target_id: TEST_TARGET_ID })
       .reply(500, 'server error');
 
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useHandlerNotesQuery(TEST_TARGET_TYPE, TEST_TARGET_ID),
       { wrapper }
     );
-    await waitFor(() => result.current.isError);
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(mockErrorHandler).toHaveBeenCalled();
     expect(nock.isDone()).toBe(true);
   });

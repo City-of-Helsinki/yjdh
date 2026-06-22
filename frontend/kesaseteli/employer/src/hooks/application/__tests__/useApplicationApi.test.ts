@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import type Application from 'shared/types/application';
 
@@ -80,8 +80,21 @@ const createAxiosError = (
 };
 
 describe('useApplicationApi - fetchEmployment', () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
+  beforeAll(() => {
+    consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      .mockImplementation(() => undefined);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it('calls onSuccess callback with updated application data on successful fetch', async () => {

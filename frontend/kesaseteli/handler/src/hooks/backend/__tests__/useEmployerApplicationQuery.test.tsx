@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
@@ -51,32 +51,29 @@ describe('useEmployerApplicationQuery', () => {
   it('fetches application data successfully by id', async () => {
     const mockData = { id: TEST_ID, status: 'submitted' };
     nock(API_BASE_TEST_URL).get(ENDPOINT).reply(200, mockData);
-    const { result, waitFor } = renderHook(
-      () => useEmployerApplicationQuery(TEST_ID),
-      { wrapper }
-    );
-    await waitFor(() => result.current.isSuccess);
+    const { result } = renderHook(() => useEmployerApplicationQuery(TEST_ID), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mockData);
     expect(nock.isDone()).toBe(true);
   });
 
   it('calls useErrorHandler on 500 error', async () => {
     nock(API_BASE_TEST_URL).get(ENDPOINT).reply(500, 'server error');
-    const { result, waitFor } = renderHook(
-      () => useEmployerApplicationQuery(TEST_ID),
-      { wrapper }
-    );
-    await waitFor(() => result.current.isError);
+    const { result } = renderHook(() => useEmployerApplicationQuery(TEST_ID), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(mockErrorHandler).toHaveBeenCalled();
   });
 
   it('does NOT call useErrorHandler on 404 error', async () => {
     nock(API_BASE_TEST_URL).get(ENDPOINT).reply(404, 'not found');
-    const { result, waitFor } = renderHook(
-      () => useEmployerApplicationQuery(TEST_ID),
-      { wrapper }
-    );
-    await waitFor(() => result.current.isError);
+    const { result } = renderHook(() => useEmployerApplicationQuery(TEST_ID), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(mockErrorHandler).not.toHaveBeenCalled();
   });
 });

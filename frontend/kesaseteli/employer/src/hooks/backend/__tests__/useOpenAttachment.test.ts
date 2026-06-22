@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useMutation } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';

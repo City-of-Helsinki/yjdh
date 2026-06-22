@@ -24,16 +24,17 @@ export const waitForBackendRequestsToComplete = async (): Promise<void> => {
     .pendingMocks()
     .filter((m) => !m.includes(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION));
   if (pending.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log('pending nocks', pending);
-    await waitFor(() => {
-      const currentPending = nock
-        .pendingMocks()
-        .filter(
-          (m) => !m.includes(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
-        );
-      expect(currentPending).toHaveLength(0);
-    });
+    await waitFor(
+      () => {
+        const currentPending = nock
+          .pendingMocks()
+          .filter(
+            (m) => !m.includes(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
+          );
+        expect(currentPending).toHaveLength(0);
+      },
+      { timeout: 5000 }
+    );
   }
 };
 

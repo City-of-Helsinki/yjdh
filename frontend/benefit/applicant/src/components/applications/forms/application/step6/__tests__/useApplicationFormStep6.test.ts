@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import {
   APPLICATION_STATUSES,

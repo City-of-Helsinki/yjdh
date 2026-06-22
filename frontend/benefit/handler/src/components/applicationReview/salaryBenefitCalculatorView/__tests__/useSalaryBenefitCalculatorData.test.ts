@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { CALCULATION_SALARY_KEYS } from 'benefit/handler/constants';
 import {
   Application,
