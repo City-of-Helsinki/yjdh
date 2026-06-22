@@ -10,6 +10,9 @@ import {
 import ApplicationTableFilterBar from './ApplicationTableFilterBar';
 import ApplicationTableHeader from './ApplicationTableHeader';
 
+/** First year the Kesäseteli programme was in operation. */
+const PROGRAMME_START_YEAR = 2022;
+
 type ApplicationTableProps = {
   defaultShowOnlyMine?: boolean;
   /**
@@ -53,6 +56,10 @@ const ApplicationTable: React.FC<ApplicationTableProps> & {
   itemsPerPage = 15,
   children,
 }) => {
+  // Plain const (not useMemo): re-derived on every render so that when the
+  // calendar year rolls over, the new string value propagates to the
+  // availableYears useMemo below. String primitives compare by value, so
+  // availableYears is still only recomputed when the year actually changes.
   const currentYear = new Date().getFullYear().toString();
   const [showOnlyMine, setShowOnlyMine] = React.useState(defaultShowOnlyMine);
   const [selectedYear, setSelectedYear] = React.useState<string>(
@@ -80,11 +87,6 @@ const ApplicationTable: React.FC<ApplicationTableProps> & {
     [onChangeYear]
   );
 
-  const { data: allApplications } = useApplicationsQuery({
-    onlyMine: false,
-    staleTime: Infinity,
-  });
-
   const {
     data: paginatedData,
     isLoading,
@@ -106,19 +108,17 @@ const ApplicationTable: React.FC<ApplicationTableProps> & {
     }
   }, [paginatedData]);
 
-  // FIXME: If there are really many applications, it might be that they don't fit in 1 page. It could be okay if we get the first, the last year, and the current year.
-  const availableYears = React.useMemo(() => {
-    if (!allApplications) return [currentYear];
-    const yearsFromApplications = allApplications.map((app) => {
-      const appDateStr =
-        app.submitted_at ||
-        (app as typeof app & { created_at?: string }).created_at;
-      return appDateStr ? appDateStr.slice(0, 4) : currentYear;
-    });
-    const uniqueYears = new Set([...yearsFromApplications, currentYear]);
-    // Sort unique years in descending order
-    return [...uniqueYears].sort((a, b) => b.localeCompare(a));
-  }, [allApplications, currentYear]);
+  // Descending list from the current year back to the programme launch year.
+  // Memoized so the stable reference doesn't invalidate the contextValue useMemo
+  // on every render (which would cause all context consumers to re-render).
+  const availableYears = React.useMemo(
+    () =>
+      Array.from(
+        { length: Number(currentYear) - PROGRAMME_START_YEAR + 1 },
+        (_, i) => String(Number(currentYear) - i)
+      ),
+    [currentYear]
+  );
 
   const applications = React.useMemo<Application[]>(
     () => (paginatedData ? paginatedData.results : []),

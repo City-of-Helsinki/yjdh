@@ -16,7 +16,6 @@ type Props = {
   onToggle?: () => void;
   selectedYear?: string;
   onChangeYear?: (year: string) => void;
-  availableYears?: string[];
 };
 
 const getFilterToggleButton = (): HTMLElement =>
@@ -37,19 +36,14 @@ const renderSubject = ({
   onToggle = jest.fn(),
   selectedYear = '2026',
   onChangeYear = jest.fn(),
-  availableYears = ['2026', '2025'],
-}: Props = {}): {
+}: Omit<Props, 'availableYears'> = {}): {
   onToggle: () => void;
   onChangeYear: (year: string) => void;
 } => {
-  // Convert availableYears back to mock Applications to let the parent wrapper compute availableYears
-  const mockAllApplications = availableYears.map((year) => ({
-    id: `app-${year}`,
-    submitted_at: `${year}-06-01`,
-  }));
-
+  // Years are now static (PROGRAMME_START_YEAR to current year); mock only
+  // needs to satisfy the paginated query used by ApplicationTable.
   (useApplicationsQuery as jest.Mock).mockReturnValue({
-    data: mockAllApplications,
+    data: { count: 0, results: [] },
     isLoading: false,
     error: null,
   });
