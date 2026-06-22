@@ -36,7 +36,7 @@ const expectations = {
       const toast = document.getElementById('HDSToastContainer');
       if (toast) {
         expect(
-          within(toast).getByRole('heading', { name: errorMessage })
+          within(toast).getAllByRole('heading', { name: errorMessage })[0]
         ).toBeInTheDocument();
       }
     });

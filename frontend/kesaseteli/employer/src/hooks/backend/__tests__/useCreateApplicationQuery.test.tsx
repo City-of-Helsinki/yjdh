@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';

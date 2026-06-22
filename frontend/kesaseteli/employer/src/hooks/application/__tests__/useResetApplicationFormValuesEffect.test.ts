@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { UseFormReturn } from 'react-hook-form';
@@ -58,7 +58,9 @@ describe('useResetApplicationFormValuesEffect', () => {
       },
     });
 
-    (ApplicationPersistenceService.getEmployerData as jest.Mock).mockReturnValue(null);
+    (
+      ApplicationPersistenceService.getEmployerData as jest.Mock
+    ).mockReturnValue(null);
 
     runHook(false);
 
@@ -66,7 +68,9 @@ describe('useResetApplicationFormValuesEffect', () => {
     const [resetValues, resetOptions] = mockReset.mock.calls[0];
     expect(resetValues.id).toBe('app-123');
     expect(resetValues.contact_person_name).toBe('John Doe');
-    expect(resetValues.summer_vouchers[0].employee_name).toBe('Voucher Employee');
+    expect(resetValues.summer_vouchers[0].employee_name).toBe(
+      'Voucher Employee'
+    );
     expect(resetOptions).toEqual({ keepDirty: false });
   });
 
@@ -88,7 +92,9 @@ describe('useResetApplicationFormValuesEffect', () => {
       contact_person_name: 'Employer Name',
       street_address: 'New Address',
     };
-    (ApplicationPersistenceService.getEmployerData as jest.Mock).mockReturnValue(mockEmployerData);
+    (
+      ApplicationPersistenceService.getEmployerData as jest.Mock
+    ).mockReturnValue(mockEmployerData);
 
     runHook(false);
 
@@ -110,14 +116,18 @@ describe('useResetApplicationFormValuesEffect', () => {
       },
     });
 
-    (ApplicationPersistenceService.getEmployerData as jest.Mock).mockReturnValue(null);
+    (
+      ApplicationPersistenceService.getEmployerData as jest.Mock
+    ).mockReturnValue(null);
 
     runHook(false);
 
     expect(mockReset).toHaveBeenCalledTimes(1);
     const [resetValues] = mockReset.mock.calls[0];
     expect(resetValues.summer_vouchers).toHaveLength(1);
-    expect(resetValues.summer_vouchers[0].summer_voucher_serial_number).toBe('');
+    expect(resetValues.summer_vouchers[0].summer_voucher_serial_number).toBe(
+      ''
+    );
   });
 
   it('merges current user typed changes if form is dirty', () => {
@@ -150,7 +160,9 @@ describe('useResetApplicationFormValuesEffect', () => {
       ],
     };
     mockGetValues.mockReturnValue(mockUserTypedValues);
-    (ApplicationPersistenceService.getEmployerData as jest.Mock).mockReturnValue(null);
+    (
+      ApplicationPersistenceService.getEmployerData as jest.Mock
+    ).mockReturnValue(null);
 
     runHook(true);
 
@@ -158,8 +170,12 @@ describe('useResetApplicationFormValuesEffect', () => {
     const [resetValues, resetOptions] = mockReset.mock.calls[0];
     expect(resetValues.contact_person_name).toBe('User Edited Name');
     expect(resetValues.street_address).toBe('User Typed Address');
-    expect(resetValues.summer_vouchers[0].employee_name).toBe('User Edited Employee');
-    expect(resetValues.summer_vouchers[0].summer_voucher_serial_number).toBe('123');
+    expect(resetValues.summer_vouchers[0].employee_name).toBe(
+      'User Edited Employee'
+    );
+    expect(resetValues.summer_vouchers[0].summer_voucher_serial_number).toBe(
+      '123'
+    );
     expect(resetOptions).toEqual({ keepDirty: true });
   });
 });

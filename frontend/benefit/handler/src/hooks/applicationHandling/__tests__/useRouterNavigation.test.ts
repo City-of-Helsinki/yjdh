@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { APPLICATION_LIST_TABS, ROUTES } from 'benefit/handler/constants';
 import { APPLICATION_STATUSES, BATCH_STATUSES } from 'benefit-shared/constants';
 import { useRouter } from 'next/router';

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import Router from 'next/router';
 
 import useConfirm from '../useConfirm';

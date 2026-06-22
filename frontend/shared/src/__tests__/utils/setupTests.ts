@@ -1,3 +1,18 @@
+import { webcrypto } from 'node:crypto';
+
+// Polyfill structuredClone for jsdom
+if (typeof globalThis.structuredClone === 'undefined') {
+  globalThis.structuredClone = (obj: any) => {
+    return JSON.parse(JSON.stringify(obj));
+  };
+}
+
+if (typeof globalThis.crypto === 'undefined') {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: webcrypto,
+  });
+}
+
 import '@testing-library/jest-dom';
 
 import { toHaveNoViolations } from 'jest-axe';
@@ -29,12 +44,13 @@ const messagesToIgnore = [
   'An update to',
   'Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component',
   'Using ReactElement as a label is against good usability and accessibility practices. Please prefer plain strings.',
-  'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
   'downshift: A component has changed the uncontrolled prop',
   'ReactDOM.render is no longer supported in React 18',
   'All radio buttons in a SelectionGroup are unchecked',
   'Could not parse CSS stylesheet',
   'i18next is made possible by our own product, Locize',
+  'Support for defaultProps will be removed from function components',
+  'AxiosError',
 ];
 
 // Directly replace console methods instead of using jest.spyOn so that
@@ -43,11 +59,14 @@ const createFilter =
   (original: (...data: unknown[]) => void) =>
   (...args: unknown[]) => {
     const firstArg = args[0];
-    const message = isString(firstArg)
-      ? firstArg
-      : firstArg instanceof Error
-      ? firstArg.message
-      : '';
+    let message = '';
+    if (isString(firstArg)) {
+      message = firstArg;
+    } else if (firstArg instanceof Error) {
+      message = firstArg.name
+        ? `${firstArg.name}: ${firstArg.message}`
+        : firstArg.message;
+    }
     if (
       args.length > 0 &&
       message.length > 0 &&

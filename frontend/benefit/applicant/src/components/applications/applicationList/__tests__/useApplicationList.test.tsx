@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
 import useApplicationsQuery from 'benefit/applicant/hooks/useApplicationsQuery';
 import { APPLICATION_STATUSES } from 'benefit-shared/constants';
@@ -45,7 +45,11 @@ const getApplicationData = (
   } as ApplicationData);
 
 describe('useApplicationList', () => {
-  const wrapper = ({ children }: { children: React.ReactNode }): JSX.Element => (
+  const wrapper = ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }): JSX.Element => (
     <FrontPageContext.Provider value={{ errors: [], setError: jest.fn() }}>
       {children}
     </FrontPageContext.Provider>
