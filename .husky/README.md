@@ -11,7 +11,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-This directory holds **Husky** hook scripts. After you run `yarn husky` from the repository root, Git’s `core.hooksPath` points here so these run on `git commit` (and related events).
+This directory holds **Husky** hook scripts. After you run `pnpm husky` from the repository root, Git's `core.hooksPath` points here so these run on `git commit` (and related events).
 
 ## Files
 
@@ -30,7 +30,7 @@ It contains small shims Git executes first.
 
 2. **`cd` to the repository root** since the helper script needs that working directory so `git add` paths and `cd frontend` resolve correctly.
 
-3. **`scripts/run-frontend-lerna-pre-commit.sh`** runs `yarn husky:pre-commit` in `frontend/` if any staged path is under `frontend/`, which uses Lerna to run each workspace package’s `pre-commit` script such as Prettier, ESLint, typecheck, and staged tests.
+3. **`scripts/run-frontend-lerna-pre-commit.sh`** runs `pnpm husky:pre-commit` in `frontend/` if any staged path is under `frontend/`, which uses Lerna to run each workspace package's `pre-commit` script such as Prettier, ESLint, typecheck, and staged tests.
 
 ## `commit-msg` hook
 
@@ -41,11 +41,11 @@ Runs **`pre-commit run --hook-stage commit-msg`**, which executes **commitlint**
 From the repo root (after [Requirements](../README.md#requirements) are satisfied):
 
 ```bash
-yarn install
-yarn husky
+pnpm install
+pnpm husky
 ```
 
-Root `yarn install` is required so `husky` and other root `package.json` dependencies used by the hooks are on `PATH`.
+Root `pnpm install` is required so `husky` and other root `package.json` dependencies used by the hooks are on `PATH`.
 
 ## Skipping hooks
 
