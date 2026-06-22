@@ -9,21 +9,26 @@ overrides:
   '@typescript-eslint/eslint-plugin': 5.28.0
   '@typescript-eslint/parser': 5.28.0
   '@typescript-eslint/typescript-estree': 5.28.0
+  '@types/react': 18.2.21
+  '@types/react-dom': 18.2.7
   eslint: 8.4.1
   eslint-config-adjunct: 4.11.1
   eslint-config-auto: 0.7.1
   eslint-plugin-react: 7.37.5
+  form-data@>=3.0.0 <3.0.5: ^3.0.5
+  form-data@>=4.0.0 <4.0.6: ^4.0.6
   hds-react: 5.0.0
   js-cookie: ^3.0.8
   js-yaml: '>=4.1.1'
+  minimatch@<3.1.4: ^3.1.4
+  minimatch@>=9.0.0 <9.0.7: ^9.0.7
   mjml: '>=4.18.1'
   postcss: ^8.5.10
   tar: ^7.5.11
   tmp: ^0.2.6
   underscore: ^1.13.8
+  undici@<6.27.0: ^6.27.0
   uuid: '>=11.1.1'
-  '@types/react': 18.3.12
-  '@types/react-dom': 18.3.1
 
 importers:
 
@@ -91,11 +96,11 @@ importers:
         specifier: ^2.0.1
         version: 2.0.3
       '@types/react':
-        specifier: 18.3.12
-        version: 18.3.12
+        specifier: 18.2.21
+        version: 18.2.21
       '@types/react-dom':
-        specifier: 18.3.1
-        version: 18.3.1
+        specifier: 18.2.7
+        version: 18.2.7
       '@types/react-input-mask':
         specifier: 2.0.5
         version: 2.0.5
@@ -347,13 +352,13 @@ importers:
         version: 2.1.2
       formik:
         specifier: ^2.2.9
-        version: 2.4.9(@types/react@18.3.12)(react@18.3.1)
+        version: 2.4.9(@types/react@18.2.21)(react@18.3.1)
       hds-design-tokens:
         specifier: ^5.0.0
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -365,7 +370,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       next-router-mock:
         specifier: 0.9.12
         version: 0.9.12(next@15.5.19(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -386,10 +391,10 @@ importers:
         version: 3.5.0(react@18.3.1)
       react-markdown:
         specifier: ^8.0.7
-        version: 8.0.7(@types/react@18.3.12)(react@18.3.1)(supports-color@5.5.0)
+        version: 8.0.7(@types/react@18.2.21)(react@18.3.1)(supports-color@5.5.0)
       react-pdf:
         specifier: ^9.2.1
-        version: 9.2.1(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 9.2.1(@types/react@18.2.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-query:
         specifier: ^3.34.0
         version: 3.39.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -486,7 +491,7 @@ importers:
         version: 2.1.2
       formik:
         specifier: ^2.2.9
-        version: 2.4.9(@types/react@18.3.12)(react@18.3.1)
+        version: 2.4.9(@types/react@18.2.21)(react@18.3.1)
       fuse.js:
         specifier: ^6.6.2
         version: 6.6.2
@@ -495,7 +500,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -507,7 +512,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       next-router-mock:
         specifier: 0.9.12
         version: 0.9.12(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -571,10 +576,10 @@ importers:
         version: 2.30.0
       formik:
         specifier: ^2.2.9
-        version: 2.4.9(@types/react@18.3.12)(react@18.3.1)
+        version: 2.4.9(@types/react@18.2.21)(react@18.3.1)
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -583,7 +588,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       next-router-mock:
         specifier: 0.9.12
         version: 0.9.12(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -638,7 +643,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -650,7 +655,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       next-router-mock:
         specifier: 0.9.12
         version: 0.9.12(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -723,7 +728,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -735,7 +740,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -788,7 +793,7 @@ importers:
         version: 4.11.1
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -827,7 +832,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       lodash:
         specifier: ^4.17.21
         version: 4.18.1
@@ -836,7 +841,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       next-router-mock:
         specifier: 0.9.12
         version: 0.9.12(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -903,7 +908,7 @@ importers:
         version: 2.1.2
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       js-file-download:
         specifier: ^0.4.12
         version: 0.4.12
@@ -915,7 +920,7 @@ importers:
         version: 15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-i18next:
         specifier: ^15.3.0
-        version: 15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
+        version: 15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -3207,7 +3212,7 @@ packages:
   '@types/hoist-non-react-statics@3.3.7':
     resolution: {integrity: sha512-PQTyIulDkIDro8P+IHbKCsw7U2xxBYflVzW/FgWdCAePD9xGSidgA76/GeJ6lBKoblyhf9pBY763gbrN+1dI8g==}
     peerDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
@@ -3288,8 +3293,8 @@ packages:
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
-  '@types/react-dom@18.3.1':
-    resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
+  '@types/react-dom@18.2.7':
+    resolution: {integrity: sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==}
 
   '@types/react-input-mask@2.0.5':
     resolution: {integrity: sha512-4wPehO42dCk2sMrAGGT/xIfUG5GVdmzyGalweW5EvJARNXgtoxQ9HnkgSkXlVKR3oLVIHlT/vXk/DUXV+WSPyw==}
@@ -3303,11 +3308,14 @@ packages:
   '@types/react-table@7.7.20':
     resolution: {integrity: sha512-ahMp4pmjVlnExxNwxyaDrFgmKxSbPwU23sGQw2gJK4EhCvnvmib2s/O/+y1dfV57dXOwpr2plfyBol+vEHbi2w==}
 
-  '@types/react@18.3.12':
-    resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
+  '@types/react@18.2.21':
+    resolution: {integrity: sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==}
 
   '@types/relateurl@0.2.33':
     resolution: {integrity: sha512-bTQCKsVbIdzLqZhLkF5fcJQreE4y1ro4DIyVrlDNSCJRRwHhB8Z+4zXXa8jN6eDvc2HbRsEYgbvrnGvi54EpSw==}
+
+  '@types/scheduler@0.26.0':
+    resolution: {integrity: sha512-WFHp9YUJQ6CKshqoC37iOlHnQSmxNc795UhB26CyBBttrN9svdIrUjl/NjnNmfcwtncN0h/0PPAFWv9ovP8mLA==}
 
   '@types/semver@7.7.1':
     resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
@@ -5649,12 +5657,12 @@ packages:
     resolution: {integrity: sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==}
     engines: {node: '>=14'}
 
-  form-data@3.0.4:
-    resolution: {integrity: sha512-f0cRzm6dkyVYV3nPoooP8XlccPQukegwhAnpoLcXy+X+A8KfpGOoXwDr9FLZd3wzgLaBGQBE3lY93Zm/i1JvIQ==}
+  form-data@3.0.5:
+    resolution: {integrity: sha512-j23EibVLnp4zNXGW7LjryXYa2X6U/M96yoOX+ybZxwkYajdxRNEqYY3zhh7y0i6kfISKS2jr+EJq1YTUDEv5+w==}
     engines: {node: '>= 6'}
 
-  form-data@4.0.5:
-    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
+  form-data@4.0.6:
+    resolution: {integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==}
     engines: {node: '>= 6'}
 
   formik@2.4.9:
@@ -7212,7 +7220,7 @@ packages:
   merge-refs@1.3.0:
     resolution: {integrity: sha512-nqXPXbso+1dcKDpPCXvwZyJILz+vSLqGGOnDrYHQYE+B8n9JTCekVLC65AfCpR4ggVyA/45Y0iR9LDyS2iI+zA==}
     peerDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -7353,9 +7361,6 @@ packages:
     resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
     engines: {node: 18 || 20 || >=22}
 
-  minimatch@3.0.5:
-    resolution: {integrity: sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==}
-
   minimatch@3.1.5:
     resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
 
@@ -7365,10 +7370,6 @@ packages:
 
   minimatch@8.0.7:
     resolution: {integrity: sha512-V+1uQNdzybxa14e/p00HZnQNNcTjnRJjDxg2V8wtkjFctq4M7hXFws4oekyTP0Jebeq7QYtpFyOeBAjc88zvYg==}
-    engines: {node: '>=16 || 14 >=14.17'}
-
-  minimatch@9.0.3:
-    resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
     engines: {node: '>=16 || 14 >=14.17'}
 
   minimatch@9.0.9:
@@ -8635,7 +8636,7 @@ packages:
   react-markdown@8.0.7:
     resolution: {integrity: sha512-bvWbzG4MtOU62XqBx3Xx+zB2raaFFsq4mYiAzfjXJMEz2sixgeAfraA3tvzULF02ZdOMUOKTBFFaZJDDrq+BJQ==}
     peerDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       react: '>=16'
 
   react-merge-refs@1.1.0:
@@ -8644,7 +8645,7 @@ packages:
   react-pdf@9.2.1:
     resolution: {integrity: sha512-AJt0lAIkItWEZRA5d/mO+Om4nPCuTiQ0saA+qItO967DTjmGjnhmF+Bi2tL286mOTfBlF5CyLzJ35KTMaDoH+A==}
     peerDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
@@ -8794,7 +8795,7 @@ packages:
   rehackt@0.1.0:
     resolution: {integrity: sha512-7kRDOuLHB87D/JESKxQoRwv4DzbIdwkAGQ7p6QKGdVlY1IZheUnVhlk/4UZlNUVxdAXpyxikE3URsG067ybVzw==}
     peerDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       react: '*'
     peerDependenciesMeta:
       '@types/react':
@@ -9801,8 +9802,8 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici@6.26.0:
-    resolution: {integrity: sha512-4yqz8a3n5HmGTlsbADNtr/dJlhkh/55Rq798G6ibiULcXbDtaLpTl1pvdqcbFfeoj3iSi52lePFM7h9H21cw/A==}
+  undici@6.27.0:
+    resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -10254,7 +10255,7 @@ snapshots:
 
   '@adobe/css-tools@4.5.0': {}
 
-  '@apollo/client@3.14.1(@types/react@18.3.12)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@apollo/client@3.14.1(@types/react@18.2.21)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.1)
       '@wry/caches': 1.0.1
@@ -10265,7 +10266,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       optimism: 0.18.1
       prop-types: 15.8.1
-      rehackt: 0.1.0(@types/react@18.3.12)(react@18.3.1)
+      rehackt: 0.1.0(@types/react@18.2.21)(react@18.3.1)
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.8.1
@@ -11861,7 +11862,7 @@ snapshots:
       libnpmpublish: 9.0.9(supports-color@9.4.0)
       load-json-file: 6.2.0
       make-dir: 4.0.0
-      minimatch: 3.0.5
+      minimatch: 3.1.5
       multimatch: 5.0.0
       node-fetch: 2.6.7(encoding@0.1.13)
       npm-package-arg: 11.0.2
@@ -12107,7 +12108,7 @@ snapshots:
       ejs: 3.1.10
       enquirer: 2.3.6
       ignore: 5.3.2
-      minimatch: 9.0.3
+      minimatch: 9.0.9
       nx: 20.8.4(@swc/core@1.15.40(@swc/helpers@0.5.23))(supports-color@9.4.0)
       semver: 7.8.2
       tmp: 0.2.7
@@ -13004,7 +13005,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.7
       '@testing-library/dom': 9.3.4
-      '@types/react-dom': 18.3.1
+      '@types/react-dom': 18.2.7
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
@@ -13173,9 +13174,9 @@ snapshots:
     dependencies:
       '@types/unist': 2.0.11
 
-  '@types/hoist-non-react-statics@3.3.7(@types/react@18.3.12)':
+  '@types/hoist-non-react-statics@3.3.7(@types/react@18.2.21)':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       hoist-non-react-statics: 3.3.2
 
   '@types/istanbul-lib-coverage@2.0.6': {}
@@ -13231,7 +13232,7 @@ snapshots:
 
   '@types/minimatch@6.0.0':
     dependencies:
-      minimatch: 10.2.5
+      minimatch: 3.1.5
 
   '@types/minimist@1.2.5': {}
 
@@ -13255,36 +13256,39 @@ snapshots:
 
   '@types/prop-types@15.7.15': {}
 
-  '@types/react-dom@18.3.1':
+  '@types/react-dom@18.2.7':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
   '@types/react-input-mask@2.0.5':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
   '@types/react-leaflet-markercluster@3.0.4':
     dependencies:
       '@types/leaflet': 1.9.21
       '@types/leaflet.markercluster': 1.5.6
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       '@types/react-leaflet': 2.8.3
 
   '@types/react-leaflet@2.8.3':
     dependencies:
       '@types/leaflet': 1.9.21
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
   '@types/react-table@7.7.20':
     dependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
-  '@types/react@18.3.12':
+  '@types/react@18.2.21':
     dependencies:
       '@types/prop-types': 15.7.15
+      '@types/scheduler': 0.26.0
       csstype: 3.2.3
 
   '@types/relateurl@0.2.33': {}
+
+  '@types/scheduler@0.26.0': {}
 
   '@types/semver@7.7.1': {}
 
@@ -13292,8 +13296,8 @@ snapshots:
 
   '@types/styled-components@5.1.36':
     dependencies:
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.12)
-      '@types/react': 18.3.12
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.2.21)
+      '@types/react': 18.2.21
       csstype: 3.2.3
 
   '@types/testing-library__jest-dom@5.14.9':
@@ -13919,7 +13923,7 @@ snapshots:
   axios@1.17.0(debug@4.4.3(supports-color@5.5.0))(supports-color@5.5.0):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@5.5.0))
-      form-data: 4.0.5
+      form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@5.5.0)
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
@@ -13929,7 +13933,7 @@ snapshots:
   axios@1.17.0(debug@4.4.3(supports-color@9.4.0))(supports-color@9.4.0):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@9.4.0))
-      form-data: 4.0.5
+      form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@9.4.0)
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
@@ -13939,7 +13943,7 @@ snapshots:
   axios@1.17.0(supports-color@9.4.0):
     dependencies:
       follow-redirects: 1.16.0
-      form-data: 4.0.5
+      form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@9.4.0)
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
@@ -14348,7 +14352,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 6.26.0
+      undici: 6.27.0
       whatwg-mimetype: 4.0.0
 
   chokidar@4.0.3:
@@ -16090,7 +16094,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  form-data@3.0.4:
+  form-data@3.0.5:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -16098,7 +16102,7 @@ snapshots:
       hasown: 2.0.4
       mime-types: 2.1.35
 
-  form-data@4.0.5:
+  form-data@4.0.6:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -16106,9 +16110,9 @@ snapshots:
       hasown: 2.0.4
       mime-types: 2.1.35
 
-  formik@2.4.9(@types/react@18.3.12)(react@18.3.1):
+  formik@2.4.9(@types/react@18.2.21)(react@18.3.1):
     dependencies:
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.12)
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.2.21)
       deepmerge: 2.2.1
       hoist-non-react-statics: 3.3.2
       lodash: 4.18.1
@@ -16448,9 +16452,9 @@ snapshots:
 
   hds-design-tokens@5.2.0: {}
 
-  hds-react@5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3):
+  hds-react@5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3):
     dependencies:
-      '@apollo/client': 3.14.1(@types/react@18.3.12)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@apollo/client': 3.14.1(@types/react@18.2.21)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@babel/runtime': 7.29.7
       '@emotion/styled-base': 11.0.0
       '@hookform/resolvers': 2.9.11(react-hook-form@7.78.0(react@18.3.1))
@@ -16488,9 +16492,9 @@ snapshots:
       - supports-color
       - typescript
 
-  hds-react@5.0.0(@types/react@18.3.12)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3):
+  hds-react@5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3):
     dependencies:
-      '@apollo/client': 3.14.1(@types/react@18.3.12)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@apollo/client': 3.14.1(@types/react@18.2.21)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@babel/runtime': 7.29.7
       '@emotion/styled-base': 11.0.0
       '@hookform/resolvers': 2.9.11(react-hook-form@7.78.0(react@18.3.1))
@@ -17559,7 +17563,7 @@ snapshots:
       decimal.js: 10.6.0
       domexception: 2.0.1
       escodegen: 2.1.0
-      form-data: 3.0.4
+      form-data: 3.0.5
       html-encoding-sniffer: 2.0.1
       http-proxy-agent: 4.0.1(supports-color@9.4.0)
       https-proxy-agent: 5.0.1(supports-color@9.4.0)
@@ -17732,7 +17736,7 @@ snapshots:
       libnpmpublish: 9.0.9(supports-color@9.4.0)
       load-json-file: 6.2.0
       make-dir: 4.0.0
-      minimatch: 3.0.5
+      minimatch: 3.1.5
       multimatch: 5.0.0
       node-fetch: 2.6.7(encoding@0.1.13)
       npm-package-arg: 11.0.2
@@ -18150,9 +18154,9 @@ snapshots:
 
   merge-descriptors@1.0.3: {}
 
-  merge-refs@1.3.0(@types/react@18.3.12):
+  merge-refs@1.3.0(@types/react@18.2.21):
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
   merge-stream@1.0.1:
     dependencies:
@@ -18340,10 +18344,6 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.6
 
-  minimatch@3.0.5:
-    dependencies:
-      brace-expansion: 1.1.15
-
   minimatch@3.1.5:
     dependencies:
       brace-expansion: 1.1.15
@@ -18353,10 +18353,6 @@ snapshots:
       brace-expansion: 2.1.1
 
   minimatch@8.0.7:
-    dependencies:
-      brace-expansion: 2.1.1
-
-  minimatch@9.0.3:
     dependencies:
       brace-expansion: 2.1.1
 
@@ -18947,10 +18943,10 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-i18next@15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1):
+  next-i18next@15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.29.7
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.12)
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.2.21)
       core-js: 3.49.0
       hoist-non-react-statics: 3.3.2
       i18next: 25.10.10(typescript@5.9.3)
@@ -18961,10 +18957,10 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  next-i18next@15.4.3(@types/react@18.3.12)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1):
+  next-i18next@15.4.3(@types/react@18.2.21)(i18next@25.10.10(typescript@5.9.3))(next@15.5.19(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.29.7
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.12)
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.2.21)
       core-js: 3.49.0
       hoist-non-react-statics: 3.3.2
       i18next: 25.10.10(typescript@5.9.3)
@@ -19196,7 +19192,7 @@ snapshots:
       jest-diff: 29.7.0
       jsonc-parser: 3.2.0
       lines-and-columns: 2.0.3
-      minimatch: 9.0.3
+      minimatch: 9.0.9
       node-machine-id: 1.1.12
       npm-run-path: 4.0.1
       open: 8.4.2
@@ -20112,11 +20108,11 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  react-markdown@8.0.7(@types/react@18.3.12)(react@18.3.1)(supports-color@5.5.0):
+  react-markdown@8.0.7(@types/react@18.2.21)(react@18.3.1)(supports-color@5.5.0):
     dependencies:
       '@types/hast': 2.3.10
       '@types/prop-types': 15.7.15
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       '@types/unist': 2.0.11
       comma-separated-tokens: 2.0.3
       hast-util-whitespace: 2.0.1
@@ -20136,20 +20132,20 @@ snapshots:
 
   react-merge-refs@1.1.0: {}
 
-  react-pdf@9.2.1(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-pdf@9.2.1(@types/react@18.2.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       clsx: 2.1.1
       dequal: 2.0.3
       make-cancellable-promise: 1.3.2
       make-event-props: 1.6.2
-      merge-refs: 1.3.0(@types/react@18.3.12)
+      merge-refs: 1.3.0(@types/react@18.2.21)
       pdfjs-dist: 4.8.69
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tiny-invariant: 1.3.3
       warning: 4.0.3
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
 
   react-popper@2.2.5(@popperjs/core@2.11.5)(react@18.3.1):
     dependencies:
@@ -20330,9 +20326,9 @@ snapshots:
     dependencies:
       jsesc: 3.1.0
 
-  rehackt@0.1.0(@types/react@18.3.12)(react@18.3.1):
+  rehackt@0.1.0(@types/react@18.2.21)(react@18.3.1):
     optionalDependencies:
-      '@types/react': 18.3.12
+      '@types/react': 18.2.21
       react: 18.3.1
 
   remark-parse@10.0.2(supports-color@5.5.0):
@@ -21588,7 +21584,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici@6.26.0: {}
+  undici@6.27.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
