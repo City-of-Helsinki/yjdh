@@ -1,0 +1,9 @@
+packages:
+  - 'frontend'
+  - 'backend'
+
+# Do not allow dependencies to be used before they have been released for at least 1 week.
+minimumReleaseAge: 10080
+
+# Keep this empty to avoid warning noise for intentionally ignored build scripts.
+ignoredBuiltDependencies: []

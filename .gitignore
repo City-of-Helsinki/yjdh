@@ -166,3 +166,8 @@ nohup.out
 
 # do not include testcafe videos
 1.mp4
+
+# yarn – not used anymore
+yarn.lock
+.yarn/
+.yarnrc.yml
