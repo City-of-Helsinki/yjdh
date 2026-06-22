@@ -7,6 +7,7 @@ from applications.models import EmailTemplate
 
 
 def assert_expected_csp(response):
+    """Assert the global Kesäseteli backend CSP directives on a response."""
     assert "Content-Security-Policy" in response.headers, "CSP header missing from response"
     csp_header = response.headers["Content-Security-Policy"]
     assert "default-src 'self'" in csp_header
