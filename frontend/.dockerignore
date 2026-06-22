@@ -13,7 +13,8 @@
 !shared/tsconfig.json
 !shared/sentry-config.js
 !tsconfig.json
-!yarn.lock
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
 
 !kesaseteli/employer/next.config.js
 !kesaseteli/employer/sentry.client.config.js
