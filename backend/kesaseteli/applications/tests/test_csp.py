@@ -35,9 +35,9 @@ def test_excel_download_includes_bootstrap_csp(staff_client):
     response = staff_client.get(reverse("excel-download"))
     assert response.status_code == 200
     assert_expected_csp(response)
-    assert "connect-src 'self' cdn.jsdelivr.net" in response.headers[
-        "Content-Security-Policy"
-    ]
+    csp_header = response.headers["Content-Security-Policy"]
+    assert "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net" in csp_header
+    assert "connect-src" not in csp_header
 
 
 @pytest.mark.django_db
