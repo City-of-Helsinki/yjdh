@@ -29,6 +29,9 @@ const buildKesaseteliCspPolicy = () => {
   const matomoOrigins = [
     getOriginFromUrl(process.env.NEXT_PUBLIC_MATOMO_URL),
   ].filter(Boolean);
+  const matomoSources = matomoOrigins.length
+    ? ` ${matomoOrigins.join(' ')}`
+    : '';
   const connectOrigins = [
     "'self'",
     getOriginFromUrl(process.env.NEXT_PUBLIC_BACKEND_URL),
@@ -38,9 +41,9 @@ const buildKesaseteliCspPolicy = () => {
 
   return [
     "default-src 'self'",
-    `script-src 'self'${isDev ? " 'unsafe-eval'" : ''} ${matomoOrigins.join(' ')}`,
+    `script-src 'self'${isDev ? " 'unsafe-eval'" : ''}${matomoSources}`,
     "style-src 'self' 'unsafe-inline'",
-    `img-src 'self' blob: data: ${matomoOrigins.join(' ')}`,
+    `img-src 'self' blob: data:${matomoSources}`,
     `font-src 'self' data: ${fontOrigins.join(' ')}`,
     `connect-src ${connectOrigins.join(' ')}`,
     "object-src 'none'",

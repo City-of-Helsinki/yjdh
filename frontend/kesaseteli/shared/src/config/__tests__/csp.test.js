@@ -42,6 +42,20 @@ describe('withKesaseteliSecurityHeaders', () => {
     );
   });
 
+  it('should not leave trailing whitespace when Matomo URL is unset', async () => {
+    process.env.NODE_ENV = 'production';
+    process.env.NEXT_PUBLIC_BACKEND_URL = 'https://localhost:8000';
+
+    const config = withKesaseteliSecurityHeaders({ i18n: {} });
+    const headers = await config.headers();
+    const csp = headers[0].headers[0].value;
+
+    expect(csp).toContain("script-src 'self';");
+    expect(csp).toContain("img-src 'self' blob: data:;");
+    expect(csp).not.toMatch(/script-src 'self' ;/);
+    expect(csp).not.toMatch(/img-src 'self' blob: data: ;/);
+  });
+
   it('should preserve pre-existing headers from the wrapped config', async () => {
     const config = withKesaseteliSecurityHeaders({
       async headers() {
