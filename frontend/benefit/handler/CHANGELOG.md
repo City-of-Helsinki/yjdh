@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.3.0...benefit-handler-v5.4.0) (2026-06-23)
+
+
+### Features
+
+* **benefit:** New fields for handler ([a197bde](https://github.com/City-of-Helsinki/yjdh/commit/a197bde18b6edb86ad381e86ce33defbc07cf55d))
+* **benefit:** New fields to handler review ([5ccaf92](https://github.com/City-of-Helsinki/yjdh/commit/5ccaf927ac9ff6e6824f1b5ad433da366f41434b))
+* **benefit:** Pdf dl button,archived applications ([4bfdb65](https://github.com/City-of-Helsinki/yjdh/commit/4bfdb6513191544a7fcb445e41f8e8bfe633309b))
+* **benefit:** Remove 2nd sum from instalments ([8c7cb91](https://github.com/City-of-Helsinki/yjdh/commit/8c7cb913141dca1096c4b035d7d71f814badccce))
+* **benefit:** Test for usedownloadapplicationpdf ([3306e7e](https://github.com/City-of-Helsinki/yjdh/commit/3306e7e61aa22d4d846fe3bce63bac8e8081c23a))
+
+
+### Bug Fixes
+
+* **benefit:** Review fixes ([a18bae4](https://github.com/City-of-Helsinki/yjdh/commit/a18bae4e5ce980c5d0895256c23753a9f82dab7e))
+* **bf:** Ensure pdf download works in all browsers ([639ad9b](https://github.com/City-of-Helsinki/yjdh/commit/639ad9b84df6a51b5d5b28ea87581000b2dc4d88))
+* **ks,shared:** Upgrade ibantools & validate IBAN ([eb9eba0](https://github.com/City-of-Helsinki/yjdh/commit/eb9eba0a1ebce0615ba038ee4dc13379d04434bd))
+
 ## [5.3.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.2.1...benefit-handler-v5.3.0) (2026-06-22)
 
 
