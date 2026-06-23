@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom';
 
 import { render, RenderResult, screen } from '@testing-library/react';
+import {
+  Application,
+  ApplicationFields,
+} from 'benefit/handler/types/application';
 import React from 'react';
 
 import EmploymentSection from '../EmploymentSection';
@@ -119,7 +123,7 @@ const fields = {
   startDate: {
     name: 'startDate',
   },
-};
+} as unknown as ApplicationFields;
 
 const baseData = {
   employee: {
@@ -135,15 +139,19 @@ const baseData = {
   roleOfEmployeeInOrganization: 'First paragraph\nSecond paragraph',
   startDate: '2026-01-02',
   endDate: '2026-12-31',
-};
+} as unknown as Application;
 
-const renderSubject = (dataOverrides = {}): RenderResult =>
+const renderSubject = (
+  dataOverrides: Partial<Application> = {}
+): RenderResult =>
   render(
     <EmploymentSection
-      data={{
-        ...baseData,
-        ...dataOverrides,
-      }}
+      data={
+        {
+          ...baseData,
+          ...dataOverrides,
+        } as Application
+      }
       translationsBase={translationsBase}
       dispatchStep={jest.fn()}
       fields={fields}
@@ -212,7 +220,7 @@ describe('review EmploymentSection', () => {
 
   it('renders truthy pay subsidy using translated value', () => {
     const { container } = renderSubject({
-      paySubsidyGranted: 'pay_subsidy',
+      paySubsidyGranted: 'pay_subsidy' as Application['paySubsidyGranted'],
     });
 
     expect(screen.getByText('Palkkatuki myönnetty')).toBeInTheDocument();
@@ -223,7 +231,7 @@ describe('review EmploymentSection', () => {
 
   it('renders dash when pay subsidy is not truthy', () => {
     const { container } = renderSubject({
-      paySubsidyGranted: 'not_granted',
+      paySubsidyGranted: 'not_granted' as Application['paySubsidyGranted'],
     });
 
     expect(container).toHaveTextContent(/Palkkatuki myönnetty[\S\s]*-/);
@@ -261,7 +269,7 @@ describe('review EmploymentSection', () => {
 
   it('renders dash when role of employee in organization is null', () => {
     const { container } = renderSubject({
-      roleOfEmployeeInOrganization: null,
+      roleOfEmployeeInOrganization: undefined,
     });
 
     expect(container).toHaveTextContent(
@@ -300,7 +308,7 @@ describe('review EmploymentSection', () => {
         data={baseData}
         translationsBase={translationsBase}
         dispatchStep={jest.fn()}
-        fields={{}}
+        fields={{} as ApplicationFields}
       />
     );
 

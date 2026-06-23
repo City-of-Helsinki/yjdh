@@ -173,7 +173,8 @@ const AlterationHandlingForm = ({
                   value="1"
                   onBlur={formik.handleBlur}
                   onChange={() => {
-                    void formik.setFieldValue('isRecoverable', true);
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    formik.setFieldValue('isRecoverable', true);
                   }}
                   checked={formik.values.isRecoverable === true}
                 />
@@ -184,7 +185,8 @@ const AlterationHandlingForm = ({
                   value="0"
                   onBlur={formik.handleBlur}
                   onChange={() => {
-                    void formik.setFieldValue('isRecoverable', false);
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    formik.setFieldValue('isRecoverable', false);
                   }}
                   checked={formik.values.isRecoverable === false}
                 />

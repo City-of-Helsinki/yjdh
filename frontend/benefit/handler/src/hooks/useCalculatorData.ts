@@ -64,31 +64,33 @@ const useCalculatorData = (
    * @param confirm true: do the actual clearing, false: just scroll to field
    * @returns true to allow chaining
    */
+  /* eslint-disable @typescript-eslint/no-floating-promises */
   const handleClear = (confirm: boolean): true => {
     if (confirm) {
-      void formik.setFieldValue('endDate', '');
-      void formik.setFieldValue('startDate', '');
-      void formik.setFieldValue(
+      formik.setFieldValue('endDate', '');
+      formik.setFieldValue('startDate', '');
+      formik.setFieldValue(
         'workTimePercent',
         String(PAY_SUBSIDY_PERCENT.DEFAULT)
       );
-      void formik.setFieldValue('monthlyAmount', '');
-      void formik.setFieldValue(
+      formik.setFieldValue('monthlyAmount', '');
+      formik.setFieldValue(
         'paySubsidies',
         application.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
           ? []
           : [PAY_SUBSIDIES_OVERRIDE]
       );
-      void formik.setFieldValue('trainingCompensations', []);
+      formik.setFieldValue('trainingCompensations', []);
       // Manual calculation fields
-      void formik.setFieldValue('overrideMonthlyBenefitAmount', '');
-      void formik.setFieldValue('overrideMonthlyBenefitAmountComment', '');
+      formik.setFieldValue('overrideMonthlyBenefitAmount', '');
+      formik.setFieldValue('overrideMonthlyBenefitAmountComment', '');
     }
     setTimeout(() => {
       focusAndScroll('monthlyPay');
     }, 20);
     return true;
   };
+  /* eslint-enable @typescript-eslint/no-floating-promises */
 
   useEffect(() => {
     if (dirty) setIsRecalculationRequired(true);

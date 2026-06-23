@@ -274,10 +274,8 @@ const CompanySection: React.FC<Props> = ({
               const value =
                 fields.companyBankAccountNumber.mask?.stripVal(initValue) ??
                 initValue;
-              void formik.setFieldValue(
-                fields.companyBankAccountNumber.name,
-                value
-              );
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue(fields.companyBankAccountNumber.name, value);
             }}
           >
             {
@@ -321,7 +319,8 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
                 )}
                 onChange={() => {
-                  void formik.setFieldValue(
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     false
                   );
@@ -339,7 +338,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
                 )}
                 onChange={() =>
-                  void formik.setFieldValue(
+                  formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     true
                   )
@@ -358,7 +357,8 @@ const CompanySection: React.FC<Props> = ({
             label={fields.companyNumberOfEmployees.label}
             onBlur={formik.handleBlur}
             onChange={(event) => {
-              void formik.setFieldValue(
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue(
                 fields.companyNumberOfEmployees.name,
                 event.target.value.replaceAll(/\D/g, '')
               );
@@ -409,7 +409,8 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.PURCHASED_SERVICE}.no`
               )}
               onChange={() => {
-                void formik.setFieldValue(fields.purchasedService.name, false);
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.purchasedService.name, false);
               }}
               // 3 states: null (none is selected), true, false
               checked={formik.values.purchasedService === false}
@@ -514,7 +515,8 @@ const CompanySection: React.FC<Props> = ({
           <Select
             texts={languageTexts}
             onChange={(lang: Option[]) => {
-              void formik.setFieldValue(
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue(
                 fields.applicantLanguage.name,
                 lang[0]?.value
               );
@@ -546,7 +548,8 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.DE_MINIMIS_AID}.no`
                 )}
                 onChange={() => {
-                  void formik.setFieldValue(fields.deMinimisAid.name, false);
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(fields.deMinimisAid.name, false);
                   setDeMinimisAids([]);
                 }}
                 // 3 states: null (none is selected), true, false
@@ -560,7 +563,8 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.DE_MINIMIS_AID}.yes`
                 )}
                 onChange={() =>
-                  void formik.setFieldValue(fields.deMinimisAid.name, true)
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(fields.deMinimisAid.name, true)
                 }
                 checked={formik.values.deMinimisAid === true}
               />
@@ -592,11 +596,13 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
               onChange={() => {
-                void formik.setFieldValue(
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(
                   fields.coOperationNegotiations.name,
                   false
                 );
-                void formik.setFieldValue(
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(
                   APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
                   ''
                 );
@@ -611,10 +617,8 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
               onChange={() =>
-                void formik.setFieldValue(
-                  fields.coOperationNegotiations.name,
-                  true
-                )
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.coOperationNegotiations.name, true)
               }
               checked={formik.values.coOperationNegotiations === true}
             />
