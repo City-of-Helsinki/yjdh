@@ -169,7 +169,8 @@ const AlterationCalculator = ({
     setCalculationRangeValid(true);
 
     if (!startDate || !endDate || startDate > endDate) {
-      void formik.setFieldValue('recoveryAmount', '0');
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      formik.setFieldValue('recoveryAmount', '0');
       setCalculationDescription(null);
       return;
     }
@@ -181,7 +182,8 @@ const AlterationCalculator = ({
       })
     ) {
       setCalculationRangeValid(false);
-      void formik.setFieldValue('recoveryAmount', '0');
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      formik.setFieldValue('recoveryAmount', '0');
       setCalculationDescription(null);
       setCalculationOutOfDate(false);
       return;
@@ -191,7 +193,8 @@ const AlterationCalculator = ({
       ? getNumberValue(formik.values?.manualRecoveryAmount || 0)
       : calculateAutomaticRecoveryAmount(startDate, endDate);
 
-    void formik.setFieldValue('recoveryAmount', total.toFixed(2));
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    formik.setFieldValue('recoveryAmount', total.toFixed(2));
     setCalculationDescription(
       t(`${translationBase}.calculation.resultDescription`, {
         months: diffMonths(endDate, startDate),
@@ -212,15 +215,17 @@ const AlterationCalculator = ({
   const handleChange =
     (field: string) =>
     (value: unknown): void => {
-      void formik.setFieldValue(field, value);
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      formik.setFieldValue(field, value);
       setCalculationOutOfDate(true);
-      void onCalculationChange(true);
+      onCalculationChange(true);
     };
 
   const selectTab = (manualTab: boolean): void => {
-    void formik.setFieldValue('isManual', manualTab);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    formik.setFieldValue('isManual', manualTab);
     setCalculationOutOfDate(true);
-    void onCalculationChange(true);
+    onCalculationChange(true);
   };
 
   const showRangeError = !calculationOutOfDate && !calculationRangeValid;

@@ -270,7 +270,8 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.no`
                 )}
                 onChange={() => {
-                  void formik.setFieldValue(
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     false
                   );
@@ -288,7 +289,7 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.yes`
                 )}
                 onChange={() =>
-                  void formik.setFieldValue(
+                  formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     true
                   )
@@ -316,7 +317,8 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                void formik.setFieldValue(
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -331,7 +333,8 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                void formik.setFieldValue(
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -356,14 +359,13 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                void formik.setFieldValue(
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(
                   fields.otherSubsidisedEmployed.name,
                   false
                 );
-                void formik.setFieldValue(
-                  fields.otherSubsidisedNumber.name,
-                  null
-                );
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.otherSubsidisedNumber.name, null);
               }}
               checked={formik.values.otherSubsidisedEmployed === false}
             />
@@ -373,10 +375,8 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                void formik.setFieldValue(
-                  fields.otherSubsidisedEmployed.name,
-                  true
-                );
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
               }}
               checked={formik.values.otherSubsidisedEmployed === true}
             />
@@ -601,10 +601,8 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                void formik.setFieldValue(
-                  fields.apprenticeshipProgram.name,
-                  false
-                );
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -616,10 +614,8 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                void formik.setFieldValue(
-                  fields.apprenticeshipProgram.name,
-                  true
-                );
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />

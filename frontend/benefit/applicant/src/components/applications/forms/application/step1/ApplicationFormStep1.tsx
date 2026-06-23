@@ -250,8 +250,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.no`
                 )}
                 onChange={() => {
-                  void formik.setFieldValue(fields.deMinimisAid.name, false);
-                  void formik.setFieldValue(fields.deMinimisAidSet.name, []);
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(fields.deMinimisAid.name, false);
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(fields.deMinimisAidSet.name, []);
                   setUnfinishedDeMinimisAid(false);
                   setDeMinimisAids([]);
                 }}
@@ -266,7 +268,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.yes`
                 )}
                 onChange={() =>
-                  void formik.setFieldValue(fields.deMinimisAid.name, true)
+                  formik.setFieldValue(fields.deMinimisAid.name, true)
                 }
                 checked={formik.values.deMinimisAid === true}
               />
@@ -312,7 +314,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
               onChange={() => {
-                void formik.setFieldValue(
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(
                   fields.coOperationNegotiations.name,
                   false
                 );
@@ -327,10 +330,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
               onChange={() =>
-                void formik.setFieldValue(
-                  fields.coOperationNegotiations.name,
-                  true
-                )
+                formik.setFieldValue(fields.coOperationNegotiations.name, true)
               }
               checked={formik.values.coOperationNegotiations === true}
             />

@@ -57,10 +57,12 @@ const useFormContent = (
     getErrorText(errors, touched, fieldName, t, false);
 
   const clearAlternativeAddressValues = React.useCallback((): void => {
-    void setFieldValue(fields.companyDepartment.name, '');
-    void setFieldValue(fields.alternativeCompanyStreetAddress.name, '');
-    void setFieldValue(fields.alternativeCompanyPostcode.name, '');
-    void setFieldValue(fields.alternativeCompanyCity.name, '');
+    /* eslint-disable @typescript-eslint/no-floating-promises */
+    setFieldValue(fields.companyDepartment.name, '');
+    setFieldValue(fields.alternativeCompanyStreetAddress.name, '');
+    setFieldValue(fields.alternativeCompanyPostcode.name, '');
+    setFieldValue(fields.alternativeCompanyCity.name, '');
+    /* eslint-enable @typescript-eslint/no-floating-promises */
   }, [
     fields.companyDepartment.name,
     fields.alternativeCompanyStreetAddress.name,
@@ -71,12 +73,15 @@ const useFormContent = (
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
-    void setFieldValue(fields.deMinimisAid.name, null);
+    /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
+    setFieldValue(fields.deMinimisAid.name, null);
   }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
 
   const clearCommissionValues = React.useCallback((): void => {
-    void setFieldValue(fields.employee.commissionDescription.name, '');
-    void setFieldValue(fields.employee.commissionAmount.name, '');
+    /* eslint-disable @typescript-eslint/no-floating-promises */
+    setFieldValue(fields.employee.commissionDescription.name, '');
+    setFieldValue(fields.employee.commissionAmount.name, '');
+    /* eslint-enable @typescript-eslint/no-floating-promises */
   }, [
     fields.employee.commissionDescription.name,
     fields.employee.commissionAmount.name,
@@ -84,12 +89,14 @@ const useFormContent = (
   ]);
 
   const clearContractValues = React.useCallback((): void => {
-    void setFieldValue(fields.employee.jobTitle.name, '');
-    void setFieldValue(fields.employee.workingHours.name, '');
-    void setFieldValue(fields.employee.collectiveBargainingAgreement.name, '');
-    void setFieldValue(fields.employee.monthlyPay.name, '');
-    void setFieldValue(fields.employee.otherExpenses.name, '');
-    void setFieldValue(fields.employee.vacationMoney.name, '');
+    /* eslint-disable @typescript-eslint/no-floating-promises */
+    setFieldValue(fields.employee.jobTitle.name, '');
+    setFieldValue(fields.employee.workingHours.name, '');
+    setFieldValue(fields.employee.collectiveBargainingAgreement.name, '');
+    setFieldValue(fields.employee.monthlyPay.name, '');
+    setFieldValue(fields.employee.otherExpenses.name, '');
+    setFieldValue(fields.employee.vacationMoney.name, '');
+    /* eslint-enable @typescript-eslint/no-floating-promises */
   }, [
     fields.employee.jobTitle.name,
     fields.employee.workingHours.name,
@@ -101,12 +108,15 @@ const useFormContent = (
   ]);
 
   const clearDatesValues = React.useCallback((): void => {
-    void setFieldValue(fields.startDate.name, '');
-    void setFieldValue(fields.endDate.name, '');
+    /* eslint-disable @typescript-eslint/no-floating-promises */
+    setFieldValue(fields.startDate.name, '');
+    setFieldValue(fields.endDate.name, '');
+    /* eslint-enable @typescript-eslint/no-floating-promises */
   }, [fields.startDate.name, fields.endDate.name, setFieldValue]);
 
   const clearBenefitValues = React.useCallback((): void => {
-    void setFieldValue(fields.benefitType.name, null);
+    /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
+    setFieldValue(fields.benefitType.name, null);
   }, [fields.benefitType.name, setFieldValue]);
 
   const displayPastApplicationDatesWarning = (): boolean => {

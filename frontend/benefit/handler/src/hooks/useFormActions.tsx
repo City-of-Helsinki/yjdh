@@ -325,9 +325,7 @@ const useFormActions = (
     } = currentValues;
 
     const normalizedPaySubsidyGranted =
-      paySubsidyGranted === null || paySubsidyGranted === undefined
-        ? PAY_SUBSIDY_GRANTED.NOT_GRANTED
-        : paySubsidyGranted;
+      paySubsidyGranted ?? PAY_SUBSIDY_GRANTED.NOT_GRANTED;
 
     const paySubsidyPercent =
       normalizedPaySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED

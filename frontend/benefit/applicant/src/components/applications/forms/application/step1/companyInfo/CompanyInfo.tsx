@@ -350,7 +350,8 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
                 )}
                 onChange={() => {
-                  void formik.setFieldValue(
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     false
                   );
@@ -388,7 +389,8 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={fields.companyNumberOfEmployees.label}
           onBlur={formik.handleBlur}
           onChange={(event) => {
-            void formik.setFieldValue(
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            formik.setFieldValue(
               fields.companyNumberOfEmployees.name,
               event.target.value.replaceAll(/\D/g, '')
             );
@@ -433,7 +435,8 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             value="false"
             label={t('common:utility.no')}
             onChange={() => {
-              void formik.setFieldValue(fields.purchasedService.name, false);
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue(fields.purchasedService.name, false);
             }}
             checked={formik.values.purchasedService === false}
           />
@@ -443,7 +446,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             value="true"
             label={t('common:utility.yes')}
             onChange={() =>
-              void formik.setFieldValue(fields.purchasedService.name, true)
+              formik.setFieldValue(fields.purchasedService.name, true)
             }
             checked={formik.values.purchasedService === true}
           />

@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom';
 
 import { render, RenderResult, screen } from '@testing-library/react';
+import {
+  Application,
+  ApplicationFields,
+} from 'benefit/handler/types/application';
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import React from 'react';
 
@@ -87,13 +91,23 @@ jest.mock('../../summarySection/SummarySection', () => ({
 
 const translationsBase = 'common:applications.sections';
 
+const baseCompany: NonNullable<Application['company']> = {
+  name: 'Test company',
+  businessId: '1234567-8',
+  companyForm: 'Oy',
+  streetAddress: 'Test street 1',
+  postcode: '00100',
+  city: 'Helsinki',
+  organizationType: ORGANIZATION_TYPES.COMPANY,
+};
+
 const fields = {
   employee: {
     firstName: {
       name: 'employee.firstName',
     },
   },
-};
+} as unknown as ApplicationFields;
 
 const baseData = {
   employee: {
@@ -102,21 +116,23 @@ const baseData = {
     socialSecurityNumber: '010190-123A',
     isLivingInHelsinki: true,
   },
-  company: {
-    organizationType: ORGANIZATION_TYPES.COMPANY,
-  },
+  company: baseCompany,
   otherFinancialSupportForEmployment: false,
   otherSubsidisedEmployed: false,
   otherSubsidisedNumber: null,
-};
+} as unknown as Application;
 
-const renderSubject = (dataOverrides = {}): RenderResult =>
+const renderSubject = (
+  dataOverrides: Partial<Application> = {}
+): RenderResult =>
   render(
     <EmployeeSection
-      data={{
-        ...baseData,
-        ...dataOverrides,
-      }}
+      data={
+        {
+          ...baseData,
+          ...dataOverrides,
+        } as Application
+      }
       translationsBase={translationsBase}
       dispatchStep={jest.fn()}
       fields={fields}
@@ -170,6 +186,7 @@ describe('review EmployeeSection', () => {
   it('renders association immediate manager check for associations', () => {
     const { container } = renderSubject({
       company: {
+        ...baseCompany,
         organizationType: ORGANIZATION_TYPES.ASSOCIATION,
       },
       associationImmediateManagerCheck: true,
@@ -188,6 +205,7 @@ describe('review EmployeeSection', () => {
   it('does not render association immediate manager check for non-associations', () => {
     renderSubject({
       company: {
+        ...baseCompany,
         organizationType: ORGANIZATION_TYPES.COMPANY,
       },
       associationImmediateManagerCheck: true,

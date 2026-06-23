@@ -98,7 +98,8 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
   ): void => {
     const newPaySubsidies = [...(formik.values.paySubsidies || [])];
     newPaySubsidies[index] = { ...newPaySubsidies[index], ...newValues };
-    void formik.setFieldValue(fields.paySubsidies.name, newPaySubsidies);
+    /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
+    formik.setFieldValue(fields.paySubsidies.name, newPaySubsidies);
   };
 
   if ((formik.values.paySubsidies?.length ?? 0) === 0) return null;
@@ -628,7 +629,8 @@ const SalaryBenefitCalculatorView: React.FC<
               onChange={(selectedOptions: OptionType[]) => {
                 const selectedValue = Number(selectedOptions?.[0]?.value);
                 if (!Number.isNaN(selectedValue)) {
-                  void formik.setFieldValue(
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  formik.setFieldValue(
                     fields.stateAidMaxPercentage.name,
                     selectedValue
                   );
@@ -724,7 +726,8 @@ const SalaryBenefitCalculatorView: React.FC<
           placeholder={fields.startDate.placeholder}
           language={language}
           onChange={(value) => {
-            void formik.setFieldValue(fields.startDate.name, value);
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            formik.setFieldValue(fields.startDate.name, value);
           }}
           value={formik.values.startDate ?? ''}
           invalid={!!getErrorMessage(fields.startDate.name)}
@@ -741,7 +744,8 @@ const SalaryBenefitCalculatorView: React.FC<
           placeholder={fields.endDate.placeholder}
           language={language}
           onChange={(value) => {
-            void formik.setFieldValue(fields.endDate.name, value);
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            formik.setFieldValue(fields.endDate.name, value);
           }}
           value={formik.values.endDate ?? ''}
           invalid={!!getErrorMessage(fields.endDate.name)}

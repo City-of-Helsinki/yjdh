@@ -294,7 +294,8 @@ const useApplicationFormStep1 = (
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
-    void setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
   }, [setDeMinimisAids, setFieldValue]);
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(
