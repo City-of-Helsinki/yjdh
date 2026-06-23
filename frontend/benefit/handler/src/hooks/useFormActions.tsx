@@ -303,9 +303,7 @@ const useFormActions = (
   const getPayloadForTrainingCompensations = (
     values: Partial<Application>
   ): TrainingCompensation[] => {
-    if (
-      values.apprenticeshipProgram
-    ) {
+    if (values.apprenticeshipProgram) {
       // Return the training compensation values as they are
       return values?.trainingCompensations || [];
     }
@@ -329,9 +327,7 @@ const useFormActions = (
     } = currentValues;
 
     const normalizedPaySubsidyGranted =
-      (paySubsidyGranted === null || paySubsidyGranted === undefined)
-        ? PAY_SUBSIDY_GRANTED.NOT_GRANTED
-        : paySubsidyGranted;
+      paySubsidyGranted ?? PAY_SUBSIDY_GRANTED.NOT_GRANTED;
 
     const paySubsidyPercent =
       normalizedPaySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
@@ -373,9 +369,7 @@ const useFormActions = (
         : undefined,
       apprenticeshipProgram,
       companyNumberOfEmployees:
-        companyNumberOfEmployees === ''
-          ? null
-          : companyNumberOfEmployees,
+        companyNumberOfEmployees === '' ? null : companyNumberOfEmployees,
     };
 
     return {
