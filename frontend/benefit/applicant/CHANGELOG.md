@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.0...benefit-applicant-v4.4.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* **benefit:** Business brief line breaks preserved ([585c31d](https://github.com/City-of-Helsinki/yjdh/commit/585c31da57e617b3f2a069fd87b189876d906d6d))
+* **benefit:** Description field width ([f83171b](https://github.com/City-of-Helsinki/yjdh/commit/f83171b17965a5d0cfb0ba8fa0c8ff01329b21c3))
+* **benefit:** Line breaks to consents ([ec1e06f](https://github.com/City-of-Helsinki/yjdh/commit/ec1e06f8745fdd89ee7bce7eb5ea924da4c88d65))
+* **benefit:** Minor fixes to applicant ui ([f9ded07](https://github.com/City-of-Helsinki/yjdh/commit/f9ded07d323d5f117e1c1c3a94d86f8bb87ebf89))
+* **benefit:** Role of employee attributes fixed ([11419e0](https://github.com/City-of-Helsinki/yjdh/commit/11419e08e33401418c15f951f105f34f26ecc663))
+
 ## [4.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.3.0...benefit-applicant-v4.4.0) (2026-06-15)
 
 
