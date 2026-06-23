@@ -373,6 +373,9 @@ importers:
       hds-react:
         specifier: 5.0.0
         version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3)
+      i18next:
+        specifier: ^25.3.2
+        version: 25.10.10(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -518,6 +521,9 @@ importers:
       hds-react:
         specifier: 5.0.0
         version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+      i18next:
+        specifier: ^25.3.2
+        version: 25.10.10(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -664,6 +670,9 @@ importers:
       hds-react:
         specifier: 5.0.0
         version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+      i18next:
+        specifier: ^25.3.2
+        version: 25.10.10(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -749,6 +758,9 @@ importers:
       hds-react:
         specifier: 5.0.0
         version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+      i18next:
+        specifier: ^25.3.2
+        version: 25.10.10(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -853,6 +865,9 @@ importers:
       hds-react:
         specifier: 5.0.0
         version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+      i18next:
+        specifier: ^25.3.2
+        version: 25.10.10(typescript@5.9.3)
       lodash:
         specifier: ^4.17.21
         version: 4.18.1
