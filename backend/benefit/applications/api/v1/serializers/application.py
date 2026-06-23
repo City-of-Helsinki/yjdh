@@ -1279,10 +1279,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
             data = self.context["request"].data
             action = data["action"] if "action" in data else None
 
-            # Ignore applicant's terms if app origin is from handler
-            if instance.application_origin == ApplicationOrigin.HANDLER or action in [
-                ApplicationActions.HANDLER_ALLOW_APPLICATION_EDIT
-            ]:
+            if action in [ApplicationActions.HANDLER_ALLOW_APPLICATION_EDIT]:
                 return
 
             if not approve_terms:

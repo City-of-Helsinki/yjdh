@@ -42,7 +42,10 @@ const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           />
         </$GridCell>
       ) : (
-        data?.applicantTermsInEffect?.applicantConsents.map((consent, i) => (
+        (
+          data?.applicantTermsApproval?.terms?.applicantConsents ??
+          data?.applicantTermsInEffect?.applicantConsents
+        )?.map((consent, i) => (
           <$GridCell $colSpan={12} id="termsSection" key={consent.id}>
             <$Checkbox
               style={{ marginBottom: theme.spacing.xs }}
