@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.24.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.23.0...benefit-backend-v2.24.0) (2026-06-23)
+
+
+### Features
+
+* **benefit:** Handler application pdf export ([d170017](https://github.com/City-of-Helsinki/yjdh/commit/d1700171cf963e9f600d6c5616929d00550a7aa2))
+* **benefit:** Pdf dl button,archived applications ([4bfdb65](https://github.com/City-of-Helsinki/yjdh/commit/4bfdb6513191544a7fcb445e41f8e8bfe633309b))
+* **benefit:** Pdf footer dynamic total pages ([844caa2](https://github.com/City-of-Helsinki/yjdh/commit/844caa2606d9755a3ced2bf22872497174c299aa))
+
+
+### Bug Fixes
+
+* **benefit:** Review fixes ([a18bae4](https://github.com/City-of-Helsinki/yjdh/commit/a18bae4e5ce980c5d0895256c23753a9f82dab7e))
+
 ## [2.23.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.22.0...benefit-backend-v2.23.0) (2026-06-18)
 
 
