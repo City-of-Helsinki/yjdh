@@ -3,6 +3,10 @@ import '@testing-library/jest-dom';
 import { render, RenderResult, screen } from '@testing-library/react';
 import React from 'react';
 
+import {
+  Application,
+  ApplicationFields,
+} from '../../../../../types/application';
 import EmploymentSection from '../EmploymentSection';
 
 jest.mock('next-i18next', () => ({
@@ -140,13 +144,10 @@ const baseData = {
 const renderSubject = (dataOverrides = {}): RenderResult =>
   render(
     <EmploymentSection
-      data={{
-        ...baseData,
-        ...dataOverrides,
-      }}
+      data={{ ...baseData, ...dataOverrides } as unknown as Application}
       translationsBase={translationsBase}
       dispatchStep={jest.fn()}
-      fields={fields}
+      fields={fields as unknown as ApplicationFields}
     />
   );
 
@@ -297,10 +298,10 @@ describe('review EmploymentSection', () => {
   it('uses empty section names for edit buttons when fields are missing', () => {
     render(
       <EmploymentSection
-        data={baseData}
+        data={baseData as unknown as Application}
         translationsBase={translationsBase}
         dispatchStep={jest.fn()}
-        fields={{}}
+        fields={{} as unknown as ApplicationFields}
       />
     );
 

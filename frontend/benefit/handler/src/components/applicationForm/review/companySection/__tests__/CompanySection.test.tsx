@@ -4,6 +4,10 @@ import { render, RenderResult, screen } from '@testing-library/react';
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import React from 'react';
 
+import {
+  Application,
+  ApplicationFields,
+} from '../../../../../types/application';
 import CompanySection from '../CompanySection';
 
 jest.mock('next-i18next', () => ({
@@ -208,13 +212,10 @@ const baseData = {
 const renderSubject = (dataOverrides = {}): RenderResult =>
   render(
     <CompanySection
-      data={{
-        ...baseData,
-        ...dataOverrides,
-      }}
+      data={{ ...baseData, ...dataOverrides } as unknown as Application}
       translationsBase={translationsBase}
       dispatchStep={jest.fn()}
-      fields={fields}
+      fields={fields as unknown as ApplicationFields}
     />
   );
 
