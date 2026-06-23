@@ -386,6 +386,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-i18next:
+        specifier: ^15.6.0
+        version: 15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
       react-input-mask:
         specifier: ^2.0.4
         version: 2.0.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -525,6 +528,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-i18next:
+        specifier: ^15.6.0
+        version: 15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
       react-input-mask:
         specifier: ^2.0.4
         version: 2.0.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -912,6 +918,9 @@ importers:
       hds-react:
         specifier: 5.0.0
         version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.15)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+      i18next:
+        specifier: ^25.0.0
+        version: 25.10.10(typescript@5.9.3)
       js-file-download:
         specifier: ^0.4.12
         version: 0.4.12
