@@ -28,6 +28,7 @@
     "finnish-ssn": "^2.1.2",
     "hds-design-tokens": "^5.0.0",
     "hds-react": "^5.0.0",
+    "i18next": "^25.3.2",
     "lodash": "^4.17.21",
     "next": "15.5.22",
     "next-i18next": "^15.3.0",
