@@ -42,7 +42,14 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
             <$Checkbox
               id={`${cbPrefix}_${consent.id}`}
               name={`${cbPrefix}_${i}`}
-              label={consent[`text${textLocale}` as TextProp] || ''}
+              label={(consent[`text${textLocale}` as TextProp] || '')
+                .split(/\\n/)
+                .map((line) => (
+                  <React.Fragment key={`${consent.id}-${line}`}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
               disabled
               checked
               aria-invalid={false}
