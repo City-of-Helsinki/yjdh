@@ -6,6 +6,7 @@ from django.db import models
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from applications.enums import ApplicationOrigin
 from applications.models import Application
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -257,8 +258,13 @@ class ApplicantTermsApproval(AbstractTermsApproval):
         except ObjectDoesNotExist:
             return True
         else:
+            terms_type = (
+                TermsType.HANDLER_TERMS
+                if application.application_origin == ApplicationOrigin.HANDLER
+                else TermsType.APPLICANT_TERMS
+            )
             return (
-                Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
+                Terms.objects.get_terms_in_effect(terms_type)
                 != application.applicant_terms_approval.terms
             )
 
