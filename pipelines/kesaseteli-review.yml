@@ -47,6 +47,7 @@ resources:
       type: git
       # Azure DevOps project/repository
       name: yjdh-kesaseteli/yjdh-kesaseteli-pipelines
+      ref: refs/heads/YJDH-900-migrate-to-pnpm
 
 extends:
   # Filename in Azure DevOps Repository
