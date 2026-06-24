@@ -64,6 +64,7 @@ class SearchView(APIView):
         search_from_archival = request.query_params.get("archival") == "1" or False
         application_number = request.query_params.get("app_no")
         load_all = request.query_params.get("load_all") == "1" or False
+        limit, offset = _get_limit_and_offset(request)
 
         subsidy_in_effect = request.query_params.get("subsidy_in_effect")
 
@@ -106,6 +107,9 @@ class SearchView(APIView):
             application_number,
             search_from_archival,
             load_all,
+            request,
+            limit,
+            offset,
         )
 
 
@@ -187,6 +191,9 @@ def search_applications(
     application_number=None,
     search_from_archival=False,
     load_all=False,
+    request=None,
+    limit=30,
+    offset=0,
 ) -> Response:
     if application_number:
         querysets = _query_by_application_number(
@@ -197,7 +204,12 @@ def search_applications(
 
     if search_string == "" and in_memory_filter_string == "":
         return _query_and_respond_to_empty_search(
-            application_queryset, archival_application_queryset, load_all
+            application_queryset,
+            archival_application_queryset,
+            load_all,
+            request,
+            limit,
+            offset,
         )
 
     # Return early in case of number-like pattern
@@ -355,22 +367,37 @@ def _query_by_application_number(
 
 
 def _query_and_respond_to_empty_search(
-    application_queryset, archival_application_queryset, load_all
+    application_queryset,
+    archival_application_queryset,
+    load_all,
+    request=None,
+    limit=30,
+    offset=0,
 ):
-    data = []
     if load_all:
+        data = []
         data += HandlerApplicationListSerializer(application_queryset, many=True).data
         data += ArchivalApplicationListSerializer(
             archival_application_queryset, many=True
         ).data
-    else:
-        data += HandlerApplicationListSerializer(
-            application_queryset[:30], many=True
-        ).data
-        data += ArchivalApplicationListSerializer(
-            archival_application_queryset[:30], many=True
-        ).data
-    return _create_search_response(None, data, SearchPattern.ALL, "")
+        return _create_search_response(None, data, SearchPattern.ALL, "")
+
+    data, total_count = _serialize_paginated_querysets(
+        application_queryset,
+        archival_application_queryset,
+        limit,
+        offset,
+    )
+
+    return _build_paginated_search_response(
+        request,
+        data,
+        total_count,
+        SearchPattern.ALL,
+        "",
+        limit,
+        offset,
+    )
 
 
 def _query_and_respond_to_ssn(
@@ -552,3 +579,93 @@ def _detect_filters(search_string):
         "search_string": search_string,
         "in_memory_filter_str": in_memory_filter_str,
     }
+
+
+def _get_limit_and_offset(request, default_limit=30):
+    try:
+        limit = int(request.query_params.get("limit", default_limit))
+    except ValueError:
+        limit = default_limit
+
+    try:
+        offset = int(request.query_params.get("offset", 0))
+    except ValueError:
+        offset = 0
+
+    return limit, offset
+
+
+def _serialize_paginated_querysets(
+    application_queryset,
+    archival_application_queryset,
+    limit,
+    offset,
+):
+    application_count = application_queryset.count()
+    archival_count = archival_application_queryset.count()
+    total_count = application_count + archival_count
+
+    data = []
+
+    if offset < application_count:
+        application_slice_end = min(offset + limit, application_count)
+        application_slice = application_queryset[offset:application_slice_end]
+        data += HandlerApplicationListSerializer(application_slice, many=True).data
+
+    remaining_limit = limit - len(data)
+
+    if remaining_limit > 0:
+        archival_offset = max(offset - application_count, 0)
+        archival_slice = archival_application_queryset[
+            archival_offset : archival_offset + remaining_limit
+        ]
+        data += ArchivalApplicationListSerializer(archival_slice, many=True).data
+
+    return data, total_count
+
+
+def _build_paginated_search_response(
+    request,
+    data,
+    total_count,
+    detected_pattern,
+    search_query_str,
+    limit,
+    offset,
+    in_memory_filter_str="",
+    in_memory_results=None,
+):
+    next_url = None
+    previous_url = None
+
+    if offset + limit < total_count:
+        next_params = request.query_params.copy()
+        next_params["limit"] = str(limit)
+        next_params["offset"] = str(offset + limit)
+        next_url = request.build_absolute_uri(
+            f"{request.path}?{next_params.urlencode()}"
+        )
+
+    if offset > 0:
+        previous_params = request.query_params.copy()
+        previous_params["limit"] = str(limit)
+        previous_params["offset"] = str(max(offset - limit, 0))
+        previous_url = request.build_absolute_uri(
+            f"{request.path}?{previous_params.urlencode()}"
+        )
+
+    return Response(
+        {
+            "q": search_query_str,
+            "matches": data,
+            "filter": in_memory_filter_str,
+            "detected_pattern": detected_pattern,
+            "count": total_count,
+            "limit": limit,
+            "offset": offset,
+            "next": next_url,
+            "previous": previous_url,
+            "score": in_memory_results["scores"] if in_memory_results else None,
+        },
+        status=status.HTTP_200_OK,
+    )
