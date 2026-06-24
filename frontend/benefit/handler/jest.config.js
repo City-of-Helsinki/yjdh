@@ -8,6 +8,7 @@ const createJestConfig = nextJest({
 const config = {
   ...sharedConfig,
   moduleNameMapper: {
+    '^@babel/runtime/helpers/esm/(.*)$': '@babel/runtime/helpers/$1',
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`benefit/handler\/(.*)$`]: '<rootDir>/src/$1',

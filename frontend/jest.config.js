@@ -2,7 +2,9 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest',
   },
-  transformIgnorePatterns: ['/node_modules/(?!.pnpm/(uuid|hds-react)@)/'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!.pnpm/(uuid|hds-react|@babel\\+runtime)@)/',
+  ],
   setupFilesAfterEnv: [require.resolve('./jest.setup.js')],
   testEnvironment: 'jsdom',
   collectCoverageFrom: [
