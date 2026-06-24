@@ -658,10 +658,16 @@ def test_reporting_fields():
 
 def test_talpa_fields():
     field_titles = get_field_titles(FIELDS)
-    talpa_field_titles = get_field_titles(get_talpa_columns())
+    talpa_columns = get_talpa_columns()
+    talpa_field_titles = get_field_titles(talpa_columns)
     assert set(talpa_field_titles) == (
         set(field_titles) - set(REMOVABLE_TALPA_FIELD_TITLES)
     )
+    # The 6 repositioned fields must appear at the end
+    from applications.exporters.excel_exporter import TALPA_END_FIELD_TITLES
+
+    end_titles = get_field_titles(talpa_columns[-len(TALPA_END_FIELD_TITLES) :])
+    assert end_titles == [str(t) for t in TALPA_END_FIELD_TITLES]
     assert get_talpa_columns() == get_exportable_fields(ExcelColumns.TALPA.value)
 
 
@@ -859,34 +865,6 @@ def test_employer_excel_calculation_status_values(
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-def test_talpa_excel_excludes_2026_fields(staff_client):
-    """All 2026 fields must be absent from Talpa Excel."""
-    EmployerSummerVoucherFactory(
-        application=EmployerApplicationFactory(
-            status=EmployerApplicationStatus.SUBMITTED
-        )
-    )
-
-    response = staff_client.get(
-        employer_excel_export_url("annual", ExcelColumns.TALPA.value)
-    )
-    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
-    header = [c.value for c in next(workbook.active.rows)]
-
-    excluded = [
-        "VTJ-tietojen luovutuskielto (ts. turvakielto)",
-        "Maksunsaajan nimi",
-        "Maksunsaajan osoite",
-        "Pankin SWIFT / BIC koodi",
-        "Pankin nimi",
-        "Pankin käyntiosoite",
-    ]
-    for title in excluded:
-        assert title not in header, f"{title} should not be in Talpa Excel"
-
-
-@pytest.mark.django_db
 def test_resolve_target_group_and_status_always_finnish():
     from applications.exporters.excel_exporter import resolve_target_group_and_status
 
@@ -952,4 +930,31 @@ def test_talpa_excel_includes_status_field(staff_client):
     header = [c.value for c in next(workbook.active.rows)]
 
     assert "Erikoistapauksen laskentatila" in header
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_talpa_excel_includes_2026_fields_at_end(staff_client):
+    """The 6 fields must appear at the end of Talpa Excel columns."""
+    EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(
+            status=EmployerApplicationStatus.SUBMITTED
+        )
+    )
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.TALPA.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    header = [c.value for c in next(workbook.active.rows)]
+
+    expected_end = [
+        "VTJ-tietojen luovutuskielto (ts. turvakielto)",
+        "Maksunsaajan nimi",
+        "Maksunsaajan osoite",
+        "Pankin SWIFT / BIC koodi",
+        "Pankin nimi",
+        "Pankin käyntiosoite",
+    ]
+    assert header[-len(expected_end) :] == expected_end
 
