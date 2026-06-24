@@ -106,8 +106,8 @@ REMOVABLE_REPORTING_FIELD_TITLES = [
 ]
 
 
-# The 6 new 2026 fields are excluded from the Talpa Excel export to ensure
-# the robot processing sheet format matches previous years exactly.
+# These fields are omitted from the Talpa Excel export to keep the columns minimal
+# and focused on robot-required data.
 REMOVABLE_TALPA_FIELD_TITLES = [
     _("Henkilötunnus"),
     _("Koulu"),
@@ -134,6 +134,11 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
     _("Työnantajan kokemus"),
     _("Muuta"),
+]
+
+# The 6 new fields introduced in 2026 that should be positioned at the very end
+# of the Talpa Excel columns to avoid disrupting Talpa robot processing.
+TALPA_END_FIELD_TITLES = [
     _("VTJ-tietojen luovutuskielto (ts. turvakielto)"),
     _("Maksunsaajan nimi"),
     _("Maksunsaajan osoite"),
@@ -352,9 +357,14 @@ def get_reporting_columns():
 
 
 def get_talpa_columns():
-    return [
-        field for field in FIELDS if field.title not in REMOVABLE_TALPA_FIELD_TITLES
+    normal_fields = [
+        field
+        for field in FIELDS
+        if field.title not in REMOVABLE_TALPA_FIELD_TITLES
+        and field.title not in TALPA_END_FIELD_TITLES
     ]
+    end_fields = [field for field in FIELDS if field.title in TALPA_END_FIELD_TITLES]
+    return normal_fields + end_fields
 
 
 def get_exportable_fields(columns: ExcelColumns):
