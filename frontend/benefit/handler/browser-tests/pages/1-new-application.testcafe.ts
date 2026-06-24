@@ -97,10 +97,15 @@ test('Fill form and submit', async (t: TestController) => {
 
   await t.click('[for="apprenticeshipProgramTrue"]');
 
-  await t.typeText(
-    '[name="startDate"]',
-    format(new Date(), DATE_FORMATS.UI_DATE)
-  );
+  // Fill the start date robustly. After typing, click the end date field to
+  // blur the start date input and close its calendar popup, which otherwise
+  // overlays following fields and makes date entry flaky. This also triggers
+  // the automatic end date fill, so we only assert it was derived correctly.
+  const startDate = format(new Date(), DATE_FORMATS.UI_DATE);
+  await t.typeText('[name="startDate"]', startDate);
+  await t.click('[name="endDate"]');
+  await t.expect(Selector('[name="startDate"]').value).eql(startDate);
+  await t.expect(Selector('[name="endDate"]').value).eql(startDate);
 
   await uploadFileAttachment(t, '#upload_attachment_full_application');
   await uploadFileAttachment(t, '#upload_attachment_employment_contract');
