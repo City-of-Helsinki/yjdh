@@ -24,35 +24,6 @@ expect.extend(toHaveNoViolations);
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
 
-// react-input-mask uses findDOMNode, which was removed in React 19.
-// Provide a lightweight test double that supports both render-prop and plain children.
-jest.mock('react-input-mask', () => {
-  const React = require('react');
-  const MockInputMask = React.forwardRef((props: any, ref: any) => {
-    const {
-      children,
-      mask: _mask,
-      maskChar: _maskChar,
-      alwaysShowMask: _alwaysShowMask,
-      ...rest
-    } = props;
-
-    const child =
-      typeof children === 'function' ? children({ ...rest, ref }) : children;
-
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child, { ...rest, ref });
-    }
-
-    return React.createElement('input', { ...rest, ref }, child);
-  });
-
-  return {
-    __esModule: true,
-    default: MockInputMask,
-  };
-});
-
 // Next.js 15's useRouter throws if RouterContext is null.
 // Mock the shared-runtime context to provide the mock router as fallback.
 jest.mock('next/dist/shared/lib/router-context.shared-runtime', () => {

@@ -1,3 +1,5 @@
+import { MaskitoOptions } from '@maskito/core';
+import { useMaskito } from '@maskito/react';
 import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import {
@@ -19,7 +21,6 @@ import {
 } from 'hds-react';
 import { TFunction } from 'next-i18next';
 import React from 'react';
-import InputMask from 'react-input-mask';
 import {
   $Checkbox,
   $RadioButton,
@@ -31,6 +32,7 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import { OptionType } from 'shared/types/common';
+import { maskitoExpressionFromLegacyFormat } from 'shared/utils/maskito';
 import { phoneToLocal } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -92,6 +94,26 @@ const CompanySection: React.FC<Props> = ({
 }) => {
   const theme = useTheme();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
+  const companyBankAccountMaskOptions = React.useMemo<MaskitoOptions>(
+    () => ({
+      mask: maskitoExpressionFromLegacyFormat(
+        fields.companyBankAccountNumber.mask?.format ?? ''
+      ),
+    }),
+    [fields.companyBankAccountNumber.mask?.format]
+  );
+  const companyBankAccountMaskRef = useMaskito({
+    options: companyBankAccountMaskOptions,
+  });
+  const setCompanyBankAccountInputRef: React.RefCallback<HTMLInputElement> = (
+    node
+  ) => {
+    void (
+      companyBankAccountMaskRef as unknown as (
+        target: HTMLElement | null
+      ) => void
+    )(node);
+  };
 
   const languageTexts = React.useMemo(
     () => ({
@@ -264,9 +286,11 @@ const CompanySection: React.FC<Props> = ({
           </$GridCell>
         )}
         <$GridCell $colSpan={4} $colStart={1}>
-          <InputMask
-            mask={fields.companyBankAccountNumber.mask?.format ?? ''}
-            maskChar={null}
+          <TextInput
+            ref={setCompanyBankAccountInputRef}
+            id={fields.companyBankAccountNumber.name}
+            name={fields.companyBankAccountNumber.name}
+            label={fields.companyBankAccountNumber.label}
             value={formik.values.companyBankAccountNumber}
             onBlur={formik.handleBlur}
             onChange={(e) => {
@@ -277,27 +301,13 @@ const CompanySection: React.FC<Props> = ({
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               formik.setFieldValue(fields.companyBankAccountNumber.name, value);
             }}
-          >
-            {
-              (() => (
-                <TextInput
-                  id={fields.companyBankAccountNumber.name}
-                  name={fields.companyBankAccountNumber.name}
-                  label={fields.companyBankAccountNumber.label}
-                  invalid={
-                    !!getErrorMessage(fields.companyBankAccountNumber.name)
-                  }
-                  aria-invalid={
-                    !!getErrorMessage(fields.companyBankAccountNumber.name)
-                  }
-                  errorText={getErrorMessage(
-                    fields.companyBankAccountNumber.name
-                  )}
-                  required
-                />
-              )) as unknown as React.ReactNode
+            invalid={!!getErrorMessage(fields.companyBankAccountNumber.name)}
+            aria-invalid={
+              !!getErrorMessage(fields.companyBankAccountNumber.name)
             }
-          </InputMask>
+            errorText={getErrorMessage(fields.companyBankAccountNumber.name)}
+            required
+          />
           <$HelpText>{fields.companyBankAccountNumber.placeholder}</$HelpText>
         </$GridCell>
         {application?.company?.organizationType ===

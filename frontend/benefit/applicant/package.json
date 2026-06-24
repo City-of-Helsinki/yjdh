@@ -20,6 +20,8 @@
   "dependencies": {
     "@frontend/benefit-shared": "workspace:*",
     "@frontend/shared": "workspace:*",
+    "@maskito/core": "^5.3.1",
+    "@maskito/react": "^5.3.1",
     "@react-pdf/renderer": "^3.1.12",
     "@sentry/browser": "^10.56.0",
     "@sentry/nextjs": "^10.56.0",
@@ -40,7 +42,6 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-i18next": "^15.6.0",
-    "react-input-mask": "^2.0.4",
     "react-loading-skeleton": "^3.0.3",
     "react-markdown": "^10.1.0",
     "react-pdf": "^9.2.1",

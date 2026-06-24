@@ -82,7 +82,6 @@
     "@types/pretty": "^2.0.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@types/react-input-mask": "2.0.5",
     "@types/react-leaflet": "^2.8.2",
     "@types/react-leaflet-markercluster": "^3.0.0",
     "@types/react-table": "^7.7.0",

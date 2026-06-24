@@ -21,6 +21,8 @@
   "dependencies": {
     "@frontend/kesaseteli-shared": "workspace:*",
     "@frontend/shared": "workspace:*",
+    "@maskito/core": "^5.3.1",
+    "@maskito/react": "^5.3.1",
     "@sentry/browser": "^10.56.0",
     "@sentry/nextjs": "^10.56.0",
     "axios": "^1.17.0",
@@ -36,7 +38,6 @@
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.30.0",
     "react-i18next": "^15.6.0",
-    "react-input-mask": "^2.0.4",
     "react-loading-skeleton": "^3.0.3",
     "react-query": "^3.34.0",
     "react-toastify": "^9.0.4",

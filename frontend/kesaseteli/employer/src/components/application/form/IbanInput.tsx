@@ -1,3 +1,4 @@
+import { useMaskito } from '@maskito/react';
 import {
   electronicFormatIBAN,
   friendlyFormatIBAN,
@@ -8,10 +9,10 @@ import useApplicationFormField from 'kesaseteli/employer/hooks/application/useAp
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import InputMask from 'react-input-mask';
 import TextInputBase from 'shared/components/forms/inputs/TextInput';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import ApplicationFormData from 'shared/types/application-form-data';
+import { maskitoExpressionFromLegacyFormat } from 'shared/utils/maskito';
 
 export type IbanInputProps = {
   id: ApplicationFieldPath;
@@ -28,16 +29,22 @@ const IbanInput: React.FC<IbanInputProps> = ({
   const { getValue, getErrorText: getDefaultErrorText } =
     useApplicationFormField<string>(id);
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const [errorText, setErrorText] = React.useState<string | null>(null);
-  const [cursor] = React.useState<number | null>(null);
 
-  React.useEffect(() => {
-    const input = inputRef.current;
-    if (input) {
-      input.setSelectionRange(cursor, cursor);
-    }
-  }, [inputRef, cursor]);
+  const inputRef = useMaskito({
+    options: {
+      mask: maskitoExpressionFromLegacyFormat(
+        'aa** **** **** **** **** **** **** **** **'
+      ),
+    },
+  });
+  const setInputRef: React.RefCallback<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (node) => {
+    void (inputRef as unknown as (target: HTMLElement | null) => void)(
+      node as HTMLElement | null
+    );
+  };
 
   const validateBankAccount = (value: string): boolean => {
     const electronicIBAN =
@@ -69,40 +76,26 @@ const IbanInput: React.FC<IbanInputProps> = ({
   };
 
   return (
-    <InputMask
-      mask="aa** **** **** **** **** **** **** **** **"
-      maskChar={null}
-      value={getValue()}
-      beforeMaskedValueChange={(newState) => {
-        // eslint-disable-next-line no-param-reassign
-        newState.value =
-          friendlyFormatIBAN(newState.value ?? undefined)?.trim() ?? '';
-        return newState;
+    <TextInputBase<ApplicationFormData>
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      registerOptions={{
+        required: true,
+        maxLength: 34,
+        ...(process.env.NODE_ENV !== 'test' && {
+          validate: validateBankAccount,
+        }),
+        setValueAs: electronicFormatIBAN,
       }}
+      id={id}
+      initialValue={friendlyFormatIBAN(getValue() ?? undefined)?.trim() ?? ''}
+      placeholder={t('common:application.form.helpers.bank_account')}
+      errorText={errorText ?? getDefaultErrorText()}
+      label={t('common:application.form.inputs.bank_account_number')}
       onBlur={onBlur}
-    >
-      {
-        (() => (
-          <TextInputBase<ApplicationFormData>
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            registerOptions={{
-              required: true,
-              maxLength: 34,
-              ...(process.env.NODE_ENV !== 'test' && {
-                validate: validateBankAccount,
-              }),
-              setValueAs: electronicFormatIBAN,
-            }}
-            id={id}
-            placeholder={t('common:application.form.helpers.bank_account')}
-            errorText={errorText ?? getDefaultErrorText()}
-            label={t(`common:application.form.inputs.bank_account_number`)}
-            {...$gridCellProps}
-          />
-        )) as unknown as React.ReactNode
-      }
-    </InputMask>
+      inputRef={setInputRef}
+      {...$gridCellProps}
+    />
   );
 };
 

@@ -1,3 +1,4 @@
+import { useMaskito } from '@maskito/react';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { translateBackendErrorMessage } from 'benefit/applicant/utils/common';
 import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
@@ -11,7 +12,6 @@ import {
   Tooltip,
 } from 'hds-react';
 import React from 'react';
-import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
 import {
   $Checkbox,
@@ -22,6 +22,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import { maskitoExpressionFromLegacyFormat } from 'shared/utils/maskito';
 import { useTheme } from 'styled-components';
 
 import {
@@ -66,6 +67,20 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
   );
 
   const theme = useTheme();
+  const companyBankAccountMaskRef = useMaskito({
+    options: {
+      mask: maskitoExpressionFromLegacyFormat(
+        fields.companyBankAccountNumber.mask?.format ?? ''
+      ),
+    },
+  });
+  const setCompanyBankAccountInputRef: React.RefCallback<HTMLInputElement> = (
+    node
+  ) => {
+    void (
+      companyBankAccountMaskRef as unknown as (node: HTMLElement | null) => void
+    )(node);
+  };
 
   return (
     <FormSection
@@ -283,9 +298,11 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         </$GridCell>
 
         <$GridCell $colSpan={4}>
-          <InputMask
-            mask={fields.companyBankAccountNumber.mask?.format ?? ''}
-            maskChar={null}
+          <TextInput
+            ref={setCompanyBankAccountInputRef}
+            id={fields.companyBankAccountNumber.name}
+            name={fields.companyBankAccountNumber.name}
+            label={fields.companyBankAccountNumber.label}
             value={formik.values.companyBankAccountNumber}
             onBlur={formik.handleBlur}
             onChange={(e) => {
@@ -298,31 +315,16 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 value
               );
             }}
-          >
-            {
-              ((props: Record<string, unknown>) => (
-                <TextInput
-                  {...props}
-                  id={fields.companyBankAccountNumber.name}
-                  name={fields.companyBankAccountNumber.name}
-                  label={fields.companyBankAccountNumber.label}
-                  invalid={
-                    !!getErrorMessage(fields.companyBankAccountNumber.name)
-                  }
-                  aria-invalid={
-                    !!getErrorMessage(fields.companyBankAccountNumber.name)
-                  }
-                  errorText={getErrorMessage(
-                    fields.companyBankAccountNumber.name
-                  )}
-                  required
-                  helperText={t(
-                    `${translationsBase}.fields.companyBankAccountNumber.placeholder`
-                  )}
-                />
-              )) as unknown as React.ReactNode
+            invalid={!!getErrorMessage(fields.companyBankAccountNumber.name)}
+            aria-invalid={
+              !!getErrorMessage(fields.companyBankAccountNumber.name)
             }
-          </InputMask>
+            errorText={getErrorMessage(fields.companyBankAccountNumber.name)}
+            required
+            helperText={t(
+              `${translationsBase}.fields.companyBankAccountNumber.placeholder`
+            )}
+          />
         </$GridCell>
         {data.organizationType.toLowerCase() ===
           ORGANIZATION_TYPES.ASSOCIATION.toLowerCase() && (

@@ -11,7 +11,7 @@ import {
   Application,
   ApplicationAlteration,
 } from 'benefit-shared/types/application';
-import React from 'react';
+import React, { act } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 
 import AlterationAccordionItem from '../AlterationAccordionItem';
@@ -227,7 +227,9 @@ describe('AlterationAccordionItem', () => {
     );
 
     const callbacks = mockMutate.mock.calls[0][1];
-    callbacks.onSuccess();
+    await act(async () => {
+      callbacks.onSuccess();
+    });
 
     await waitFor(() => {
       expect(

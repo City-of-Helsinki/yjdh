@@ -17,6 +17,7 @@ export type TextInputProps<T extends FieldValues> = InputProps<T> & {
   type?: 'text' | 'decimal' | 'number' | 'textArea';
   placeholder?: string;
   onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  inputRef?: React.RefCallback<HTMLInputElement | HTMLTextAreaElement>;
 } & GridCellProps;
 
 const getComponentType = <T extends FieldValues>(
@@ -48,6 +49,7 @@ const TextInput = <T extends FieldValues>({
   registerOptions = {},
   onChange,
   onBlur,
+  inputRef,
   autoComplete,
   disabled,
   readOnly,
@@ -79,10 +81,29 @@ const TextInput = <T extends FieldValues>({
 
   const registerEvents = { ...register(id, registerOptions) };
 
+  const mergedRef = React.useCallback(
+    (node: HTMLInputElement | HTMLTextAreaElement | null) => {
+      const registerRef = registerEvents.ref as
+        | React.RefCallback<HTMLInputElement | HTMLTextAreaElement>
+        | React.MutableRefObject<HTMLInputElement | HTMLTextAreaElement | null>
+        | undefined;
+
+      if (typeof registerRef === 'function') {
+        registerRef(node);
+      }
+
+      if (typeof inputRef === 'function') {
+        inputRef(node);
+      }
+    },
+    [registerEvents.ref, inputRef]
+  );
+
   return (
     <$GridCell {...$gridCellProps}>
       <$TextInput
         {...registerEvents}
+        ref={mergedRef}
         onChange={(
           e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
         ) => {

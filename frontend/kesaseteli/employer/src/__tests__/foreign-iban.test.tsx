@@ -29,10 +29,18 @@ describe('foreign IBAN note', () => {
 
       // Initially Finnish IBAN
       await applicationPage.step1.actions.typeIban('FI2112345600000785');
+      applicationPage.step1.expectations.inputValueIsSet(
+        'bank_account_number',
+        'FI21 1234 5600 0007 85'
+      );
       await applicationPage.step1.expectations.expectForeignIbanNote(false);
 
       // Change to foreign IBAN
       await applicationPage.step1.actions.typeIban('DE89370400440532013000');
+      applicationPage.step1.expectations.inputValueIsSet(
+        'bank_account_number',
+        'DE89 3704 0044 0532 0130 00'
+      );
       await applicationPage.step1.expectations.expectForeignIbanNote(true);
       applicationPage.step1.expectations.expectForeignIbanFieldsVisible(true);
 
