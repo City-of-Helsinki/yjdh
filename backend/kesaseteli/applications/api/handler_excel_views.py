@@ -112,6 +112,10 @@ class YouthApplicationExcelExportViewSet(ModelViewSet):
                     ("status", str(_("Hakemuksen tila"))),
                     ("application_year", str(_("Hakuvuosi"))),
                     ("summer_voucher_serial_number", str(_("Kesäsetelinro"))),
+                    (
+                        "target_group",
+                        str(_("Erikoistapaus (esim yhdeksäsluokkalainen)")),
+                    ),
                     ("birth_year", str(_("Syntymävuosi"))),
                     ("birthdate", str(_("Syntymäpvm"))),
                     ("first_name", str(_("Etunimi"))),
@@ -129,6 +133,10 @@ class YouthApplicationExcelExportViewSet(ModelViewSet):
                     ("confirmation_date", str(_("Vahvistettu"))),
                     ("additional_info_providing_date", str(_("Lisätiedot annettu"))),
                     ("handling_date", str(_("Käsitelty"))),
+                    (
+                        "target_group_calculation_status",
+                        str(_("Erikoistapauksen laskentatila")),
+                    ),
                 ]
             )
 

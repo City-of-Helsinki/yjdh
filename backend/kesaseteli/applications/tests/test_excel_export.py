@@ -14,6 +14,7 @@ from django.shortcuts import reverse
 from django.test import override_settings
 from django.utils import translation
 from django.utils.timezone import localdate
+from django.utils.translation import gettext_lazy as _
 from freezegun import freeze_time
 from rest_framework import status
 
@@ -23,6 +24,7 @@ from applications.employer_excel_export import (
     get_excel_download_error_message,
 )
 from applications.enums import (
+    AdditionalInfoUserReason,
     EmployerApplicationStatus,
     ExcelColumns,
     VtjTestCase,
@@ -566,6 +568,20 @@ def test_youth_excel_download_content(staff_client):  # noqa: C901
                     assert app.handled_at is None
                 else:
                     assert date.fromisoformat(output_value) == localdate(app.handled_at)
+            elif source_field == "target_group":
+                from applications.exporters.excel_exporter import (
+                    resolve_target_group_and_status,
+                )
+
+                expected_val, _ = resolve_target_group_and_status(app)
+                assert output_value == expected_val
+            elif source_field == "target_group_calculation_status":
+                from applications.exporters.excel_exporter import (
+                    resolve_target_group_and_status,
+                )
+
+                _, expected_status = resolve_target_group_and_status(app)
+                assert output_value == expected_status
             else:
                 assert output_value == getattr(app, source_field), source_field
 
@@ -742,3 +758,179 @@ def test_youth_excel_download_unauthenticated_redirects_with_mock_flag(client):
     response = client.get(youth_excel_download_url())
     assert response.status_code == status.HTTP_302_FOUND
     assert response.url.startswith(reverse("django_auth_adfs:login"))
+
+
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_employer_excel_target_group_calculated_when_missing(staff_client):
+    """When youth application has no target_group, Excel should calculate it from age."""
+    voucher = EmployerSummerVoucherFactory(
+        youth_summer_voucher__youth_application__social_security_number="",
+        youth_summer_voucher__youth_application__non_vtj_birthdate=date(
+            date.today().year - 16, 7, 1
+        ),
+    )
+    youth_app = voucher.youth_summer_voucher.youth_application
+    youth_app.target_group = ""
+    youth_app.save(update_fields=["target_group"])
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.REPORTING.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows = list(workbook.active.rows)
+    header = [c.value for c in rows[0]]
+    data = [c.value for c in rows[1]]
+
+    with translation.override("fi"):
+        special_case_title = str(SPECIAL_CASE_FIELD_TITLE)
+    idx = header.index(special_case_title)
+    # Should have calculated a target group from the youth's age
+    assert data[idx] != "" and data[idx] is not None
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_employer_excel_target_group_unresolved_with_underage_or_overage(staff_client):
+    """When youth has underage_or_overage and no target_group, Excel should leave it empty."""
+    voucher = EmployerSummerVoucherFactory(
+        youth_summer_voucher__youth_application__social_security_number="",
+        youth_summer_voucher__youth_application__non_vtj_birthdate=date(
+            date.today().year - 16, 7, 1
+        ),
+    )
+    youth_app = voucher.youth_summer_voucher.youth_application
+    youth_app.target_group = ""
+    youth_app.additional_info_user_reasons = [
+        AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE.value
+    ]
+    youth_app.save(update_fields=["target_group", "additional_info_user_reasons"])
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.REPORTING.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows = list(workbook.active.rows)
+    header = [c.value for c in rows[0]]
+    data = [c.value for c in rows[1]]
+
+    with translation.override("fi"):
+        special_case_title = str(SPECIAL_CASE_FIELD_TITLE)
+    idx = header.index(special_case_title)
+    assert data[idx] in ("", None)
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "target_group,additional_reasons,expected_status",
+    [
+        ("primary_target_group", [], "annettu"),
+        ("", [], "laskettu"),
+        ("", [AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE.value], "selvittämätön"),
+    ],
+)
+def test_employer_excel_calculation_status_values(
+    staff_client, target_group, additional_reasons, expected_status
+):
+    """Calculation status field shows correct value based on target group state."""
+    voucher = EmployerSummerVoucherFactory(
+        youth_summer_voucher__youth_application__social_security_number="",
+        youth_summer_voucher__youth_application__non_vtj_birthdate=date(
+            date.today().year - 16, 7, 1
+        ),
+    )
+    youth_app = voucher.youth_summer_voucher.youth_application
+    youth_app.target_group = target_group
+    youth_app.additional_info_user_reasons = additional_reasons
+    youth_app.save(update_fields=["target_group", "additional_info_user_reasons"])
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.REPORTING.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows = list(workbook.active.rows)
+    header = [c.value for c in rows[0]]
+    data = [c.value for c in rows[1]]
+
+    with translation.override("fi"):
+        status_title = str(_("Erikoistapauksen laskentatila"))
+    idx = header.index(status_title)
+    assert data[idx] == expected_status
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_talpa_excel_excludes_2026_and_status_fields(staff_client):
+    """All 2026 fields AND the new status field must be absent from Talpa Excel."""
+    EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(
+            status=EmployerApplicationStatus.SUBMITTED
+        )
+    )
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.TALPA.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    header = [c.value for c in next(workbook.active.rows)]
+
+    excluded = [
+        "VTJ-tietojen luovutuskielto (ts. turvakielto)",
+        "Maksunsaajan nimi",
+        "Maksunsaajan osoite",
+        "Pankin SWIFT / BIC koodi",
+        "Pankin nimi",
+        "Pankin käyntiosoite",
+        "Erikoistapauksen laskentatila",
+    ]
+    for title in excluded:
+        assert title not in header, f"{title} should not be in Talpa Excel"
+
+
+@pytest.mark.django_db
+def test_resolve_target_group_and_status_always_finnish():
+    from applications.exporters.excel_exporter import resolve_target_group_and_status
+
+    # 1. No youth application
+    with translation.override("en"):
+        _, status1 = resolve_target_group_and_status(None)
+        assert status1 == "selvittämätön"
+
+    with translation.override("sv"):
+        _, status2 = resolve_target_group_and_status(None)
+        assert status2 == "selvittämätön"
+
+    # 2. Youth application with target group
+    app = YouthApplicationFactory(target_group="primary_target_group")
+    with translation.override("en"):
+        display, status = resolve_target_group_and_status(app)
+        assert display == "9. luokkalainen"
+        assert status == "annettu"
+
+    with translation.override("sv"):
+        display, status = resolve_target_group_and_status(app)
+        assert display == "9. luokkalainen"
+        assert status == "annettu"
+
+    # 3. Youth application with underage/overage reason
+    app_err = YouthApplicationFactory(
+        target_group="",
+        additional_info_user_reasons=[
+            AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE.value
+        ],
+    )
+    with translation.override("en"):
+        display, status = resolve_target_group_and_status(app_err)
+        assert display == ""
+        assert status == "selvittämätön"
+
+    # 4. Youth application where target group class is resolved by age (e.g. age 15)
+    app_calculated = YouthApplicationFactory(
+        target_group="",
+        social_security_number="",
+        non_vtj_birthdate=date(date.today().year - 15, 7, 1),
+    )
+    with translation.override("en"):
+        display, status = resolve_target_group_and_status(app_calculated)
+        assert display == "8. luokkalainen"
+        assert status == "laskettu"

@@ -1016,3 +1016,15 @@ msgstr "Request for additional information"
 
 msgid "Käsitelty"
 msgstr ""
+
+msgid "Erikoistapauksen laskentatila"
+msgstr "Special case calculation status"
+
+msgid "annettu"
+msgstr "given"
+
+msgid "laskettu"
+msgstr "calculated"
+
+msgid "selvittämätön"
+msgstr "unresolved"

@@ -23,6 +23,7 @@ from applications.enums import (
     get_supported_languages,
     YouthApplicationStatus,
 )
+from applications.exporters.excel_exporter import resolve_target_group_and_status
 from applications.models import (
     Attachment,
     EmployerApplication,
@@ -1188,6 +1189,8 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
     additional_info_user_reasons = serializers.SerializerMethodField()
     summer_voucher_serial_number = serializers.SerializerMethodField()
     is_unlisted_school = serializers.SerializerMethodField()
+    target_group = serializers.SerializerMethodField()
+    target_group_calculation_status = serializers.SerializerMethodField()
 
     @staticmethod
     def to_isoformat_localdate(value: datetime) -> str:
@@ -1232,6 +1235,14 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
     def get_additional_info_user_reasons(self, obj: YouthApplication) -> str:
         return ", ".join(sorted(obj.additional_info_user_reasons))
 
+    def get_target_group(self, obj: YouthApplication) -> str:
+        val, _ = resolve_target_group_and_status(obj)
+        return val
+
+    def get_target_group_calculation_status(self, obj: YouthApplication) -> str:
+        _, status_val = resolve_target_group_and_status(obj)
+        return status_val
+
     def get_is_unlisted_school(self, obj: YouthApplication) -> str:
         with translation.override("fi"):
             return str(_("Kyllä") if obj.is_unlisted_school else _("Ei"))
@@ -1266,6 +1277,8 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
             "school",
             "status",
             "summer_voucher_serial_number",
+            "target_group",
+            "target_group_calculation_status",
             "vtj_home_municipality",
             "vtj_last_name",
         ]
