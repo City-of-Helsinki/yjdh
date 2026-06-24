@@ -1,5 +1,10 @@
 const { withKesaseteliSecurityHeaders } = require('../csp');
 
+const getRouteHeaders = async (config) => {
+  const headers = await config.headers();
+  return headers.find(({ source }) => source === '/:path*').headers;
+};
+
 describe('withKesaseteliSecurityHeaders', () => {
   afterEach(() => {
     delete process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -17,22 +22,30 @@ describe('withKesaseteliSecurityHeaders', () => {
       'https://webanalytics.digiaiiris.com/js/';
 
     const config = withKesaseteliSecurityHeaders({ i18n: {} });
-    const headers = await config.headers();
-    const csp = headers[0].headers[0].value;
+    const routeHeaders = await getRouteHeaders(config);
+    const csp = routeHeaders.find(
+      ({ key }) => key === 'Content-Security-Policy'
+    ).value;
 
-    expect(headers).toEqual([
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: expect.stringContaining(
-              "connect-src 'self' https://localhost:8000 https://sentry.test.hel.ninja https://webanalytics.digiaiiris.com"
-            ),
-          },
-        ],
-      },
-    ]);
+    expect(routeHeaders).toEqual(
+      expect.arrayContaining([
+        {
+          key: 'Content-Security-Policy',
+          value: expect.stringContaining(
+            "connect-src 'self' https://localhost:8000 https://sentry.test.hel.ninja https://webanalytics.digiaiiris.com"
+          ),
+        },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        {
+          key: 'Referrer-Policy',
+          value: 'strict-origin-when-cross-origin',
+        },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+        },
+      ])
+    );
     expect(csp).not.toContain('unsafe-eval');
     expect(csp).toContain(
       "script-src 'self' https://webanalytics.digiaiiris.com"
@@ -47,8 +60,10 @@ describe('withKesaseteliSecurityHeaders', () => {
     process.env.NEXT_PUBLIC_BACKEND_URL = 'https://localhost:8000';
 
     const config = withKesaseteliSecurityHeaders({ i18n: {} });
-    const headers = await config.headers();
-    const csp = headers[0].headers[0].value;
+    const routeHeaders = await getRouteHeaders(config);
+    const csp = routeHeaders.find(
+      ({ key }) => key === 'Content-Security-Policy'
+    ).value;
 
     expect(csp).toContain("script-src 'self';");
     expect(csp).toContain("img-src 'self' blob: data:;");
@@ -76,12 +91,13 @@ describe('withKesaseteliSecurityHeaders', () => {
       },
       {
         source: '/:path*',
-        headers: [
+        headers: expect.arrayContaining([
           {
             key: 'Content-Security-Policy',
             value: expect.stringContaining("default-src 'self'"),
           },
-        ],
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+        ]),
       },
     ]);
   });
