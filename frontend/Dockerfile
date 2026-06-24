@@ -77,6 +77,14 @@ WORKDIR /app
 # copy all files
 COPY --chown=default:root . .
 
+USER root
+
+# Patch hds-core before the build runs so the build can write the fixed package
+# into node_modules. This stage still has root access; pnpm build does not.
+RUN pnpm fix-hds-shim
+
+USER default:root
+
 # Build application
 WORKDIR /app/$PROJECT/$FOLDER/
 
@@ -104,6 +112,12 @@ RUN rm -rf $PROJECT/$FOLDER/node_modules \
 
 # Install production dependencies
 RUN --mount=type=cache,target=/pnpm/store,sharing=locked pnpm install --store-dir /pnpm/store --prod --frozen-lockfile --ignore-scripts --prefer-offline
+
+# Patch hds-core after the production dependency reinstall so the final runtime
+# image keeps the fixed package. The production stage removes and reinstalls
+# node_modules, so the shim must run here.
+COPY --chown=default:default scripts/fix-hds-core-cookie-consent.js scripts/fix-hds-core-cookie-consent.js
+RUN pnpm fix-hds-shim
 
 # Change ownership to default:root to ensure accessibility
 RUN chown -R default:root /app

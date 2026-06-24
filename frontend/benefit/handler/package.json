@@ -3,8 +3,8 @@
   "version": "5.4.0",
   "license": "MIT",
   "scripts": {
-    "dev": "PORT=3100 node ../../shared/src/server/next-server.js",
-    "build": "next build",
+    "dev": "pnpm fix-hds-shim && PORT=3100 node ../../shared/src/server/next-server.js",
+    "build": "pnpm fix-hds-shim && next build",
     "start": "NODE_ENV=production PORT=3100 node ../../shared/src/server/next-server.js",
     "lint": "eslint --ext js,ts,tsx src",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
@@ -13,7 +13,8 @@
     "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
     "test:coverage": "pnpm run test --verbose --coverage",
     "browser-test": "testcafe 'chrome --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --sf browser-tests/pages/",
-    "browser-test:ci": "testcafe 'chrome:headless --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --screenshots path=report --video report --reporter spec,html:report/index.html browser-tests/pages/ --sf"
+    "browser-test:ci": "testcafe 'chrome:headless --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --screenshots path=report --video report --reporter spec,html:report/index.html browser-tests/pages/ --sf",
+    "fix-hds-shim": "node ../../scripts/fix-hds-core-cookie-consent.js"
   },
   "dependencies": {
     "@frontend/benefit-shared": "workspace:*",

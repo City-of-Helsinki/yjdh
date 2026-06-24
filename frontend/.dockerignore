@@ -16,6 +16,8 @@
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
 
+!scripts/fix-hds-core-cookie-consent.js
+
 !kesaseteli/employer/next.config.js
 !kesaseteli/employer/sentry.client.config.js
 !kesaseteli/employer/sentry.server.config.js

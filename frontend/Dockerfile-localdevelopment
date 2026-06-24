@@ -32,6 +32,10 @@ COPY --chown=default:default $PROJECT/shared/package.json* $PROJECT/shared/packa
 COPY --chown=default:default shared/package.json shared/package.json
 RUN --mount=type=cache,target=/pnpm/store,sharing=locked pnpm install --store-dir /pnpm/store --frozen-lockfile
 
+# Patch hds-core before the app is started so the build uses the fixed hds-core package.
+COPY --chown=default:default scripts/fix-hds-core-cookie-consent.js scripts/fix-hds-core-cookie-consent.js
+RUN pnpm fix-hds-shim
+
 # Ensure the project's .next directory exist and is accessible
 # so that the express server can access the files
 RUN mkdir -p $PROJECT/$FOLDER/.next \
@@ -58,12 +62,11 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 ARG PROJECT
 ARG FOLDER
 
-# Enable Turbopack for faster dev builds, see https://nextjs.org/docs/14/architecture/turbopack
+# Disable Turbopack by default in the dev image because the current SSR path is
+# not compatible with the Turbopack-generated jsxDEV runtime.
 #
-# Next.js internally checks !!process.env.TURBOPACK in router-server.ts (not documented API),
-# see https://github.com/vercel/next.js/blob/v14.2.32/packages/next/src/server/lib/router-server.ts#L135
-# To disable, set TURBOPACK="" (empty string). Note: "0" or "false" won't work due to !! coercion
-ARG TURBOPACK=1
+# To opt back in, pass TURBOPACK=1 as a build arg.
+ARG TURBOPACK=
 ENV TURBOPACK=${TURBOPACK}
 
 # Enable hot reload by default by polling for file changes.

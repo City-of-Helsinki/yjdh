@@ -51,7 +51,9 @@
     "ks-youth:browser-test": "pnpm --dir kesaseteli/youth run browser-test",
     "ks-youth:browser-test:ci": "pnpm --dir kesaseteli/youth run browser-test:ci",
     "shared:test": "pnpm --dir shared run test",
-    "ks-shared:test": "pnpm --dir kesaseteli/shared run test"
+    "ks-shared:test": "pnpm --dir kesaseteli/shared run test",
+    "fix-hds-shim": "node ./scripts/fix-hds-core-cookie-consent.js"
+
   },
   "dependencies": {
     "@sentry/nextjs": "^10.56.0",
