@@ -2,7 +2,7 @@
  * TODO: YJDH-701, refactor to reduce code duplication, copied and modified from:
  *       frontend/kesaseteli/youth/src/components/youth-form/SubmitErrorSummary.tsx
  */
-import { ErrorSummary } from 'hds-react';
+import { Notification } from 'hds-react';
 import { BACKEND_TO_FRONTEND_FIELD } from 'kesaseteli/handler/constants/data-mappings';
 import { SubmitError } from 'kesaseteli/handler/hooks/application/useHandleApplicationWithoutSsnSubmit';
 import { BackendApplicationWithoutSsn } from 'kesaseteli/handler/types/application-without-ssn-types';
@@ -43,13 +43,14 @@ const SubmitErrorSummary: React.FC<Props> = ({ error }) => {
   }, [error.errorFields, error.type, t]);
 
   return (
-    <ErrorSummary
+    <Notification
+      type="error"
       css={alignCenterSvg}
       autofocus={formState.isSubmitted}
       label={t('common:applicationWithoutSsn.form.checkNotification.label')}
     >
       {message}
-    </ErrorSummary>
+    </Notification>
   );
 };
 

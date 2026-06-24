@@ -25,6 +25,7 @@ const OpenInNewTabLink: React.FC<LinkProps> = ({
   openInNewTab,
   openInNewTabLabel,
   'aria-label': ariaLabelProp,
+  ref,
   ...rest
 }) => {
   const { t } = useTranslation();
