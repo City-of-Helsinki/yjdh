@@ -4,14 +4,15 @@ from typing import Iterable, List, Literal, NamedTuple
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 from xlsxwriter import Workbook
 from xlsxwriter.worksheet import Worksheet
 
-from applications.enums import ExcelColumns
+from applications.enums import AdditionalInfoUserReason, ExcelColumns
 from applications.models import EmployerSummerVoucher
-from common.utils import getattr_nested
+from applications.target_groups import get_target_group_class_by_age
+from common.utils import get_age, getattr_nested
 
 ExcelFieldType = Literal["int", "str"]
 
@@ -41,6 +42,45 @@ INVOICER_NAME_FIELD_TITLE = _("Laskuttajan nimi")
 INVOICER_PHONE_NUMBER_FIELD_TITLE = _("Laskuttajan Puhelin")
 VOUCHER_NUMBER_FIELD_TITLE = _("Setelin numero")
 
+
+def resolve_target_group_and_status(youth_application) -> tuple[str, str]:
+    """Resolve the target group display name and calculation status.
+
+    Returns:
+        Tuple of (target_group_display_name, calculation_status).
+        - target_group_display_name: Finnish display name or "" if unresolvable.
+        - calculation_status: One of "annettu", "laskettu", "selvittämätön".
+    """
+    with translation.override("fi"):
+        if not youth_application:
+            return "", str(_("selvittämätön"))
+
+        target_group = youth_application.target_group
+        if target_group:
+            return youth_application.get_target_group_display(), str(_("annettu"))
+
+        reasons = youth_application.additional_info_user_reasons or []
+        if AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE.value in reasons:
+            return "", str(_("selvittämätön"))
+
+        birthdate = youth_application.birthdate
+        if birthdate:
+            created_year = (
+                youth_application.created_at.year
+                if youth_application.created_at
+                else timezone.now().year
+            )
+            age = get_age(birthdate, created_year)
+            cls = get_target_group_class_by_age(age)
+            if cls:
+                return str(cls().name), str(_("laskettu"))
+
+        return "", str(_("selvittämätön"))
+
+
+# These fields are omitted when exporting the "Reporting" Excel sheet.
+# The reporting export should focus on application/voucher content and omit
+# handler-specific or detailed company fields.
 REMOVABLE_REPORTING_FIELD_TITLES = [
     _("Y-tunnus"),
     _("Yhdyshenkilö"),
@@ -66,6 +106,9 @@ REMOVABLE_REPORTING_FIELD_TITLES = [
 ]
 
 
+# The 6 new 2026 fields and the calculation status field are excluded from
+# the Talpa Excel export to ensure the robot processing sheet format matches
+# previous years exactly.
 REMOVABLE_TALPA_FIELD_TITLES = [
     _("Henkilötunnus"),
     _("Koulu"),
@@ -92,6 +135,13 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
     _("Työnantajan kokemus"),
     _("Muuta"),
+    _("VTJ-tietojen luovutuskielto (ts. turvakielto)"),
+    _("Maksunsaajan nimi"),
+    _("Maksunsaajan osoite"),
+    _("Pankin SWIFT / BIC koodi"),
+    _("Pankin nimi"),
+    _("Pankin käyntiosoite"),
+    _("Erikoistapauksen laskentatila"),
 ]
 
 
@@ -287,6 +337,13 @@ FIELDS = [
     ExcelField(_("Tarkastaja sukunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Hyväksyjä etunimi"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Hyväksyjä sukunimi"), "", [], 30, "#F7DAE3"),
+    ExcelField(
+        _("Erikoistapauksen laskentatila"),
+        "%s",
+        ["target_group_calculation_status"],
+        30,
+        "white",
+    ),
 ]
 
 
@@ -382,6 +439,21 @@ def handle_special_cases(
         summer_voucher, "application", None
     ):
         value = value if summer_voucher.application.is_separate_invoicer else ""
+    elif attr_str == "target_group":
+        if not value:
+            youth_app = (
+                summer_voucher.youth_summer_voucher.youth_application
+                if getattr(summer_voucher, "youth_summer_voucher", None)
+                else None
+            )
+            value = resolve_target_group_and_status(youth_app)[0]
+    elif attr_str == "target_group_calculation_status":
+        youth_app = (
+            summer_voucher.youth_summer_voucher.youth_application
+            if getattr(summer_voucher, "youth_summer_voucher", None)
+            else None
+        )
+        value = resolve_target_group_and_status(youth_app)[1]
     return value
 
 

@@ -175,7 +175,11 @@ class EmployerExcelExportService:
             base_queryset = base_queryset.filter(pk__in=filter_pks)
         return (
             base_queryset.select_related(
-                "application", "application__company", "application__user"
+                "application",
+                "application__company",
+                "application__user",
+                "youth_summer_voucher",
+                "youth_summer_voucher__youth_application",
             )
             .prefetch_related("attachments")
             .order_by("application__submitted_at", "created_at", "pk")

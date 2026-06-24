@@ -1016,3 +1016,15 @@ msgstr "Begäran om ytterligare information"
 
 msgid "Käsitelty"
 msgstr ""
+
+msgid "Erikoistapauksen laskentatila"
+msgstr "Specialfalls beräkningsstatus"
+
+msgid "annettu"
+msgstr "given"
+
+msgid "laskettu"
+msgstr "beräknad"
+
+msgid "selvittämätön"
+msgstr "oavgjord"
