@@ -106,9 +106,8 @@ REMOVABLE_REPORTING_FIELD_TITLES = [
 ]
 
 
-# The 6 new 2026 fields and the calculation status field are excluded from
-# the Talpa Excel export to ensure the robot processing sheet format matches
-# previous years exactly.
+# The 6 new 2026 fields are excluded from the Talpa Excel export to ensure
+# the robot processing sheet format matches previous years exactly.
 REMOVABLE_TALPA_FIELD_TITLES = [
     _("Henkilötunnus"),
     _("Koulu"),
@@ -141,7 +140,6 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     _("Pankin SWIFT / BIC koodi"),
     _("Pankin nimi"),
     _("Pankin käyntiosoite"),
-    _("Erikoistapauksen laskentatila"),
 ]
 
 

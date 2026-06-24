@@ -860,8 +860,8 @@ def test_employer_excel_calculation_status_values(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-def test_talpa_excel_excludes_2026_and_status_fields(staff_client):
-    """All 2026 fields AND the new status field must be absent from Talpa Excel."""
+def test_talpa_excel_excludes_2026_fields(staff_client):
+    """All 2026 fields must be absent from Talpa Excel."""
     EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory(
             status=EmployerApplicationStatus.SUBMITTED
@@ -881,7 +881,6 @@ def test_talpa_excel_excludes_2026_and_status_fields(staff_client):
         "Pankin SWIFT / BIC koodi",
         "Pankin nimi",
         "Pankin käyntiosoite",
-        "Erikoistapauksen laskentatila",
     ]
     for title in excluded:
         assert title not in header, f"{title} should not be in Talpa Excel"
@@ -934,3 +933,23 @@ def test_resolve_target_group_and_status_always_finnish():
         display, status = resolve_target_group_and_status(app_calculated)
         assert display == "8. luokkalainen"
         assert status == "laskettu"
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_talpa_excel_includes_status_field(staff_client):
+    """The calculation status field should now appear in Talpa Excel."""
+    EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(
+            status=EmployerApplicationStatus.SUBMITTED
+        )
+    )
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.TALPA.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    header = [c.value for c in next(workbook.active.rows)]
+
+    assert "Erikoistapauksen laskentatila" in header
+
