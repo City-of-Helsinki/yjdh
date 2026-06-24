@@ -40,7 +40,6 @@
     "finnish-business-ids": "^3.1.1",
     "finnish-ssn": "^2.1.2",
     "formik": "^2.2.9",
-    "fuse.js": "^6.6.2",
     "hds-design-tokens": "^6.0.3",
     "hds-react": "^6.0.3",
     "ibantools": "^4.5.4",

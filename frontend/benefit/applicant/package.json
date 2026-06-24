@@ -22,7 +22,6 @@
     "@frontend/shared": "workspace:*",
     "@maskito/core": "^5.3.1",
     "@maskito/react": "^5.3.1",
-    "@react-pdf/renderer": "^3.1.12",
     "@sentry/browser": "^10.56.0",
     "@sentry/nextjs": "^10.56.0",
     "axios": "^1.17.0",
