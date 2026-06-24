@@ -227,7 +227,7 @@ TableProps<D>): React.ReactElement => {
 
   const [dataState, setDataState] = React.useState<D[]>(data);
 
-  const skipPageResetRef = React.useRef<boolean>();
+  const skipPageResetRef = React.useRef<boolean>(false);
 
   useEffect(() => {
     // After the table has updated, always remove the flag

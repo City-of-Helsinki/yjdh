@@ -65,7 +65,7 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
 
   const getTransformForArchivedStatus = ({
     status,
-  }: TableTransforms): JSX.Element => (
+  }: TableTransforms): React.ReactElement => (
     <$TagWrapper $colors={getTagStyleForStatus(status)}>
       <Tag
         iconStart={

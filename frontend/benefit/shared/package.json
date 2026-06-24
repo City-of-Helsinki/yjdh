@@ -25,8 +25,8 @@
     "next": "15.5.19",
     "next-i18next": "^15.3.0",
     "next-router-mock": "0.9.12",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "react-query": "^3.34.0",
     "styled-components": "^5.3.11",
     "yup": "^0.32.9"

@@ -12,7 +12,7 @@ type Props = {
   status: APPLICATION_STATUSES;
 };
 
-const StatusIcon = ({ status }: Props): JSX.Element => {
+const StatusIcon = ({ status }: Props): React.ReactElement => {
   let Component: React.ElementType | null = null;
   switch (status) {
     case APPLICATION_STATUSES.DRAFT: {

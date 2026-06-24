@@ -29,6 +29,8 @@ export interface ApplicationListTableColumns {
   key: string;
   headerName: string;
   sortIconType?: 'string' | 'other';
-  transform?: (args: ApplicationListTableTransforms) => string | JSX.Element;
+  transform?: (
+    args: ApplicationListTableTransforms
+  ) => string | React.ReactElement;
   customSortCompareFunction?: (a: string, b: string) => number;
 }

@@ -18,7 +18,7 @@ import React from 'react';
 import Button from 'shared/components/button/Button';
 import { useTheme } from 'styled-components';
 
-const DecisionsApplicationList = (): JSX.Element => {
+const DecisionsApplicationList = (): React.ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
   const theme = useTheme();

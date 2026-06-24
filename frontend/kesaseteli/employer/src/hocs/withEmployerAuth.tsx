@@ -9,7 +9,7 @@ import withOrganisation from './withOrganisation';
  * Combined HOC for the Employer UI.
  * Ensures the user is both authenticated and has organization authorization.
  */
-const withEmployerAuth = <P extends JSX.IntrinsicAttributes>(
+const withEmployerAuth = <P extends object>(
   WrappedComponent: React.FC<P>
 ): React.FC<P> => {
   const AuthenticatedComponent = withAuth(withOrganisation(WrappedComponent));

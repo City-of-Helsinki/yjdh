@@ -55,7 +55,7 @@ const AlterationCalculator = ({
   application,
   getErrorMessage,
   onCalculationChange,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const { t } = useTranslation();
   const { tableRows } = useCalculationTable({
     calculation: application.calculation,

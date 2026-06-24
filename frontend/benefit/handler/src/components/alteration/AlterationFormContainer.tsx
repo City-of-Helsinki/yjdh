@@ -76,13 +76,13 @@ const AlterationFormContainer: React.FC<Props> = ({
 
   const handleError = (error: AxiosError<unknown>): void => {
     const errorData = camelcaseKeys(error.response?.data ?? {});
-    const errors: JSX.Element[] = [];
+    const errors: React.ReactElement[] = [];
 
     const getErrorItem = (
       fieldKey: string,
       itemKey: string,
       value: string
-    ): JSX.Element => {
+    ): React.ReactElement => {
       const fieldLabel = t(
         `common:applications.alterations.new.fields.${fieldKey}.label`,
         ''

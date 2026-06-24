@@ -41,10 +41,10 @@ jest.mock('benefit/handler/hooks/useUpdateCompanyIndustryCode', () =>
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
 jest.mock('shared/components/toast/show-error-toast', () => jest.fn());
 
-function MockEditAction(): JSX.Element {
+function MockEditAction(): React.ReactElement {
   return <span />;
 }
-function MockSidebar(): JSX.Element {
+function MockSidebar(): React.ReactElement {
   return <span />;
 }
 

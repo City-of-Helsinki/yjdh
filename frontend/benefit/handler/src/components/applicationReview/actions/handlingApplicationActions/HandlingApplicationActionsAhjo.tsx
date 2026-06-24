@@ -376,7 +376,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     }
   };
 
-  const renderModals = (): JSX.Element => (
+  const renderModals = (): React.ReactElement => (
     <>
       {isConfirmationModalOpen && (
         <Modal

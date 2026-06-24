@@ -11,6 +11,6 @@ type BatchTableColumns = {
   key: string;
   headerName: string;
   sortIconType?: 'string' | 'other';
-  transform?: ({ ...args }: TableTransforms) => string | JSX.Element;
+  transform?: ({ ...args }: TableTransforms) => string | React.ReactElement;
   customSortCompareFunction?: (a: string, b: string) => void;
 };

@@ -39,7 +39,7 @@ describe('AlterationFormProvider', () => {
     const user = userEvent.setup();
     const handleSubmit = jest.fn();
 
-    const Consumer = (): JSX.Element => {
+    const Consumer = (): React.ReactElement => {
       const {
         language,
         isSubmitted,

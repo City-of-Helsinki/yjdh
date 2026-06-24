@@ -24,7 +24,7 @@ jest.mock('benefit/handler/hooks/useInstalmentStatusTransition');
 jest.mock(
   'react-loading-skeleton',
   () =>
-    function MockSkeleton(): JSX.Element {
+    function MockSkeleton(): React.ReactElement {
       return <div data-testid="loading-skeleton" />;
     }
 );
@@ -40,7 +40,7 @@ jest.mock(
       isOpen: boolean;
       onClose: () => void;
       onStatusChange: (status: INSTALMENT_STATUSES) => void;
-    }): JSX.Element | null {
+    }): React.ReactElement | null {
       if (!isOpen) return null;
       return (
         <div data-testid="talpa-status-modal">
@@ -185,7 +185,7 @@ describe('ApplicationList', () => {
   it('closes talpa modal when instalment status change succeeds (useEffect)', async () => {
     const user = setupUserAndRender(() => {
       // Use a controlled wrapper so the mock's isSuccess can flip without losing providers
-      function TriggerWrapper(): JSX.Element {
+      function TriggerWrapper(): React.ReactElement {
         const [success, setSuccess] = React.useState(false);
         mockUseInstalmentStatusTransition.mockReturnValue({
           mutate,

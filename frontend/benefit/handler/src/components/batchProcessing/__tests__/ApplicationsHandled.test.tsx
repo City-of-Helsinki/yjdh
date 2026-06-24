@@ -11,7 +11,7 @@ import ApplicationsHandled from '../ApplicationsHandled';
 jest.mock(
   'react-loading-skeleton',
   () =>
-    function MockSkeleton(): JSX.Element {
+    function MockSkeleton(): React.ReactElement {
       return <div data-testid="loading-skeleton" />;
     }
 );
@@ -151,7 +151,7 @@ describe('ApplicationsHandled', () => {
   });
 
   it('resets selected rows after successful batch creation', async () => {
-    function TriggerWrapper(): JSX.Element {
+    function TriggerWrapper(): React.ReactElement {
       const [isSuccess, setIsSuccess] = React.useState(false);
       mockUseAddToBatchQuery.mockReturnValue({
         isSuccess,

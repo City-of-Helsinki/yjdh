@@ -73,7 +73,7 @@ const getFirstInstalmentTotalAmount = (
   calculatedBenefitAmount?: string,
   secondInstalment?: Instalment,
   alterations?: ApplicationAlteration[]
-): string | JSX.Element => {
+): string | React.ReactElement => {
   const benefitAmount = calculatedBenefitAmount || '0';
   let firstInstalment = parseInt(benefitAmount, 10);
   let recoveryAmount = 0;
@@ -108,7 +108,7 @@ export const renderPaymentTagPerStatus = (
   talpaStatus?: TALPA_STATUSES,
   id?: string,
   clickTalpaTag?: (id: string, talpaStatus: TALPA_STATUSES) => void
-): JSX.Element => (
+): React.ReactElement => (
   <$TagWrapper $colors={getTalpaTagStyleForStatus(talpaStatus)}>
     <Tag
       onClick={
@@ -122,7 +122,7 @@ export const renderPaymentTagPerStatus = (
   </$TagWrapper>
 );
 
-const renderAhjoError = (ahjoError: AhjoError): JSX.Element[] => {
+const renderAhjoError = (ahjoError: AhjoError): React.ReactElement[] => {
   if (Array.isArray(ahjoError.errorFromAhjo))
     return ahjoError.errorFromAhjo.map(({ id, message }) => (
       <li key={id}>{message}</li>
@@ -193,7 +193,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       applicationStatus: APPLICATION_STATUSES,
       unreadMessagesCount: number,
       ahjoError?: AhjoError
-    ): JSX.Element => (
+    ): React.ReactElement => (
       <$TableActions>
         {Number(unreadMessagesCount) > 0 ? (
           <$ActionMessages>
@@ -240,7 +240,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     (
       applicationStatus: APPLICATION_STATUSES,
       additionalInformationNeededBy: string | Date
-    ): JSX.Element => {
+    ): React.ReactElement => {
       const label = t(
         `common:applications.list.columns.applicationStatuses.${String(
           applicationStatus

@@ -1,8 +1,9 @@
+import React from 'react';
 import Toast from 'shared/components/toast/Toast';
 
 const showErrorToast = (
   title: string,
-  message: string | JSX.Element | Array<string | JSX.Element>,
+  message: React.ReactNode,
   autoDismissTime = 5000
 ): void =>
   void Toast({

@@ -17,15 +17,13 @@ export type Result = {
 
 const renderComponent =
   (backendUrl = 'http://localhost:8000') =>
-  (Element: JSX.Element, router: Partial<NextRouter> = {}): Result => {
+  (Element: React.ReactElement, router: Partial<NextRouter> = {}): Result => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const renderResult = render(
       <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={theme}>
-            {Element}
-          </ThemeProvider>
+          <ThemeProvider theme={theme}>{Element}</ThemeProvider>
           <HiddenLoadingIndicator />
         </QueryClientProvider>
       </BackendAPIContext.Provider>,

@@ -46,7 +46,7 @@ const AlterationAccordionItem = ({
   alteration,
   application,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
-AlterationAccordionItemProps): JSX.Element => {
+AlterationAccordionItemProps): React.ReactElement => {
   const locale = useLocale();
   const { t } = useTranslation();
   const router = useRouter();

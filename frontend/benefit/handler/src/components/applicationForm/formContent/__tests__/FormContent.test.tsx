@@ -1,7 +1,10 @@
-import { fireEvent, render, RenderResult, screen } from '@testing-library/react';
 import {
-  APPLICATION_FIELD_KEYS,
-} from 'benefit/handler/constants';
+  fireEvent,
+  render,
+  RenderResult,
+  screen,
+} from '@testing-library/react';
+import { APPLICATION_FIELD_KEYS } from 'benefit/handler/constants';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import {
   Application,
@@ -105,7 +108,7 @@ jest.mock('shared/components/forms/heading/Heading', () => ({
     as: Component = 'h3',
   }: {
     header: string;
-    as?: keyof JSX.IntrinsicElements;
+    as?: React.ElementType;
   }) => <Component>{header}</Component>,
 }));
 
@@ -558,7 +561,7 @@ describe('FormContent new fields', () => {
   it('sets otherSubsidisedEmployed to false and clears otherSubsidisedNumber when no is selected', () => {
     const formik = createFormik({
       otherSubsidisedEmployed: true,
-      otherSubsidisedNumber: "12",
+      otherSubsidisedNumber: '12',
     });
     renderComponent({ formik });
 

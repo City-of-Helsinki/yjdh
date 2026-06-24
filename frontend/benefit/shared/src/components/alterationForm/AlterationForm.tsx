@@ -43,7 +43,7 @@ export const isDateInHandledRecoveryRange = (
         formatDate(date, DATE_FORMATS.BACKEND_DATE)
   ) ?? false;
 
-const AlterationForm = ({ application }: Props): JSX.Element | null => {
+const AlterationForm = ({ application }: Props): React.ReactElement | null => {
   const { t, formik, language, isSubmitted } = useContext(
     AlterationFormContext
   );

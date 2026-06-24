@@ -75,7 +75,7 @@ const buildApplicationUrl = (
 export const renderInstalmentTagPerStatus = (
   t: TFunction,
   status?: INSTALMENT_STATUSES
-): JSX.Element | string =>
+): React.ReactElement | string =>
   status ? (
     <$TagWrapper $colors={getInstalmentTagStyleForStatus(status)}>
       <Tag>
@@ -167,9 +167,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             String(secondInstalment?.amountAfterRecoveries || 0)
           );
           return amountAfterRecoveries > 0 ? (
-            <>
-              {formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}
-            </>
+            <>{formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}</>
           ) : (
             <$Wrapper>
               <$Column>

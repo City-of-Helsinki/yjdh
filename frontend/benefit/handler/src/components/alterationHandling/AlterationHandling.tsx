@@ -17,7 +17,7 @@ import Container from 'shared/components/container/Container';
 import hdsToast from 'shared/components/toast/Toast';
 import { useTheme } from 'styled-components';
 
-const AlterationHandling = (): JSX.Element => {
+const AlterationHandling = (): React.ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
   const theme = useTheme();
@@ -46,13 +46,13 @@ const AlterationHandling = (): JSX.Element => {
 
   const onError = (error: AxiosError<unknown>): void => {
     const errorData = camelcaseKeys(error.response?.data ?? {});
-    const errors: JSX.Element[] = [];
+    const errors: React.ReactElement[] = [];
 
     const getErrorItem = (
       fieldKey: string,
       itemKey: string,
       value: string
-    ): JSX.Element => {
+    ): React.ReactElement => {
       const fieldLabel = t(`${translationBase}.fields.${fieldKey}.label`, '');
 
       if (!fieldLabel) {

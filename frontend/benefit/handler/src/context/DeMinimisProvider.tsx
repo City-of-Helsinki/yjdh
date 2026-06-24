@@ -5,7 +5,7 @@ import DeMinimisContext from './DeMinimisContext';
 
 const DeMinimisProvider = <P,>({
   children,
-}: React.PropsWithChildren<P>): JSX.Element => {
+}: React.PropsWithChildren<P>): React.ReactElement => {
   const [deMinimisAids, setDeMinimisAids] = React.useState<DeMinimisAid[]>([]);
   const [unfinishedDeMinimisAidRow, setUnfinishedDeMinimisAidRow] =
     React.useState<boolean>(false);

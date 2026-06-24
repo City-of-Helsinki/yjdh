@@ -27,7 +27,7 @@ const AlterationHandlingConfirmationModal = ({
   isOpen,
   values,
   isWorking,
-}: Props): JSX.Element | null => {
+}: Props): React.ReactElement | null => {
   const { t } = useTranslation();
 
   if (!values) {

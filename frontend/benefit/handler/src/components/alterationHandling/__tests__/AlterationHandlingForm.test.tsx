@@ -39,7 +39,7 @@ jest.mock(
       onCalculationChange,
     }: {
       onCalculationChange: (isOutOfDate: boolean) => void;
-    }): JSX.Element {
+    }): React.ReactElement {
       return (
         <div>
           <button type="button" onClick={() => onCalculationChange(true)}>
@@ -63,7 +63,7 @@ jest.mock(
       isOpen: boolean;
       onClose: () => void;
       onSubmit: () => void;
-    }): JSX.Element | null {
+    }): React.ReactElement | null {
       if (!isOpen) return null;
       return (
         <div data-testid="confirmation-modal">
@@ -86,7 +86,7 @@ jest.mock(
     }: {
       isOpen: boolean;
       onClose: () => void;
-    }): JSX.Element {
+    }): React.ReactElement {
       return (
         <div data-testid="sidebar" data-open={String(isOpen)}>
           <button type="button" onClick={onClose}>

@@ -73,7 +73,7 @@ describe('useApplicationFormStep1', () => {
     children,
   }: {
     children: React.ReactNode;
-  }): JSX.Element => (
+  }): React.ReactElement => (
     <DeMinimisContext.Provider
       value={{
         deMinimisAids: [],

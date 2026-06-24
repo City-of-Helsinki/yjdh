@@ -15,7 +15,7 @@ jest.mock('benefit/handler/hooks/useDownloadP2PFile', () => jest.fn());
 jest.mock(
   'react-loading-skeleton',
   () =>
-    function MockSkeleton(): JSX.Element {
+    function MockSkeleton(): React.ReactElement {
       return <div data-testid="loading-skeleton" />;
     }
 );
@@ -56,7 +56,7 @@ const renderSubject = (batchOverrides: Partial<BatchProposal> = {}): void => {
   );
 };
 
-function DownloadStateWrapper(): JSX.Element {
+function DownloadStateWrapper(): React.ReactElement {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
 

@@ -49,7 +49,7 @@ describe('useApplicationList', () => {
     children,
   }: {
     children: React.ReactNode;
-  }): JSX.Element => (
+  }): React.ReactElement => (
     <FrontPageContext.Provider value={{ errors: [], setError: jest.fn() }}>
       {children}
     </FrontPageContext.Provider>

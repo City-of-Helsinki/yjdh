@@ -192,7 +192,7 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     });
   }
 
-  const proposalForDecisionHeader = (): JSX.Element => {
+  const proposalForDecisionHeader = (): React.ReactElement => {
     if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
       return (
         <>

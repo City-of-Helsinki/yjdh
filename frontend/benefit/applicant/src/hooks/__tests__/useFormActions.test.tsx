@@ -80,7 +80,7 @@ describe('useFormActions - onQuietSave', () => {
     children,
   }: {
     children: React.ReactNode;
-  }): JSX.Element => (
+  }): React.ReactElement => (
     <DeMinimisContext.Provider
       value={{ deMinimisAids: [], setDeMinimisAids: jest.fn() }}
     >

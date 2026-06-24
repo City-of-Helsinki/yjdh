@@ -29,7 +29,7 @@ jest.mock('next/router', () => ({
 jest.mock(
   'benefit/handler/components/alteration/AlterationFormContainer',
   () =>
-    function MockAlterationFormContainer(): JSX.Element {
+    function MockAlterationFormContainer(): React.ReactElement {
       return <div data-testid="alteration-form-container" />;
     }
 );

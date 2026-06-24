@@ -18,7 +18,7 @@ const isNotFound = (err: unknown): boolean =>
  * HOC that ensures the user has organization authorization.
  * Redirects to /no-organisation if the user is authenticated but lacks organization info or receives a 403.
  */
-const withOrganisation = <P extends JSX.IntrinsicAttributes>(
+const withOrganisation = <P extends object>(
   WrappedComponent: React.FC<P>
 ): React.FC<P> =>
   // eslint-disable-next-line sonarjs/cognitive-complexity

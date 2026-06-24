@@ -10,7 +10,7 @@ const FIVE_MINUTES = 5 * 60 * 1000;
 
 const AuthProvider = <P,>({
   children,
-}: React.PropsWithChildren<P>): JSX.Element => {
+}: React.PropsWithChildren<P>): React.ReactElement => {
   const router = useRouter();
   const userQuery = useUserQuery<boolean>({
     select: Boolean,
