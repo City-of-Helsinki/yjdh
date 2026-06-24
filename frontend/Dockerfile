@@ -120,6 +120,7 @@ USER default:root
 COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
 COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
 COPY --chown=default:root --from=staticbuilder app/next.config.js ./
+COPY --chown=default:root --from=staticbuilder app/$PROJECT/shared/src/config/ $PROJECT/shared/src/config/
 COPY --chown=default:root --from=staticbuilder app/shared/src/server/next-server.js shared/src/server/
 
 # Copy public directory
