@@ -85,7 +85,7 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
                   const alert =
                     formik.dirty &&
                     // eslint-disable-next-line no-alert
-                    !window.confirm(
+                    !globalThis.confirm(
                       t(
                         'common:applications.actions.backWithoutSavingDescription'
                       )
@@ -130,7 +130,6 @@ const ActionBarEdit: React.FC<ActionBarProps> = ({
                   </$GridCell>
                   <$GridCell $colSpan={12}>
                     <p>{t(`common:applications.dialog.edit.helperText`)}</p>
-                    {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
                     <TextArea
                       id={fields.changeReason.name}
                       name={fields.changeReason.name}

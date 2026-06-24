@@ -38,9 +38,9 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     <AttachmentsListBase
       as={as}
       title={
-        title !== undefined
-          ? title
-          : t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)
+        title === undefined
+          ? t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)
+          : title
       }
       attachmentType={attachmentType}
       name={attachmentType}

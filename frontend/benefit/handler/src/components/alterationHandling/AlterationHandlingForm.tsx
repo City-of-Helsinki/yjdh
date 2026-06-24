@@ -173,6 +173,7 @@ const AlterationHandlingForm = ({
                   value="1"
                   onBlur={formik.handleBlur}
                   onChange={() => {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     formik.setFieldValue('isRecoverable', true);
                   }}
                   checked={formik.values.isRecoverable === true}
@@ -184,6 +185,7 @@ const AlterationHandlingForm = ({
                   value="0"
                   onBlur={formik.handleBlur}
                   onChange={() => {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     formik.setFieldValue('isRecoverable', false);
                   }}
                   checked={formik.values.isRecoverable === false}
@@ -219,7 +221,6 @@ const AlterationHandlingForm = ({
         >
           <$Grid>
             <$GridCell $colSpan={8}>
-              {/* @ts-expect-error TS2740: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
               <TextArea
                 label={
                   formik.values.isRecoverable

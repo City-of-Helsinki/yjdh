@@ -37,8 +37,9 @@ const Header: React.FC = () => {
       isNavigationVisible
       navigationItems={navigationItems}
       login={
-        !userQuery.isLoading
-          ? {
+        userQuery.isLoading
+          ? undefined
+          : {
               isAuthenticated: userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
@@ -47,7 +48,6 @@ const Header: React.FC = () => {
               userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }
-          : undefined
       }
       theme="dark"
     />

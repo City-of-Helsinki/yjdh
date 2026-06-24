@@ -5,7 +5,7 @@ export const selectRandomValuesFromArray = <T>(
   amount: number
 ): Array<T> => {
   const shuffled = array.sort(randomCompareFn);
-  const index = amount < array.length ? amount : array.length;
+  const index = Math.min(amount, array.length);
   return shuffled.slice(0, index);
 };
 

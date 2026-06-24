@@ -9,25 +9,25 @@
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage"
+    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "pnpm run test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
-    "@frontend/shared": "*",
+    "@frontend/shared": "workspace:*",
     "axios": "^1.17.0",
     "finnish-ssn": "^2.1.2",
     "react-query": "^3.34.0"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
-    "hds-react": "^5.0.0",
+    "eslint-config-adjunct": "4.11.1",
+    "hds-react": "5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "hds-react": "^5.0.0",
+    "hds-react": "5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

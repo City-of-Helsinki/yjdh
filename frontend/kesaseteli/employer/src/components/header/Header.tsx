@@ -52,8 +52,9 @@ const Header: React.FC = () => {
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
       login={
-        !userQuery.isLoading
-          ? {
+        userQuery.isLoading
+          ? undefined
+          : {
               isAuthenticated: !isLoginPage && userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
@@ -62,7 +63,6 @@ const Header: React.FC = () => {
               userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }
-          : undefined
       }
     />
   );

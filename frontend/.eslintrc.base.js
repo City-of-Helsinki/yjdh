@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
   rules: {
+    'switch-case/no-case-curly': 'off',
     'no-secrets/no-secrets': [
       'error',
       { ignoreContent: 'https://makasiini.hel.ninja/delivery' },

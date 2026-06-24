@@ -91,14 +91,14 @@ describe('useApplicationFormStep1', () => {
       data: {
         organization_type: ORGANIZATION_TYPES.COMPANY,
       },
-    } as any);
+    } as unknown as ReturnType<typeof useCompanyQuery>);
 
     mockUseFormActions.mockReturnValue(mockFormActions);
 
     mockUseTranslation.mockReturnValue({
       t: mockT,
-      i18n: {} as any,
-    } as any);
+      i18n: {} as unknown,
+    } as unknown as ReturnType<typeof useTranslation>);
 
     mockGetLanguageOptions.mockReturnValue([
       { label: 'Finnish', value: 'fi' },
@@ -137,7 +137,7 @@ describe('useApplicationFormStep1', () => {
       data: {
         organization_type: ORGANIZATION_TYPES.ASSOCIATION,
       },
-    } as any);
+    } as unknown as ReturnType<typeof useCompanyQuery>);
 
     const applicationWithActivities: Partial<Application> = {
       ...mockApplication,
@@ -157,7 +157,7 @@ describe('useApplicationFormStep1', () => {
       data: {
         organization_type: ORGANIZATION_TYPES.ASSOCIATION,
       },
-    } as any);
+    } as unknown as ReturnType<typeof useCompanyQuery>);
 
     const applicationWithoutActivities: Partial<Application> = {
       ...mockApplication,

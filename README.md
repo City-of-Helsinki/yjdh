@@ -99,8 +99,8 @@ Before starting, ensure you have the following installed:
 
 * Docker@^19.03.0 (or higher)
 * Docker Compose@^2.20.0 (or higher)
-* NodeJS `>=22.13.1 <23.11.0`
-* Yarn@^1.22
+* NodeJS `>=24.17.0
+* pnpm@11.5.0
 * [pre-commit](https://pre-commit.com/) `>=4.5.1`
 
 Verify your installations:
@@ -109,7 +109,7 @@ Verify your installations:
 docker --version
 docker compose version
 node --version
-yarn --version
+pnpm --version
 pre-commit --version
 ```
 
@@ -148,11 +148,11 @@ The example files already contain everything needed to get a development environ
 
 #### 3. Start the stack with Docker
 
-* Kesäseteli Employer: `yarn employer up`
-* Kesäseteli Youth/Handler: `yarn youth up` or `yarn handler up`
-* Benefit: `yarn benefit up`
+* Kesäseteli Employer: `pnpm employer up`
+* Kesäseteli Youth/Handler: `pnpm youth up` or `pnpm handler up`
+* Benefit: `pnpm benefit up`
 
-**Note:** On Linux, use the `:linux` variants (`yarn employer:linux up`, `yarn youth:linux up`, etc.) for proper file permissions.
+**Note:** On Linux, use the `:linux` variants (`pnpm employer:linux up`, `pnpm youth:linux up`, etc.) for proper file permissions.
 
 **Note:** Youth and Handler spin up the same stack; don't run both at the same time.
 
@@ -176,18 +176,18 @@ See [Testing](#testing) below.
 
 #### Switching stacks or cleaning up
 
-To switch stacks or clear issues, run `yarn clean` to remove containers and volumes.
+To switch stacks or clear issues, run `pnpm clean` to remove containers and volumes.
 
 ### Stack commands
 
 **Kesäseteli** (run only one stack at a time; Youth and Handler share the same stack):
 
-* [Employer](#kesaseteli-employer-development-with-docker): `yarn employer up`, running at port 3000
-* [Youth](#kesaseteli-youth-development-with-docker) / [Handler](#kesaseteli-handler-development-with-docker): `yarn youth up` or `yarn handler up`, running at ports 3100 and 3200
+* [Employer](#kesaseteli-employer-development-with-docker): `pnpm employer up`, running at port 3000
+* [Youth](#kesaseteli-youth-development-with-docker) / [Handler](#kesaseteli-handler-development-with-docker): `pnpm youth up` or `pnpm handler up`, running at ports 3100 and 3200
 
 **Benefit (Helsinki-lisä):**
 
-* [Benefit](#benefit): `yarn benefit up`, Applicant at port 3000 and Handler at 3100
+* [Benefit](#benefit): `pnpm benefit up`, Applicant at port 3000 and Handler at 3100
 
 Backend is at `https://localhost:8000` in all stacks.
 
@@ -215,23 +215,23 @@ From repository root:
 
 ### Frontend tests
 
-Frontend tests run locally (not in Docker) and require Node.js and yarn.
+Frontend tests run locally (not in Docker) and require Node.js and pnpm.
 
-**Prerequisites:** Install frontend dependencies first (if not already done). From the repository root run `yarn --cwd frontend install`, or run `yarn install` from the `frontend` directory.
+**Prerequisites:** Install frontend dependencies first (if not already done). From the repository root run `pnpm --cwd frontend install`, or run `pnpm install` from the `frontend` directory.
 
 From repository root:
 
-* Run all frontend tests: `yarn --cwd frontend test`
-* Run Kesäseteli Employer tests only: `yarn --cwd frontend ks-empl:test`
-* Run Kesäseteli Youth tests only: `yarn --cwd frontend ks-youth:test`
-* Run Benefit Handler tests only: `yarn --cwd frontend bf-hdlr:test`
-* Run Benefit Applicant tests only: `yarn --cwd frontend bf-appl:test`
+* Run all frontend tests: `pnpm --cwd frontend test`
+* Run Kesäseteli Employer tests only: `pnpm --cwd frontend ks-empl:test`
+* Run Kesäseteli Youth tests only: `pnpm --cwd frontend ks-youth:test`
+* Run Benefit Handler tests only: `pnpm --cwd frontend bf-hdlr:test`
+* Run Benefit Applicant tests only: `pnpm --cwd frontend bf-appl:test`
 
-**Note:** Frontend tests require local Node.js and yarn installation.
+**Note:** Frontend tests require local Node.js and pnpm installation.
 
 ## Local troubleshooting
 
-**On Linux:** Use the `:linux` script variants (e.g. `yarn employer:linux up`) when starting the stack, and for backend tests use the `UID/GID` prefix and add `-f compose/linux.yml`. See [Backend tests](#backend-tests) and [Quick start](#quick-start).
+**On Linux:** Use the `:linux` script variants (e.g. `pnpm employer:linux up`) when starting the stack, and for backend tests use the `UID/GID` prefix and add `-f compose/linux.yml`. See [Backend tests](#backend-tests) and [Quick start](#quick-start).
 
 #### 502 Bad Gateway in frontend
 
@@ -301,8 +301,8 @@ See more in [`.husky/README.md`](.husky/README.md).
 After cloning, install root Node dependencies (for Husky, etc.) and wire Git to use Husky:
 
 ```bash
-yarn install
-yarn husky
+pnpm install
+pnpm husky
 ```
 
 Note: you don't need to run `pre-commit install`, Husky calls `pre-commit run` directly.
@@ -317,11 +317,11 @@ YJDH-Kesäseteli service for employers to fulfill employee applications
 
 Follow the [Quick start](#quick-start) section above to set up your environment files.
 
-Then run `yarn employer up` or, if you want to rebuild, then `yarn employer up --build`
+Then run `pnpm employer up` or, if you want to rebuild, then `pnpm employer up --build`
   - The employer frontend is now running at [localhost:3000](https://localhost:3000)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
-If services fail to get up, `yarn clean` or `docker system prune --all` might help.
+If services fail to get up, `pnpm clean` or `docker system prune --all` might help.
 
 ## Kesäseteli youth
 
@@ -331,11 +331,11 @@ YJDH-Kesäseteli service for young people to send kesäseteli applications
 
 Follow the [Quick start](#quick-start) section above to set up your environment files.
 
-Then run `yarn youth up` or, if you want to rebuild, then `yarn youth up --build`
+Then run `pnpm youth up` or, if you want to rebuild, then `pnpm youth up --build`
   - The youth frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
-If services fail to get up, `yarn clean` might help.
+If services fail to get up, `pnpm clean` might help.
 
 ## Kesäseteli handler
 
@@ -345,11 +345,11 @@ YJDH-Kesäseteli service for city staff to process kesäseteli applications
 
 Follow the [Quick start](#quick-start) section above to set up your environment files.
 
-Then run `yarn handler up` or, if you want to rebuild, then `yarn handler up --build`
+Then run `pnpm handler up` or, if you want to rebuild, then `pnpm handler up --build`
   - The handler frontend is now running at [localhost:3200](https://localhost:3200)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
-If services fail to get up, `yarn clean` might help.
+If services fail to get up, `pnpm clean` might help.
 
 ## Benefit
 
@@ -362,7 +362,7 @@ YJDH-Benefit provides two services for applying and for handling the application
 
 Follow the [Quick start](#quick-start) section above to set up your environment files.
 
-Then run `yarn benefit up` or, if you want to rebuild, then `yarn benefit up --build`
+Then run `pnpm benefit up` or, if you want to rebuild, then `pnpm benefit up --build`
   - The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
   - The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)

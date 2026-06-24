@@ -74,8 +74,7 @@ export const $TableWrapper = styled.div<TableWrapperProps>`
   background: #fff;
   transition: 0.15s outline ease-in-out;
   outline: 1px solid
-    ${(props: TableWrapperProps) =>
-      props.borderColor ? props.borderColor : 'transparent'};
+    ${(props: TableWrapperProps) => props.borderColor || 'transparent'};
 `;
 
 export const $TableBody = styled.div<CollapsedProps>`
@@ -110,7 +109,7 @@ export const $TableFooter = styled.footer<$TableFooterProps>`
   display: flex;
   flex-flow: row wrap;
   background-color: ${(props: $TableFooterProps) =>
-    props.backgroundColor ? props.backgroundColor : '#efefef'};
+    props.backgroundColor || '#efefef'};
   width: 100%;
   padding: var(--spacing-m);
   align-items: center;

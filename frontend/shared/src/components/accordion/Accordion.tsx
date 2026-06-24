@@ -3,7 +3,6 @@ import noop from 'lodash/noop';
 import React from 'react';
 import useAccordion from 'shared/hooks/useAccordion';
 
-import { AccordionProps } from './accordion.d';
 import {
   $Accordion,
   $AccordionContent,
@@ -14,7 +13,9 @@ import {
 /**
  * 95% copy-paste from hds, can be deleted after hds supoorts initiallyOpen prop
  */
-const Accordion: React.FC<AccordionProps> = (props: AccordionProps) => {
+const Accordion: React.FC<React.ComponentProps<typeof $Accordion>> = (
+  props
+) => {
   const {
     children,
     heading,

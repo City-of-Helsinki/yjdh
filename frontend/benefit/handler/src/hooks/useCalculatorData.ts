@@ -64,6 +64,7 @@ const useCalculatorData = (
    * @param confirm true: do the actual clearing, false: just scroll to field
    * @returns true to allow chaining
    */
+  /* eslint-disable @typescript-eslint/no-floating-promises */
   const handleClear = (confirm: boolean): true => {
     if (confirm) {
       formik.setFieldValue('endDate', '');
@@ -89,6 +90,7 @@ const useCalculatorData = (
     }, 20);
     return true;
   };
+  /* eslint-enable @typescript-eslint/no-floating-promises */
 
   useEffect(() => {
     if (dirty) setIsRecalculationRequired(true);

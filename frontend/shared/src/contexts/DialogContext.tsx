@@ -49,23 +49,20 @@ const reducer = (
   const content = action?.payload?.content ?? '';
   const link = action?.payload?.link ?? '';
   const linkText = action?.payload?.linkText ?? '';
-  switch (action.type) {
-    case DialogActionKind.SHOW_CONFIRM:
-      return {
-        show: true,
-        header: action.payload.header,
-        submitButtonLabel: action.payload.submitButtonLabel,
-        submitButtonIcon: action.payload.submitButtonIcon,
-        submitButtonVariant: action.payload.submitButtonVariant,
-        content,
-        link,
-        linkText,
-      };
-
-    case DialogActionKind.HIDE_CONFIRM:
-    default:
-      return initialState;
+  if (action.type === DialogActionKind.SHOW_CONFIRM) {
+    return {
+      show: true,
+      header: action.payload.header,
+      submitButtonLabel: action.payload.submitButtonLabel,
+      submitButtonIcon: action.payload.submitButtonIcon,
+      submitButtonVariant: action.payload.submitButtonVariant,
+      content,
+      link,
+      linkText,
+    };
   }
+
+  return initialState;
 };
 
 export const DialogContext = React.createContext<
@@ -83,7 +80,9 @@ export const DialogContext = React.createContext<
   () => {},
 ]);
 
-export const DialogContextProvider: React.FC = ({ children }) => {
+export const DialogContextProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <DialogContext.Provider value={[state, dispatch]}>

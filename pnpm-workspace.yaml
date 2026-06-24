@@ -1,0 +1,20 @@
+# Do not allow dependencies to be used before they have been released for at least 1 week.
+minimumReleaseAge: 10080
+
+# Keep this empty to avoid warning noise for intentionally ignored build scripts.
+ignoredBuiltDependencies: []
+
+allowBuilds:
+  '@ffmpeg-installer/darwin-arm64': true
+  '@ffmpeg-installer/darwin-x64': true
+  '@ffmpeg-installer/linux-arm64': true
+  '@ffmpeg-installer/linux-x64': true
+  '@ffmpeg-installer/win32-x64': true
+  '@sentry/cli': true
+  '@swc/core': true
+  canvas: true
+  core-js: true
+  core-js-pure: true
+  nx: true
+  sharp: true
+  unrs-resolver: true

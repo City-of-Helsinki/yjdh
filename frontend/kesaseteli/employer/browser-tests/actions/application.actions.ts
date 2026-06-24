@@ -18,7 +18,7 @@ type UserAndApplicationData = Omit<Application, 'user'> & SuomiFiData;
 const fakeObjectFactory = new FakeObjectFactory();
 
 const isForeignIban = (iban: string): boolean => {
-  const val = (iban || '').replace(/\s/g, '').toUpperCase();
+  const val = (iban || '').replaceAll(/\s/g, '').toUpperCase();
   return val.length >= 2 && !val.startsWith('FI');
 };
 

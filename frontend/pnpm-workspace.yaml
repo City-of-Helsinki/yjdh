@@ -1,0 +1,50 @@
+packages:
+  - 'kesaseteli/*'
+  - 'benefit/*'
+  - 'shared'
+
+# Do not allow dependencies to be used before they have been released for at least 1 week.
+minimumReleaseAge: 10080
+
+# Don't run the deps status check before `pnpm <script>`. In the dev Docker
+# container there is no TTY to confirm purging node_modules, which otherwise
+# crashes with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY. Dependencies are
+# installed from the frozen lockfile, so the pre-run check is unnecessary.
+verifyDepsBeforeRun: false
+
+# Keep this empty to avoid warning noise for intentionally ignored build scripts.
+ignoredBuiltDependencies: []
+
+# Keep pnpm's default node_modules layout to avoid dependency shadowing in nx internals.
+shamefullyHoist: false
+
+overrides:
+  '@tootallnate/once': '>=2.0.1'
+  'form-data@>=3.0.0 <3.0.5': '^3.0.5'
+  'form-data@>=4.0.0 <4.0.6': '^4.0.6'
+  js-cookie: '^3.0.8'
+  js-yaml: '>=4.1.1'
+  'minimatch@<3.1.4': '^3.1.4'
+  'minimatch@>=9.0.0 <9.0.7': '^9.0.7'
+  mjml: '>=4.18.1'
+  postcss: '^8.5.10'
+  tar: '^7.5.11'
+  tmp: '^0.2.6'
+  underscore: '^1.13.8'
+  'undici@<6.27.0': '^6.27.0'
+  uuid: '>=11.1.1'
+
+allowBuilds:
+  '@ffmpeg-installer/darwin-arm64': true
+  '@ffmpeg-installer/darwin-x64': true
+  '@ffmpeg-installer/linux-arm64': true
+  '@ffmpeg-installer/linux-x64': true
+  '@ffmpeg-installer/win32-x64': true
+  '@sentry/cli': true
+  '@swc/core': true
+  canvas: true
+  core-js: true
+  core-js-pure: true
+  nx: true
+  sharp: true
+  unrs-resolver: true

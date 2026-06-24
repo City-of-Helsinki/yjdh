@@ -2,12 +2,12 @@ import { initMatomo, trackEvent, trackPageView } from 'shared/utils/matomo';
 
 describe('matomo', () => {
   beforeEach(() => {
-    window._paq = [];
+    globalThis._paq = [];
     document.head.innerHTML = '<script src="test.js"></script>';
   });
 
   afterEach(() => {
-    delete (window as Partial<Window>)._paq;
+    delete globalThis._paq;
   });
 
   describe('initMatomo', () => {
@@ -17,7 +17,7 @@ describe('matomo', () => {
         siteId: '42',
       });
 
-      const commands = window._paq.flat();
+      const commands = (globalThis._paq || []).flat();
       const setTrackerIdx = commands.indexOf('setTrackerUrl');
       const setSiteIdIdx = commands.indexOf('setSiteId');
       const trackPageViewIdx = commands.indexOf('trackPageView');
@@ -36,7 +36,9 @@ describe('matomo', () => {
         siteId: '1',
       });
 
-      const trackerUrl = window._paq.find((cmd) => cmd[0] === 'setTrackerUrl');
+      const trackerUrl = (globalThis._paq || []).find(
+        (cmd) => cmd[0] === 'setTrackerUrl'
+      );
       expect(trackerUrl).toEqual([
         'setTrackerUrl',
         '//matomo.example.com/matomo.php',
@@ -51,7 +53,9 @@ describe('matomo', () => {
         phpTrackerFile: 'tracker.php',
       });
 
-      const trackerUrl = window._paq.find((cmd) => cmd[0] === 'setTrackerUrl');
+      const trackerUrl = (globalThis._paq || []).find(
+        (cmd) => cmd[0] === 'setTrackerUrl'
+      );
       expect(trackerUrl).toEqual([
         'setTrackerUrl',
         '//matomo.example.com/tracker.php',
@@ -67,7 +71,7 @@ describe('matomo', () => {
         siteId: '1',
       });
 
-      const commands = window._paq.flat();
+      const commands = (globalThis._paq || []).flat();
       expect(commands).toContain('requireConsent');
       expect(commands).not.toContain('requireCookieConsent');
     });
@@ -87,48 +91,58 @@ describe('matomo', () => {
 
   describe('trackPageView', () => {
     it('should push setCustomUrl, setDocumentTitle and trackPageView', () => {
-      window._paq = [];
+      globalThis._paq = [];
       trackPageView();
-      expect(window._paq).toContainEqual([
+      expect(globalThis._paq).toContainEqual([
         'setCustomUrl',
-        window.location.href,
+        globalThis.location.href,
       ]);
-      expect(window._paq).toContainEqual(['setDocumentTitle', document.title]);
-      expect(window._paq).toContainEqual(['trackPageView']);
+      expect(globalThis._paq).toContainEqual([
+        'setDocumentTitle',
+        document.title,
+      ]);
+      expect(globalThis._paq).toContainEqual(['trackPageView']);
     });
 
     it('should set referrer url and custom url on subsequent navigations', () => {
-      window._paq = [];
+      globalThis._paq = [];
       trackPageView('/new-page');
-      expect(window._paq).toContainEqual([
+      expect(globalThis._paq).toContainEqual([
         'setReferrerUrl',
         expect.any(String),
       ]);
-      expect(window._paq).toContainEqual([
+      expect(globalThis._paq).toContainEqual([
         'setCustomUrl',
-        `${window.location.origin}/new-page`,
+        `${globalThis.location.origin}/new-page`,
       ]);
-      expect(window._paq).toContainEqual(['setDocumentTitle', document.title]);
-      expect(window._paq).toContainEqual(['trackPageView']);
+      expect(globalThis._paq).toContainEqual([
+        'setDocumentTitle',
+        document.title,
+      ]);
+      expect(globalThis._paq).toContainEqual(['trackPageView']);
     });
 
     it('should not push if _paq is not defined', () => {
-      delete (window as Partial<Window>)._paq;
+      delete globalThis._paq;
       expect(() => trackPageView()).not.toThrow();
     });
   });
 
   describe('trackEvent', () => {
     it('should push trackEvent with category and action', () => {
-      window._paq = [];
+      globalThis._paq = [];
       trackEvent('Category', 'Action');
-      expect(window._paq).toContainEqual(['trackEvent', 'Category', 'Action']);
+      expect(globalThis._paq).toContainEqual([
+        'trackEvent',
+        'Category',
+        'Action',
+      ]);
     });
 
     it('should include optional name and value', () => {
-      window._paq = [];
+      globalThis._paq = [];
       trackEvent('Category', 'Action', 'Name', 42);
-      expect(window._paq).toContainEqual([
+      expect(globalThis._paq).toContainEqual([
         'trackEvent',
         'Category',
         'Action',
@@ -138,13 +152,17 @@ describe('matomo', () => {
     });
 
     it('should filter out undefined optional params', () => {
-      window._paq = [];
+      globalThis._paq = [];
       trackEvent('Category', 'Action');
-      expect(window._paq).toContainEqual(['trackEvent', 'Category', 'Action']);
+      expect(globalThis._paq).toContainEqual([
+        'trackEvent',
+        'Category',
+        'Action',
+      ]);
     });
 
     it('should not push if _paq is not defined', () => {
-      delete (window as Partial<Window>)._paq;
+      delete globalThis._paq;
       expect(() => trackEvent('Cat', 'Act')).not.toThrow();
     });
   });

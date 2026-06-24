@@ -11,11 +11,11 @@ const useReviewStateQuery = (
   return useQuery<ReviewStateData, Error>(
     ['reviewState', id],
     () =>
-      !id
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<ReviewStateData>(
+      id
+        ? handleResponse<ReviewStateData>(
             axios.get(`${BackendEndpoint.HANDLER_APPLICATIONS}${id}/review/`)
-          ),
+          )
+        : Promise.reject(new Error('Missing application id')),
     {
       enabled: Boolean(id),
       staleTime: Infinity,

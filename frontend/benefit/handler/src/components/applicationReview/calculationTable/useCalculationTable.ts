@@ -116,7 +116,7 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
       ...createBenefitRow(),
       id: 'table-footer',
       dates: `${tableRows[0]?.startDate ?? ''} - ${
-        tableRows[tableRows.length - 1]?.endDate ?? ''
+        tableRows.at(-1)?.endDate ?? ''
       }`,
       // Summing up multiple duration periods may cause float number inaccuracies to accumulate;
       // formatting to two decimals and then casting back to a number should get rid of them

@@ -1,7 +1,7 @@
 /* eslint-disable scanjs-rules/identifier_localStorage */
 /* eslint-disable scanjs-rules/identifier_sessionStorage */
 
-const IS_CLIENT = typeof window !== 'undefined';
+const IS_CLIENT = globalThis.window !== undefined;
 
 export const getLocalStorageItem = (key: string): string =>
   IS_CLIENT ? localStorage.getItem(key) || '' : '';

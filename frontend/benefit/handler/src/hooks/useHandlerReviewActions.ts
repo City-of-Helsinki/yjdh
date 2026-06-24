@@ -132,11 +132,11 @@ const useHandlerReviewActions = (
       ? convertToBackendDateFormat(values.endDate)
       : undefined;
 
-    const overrideMonthlyBenefitAmountComment = !isEmpty(
+    const overrideMonthlyBenefitAmountComment = isEmpty(
       values.overrideMonthlyBenefitAmount
     )
-      ? values.overrideMonthlyBenefitAmountComment
-      : '';
+      ? ''
+      : values.overrideMonthlyBenefitAmountComment;
 
     const paySubsidies = values.paySubsidies?.map((item) => ({
       ...item,

@@ -17,22 +17,25 @@ const SubmitErrorSummary: React.FC<Props> = ({ error }) => {
 
   const message = React.useMemo(() => {
     switch (error.type) {
-      case 'please_recheck_data':
+      case 'please_recheck_data': {
         return t('common:youthApplication.checkNotification.recheck');
+      }
 
-      case 'validation_error':
+      case 'validation_error': {
         return t('common:youthApplication.checkNotification.validation', {
           fields: error.errorFields
-            .map((name) => t(`common:youthApplication.form.${name as string}`))
+            .map((name: string) => t(`common:youthApplication.form.${name}`))
             .join(', '),
         });
+      }
 
-      default:
+      default: {
         if (error.type === null) {
-      return null;
-    }
-    assertUnreachable(error.type, 'Unknown submit error type');
-    return null;
+          return null;
+        }
+        assertUnreachable(error.type, 'Unknown submit error type');
+        return null;
+      }
     }
   }, [error.errorFields, error.type, t]);
 

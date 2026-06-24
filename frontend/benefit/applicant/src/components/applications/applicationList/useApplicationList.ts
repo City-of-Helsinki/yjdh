@@ -50,23 +50,29 @@ const getAvatarBGColor = (
   status: APPLICATION_STATUSES
 ): keyof DefaultTheme['colors'] => {
   switch (status) {
-    case APPLICATION_STATUSES.DRAFT:
+    case APPLICATION_STATUSES.DRAFT: {
       return 'black40';
+    }
 
-    case APPLICATION_STATUSES.INFO_REQUIRED:
+    case APPLICATION_STATUSES.INFO_REQUIRED: {
       return 'alert';
+    }
 
-    case APPLICATION_STATUSES.RECEIVED:
+    case APPLICATION_STATUSES.RECEIVED: {
       return 'info';
+    }
 
-    case APPLICATION_STATUSES.ACCEPTED:
+    case APPLICATION_STATUSES.ACCEPTED: {
       return 'success';
+    }
 
-    case APPLICATION_STATUSES.REJECTED:
+    case APPLICATION_STATUSES.REJECTED: {
       return 'error';
+    }
 
-    default:
+    default: {
       return 'black40';
+    }
   }
 };
 
@@ -75,18 +81,21 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
   return name === ' ' ? '-' : name;
 };
 
-const getDateDaysBefore = (date: string, daysBefore: number): Date | undefined => {
+const getDateDaysBefore = (
+  date: string,
+  daysBefore: number
+): Date | undefined => {
   const parsedDate = parseDate(date);
 
   return parsedDate ? subDays(parsedDate, daysBefore) : undefined;
 };
 
 const useApplicationList = ({
-                              status,
-                              isArchived,
-                              orderByOptions,
-                              secondInstalmentStatus,
-                            }: Props): ApplicationListProps => {
+  status,
+  isArchived,
+  orderByOptions,
+  secondInstalmentStatus,
+}: Props): ApplicationListProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const [orderBy, setOrderBy] = useState<OptionType>(
@@ -132,18 +141,20 @@ const useApplicationList = ({
 
     switch (applicationStatus) {
       case APPLICATION_STATUSES.DRAFT:
-      case APPLICATION_STATUSES.INFO_REQUIRED:
+      case APPLICATION_STATUSES.INFO_REQUIRED: {
         return {
           label: t(`${translationListBase}.common.edit`),
           handleAction,
           Icon: IconPen,
         };
+      }
 
-      default:
+      default: {
         return {
           label: t(`${translationListBase}.common.check`),
           handleAction,
         };
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
 import nock from 'nock';
@@ -21,7 +21,7 @@ type LanguageSummerVoucherConfigurations = Record<
 const languages = ['fi', 'sv', 'en'] as const;
 
 const languageDataMock = languages.reduce<LanguageSummerVoucherConfigurations>(
-  (acc, lang: typeof languages[number]) => ({
+  (acc, lang: (typeof languages)[number]) => ({
     ...acc,
     [lang]: [
       {
@@ -40,6 +40,14 @@ const languageDataMock = languages.reduce<LanguageSummerVoucherConfigurations>(
 
 jest.mock('next-i18next', () => ({
   useTranslation: jest.fn(),
+}));
+
+jest.mock('react-i18next', () => ({
+  useTranslation: jest.fn(() => ({
+    t: (key: string) => key,
+    i18n: { language: 'fi' },
+  })),
+  initReactI18next: { type: '3rdParty', init: jest.fn() },
 }));
 
 jest.mock('shared/hooks/useErrorHandler', () => ({
@@ -101,12 +109,12 @@ describe('useSummerVoucherConfigurationQuery', () => {
       .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
       .reply(200, languageDataMock[firstLang]);
 
-    const { result, waitFor, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       () => useSummerVoucherConfigurationQuery(),
       { wrapper }
     );
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(languageDataMock[firstLang]);
     expect(nock.isDone()).toBe(true);
 
@@ -127,7 +135,9 @@ describe('useSummerVoucherConfigurationQuery', () => {
         .reply(200, languageDataMock[lang]);
 
       rerender();
-      await waitFor(() => result.current.isSuccess, { timeout: 5000 });
+      await waitFor(() => expect(result.current.isSuccess).toBe(true), {
+        timeout: 5000,
+      });
 
       expect(result.current.data).toEqual(languageDataMock[lang]);
       expect(nock.isDone()).toBe(true);
@@ -144,12 +154,11 @@ describe('useSummerVoucherConfigurationQuery', () => {
       .get(BackendEndpoint.SUMMER_VOUCHER_CONFIGURATION)
       .reply(500);
 
-    const { result, waitFor } = renderHook(
-      () => useSummerVoucherConfigurationQuery(),
-      { wrapper }
-    );
+    const { result } = renderHook(() => useSummerVoucherConfigurationQuery(), {
+      wrapper,
+    });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(mockErrorHandler).toHaveBeenCalled();
     expect(nock.isDone()).toBe(true);

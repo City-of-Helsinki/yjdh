@@ -10,15 +10,15 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage",
+    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "pnpm run test --verbose --coverage",
     "browser-test": "testcafe 'chrome --allow-insecure-localhost --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/*.testcafe.ts --sf",
     "browser-test:headless": "testcafe 'chrome:headless --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/*.testcafe.ts --sf",
     "browser-test:ci": "testcafe 'chrome:headless --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --disable-gpu --window-size=\"1249,720\"  --ignore-certificate-errors-spki-list=\"8sg/cl7YabrOFqSqH+Bu0e+P27Av33gWgi8Lq28DW1I=,gJt+wt/T3afCRkxtMMSjXcl/99sgzWc2kk1c1PC9tG0=,zrQI2/1q8i2SRPmMZ1sMntIkG+lMW0legPFokDo3nrY=\"' --screenshots path=report --video report --reporter spec,html:report/index.html browser-tests/pages/*.testcafe.ts --sf"
   },
   "dependencies": {
-    "@frontend/benefit-shared": "*",
-    "@frontend/shared": "*",
+    "@frontend/benefit-shared": "workspace:*",
+    "@frontend/shared": "workspace:*",
     "@react-pdf/renderer": "^3.1.12",
     "@sentry/browser": "^10.56.0",
     "@sentry/nextjs": "^10.56.0",
@@ -29,7 +29,8 @@
     "finnish-ssn": "^2.1.2",
     "formik": "^2.2.9",
     "hds-design-tokens": "^5.0.0",
-    "hds-react": "^5.0.0",
+    "hds-react": "5.0.0",
+    "ibantools": "^4.1.5",
     "lodash": "^4.17.21",
     "next": "15.5.19",
     "next-i18next": "^15.3.0",
@@ -37,6 +38,7 @@
     "pdfjs-dist": "4.8.69",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^15.6.0",
     "react-input-mask": "^2.0.4",
     "react-loading-skeleton": "^3.0.3",
     "react-markdown": "^8.0.7",
@@ -49,7 +51,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
+    "eslint-config-adjunct": "4.11.1",
     "typescript": "^5.9.3"
   }
 }

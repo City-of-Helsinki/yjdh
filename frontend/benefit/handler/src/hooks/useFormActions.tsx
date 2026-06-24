@@ -70,9 +70,7 @@ const toStringArrayRecord = (
   Object.fromEntries(
     Object.entries(value).map(([entryKey, entryValue]) => [
       entryKey,
-      Array.isArray(entryValue)
-        ? entryValue.map((item) => String(item))
-        : [String(entryValue)],
+      Array.isArray(entryValue) ? entryValue.map(String) : [String(entryValue)],
     ])
   );
 
@@ -86,7 +84,7 @@ const renderErrorValue = (value: unknown): string => {
   }
 
   if (Array.isArray(value)) {
-    return value.map((item) => String(item)).join(', ');
+    return value.map(String).join(', ');
   }
 
   if (value && typeof value === 'object') {
@@ -303,9 +301,7 @@ const useFormActions = (
   const getPayloadForTrainingCompensations = (
     values: Partial<Application>
   ): TrainingCompensation[] => {
-    if (
-      values.apprenticeshipProgram
-    ) {
+    if (values.apprenticeshipProgram) {
       // Return the training compensation values as they are
       return values?.trainingCompensations || [];
     }
@@ -329,9 +325,7 @@ const useFormActions = (
     } = currentValues;
 
     const normalizedPaySubsidyGranted =
-      (paySubsidyGranted === null || paySubsidyGranted === undefined)
-        ? PAY_SUBSIDY_GRANTED.NOT_GRANTED
-        : paySubsidyGranted;
+      paySubsidyGranted ?? PAY_SUBSIDY_GRANTED.NOT_GRANTED;
 
     const paySubsidyPercent =
       normalizedPaySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
@@ -373,9 +367,7 @@ const useFormActions = (
         : undefined,
       apprenticeshipProgram,
       companyNumberOfEmployees:
-        companyNumberOfEmployees === ''
-          ? null
-          : companyNumberOfEmployees,
+        companyNumberOfEmployees === '' ? null : companyNumberOfEmployees,
     };
 
     return {

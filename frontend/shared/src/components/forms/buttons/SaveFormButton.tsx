@@ -1,4 +1,4 @@
-import { ButtonPresetTheme, ButtonProps } from 'hds-react';
+import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React from 'react';
 import {
   FieldValues,
@@ -12,7 +12,7 @@ import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 type Props<FormData extends FieldValues, BackendResponseData> = Omit<
-  ButtonProps,
+  React.ComponentProps<typeof Button>,
   'onClick' | 'onError'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;
@@ -35,6 +35,7 @@ const SaveFormButton = <
   isLoading,
   theme,
   asLink,
+  variant = ButtonVariant.Primary,
   ...buttonProps
 }: Props<FormData, BackendResponseData>): React.ReactElement => {
   const { handleSubmit, formState } = useFormContext<FormData>();
@@ -47,7 +48,7 @@ const SaveFormButton = <
   );
   const handleSaving: SubmitHandler<FormData> = React.useCallback(
     (formData) => {
-      saveQuery.mutate(formData as FormData, {
+      saveQuery.mutate(formData, {
         onSuccess: (responseData) => {
           if (onSuccess) {
             void onSuccess(responseData);
@@ -67,6 +68,7 @@ const SaveFormButton = <
       onClick={handleSubmit(handleSaving, onInvalidForm)}
       disabled={disabled || isSaving}
       isLoading={isLoading || isSaving}
+      variant={variant}
     >
       {children}
     </ButtonComponent>

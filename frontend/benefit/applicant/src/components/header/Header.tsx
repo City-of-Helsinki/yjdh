@@ -63,8 +63,8 @@ const Header: React.FC = () => {
           isAuthenticated: !isLoginPage && isSuccess,
           loginLabel: t('common:header.loginLabel'),
           logoutLabel: t('common:header.logoutLabel'),
-          onLogin: !isLoading ? login : noop,
-          onLogout: !isLoading ? logout : noop,
+          onLogin: isLoading ? noop : login,
+          onLogout: isLoading ? noop : logout,
           userName: isSuccess
             ? getFullName(data?.firstName, data?.lastName)
             : undefined,
@@ -88,12 +88,13 @@ const Header: React.FC = () => {
                   theme={ButtonPresetTheme.Coat}
                   onClick={() => setMessagesDrawerVisiblity(true)}
                 >
-                  {t('common:header.messages')}
-                  {unreadMessagesCount
-                    ? ` (${t('common:applications.list.common.newMessages', {
-                        count: unreadMessagesCount,
-                      })})`
-                    : ''}
+                  {`${t('common:header.messages')}${
+                    unreadMessagesCount
+                      ? ` (${t('common:applications.list.common.newMessages', {
+                          count: unreadMessagesCount,
+                        })})`
+                      : ''
+                  }`}
                 </Button>,
               ]
             : undefined

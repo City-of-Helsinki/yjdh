@@ -1,5 +1,5 @@
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
-import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
+import { ButtonPresetTheme, ButtonSize, ButtonVariant } from 'hds-react';
 import React from 'react';
 import Button from 'shared/components/button/Button';
 import {
@@ -11,18 +11,18 @@ const toggleNewAhjoMode = (isNewMode: boolean): void => {
   // eslint-disable-next-line no-alert
   const confirm = isNewMode
     ? // eslint-disable-next-line no-alert
-      window.confirm(
+      globalThis.confirm(
         'Haluatko palata vanhaan koontipohjaiseen käyttöliittymään?'
       )
     : // eslint-disable-next-line no-alert
-      window.confirm('Ota Ahjo-integraation käyttöliittymä käyttöön?');
+      globalThis.confirm('Ota Ahjo-integraation käyttöliittymä käyttöön?');
   if (!confirm) return;
-  if (!isNewMode) {
-    setLocalStorageItem('newAhjoMode', '1');
-  } else {
+  if (isNewMode) {
     removeLocalStorageItem('newAhjoMode');
+  } else {
+    setLocalStorageItem('newAhjoMode', '1');
   }
-  window.location.reload();
+  globalThis.location.reload();
 };
 
 const TemporaryAhjoModeSwitch: React.FC = () => {
@@ -33,11 +33,13 @@ const TemporaryAhjoModeSwitch: React.FC = () => {
       onClick={() => toggleNewAhjoMode(isNewAhjoMode)}
       theme={ButtonPresetTheme.Coat}
       variant={ButtonVariant.Supplementary}
-      size="small"
+      size={ButtonSize.Small}
     >
-      Ahjo-integraatio
-      <br />
-      {isNewAhjoMode ? 'on päällä' : 'on pois päältä'}
+      <span>
+        Ahjo-integraatio
+        <br />
+        {isNewAhjoMode ? 'on päällä' : 'on pois päältä'}
+      </span>
     </Button>
   );
 };

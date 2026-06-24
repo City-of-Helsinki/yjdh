@@ -61,22 +61,22 @@ const useApplicationReports = (): ExtendedComponentProps => {
   const { data: lastAcceptedApplicationBatches } =
     useReportsApplicationBatchesQuery(PROPOSALS_FOR_DECISION.ACCEPTED);
   const lastAcceptedApplicationsExportDate =
-    lastAcceptedApplicationBatches && lastAcceptedApplicationBatches.length > 0
+    lastAcceptedApplicationBatches &&
+    lastAcceptedApplicationBatches.length > 0 &&
+    lastAcceptedApplicationBatches.at(-1)?.created_at
       ? convertToUIDateFormat(
-          lastAcceptedApplicationBatches[
-            lastAcceptedApplicationBatches.length - 1
-          ].created_at
+          lastAcceptedApplicationBatches.at(-1)?.created_at ?? ''
         )
       : '';
 
   const { data: lastRejectedApplicationBatches } =
     useReportsApplicationBatchesQuery(PROPOSALS_FOR_DECISION.REJECTED);
   const lastRejectedApplicationsExportDate =
-    lastRejectedApplicationBatches && lastRejectedApplicationBatches.length > 0
+    lastRejectedApplicationBatches &&
+    lastRejectedApplicationBatches.length > 0 &&
+    lastRejectedApplicationBatches.at(-1)?.created_at
       ? convertToUIDateFormat(
-          lastRejectedApplicationBatches[
-            lastRejectedApplicationBatches.length - 1
-          ].created_at
+          lastRejectedApplicationBatches.at(-1)?.created_at ?? ''
         )
       : '';
 

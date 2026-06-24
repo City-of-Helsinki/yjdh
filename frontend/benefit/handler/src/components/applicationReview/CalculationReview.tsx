@@ -41,8 +41,8 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
         {handledApplication?.status === APPLICATION_STATUSES.ACCEPTED && (
           <p>
             {t('common:review.decisionProposal.list.text.accepted', {
-              months: tableRows[tableRows.length - 1]?.duration,
-              startAndEndDate: `${tableRows[tableRows.length - 1]?.dates}`,
+              months: tableRows.at(-1)?.duration,
+              startAndEndDate: tableRows.at(-1)?.dates || '',
             })}
           </p>
         )}
@@ -108,8 +108,7 @@ const CalculationReview: React.FC<ApplicationReviewStepProps> = ({
                 </dd>
               </div>
               {decisionProposalDraft.grantedAsDeMinimisAid &&
-                (handledApplication?.industryCode ||
-                  company?.industryCode) && (
+                (handledApplication?.industryCode || company?.industryCode) && (
                   <div>
                     <dt>
                       {t('common:review.decisionProposal.list.industryCode')}

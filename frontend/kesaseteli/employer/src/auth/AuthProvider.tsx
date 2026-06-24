@@ -13,7 +13,7 @@ const AuthProvider = <P,>({
 }: React.PropsWithChildren<P>): JSX.Element => {
   const router = useRouter();
   const userQuery = useUserQuery<boolean>({
-    select: (user) => Boolean(user),
+    select: Boolean,
     refetchInterval: FIVE_MINUTES,
     enabled: router.route !== ROUTES.COOKIE_SETTINGS,
   });

@@ -11,7 +11,7 @@ export const $Main = styled.main<MainProps>`
     100% - ${(props: MainProps) => (props.$isSidebarVisible ? '520px' : '0px')}
   );
   background-color: ${(props: MainProps) =>
-    props.$backgroundColor ? props.$backgroundColor : props.theme.colors.white};
+    props.$backgroundColor || props.theme.colors.white};
   display: flex;
   flex-direction: column;
   height: 100%;

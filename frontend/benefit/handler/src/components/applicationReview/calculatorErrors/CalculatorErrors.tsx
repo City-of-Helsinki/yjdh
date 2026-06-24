@@ -23,7 +23,7 @@ const CalculatorErrors: React.FC<CalculatorErrorsProps> = ({ data }) => {
     Object.entries(object).map(([key, value]) => (
       <li key={key}>{`${t(
         `common:calculators.fields.${camelCase(key)}.label`
-      )}${objectIndex !== null ? ` ${objectIndex + 1}` : ''}: ${String(
+      )}${objectIndex === null ? '' : ` ${objectIndex + 1}`}: ${String(
         value
       )}`}</li>
     ));

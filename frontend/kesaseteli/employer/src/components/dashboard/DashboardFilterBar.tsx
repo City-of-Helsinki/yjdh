@@ -31,7 +31,7 @@ const DashboardFilterBar: React.FC<Props> = ({ showOnlyMine, onToggle }) => {
         tooltip={
           <Tooltip
             id="application-table-filter-mine-tooltip"
-            label={t('common:dashboard.filterBar.tooltipLabel')}
+            tooltipLabel={t('common:dashboard.filterBar.tooltipLabel')}
             buttonLabel={t('common:dashboard.filterBar.tooltipButtonLabel')}
           >
             {t('common:dashboard.filterBar.tooltipText')}

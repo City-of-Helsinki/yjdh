@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
 import { isRecord } from 'shared/utils/object.utils';
 import { isString } from 'shared/utils/type-guards';
 /**
@@ -7,7 +6,7 @@ import { isString } from 'shared/utils/type-guards';
 
 const maskFinnishSsn = (text: unknown): unknown =>
   isString(text)
-    ? text.replace(/\d{6}[+a-z-]\d{3}[\da-z]/gi, '*'.repeat(11))
+    ? text.replaceAll(/\d{6}[+a-z-]\d{3}[\da-z]/gi, '*'.repeat(11))
     : text;
 
 /* Gets the length of the given variable */
@@ -47,7 +46,7 @@ export const maskAttribute = (
   object: Record<string, unknown>,
   attributes: string[]
 ): typeof object => {
-  const clonedObject = cloneDeep(object);
+  const clonedObject = structuredClone(object);
   recursiveMask(clonedObject, attributes);
   return clonedObject;
 };

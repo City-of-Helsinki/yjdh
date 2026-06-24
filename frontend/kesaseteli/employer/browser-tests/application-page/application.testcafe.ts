@@ -235,7 +235,7 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
     await header.isLoaded();
 
     // eslint-disable-next-line scanjs-rules/call_eval
-    const appUrl = (await t.eval(() => window.location.href)) as string;
+    const appUrl = (await t.eval(() => globalThis.location.href)) as string;
 
     // Verify NO warning when navigating away from a clean form
     const appTitle = Selector('a').withText(/kesäseteli/i);

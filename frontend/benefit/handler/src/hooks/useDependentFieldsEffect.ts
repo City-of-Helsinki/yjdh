@@ -153,7 +153,7 @@ export const useDependentFieldsEffect = (
   React.useEffect(() => {
     switch (benefitType) {
       case BENEFIT_TYPES.EMPLOYMENT:
-      case BENEFIT_TYPES.SALARY:
+      case BENEFIT_TYPES.SALARY: {
         dispatch(
           createUpdateAction([
             EFFECTS.CLEAR_COMMISSION_VALUES,
@@ -161,8 +161,9 @@ export const useDependentFieldsEffect = (
           ])
         );
         break;
+      }
 
-      case BENEFIT_TYPES.COMMISSION:
+      case BENEFIT_TYPES.COMMISSION: {
         dispatch(
           createUpdateAction([
             EFFECTS.CLEAR_CONTRACT_VALUES,
@@ -170,8 +171,9 @@ export const useDependentFieldsEffect = (
           ])
         );
         break;
+      }
 
-      default:
+      default: {
         dispatch(
           createUpdateAction([
             EFFECTS.CLEAR_COMMISSION_VALUES,
@@ -180,6 +182,7 @@ export const useDependentFieldsEffect = (
           ])
         );
         break;
+      }
     }
   }, [benefitType]);
 

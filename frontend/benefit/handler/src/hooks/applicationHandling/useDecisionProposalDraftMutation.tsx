@@ -27,13 +27,15 @@ const useDecisionProposalDraftMutation = (
   return useMutation<DecisionProposalDraftData, Error, DecisionProposalDraft>(
     'changeDecisionProposal',
     (decisionProposalPayload: DecisionProposalDraft) =>
-      !application.id
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<DecisionProposalDraftData>(
+      application.id
+        ? handleResponse<DecisionProposalDraftData>(
             axios.patch(`${BackendEndpoint.DECISION_PROPOSAL_DRAFT}`, {
-              ...snakecaseKeys(decisionProposalPayload),
+              ...snakecaseKeys(
+                decisionProposalPayload as Record<string, unknown>
+              ),
             })
-          ),
+          )
+        : Promise.reject(new Error('Missing application id')),
     {
       onSuccess: () => {
         void queryClient.invalidateQueries('applications');

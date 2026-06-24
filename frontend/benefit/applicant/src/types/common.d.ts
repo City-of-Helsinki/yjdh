@@ -1,3 +1,4 @@
+/* eslint-disable no-var, vars-on-top */
 import { Application } from 'benefit-shared/types/application';
 
 export type DynamicFormStepComponentProps = {
@@ -39,9 +40,20 @@ export type ConsentsCookie = {
 };
 
 declare global {
+  var rnsData: RNSData;
+  // Matomo
+  var _paq: [string, ...unknown[]][];
+
   interface Window {
     rnsData: RNSData;
     // Matomo
     _paq: [string, ...unknown[]][];
   }
+
+  interface GlobalThis {
+    rnsData: RNSData;
+    // Matomo
+    _paq: [string, ...unknown[]][];
+  }
 }
+/* eslint-enable no-var, vars-on-top */

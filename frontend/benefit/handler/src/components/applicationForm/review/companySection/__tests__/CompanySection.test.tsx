@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom';
 
 import { render, RenderResult, screen } from '@testing-library/react';
+import {
+  Application,
+  ApplicationFields,
+} from 'benefit/handler/types/application';
 import { ORGANIZATION_TYPES } from 'benefit-shared/constants';
 import React from 'react';
 
@@ -174,6 +178,16 @@ jest.mock(
 
 const translationsBase = 'common:applications.sections';
 
+const baseCompany: NonNullable<Application['company']> = {
+  name: 'Test company',
+  businessId: '1234567-8',
+  streetAddress: 'Test street 1',
+  postcode: '00100',
+  city: 'Helsinki',
+  organizationType: ORGANIZATION_TYPES.COMPANY,
+  companyForm: 'Oy',
+};
+
 const fields = {
   companyContactPersonFirstName: {
     name: 'companyContactPersonFirstName',
@@ -184,17 +198,10 @@ const fields = {
   deMinimisAidSet: {
     name: 'deMinimisAidSet',
   },
-};
+} as unknown as ApplicationFields;
 
 const baseData = {
-  company: {
-    name: 'Test company',
-    businessId: '1234567-8',
-    streetAddress: 'Test street 1',
-    postcode: '00100',
-    city: 'Helsinki',
-    organizationType: ORGANIZATION_TYPES.COMPANY,
-  },
+  company: baseCompany,
   companyBankAccountNumber: 'FI1212345600000785',
   companyContactPersonFirstName: 'Jane',
   companyContactPersonLastName: 'Doe',
@@ -203,15 +210,19 @@ const baseData = {
   applicantLanguage: 'fi',
   coOperationNegotiations: false,
   attachments: [],
-};
+} as unknown as Application;
 
-const renderSubject = (dataOverrides = {}): RenderResult =>
+const renderSubject = (
+  dataOverrides: Partial<Application> = {}
+): RenderResult =>
   render(
     <CompanySection
-      data={{
-        ...baseData,
-        ...dataOverrides,
-      }}
+      data={
+        {
+          ...baseData,
+          ...dataOverrides,
+        } as Application
+      }
       translationsBase={translationsBase}
       dispatchStep={jest.fn()}
       fields={fields}
@@ -326,7 +337,7 @@ describe('review CompanySection', () => {
   it('renders association business activities for associations', () => {
     renderSubject({
       company: {
-        ...baseData.company,
+        ...baseCompany,
         organizationType: ORGANIZATION_TYPES.ASSOCIATION,
       },
       associationHasBusinessActivities: true,
@@ -341,7 +352,7 @@ describe('review CompanySection', () => {
   it('does not render association business activities for non-associations', () => {
     renderSubject({
       company: {
-        ...baseData.company,
+        ...baseCompany,
         organizationType: ORGANIZATION_TYPES.COMPANY,
       },
       associationHasBusinessActivities: true,

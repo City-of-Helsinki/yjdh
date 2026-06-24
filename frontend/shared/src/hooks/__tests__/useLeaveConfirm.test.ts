@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import Router from 'next/router';
 
 import useConfirm from '../useConfirm';
@@ -96,13 +96,13 @@ describe('useLeaveConfirm', () => {
   });
 
   describe('handleGlobalClick', () => {
-    const originalLocation = window.location;
+    const originalLocation = globalThis.location;
 
     beforeAll(() => {
-      delete (window as { location?: Location }).location;
+      delete (globalThis as { location?: Location }).location;
 
       // eslint-disable-next-line scanjs-rules/assign_to_location
-      (window as { location: Location }).location = {
+      (globalThis as { location: Location }).location = {
         ...originalLocation,
         pathname: '/application',
         search: '?id=123',
@@ -113,12 +113,12 @@ describe('useLeaveConfirm', () => {
 
     afterAll(() => {
       // eslint-disable-next-line scanjs-rules/assign_to_location
-      (window as { location: Location }).location = originalLocation;
+      (globalThis as { location: Location }).location = originalLocation;
     });
 
     it('should not trigger confirmation on internal anchor click', () => {
       mockRouter.asPath = '/application?id=123';
-      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const addEventListenerSpy = jest.spyOn(globalThis, 'addEventListener');
       renderHook(() => useLeaveConfirm(true, 'message'));
       const clickCall = addEventListenerSpy.mock.calls.find(
         (call) => call[0] === 'click'
@@ -145,7 +145,7 @@ describe('useLeaveConfirm', () => {
 
     it('should trigger confirmation on external-like internal link (different page)', () => {
       mockRouter.asPath = '/application?id=123';
-      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const addEventListenerSpy = jest.spyOn(globalThis, 'addEventListener');
       renderHook(() => useLeaveConfirm(true, 'message'));
       const clickCall = addEventListenerSpy.mock.calls.find(
         (call) => call[0] === 'click'

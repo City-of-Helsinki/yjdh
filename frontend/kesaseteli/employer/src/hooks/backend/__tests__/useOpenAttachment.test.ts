@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 
@@ -9,7 +9,7 @@ jest.mock('shared/hooks/useBackendAPI');
 describe('useOpenAttachment', () => {
   let mockGet: jest.Mock;
   let mockHandleResponse: jest.Mock;
-  let originalOpen: typeof window.open;
+  let originalOpen: typeof globalThis.open;
   let originalCreateObjectURL: typeof URL.createObjectURL;
   let mockOpen: jest.Mock;
   let mockFocus: jest.Mock;

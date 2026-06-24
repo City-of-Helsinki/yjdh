@@ -7,7 +7,6 @@ import useSecondInstalmentRespondMutation from 'benefit/applicant/hooks/useSecon
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowRight,
@@ -15,6 +14,7 @@ import {
 } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import {
@@ -31,7 +31,7 @@ import {
 } from 'shared/utils/date.utils';
 
 const getFileNameFromPath = (path?: string): string =>
-  path?.split('/').filter(Boolean).at(-1) ?? '';
+  path?.split('/').findLast(Boolean) ?? '';
 
 const normalizeAttachmentFileNames = (
   attachments: BenefitAttachment[] = []
@@ -221,7 +221,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
               </span>
             </$GridCell>
             <$GridCell $colSpan={6} justifySelf="end">
-              <span css={{ color: 'var(--color-fog)' }}>
+              <span style={{ color: 'var(--color-fog)' }}>
                 {t(
                   'common:applications.secondInstalmentUpload.applicationNumber'
                 )}
@@ -236,7 +236,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
               </span>
             </$GridCell>
           </$Grid>
-          <hr css={{ marginTop: '6px', marginBottom: '6px' }} />
+          <hr style={{ marginTop: '6px', marginBottom: '6px' }} />
         </>
       )}
 
@@ -262,7 +262,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
         </p>
       )}
       <$Grid columns={1}>
-        <$GridCell colSpan={1}>
+        <$GridCell $colSpan={1}>
           <$Checkbox
             id="employer-assurance"
             name="employer-assurance"
@@ -275,7 +275,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
             required
           />
         </$GridCell>
-        <$GridCell colSpan={1}>
+        <$GridCell $colSpan={1}>
           <ul>
             <AttachmentsList
               as="li"

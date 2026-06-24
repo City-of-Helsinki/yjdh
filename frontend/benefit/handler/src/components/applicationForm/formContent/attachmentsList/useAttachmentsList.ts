@@ -79,7 +79,7 @@ const useAttachmentsList = (
     if (
       response &&
       // eslint-disable-next-line no-alert
-      window.confirm(
+      globalThis.confirm(
         t('common:applications.sections.attachments.confirm', {
           name: attachment?.attachmentFileName,
         })

@@ -1,3 +1,4 @@
+/* eslint-disable no-var, vars-on-top */
 import React from 'react';
 
 export type OptionType<T extends string | number = string | number> = {
@@ -20,8 +21,18 @@ export type ThemeOption = 'dark' | 'light';
 export type NavigationVariant = 'default' | 'inline';
 
 declare global {
+  // Matomo
+  var _paq: [string, ...unknown[]][] | undefined;
+
   interface Window {
     // Matomo
-    _paq: [string, ...unknown[]][];
+    _paq?: [string, ...unknown[]][];
+  }
+
+  interface GlobalThis {
+    // Matomo
+    _paq?: [string, ...unknown[]][];
   }
 }
+
+/* eslint-enable no-var, vars-on-top */

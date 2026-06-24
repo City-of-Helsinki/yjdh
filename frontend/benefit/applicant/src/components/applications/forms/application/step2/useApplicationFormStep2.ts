@@ -201,17 +201,20 @@ const useApplicationFormStep2 = (
 
   let language = SUPPORTED_LANGUAGES.FI;
   switch (i18n.language) {
-    case SUPPORTED_LANGUAGES.EN:
+    case SUPPORTED_LANGUAGES.EN: {
       language = SUPPORTED_LANGUAGES.EN;
       break;
+    }
 
-    case SUPPORTED_LANGUAGES.SV:
+    case SUPPORTED_LANGUAGES.SV: {
       language = SUPPORTED_LANGUAGES.SV;
       break;
+    }
 
-    default:
+    default: {
       language = SUPPORTED_LANGUAGES.FI;
       break;
+    }
   }
 
   return {

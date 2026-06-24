@@ -34,12 +34,12 @@ const BatchProposals: React.FC<BatchProps> = ({
 
   return (
     <div data-testid="batch-application-list">
-      {!shouldHideList ? (
+      {shouldHideList ? (
+        <$EmptyHeading>{t(`common:batches.empty`)}</$EmptyHeading>
+      ) : (
         list.map((batch: BatchProposal) => (
           <BatchApplicationList batch={batch} key={batch.id} />
         ))
-      ) : (
-        <$EmptyHeading>{t(`common:batches.empty`)}</$EmptyHeading>
       )}
     </div>
   );

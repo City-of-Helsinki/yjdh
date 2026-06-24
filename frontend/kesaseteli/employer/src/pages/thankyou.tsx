@@ -1,4 +1,8 @@
-import { ButtonVariant, IconCheckCircleFill } from 'hds-react';
+import {
+  ButtonVariant,
+  IconCheckCircleFill,
+  NotificationSize,
+} from 'hds-react';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
@@ -104,7 +108,7 @@ const ThankYouPage: NextPage = () => {
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
     const vouchers = applicationQuery.data?.summer_vouchers || [];
-    const lastVoucher = vouchers[vouchers.length - 1];
+    const lastVoucher = vouchers.at(-1);
     const employeeName = lastVoucher?.employee_name || '';
     if (applicationId && application.status === 'draft') {
       goToPage(`/application?id=${applicationId}`, 'replace');
@@ -121,7 +125,7 @@ const ThankYouPage: NextPage = () => {
         <$Notification
           label={t('common:thankyouPage.thankyouMessageLabel')}
           type="success"
-          size="large"
+          size={NotificationSize.Large}
         >
           {t(`common:thankyouPage.thankyouMessageContent`)}
         </$Notification>

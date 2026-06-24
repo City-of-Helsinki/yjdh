@@ -43,33 +43,33 @@ The easiest way to spin up the Youth UI along with its backend stack is using Do
    ```
 2. Start the development stack from the repository root:
    ```bash
-   yarn youth up
+   pnpm youth up
    ```
    This will spin up the Youth UI at [http://localhost:3100](http://localhost:3100) and the backend API at `https://localhost:8000`.
 
 ### Local Development (Without Docker)
 
-To run the Next.js server locally without Docker (requires Node.js `>=22.13.1 <23.11.0`):
+To run the Next.js server locally without Docker (requires Node.js `>=24.17.0`):
 
 1. Install frontend dependencies from the repository root:
    ```bash
-   yarn --cwd frontend install
+   pnpm --dir frontend install
    ```
 2. Start the development server from the `frontend/kesaseteli/youth` directory:
    ```bash
-   yarn dev
+   pnpm dev
    ```
    The UI will be accessible at [http://localhost:3100](http://localhost:3100).
 
 ## Scripts
 
-Run these scripts from the `frontend/kesaseteli/youth` directory or use `yarn --cwd frontend/kesaseteli/youth <script-name>`:
+Run these scripts from the `frontend/kesaseteli/youth` directory or use `pnpm --dir frontend/kesaseteli/youth <script-name>`:
 
-- `yarn dev`: Starts the Next.js development server at [http://localhost:3100](http://localhost:3100).
-- `yarn build`: Builds the production bundle.
-- `yarn start`: Starts the Next.js production server.
-- `yarn lint`: Runs ESLint checks on `src` and `browser-tests`.
-- `yarn typecheck`: Performs TypeScript static type checking.
+- `pnpm dev`: Starts the Next.js development server at [http://localhost:3100](http://localhost:3100).
+- `pnpm build`: Builds the production bundle.
+- `pnpm start`: Starts the Next.js production server.
+- `pnpm lint`: Runs ESLint checks on `src` and `browser-tests`.
+- `pnpm typecheck`: Performs TypeScript static type checking.
 
 ## Testing
 
@@ -79,10 +79,10 @@ Run unit/integration tests with Jest:
 
 ```bash
 # Run tests inside this directory
-yarn test
+pnpm test
 
 # Run tests with coverage report
-yarn test:coverage
+pnpm test:coverage
 ```
 
 ### Browser (End-to-End) Tests
@@ -91,8 +91,8 @@ End-to-end tests are written using Testcafe and run against a running developmen
 
 ```bash
 # Run browser tests locally (Chrome)
-yarn browser-test
+pnpm browser-test
 
 # Run browser tests in headless mode (CI)
-yarn browser-test:ci
+pnpm browser-test:ci
 ```

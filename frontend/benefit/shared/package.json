@@ -9,29 +9,30 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage"
+    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "pnpm run test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
-    "@frontend/shared": "*",
+    "@frontend/shared": "workspace:*",
     "@sentry/nextjs": "^10.56.0",
     "axios": "^1.17.0",
     "camelcase-keys": "^7.0.1",
     "date-fns": "^2.24.0",
     "formik": "^2.2.9",
-    "hds-react": "^5.0.0",
+    "hds-react": "5.0.0",
     "ibantools": "^4.5.4",
     "next": "15.5.19",
-    "next-i18next": "^13.0.3",
+    "next-i18next": "^15.3.0",
     "next-router-mock": "0.9.12",
     "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-query": "^3.34.0",
     "styled-components": "^5.3.11",
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
+    "eslint-config-adjunct": "4.11.1",
     "i18next": "*",
     "typescript": "^5.9.3"
   }

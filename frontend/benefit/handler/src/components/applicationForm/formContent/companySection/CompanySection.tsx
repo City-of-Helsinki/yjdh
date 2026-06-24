@@ -5,7 +5,10 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import { ATTACHMENT_TYPES, ORGANIZATION_TYPES } from 'benefit-shared/constants';
-import { ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
+import {
+  ApplicationData,
+  DeMinimisAid,
+} from 'benefit-shared/types/application';
 import { FormikProps } from 'formik';
 import {
   IconCheckCircleFill,
@@ -98,6 +101,14 @@ const CompanySection: React.FC<Props> = ({
     }),
     [getErrorMessage, fields, t]
   );
+  const hdsLanguageOptions = React.useMemo(
+    () =>
+      languageOptions.map((option) => ({
+        label: option.label,
+        value: option.value?.toString(),
+      })),
+    [languageOptions]
+  );
 
   return (
     <>
@@ -178,7 +189,6 @@ const CompanySection: React.FC<Props> = ({
         {formik.values.useAlternativeAddress && (
           <$GridCell as={$Grid} $colSpan={12}>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.companyDepartment.name}
                 name={fields.companyDepartment.name}
@@ -193,7 +203,6 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colStart={1} $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyStreetAddress.name}
                 name={fields.alternativeCompanyStreetAddress.name}
@@ -215,7 +224,6 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyPostcode.name}
                 name={fields.alternativeCompanyPostcode.name}
@@ -237,7 +245,6 @@ const CompanySection: React.FC<Props> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.alternativeCompanyCity.name}
                 name={fields.alternativeCompanyCity.name}
@@ -267,15 +274,12 @@ const CompanySection: React.FC<Props> = ({
               const value =
                 fields.companyBankAccountNumber.mask?.stripVal(initValue) ??
                 initValue;
-              return formik.setFieldValue(
-                fields.companyBankAccountNumber.name,
-                value
-              );
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue(fields.companyBankAccountNumber.name, value);
             }}
           >
             {
               (() => (
-                // @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here.
                 <TextInput
                   id={fields.companyBankAccountNumber.name}
                   name={fields.companyBankAccountNumber.name}
@@ -315,6 +319,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
                 )}
                 onChange={() => {
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     false
@@ -346,16 +351,16 @@ const CompanySection: React.FC<Props> = ({
           </$GridCell>
         )}
         <$GridCell $colSpan={8} $colStart={1}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyNumberOfEmployees.name}
             name={fields.companyNumberOfEmployees.name}
             label={fields.companyNumberOfEmployees.label}
             onBlur={formik.handleBlur}
             onChange={(event) => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               formik.setFieldValue(
                 fields.companyNumberOfEmployees.name,
-                event.target.value.replace(/\D/g, '')
+                event.target.value.replaceAll(/\D/g, '')
               );
             }}
             value={String(formik.values.companyNumberOfEmployees ?? '')}
@@ -368,7 +373,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={12}>
-          {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
           <TextArea
             id={fields.companyBusinessBrief.name}
             name={fields.companyBusinessBrief.name}
@@ -405,6 +409,7 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.PURCHASED_SERVICE}.no`
               )}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(fields.purchasedService.name, false);
               }}
               // 3 states: null (none is selected), true, false
@@ -427,7 +432,6 @@ const CompanySection: React.FC<Props> = ({
       </FormSection>
       <FormSection header={t(`${translationsBase}.headings.company2`)}>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -449,7 +453,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonLastName.name}
             name={fields.companyContactPersonLastName.name}
@@ -471,7 +474,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonPhoneNumber.name}
             name={fields.companyContactPersonPhoneNumber.name}
@@ -493,7 +495,6 @@ const CompanySection: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.companyContactPersonEmail.name}
             name={fields.companyContactPersonEmail.name}
@@ -513,19 +514,18 @@ const CompanySection: React.FC<Props> = ({
         <$GridCell $colSpan={3}>
           <Select
             texts={languageTexts}
-            onChange={(lang: Option[]) =>
-              formik.setFieldValue(fields.applicantLanguage.name, lang[0].value)
-            }
-            options={languageOptions}
+            onChange={(lang: Option[]) => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue(
+                fields.applicantLanguage.name,
+                lang[0]?.value
+              );
+            }}
+            options={hdsLanguageOptions}
             id={fields.applicantLanguage.name}
             invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
-            value={[
-              formik.values.applicantLanguage ?? {
-                label: 'Suomi',
-                value: 'fi',
-              },
-            ].filter(Boolean)}
+            value={[formik.values.applicantLanguage ?? 'fi'].filter(Boolean)}
             required
           />
         </$GridCell>
@@ -548,6 +548,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.DE_MINIMIS_AID}.no`
                 )}
                 onChange={() => {
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   formik.setFieldValue(fields.deMinimisAid.name, false);
                   setDeMinimisAids([]);
                 }}
@@ -562,6 +563,7 @@ const CompanySection: React.FC<Props> = ({
                   `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.DE_MINIMIS_AID}.yes`
                 )}
                 onChange={() =>
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   formik.setFieldValue(fields.deMinimisAid.name, true)
                 }
                 checked={formik.values.deMinimisAid === true}
@@ -594,10 +596,12 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(
                   fields.coOperationNegotiations.name,
                   false
                 );
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(
                   APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
                   ''
@@ -613,6 +617,7 @@ const CompanySection: React.FC<Props> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELD_KEYS.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
               onChange={() =>
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(fields.coOperationNegotiations.name, true)
               }
               checked={formik.values.coOperationNegotiations === true}
@@ -626,7 +631,6 @@ const CompanySection: React.FC<Props> = ({
               margin-top: ${theme.spacing.s};
             `}
           >
-            {/* @ts-expect-error: HDS React TextArea has very strict prop requirements that are not necessary here. */}
             <TextArea
               id={fields.coOperationNegotiationsDescription.name}
               name={fields.coOperationNegotiationsDescription.name}

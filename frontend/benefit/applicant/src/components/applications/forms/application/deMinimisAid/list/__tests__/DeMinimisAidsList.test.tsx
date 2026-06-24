@@ -118,7 +118,10 @@ describe('DeMinimisAidsList', () => {
     ).toBeInTheDocument();
     const notification = screen.getByTestId('deminimis-maxed-notification');
     const amountWithAnyWhitespace =
-      MAX_DEMINIMIS_AID_TOTAL_AMOUNT.toLocaleString('fi').replace(/\s/u, '\\s');
+      MAX_DEMINIMIS_AID_TOTAL_AMOUNT.toLocaleString('fi').replace(
+        /\s/u,
+        String.raw`\s`
+      );
 
     expect(
       screen.getByText(deMinimisAidMaxAmountLabelText)

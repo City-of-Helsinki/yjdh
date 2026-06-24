@@ -8,7 +8,7 @@ export const $PageHeading = styled.h1`
 `;
 
 type SectionProps = {
-  $headingBottomBorder: boolean;
+  $headingBottomBorder?: boolean;
   theme: DefaultTheme;
 };
 

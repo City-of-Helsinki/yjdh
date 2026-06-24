@@ -72,7 +72,7 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
         switch (errorCode) {
           case 'already_assigned':
           case 'email_in_use':
-          case 'inadmissible_data':
+          case 'inadmissible_data': {
             // eslint-disable-next-line unicorn/no-useless-undefined
             setSubmitError(undefined);
             // eslint-disable-next-line no-console
@@ -82,8 +82,9 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
             );
             void router.push(`/${locale}/${encodeURIComponent(errorCode)}`);
             return;
+          }
 
-          case 'please_recheck_data':
+          case 'please_recheck_data': {
             // eslint-disable-next-line no-console
             console.log(
               `Application creation failed: ${error.response.data.code}`,
@@ -92,9 +93,11 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
             reset(getValues());
             setSubmitError({ type: 'please_recheck_data', errorFields: [] });
             return;
+          }
 
-          default:
+          default: {
             assertUnreachable(errorCode);
+          }
         }
       } else if (isYouthApplicationValidationError(error)) {
         const errorFields = collectErrorFieldsFromResponse(

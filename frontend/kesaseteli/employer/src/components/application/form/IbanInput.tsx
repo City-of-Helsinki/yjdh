@@ -48,6 +48,7 @@ const IbanInput: React.FC<IbanInputProps> = ({
         const maskedIban = electronicIBAN
           ? `****${electronicIBAN.slice(-4)}`
           : undefined;
+        // eslint-disable-next-line no-console
         console.error('Invalid IBAN', {
           valid,
           errorCodes,

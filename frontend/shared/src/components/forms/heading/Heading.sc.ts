@@ -23,5 +23,5 @@ export const $Header = styled.h1<HeadingProps>`
   gap: ${(props: { theme: DefaultTheme } & HeadingProps) =>
     props.theme.spacing.s};
   font-weight: ${(props: { theme: DefaultTheme } & HeadingProps) =>
-    props.weight ? props.weight : '500'};
+    props.weight || '500'};
 `;

@@ -50,7 +50,6 @@ const ApplicationReports: React.FC = () => {
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
           <DateInput
             id={`${t(`${translationsBase}.fields.endDate`)}`}
             name={`${t(`${translationsBase}.fields.endDate`)}`}

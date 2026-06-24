@@ -11,9 +11,8 @@ const useDecisionProposalTemplateQuery = (
   return useQuery<DecisionProposalTemplateData[], Error>(
     ['decisionProposalTemplates'],
     () =>
-      !id
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<DecisionProposalTemplateData[]>(
+      id
+        ? handleResponse<DecisionProposalTemplateData[]>(
             axios.get(`${String(BackendEndpoint.DECISION_PROPOSAL_TEMPLATE)}`, {
               params: {
                 decision_type: decisionType,
@@ -21,6 +20,7 @@ const useDecisionProposalTemplateQuery = (
               },
             })
           )
+        : Promise.reject(new Error('Missing application id'))
   );
 };
 

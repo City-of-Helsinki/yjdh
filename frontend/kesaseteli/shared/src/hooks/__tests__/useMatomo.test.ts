@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import singletonRouter from 'next-router-mock';
 import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider';
 import { initMatomo, trackPageView } from 'shared/utils/matomo';
@@ -50,7 +50,9 @@ describe('useMatomo', () => {
 
     await act(async () => {
       await singletonRouter.push('/new-path');
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
     });
 
     expect(trackPageView).toHaveBeenCalledTimes(1);

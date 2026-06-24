@@ -32,7 +32,7 @@ export const getValidationSchema = (
   return Yup.object().shape({
     application: Yup.string().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     alterationType: Yup.mixed()
-      .oneOf([...Object.values(ALTERATION_TYPE)])
+      .oneOf(Object.values(ALTERATION_TYPE))
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     endDate: Yup.string()
       .nullable()

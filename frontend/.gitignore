@@ -1,4 +1,5 @@
 .next
+.pnpm-store
 node_modules
 screenshots
 tsconfig.tsbuildinfo
@@ -6,3 +7,8 @@ report
 coverage
 
 certificates
+
+# yarn – not used anymore
+yarn.lock
+.yarn/
+.yarnrc.yml

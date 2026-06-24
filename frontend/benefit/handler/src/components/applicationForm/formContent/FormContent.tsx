@@ -1,7 +1,5 @@
 import { APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit/applicant/src/constants';
-import {
-  APPLICATION_START_DATE,
-} from 'benefit/handler/constants';
+import { APPLICATION_START_DATE } from 'benefit/handler/constants';
 import { useAlertBeforeLeaving } from 'benefit/handler/hooks/useAlertBeforeLeaving';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
 import { useDependentFieldsEffect } from 'benefit/handler/hooks/useDependentFieldsEffect';
@@ -38,9 +36,7 @@ import {
 } from 'shared/components/forms/fields/Fields.sc';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
-import {
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { BenefitAttachment } from 'shared/types/attachment';
 import {
   formatStringFloatValue,
@@ -144,7 +140,6 @@ const FormContent: React.FC<Props> = ({
             </$DateHeader>
           </$GridCell>
           <$GridCell $colStart={1} $colSpan={4}>
-            {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
             <DateInput
               id={fields.paperApplicationDate.name}
               name={fields.paperApplicationDate.name}
@@ -179,7 +174,6 @@ const FormContent: React.FC<Props> = ({
 
       <FormSection header={t(`${translationsBase}.headings.employment1`)}>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.employee.firstName.name}
             name={fields.employee.firstName.name}
@@ -194,7 +188,6 @@ const FormContent: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.employee.lastName.name}
             name={fields.employee.lastName.name}
@@ -209,7 +202,6 @@ const FormContent: React.FC<Props> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.employee.socialSecurityNumber.name}
             name={fields.employee.socialSecurityNumber.name}
@@ -278,6 +270,7 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.no`
                 )}
                 onChange={() => {
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     false
@@ -324,6 +317,7 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
@@ -339,6 +333,7 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
@@ -364,14 +359,13 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(
                   fields.otherSubsidisedEmployed.name,
                   false
                 );
-                formik.setFieldValue(
-                  fields.otherSubsidisedNumber.name,
-                  null
-                );
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                formik.setFieldValue(fields.otherSubsidisedNumber.name, null);
               }}
               checked={formik.values.otherSubsidisedEmployed === false}
             />
@@ -381,6 +375,7 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
               }}
               checked={formik.values.otherSubsidisedEmployed === true}
@@ -396,7 +391,6 @@ const FormContent: React.FC<Props> = ({
                 padding-left: ${theme.spacing.m};
               `}
             >
-              {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
               <TextInput
                 id={fields.otherSubsidisedNumber.name}
                 name={fields.otherSubsidisedNumber.name}
@@ -419,7 +413,6 @@ const FormContent: React.FC<Props> = ({
       >
         <>
           <$GridCell $colSpan={4}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.jobTitle.name}
               name={fields.employee.jobTitle.name}
@@ -434,7 +427,6 @@ const FormContent: React.FC<Props> = ({
             />
           </$GridCell>
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.workingHours.name}
               name={fields.employee.workingHours.name}
@@ -461,7 +453,6 @@ const FormContent: React.FC<Props> = ({
             </$HelpText>
           </$GridCell>
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.collectiveBargainingAgreement.name}
               name={fields.employee.collectiveBargainingAgreement.name}
@@ -489,7 +480,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
 
           <$GridCell $colSpan={12}>
-            {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
             <TextArea
               id={fields.roleOfEmployeeInOrganization.name}
               name={fields.roleOfEmployeeInOrganization.name}
@@ -525,7 +515,6 @@ const FormContent: React.FC<Props> = ({
           </$GridCell>
 
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.monthlyPay.name}
               name={fields.employee.monthlyPay.name}
@@ -546,7 +535,6 @@ const FormContent: React.FC<Props> = ({
             <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
           </$GridCell>
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.vacationMoney.name}
               name={fields.employee.vacationMoney.name}
@@ -571,7 +559,6 @@ const FormContent: React.FC<Props> = ({
             <$HelpText>{t(`${translationsBase}.eurosPerMonth`)}</$HelpText>
           </$GridCell>
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               id={fields.employee.otherExpenses.name}
               name={fields.employee.otherExpenses.name}
@@ -614,6 +601,7 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(fields.apprenticeshipProgram.name, false);
               }}
               checked={formik.values.apprenticeshipProgram === false}
@@ -626,6 +614,7 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 formik.setFieldValue(fields.apprenticeshipProgram.name, true);
               }}
               checked={formik.values.apprenticeshipProgram === true}
@@ -641,7 +630,6 @@ const FormContent: React.FC<Props> = ({
           <$DateHeader>{t(`${translationsBase}.dateExplanation`)}</$DateHeader>
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={6}>
-          {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
           <DateInput
             id={fields.startDate.name}
             name={fields.startDate.name}
@@ -665,7 +653,6 @@ const FormContent: React.FC<Props> = ({
           —
         </$GridCell>
         <$GridCell $colSpan={6}>
-          {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
           <DateInput
             id={fields.endDate.name}
             name={fields.endDate.name}
@@ -681,7 +668,7 @@ const FormContent: React.FC<Props> = ({
             invalid={!!getErrorMessage(fields.endDate.name)}
             aria-invalid={!!getErrorMessage(fields.endDate.name)}
             errorText={getErrorMessage(fields.endDate.name)}
-            initialMonth={!formik.values.endDate ? minEndDate : undefined}
+            initialMonth={formik.values.endDate ? undefined : minEndDate}
             minDate={minEndDate}
             maxDate={maxEndDate}
             required

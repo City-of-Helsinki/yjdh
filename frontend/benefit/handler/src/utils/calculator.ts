@@ -15,7 +15,7 @@ type ExtractedCalculatorRowsType = {
 export const extractCalculatorRows = (
   originalRows: Row[]
 ): ExtractedCalculatorRowsType => {
-  const rows: Row[] = JSON.parse(JSON.stringify(originalRows)) as Row[];
+  const rows: Row[] = structuredClone(originalRows);
   const totalRow = rows.pop();
   const totalRowDescription = rows.pop();
   const dateRangeRows = rows.filter(

@@ -9,19 +9,24 @@ export const statusColorMap = (
     return `coatOfArms${variant}`;
   }
   switch (status) {
-    case APPLICATION_STATUSES.HANDLING:
+    case APPLICATION_STATUSES.HANDLING: {
       return `coatOfArms${variant}`;
+    }
 
-    case APPLICATION_STATUSES.INFO_REQUIRED:
+    case APPLICATION_STATUSES.INFO_REQUIRED: {
       return `summer${variant}`;
+    }
 
-    case APPLICATION_STATUSES.ACCEPTED:
+    case APPLICATION_STATUSES.ACCEPTED: {
       return `tram${variant}`;
+    }
 
-    case APPLICATION_STATUSES.REJECTED:
+    case APPLICATION_STATUSES.REJECTED: {
       return `brick${variant}`;
+    }
 
-    default:
+    default: {
       return `coatOfArms${variant}`;
+    }
   }
 };
