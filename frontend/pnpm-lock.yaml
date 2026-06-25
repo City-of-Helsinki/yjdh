@@ -133,9 +133,6 @@ importers:
       '@types/react-table':
         specifier: ^7.7.0
         version: 7.7.20
-      '@types/styled-components':
-        specifier: ^5.1.24
-        version: 5.1.36
       '@types/uuid':
         specifier: ^8.3.1
         version: 8.3.4
@@ -425,8 +422,8 @@ importers:
         specifier: ^5.4.2
         version: 5.5.0
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       uuid:
         specifier: '>=11.1.1'
         version: 14.0.0
@@ -564,8 +561,8 @@ importers:
         specifier: ^5.4.2
         version: 5.5.0
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       uuid:
         specifier: '>=11.1.1'
         version: 14.0.0
@@ -625,8 +622,8 @@ importers:
         specifier: ^3.34.0
         version: 3.39.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       yup:
         specifier: ^0.32.9
         version: 0.32.11
@@ -716,8 +713,8 @@ importers:
         specifier: ^17.6.0
         version: 17.6.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       eslint-config-adjunct:
         specifier: 4.11.1
@@ -789,8 +786,8 @@ importers:
         specifier: ^9.0.4
         version: 9.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-node:
         specifier: ^10.0.0
         version: 10.9.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(@types/node@22.19.20)(typescript@5.9.3)
@@ -896,8 +893,8 @@ importers:
         specifier: ^9.0.4
         version: 9.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-node:
         specifier: ^10.0.0
         version: 10.9.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(@types/node@22.19.20)(typescript@5.9.3)
@@ -978,8 +975,8 @@ importers:
         specifier: ^9.0.4
         version: 9.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
-        specifier: ^5.3.11
-        version: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       uuid:
         specifier: '>=11.1.1'
         version: 14.0.0
@@ -1843,12 +1840,6 @@ packages:
 
   '@emotion/memoize@0.9.0':
     resolution: {integrity: sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==}
-
-  '@emotion/stylis@0.8.5':
-    resolution: {integrity: sha512-h6KtPihKFn3T9fuIrwvXXUOwlx3rfUvfZIcP5a6rh8Y7zjE3O06hT5Ss4S/YI1AYhuZ1kjaE/5EaOOI2NqSylQ==}
-
-  '@emotion/unitless@0.7.5':
-    resolution: {integrity: sha512-OWORNpfjMsSSUBVrRBVGECkhWcULOAJz9ZW8uK9qgxD+87M7jHRcvh/A96XXNhXTLmKcoYSQtBEX7lHMO7YRwg==}
 
   '@eslint-community/eslint-utils@4.9.1':
     resolution: {integrity: sha512-phrYmNiYppR7znFEdqgfWHXR6NCkZEK7hwWDHZUjit/2/U0r6XvkDl0SYnoM51Hq7FhCGdLDT6zxCCOY1hexsQ==}
@@ -3503,9 +3494,6 @@ packages:
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
 
-  '@types/styled-components@5.1.36':
-    resolution: {integrity: sha512-pGMRNY5G2rNDKEv2DOiFYa7Ft1r0jrhmgBwHhOMzPTgCjO76bCot0/4uEfqj7K0Jf1KdQmDtAuaDk9EAs9foSw==}
-
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
 
@@ -4124,12 +4112,6 @@ packages:
     resolution: {integrity: sha512-M762rNHfSF1EV3SLtnCJXFoQbbIIz0OyRwnCmV0KPC7qosSfCO0QLTSuJX3ayAebubhE6oYBAYPrBA5ljowaZg==}
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
-
-  babel-plugin-styled-components@2.3.0:
-    resolution: {integrity: sha512-nP/y6PbBqS/qtKROnJCgpGo8hYUzlBAVXN1QAjSBANL6vZiQXPQN7FYW/nUwoxY7nZhBEGm9T5tjL9gbzwulDw==}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-      styled-components: '>= 2'
 
   babel-plugin-syntax-trailing-function-commas@6.22.0:
     resolution: {integrity: sha512-Gx9CH3Q/3GKbhs07Bszw5fPTlU+ygrOGfAhEt7W2JICwufpC4SuO0mG0+4NykPBSYPMJhqvVlDBU17qB1D+hMQ==}
@@ -9089,9 +9071,6 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  shallowequal@1.1.0:
-    resolution: {integrity: sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==}
-
   sharp@0.35.3:
     resolution: {integrity: sha512-ej0zVHuZGHCiABXcNxeYhpRnPNPAcvbG8RMdBAhDAxLKkCRVSpK3Iyu7qbqw3JMzoj0REeM6f3tJLtVwl0023Q==}
     engines: {node: '>=20.9.0'}
@@ -9362,13 +9341,21 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  styled-components@5.3.11:
-    resolution: {integrity: sha512-uuzIIfnVkagcVHv9nE0VPlHPSCmXIUGKfJ42LNjxCCTDTL5sgnJ8Z7GZBq0EnLYGln77tPpEpExt2+qa+cZqSw==}
-    engines: {node: '>=10'}
+  styled-components@6.5.0:
+    resolution: {integrity: sha512-WLnTRAIRJsmCQfPXoEDDd1YMML+ImxQ8YGVVg60FALxsn/rpWiQWSJCZDNfu/buAcBFnTUr8ev6CBR8rb7xLiQ==}
+    engines: {node: '>= 16'}
     peerDependencies:
+      css-to-react-native: '>= 3.2.0'
       react: '>= 16.8.0'
       react-dom: '>= 16.8.0'
-      react-is: '>= 16.8.0'
+      react-native: '>= 0.68.0'
+    peerDependenciesMeta:
+      css-to-react-native:
+        optional: true
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
 
   styled-jsx@5.1.6:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
@@ -9388,6 +9375,9 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
       postcss: '>=8.5.23'
+
+  stylis@4.3.6:
+    resolution: {integrity: sha512-yQ3rwFWRfwNUY7H5vpU0wfdkNSnvnJinhF9830Swlaxl03zsOjCfmX0ugac+3LtK0lYSgwL/KXc8oYL3mG4YFQ==}
 
   stylis@4.4.0:
     resolution: {integrity: sha512-5Z9ZpRzfuH6l/UAvCPAPUo3665Nk2wLaZU3x+TLHKVzIz33+sbJqbtrYoC3KD4/uVOr2Zp+L0LySezP9OHV9yA==}
@@ -11238,10 +11228,6 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/stylis@0.8.5': {}
-
-  '@emotion/unitless@0.7.5': {}
-
   '@eslint-community/eslint-utils@4.9.1(eslint@8.4.1)':
     dependencies:
       eslint: 8.4.1
@@ -12917,12 +12903,6 @@ snapshots:
 
   '@types/stack-utils@2.0.3': {}
 
-  '@types/styled-components@5.1.36':
-    dependencies:
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.2.21)
-      '@types/react': 18.2.21
-      csstype: 3.2.3
-
   '@types/tough-cookie@4.0.5': {}
 
   '@types/trusted-types@2.0.7':
@@ -13545,15 +13525,6 @@ snapshots:
       '@babel/core': 7.29.7
       '@babel/helper-define-polyfill-provider': 0.6.8(@babel/core@7.29.7)
 
-  babel-plugin-styled-components@2.3.0(@babel/core@7.29.7)(styled-components@5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)):
-    dependencies:
-      '@babel/core': 7.29.7
-      '@babel/helper-annotate-as-pure': 7.29.7
-      '@babel/helper-module-imports': 7.29.7
-      '@babel/plugin-syntax-jsx': 7.29.7(@babel/core@7.29.7)
-      picomatch: 4.0.4
-      styled-components: 5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)
-
   babel-plugin-syntax-trailing-function-commas@6.22.0: {}
 
   babel-preset-current-node-syntax@1.2.0(@babel/core@7.29.7):
@@ -13725,7 +13696,8 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  camelize@1.0.1: {}
+  camelize@1.0.1:
+    optional: true
 
   caniuse-api@3.0.0:
     dependencies:
@@ -14134,7 +14106,8 @@ snapshots:
 
   crypto-md5@1.0.0: {}
 
-  css-color-keywords@1.0.0: {}
+  css-color-keywords@1.0.0:
+    optional: true
 
   css-declaration-sorter@7.4.0(postcss@8.5.25):
     dependencies:
@@ -14157,6 +14130,7 @@ snapshots:
       camelize: 1.0.1
       css-color-keywords: 1.0.0
       postcss-value-parser: 4.2.0
+    optional: true
 
   css-tree@1.1.3:
     dependencies:
@@ -19839,8 +19813,6 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shallowequal@1.1.0: {}
-
   sharp@0.35.3(@types/node@22.19.20):
     dependencies:
       '@img/colour': 1.1.0
@@ -20188,23 +20160,15 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styled-components@5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8):
+  styled-components@6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
-      '@babel/helper-module-imports': 7.29.7
-      '@babel/traverse': 7.29.7
       '@emotion/is-prop-valid': 1.4.0
-      '@emotion/stylis': 0.8.5
-      '@emotion/unitless': 0.7.5
-      babel-plugin-styled-components: 2.3.0(@babel/core@7.29.7)(styled-components@5.3.11(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8))
-      css-to-react-native: 3.2.0
-      hoist-non-react-statics: 3.3.2
+      csstype: 3.2.3
       react: 19.2.8
+      stylis: 4.3.6
+    optionalDependencies:
+      css-to-react-native: 3.2.0
       react-dom: 19.2.8(react@19.2.8)
-      react-is: 19.2.8
-      shallowequal: 1.1.0
-      supports-color: 5.5.0
-    transitivePeerDependencies:
-      - '@babel/core'
 
   styled-jsx@5.1.6(@babel/core@7.29.7)(react@19.2.8):
     dependencies:
@@ -20218,6 +20182,8 @@ snapshots:
       browserslist: 4.28.2
       postcss: 8.5.25
       postcss-selector-parser: 7.1.1
+
+  stylis@4.3.6: {}
 
   stylis@4.4.0: {}
 

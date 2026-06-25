@@ -26,7 +26,13 @@ const Layout: React.FC<Props> = ({ children }) => {
 interface StyledProps {
   backgroundColor?: string;
 }
-export const $BackgroundWrapper = styled.div<StyledProps>`
+
+const backgroundWrapperShouldForwardProp = (prop: string): boolean =>
+  prop !== 'backgroundColor';
+
+export const $BackgroundWrapper = styled.div.withConfig({
+  shouldForwardProp: backgroundWrapperShouldForwardProp,
+})<StyledProps>`
   background-color: ${(props: StyledProps) =>
     props ? props.backgroundColor : '#fff'};
   height: 100%;
