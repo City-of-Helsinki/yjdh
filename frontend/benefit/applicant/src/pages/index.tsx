@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import ApplicationList from 'benefit/applicant/components/applications/applicationList/ApplicationList';
 import { $ListActionButtonContainer } from 'benefit/applicant/components/applications/applicationList/ApplicationList.sc';
 import ExpandableApplicationList from 'benefit/applicant/components/applications/applicationList/ExpandableApplicationList';
@@ -13,7 +14,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import withAuth from 'shared/components/hocs/withAuth';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -41,7 +41,7 @@ const ApplicantIndex: NextPage = () => {
    * application if status changes to "additional_information_needed"
    */
   const effectInvalidateApplicationsCache = () =>
-    void queryClient.invalidateQueries('applications');
+    void queryClient.invalidateQueries({ queryKey: ['applications'] });
   useEffect(effectInvalidateApplicationsCache, [queryClient]);
 
   const [infoNeededCount, setInfoNeededCount] = useState<number | null>(null);

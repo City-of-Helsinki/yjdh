@@ -49,7 +49,7 @@ const useAlterationHandling = (): AlterationHandlingProps => {
   }, [router]);
 
   useEffect(() => {
-    const loadingDataStatuses = new Set(['idle', 'loading']);
+    const loadingDataStatuses = new Set(['pending']);
     if (
       applicationId &&
       alterationId &&

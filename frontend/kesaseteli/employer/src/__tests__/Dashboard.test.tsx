@@ -117,7 +117,7 @@ const setupDashboard = ({
 } => {
   (useCreateApplicationQuery as jest.Mock).mockReturnValue({
     mutate: mockMutate,
-    isLoading: isCreateLoading,
+    isPending: isCreateLoading,
   });
 
   if (mutateImplementation) {

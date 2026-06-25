@@ -34,7 +34,7 @@ const useApplicationFormStep4 = (
 
   const {
     mutate: uploadAttachment,
-    isLoading: isUploading,
+    isPending: isUploading,
     isError: isUploadingError,
   } = useUploadAttachmentQuery();
 
@@ -49,7 +49,7 @@ const useApplicationFormStep4 = (
 
   const {
     mutate: removeAttachment,
-    isLoading: isRemoving,
+    isPending: isRemoving,
     isError: isRemovingError,
   } = useRemoveAttachmentQuery();
 

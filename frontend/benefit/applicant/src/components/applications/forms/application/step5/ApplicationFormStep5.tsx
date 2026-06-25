@@ -62,7 +62,7 @@ const ApplicationFormStep5: React.FC<
 
   const {
     data: clonedData,
-    isLoading,
+    isPending,
     mutate: cloneApplication,
   } = useCloneApplicationMutation();
 
@@ -224,7 +224,7 @@ const ApplicationFormStep5: React.FC<
           </$GridCell>
           <$GridCell $colSpan={8} justifySelf="end">
             <Button
-              isLoading={isLoading}
+              isLoading={isPending}
               iconStart={<IconPlus />}
               theme={ButtonPresetTheme.Coat}
               role="link"

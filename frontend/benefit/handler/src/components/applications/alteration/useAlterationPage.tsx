@@ -14,7 +14,7 @@ type AlterationPageProps = {
 };
 
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
-  Boolean(id) && status !== 'idle' && status !== 'loading';
+  Boolean(id) && status !== 'pending';
 
 const useAlterationPage = (): AlterationPageProps => {
   const router = useRouter();

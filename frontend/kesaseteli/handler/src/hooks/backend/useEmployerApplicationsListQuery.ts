@@ -1,14 +1,15 @@
 import {
+  keepPreviousData,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
+import {
   BaseApplication,
   PaginatedResponse,
 } from 'kesaseteli/handler/types/application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import {
-  QueryKey,
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from 'react-query';
+import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
@@ -25,7 +26,7 @@ const useEmployerApplicationsListQuery = <
   T extends BaseApplication = BaseApplication
 >(
   params: EmployerApplicationsQueryParams,
-  options?: UseQueryOptions<PaginatedResponse<T>>
+  options?: Omit<UseQueryOptions<PaginatedResponse<T>>, 'queryKey' | 'queryFn'>
 ): UseQueryResult<PaginatedResponse<T>> => {
   const { axios, handleResponse } = useBackendAPI();
   const handleError = useErrorHandler();
@@ -40,20 +41,26 @@ const useEmployerApplicationsListQuery = <
     searchParams.append('ordering', params.ordering);
   }
 
-  return useQuery(
-    [BackendEndpoint.EMPLOYER_APPLICATIONS, params] as QueryKey,
-    () =>
+  const query = useQuery({
+    queryKey: [BackendEndpoint.EMPLOYER_APPLICATIONS, params],
+    queryFn: () =>
       handleResponse(
         axios.get<PaginatedResponse<T>>(BackendEndpoint.EMPLOYER_APPLICATIONS, {
           params: searchParams,
         })
       ),
-    {
-      keepPreviousData: true,
-      onError: handleError,
-      ...options,
+    placeholderData: keepPreviousData,
+    ...options,
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      handleError(query.error);
     }
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.isError, query.error]);
+
+  return query;
 };
 
 export default useEmployerApplicationsListQuery;

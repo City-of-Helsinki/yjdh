@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ButtonVariant,
   IconCheckCircleFill,
@@ -13,7 +14,6 @@ import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
@@ -144,12 +144,12 @@ const ThankYouPage: NextPage = () => {
               onClick={createNewApplicationClick}
               variant={ButtonVariant.Secondary}
               isLoading={
-                createApplicationQuery.isLoading ||
+                createApplicationQuery.isPending ||
                 isApplicationsLoading ||
                 isApplicationsFetching
               }
               disabled={
-                createApplicationQuery.isLoading ||
+                createApplicationQuery.isPending ||
                 isApplicationsLoading ||
                 isApplicationsFetching
               }

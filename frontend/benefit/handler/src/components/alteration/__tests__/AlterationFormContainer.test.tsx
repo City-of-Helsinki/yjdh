@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { act, RenderResult, screen } from '@testing-library/react';
 import { createAlterationApplication } from 'benefit/handler/__tests__/utils/alteration-fixtures';
 import renderComponent from 'benefit/handler/__tests__/utils/render-component';
@@ -10,7 +11,6 @@ import {
 } from 'benefit-shared/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import hdsToast from 'shared/components/toast/Toast';
 
 jest.mock('benefit/handler/components/alteration/useAlterationForm');
@@ -22,8 +22,8 @@ jest.mock(
     }
 );
 jest.mock('shared/components/toast/Toast', () => jest.fn());
-jest.mock('react-query', () => ({
-  ...jest.requireActual('react-query'),
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
   useQueryClient: jest.fn(),
 }));
 
@@ -153,7 +153,9 @@ describe('AlterationFormContainer', () => {
       } as ApplicationAlterationData);
     });
 
-    expect(invalidateQueries).toHaveBeenCalledWith(['applications', 'app-id']);
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['applications', 'app-id'],
+    });
     expect(onSuccess).toHaveBeenCalledTimes(1);
     expect(mockHdsToast).toHaveBeenCalledWith(
       expect.objectContaining({

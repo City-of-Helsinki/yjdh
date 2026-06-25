@@ -1,20 +1,6 @@
+import { QueryClient, QueryFunctionContext } from '@tanstack/react-query';
 import { AxiosInstance } from 'axios';
-import {
-  QueryClient,
-  QueryFunctionContext,
-  QueryKey,
-  setLogger,
-} from 'react-query';
 import { isString } from 'shared/utils/type-guards';
-
-// silence react-query errors: https://tkdodo.eu/blog/testing-react-query#silence-the-error-console
-/* eslint-disable no-console */
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: () => {},
-});
-/* eslint-enable no-console */
 
 const createReactQueryTestClient = (
   axios: AxiosInstance,
@@ -26,9 +12,11 @@ const createReactQueryTestClient = (
         retry: false,
         staleTime: Infinity,
         refetchOnWindowFocus: false,
-        queryFn: async <T,>({
-          queryKey: [url],
-        }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
+
+        // v5: queryFn receives an object with { queryKey }
+        queryFn: async <T,>({ queryKey }: QueryFunctionContext): Promise<T> => {
+          const [url] = queryKey;
+
           if (isString(url)) {
             const { data } = await axios.get<T>(
               `${baseUrl}${url.toLowerCase()}`

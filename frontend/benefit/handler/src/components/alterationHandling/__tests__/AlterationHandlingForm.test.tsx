@@ -189,7 +189,7 @@ describe('AlterationHandlingForm', () => {
     mockValidateForm.mockResolvedValue(true);
     mockUseUpdateApplicationAlterationWithCsvQuery.mockReturnValue({
       mutateAsync: jest.fn().mockResolvedValue(new Blob(['csv'])),
-      isLoading: false,
+      isPending: false,
     } as never);
     mockUseRouterNavigation.mockReturnValue({
       navigateBack: mockNavigateBack,

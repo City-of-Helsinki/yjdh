@@ -1,10 +1,15 @@
 import {
+  keepPreviousData,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
+import {
   PaginatedResponse,
   YouthApplication,
 } from 'kesaseteli/handler/types/application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { QueryKey, useQuery, UseQueryOptions } from 'react-query';
-import { UseQueryResult } from 'react-query/types/react/types';
+import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
@@ -18,7 +23,10 @@ export type YouthApplicationsQueryParams = {
 
 const useYouthApplicationsListQuery = (
   params: YouthApplicationsQueryParams,
-  options?: UseQueryOptions<PaginatedResponse<YouthApplication>>
+  options?: Omit<
+    UseQueryOptions<PaginatedResponse<YouthApplication>>,
+    'queryKey' | 'queryFn'
+  >
 ): UseQueryResult<PaginatedResponse<YouthApplication>> => {
   const { axios, handleResponse } = useBackendAPI();
   const handleError = useErrorHandler();
@@ -33,9 +41,9 @@ const useYouthApplicationsListQuery = (
     searchParams.append('ordering', params.ordering);
   }
 
-  return useQuery(
-    [BackendEndpoint.YOUTH_APPLICATIONS, params] as QueryKey,
-    () =>
+  const query = useQuery({
+    queryKey: [BackendEndpoint.YOUTH_APPLICATIONS, params],
+    queryFn: () =>
       handleResponse(
         axios.get<PaginatedResponse<YouthApplication>>(
           BackendEndpoint.YOUTH_APPLICATIONS,
@@ -44,12 +52,18 @@ const useYouthApplicationsListQuery = (
           }
         )
       ),
-    {
-      keepPreviousData: true,
-      onError: handleError,
-      ...options,
+    placeholderData: keepPreviousData,
+    ...options,
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      handleError(query.error);
     }
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.isError, query.error]);
+
+  return query;
 };
 
 export default useYouthApplicationsListQuery;

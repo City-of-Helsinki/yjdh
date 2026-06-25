@@ -1,6 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 import 'hds-design-tokens';
 
+import { QueryClientProvider } from '@tanstack/react-query';
 import Footer from 'kesaseteli/youth/components/footer/Footer';
 import Header from 'kesaseteli/youth/components/header/Header';
 import getRequiredYouthCookieGroups from 'kesaseteli/youth/utils/get-required-youth-cookie-groups';
@@ -14,7 +15,6 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
-import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 

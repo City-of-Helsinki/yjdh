@@ -55,14 +55,14 @@ const values = {
 
 const renderSubject = ({
   props = {},
-  isLoading = false,
+  isPending = false,
 }: {
   props?: Partial<React.ComponentProps<typeof AlterationCsvButton>>;
-  isLoading?: boolean;
+  isPending?: boolean;
 } = {}): RenderResult => {
   mockUseUpdateApplicationAlterationWithCsvQuery.mockReturnValue({
     mutateAsync,
-    isLoading,
+    isPending,
   } as never);
 
   return renderComponent(
@@ -95,7 +95,7 @@ describe('AlterationCsvButton', () => {
 
     mockUseUpdateApplicationAlterationWithCsvQuery.mockReturnValue({
       mutateAsync,
-      isLoading: true,
+      isPending: true,
     } as never);
 
     rerender(

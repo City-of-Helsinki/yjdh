@@ -1,7 +1,7 @@
+import { UseQueryResult } from '@tanstack/react-query';
 import { Pagination, Table } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { UseQueryResult } from 'react-query/types/react/types';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import styled from 'styled-components';

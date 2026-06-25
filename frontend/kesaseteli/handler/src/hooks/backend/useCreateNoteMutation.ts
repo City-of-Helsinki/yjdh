@@ -1,4 +1,10 @@
 import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
+import {
   CreateNotePayload,
   HandlerNote,
   NoteTargetType,
@@ -9,12 +15,6 @@ import {
   getHandlerNotesQueryKey,
   getYouthApplicationTimelineKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import {
-  useMutation,
-  UseMutationOptions,
-  UseMutationResult,
-  useQueryClient,
-} from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
@@ -32,18 +32,18 @@ const useCreateNoteMutation = (
       handleResponse<HandlerNote>(
         axios.post<HandlerNote>(BackendEndpoint.HANDLER_NOTES, payload)
       ),
-    onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries(
-        getHandlerNotesQueryKey(targetType, targetId)
-      );
-      await queryClient.invalidateQueries(
-        getYouthApplicationTimelineKey(targetId)
-      );
-      await queryClient.invalidateQueries(
-        getEmployerApplicationTimelineKey(targetId)
-      );
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: [getHandlerNotesQueryKey(targetType, targetId)],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [getYouthApplicationTimelineKey(targetId)],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [getEmployerApplicationTimelineKey(targetId)],
+      });
       if (onSuccess) {
-        await onSuccess(data, variables, context);
+        await onSuccess(data, variables, onMutateResult, context);
       }
     },
     onError: useErrorHandler(),
