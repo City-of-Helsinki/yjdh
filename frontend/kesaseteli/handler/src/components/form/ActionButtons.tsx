@@ -69,9 +69,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
         onClick={() => complete('accept')}
         isLoading={isLoading}
         disabled={isDisabled}
-        css={`
-          margin-right: ${theme.spacing.l};
-        `}
+        style={{ marginRight: theme.spacing.l }}
       >
         {t(`common:handlerApplication.accept`)}
       </Button>

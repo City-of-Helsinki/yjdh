@@ -16,6 +16,12 @@ interface MessageListProps {
   variant: MessageVariant;
 }
 
+const metaShouldForwardProp = (prop: string): boolean =>
+  !['wrapAsColumn', 'alignRight'].includes(prop);
+
+const messageShouldForwardProp = (prop: string): boolean =>
+  !['isPrimary', 'alignRight'].includes(prop);
+
 export const $MessagesList = styled.div<MessageListProps>`
   display: flex;
   flex-direction: column;
@@ -29,7 +35,9 @@ export const $MessagesList = styled.div<MessageListProps>`
   padding: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs};
 `;
 
-export const $Meta = styled.div<MetaProps>`
+export const $Meta = styled.div.withConfig({
+  shouldForwardProp: metaShouldForwardProp,
+})<MetaProps>`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -58,7 +66,9 @@ export const $MessageContainer = styled.div`
   align-items: flex-start;
 `;
 
-export const $Message = styled.div<MessageProps>`
+export const $Message = styled.div.withConfig({
+  shouldForwardProp: messageShouldForwardProp,
+})<MessageProps>`
   padding: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.xs};
   background: ${(props: { theme: DefaultTheme } & MessageProps) =>
     props.isPrimary
