@@ -13,11 +13,27 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
   const { textLocale, cbPrefix, t } = useConsentViewer();
   const theme = useTheme();
 
+  const termsPdfLinks = React.useMemo(
+    () =>
+      [
+        { termsKey: 'terms1', urlKey: `termsPdf${textLocale}` },
+        { termsKey: 'terms2', urlKey: `termsPdf2${textLocale}` },
+        { termsKey: 'terms3', urlKey: `termsPdf3${textLocale}` },
+        { termsKey: 'terms4', urlKey: `termsPdf4${textLocale}` },
+      ]
+        .map(({ termsKey, urlKey }) => ({
+          termsKey,
+          url: data?.applicantTermsApproval?.terms?.[urlKey as TermsProp] ?? '',
+        }))
+        .filter(({ url }) => url.length > 0),
+    [data?.applicantTermsApproval?.terms, textLocale]
+  );
+
   if (!data) return null;
   return (
     <>
-      {data && (
-        <$GridCell $colSpan={12}>
+      {termsPdfLinks.map(({ url, termsKey }) => (
+        <$GridCell $colSpan={12} key={termsKey}>
           <OpenInNewTabLink
             style={{ color: theme.colors.black }}
             external
@@ -26,16 +42,12 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
             )}
             size={LinkSize.Medium}
             openInNewTab
-            href={
-              data.applicantTermsApproval?.terms?.[
-                `termsPdf${textLocale}` as TermsProp
-              ] ?? ''
-            }
+            href={url}
           >
-            {t('common:pdfViewer.terms')}
+            {t(`common:pdfViewer.${termsKey}`)}
           </OpenInNewTabLink>
         </$GridCell>
-      )}
+      ))}
       {data?.applicantTermsApproval?.terms?.applicantConsents?.map(
         (consent, i) => (
           <$GridCell $colSpan={12} key={consent.id}>
