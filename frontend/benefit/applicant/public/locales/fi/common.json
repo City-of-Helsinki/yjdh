@@ -848,6 +848,10 @@
     "next": "Seuraava sivu",
     "page": "Sivu",
     "terms": "Ehdot.PDF",
+    "terms1": "Avaa Helsinki-lisän myöntämisen ehdot pdf-tiedostona",
+    "terms2": "Avaa Helsinki-lisän myöntämisen ja maksamisen reunaehdot 1.5.2026 pdf-tiedostona",
+    "terms3": "Avaa järjestöyhteistyön ja avustustoiminnan eettiset kumppanuusperiaatteet pdf-tiedostona",
+    "terms4": "Avaa Helsingin kaupungin avustusten yleisohjeet pdf-tiedostona",
     "openInExternalDomainAriaLabel": "Avautuu uudella verkkosivulla"
   },
   "tooltip": {

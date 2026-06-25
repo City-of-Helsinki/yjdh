@@ -848,6 +848,10 @@
     "next": "Next page",
     "page": "Page",
     "terms": "Terms.PDF",
+    "terms1": "Open the Helsinki benefit for employer conditions as a pdf file",
+    "terms2": "Open the preconditions of the Helsinki benefit from 1 May 2026 as a pdf file",
+    "terms3": "Open the ethical partnership principles for cooperation with organizations and grant activities as a pdf file",
+    "terms4": "Open the City of Helsinki's general guidelines for grants as a pdf file",
     "openInExternalDomainAriaLabel": "Opens a different website"
   },
   "tooltip": {

@@ -28,6 +28,9 @@ const baseApplication = createMockApplication({
       effectiveFrom: '2026-01-01',
       termsType: ATTACHMENT_TYPES.EMPLOYEE_CONSENT,
       termsPdfFi: 'https://example.com/terms-fi.pdf',
+      termsPdf2Fi: 'https://example.com/terms-2-fi.pdf',
+      termsPdf3Fi: 'https://example.com/terms-3-fi.pdf',
+      termsPdf4Fi: 'https://example.com/terms-4-fi.pdf',
       applicantConsents: [
         createMockApplicantConsent({
           id: 'consent-1',
@@ -47,6 +50,9 @@ const renderConsentViewer = (
 ): ReturnType<typeof renderComponent> =>
   renderComponent(<ConsentViewer data={data as Application} />);
 
+const escapeRegExp = (value: string):string =>
+  value.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
+
 describe('ConsentViewer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -64,17 +70,78 @@ describe('ConsentViewer', () => {
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
   });
 
-  it('renders terms pdf link with translated label and href', () => {
+  it('renders all available PDF links with translated labels and correct hrefs', () => {
     renderConsentViewer(baseApplication);
 
-    const termsLink = screen.getByRole('link', {
-      name: /ehdot\.pdf.*avautuu uudessa välilehdessä.*avautuu uudella verkkosivulla/i,
+    const expectedLinks = [
+      {
+        name: 'Avaa Helsinki-lisän myöntämisen ehdot pdf-tiedostona',
+        href: 'https://example.com/terms-fi.pdf',
+      },
+      {
+        name: 'Avaa Helsinki-lisän myöntämisen ja maksamisen reunaehdot 1.5.2026 pdf-tiedostona',
+        href: 'https://example.com/terms-2-fi.pdf',
+      },
+      {
+        name: 'Avaa järjestöyhteistyön ja avustustoiminnan eettiset kumppanuusperiaatteet pdf-tiedostona',
+        href: 'https://example.com/terms-3-fi.pdf',
+      },
+      {
+        name: 'Avaa Helsingin kaupungin avustusten yleisohjeet pdf-tiedostona',
+        href: 'https://example.com/terms-4-fi.pdf',
+      },
+    ];
+
+    expectedLinks.forEach(({ name, href }) => {
+      const link = screen.getByRole('link', {
+        name: new RegExp(escapeRegExp(name)),
+      });
+
+      expect(link).toHaveAttribute('href', href);
     });
-    expect(termsLink).toBeInTheDocument();
-    expect(termsLink).toHaveAttribute(
+  });
+
+  it('does not render PDF links without href values', () => {
+    renderConsentViewer(
+      createMockApplication({
+        applicantTermsApproval: {
+          ...baseApplication.applicantTermsApproval,
+          terms: {
+            ...baseApplication.applicantTermsApproval?.terms,
+            termsPdfFi: 'https://example.com/terms-fi.pdf',
+            termsPdf2Fi: '',
+            termsPdf3Fi: undefined,
+            termsPdf4Fi: '',
+          },
+        },
+      } as Partial<Application>)
+    );
+
+    const renderedLink = screen.getByRole('link', {
+      name: /avaa helsinki-lisän myöntämisen ehdot pdf-tiedostona/i,
+    });
+
+    expect(renderedLink).toBeInTheDocument();
+    expect(renderedLink).toHaveAttribute(
       'href',
       'https://example.com/terms-fi.pdf'
     );
+
+    expect(
+      screen.queryByRole('link', {
+        name: /avaa helsinki-lisän myöntämisen ja maksamisen reunaehdot/i,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', {
+        name: /avaa järjestöyhteistyön ja avustustoiminnan eettiset kumppanuusperiaatteet/i,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', {
+        name: /avaa helsingin kaupungin avustusten yleisohjeet/i,
+      })
+    ).not.toBeInTheDocument();
   });
 
   it('renders one disabled checked checkbox for each applicant consent', () => {
