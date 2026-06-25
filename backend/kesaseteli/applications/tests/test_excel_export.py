@@ -730,3 +730,15 @@ def test_youth_excel_download_with_missing_birthdate(staff_client):
     # Test that birth_year and birthdate use their respective fallback values:
     assert row_by_field["birth_year"] == -1
     assert row_by_field["birthdate"] == "N/A"
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+def test_youth_excel_download_unauthenticated_redirects_with_mock_flag(client):
+    """
+    Test that when mock flag is on, a GET request on youth-excel-download
+    by a plain unauthenticated client redirects to the ADFS login page.
+    """
+    response = client.get(youth_excel_download_url())
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url.startswith(reverse("django_auth_adfs:login"))

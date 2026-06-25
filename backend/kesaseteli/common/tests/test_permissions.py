@@ -75,7 +75,7 @@ def test_handler_permission_has_user_permission_without_mock_flag(
 @pytest.mark.parametrize(
     "test_user,expected_result",
     [
-        (test_user, True)
+        (test_user, bool(test_user and test_user.is_authenticated))
         for test_user, _ in _get_test_user_and_expected_handler_permission_tuples()
     ],
 )
