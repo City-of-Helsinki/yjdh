@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.4.0...benefit-handler-v5.4.1) (2026-06-25)
+
+
+### Bug Fixes
+
+* **bf:** Fixes to main from pre-commit complains ([201c961](https://github.com/City-of-Helsinki/yjdh/commit/201c961879daf82c731aba08c4e66679b6277a02))
+* **bf:** Preserve old terms in applic. approvals ([fa42b5b](https://github.com/City-of-Helsinki/yjdh/commit/fa42b5bd22548baaa23b2ec4d91c86924e9f4c14))
+
 ## [5.4.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.3.0...benefit-handler-v5.4.0) (2026-06-23)
 
 
