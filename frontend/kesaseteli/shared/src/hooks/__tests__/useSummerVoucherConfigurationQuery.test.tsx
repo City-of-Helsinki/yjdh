@@ -10,7 +10,7 @@ import useLocale from 'shared/hooks/useLocale';
 
 import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
 
-const API_BASE_TEST_URL = 'http://kesaseteli-api';
+const API_BASE_TEST_URL = 'http://localhost';
 
 type Language = 'fi' | 'sv' | 'en';
 type LanguageSummerVoucherConfigurations = Record<

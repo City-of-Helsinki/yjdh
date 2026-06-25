@@ -32,17 +32,13 @@ describe('TemporaryAhjoModeSwitch', () => {
   const renderSubject = (isNewMode: boolean, confirmResult = false): void => {
     mockUseDetermineAhjoMode.mockReturnValue(isNewMode);
     (globalThis.confirm as jest.Mock).mockReturnValue(confirmResult);
-    renderComponent(<TemporaryAhjoModeSwitch />);
+    renderComponent(<TemporaryAhjoModeSwitch onReload={reloadMock} />);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(globalThis, 'confirm').mockReturnValue(false);
     reloadMock = jest.fn();
-    jest.spyOn(globalThis, 'location', 'get').mockReturnValue({
-      ...globalThis.location,
-      reload: reloadMock,
-    });
   });
 
   afterEach(() => {

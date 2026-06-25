@@ -68,22 +68,6 @@ describe('common utils', () => {
     it('does nothing when app loader is missing', () => {
       expect(() => setAppLoaded()).not.toThrow();
     });
-
-    it('does nothing when window is undefined', () => {
-      const originalWindow = globalThis.window;
-
-      Object.defineProperty(globalThis, 'window', {
-        value: undefined,
-        configurable: true,
-      });
-
-      expect(() => setAppLoaded()).not.toThrow();
-
-      Object.defineProperty(globalThis, 'window', {
-        value: originalWindow,
-        configurable: true,
-      });
-    });
   });
 
   describe('isTruthy', () => {

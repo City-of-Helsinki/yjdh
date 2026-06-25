@@ -7,6 +7,12 @@ module.exports = {
     [`^kesaseteli/employer\/(.*)$`]: '<rootDir>src/$1',
   },
   testEnvironment: '<rootDir>/../../shared/jest-canvas-env.js',
+  // jsdom env defaults customExportConditions to ['browser'], which makes axios
+  // resolve its browser build (no Node 'http' adapter). Tests force the http
+  // adapter so nock can intercept requests, so prefer the default (node) build.
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
     '<rootDir>src/__tests__/utils/i18n/i18n-test.ts',

@@ -96,24 +96,14 @@ describe('useLeaveConfirm', () => {
   });
 
   describe('handleGlobalClick', () => {
-    const originalLocation = globalThis.location;
+    const originalHref = globalThis.location.href;
 
     beforeAll(() => {
-      delete (globalThis as { location?: Location }).location;
-
-      // eslint-disable-next-line scanjs-rules/assign_to_location
-      (globalThis as { location: Location }).location = {
-        ...originalLocation,
-        pathname: '/application',
-        search: '?id=123',
-        origin: 'http://localhost',
-        href: 'http://localhost/application?id=123',
-      } as Location;
+      window.history.replaceState({}, '', '/application?id=123');
     });
 
     afterAll(() => {
-      // eslint-disable-next-line scanjs-rules/assign_to_location
-      (globalThis as { location: Location }).location = originalLocation;
+      window.history.replaceState({}, '', originalHref);
     });
 
     it('should not trigger confirmation on internal anchor click', () => {

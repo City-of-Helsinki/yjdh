@@ -9,7 +9,7 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:staged": "pnpm run test --watchAll=false --passWithNoTests --findRelatedTests",
     "test:coverage": "pnpm run test --verbose --coverage"
   },
   "license": "MIT",

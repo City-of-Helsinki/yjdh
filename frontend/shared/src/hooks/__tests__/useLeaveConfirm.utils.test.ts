@@ -23,18 +23,14 @@ describe('useLeaveConfirm.utils', () => {
   });
 
   describe('isInternalLink', () => {
-    const originalLocation = globalThis.location;
+    const originalHref = globalThis.location.href;
+
     beforeAll(() => {
-      delete (globalThis as { location?: Location }).location;
-      // eslint-disable-next-line scanjs-rules/assign_to_location
-      (globalThis as { location: Location }).location = {
-        ...originalLocation,
-        origin: 'http://localhost',
-      } as Location;
+      window.history.replaceState({}, '', '/current-page');
     });
+
     afterAll(() => {
-      // eslint-disable-next-line scanjs-rules/assign_to_location
-      (globalThis as { location: Location }).location = originalLocation;
+      window.history.replaceState({}, '', originalHref);
     });
 
     it('should return true for internal links', () => {
