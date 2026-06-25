@@ -42,7 +42,7 @@
     "react-query": "^3.34.0",
     "react-toastify": "^9.0.4",
     "react-use": "^17.6.0",
-    "styled-components": "^5.3.11"
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "eslint-config-adjunct": "4.11.1",

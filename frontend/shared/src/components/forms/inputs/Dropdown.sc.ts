@@ -5,7 +5,12 @@ type $DropdownWrapperProps = {
   theme: DefaultTheme;
 };
 
-export const $DropdownWrapper = styled.div<$DropdownWrapperProps>`
+const dropdownWrapperShouldForwardProp = (prop: string): boolean =>
+  prop !== 'errorText';
+
+export const $DropdownWrapper = styled.div.withConfig({
+  shouldForwardProp: dropdownWrapperShouldForwardProp,
+})<$DropdownWrapperProps>`
   ${(props: $DropdownWrapperProps) =>
     props.errorText ? '' : `margin-bottom: ${props.theme.spacing.m};`}
 `;

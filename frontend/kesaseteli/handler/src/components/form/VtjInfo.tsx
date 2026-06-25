@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Notification } from 'shared/components/notification/Notification.sc';
-import { DefaultTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 type Props = {
   application: ActivatedYouthApplication;
@@ -17,6 +17,7 @@ type Props = {
 
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const {
     encrypted_handler_vtj_json: vtjData,
     social_security_number,
@@ -67,10 +68,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
         <$Notification
           label={t('common:handlerApplication.vtjInfo.dataRestricted')}
           type="info"
-          css={`
-            margin-bottom: ${({ theme }: { theme: DefaultTheme }) =>
-              theme.spacing.m};
-          `}
+          style={{ marginBottom: theme.spacing.m }}
         />
       )}
       {!notFound && (

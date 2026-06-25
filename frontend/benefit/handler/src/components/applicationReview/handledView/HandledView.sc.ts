@@ -11,6 +11,11 @@ type HandledRowProps = {
   theme: DefaultTheme;
 };
 
+const handledHrShouldForwardProp = (prop: string): boolean => prop !== 'dashed';
+
+const handledRowShouldForwardProp = (prop: string): boolean =>
+  prop !== 'largeMargin';
+
 export const $HandledSection = styled.div`
   background-color: ${(props: { theme: DefaultTheme }) =>
     props.theme.colors.coatOfArmsLight};
@@ -23,14 +28,18 @@ export const $HandledSection = styled.div`
     ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl5};
 `;
 
-export const $HandledHr = styled.hr<HandledHrProps>`
+export const $HandledHr = styled.hr.withConfig({
+  shouldForwardProp: handledHrShouldForwardProp,
+})<HandledHrProps>`
   border-top: 1px
     ${(props: HandledHrProps) => (props.dashed ? 'dashed' : 'solid')}
     ${(props: HandledHrProps) => props.theme.colors.coatOfArms};
   margin: ${(props: HandledHrProps) => props.theme.spacing.l} 0;
 `;
 
-export const $HandledRow = styled($Grid)<HandledRowProps>`
+export const $HandledRow = styled($Grid).withConfig({
+  shouldForwardProp: handledRowShouldForwardProp,
+})<HandledRowProps>`
   gap: 0;
   margin: ${(props: HandledRowProps) =>
       props.largeMargin ? props.theme.spacing.l : props.theme.spacing.s}

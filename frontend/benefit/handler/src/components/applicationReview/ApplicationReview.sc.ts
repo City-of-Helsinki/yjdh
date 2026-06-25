@@ -18,6 +18,14 @@ type TabButtonProps = {
   theme: DefaultTheme;
 };
 
+const calculatorTextShouldForwardProp = (prop: string): boolean =>
+  prop !== 'isBold';
+
+const calculatorTableRowShouldForwardProp = (prop: string): boolean =>
+  !['isTotal', 'isNewSection'].includes(prop);
+
+const tabButtonShouldForwardProp = (prop: string): boolean => prop !== 'active';
+
 export const $ApplicationModify = styled.div`
   z-index: 2;
   overflow: hidden;
@@ -57,7 +65,9 @@ export const $ActionsWrapper = styled.div`
   margin-left: 0;
 `;
 
-export const $CalculatorText = styled.p<CalculatorTextProps>`
+export const $CalculatorText = styled.p.withConfig({
+  shouldForwardProp: calculatorTextShouldForwardProp,
+})<CalculatorTextProps>`
   margin: 0;
   font-size: ${(props: CalculatorTextProps) => props.theme.fontSize.body.m};
   font-weight: ${(props: CalculatorTextProps) =>
@@ -105,7 +115,9 @@ export const $ResetLink = styled(Link)`
   }
 `;
 
-export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
+export const $CalculatorTableRow = styled.div.withConfig({
+  shouldForwardProp: calculatorTableRowShouldForwardProp,
+})<CalculatorTableRowProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -132,7 +144,9 @@ export const $CalculatorTableHeader = styled.div`
     `${spacing.xs3} ${spacing.xs}`};
 `;
 
-export const $TabButton = styled.span<TabButtonProps>`
+export const $TabButton = styled.span.withConfig({
+  shouldForwardProp: tabButtonShouldForwardProp,
+})<TabButtonProps>`
   display: inline-block;
   cursor: pointer;
   align-items: center;

@@ -142,16 +142,12 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
       <Field
         type="email"
         value={email}
-        css={`
-          padding-bottom: ${theme.spacing.s};
-        `}
+        style={{ paddingBottom: theme.spacing.s }}
       />
       <Field
         type="target_group"
         value={targetGroupName}
-        css={`
-          padding-bottom: ${theme.spacing.s};
-        `}
+        style={{ paddingBottom: theme.spacing.s }}
       />
       {additionalInfoProvided && (
         <>
@@ -171,9 +167,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
           <Field
             type="additional_info_description"
             value={additional_info_description}
-            css={`
-              padding-bottom: ${theme.spacing.m};
-            `}
+            style={{ paddingBottom: theme.spacing.m }}
           />
         </>
       )}

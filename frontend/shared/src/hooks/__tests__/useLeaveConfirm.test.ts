@@ -99,11 +99,11 @@ describe('useLeaveConfirm', () => {
     const originalHref = globalThis.location.href;
 
     beforeAll(() => {
-      window.history.replaceState({}, '', '/application?id=123');
+      globalThis.history.replaceState({}, '', '/application?id=123');
     });
 
     afterAll(() => {
-      window.history.replaceState({}, '', originalHref);
+      globalThis.history.replaceState({}, '', originalHref);
     });
 
     it('should not trigger confirmation on internal anchor click', () => {

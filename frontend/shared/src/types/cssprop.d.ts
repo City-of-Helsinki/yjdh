@@ -1,2 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as types from 'styled-components/cssprop';
+import type { CSSProp } from 'styled-components';
+
+declare module 'react' {
+  interface Attributes {
+    css?: CSSProp | undefined;
+  }
+}

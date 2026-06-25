@@ -28,7 +28,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-query": "^3.34.0",
-    "styled-components": "^5.3.11",
+    "styled-components": "^6.1.19",
     "yup": "^0.32.9"
   },
   "devDependencies": {

@@ -11,6 +11,7 @@ type Props = GridCellProps & {
   type?: string;
   value?: string;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 };
 
 const Field: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const Field: React.FC<Props> = ({
   type,
   value,
   children,
+  style,
   ...gridCellProps
 }) => {
   const { t } = useTranslation();
@@ -26,7 +28,7 @@ const Field: React.FC<Props> = ({
   return (
     <$GridCell
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
-      css={{ fontSize: theme.fontSize.body.l }}
+      style={{ fontSize: theme.fontSize.body.l, ...style }}
       {...gridCellProps}
     >
       {type && (

@@ -26,11 +26,11 @@ describe('useLeaveConfirm.utils', () => {
     const originalHref = globalThis.location.href;
 
     beforeAll(() => {
-      window.history.replaceState({}, '', '/current-page');
+      globalThis.history.replaceState({}, '', '/current-page');
     });
 
     afterAll(() => {
-      window.history.replaceState({}, '', originalHref);
+      globalThis.history.replaceState({}, '', originalHref);
     });
 
     it('should return true for internal links', () => {

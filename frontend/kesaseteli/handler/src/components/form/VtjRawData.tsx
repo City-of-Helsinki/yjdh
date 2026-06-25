@@ -21,7 +21,6 @@ const VtjRawDataAccordion: React.FC<Props> = ({ data }) => {
       ),
     [data]
   );
-  /* eslint-disable no-secrets/no-secrets */
   return (
     <Accordion
       id="vtj-info-accordion"
@@ -47,7 +46,6 @@ const VtjRawDataAccordion: React.FC<Props> = ({ data }) => {
       </pre>
     </Accordion>
   );
-  /* eslint-enable no-secrets/no-secrets */
 };
 
 export default VtjRawDataAccordion;

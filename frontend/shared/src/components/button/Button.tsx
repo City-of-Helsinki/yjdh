@@ -6,7 +6,7 @@ import {
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { $Button } from './Button.sc';
+import $Button from './Button.sc';
 
 export type ButtonProps = Omit<HdsButtonProps, 'children'> & {
   loadingText?: string;
@@ -26,7 +26,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <$Button
-        {...(props as React.ComponentProps<typeof $Button>)}
+        {...props}
         ref={ref}
         disabled={disabled}
         iconStart={iconStart}

@@ -2,7 +2,14 @@ import styled from 'styled-components';
 
 import { AccordionProps } from './accordion.d';
 
-export const $Accordion = styled.div<AccordionProps>`
+const accordionShouldForwardProp = (prop: string): boolean =>
+  !['card', 'border', 'headerBackgroundColor'].includes(prop);
+const accordionHeaderShouldForwardProp = (prop: string): boolean =>
+  !['card', 'headerBackgroundColor'].includes(prop);
+
+export const $Accordion = styled.div.withConfig({
+  shouldForwardProp: accordionShouldForwardProp,
+})<AccordionProps>`
   ${(props: AccordionProps) =>
     props.card
       ? ''
@@ -20,7 +27,9 @@ export const $Accordion = styled.div<AccordionProps>`
     props.border ? `border: 2px solid var(--color-black-60)` : ''};
 `;
 
-export const $AccordionHeader = styled.div<AccordionProps>`
+export const $AccordionHeader = styled.div.withConfig({
+  shouldForwardProp: accordionHeaderShouldForwardProp,
+})<AccordionProps>`
   position: relative;
   background-color: ${(props: AccordionProps) => props.headerBackgroundColor};
   color: var(--color-black-90);

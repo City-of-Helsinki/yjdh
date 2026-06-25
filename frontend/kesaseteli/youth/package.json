@@ -39,7 +39,7 @@
     "react-i18next": "^15.6.0",
     "react-query": "^3.34.0",
     "react-toastify": "^9.0.4",
-    "styled-components": "^5.3.11",
+    "styled-components": "^6.1.19",
     "ts-node": "^10.0.0"
   },
   "devDependencies": {

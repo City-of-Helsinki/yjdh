@@ -38,7 +38,40 @@ export type GridCellProps = {
   justifySelf?: 'start' | 'end' | 'center' | 'stretch';
 };
 
-export const $Section = styled.section<FormSectionProps>`
+type GridResolvedGapProps = Omit<GridProps, 'gap'> & {
+  columnGap: SpacingValue;
+  rowGap: SpacingValue;
+};
+
+const gridShouldForwardProp = (prop: string): boolean =>
+  ![
+    'gap',
+    'rowGap',
+    'columnGap',
+    'columns',
+    'bgColor',
+    'bgHorizontalPadding',
+    'bgVerticalPadding',
+    'alignItems',
+    'justifyItems',
+  ].includes(prop);
+
+const sectionShouldForwardProp = (prop: string): boolean =>
+  ![
+    'paddingBottom',
+    'action',
+    'gridActions',
+    'withoutDivider',
+    'header',
+    'headerLevel',
+  ].includes(prop);
+
+const gridCellShouldForwardProp = (prop: string): boolean =>
+  !['alignSelf', 'justifySelf'].includes(prop);
+
+export const $Section = styled.section.withConfig({
+  shouldForwardProp: sectionShouldForwardProp,
+})<FormSectionProps>`
   display: flex;
   flex-direction: column;
   padding-bottom: ${(props: { theme: DefaultTheme } & FormSectionProps) =>
@@ -58,22 +91,24 @@ export const $SubHeader = styled.h3<$SubHeaderProps>`
   font-weight: ${(props: $SubHeaderProps) => props.weight || '600'};
 `;
 
-export const $Grid = styled.div.attrs<
-  GridProps,
-  Omit<GridProps, 'gap'> & { columnGap: SpacingValue; rowGap: SpacingValue }
->((props: { theme: DefaultTheme } & GridProps) => ({
-  ...props,
-  rowGap: props.rowGap || props.gap || props.theme.spacing.m,
-  columnGap: props.columnGap || props.gap || props.theme.spacing.s,
-}))<GridProps>`
+export const $Grid = styled.div
+  .withConfig({
+    shouldForwardProp: gridShouldForwardProp,
+  })
+  .attrs<GridProps, GridResolvedGapProps>(
+    (props: { theme: DefaultTheme } & GridProps) => ({
+      ...props,
+      rowGap: props.rowGap || props.gap || props.theme.spacing.m,
+      columnGap: props.columnGap || props.gap || props.theme.spacing.s,
+    })
+  )<GridResolvedGapProps>`
   position: relative;
   display: grid;
   grid-template-columns: repeat(
     ${(props: GridProps) => props.columns ?? 12},
     1fr
   );
-  gap: ${(props: { columnGap: SpacingValue; rowGap: SpacingValue }) =>
-    `${props.rowGap} ${props.columnGap}`};
+  gap: ${(props) => `${props.rowGap} ${props.columnGap}`};
   align-items: ${(props: GridProps) => props.alignItems ?? 'initial'};
   justify-items: ${(props: GridProps) => props.justifyItems ?? 'initial'};
 
@@ -108,7 +143,9 @@ export const $Grid = styled.div.attrs<
   }
 `;
 
-export const $GridCell = styled.div<GridCellProps>`
+export const $GridCell = styled.div.withConfig({
+  shouldForwardProp: gridCellShouldForwardProp,
+})<GridCellProps>`
   position: relative;
   grid-column: ${(props: GridCellProps) => props.$colStart ?? 'auto'} / span
     ${(props: GridCellProps) => props.$colSpan ?? 1};
