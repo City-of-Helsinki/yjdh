@@ -55,7 +55,7 @@ const ITEMS_PER_PAGE = 30;
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
   const [initialQuery, setInitialQuery] = React.useState<boolean>(true);
-  const [loadAll, setLoadAll] = React.useState<boolean>(false);
+  const [isLoadAllMode, setIsLoadAllMode] = React.useState<boolean>(false);
   const [displayLoadAll, setDisplayLoadAll] = React.useState<boolean>(true);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
 
@@ -80,7 +80,7 @@ const ApplicationsArchive: React.FC = () => {
       subsidyInEffect,
       decisionRange,
       applicationNum ? applicationNum.toString() : null,
-      loadAll
+      isLoadAllMode
     );
   const searchTexts = React.useMemo(
     () => ({
@@ -95,6 +95,8 @@ const ApplicationsArchive: React.FC = () => {
 
   const onSearch = (value: string): void => {
     setSearchString(value);
+    setIsLoadAllMode(false);
+    setDisplayLoadAll(true);
     setCurrentPage(1);
     submitSearch(value, {
       limit: ITEMS_PER_PAGE,
@@ -118,7 +120,7 @@ const ApplicationsArchive: React.FC = () => {
     setDecisionRange(null);
     setSubsidyInEffect(value || null);
     setDisplayLoadAll(true);
-    setLoadAll(false);
+    setIsLoadAllMode(false);
     setCurrentPage(1);
   };
   const handleDecisionFilterChange = (
@@ -129,7 +131,7 @@ const ApplicationsArchive: React.FC = () => {
     setDecisionRange(value || null);
     setSubsidyInEffect(null);
     setDisplayLoadAll(true);
-    setLoadAll(false);
+    setIsLoadAllMode(false);
     setCurrentPage(1);
   };
   const handleFiltersOff = (): void => {
@@ -137,7 +139,7 @@ const ApplicationsArchive: React.FC = () => {
     setSubsidyInEffect(null);
     setFilterSelection(FILTER_SELECTION.NO_FILTER);
     setDisplayLoadAll(true);
-    setLoadAll(false);
+    setIsLoadAllMode(false);
     setCurrentPage(1);
   };
 
@@ -151,11 +153,10 @@ const ApplicationsArchive: React.FC = () => {
         limit: ITEMS_PER_PAGE,
         offset: 0,
       });
-      setLoadAll(false);
       setCurrentPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterSelection, applicationNum, router, initialQuery, loadAll]);
+  }, [filterSelection, applicationNum, router, initialQuery, isLoadAllMode]);
 
   const pageCount = Math.ceil((searchResults?.count ?? 0) / ITEMS_PER_PAGE);
 
@@ -279,7 +280,7 @@ const ApplicationsArchive: React.FC = () => {
             style={{ marginTop: 'var(--spacing-m)' }}
             theme={ButtonPresetTheme.Coat}
             onClick={() => {
-              setLoadAll(true);
+              setIsLoadAllMode(true);
               setDisplayLoadAll(false);
               setCurrentPage(1);
               focusAndScrollToSelector('header');

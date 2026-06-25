@@ -63,7 +63,6 @@ class SearchView(APIView):
         archived = request.query_params.get("archived") == "1" or False
         search_from_archival = request.query_params.get("archival") == "1" or False
         application_number = request.query_params.get("app_no")
-        load_all = request.query_params.get("load_all") == "1" or False
         limit, offset = _get_limit_and_offset(request)
 
         subsidy_in_effect = request.query_params.get("subsidy_in_effect")
@@ -106,7 +105,6 @@ class SearchView(APIView):
             detected_pattern,
             application_number,
             search_from_archival,
-            load_all,
             request,
             limit,
             offset,
@@ -190,7 +188,6 @@ def search_applications(
     detected_pattern,
     application_number=None,
     search_from_archival=False,
-    load_all=False,
     request=None,
     limit=30,
     offset=0,
@@ -206,7 +203,6 @@ def search_applications(
         return _query_and_respond_to_empty_search(
             application_queryset,
             archival_application_queryset,
-            load_all,
             request,
             limit,
             offset,
@@ -369,19 +365,10 @@ def _query_by_application_number(
 def _query_and_respond_to_empty_search(
     application_queryset,
     archival_application_queryset,
-    load_all,
     request=None,
     limit=30,
     offset=0,
 ):
-    if load_all:
-        data = []
-        data += HandlerApplicationListSerializer(application_queryset, many=True).data
-        data += ArchivalApplicationListSerializer(
-            archival_application_queryset, many=True
-        ).data
-        return _create_search_response(None, data, SearchPattern.ALL, "")
-
     data, total_count = _serialize_paginated_querysets(
         application_queryset,
         archival_application_queryset,
