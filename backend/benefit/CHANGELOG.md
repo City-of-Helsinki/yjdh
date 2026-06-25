@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.24.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.0...benefit-backend-v2.24.1) (2026-06-25)
+
+
+### Bug Fixes
+
+* **bf:** Preserve old terms in applic. approvals ([fa42b5b](https://github.com/City-of-Helsinki/yjdh/commit/fa42b5bd22548baaa23b2ec4d91c86924e9f4c14))
+
 ## [2.24.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.23.0...benefit-backend-v2.24.0) (2026-06-23)
 
 
