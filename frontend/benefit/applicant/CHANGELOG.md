@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.1...benefit-applicant-v4.4.2) (2026-06-25)
+
+
+### Bug Fixes
+
+* **benefit:** Show all pdf terms on summary page ([f55281f](https://github.com/City-of-Helsinki/yjdh/commit/f55281f17025313b8012c646f2d859daaf85ff49))
+
 ## [4.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.0...benefit-applicant-v4.4.1) (2026-06-23)
 
 
