@@ -53,22 +53,36 @@ const messagesToIgnore = [
   'AxiosError',
 ];
 
+const stringifyArg = (arg: unknown): string => {
+  if (isString(arg)) {
+    return arg;
+  }
+
+  if (arg instanceof Error) {
+    return arg.name ? `${arg.name}: ${arg.message}` : arg.message;
+  }
+
+  if (arg && typeof arg === 'object') {
+    const message = Reflect.get(arg, 'message');
+    if (isString(message)) {
+      return message;
+    }
+  }
+
+  return '';
+};
+
 // Directly replace console methods instead of using jest.spyOn so that
 // jest's reporter does not capture and redisplay the suppressed messages.
 const createFilter =
   (original: (...data: unknown[]) => void) =>
   (...args: unknown[]) => {
-    const firstArg = args[0];
-    let message = '';
-    if (isString(firstArg)) {
-      message = firstArg;
-    } else if (firstArg instanceof Error) {
-      message = firstArg.name
-        ? `${firstArg.name}: ${firstArg.message}`
-        : firstArg.message;
-    }
+    const message = args
+      .map((arg) => stringifyArg(arg))
+      .filter((value) => value.length > 0)
+      .join(' | ');
+
     if (
-      args.length > 0 &&
       message.length > 0 &&
       messagesToIgnore.some((msg) => message.includes(msg))
     ) {

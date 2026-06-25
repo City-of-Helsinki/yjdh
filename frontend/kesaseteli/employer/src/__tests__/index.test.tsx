@@ -257,7 +257,6 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       ).not.toBeInTheDocument();
 
       // Select "All years"
-      await user.click(combobox);
       const allOptions = await screen.findAllByRole('option');
       const allOption = allOptions[0];
       await user.click(allOption);

@@ -10,7 +10,7 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:staged": "pnpm run test --watchAll=false --passWithNoTests --findRelatedTests",
     "test:coverage": "pnpm run test --verbose --coverage",
     "browser-test": "testcafe 'chrome --allow-insecure-localhost --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/*.testcafe.ts --sf",
     "browser-test:headless": "testcafe 'chrome:headless --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' browser-tests/pages/*.testcafe.ts --sf",
