@@ -13,6 +13,7 @@ const config = {
   ],
   moduleNameMapper: {
     ...sharedConfig.moduleNameMapper,
+    '^@babel/runtime/helpers/esm/(.*)$': '@babel/runtime/helpers/$1',
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`benefit/applicant\/(.*)$`]: '<rootDir>/src/$1',

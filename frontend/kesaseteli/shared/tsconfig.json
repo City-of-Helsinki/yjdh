@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "preserve",
     "baseUrl": "../../",
+    "types": ["jest", "node", "@testing-library/jest-dom"],
     "paths": {
       "kesaseteli-shared/*": [
         "kesaseteli/shared/src/*"
