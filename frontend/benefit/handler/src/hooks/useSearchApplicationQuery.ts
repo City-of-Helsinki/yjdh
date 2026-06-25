@@ -10,6 +10,14 @@ import {
 } from '../components/applicationsArchive/useApplicationsArchive';
 import { SearchResponse } from '../types/search';
 
+type SearchApplicationPayload =
+  | string
+  | {
+      q: string;
+      limit?: number;
+      offset?: number;
+    };
+
 const useSearchApplicationQuery = (
   archived = false,
   includeArchivalApplications = false,
@@ -17,7 +25,7 @@ const useSearchApplicationQuery = (
   decisionRange?: DECISION_RANGE,
   applicationNum?: string,
   loadAll = false
-): UseMutationResult<SearchResponse, Error, string> => {
+): UseMutationResult<SearchResponse, Error, SearchApplicationPayload> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
 
@@ -27,8 +35,12 @@ const useSearchApplicationQuery = (
       t('common:applications.list.errors.fetch.text', { status: 'error' })
     );
   };
-  return useMutation<SearchResponse, Error, string>(
-    async (q: string) => {
+  return useMutation<SearchResponse, Error, SearchApplicationPayload>(
+    async (payload: SearchApplicationPayload) => {
+      const q = typeof payload === 'string' ? payload : payload.q;
+      const limit = typeof payload === 'string' ? undefined : payload.limit;
+      const offset = typeof payload === 'string' ? undefined : payload.offset;
+
       const params: {
         q: string;
         archived?: string;
@@ -37,6 +49,8 @@ const useSearchApplicationQuery = (
         years_since_decision?: DECISION_RANGE;
         app_no?: string;
         load_all?: string;
+        limit?: number;
+        offset?: number;
       } = {
         q,
         ...(archived && { archived: '1' }),
@@ -44,6 +58,8 @@ const useSearchApplicationQuery = (
         ...(subsidyInEffect && { subsidy_in_effect: subsidyInEffect }),
         ...(decisionRange && { years_since_decision: decisionRange }),
         ...(loadAll && { load_all: '1' }),
+        ...(limit !== undefined && { limit }),
+        ...(offset !== undefined && { offset }),
       };
 
       if (applicationNum) {

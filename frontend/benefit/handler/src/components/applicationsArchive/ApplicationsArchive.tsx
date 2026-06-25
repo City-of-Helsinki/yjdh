@@ -50,11 +50,14 @@ const searchButtonAriaLabelKey =
 const searchClearButtonAriaLabelKey =
   'common:search.fields.searchInput.keyword.searchClearButtonAriaLabel'; // eslint-disable-line no-secrets/no-secrets
 
+const ITEMS_PER_PAGE = 30;
+
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
   const [initialQuery, setInitialQuery] = React.useState<boolean>(true);
   const [loadAll, setLoadAll] = React.useState<boolean>(false);
   const [displayLoadAll, setDisplayLoadAll] = React.useState<boolean>(true);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const [subsidyInEffect, setSubsidyInEffect] =
     React.useState<SUBSIDY_IN_EFFECT | null>(
@@ -92,7 +95,19 @@ const ApplicationsArchive: React.FC = () => {
 
   const onSearch = (value: string): void => {
     setSearchString(value);
-    submitSearch(value);
+    setCurrentPage(1);
+    submitSearch(value, {
+      limit: ITEMS_PER_PAGE,
+      offset: 0,
+    });
+  };
+
+  const handlePageChange = (page: number): void => {
+    setCurrentPage(page);
+    submitSearch(searchString, {
+      limit: ITEMS_PER_PAGE,
+      offset: (page - 1) * ITEMS_PER_PAGE,
+    });
   };
 
   const handleSubsidyFilterChange = (
@@ -104,6 +119,7 @@ const ApplicationsArchive: React.FC = () => {
     setSubsidyInEffect(value || null);
     setDisplayLoadAll(true);
     setLoadAll(false);
+    setCurrentPage(1);
   };
   const handleDecisionFilterChange = (
     selection: FILTER_SELECTION,
@@ -114,6 +130,7 @@ const ApplicationsArchive: React.FC = () => {
     setSubsidyInEffect(null);
     setDisplayLoadAll(true);
     setLoadAll(false);
+    setCurrentPage(1);
   };
   const handleFiltersOff = (): void => {
     setDecisionRange(null);
@@ -121,6 +138,7 @@ const ApplicationsArchive: React.FC = () => {
     setFilterSelection(FILTER_SELECTION.NO_FILTER);
     setDisplayLoadAll(true);
     setLoadAll(false);
+    setCurrentPage(1);
   };
 
   React.useEffect(() => {
@@ -129,11 +147,17 @@ const ApplicationsArchive: React.FC = () => {
       handleFiltersOff();
       setInitialQuery(false);
     } else if (!isSearchLoading) {
-      submitSearch(searchString);
+      submitSearch(searchString, {
+        limit: ITEMS_PER_PAGE,
+        offset: 0,
+      });
       setLoadAll(false);
+      setCurrentPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSelection, applicationNum, router, initialQuery, loadAll]);
+
+  const pageCount = Math.ceil((searchResults?.count ?? 0) / ITEMS_PER_PAGE);
 
   return (
     <Container data-testid="application-list-archived">
@@ -241,18 +265,23 @@ const ApplicationsArchive: React.FC = () => {
 
       <ApplicationArchiveList
         data={searchResults?.matches || []}
+        totalCount={searchResults?.count ?? 0}
+        currentPage={currentPage}
+        pageCount={pageCount}
+        onPageChange={handlePageChange}
         isSearchLoading={isSearchLoading}
       />
       {displayLoadAll &&
         !isSearchLoading &&
         searchString.length === 0 &&
-        (searchResults?.matches || []).length >= 30 && (
+        Boolean(searchResults?.next) && (
           <Button
             style={{ marginTop: 'var(--spacing-m)' }}
             theme={ButtonPresetTheme.Coat}
             onClick={() => {
               setLoadAll(true);
               setDisplayLoadAll(false);
+              setCurrentPage(1);
               focusAndScrollToSelector('header');
             }}
           >

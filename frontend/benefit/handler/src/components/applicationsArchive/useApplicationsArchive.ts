@@ -24,12 +24,18 @@ export enum SUBSIDY_IN_EFFECT {
 export enum DECISION_RANGE {
   RANGE_THREE_YEARS = 3,
 }
+
+type SearchPaginationOptions = {
+  limit?: number;
+  offset?: number;
+};
+
 interface ApplicationListProps {
   t: TFunction;
   searchResults: SearchResponse | undefined;
   isSearchLoading: boolean;
   shouldHideList: boolean;
-  submitSearch: (value: string) => void;
+  submitSearch: (value: string, options?: SearchPaginationOptions) => void;
 }
 
 const sortApplicationsByHandledAt = (
@@ -53,14 +59,19 @@ const transformApplicationArchiveData = (
     calculation,
     alterations,
   } = application;
+  const employeeName = getFullNameListing(
+    employee?.first_name,
+    employee?.last_name
+  )
+    .replace(/^,\s*|\s*,\s*$/g, '')
+    .trim();
 
   return {
     id,
     status,
     companyName: company ? company.name : '-',
     companyId: company ? company.business_id : '-',
-    employeeName:
-      getFullNameListing(employee?.first_name, employee?.last_name) || '-',
+    employeeName: employeeName || '-',
     handledAt: convertToUIDateFormat(handled_at) || '-',
     applicationNum,
     alterations,
@@ -116,8 +127,12 @@ const useApplicationsArchive = (
     searchResults,
     isSearchLoading,
     shouldHideList,
-    submitSearch: (value: string) => {
-      getSearchResults(value);
+    submitSearch: (value: string, options?: SearchPaginationOptions) => {
+      getSearchResults({
+        q: value,
+        limit: options?.limit,
+        offset: options?.offset,
+      });
     },
   };
 };
