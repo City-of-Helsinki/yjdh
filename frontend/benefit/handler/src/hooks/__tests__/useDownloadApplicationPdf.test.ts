@@ -1,15 +1,15 @@
 import '@testing-library/jest-dom';
 import '../../../test/i18n/i18n-test';
 
+import { useMutation } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useMutation } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import useDownloadApplicationPdf from '../useDownloadApplicationPdf';
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   useMutation: jest.fn(),
 }));
 
@@ -36,13 +36,11 @@ describe('useDownloadApplicationPdf', () => {
 
     mutationOptions = {};
 
-    (useMutation as jest.Mock).mockImplementation(
-      (_key, passedMutationFn, options) => {
-        mutationFn.mockImplementation(passedMutationFn);
-        mutationOptions = options;
-        return { mutate: jest.fn() };
-      }
-    );
+    (useMutation as jest.Mock).mockImplementation((options) => {
+      mutationFn.mockImplementation(options.mutationFn);
+      mutationOptions = options;
+      return { mutate: jest.fn() };
+    });
   });
 
   it('calls the correct endpoint with arraybuffer responseType', async () => {

@@ -49,7 +49,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
       )
     );
     await waitFor(() =>
-      expect(queryClient.getQueryData('user')).toBeUndefined()
+      expect(queryClient.getQueryData(['user'])).toBeUndefined()
     );
   });
 

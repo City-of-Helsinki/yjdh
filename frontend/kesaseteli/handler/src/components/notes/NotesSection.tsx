@@ -30,7 +30,7 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
         <NoteForm
           targetType={targetType}
           targetId={applicationId}
-          isLoading={createMutation.isLoading}
+          isLoading={createMutation.isPending}
           onSubmit={(payload, onSuccess) =>
             createMutation.mutate(payload as CreateNotePayload, { onSuccess })
           }

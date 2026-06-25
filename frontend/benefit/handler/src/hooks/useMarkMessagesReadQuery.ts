@@ -1,8 +1,12 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { MESSAGE_URLS } from 'benefit-shared/constants';
 import { MessageData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -20,25 +24,26 @@ const useMarkMessagesReadQuery = (
     );
   };
 
-  return useMutation(
-    ['messages', applicationId, 'markRead'],
-    async () => {
+  return useMutation<void, Error, void>({
+    mutationKey: ['messages', applicationId, 'markRead'],
+    mutationFn: async () => {
       const res = axios.post<MessageData[]>(
         `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${MESSAGE_URLS.MESSAGES}mark_read/`
       );
 
       return void handleResponse(res);
     },
-    {
-      onError: () => handleError(),
-      onSuccess: () => {
-        setTimeout(
-          () => void queryClient.invalidateQueries(['messageNotifications']),
-          10
-        );
-      },
-    }
-  );
+    onError: () => handleError(),
+    onSuccess: () => {
+      setTimeout(
+        () =>
+          void queryClient.invalidateQueries({
+            queryKey: ['messageNotifications'],
+          }),
+        10
+      );
+    },
+  });
 };
 
 export default useMarkMessagesReadQuery;

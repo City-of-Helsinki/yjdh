@@ -30,13 +30,13 @@ const useAttachmentsList = (): ExtendedComponentProps => {
 
   const {
     mutate: removeAttachment,
-    isLoading: isRemoving,
+    isPending: isRemoving,
     isError: isRemovingError,
   } = useRemoveAttachmentQuery();
 
   const {
     mutate: uploadAttachment,
-    isLoading: isUploading,
+    isPending: isUploading,
     isError: isUploadingError,
     error: uploadError,
   } = useUploadAttachmentQuery();

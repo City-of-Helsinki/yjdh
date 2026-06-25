@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
 import '../../../test/i18n/i18n-test';
 
+import { useQuery } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
-import { useQuery } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import useAhjoSettingsQuery from '../useAhjoSettingsQuery';
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   useQuery: jest.fn(),
 }));
 
@@ -25,8 +25,8 @@ describe('useAhjoSettingsQuery', () => {
   let queryFn: jest.Mock;
 
   const setupQueryFn = (): void => {
-    mockUseQuery.mockImplementation((_key, fn) => {
-      queryFn = fn as jest.Mock;
+    mockUseQuery.mockImplementation((options) => {
+      queryFn = options.queryFn as jest.Mock;
       return { isLoading: false } as never;
     });
   };
@@ -49,8 +49,9 @@ describe('useAhjoSettingsQuery', () => {
       renderHook(() => useAhjoSettingsQuery(type));
 
       expect(mockUseQuery).toHaveBeenCalledWith(
-        ['ahjoSettings', type],
-        expect.any(Function)
+        expect.objectContaining({
+          queryKey: ['ahjoSettings', type],
+        })
       );
     }
   );

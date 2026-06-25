@@ -185,11 +185,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
         5000
       );
     }
-    if (
-      id &&
-      applicationDataStatus !== 'idle' &&
-      applicationDataStatus !== 'loading'
-    ) {
+    if (id && applicationDataStatus !== 'pending') {
       setIsLoading(false);
     }
   }, [
