@@ -10,7 +10,7 @@ import useLocale from 'shared/hooks/useLocale';
 
 import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
 
-const API_BASE_TEST_URL = 'http://kesaseteli-api';
+const API_BASE_TEST_URL = 'http://localhost';
 
 type Language = 'fi' | 'sv' | 'en';
 type LanguageSummerVoucherConfigurations = Record<
@@ -21,7 +21,7 @@ type LanguageSummerVoucherConfigurations = Record<
 const languages = ['fi', 'sv', 'en'] as const;
 
 const languageDataMock = languages.reduce<LanguageSummerVoucherConfigurations>(
-  (acc, lang: typeof languages[number]) => ({
+  (acc, lang: (typeof languages)[number]) => ({
     ...acc,
     [lang]: [
       {
