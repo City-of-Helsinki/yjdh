@@ -12,7 +12,15 @@ type ViewFieldProps = ViewFieldBoldProps & {
   children?: React.ReactNode;
 };
 
-export const $ViewField = styled.div<ViewFieldProps>`
+const viewFieldShouldForwardProp = (prop: string): boolean =>
+  !['large', 'isInline', 'topMargin'].includes(prop);
+
+const viewFieldBoldShouldForwardProp = (prop: string): boolean =>
+  prop !== 'large';
+
+export const $ViewField = styled.div.withConfig({
+  shouldForwardProp: viewFieldShouldForwardProp,
+})<ViewFieldProps>`
   &:not(:last-child) {
     padding-bottom: ${(props: ViewFieldProps) =>
       props.children ? props.theme.spacing.s : 0};
@@ -25,7 +33,9 @@ export const $ViewField = styled.div<ViewFieldProps>`
     props.large ? props.theme.fontSize.body.l : props.theme.fontSize.body.m};
 `;
 
-export const $ViewFieldBold = styled.div<ViewFieldBoldProps>`
+export const $ViewFieldBold = styled.div.withConfig({
+  shouldForwardProp: viewFieldBoldShouldForwardProp,
+})<ViewFieldBoldProps>`
   font-weight: 600;
   font-size: ${(props: ViewFieldBoldProps) =>
     props.large ? props.theme.fontSize.body.l : props.theme.fontSize.body.m};

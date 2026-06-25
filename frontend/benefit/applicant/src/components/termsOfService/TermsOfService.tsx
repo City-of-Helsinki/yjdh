@@ -14,7 +14,17 @@ import useLogout from '../../hooks/useLogout';
 import useTermsOfServiceData from '../../hooks/useTermsOfServiceData';
 import PdfViewer from '../pdfViewer/PdfViewer';
 
-export const $Markdown = styled(ReactMarkdown)`
+type MarkdownProps = React.ComponentProps<typeof ReactMarkdown> & {
+  className?: string;
+};
+
+const MarkdownBase: React.FC<MarkdownProps> = ({ className, ...props }) => (
+  <div className={className}>
+    <ReactMarkdown {...props} />
+  </div>
+);
+
+export const $Markdown = styled(MarkdownBase)`
   background-color: ${(props) => props.theme.colors.white};
   box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: ${(props) => props.theme.spacing.s};

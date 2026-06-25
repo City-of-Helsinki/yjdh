@@ -4,7 +4,12 @@ type DrawerProps = {
   stickyBarInUse?: boolean;
 };
 
-export const $Drawer = styled.aside<DrawerProps>`
+const drawerShouldForwardProp = (prop: string): boolean =>
+  prop !== 'stickyBarInUse';
+
+export const $Drawer = styled.aside.withConfig({
+  shouldForwardProp: drawerShouldForwardProp,
+})<DrawerProps>`
   @keyframes animate-open {
     100% {
       margin-right: 0;
@@ -17,8 +22,11 @@ export const $Drawer = styled.aside<DrawerProps>`
   bottom: 0;
   width: 520px;
   margin-right: -520px;
-  height: calc(100vh - ${(props: DrawerProps) => (props.stickyBarInUse ? '80' : '0')}px);
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.white};
+  height: calc(
+    100vh - ${(props: DrawerProps) => (props.stickyBarInUse ? '80' : '0')}px
+  );
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.white};
   z-index: 100;
   box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);
   display: flex;
@@ -37,7 +45,8 @@ export const $Close = styled.div`
   justify-content: center;
   align-items: center;
   position: fixed;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.white};
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.white};
   padding: 0 ${({ theme }: { theme: DefaultTheme }) => theme.spacing.s};
   right: 0px;
   animation: animate-open 0.3s ease-in-out forwards;
@@ -47,11 +56,8 @@ export const $Close = styled.div`
 `;
 
 export const $Top = styled.div`
-  margin: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.l} 0 ${({
-  theme,
-}: {
-  theme: DefaultTheme;
-}) => theme.spacing.l};
+  margin: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.l} 0
+    ${({ theme }: { theme: DefaultTheme }) => theme.spacing.l};
 `;
 
 export const $Title = styled.h3`
@@ -83,7 +89,8 @@ export const $Body = styled.div`
 
 export const $Bottom = styled.div`
   padding: 0 ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.black5};
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.black5};
   padding-top: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
   padding-bottom: ${({ theme }: { theme: DefaultTheme }) => theme.spacing.m};
 `;
