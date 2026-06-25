@@ -157,7 +157,7 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
             if (e.key === 'Enter' || e.key === ' ') uploadRef.current?.click();
           }}
         >
-          {uploadMutation.isLoading
+          {uploadMutation.isPending
             ? t('common:upload.isUploading')
             : t('common:handlerApplication.attachmentsDragAndDropPlaceholder')}
         </$DragDropArea>
@@ -180,7 +180,7 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
         <Button
           id="attachment-upload-button"
           onClick={() => uploadRef.current?.click()}
-          isLoading={uploadMutation.isLoading}
+          isLoading={uploadMutation.isPending}
           loadingText={t('common:upload.isUploading')}
           iconStart={<IconPlus />}
           theme={ButtonPresetTheme.Coat}

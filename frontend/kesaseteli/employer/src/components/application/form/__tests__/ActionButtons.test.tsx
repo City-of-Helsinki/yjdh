@@ -33,8 +33,8 @@ type ApplicationApiMock = {
   updateApplication: jest.Mock;
   sendApplication: jest.Mock;
   deleteApplication: jest.Mock;
-  updateApplicationQuery: { isLoading: boolean };
-  deleteApplicationQuery: { isLoading: boolean };
+  updateApplicationQuery: { isPending: boolean };
+  deleteApplicationQuery: { isPending: boolean };
 };
 
 type TestSetupOptions = {
@@ -57,8 +57,8 @@ jest.mock('shared/hooks/useGoToPage', () => jest.fn());
 jest.mock('shared/hooks/useLeaveConfirm', () => ({
   setLeaveConfirmBypassed: jest.fn(),
 }));
-jest.mock('react-query', () => ({
-  ...jest.requireActual('react-query'),
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
   useQueryClient: () => ({ invalidateQueries: jest.fn() }),
 }));
 jest.mock('kesaseteli/employer/utils/localstorage.utils', () => ({
@@ -111,8 +111,8 @@ describe('ActionButtons', () => {
     updateApplication: jest.fn(),
     sendApplication: mockSendApplication,
     deleteApplication: mockDeleteApplication,
-    updateApplicationQuery: { isLoading: false },
-    deleteApplicationQuery: { isLoading: false },
+    updateApplicationQuery: { isPending: false },
+    deleteApplicationQuery: { isPending: false },
   });
 
   const renderActionButtonsWithProps = (

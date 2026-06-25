@@ -1,9 +1,4 @@
-import {
-  ButtonSize,
-  ButtonVariant,
-  IconPenLine,
-  IconTrash,
-} from 'hds-react';
+import { ButtonSize, ButtonVariant, IconPenLine, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -20,8 +15,6 @@ import {
   $NoteContent,
 } from './NoteCard.sc';
 import NoteForm from './NoteForm';
-
-
 
 type Props = {
   note: HandlerNote;
@@ -60,7 +53,7 @@ const NoteCard: React.FC<Props> = ({ note }) => {
           initialNote={note}
           targetType={note.target_type}
           targetId={note.target_id}
-          isLoading={updateMutation.isLoading}
+          isLoading={updateMutation.isPending}
           onSubmit={(payload, onSuccess) =>
             updateMutation.mutate(payload as UpdateNotePayload, { onSuccess })
           }
@@ -106,7 +99,7 @@ const NoteCard: React.FC<Props> = ({ note }) => {
           isOpen={isDeleteDialogOpen}
           onClose={() => setIsDeleteDialogOpen(false)}
           onConfirm={handleDeleteConfirm}
-          isDeleting={deleteMutation.isLoading}
+          isDeleting={deleteMutation.isPending}
         />
       )}
     </$NoteCardContainer>

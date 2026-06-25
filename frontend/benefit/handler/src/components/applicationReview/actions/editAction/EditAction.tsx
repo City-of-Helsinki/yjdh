@@ -22,7 +22,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
 
   const {
     mutate: requireAdditionalInformation,
-    isLoading: isUpdatingApplication,
+    isPending: isUpdatingApplication,
   } = useRequireAdditionalInformation();
 
   const updateApplicationStatus = (

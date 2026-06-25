@@ -1,9 +1,9 @@
+import { useQueryClient } from '@tanstack/react-query';
 import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { ROUTES_FOR_ANONYMOUS_USERS } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import theme from 'shared/styles/theme';
 import User from 'shared/types/user';
@@ -73,7 +73,7 @@ export const UserProvider: React.FC<React.PropsWithChildren<unknown>> = ({
   const { data: user, isLoading, isFetching, isSuccess, isError } = userQuery;
 
   const clearUser = React.useCallback(() => {
-    queryClient.removeQueries(BackendEndpoint.USER);
+    queryClient.removeQueries({ queryKey: [BackendEndpoint.USER] });
   }, [queryClient]);
 
   const contextValue = React.useMemo(

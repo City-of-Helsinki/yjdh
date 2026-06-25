@@ -31,7 +31,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
     social_security_number,
   } = application;
   const { confirm } = useConfirm();
-  const { isLoading, mutate } = useCompleteYouthApplicationQuery(id);
+  const { isPending, mutate } = useCompleteYouthApplicationQuery(id);
   const icon = React.useMemo(
     () => ({
       accept: <IconCheck aria-hidden />,
@@ -55,7 +55,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
   };
 
   const isDisabled =
-    isLoading ||
+    isPending ||
     // Missing social security number requires birthdate for processing
     (!social_security_number && !non_vtj_birthdate);
 
@@ -67,7 +67,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
         data-testid="accept-button"
         iconStart={icon.accept}
         onClick={() => complete('accept')}
-        isLoading={isLoading}
+        isLoading={isPending}
         disabled={isDisabled}
         style={{ marginRight: theme.spacing.l }}
       >
@@ -79,7 +79,7 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
         iconStart={icon.reject}
         onClick={() => complete('reject')}
         loadingText={t(`common:handlerApplication.saving`)}
-        isLoading={isLoading}
+        isLoading={isPending}
         disabled={isDisabled}
       >
         {t(`common:handlerApplication.reject`)}

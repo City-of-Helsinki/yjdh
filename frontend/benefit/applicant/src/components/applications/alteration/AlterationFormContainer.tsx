@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
   $AlterationFormButtonContainer,
@@ -23,7 +24,6 @@ import {
 } from 'hds-react';
 import kebabCase from 'lodash/kebabCase';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import hdsToast from 'shared/components/toast/Toast';
@@ -45,7 +45,9 @@ const AlterationFormContainer: React.FC<Props> = ({
   const handleSuccess = async (
     response: ApplicationAlterationData
   ): Promise<void> => {
-    await queryClient.invalidateQueries(['applications', application.id]);
+    await queryClient.invalidateQueries({
+      queryKey: ['applications', application.id],
+    });
     onSuccess();
 
     const textKey =

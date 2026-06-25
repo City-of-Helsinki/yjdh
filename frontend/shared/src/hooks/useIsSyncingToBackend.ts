@@ -1,4 +1,4 @@
-import { useIsFetching, useIsMutating } from 'react-query';
+import { useIsFetching, useIsMutating } from '@tanstack/react-query';
 
 type SyncingToBackend = {
   isLoading: boolean;
@@ -7,7 +7,7 @@ type SyncingToBackend = {
 };
 
 const useIsSyncingToBackend = (): SyncingToBackend => {
-  const isLoading = useIsFetching({ fetching: false }) > 0;
+  const isLoading = useIsFetching() > 0;
   const isMutating = useIsMutating() > 0;
   return {
     isLoading,

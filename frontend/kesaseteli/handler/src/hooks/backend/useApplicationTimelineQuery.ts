@@ -1,3 +1,4 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import {
   APPLICATION_LIST_TYPES,
   ApplicationListType,
@@ -7,7 +8,7 @@ import {
   getEmployerApplicationTimelineKey,
   getYouthApplicationTimelineKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
@@ -23,15 +24,21 @@ const useApplicationTimelineQuery = (
       ? getYouthApplicationTimelineKey(applicationId ?? '')
       : getEmployerApplicationTimelineKey(applicationId ?? '');
 
-  return useQuery(
-    timelineKey,
-    () =>
+  const query = useQuery({
+    queryKey: [timelineKey],
+    queryFn: () =>
       handleResponse<TimelineItem[]>(axios.get<TimelineItem[]>(timelineKey)),
-    {
-      enabled: Boolean(applicationId),
-      onError: handleError,
+    enabled: Boolean(applicationId),
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      handleError(query.error);
     }
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.isError, query.error]);
+
+  return query;
 };
 
 export default useApplicationTimelineQuery;

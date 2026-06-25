@@ -1,10 +1,10 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import {
   ApplicantConsents,
   ApproveTermsOfServiceResponseData,
   User,
 } from 'benefit-shared/types/application';
-import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApproveTermsOfServiceMutation = (): UseMutationResult<
@@ -14,9 +14,9 @@ const useApproveTermsOfServiceMutation = (): UseMutationResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
 
-  return useMutation<ApproveTermsOfServiceResponseData, unknown, User>(
-    'approveTermsOfService',
-    (user: User) =>
+  return useMutation<ApproveTermsOfServiceResponseData, unknown, User>({
+    mutationKey: ['approveTermsOfService'],
+    mutationFn: (user: User) =>
       handleResponse<ApproveTermsOfServiceResponseData>(
         axios.post(BackendEndpoint.APPROVE_TERMS_OF_SERVICE, {
           terms: user.termsOfServiceInEffect.id,
@@ -25,8 +25,8 @@ const useApproveTermsOfServiceMutation = (): UseMutationResult<
               (item: ApplicantConsents) => item.id
             ),
         })
-      )
-  );
+      ),
+  });
 };
 
 export default useApproveTermsOfServiceMutation;

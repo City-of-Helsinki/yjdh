@@ -1,7 +1,11 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import { ErrorData } from '../types/common';
@@ -18,9 +22,9 @@ const useUpdateApplicationAlterationWithCsvQuery = (): UseMutationResult<
   const { axios } = useBackendAPI();
   const queryClient = useQueryClient();
 
-  return useMutation(
-    'updateApplicationAlterationWithCsv',
-    async ({ id, applicationId, data }) => {
+  return useMutation({
+    mutationKey: ['updateApplicationAlterationWithCsv'],
+    mutationFn: async ({ id, applicationId, data }) => {
       const params = `?application_id=${applicationId}&alteration_id=${id}`;
       const endpoint = `${BackendEndpoint.HANDLER_APPLICATION_ALTERATION_UPDATE_WITH_CSV}${params}`;
 
@@ -40,12 +44,12 @@ const useUpdateApplicationAlterationWithCsvQuery = (): UseMutationResult<
       }
       throw new Error('Unexpected response type');
     },
-    {
-      onSuccess: (_, { applicationId }) => {
-        void queryClient.invalidateQueries(['applications', applicationId]);
-      },
-    }
-  );
+    onSuccess: (_, { applicationId }) => {
+      void queryClient.invalidateQueries({
+        queryKey: ['applications', applicationId],
+      });
+    },
+  });
 };
 
 export default useUpdateApplicationAlterationWithCsvQuery;

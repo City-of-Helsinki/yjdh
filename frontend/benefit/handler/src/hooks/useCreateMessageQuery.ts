@@ -1,9 +1,13 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { MESSAGE_URLS } from 'benefit-shared/constants';
 import { MessageData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -24,22 +28,20 @@ const useCreateMessageQuery = (
     );
   };
 
-  return useMutation(
-    ['createMessage', applicationId, messageType],
-    (message: MessageData) =>
+  return useMutation({
+    mutationKey: ['createMessage', applicationId, messageType],
+    mutationFn: (message: MessageData) =>
       handleResponse<MessageData>(
         axios.post(
           `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${messageType}`,
           message
         )
       ),
-    {
-      onSuccess: () => {
-        void queryClient.invalidateQueries('messages');
-      },
-      onError: () => handleError(),
-    }
-  );
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['messages'] });
+    },
+    onError: () => handleError(),
+  });
 };
 
 export default useCreateMessageQuery;

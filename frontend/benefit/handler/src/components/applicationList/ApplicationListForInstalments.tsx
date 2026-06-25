@@ -105,7 +105,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
     isInstalmentChangeDateDialogShown,
     setIsInstalmentChangeDateDialogShown,
   ] = React.useState(false);
-  const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
+  const { mutate: changeInstalmentStatus, isPending: isLoadingStatusChange } =
     useInstalmentStatusTransition();
   const { mutate: changeInstalmentDate } = useInstalmentDateChange();
 

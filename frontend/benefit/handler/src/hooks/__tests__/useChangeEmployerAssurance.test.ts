@@ -1,15 +1,15 @@
 import '@testing-library/jest-dom';
 import '../../../test/i18n/i18n-test';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useMutation, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import useChangeEmployerAssurance from '../useChangeEmployerAssurance';
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   useMutation: jest.fn(),
   useQueryClient: jest.fn(),
 }));
@@ -68,16 +68,14 @@ describe('useChangeEmployerAssurance', () => {
 
     mutationOptions = {};
 
-    (useMutation as jest.Mock).mockImplementation(
-      (_key, passedMutationFn, options) => {
-        mutationFn.mockImplementation(passedMutationFn);
-        mutationOptions = options;
-        return {
-          mutate: jest.fn(),
-          mutateAsync: jest.fn(),
-        };
-      }
-    );
+    (useMutation as jest.Mock).mockImplementation((options) => {
+      mutationFn.mockImplementation(options.mutationFn);
+      mutationOptions = options;
+      return {
+        mutate: jest.fn(),
+        mutateAsync: jest.fn(),
+      };
+    });
   });
 
   it('optimistically updates cache on mutate', async () => {
@@ -86,7 +84,7 @@ describe('useChangeEmployerAssurance', () => {
         return { id: 'application-id', employerAssurance: false };
       }
 
-      if (queryKey === 'applications') {
+      if (Array.isArray(queryKey) && queryKey[0] === 'applications') {
         return [{ id: 'application-id', employerAssurance: false }];
       }
 
@@ -100,15 +98,20 @@ describe('useChangeEmployerAssurance', () => {
       employerAssurance: true,
     });
 
-    expect(cancelQueries).toHaveBeenCalledWith('application');
-    expect(cancelQueries).toHaveBeenCalledWith('applications');
+    expect(cancelQueries).toHaveBeenCalledWith({
+      queryKey: ['application'],
+    });
+
+    expect(cancelQueries).toHaveBeenCalledWith({
+      queryKey: ['applications'],
+    });
 
     expect(setQueryData).toHaveBeenCalledWith(
       ['application', 'application-id'],
       expect.any(Function)
     );
     expect(setQueryData).toHaveBeenCalledWith(
-      'applications',
+      ['applications'],
       expect.any(Function)
     );
 
@@ -169,7 +172,8 @@ describe('useChangeEmployerAssurance', () => {
     });
 
     const applicationsUpdateCall = setQueryData.mock.calls.find(
-      ([queryKey]: [unknown]) => queryKey === 'applications'
+      ([queryKey]: [unknown]) =>
+        Array.isArray(queryKey) && queryKey[0] === 'applications'
     );
 
     const applicationsUpdater = applicationsUpdateCall?.[1] as
@@ -197,11 +201,13 @@ describe('useChangeEmployerAssurance', () => {
       employerAssurance: true,
     });
 
-    expect(invalidateQueries).toHaveBeenCalledWith('applications');
-    expect(invalidateQueries).toHaveBeenCalledWith([
-      'application',
-      'application-id',
-    ]);
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['applications'],
+    });
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['application', 'application-id'],
+    });
   });
 
   it.each<[string, unknown]>([
@@ -221,9 +227,10 @@ describe('useChangeEmployerAssurance', () => {
         ['application', 'application-id'],
         { id: 'application-id', employerAssurance: false }
       );
-      expect(setQueryData).toHaveBeenCalledWith('applications', [
-        { id: 'application-id', employerAssurance: false },
-      ]);
+      expect(setQueryData).toHaveBeenCalledWith(
+        ['applications'],
+        [{ id: 'application-id', employerAssurance: false }]
+      );
     } else {
       expect(setQueryData).not.toHaveBeenCalled();
     }

@@ -1,8 +1,8 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useGoToPage from 'shared/hooks/useGoToPage';
 
@@ -22,7 +22,7 @@ const createWrapper = (): {
     defaultOptions: {
       queries: {
         retry: false,
-        queryFn: jest.fn(),
+        queryFn: () => null, // Provide a default query function to avoid errors during testing),
       },
     },
   });

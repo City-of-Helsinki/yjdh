@@ -1,8 +1,8 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
-import { QueryClientProvider } from 'react-query';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
@@ -67,15 +67,21 @@ describe('useCreateNoteMutation', () => {
 
     await result.current.mutateAsync(payload);
 
-    expect(invalidateQueriesSpy).toHaveBeenCalledWith(
-      `${BackendEndpoint.HANDLER_NOTES}?target_type=${TEST_TARGET_TYPE}&target_id=${TEST_TARGET_ID}`
-    );
-    expect(invalidateQueriesSpy).toHaveBeenCalledWith(
-      `${BackendEndpoint.YOUTH_APPLICATIONS}${TEST_TARGET_ID}/timeline/`
-    );
-    expect(invalidateQueriesSpy).toHaveBeenCalledWith(
-      `${BackendEndpoint.EMPLOYER_APPLICATIONS}${TEST_TARGET_ID}/timeline/`
-    );
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.HANDLER_NOTES}?target_type=${TEST_TARGET_TYPE}&target_id=${TEST_TARGET_ID}`,
+      ],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.YOUTH_APPLICATIONS}${TEST_TARGET_ID}/timeline/`,
+      ],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.EMPLOYER_APPLICATIONS}${TEST_TARGET_ID}/timeline/`,
+      ],
+    });
     expect(nock.isDone()).toBe(true);
   });
 

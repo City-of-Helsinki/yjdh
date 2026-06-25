@@ -1,3 +1,8 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import {
   BATCH_STATUSES,
@@ -7,7 +12,6 @@ import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -53,9 +57,9 @@ const useBatchInspected = (
     );
   };
 
-  return useMutation<Response, Error, Payload>(
-    'changeBatchStatus',
-    ({ id, status, form }: Payload) => {
+  return useMutation<Response, Error, Payload>({
+    mutationKey: ['changeBatchStatus'],
+    mutationFn: ({ id, status, form }: Payload) => {
       const formattedForm = form
         ? {
             ...form,
@@ -74,33 +78,31 @@ const useBatchInspected = (
       );
       return handleResponse<Response>(request);
     },
-    {
-      onSuccess: ({ status: backendStatus }: Response) => {
-        showSuccessToast(
-          t(
-            `common:batches.notifications.statusChange.${backendStatus}.heading`
-          ),
-          t(`common:batches.notifications.statusChange.${backendStatus}.text`, {
-            count: numberOfApplications,
-          })
-        );
+    onSuccess: ({ status: backendStatus }: Response) => {
+      showSuccessToast(
+        t(`common:batches.notifications.statusChange.${backendStatus}.heading`),
+        t(`common:batches.notifications.statusChange.${backendStatus}.text`, {
+          count: numberOfApplications,
+        })
+      );
 
-        if (
-          [BATCH_STATUSES.COMPLETED, BATCH_STATUSES.DECIDED_ACCEPTED].includes(
-            backendStatus
-          )
-        ) {
-          setBatchCloseAnimation?.(true);
-          setTimeout(() => {
-            void queryClient.invalidateQueries('applicationsList');
-          }, 700);
-        } else {
-          void queryClient.invalidateQueries('applicationsList');
-        }
-      },
-      onError: () => handleError(),
-    }
-  );
+      if (
+        [BATCH_STATUSES.COMPLETED, BATCH_STATUSES.DECIDED_ACCEPTED].includes(
+          backendStatus
+        )
+      ) {
+        setBatchCloseAnimation?.(true);
+        setTimeout(() => {
+          void queryClient.invalidateQueries({
+            queryKey: ['applicationsList'],
+          });
+        }, 700);
+      } else {
+        void queryClient.invalidateQueries({ queryKey: ['applicationsList'] });
+      }
+    },
+    onError: () => handleError(),
+  });
 };
 
 export default useBatchInspected;

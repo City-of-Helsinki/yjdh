@@ -1,9 +1,9 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { act, renderHook } from '@testing-library/react';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { useRouter } from 'next/router';
-import { useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import Application from 'shared/types/application';
 
@@ -16,7 +16,7 @@ jest.mock('kesaseteli/employer/hooks/backend/useCreateApplicationQuery');
 jest.mock('shared/hooks/useLocale', () => jest.fn(() => 'fi'));
 jest.mock('shared/hooks/useErrorHandler', () => jest.fn(() => jest.fn()));
 jest.mock('shared/hooks/useBackendAPI');
-jest.mock('react-query');
+jest.mock('@tanstack/react-query');
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));

@@ -419,7 +419,7 @@ AlterationAccordionItemProps): React.ReactElement => {
             isOpen
             onClose={() => setIsDeleteModalOpen(false)}
             onDelete={deleteItem}
-            isDeleting={deleteStatus === 'loading'}
+            isDeleting={deleteStatus === 'pending'}
           />
         )}
         {isDeleteModalOpen && cancellable && (
@@ -427,7 +427,7 @@ AlterationAccordionItemProps): React.ReactElement => {
             isOpen
             onClose={() => setIsDeleteModalOpen(false)}
             onSetCancelled={setItemCancelled}
-            isDeleting={cancelStatus === 'loading'}
+            isDeleting={cancelStatus === 'pending'}
             alteration={alteration}
           />
         )}

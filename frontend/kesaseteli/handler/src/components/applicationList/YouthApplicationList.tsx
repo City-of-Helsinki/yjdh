@@ -1,7 +1,7 @@
+import { UseQueryResult } from '@tanstack/react-query';
 import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { UseQueryResult } from 'react-query/types/react/types';
 import useLocale from 'shared/hooks/useLocale';
 import styled from 'styled-components';
 

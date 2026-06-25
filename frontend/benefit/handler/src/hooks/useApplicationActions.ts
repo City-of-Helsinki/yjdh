@@ -65,7 +65,7 @@ const useApplicationActions = (
 
   return {
     updateStatus,
-    isUpdatingApplication: updateApplicationQuery.isLoading,
+    isUpdatingApplication: updateApplicationQuery.isPending,
   };
 };
 

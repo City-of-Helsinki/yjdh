@@ -199,7 +199,7 @@ const AlterationAccordionItem = ({
           onClose={() => setIsDeleteModalOpen(false)}
           onDelete={deleteItem}
           alteration={alteration}
-          isDeleting={deleteStatus === 'loading'}
+          isDeleting={deleteStatus === 'pending'}
         />
       )}
     </$AlterationAccordionItem>
