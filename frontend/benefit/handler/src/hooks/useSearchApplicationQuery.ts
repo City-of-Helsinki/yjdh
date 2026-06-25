@@ -1,6 +1,6 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -27,8 +27,8 @@ const useSearchApplicationQuery = (
       t('common:applications.list.errors.fetch.text', { status: 'error' })
     );
   };
-  return useMutation<SearchResponse, Error, string>(
-    async (q: string) => {
+  return useMutation<SearchResponse, Error, string>({
+    mutationFn: async (q: string) => {
       const params: {
         q: string;
         archived?: string;
@@ -54,10 +54,8 @@ const useSearchApplicationQuery = (
       });
       return handleResponse(res);
     },
-    {
-      onError: () => handleError(),
-    }
-  );
+    onError: () => handleError(),
+  });
 };
 
 export default useSearchApplicationQuery;

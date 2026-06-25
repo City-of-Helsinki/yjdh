@@ -1,7 +1,8 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useEffect } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -14,15 +15,6 @@ const useApplicationsQuery = (
 ): UseQueryResult<ApplicationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
-
-  const handleError = (): void => {
-    showErrorToast(
-      t('common:applications.list.errors.fetch.label'),
-      t('common:applications.list.errors.fetch.text', {
-        status,
-      })
-    );
-  };
 
   const params: {
     status: string;
@@ -44,9 +36,9 @@ const useApplicationsQuery = (
     params.filter_archived = '1';
   }
 
-  return useQuery<ApplicationData[], Error>(
-    ['applicationsList', ...status],
-    async () => {
+  const query = useQuery<ApplicationData[], Error>({
+    queryKey: ['applicationsList', ...status],
+    queryFn: async () => {
       const res = axios.get<ApplicationData[]>(
         `${BackendEndpoint.HANDLER_APPLICATIONS_SIMPLIFIED}`,
         {
@@ -55,10 +47,20 @@ const useApplicationsQuery = (
       );
       return handleResponse(res);
     },
-    {
-      onError: () => handleError(),
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      showErrorToast(
+        t('common:applications.list.errors.fetch.label'),
+        t('common:applications.list.errors.fetch.text', {
+          status,
+        })
+      );
     }
-  );
+  }, [query, status, t]);
+
+  return query;
 };
 
 export default useApplicationsQuery;

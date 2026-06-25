@@ -1,6 +1,10 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import noop from 'lodash/noop';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/application';
@@ -13,9 +17,9 @@ const useUpdateApplicationQuery = (
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const language = useLocale();
-  return useMutation(
-    `${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`,
-    (application: DraftApplication) =>
+  return useMutation({
+    mutationKey: [`${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`],
+    mutationFn: (application: DraftApplication) =>
       id
         ? handleResponse<Application>(
             axios.put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/`, {
@@ -24,18 +28,16 @@ const useUpdateApplicationQuery = (
             })
           )
         : Promise.reject(new Error('Missing id')),
-    {
-      onSuccess: (application) => {
-        onSuccess(application);
-        void queryClient.invalidateQueries(
-          `${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`
-        );
-        void queryClient.invalidateQueries(
-          BackendEndpoint.EMPLOYER_APPLICATIONS
-        );
-      },
-    }
-  );
+    onSuccess: (application) => {
+      onSuccess(application);
+      void queryClient.invalidateQueries({
+        queryKey: [`${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [BackendEndpoint.EMPLOYER_APPLICATIONS],
+      });
+    },
+  });
 };
 
 export default useUpdateApplicationQuery;

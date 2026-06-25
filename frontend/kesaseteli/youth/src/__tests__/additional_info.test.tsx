@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import {
   expectToGetSummerVoucherConfigurationFromBackend,
@@ -51,6 +52,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   it(`shows that application is not found when id query param is not present`, async () => {
     renderPage(AdditionalInfoPage, { query: {} });
+    await screen.findByTestId('additional-info');
     await getAdditionalInfoPageApi().expectations.notificationIsPresent(
       'notFound'
     );

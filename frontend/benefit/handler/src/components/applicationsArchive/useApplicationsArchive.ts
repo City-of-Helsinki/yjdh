@@ -96,7 +96,7 @@ const useApplicationsArchive = (
 
   const {
     data: searchResults,
-    isLoading: isSearchLoading,
+    isPending: isSearchLoading,
     error,
     mutate: getSearchResults,
   } = useSearchApplicationQuery(

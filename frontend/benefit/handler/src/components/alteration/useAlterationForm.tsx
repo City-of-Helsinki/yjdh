@@ -42,7 +42,7 @@ const useAlterationForm = ({
   const {
     mutate: createQuery,
     error,
-    isLoading,
+    isPending,
   } = useCreateApplicationAlterationQuery({
     onSuccess,
   });
@@ -110,7 +110,7 @@ const useAlterationForm = ({
     formik,
     language,
     isSubmitted,
-    isSubmitting: isLoading,
+    isSubmitting: isPending,
     handleSubmit,
     error: (error as AxiosError) || null,
   };

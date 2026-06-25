@@ -1,32 +1,34 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationData } from 'benefit-shared/types/application';
-import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-const useApplicationsQuery = ({
-                                status,
-                                isArchived,
-                                orderBy = 'id',
-                                secondInstalmentStatus,
-                              }: {
+type Params = {
   status: string[];
   isArchived?: boolean;
   orderBy?: string;
   secondInstalmentStatus?: string;
-}): UseQueryResult<ApplicationData[], Error> => {
+};
+
+const useApplicationsQuery = ({
+  status,
+  isArchived,
+  orderBy = 'id',
+  secondInstalmentStatus,
+}: Params): UseQueryResult<ApplicationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
 
-  return useQuery<ApplicationData[], Error>(
-    [
+  return useQuery<ApplicationData[], Error>({
+    queryKey: [
       'applicationsList',
       ...status,
       orderBy,
       isArchived ? '1' : '0',
       secondInstalmentStatus ?? '',
     ],
-    async () => {
+    queryFn: async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.APPLICATIONS_SIMPLIFIED}`,
+        BackendEndpoint.APPLICATIONS_SIMPLIFIED,
         {
           params: {
             status: status.join(','),
@@ -38,10 +40,8 @@ const useApplicationsQuery = ({
       );
       return handleResponse(res);
     },
-    {
-      retry: false,
-    }
-  );
+    retry: false,
+  });
 };
 
 export default useApplicationsQuery;

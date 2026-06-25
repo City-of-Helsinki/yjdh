@@ -1,8 +1,12 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { INSTALMENT_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -24,31 +28,29 @@ const useInstalmentStatusTransition = (): UseMutationResult<
     null,
     AxiosError<Error, Record<string, string[]>>,
     Payload
-  >(
-    'instalments',
-    ({ id, status }: Payload) =>
+  >({
+    mutationKey: ['instalments'],
+    mutationFn: ({ id, status }: Payload) =>
       handleResponse(
         axios.patch(
           `${HandlerEndpoint.HANDLER_INSTALMENT_STATUS_TRANSITION(id)}`,
           { status }
         )
       ),
-    {
-      onSuccess: () => {
-        void queryClient.invalidateQueries('applicationsList');
-        void queryClient.invalidateQueries('application');
-        void queryClient.invalidateQueries('applications');
-      },
-      onError: (error: AxiosError<Error, Record<string, string[]>>) => {
-        showErrorToast(
-          t('common:error.generic.label'),
-          t('common:error.generic.text')
-        );
-        // eslint-disable-next-line no-console
-        console.log(error);
-      },
-    }
-  );
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['applicationsList'] });
+      void queryClient.invalidateQueries({ queryKey: ['application'] });
+      void queryClient.invalidateQueries({ queryKey: ['applications'] });
+    },
+    onError: (error: AxiosError<Error, Record<string, string[]>>) => {
+      showErrorToast(
+        t('common:error.generic.label'),
+        t('common:error.generic.text')
+      );
+      // eslint-disable-next-line no-console
+      console.log(error);
+    },
+  });
 };
 
 export default useInstalmentStatusTransition;

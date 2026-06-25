@@ -1,9 +1,9 @@
+import { QueryClient, QueryFunctionContext } from '@tanstack/react-query';
 import Axios, { AxiosInstance } from 'axios';
 import {
   BackendEndPoints,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
 import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
 import { isString } from 'shared/utils/type-guards';
 
@@ -33,13 +33,11 @@ const createQueryClient = (): QueryClient =>
         retry: (failureCount, error) =>
           process.env.NODE_ENV === 'production' &&
           failureCount < 3 &&
-          !/40[134]/.test((error as Error).message),
+          !/40[134]/.test(error.message),
         staleTime: 30_000,
-        notifyOnChangeProps: 'tracked',
-        queryFn: async <T>({
-          queryKey: [url],
-        }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
-          // Best practice: https://react-query.tanstack.com/guides/default-query-function
+        queryFn: async <T>({ queryKey }: QueryFunctionContext): Promise<T> => {
+          const [url] = queryKey;
+
           if (
             isString(url) &&
             BackendEndPoints.some((endpoint) => url.startsWith(endpoint))

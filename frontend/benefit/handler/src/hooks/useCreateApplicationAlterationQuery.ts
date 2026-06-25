@@ -1,7 +1,7 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
-import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import { ErrorData } from '../types/common';
@@ -14,7 +14,7 @@ const useCreateApplicationAlterationQuery = ({
   onSuccess,
 }: Props): UseMutationResult<
   ApplicationAlterationData,
-  AxiosError<unknown>,
+  AxiosError<ErrorData>,
   ApplicationAlterationData
 > => {
   const { axios, handleResponse } = useBackendAPI();
@@ -23,16 +23,14 @@ const useCreateApplicationAlterationQuery = ({
     ApplicationAlterationData,
     AxiosError<ErrorData>,
     ApplicationAlterationData
-  >(
-    'createApplicationAlteration',
-    (alteration: ApplicationAlterationData) =>
+  >({
+    mutationKey: ['createApplicationAlteration'],
+    mutationFn: (alteration: ApplicationAlterationData) =>
       handleResponse<ApplicationAlterationData>(
         axios.post(BackendEndpoint.HANDLER_APPLICATION_ALTERATION, alteration)
       ),
-    {
-      onSuccess,
-    }
-  );
+    onSuccess,
+  });
 };
 
 export default useCreateApplicationAlterationQuery;

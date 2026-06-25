@@ -1,15 +1,15 @@
+import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import {
   BackendEndpoint,
   getYouthApplicationQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import {
-  useMutation,
-  UseMutationOptions,
-  UseMutationResult,
-  useQueryClient,
-} from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
@@ -31,10 +31,12 @@ const useCompleteYouthApplicationQuery = (
           encrypted_handler_vtj_json,
         })
       ),
-    onSuccess: (data, operation, context) => {
-      void queryClient.invalidateQueries(getYouthApplicationQueryKey(id));
+    onSuccess: (data, variables, onMutateResult, context) => {
+      void queryClient.invalidateQueries({
+        queryKey: [getYouthApplicationQueryKey(id)],
+      });
       if (onSuccess) {
-        void onSuccess(data, operation, context);
+        void onSuccess(data, variables, onMutateResult, context);
       }
     },
     onError: useErrorHandler(),

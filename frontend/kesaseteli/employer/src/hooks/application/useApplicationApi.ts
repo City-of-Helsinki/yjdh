@@ -1,3 +1,8 @@
+import {
+  UseMutationResult,
+  useQueryClient,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import Axios from 'axios';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useDeleteApplicationQuery from 'kesaseteli/employer/hooks/backend/useDeleteApplicationQuery';
@@ -9,7 +14,6 @@ import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import { ErrorOption } from 'react-hook-form';
-import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
@@ -289,7 +293,9 @@ const useApplicationApi = <T = Application>(
     (onSuccess: () => void | Promise<void>) => () => {
       clearLocalStorage(`application-${applicationId}`);
       ApplicationPersistenceService.clearAll();
-      void queryClient.invalidateQueries(BackendEndpoint.EMPLOYER_APPLICATIONS);
+      void queryClient.invalidateQueries({
+        queryKey: [BackendEndpoint.EMPLOYER_APPLICATIONS],
+      });
       return onSuccess();
     };
 

@@ -1,5 +1,6 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
@@ -12,9 +13,9 @@ const useApplicationsQuery = <T = Application[]>(
   const { axios, handleResponse } = useBackendAPI();
   const defaultErrorHandler = useErrorHandler();
 
-  return useQuery(
-    [BackendEndpoint.EMPLOYER_APPLICATIONS, { onlyMine }],
-    () =>
+  const query = useQuery({
+    queryKey: [BackendEndpoint.EMPLOYER_APPLICATIONS, { onlyMine }],
+    queryFn: () =>
       handleResponse<Application[]>(
         axios.get(BackendEndpoint.EMPLOYER_APPLICATIONS, {
           params: {
@@ -22,15 +23,21 @@ const useApplicationsQuery = <T = Application[]>(
           },
         })
       ),
-    {
-      select: select
-        ? (applications: Application[]) => select(applications)
-        : undefined,
-      staleTime: Infinity,
-      retryDelay: 3000,
-      onError: onError ?? defaultErrorHandler,
+    select: select
+      ? (applications: Application[]) => select(applications)
+      : undefined,
+    staleTime: Infinity,
+    retryDelay: 3000,
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      const errorHandler = onError ?? defaultErrorHandler;
+      errorHandler(query.error);
     }
-  );
+  }, [query, defaultErrorHandler, onError]);
+
+  return query;
 };
 
 export default useApplicationsQuery;

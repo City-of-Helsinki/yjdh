@@ -1,10 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import theme from 'shared/styles/theme';
 import Application from 'shared/types/application';

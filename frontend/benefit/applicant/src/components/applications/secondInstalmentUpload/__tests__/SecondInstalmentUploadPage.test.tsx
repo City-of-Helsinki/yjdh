@@ -171,7 +171,7 @@ const setupMocks = ({
   respondIsLoading = false,
   changeEmployerAssuranceIsLoading = false,
 }: {
-  attachments?: typeof payslipAttachment[];
+  attachments?: (typeof payslipAttachment)[];
   employerAssurance?: boolean;
   info?: typeof secondInstalmentInfo;
   infoIsError?: boolean;
@@ -194,12 +194,12 @@ const setupMocks = ({
 
   mockedUseSecondInstalmentRespondMutation.mockReturnValue({
     mutate: secondInstalmentRespondMock,
-    isLoading: respondIsLoading,
+    isPending: respondIsLoading,
   } as unknown as ReturnType<typeof useSecondInstalmentRespondMutation>);
 
   mockedUseChangeEmployerAssuranceMutation.mockReturnValue({
     mutate: changeEmployerAssuranceMock,
-    isLoading: changeEmployerAssuranceIsLoading,
+    isPending: changeEmployerAssuranceIsLoading,
   } as unknown as ReturnType<typeof useChangeEmployerAssuranceMutation>);
 };
 

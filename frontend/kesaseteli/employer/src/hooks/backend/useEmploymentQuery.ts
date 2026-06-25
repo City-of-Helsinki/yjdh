@@ -1,5 +1,5 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { EmploymentBase } from 'shared/types/employment';
 
@@ -17,9 +17,9 @@ const useEmploymentQuery = (): UseMutationResult<
   EmploymentArgs
 > => {
   const { axios, handleResponse } = useBackendAPI();
-  return useMutation(
-    `${BackendEndpoint.EMPLOYMENT}`,
-    ({
+  return useMutation({
+    mutationKey: [BackendEndpoint.EMPLOYMENT],
+    mutationFn: ({
       employer_summer_voucher_id,
       employee_name,
       summer_voucher_serial_number,
@@ -36,8 +36,8 @@ const useEmploymentQuery = (): UseMutationResult<
               employee_name,
               summer_voucher_serial_number,
             })
-          )
-  );
+          ),
+  });
 };
 
 export default useEmploymentQuery;

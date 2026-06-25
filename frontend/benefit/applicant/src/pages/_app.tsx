@@ -4,6 +4,7 @@ import 'benefit-shared/styles/app.css';
 import 'hds-design-tokens';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import Layout from 'benefit/applicant/components/layout/Layout';
 import AppContextProvider from 'benefit/applicant/context/AppContextProvider';
@@ -19,7 +20,6 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import isServerSide from 'shared/server/is-server-side';

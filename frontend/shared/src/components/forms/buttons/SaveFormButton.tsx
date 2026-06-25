@@ -1,3 +1,4 @@
+import { UseMutationResult } from '@tanstack/react-query';
 import { ButtonPresetTheme, ButtonVariant } from 'hds-react';
 import React from 'react';
 import {
@@ -6,7 +7,6 @@ import {
   SubmitHandler,
   useFormContext,
 } from 'react-hook-form';
-import { UseMutationResult } from 'react-query';
 import Button from 'shared/components/button/Button';
 import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
@@ -43,8 +43,8 @@ const SaveFormButton = <
   const onDefaultError = useErrorHandler();
 
   const isSaving = React.useMemo(
-    () => saveQuery.isLoading || formState.isSubmitting,
-    [saveQuery.isLoading, formState.isSubmitting]
+    () => saveQuery.isPending || formState.isSubmitting,
+    [saveQuery.isPending, formState.isSubmitting]
   );
   const handleSaving: SubmitHandler<FormData> = React.useCallback(
     (formData) => {

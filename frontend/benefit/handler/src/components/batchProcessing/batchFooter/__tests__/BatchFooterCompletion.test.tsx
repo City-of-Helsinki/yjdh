@@ -62,7 +62,7 @@ function DownloadStateWrapper(): React.ReactElement {
 
   mockUseDownloadP2PFile.mockReturnValue({
     isError: error,
-    isLoading: loading,
+    isPending: loading,
     mutate: downloadP2PFile,
   } as never);
 
@@ -111,7 +111,7 @@ describe('BatchFooterCompletion', () => {
 
     mockUseDownloadP2PFile.mockReturnValue({
       isError: false,
-      isLoading: false,
+      isPending: false,
       mutate: downloadP2PFile,
     } as never);
   });

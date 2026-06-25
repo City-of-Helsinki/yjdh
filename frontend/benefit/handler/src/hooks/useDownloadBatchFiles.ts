@@ -1,6 +1,6 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { downloadFile } from 'shared/utils/file.utils';
@@ -23,22 +23,20 @@ const useDownloadBatchFiles = (): UseMutationResult<
     );
   };
 
-  return useMutation<ArrayBufferData, Error, BatchID>(
-    'downloadBatchFiles',
-    (batchId: BatchID) => {
+  return useMutation<ArrayBufferData, Error, BatchID>({
+    mutationKey: ['downloadBatchFiles'],
+    mutationFn: (batchId: BatchID) => {
       const res = axios.get<ArrayBufferData>(
         HandlerEndpoint.BATCH_DOWNLOAD_PDF_FILES(batchId),
         { responseType: 'arraybuffer' }
       );
       return handleResponse<ArrayBufferData>(res);
     },
-    {
-      onSuccess: (data) => {
-        downloadFile(data, 'csv/pdf');
-      },
-      onError: () => handleError(),
-    }
-  );
+    onSuccess: (data) => {
+      downloadFile(data, 'csv/pdf');
+    },
+    onError: () => handleError(),
+  });
 };
 
 export default useDownloadBatchFiles;

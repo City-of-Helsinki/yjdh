@@ -16,6 +16,7 @@
   "dependencies": {
     "@frontend/shared": "workspace:*",
     "@sentry/nextjs": "^10.56.0",
+    "@tanstack/react-query": "5.101.0",
     "axios": "^1.17.0",
     "camelcase-keys": "^7.0.1",
     "date-fns": "^2.24.0",
@@ -27,7 +28,6 @@
     "next-router-mock": "0.9.12",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-query": "^3.34.0",
     "styled-components": "^6.1.19",
     "yup": "^0.32.9"
   },

@@ -1,10 +1,10 @@
+import { UseMutationResult, useQueryClient } from '@tanstack/react-query';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';

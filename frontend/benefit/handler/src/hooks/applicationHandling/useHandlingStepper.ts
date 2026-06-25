@@ -1,7 +1,7 @@
+import { QueryClient } from '@tanstack/react-query';
 import { StepState } from 'hds-react';
 import { TFunction } from 'next-i18next';
 import { useReducer } from 'react';
-import { QueryClient } from 'react-query';
 
 type ApplicationStepperProps = {
   stepState: StepStateType;
@@ -50,8 +50,8 @@ const mapCompleteStep = (
       label: step.label,
     };
   }
-  void queryClient.invalidateQueries('applications');
-  void queryClient.invalidateQueries('application');
+  void queryClient.invalidateQueries({ queryKey: ['applications'] });
+  void queryClient.invalidateQueries({ queryKey: ['application'] });
   return step;
 };
 
@@ -81,7 +81,9 @@ const useApplicationStepper = (
             activeStepIndex: action.payload,
             steps: state.steps.map((step, index: number) => {
               if (index === action.payload) {
-                void queryClient.invalidateQueries(['applications', id]);
+                void queryClient.invalidateQueries({
+                  queryKey: ['applications', id],
+                });
                 return {
                   state: StepState.available,
                   label: step.label,

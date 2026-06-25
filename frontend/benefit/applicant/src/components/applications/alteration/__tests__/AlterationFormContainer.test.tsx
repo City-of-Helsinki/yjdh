@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useQueryClient } from '@tanstack/react-query';
 import { RenderResult, screen, waitFor } from '@testing-library/react';
 import { AxiosError } from 'axios';
 import { createMockApplication } from 'benefit/applicant/__tests__/utils/mock-data';
@@ -9,14 +10,13 @@ import useCreateApplicationAlterationQuery from 'benefit/applicant/hooks/useCrea
 import { ALTERATION_TYPE } from 'benefit-shared/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
 
 jest.mock('benefit/applicant/hooks/useCreateApplicationAlterationQuery');
 
-jest.mock('react-query', () => {
-  const actual = jest.requireActual('react-query');
+jest.mock('@tanstack/react-query', () => {
+  const actual = jest.requireActual('@tanstack/react-query');
   return {
     ...actual,
     useQueryClient: jest.fn(),
@@ -65,7 +65,7 @@ describe('AlterationFormContainer', () => {
     (useCreateApplicationAlterationQuery as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
       error: null,
-      isLoading: false,
+      isPending: false,
     });
     (useQueryClient as jest.Mock).mockReturnValue({
       invalidateQueries: mockInvalidateQueries,
@@ -83,7 +83,7 @@ describe('AlterationFormContainer', () => {
     (useCreateApplicationAlterationQuery as jest.Mock).mockImplementation(
       ({ onSuccess }) => {
         capturedOnSuccess = onSuccess;
-        return { mutate: jest.fn(), error: null, isLoading: false };
+        return { mutate: jest.fn(), error: null, isPending: false };
       }
     );
     return { getOnSuccess: () => capturedOnSuccess };
@@ -115,7 +115,7 @@ describe('AlterationFormContainer', () => {
     (useCreateApplicationAlterationQuery as jest.Mock).mockReturnValue({
       mutate: mockMutate,
       error: null,
-      isLoading: false,
+      isPending: false,
     });
 
     const user = setupUserAndRender(() => {
@@ -140,7 +140,7 @@ describe('AlterationFormContainer', () => {
     (useCreateApplicationAlterationQuery as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
       error: null,
-      isLoading: true,
+      isPending: true,
     });
 
     getComponent();
@@ -201,10 +201,9 @@ describe('AlterationFormContainer', () => {
         alteration_type: ALTERATION_TYPE.TERMINATION,
       } as ApplicationAlterationData);
 
-      expect(mockInvalidateQueries).toHaveBeenCalledWith([
-        'applications',
-        baseApplication.id,
-      ]);
+      expect(mockInvalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['applications', baseApplication.id],
+      });
       expect(mockOnSuccess).toHaveBeenCalledTimes(1);
       expect(hdsToast).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -242,7 +241,7 @@ describe('AlterationFormContainer', () => {
           end_date: ['End date is required'],
           reason: ['Reason must be at least 10 characters'],
         }),
-        isLoading: false,
+        isPending: false,
       });
 
       getComponent();
@@ -267,7 +266,7 @@ describe('AlterationFormContainer', () => {
         error: makeAxiosError({
           alteration_type: ['Field is required', 'Invalid choice'],
         }),
-        isLoading: false,
+        isPending: false,
       });
 
       getComponent();
@@ -290,7 +289,7 @@ describe('AlterationFormContainer', () => {
       (useCreateApplicationAlterationQuery as jest.Mock).mockReturnValue({
         mutate: jest.fn(),
         error: makeAxiosError({ end_date: ['This field is required'] }),
-        isLoading: false,
+        isPending: false,
       });
 
       getComponent();
@@ -306,7 +305,7 @@ describe('AlterationFormContainer', () => {
       (useCreateApplicationAlterationQuery as jest.Mock).mockReturnValue({
         mutate: jest.fn(),
         error: makeAxiosError({}, 500),
-        isLoading: false,
+        isPending: false,
       });
 
       getComponent();

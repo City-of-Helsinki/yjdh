@@ -1,8 +1,12 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { MESSAGE_URLS } from 'benefit-shared/constants';
 import { MessageData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -20,24 +24,25 @@ const useMarkLastMessageUnreadQuery = (
     );
   };
 
-  return useMutation(
-    ['messages', applicationId, 'markUnread'],
-    async () => {
+  return useMutation({
+    mutationKey: ['messages', applicationId, 'markUnread'],
+    mutationFn: async () => {
       const res = axios.post<MessageData[]>(
         `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${MESSAGE_URLS.MESSAGES}mark_unread/`
       );
       return void handleResponse(res);
     },
-    {
-      onError: () => handleError(),
-      onSuccess: () => {
-        setTimeout(
-          () => void queryClient.invalidateQueries(['messageNotifications']),
-          10
-        );
-      },
-    }
-  );
+    onError: () => handleError(),
+    onSuccess: () => {
+      setTimeout(
+        () =>
+          void queryClient.invalidateQueries({
+            queryKey: ['messageNotifications'],
+          }),
+        10
+      );
+    },
+  });
 };
 
 export default useMarkLastMessageUnreadQuery;

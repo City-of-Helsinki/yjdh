@@ -10,7 +10,6 @@ import {
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { MutationFunction } from 'react-query';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 import { convertDateFormat } from 'shared/utils/date.utils';
@@ -18,7 +17,7 @@ import snakecaseKeys from 'snakecase-keys';
 
 type Props = {
   application: Application;
-  onSuccess: MutationFunction<void, ApplicationAlterationData>;
+  onSuccess: (data: ApplicationAlterationData) => void | Promise<void>;
   onError?: (error: AxiosError<unknown>) => void;
 };
 
@@ -44,7 +43,7 @@ const useAlterationForm = ({
   const {
     mutate: createQuery,
     error,
-    isLoading,
+    isPending,
   } = useCreateApplicationAlterationQuery({
     onSuccess,
   });
@@ -106,7 +105,7 @@ const useAlterationForm = ({
     formik,
     language,
     isSubmitted,
-    isSubmitting: isLoading,
+    isSubmitting: isPending,
     handleSubmit,
     error,
   };

@@ -40,7 +40,7 @@ const BatchFooterDraft: React.FC<BatchProps> = ({
 
   const {
     isError: isDownloadError,
-    isLoading: isDownloading,
+    isPending: isDownloading,
     mutate: downloadBatchFiles,
   } = useDownloadBatchFiles();
 

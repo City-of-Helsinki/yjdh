@@ -1,10 +1,10 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import type {
   ApplicationWithoutSsnFormData,
   BackendApplicationWithoutSsn,
 } from 'kesaseteli/handler/types/application-without-ssn-types';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useCreateYouthApplicationWithoutSsnQuery = (): UseMutationResult<
@@ -30,16 +30,16 @@ const useCreateYouthApplicationWithoutSsnQuery = (): UseMutationResult<
     target_group: formData.targetGroup,
   });
 
-  return useMutation(
-    BackendEndpoint.CREATE_YOUTH_APPLICATION_WITHOUT_SSN,
-    (formData) =>
+  return useMutation({
+    mutationKey: [BackendEndpoint.CREATE_YOUTH_APPLICATION_WITHOUT_SSN],
+    mutationFn: (formData) =>
       handleResponse<CreatedYouthApplication>(
         axios.post(
           BackendEndpoint.CREATE_YOUTH_APPLICATION_WITHOUT_SSN,
           toBackendFormData(formData)
         )
-      )
-  );
+      ),
+  });
 };
 
 export default useCreateYouthApplicationWithoutSsnQuery;

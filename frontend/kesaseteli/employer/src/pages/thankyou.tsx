@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ButtonVariant,
   IconCheckCircleFill,
@@ -13,7 +14,6 @@ import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Header, $Heading } from 'shared/components/layout/Layout.sc';
@@ -55,11 +55,8 @@ const ThankYouPage: NextPage = () => {
   const createApplicationQuery = useCreateApplicationQuery();
   const errorHandler = useErrorHandler();
 
-  const {
-    data: applications,
-    isLoading: isApplicationsLoading,
-    isFetching: isApplicationsFetching,
-  } = useApplicationsQuery(false);
+  const { data: applications, isLoading: isApplicationsLoading } =
+    useApplicationsQuery(false);
   const draftApplication = applications?.find(
     (app) => app.status === 'draft' && app.is_mine
   );
@@ -69,7 +66,7 @@ const ThankYouPage: NextPage = () => {
       const employerData = extractEmployerFields(applicationQuery.data);
       ApplicationPersistenceService.storeEmployerData(employerData);
     }
-    if (isApplicationsLoading || isApplicationsFetching) {
+    if (isApplicationsLoading) {
       return;
     }
     if (draftApplication) {
@@ -93,7 +90,6 @@ const ThankYouPage: NextPage = () => {
     errorHandler,
     draftApplication,
     isApplicationsLoading,
-    isApplicationsFetching,
   ]);
 
   const returnToDashboard = (): void => {
@@ -144,14 +140,10 @@ const ThankYouPage: NextPage = () => {
               onClick={createNewApplicationClick}
               variant={ButtonVariant.Secondary}
               isLoading={
-                createApplicationQuery.isLoading ||
-                isApplicationsLoading ||
-                isApplicationsFetching
+                createApplicationQuery.isPending || isApplicationsLoading
               }
               disabled={
-                createApplicationQuery.isLoading ||
-                isApplicationsLoading ||
-                isApplicationsFetching
+                createApplicationQuery.isPending || isApplicationsLoading
               }
               loadingText={t('common:application.loading')}
             >

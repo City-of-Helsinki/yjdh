@@ -53,9 +53,9 @@ const AlterationCsvButton: React.FC<AlterationCsvProps> = ({
       variant={secondary ? ButtonVariant.Secondary : ButtonVariant.Primary}
       iconStart={<IconDownload />}
       onClick={handleDownloadCsv}
-      disabled={!isAlterationValid || updateMutation.isLoading}
+      disabled={!isAlterationValid || updateMutation.isPending}
     >
-      {updateMutation.isLoading
+      {updateMutation.isPending
         ? t('common:utility.downloading')
         : t('common:applications.alterations.handling.talpaCsv.button')}
     </Button>

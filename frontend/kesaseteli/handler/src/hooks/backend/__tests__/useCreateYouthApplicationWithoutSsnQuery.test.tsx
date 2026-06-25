@@ -1,9 +1,9 @@
 // Integration test: Verifies request payloads are mapped correctly and endpoints are called using nock
+import { QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import React from 'react';
-import { QueryClientProvider } from 'react-query';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';

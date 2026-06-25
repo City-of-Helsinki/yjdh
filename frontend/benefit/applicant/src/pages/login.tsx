@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   $Hr,
   $Paragraph,
@@ -17,7 +18,6 @@ import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';

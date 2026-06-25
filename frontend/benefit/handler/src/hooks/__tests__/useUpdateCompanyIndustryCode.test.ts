@@ -1,11 +1,11 @@
+import { useMutation } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useMutation } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import useUpdateCompanyIndustryCode from '../useUpdateCompanyIndustryCode';
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   useMutation: jest.fn(),
   useQueryClient: jest.fn().mockReturnValue({
     invalidateQueries: jest.fn(),
@@ -36,8 +36,8 @@ describe('useUpdateCompanyIndustryCode', () => {
       handleResponse,
     });
 
-    (useMutation as jest.Mock).mockImplementation((_key, mutationFn) => {
-      capturedMutationFn = mutationFn;
+    (useMutation as jest.Mock).mockImplementation((options) => {
+      capturedMutationFn = options.mutationFn;
       return { mutate: jest.fn() };
     });
   });
@@ -88,9 +88,9 @@ describe('useUpdateCompanyIndustryCode', () => {
     renderHook(() => useUpdateCompanyIndustryCode());
 
     expect(useMutation).toHaveBeenCalledWith(
-      'updateCompanyIndustryCode',
-      expect.any(Function),
-      expect.any(Object)
+      expect.objectContaining({
+        mutationKey: ['updateCompanyIndustryCode'],
+      })
     );
   });
 });

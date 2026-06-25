@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import {
   EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS,
@@ -5,7 +6,6 @@ import {
 } from 'benefit/handler/constants';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
-import { useQueryClient } from 'react-query';
 
 import { useApplicationReports } from '../useApplicationReports';
 
@@ -35,9 +35,8 @@ jest.mock('benefit/handler/hooks/useReportsApplicationBatchesQuery', () => ({
   __esModule: true,
   default: (proposalForDecision: PROPOSALS_FOR_DECISION) =>
     mockUseReportsApplicationBatchesQuery(proposalForDecision),
-  getReportsApplicationBatchesQueryKey: (proposal: string) => [
+  getReportsApplicationBatchesQueryKey: (proposal: string) =>
     `reports-${proposal}`,
-  ],
 }));
 jest.mock('shared/hooks/useBackendAPI', () => ({
   __esModule: true,
@@ -48,7 +47,7 @@ jest.mock('shared/hooks/useBackendAPI', () => ({
     handleResponse: mockHandleResponse,
   }),
 }));
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn(() => ({
     invalidateQueries: mockInvalidateQueries,
   })),
@@ -177,9 +176,9 @@ describe('useApplicationReports', () => {
       'mock-file-content',
       'csv/pdf'
     );
-    expect(mockInvalidateQueries).toHaveBeenCalledWith([
-      `reports-${PROPOSALS_FOR_DECISION.ACCEPTED}`,
-    ]);
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({
+      queryKey: [`reports-${PROPOSALS_FOR_DECISION.ACCEPTED}`],
+    });
   });
 
   it('should export applications in time range with converted date params', async () => {

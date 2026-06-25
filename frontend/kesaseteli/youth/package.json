@@ -24,6 +24,7 @@
     "@frontend/shared": "workspace:*",
     "@sentry/browser": "^10.56.0",
     "@sentry/nextjs": "^10.56.0",
+    "@tanstack/react-query": "5.101.0",
     "axios": "^1.17.0",
     "dotenv": "^16.0.0",
     "finnish-ssn": "^2.1.2",
@@ -37,7 +38,6 @@
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.30.0",
     "react-i18next": "^15.6.0",
-    "react-query": "^3.34.0",
     "react-toastify": "^9.0.4",
     "styled-components": "^6.1.19",
     "ts-node": "^10.0.0"

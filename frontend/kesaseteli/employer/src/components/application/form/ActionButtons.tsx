@@ -100,8 +100,8 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
 
   const isLoading =
     isSubmitting ||
-    updateApplicationQuery.isLoading ||
-    deleteApplicationQuery.isLoading ||
+    updateApplicationQuery.isPending ||
+    deleteApplicationQuery.isPending ||
     isWizardLoading;
 
   return (

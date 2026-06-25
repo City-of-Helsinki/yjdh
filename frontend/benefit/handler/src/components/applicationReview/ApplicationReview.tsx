@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
 import { HANDLED_STATUSES } from 'benefit/handler/constants';
 import { useDetermineAhjoMode } from 'benefit/handler/hooks/useDetermineAhjoMode';
@@ -6,7 +7,6 @@ import { APPLICATION_STATUSES } from 'benefit-shared/constants';
 import { ErrorData } from 'benefit-shared/types/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useQueryClient } from 'react-query';
 import ErrorPage from 'shared/components/pages/ErrorPage';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';

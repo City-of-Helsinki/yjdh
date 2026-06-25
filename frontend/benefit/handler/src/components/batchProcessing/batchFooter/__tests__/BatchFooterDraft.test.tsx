@@ -58,7 +58,7 @@ function DownloadStateWrapper(): React.ReactElement {
 
   mockUseDownloadBatchFiles.mockReturnValue({
     isError: error,
-    isLoading: loading,
+    isPending: loading,
     mutate: downloadBatchFiles,
   } as never);
 
@@ -149,7 +149,7 @@ describe('BatchFooterDraft', () => {
 
     mockUseDownloadBatchFiles.mockReturnValue({
       isError: false,
-      isLoading: false,
+      isPending: false,
       mutate: downloadBatchFiles,
     } as never);
 

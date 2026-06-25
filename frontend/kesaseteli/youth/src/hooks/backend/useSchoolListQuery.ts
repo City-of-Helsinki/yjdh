@@ -1,11 +1,22 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
-const useSchoolListQuery = (): UseQueryResult<string[]> =>
-  useQuery(BackendEndpoint.SCHOOLS, {
+const useSchoolListQuery = (): UseQueryResult<string[]> => {
+  const errorHandler = useErrorHandler();
+  const query = useQuery<string[]>({
+    queryKey: [BackendEndpoint.SCHOOLS],
     staleTime: Infinity,
-    onError: useErrorHandler(),
   });
+
+  useEffect(() => {
+    if (query.isError) {
+      errorHandler(query.error);
+    }
+  }, [query, errorHandler]);
+
+  return query;
+};
 
 export default useSchoolListQuery;

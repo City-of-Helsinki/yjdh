@@ -1,5 +1,5 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 
@@ -14,9 +14,9 @@ const useUploadAttachmentQuery = (): UseMutationResult<
   UploadAttachmentData
 > => {
   const { axios, handleResponse } = useBackendAPI();
-  return useMutation(
-    BackendEndpoint.ATTACHMENTS,
-    ({ summer_voucher, data }: UploadAttachmentData) =>
+  return useMutation({
+    mutationKey: [BackendEndpoint.ATTACHMENTS],
+    mutationFn: ({ summer_voucher, data }: UploadAttachmentData) =>
       summer_voucher
         ? handleResponse<KesaseteliAttachment>(
             axios.post(
@@ -29,8 +29,8 @@ const useUploadAttachmentQuery = (): UseMutationResult<
               }
             )
           )
-        : Promise.reject(new Error('Missing summer_voucher id'))
-  );
+        : Promise.reject(new Error('Missing summer_voucher id')),
+  });
 };
 
 export default useUploadAttachmentQuery;

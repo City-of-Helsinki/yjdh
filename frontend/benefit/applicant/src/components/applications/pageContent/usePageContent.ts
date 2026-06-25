@@ -31,7 +31,7 @@ type ExtendedComponentProps = {
 };
 
 const isApplicationLoaded = (id: number | string, status: string): boolean =>
-  !!(id && status !== 'idle' && status !== 'loading');
+  !!(id && status !== 'pending');
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const usePageContent = (): ExtendedComponentProps => {

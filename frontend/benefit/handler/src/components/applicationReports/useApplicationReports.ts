@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS,
   EXPORT_APPLICATIONS_ROUTES,
@@ -13,7 +14,6 @@ import fromPairs from 'lodash/fromPairs';
 import noop from 'lodash/noop';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { useCallback } from 'react';
-import { useQueryClient } from 'react-query';
 import { Field } from 'shared/components/forms/fields/types';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
@@ -94,9 +94,9 @@ const useApplicationReports = (): ExtendedComponentProps => {
         )
       );
       downloadFile(data, type);
-      void queryClient.invalidateQueries(
-        getReportsApplicationBatchesQueryKey(proposalForDecision)
-      );
+      void queryClient.invalidateQueries({
+        queryKey: [getReportsApplicationBatchesQueryKey(proposalForDecision)],
+      });
     },
     [axios, handleResponse, queryClient]
   );

@@ -1,6 +1,10 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { ErrorResponse } from 'benefit/applicant/types/common';
 import { ApplicantEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 type ChangeEmployerAssuranceParams = {
@@ -16,8 +20,8 @@ const useChangeEmployerAssuranceMutation = (): UseMutationResult<
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
 
-  return useMutation<void, ErrorResponse, ChangeEmployerAssuranceParams>(
-    ({ applicationId, employerAssurance }) =>
+  return useMutation<void, ErrorResponse, ChangeEmployerAssuranceParams>({
+    mutationFn: ({ applicationId, employerAssurance }) =>
       handleResponse<void>(
         axios.patch(
           ApplicantEndpoint.CHANGE_EMPLOYER_ASSURANCE(applicationId),
@@ -26,14 +30,14 @@ const useChangeEmployerAssuranceMutation = (): UseMutationResult<
           }
         )
       ),
-    {
-      onSuccess: (_data, { applicationId }) => {
-        void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries(['applications', applicationId]);
-        void queryClient.invalidateQueries('application');
-      },
-    }
-  );
+    onSuccess: (_data, { applicationId }) => {
+      void queryClient.invalidateQueries({ queryKey: ['applications'] });
+      void queryClient.invalidateQueries({
+        queryKey: ['applications', applicationId],
+      });
+      void queryClient.invalidateQueries({ queryKey: ['application'] });
+    },
+  });
 };
 
 export default useChangeEmployerAssuranceMutation;

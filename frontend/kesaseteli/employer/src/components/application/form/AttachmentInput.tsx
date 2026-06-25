@@ -172,8 +172,8 @@ const AttachmentInput: React.FC<Props> = ({
         onUpload={handleUpload}
         onRemove={handleRemove}
         onOpen={openAttachment}
-        isUploading={uploadAttachmentQuery.isLoading}
-        isRemoving={removeAttachmentQuery.isLoading}
+        isUploading={uploadAttachmentQuery.isPending}
+        isRemoving={removeAttachmentQuery.isPending}
         message={message}
         errorMessage={
           hasError()

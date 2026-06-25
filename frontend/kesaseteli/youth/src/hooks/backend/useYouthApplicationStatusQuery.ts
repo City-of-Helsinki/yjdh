@@ -1,6 +1,11 @@
+import {
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { getYouthApplicationStatusQueryKey } from 'kesaseteli-shared/backend-api/backend-api';
 import YouthApplicationStatus from 'kesaseteli-shared/types/youth-application-status';
-import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
+import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import { isError } from 'shared/utils/type-guards';
 
@@ -9,17 +14,23 @@ const useYouthApplicationStatusQuery = (
   options?: UseQueryOptions<YouthApplicationStatus>
 ): UseQueryResult<YouthApplicationStatus> => {
   const handleError = useErrorHandler();
-  return useQuery({
-    queryKey: id ? getYouthApplicationStatusQueryKey(id) : undefined,
+  const query = useQuery({
+    queryKey: [id ? getYouthApplicationStatusQueryKey(id) : undefined],
     enabled: Boolean(id),
     staleTime: Infinity,
-    onError: (error: unknown) => {
+    ...options,
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      const { error } = query;
       if (isError(error) && !error.message.includes('404')) {
         handleError(error);
       }
-    },
-    ...options,
-  });
+    }
+  }, [query, handleError]);
+
+  return query;
 };
 
 export default useYouthApplicationStatusQuery;

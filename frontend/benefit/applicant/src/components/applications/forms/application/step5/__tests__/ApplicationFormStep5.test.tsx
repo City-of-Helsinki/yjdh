@@ -120,7 +120,7 @@ const mockHookReturn = {
 
 const mockCloneMutation = {
   data: undefined,
-  isLoading: false,
+  isPending: false,
   mutate: jest.fn(),
 };
 
@@ -306,7 +306,7 @@ describe('ApplicationFormStep5', () => {
   it('shows clone button as loading when mutation is in progress', () => {
     mockUseCloneApplicationMutation.mockReturnValue({
       ...mockCloneMutation,
-      isLoading: true,
+      isPending: true,
     });
 
     renderForm(baseApplication, { isReadOnly: true });

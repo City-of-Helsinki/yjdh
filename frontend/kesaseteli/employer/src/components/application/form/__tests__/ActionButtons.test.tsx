@@ -33,8 +33,8 @@ type ApplicationApiMock = {
   updateApplication: jest.Mock;
   sendApplication: jest.Mock;
   deleteApplication: jest.Mock;
-  updateApplicationQuery: { isLoading: boolean };
-  deleteApplicationQuery: { isLoading: boolean };
+  updateApplicationQuery: { isPending: boolean };
+  deleteApplicationQuery: { isPending: boolean };
 };
 
 type TestSetupOptions = {
@@ -96,8 +96,8 @@ describe('ActionButtons', () => {
     updateApplication: jest.fn(),
     sendApplication: mockSendApplication,
     deleteApplication: mockDeleteApplication,
-    updateApplicationQuery: { isLoading: false },
-    deleteApplicationQuery: { isLoading: false },
+    updateApplicationQuery: { isPending: false },
+    deleteApplicationQuery: { isPending: false },
   });
 
   const renderActionButtonsWithProps = (

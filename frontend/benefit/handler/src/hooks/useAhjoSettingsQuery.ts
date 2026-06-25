@@ -1,3 +1,4 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import {
   AhjoSettingsResponse,
@@ -7,7 +8,6 @@ import {
   DecisionMakerOptions,
 } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
-import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 type AhjoSettingsType = 'ahjo_decision_maker' | 'ahjo_signer';
@@ -16,9 +16,9 @@ const useAhjoSettingsQuery = (
   type: AhjoSettingsType
 ): UseQueryResult<DecisionMakerOptions | AhjoSignerOptions, Error> => {
   const { axios, handleResponse } = useBackendAPI();
-  return useQuery<DecisionMakerOptions | AhjoSignerOptions, Error>(
-    ['ahjoSettings', type],
-    () =>
+  return useQuery<DecisionMakerOptions | AhjoSignerOptions, Error>({
+    queryKey: ['ahjoSettings', type],
+    queryFn: () =>
       handleResponse<AhjoSettingsResponse>(
         axios.get(`${String(BackendEndpoint.AHJO_SETTINGS)}${type}`)
       ).then((response) => {
@@ -30,8 +30,8 @@ const useAhjoSettingsQuery = (
         return (response?.data || []).map((item: AhjoSigner) =>
           camelcaseKeys(item, { deep: true })
         );
-      })
-  );
+      }),
+  });
 };
 
 export default useAhjoSettingsQuery;

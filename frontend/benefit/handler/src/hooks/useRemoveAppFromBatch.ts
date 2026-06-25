@@ -1,6 +1,10 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -28,9 +32,9 @@ const useRemoveAppFromBatch = (
     );
   };
 
-  return useMutation<Response, Error, Payload>(
-    'removeApplicationFromBatch',
-    ({ appIds, batchId }: Payload) =>
+  return useMutation<Response, Error, Payload>({
+    mutationKey: ['removeApplicationFromBatch'],
+    mutationFn: ({ appIds, batchId }: Payload) =>
       handleResponse<Response>(
         axios.patch<Response>(
           HandlerEndpoint.BATCH_APP_DEASSIGN(batchId || ''),
@@ -39,32 +43,33 @@ const useRemoveAppFromBatch = (
           }
         )
       ),
-    {
-      onSuccess: ({ remainingApps }: Response) => {
-        if (remainingApps === 0) {
-          setBatchCloseAnimation(true);
-          showSuccessToast(
-            t(
-              'common:batches.notifications.removeFromBatch.success.headingBatchRemoved'
-            ),
-            ''
-          );
-          setTimeout(() => {
-            void queryClient.invalidateQueries('applicationsList');
-          }, 700);
-        } else {
-          void queryClient.invalidateQueries('applicationsList');
-          showSuccessToast(
-            t(
-              'common:batches.notifications.removeFromBatch.success.headingAppRemoved'
-            ),
-            ''
-          );
-        }
-      },
-      onError: () => handleError(),
-    }
-  );
+
+    onSuccess: ({ remainingApps }: Response) => {
+      if (remainingApps === 0) {
+        setBatchCloseAnimation(true);
+        showSuccessToast(
+          t(
+            'common:batches.notifications.removeFromBatch.success.headingBatchRemoved'
+          ),
+          ''
+        );
+        setTimeout(() => {
+          void queryClient.invalidateQueries({
+            queryKey: ['applicationsList'],
+          });
+        }, 700);
+      } else {
+        void queryClient.invalidateQueries({ queryKey: ['applicationsList'] });
+        showSuccessToast(
+          t(
+            'common:batches.notifications.removeFromBatch.success.headingAppRemoved'
+          ),
+          ''
+        );
+      }
+    },
+    onError: () => handleError(),
+  });
 };
 
 export default useRemoveAppFromBatch;

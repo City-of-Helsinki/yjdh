@@ -1,4 +1,4 @@
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 
 import SummerVoucherConfiguration from '../types/summer-voucher-configuration';
 import useSummerVoucherConfigurationQuery from './useSummerVoucherConfigurationQuery';

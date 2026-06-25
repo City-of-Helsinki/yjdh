@@ -1,3 +1,4 @@
+import { UseMutateFunction } from '@tanstack/react-query';
 import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
 import useMarkLastMessageUnreadQuery from 'benefit/handler/hooks/useMarkLastMessageUnreadQuery';
 import useMarkMessagesReadQuery from 'benefit/handler/hooks/useMarkMessagesReadQuery';
@@ -5,7 +6,6 @@ import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import { MESSAGE_TYPES, MESSAGE_URLS } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
-import { UseMutateFunction } from 'react-query';
 
 type ExtendedComponentProps = {
   t: TFunction;

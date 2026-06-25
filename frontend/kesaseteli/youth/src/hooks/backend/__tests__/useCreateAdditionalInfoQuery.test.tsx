@@ -1,8 +1,8 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import nock from 'nock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 
 import useCreateAdditionalInfoQuery from '../useCreateAdditionalInfoQuery';

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
   $AlterationFormStickyBarContainer,
@@ -24,7 +25,6 @@ import {
 import kebabCase from 'lodash/kebabCase';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import {
@@ -53,7 +53,9 @@ const AlterationFormContainer: React.FC<Props> = ({
   const handleSuccess = async (
     response: ApplicationAlterationData
   ): Promise<void> => {
-    await queryClient.invalidateQueries(['applications', application.id]);
+    await queryClient.invalidateQueries({
+      queryKey: ['applications', application.id],
+    });
     onSuccess();
 
     const textKey =

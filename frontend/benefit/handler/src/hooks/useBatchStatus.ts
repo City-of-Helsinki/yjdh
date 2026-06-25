@@ -1,8 +1,12 @@
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { HandlerEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { useTranslation } from 'next-i18next';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -61,9 +65,9 @@ const useBatchStatus = (
     );
   };
 
-  return useMutation<Response, BatchError, Payload>(
-    'changeBatchStatus',
-    ({ id, status }: Payload) => {
+  return useMutation<Response, BatchError, Payload>({
+    mutationKey: ['changeBatchStatus'],
+    mutationFn: ({ id, status }: Payload) => {
       const request = axios.patch<Response>(
         HandlerEndpoint.BATCH_STATUS_CHANGE(id),
         {
@@ -72,32 +76,30 @@ const useBatchStatus = (
       );
       return handleResponse<Response>(request);
     },
-    {
-      onSuccess: ({ status: backendStatus, previousStatus }: Response) => {
-        showSuccessToast(
-          t(
-            `common:batches.notifications.statusChange.${backendStatus}.heading`
-          ),
-          ''
-        );
-        if (
-          previousStatus === BATCH_STATUSES.AWAITING_FOR_DECISION ||
-          backendStatus === BATCH_STATUSES.COMPLETED ||
-          (previousStatus === BATCH_STATUSES.AHJO_REPORT_CREATED &&
-            backendStatus === BATCH_STATUSES.AWAITING_FOR_DECISION)
-        ) {
-          setBatchCloseAnimation?.(true);
-          setTimeout(() => {
-            void queryClient.invalidateQueries('applicationsList');
-          }, 700);
-        } else {
-          void queryClient.invalidateQueries('applicationsList');
-        }
-      },
-      onError: (e: BatchError, { status: previousStatus }) =>
-        handleError(e, previousStatus),
-    }
-  );
+    onSuccess: ({ status: backendStatus, previousStatus }: Response) => {
+      showSuccessToast(
+        t(`common:batches.notifications.statusChange.${backendStatus}.heading`),
+        ''
+      );
+      if (
+        previousStatus === BATCH_STATUSES.AWAITING_FOR_DECISION ||
+        backendStatus === BATCH_STATUSES.COMPLETED ||
+        (previousStatus === BATCH_STATUSES.AHJO_REPORT_CREATED &&
+          backendStatus === BATCH_STATUSES.AWAITING_FOR_DECISION)
+      ) {
+        setBatchCloseAnimation?.(true);
+        setTimeout(() => {
+          void queryClient.invalidateQueries({
+            queryKey: ['applicationsList'],
+          });
+        }, 700);
+      } else {
+        void queryClient.invalidateQueries({ queryKey: ['applicationsList'] });
+      }
+    },
+    onError: (e: BatchError, { status: previousStatus }) =>
+      handleError(e, previousStatus),
+  });
 };
 
 export default useBatchStatus;

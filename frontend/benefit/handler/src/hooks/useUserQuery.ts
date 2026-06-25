@@ -1,7 +1,8 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useCallback, useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import User from 'shared/types/user';
@@ -28,42 +29,59 @@ const useUserQuery = <T extends User>(
       router.asPath.includes('userStateError=true'));
   const { axios, handleResponse } = useBackendAPI();
 
-  const handleError = (error: AxiosError): void => {
-    if (logout) {
-      void router.push(`${locale}${ROUTES.LOGIN}?logout=true`);
-    } else if (/40[13]/.test(error.message)) {
-      void router.push(`${locale}${ROUTES.LOGIN}`);
-    } else if (
-      !process.env.NEXT_PUBLIC_MOCK_FLAG ||
-      process.env.NEXT_PUBLIC_MOCK_FLAG === '0'
-    ) {
-      void router.push(`${locale}${ROUTES.LOGIN}?userStateError=true`);
-    }
-  };
-
-  const checkForStaffStatus = (user: User): void => {
-    if (user && !user.is_staff) {
-      void noPermissionLogout();
-    }
-  };
-
-  return useQuery(
-    `${BackendEndpoint.USER_ME}`,
-    () => handleResponse<User>(axios.get(BackendEndpoint.USER_ME)),
-    {
-      refetchInterval: FIVE_MINUTES,
-      enabled: !logout,
-      retry: false,
-      select,
-      onSuccess: (user: User): void => {
-        checkForStaffStatus(user);
-        if (user.csrf_token) {
-          setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
-          axios.defaults.headers['X-CSRFToken'] = user.csrf_token;
-        }
-      },
-      onError: (error) => handleError(error),
-    }
+  const handleError = useCallback(
+    (error: AxiosError): void => {
+      if (logout) {
+        void router.push(`${locale}${ROUTES.LOGIN}?logout=true`);
+      } else if (/40[13]/.test(error.message)) {
+        void router.push(`${locale}${ROUTES.LOGIN}`);
+      } else if (
+        !process.env.NEXT_PUBLIC_MOCK_FLAG ||
+        process.env.NEXT_PUBLIC_MOCK_FLAG === '0'
+      ) {
+        void router.push(`${locale}${ROUTES.LOGIN}?userStateError=true`);
+      }
+    },
+    [logout, locale, router]
   );
+
+  const checkForStaffStatus = useCallback(
+    (user: User): void => {
+      if (user && !user.is_staff) {
+        void noPermissionLogout();
+      }
+    },
+    [noPermissionLogout]
+  );
+
+  const handleSuccess = useCallback(
+    (user: User) => {
+      checkForStaffStatus(user);
+      if (user.csrf_token) {
+        setLocalStorageItem(LOCAL_STORAGE_KEYS.CSRF_TOKEN, user.csrf_token);
+        axios.defaults.headers['X-CSRFToken'] = user.csrf_token;
+      }
+    },
+    [axios, checkForStaffStatus]
+  );
+
+  const query = useQuery<T | User, AxiosError>({
+    queryKey: [BackendEndpoint.USER_ME],
+    queryFn: () => handleResponse<User>(axios.get(BackendEndpoint.USER_ME)),
+    refetchInterval: FIVE_MINUTES,
+    enabled: !logout,
+    retry: false,
+    select,
+  });
+
+  useEffect(() => {
+    if (query.data) {
+      handleSuccess(query.data);
+    } else if (query.isError) {
+      handleError(query.error);
+    }
+  }, [query, handleSuccess, handleError]);
+
+  return query;
 };
 export default useUserQuery;
