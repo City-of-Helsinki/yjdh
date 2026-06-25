@@ -1,7 +1,11 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework.permissions import BasePermission
+
+LOGGER = logging.getLogger(__name__)
 
 
 class DenyAll(BasePermission):
@@ -51,19 +55,37 @@ class HandlerPermission(BasePermission):
         Does the user have permission to act as a handler for youth
         applications / youth summer vouchers?
 
-        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or user is an
-            active staff or superuser user, otherwise False.
+        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set and user is
+            authenticated, or user is an active staff or superuser user,
+            otherwise False.
         """
+        if not (user and user.is_authenticated):
+            LOGGER.debug("User is not authenticated")
+            return False
+
         if settings.NEXT_PUBLIC_MOCK_FLAG:
+            # Under mock flag (local dev / testing), any authenticated user is allowed
+            # to act as a handler. This simplifies local development and satisfies
+            # test cases parametrized with non-staff authenticated clients (api_client).
+            LOGGER.info(
+                "Returning True from HandlerPermission.has_user_permission ("
+                "NEXT_PUBLIC_MOCK_FLAG is True)"
+            )
             return True
 
-        return bool(user and user.is_active and (user.is_staff or user.is_superuser))
+        has_permission = bool(user.is_active and (user.is_staff or user.is_superuser))
+        LOGGER.debug(
+            f"User has permission: {has_permission} (is_active={user.is_active}, "
+            f"is_staff={user.is_staff}, is_superuser={user.is_superuser})"
+        )
+        return has_permission
 
     def has_permission(self, request, view):
         """
         Does the request's user have permission to the given view?
 
-        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or request has
-            an active staff or superuser user, otherwise False.
+        :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set and request has
+            an authenticated user, or request has an active staff or superuser
+            user, otherwise False.
         """
         return HandlerPermission.has_user_permission(request.user)

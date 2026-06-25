@@ -12,7 +12,6 @@ import factory.random
 import pytest
 from auditlog.models import LogEntry
 from dateutil.relativedelta import relativedelta
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.template import Context, Template
@@ -41,7 +40,6 @@ from applications.tests.data.mock_vtj import (
     mock_vtj_person_id_query_found_content,
     mock_vtj_person_id_query_not_found_content,
 )
-from common.permissions import HandlerPermission
 from common.tests.conftest import (
     api_client,
 )
@@ -387,7 +385,7 @@ def test_youth_applications_not_allowed_methods(
         (False, staff_client, 302, RedirectTo.handler_process),
         (False, superuser_client, 302, RedirectTo.handler_process),
         # With mock flag
-        (True, unauth_api_client, 302, RedirectTo.handler_process),
+        (True, unauth_api_client, 302, RedirectTo.adfs_login),
         (True, api_client, 302, RedirectTo.handler_process),
         (True, staff_client, 302, RedirectTo.handler_process),
         (True, superuser_client, 302, RedirectTo.handler_process),
@@ -426,7 +424,7 @@ def test_youth_applications_process_valid_pk(
         (False, staff_client, 200, None),
         (False, superuser_client, 200, None),
         # With mock flag
-        (True, unauth_api_client, 200, None),
+        (True, unauth_api_client, 302, RedirectTo.adfs_login),
         (True, api_client, 200, None),
         (True, staff_client, 200, None),
         (True, superuser_client, 200, None),
@@ -464,7 +462,7 @@ def test_youth_applications_detail_valid_pk(
         (False, staff_client, 404, None),
         (False, superuser_client, 404, None),
         # With mock flag
-        (True, unauth_api_client, 404, None),
+        (True, unauth_api_client, 302, RedirectTo.adfs_login),
         (True, api_client, 404, None),
         (True, staff_client, 404, None),
         (True, superuser_client, 404, None),
@@ -1821,7 +1819,7 @@ def test_youth_summer_voucher_email_plaintext_content(api_client, language):
 )
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_accept_acceptable_with_invalid_smtp_server(
-    api_client, language
+    api_client, user, language
 ):
     # Use an email address which uses a reserved domain name (See RFC 2606)
     # so even if it'd be sent to an SMTP server it wouldn't go anywhere
@@ -1830,7 +1828,7 @@ def test_youth_applications_accept_acceptable_with_invalid_smtp_server(
     )
     assert not acceptable_youth_application.is_accepted
     assert acceptable_youth_application.can_accept_manually(
-        handler=AnonymousUser(),
+        handler=user,
         encrypted_handler_vtj_json=json.dumps(
             get_test_handling_data()["encrypted_handler_vtj_json"]
         ),
@@ -2190,7 +2188,7 @@ def test_youth_application_post_success(
         (False, staff_client, 200, None),
         (False, superuser_client, 200, None),
         # With mock flag
-        (True, unauth_api_client, 200, None),
+        (True, unauth_api_client, 302, RedirectTo.adfs_login),
         (True, api_client, 200, None),
         (True, staff_client, 200, None),
         (True, superuser_client, 200, None),
@@ -2255,17 +2253,11 @@ def test_youth_applications_accept_acceptable(
         ]
         handler = response.wsgi_request.user
         assert handler is not None
-        if handler == AnonymousUser():
-            assert HandlerPermission.allow_empty_handler()
-            assert handler.pk is None
-            assert acceptable_youth_application.handler is None
-            assert youth_voucher_audit_event.actor_id is None
-            assert youth_app_audit_event.actor_id is None
-        else:
-            assert handler.pk is not None
-            assert acceptable_youth_application.handler == handler
-            assert youth_voucher_audit_event.actor_id == handler.pk
-            assert youth_app_audit_event.actor_id == handler.pk
+        assert handler.is_authenticated
+        assert handler.pk is not None
+        assert acceptable_youth_application.handler == handler
+        assert youth_voucher_audit_event.actor_id == handler.pk
+        assert youth_app_audit_event.actor_id == handler.pk
     else:
         assert acceptable_youth_application.status == old_status
         assert acceptable_youth_application.modified_at == old_modified_at
@@ -2332,7 +2324,7 @@ def test_youth_applications_accept_acceptable__vtj_disabled(
         (False, staff_client, 400, None),
         (False, superuser_client, 400, None),
         # With mock flag
-        (True, unauth_api_client, 400, None),
+        (True, unauth_api_client, 302, RedirectTo.adfs_login),
         (True, api_client, 400, None),
         (True, staff_client, 400, None),
         (True, superuser_client, 400, None),
@@ -2386,7 +2378,7 @@ def test_youth_applications_handle_handled(
         (False, staff_client, 200, None),
         (False, superuser_client, 200, None),
         # With mock flag
-        (True, unauth_api_client, 200, None),
+        (True, unauth_api_client, 302, RedirectTo.adfs_login),
         (True, api_client, 200, None),
         (True, staff_client, 200, None),
         (True, superuser_client, 200, None),
@@ -2438,15 +2430,10 @@ def test_youth_applications_reject_rejectable(
         ]
         handler = response.wsgi_request.user
         assert handler is not None
-        if handler == AnonymousUser():
-            assert HandlerPermission.allow_empty_handler()
-            assert handler.pk is None
-            assert rejectable_youth_application.handler is None
-            assert audit_event.actor_id is None
-        else:
-            assert handler.pk is not None
-            assert rejectable_youth_application.handler == handler
-            assert audit_event.actor_id == handler.pk
+        assert handler.is_authenticated
+        assert handler.pk is not None
+        assert rejectable_youth_application.handler == handler
+        assert audit_event.actor_id == handler.pk
     else:
         assert rejectable_youth_application.status == old_status
         assert rejectable_youth_application.modified_at == old_modified_at
