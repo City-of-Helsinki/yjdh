@@ -1,5 +1,7 @@
 from urllib.parse import urlencode
 
+from csp.constants import SELF, UNSAFE_INLINE
+from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.apps import AdminConfig
@@ -8,9 +10,18 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+# Django admin templates rely on inline scripts.
+ADMIN_CSP = {
+    "script-src": [SELF, UNSAFE_INLINE],
+}
+
 
 class KesaseteliAdminSite(admin.AdminSite):
     login_template = "admin/hel_login.html"
+
+    def admin_view(self, view, cacheable=False):
+        inner = super().admin_view(view, cacheable)
+        return csp_update(ADMIN_CSP)(inner)
 
     def each_context(self, request):
         context = super().each_context(request)

@@ -26,6 +26,20 @@ def assert_expected_csp(response):
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_admin_index_includes_inline_script_csp(admin_client):
+    """Check admin pages allow inline scripts required by Django admin.
+
+    Args:
+        admin_client: Logged-in admin user client.
+    """
+    response = admin_client.get(reverse("admin:index"))
+    assert response.status_code == 200
+    assert_expected_csp(response)
+    assert "script-src 'self' 'unsafe-inline'" in response.headers["Content-Security-Policy"]
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_excel_download_includes_bootstrap_csp(staff_client):
     """Check excel-download allows the Bootstrap CDN in CSP.
 
