@@ -568,16 +568,19 @@ def _detect_filters(search_string):
     }
 
 
-def _get_limit_and_offset(request, default_limit=30):
+def _get_limit_and_offset(request, default_limit=30, max_limit=200):
     try:
         limit = int(request.query_params.get("limit", default_limit))
-    except ValueError:
+    except (TypeError, ValueError):
         limit = default_limit
 
     try:
         offset = int(request.query_params.get("offset", 0))
-    except ValueError:
+    except (TypeError, ValueError):
         offset = 0
+
+    limit = max(1, min(limit, max_limit))
+    offset = max(0, offset)
 
     return limit, offset
 

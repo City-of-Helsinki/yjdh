@@ -1,6 +1,5 @@
 import { ROUTES } from 'benefit/handler/constants';
 import {
-  ButtonPresetTheme,
   IconCross,
   RadioButton,
   Search,
@@ -10,14 +9,12 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { focusAndScrollToSelector } from 'shared/utils/dom.utils';
 import styled from 'styled-components';
 
 import ApplicationArchiveList from './ApplicationArchiveList';
@@ -55,8 +52,6 @@ const ITEMS_PER_PAGE = 30;
 const ApplicationsArchive: React.FC = () => {
   const [searchString, setSearchString] = React.useState<string>('');
   const [initialQuery, setInitialQuery] = React.useState<boolean>(true);
-  const [isLoadAllMode, setIsLoadAllMode] = React.useState<boolean>(false);
-  const [displayLoadAll, setDisplayLoadAll] = React.useState<boolean>(true);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const [subsidyInEffect, setSubsidyInEffect] =
@@ -79,8 +74,7 @@ const ApplicationsArchive: React.FC = () => {
       true,
       subsidyInEffect,
       decisionRange,
-      applicationNum ? applicationNum.toString() : null,
-      isLoadAllMode
+      applicationNum ? applicationNum.toString() : null
     );
   const searchTexts = React.useMemo(
     () => ({
@@ -95,8 +89,6 @@ const ApplicationsArchive: React.FC = () => {
 
   const onSearch = (value: string): void => {
     setSearchString(value);
-    setIsLoadAllMode(false);
-    setDisplayLoadAll(true);
     setCurrentPage(1);
     submitSearch(value, {
       limit: ITEMS_PER_PAGE,
@@ -119,8 +111,6 @@ const ApplicationsArchive: React.FC = () => {
     setFilterSelection(selection);
     setDecisionRange(null);
     setSubsidyInEffect(value || null);
-    setDisplayLoadAll(true);
-    setIsLoadAllMode(false);
     setCurrentPage(1);
   };
   const handleDecisionFilterChange = (
@@ -130,16 +120,12 @@ const ApplicationsArchive: React.FC = () => {
     setFilterSelection(selection);
     setDecisionRange(value || null);
     setSubsidyInEffect(null);
-    setDisplayLoadAll(true);
-    setIsLoadAllMode(false);
     setCurrentPage(1);
   };
   const handleFiltersOff = (): void => {
     setDecisionRange(null);
     setSubsidyInEffect(null);
     setFilterSelection(FILTER_SELECTION.NO_FILTER);
-    setDisplayLoadAll(true);
-    setIsLoadAllMode(false);
     setCurrentPage(1);
   };
 
@@ -156,7 +142,7 @@ const ApplicationsArchive: React.FC = () => {
       setCurrentPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterSelection, applicationNum, router, initialQuery, isLoadAllMode]);
+  }, [filterSelection, applicationNum, router, initialQuery]);
 
   const pageCount = Math.ceil((searchResults?.count ?? 0) / ITEMS_PER_PAGE);
 
@@ -272,23 +258,6 @@ const ApplicationsArchive: React.FC = () => {
         onPageChange={handlePageChange}
         isSearchLoading={isSearchLoading}
       />
-      {displayLoadAll &&
-        !isSearchLoading &&
-        searchString.length === 0 &&
-        Boolean(searchResults?.next) && (
-          <Button
-            style={{ marginTop: 'var(--spacing-m)' }}
-            theme={ButtonPresetTheme.Coat}
-            onClick={() => {
-              setIsLoadAllMode(true);
-              setDisplayLoadAll(false);
-              setCurrentPage(1);
-              focusAndScrollToSelector('header');
-            }}
-          >
-            {t('common:utility.loadMore')}
-          </Button>
-        )}
     </Container>
   );
 };

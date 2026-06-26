@@ -158,8 +158,7 @@ describe('useApplicationsArchive', () => {
         true,
         SUBSIDY_IN_EFFECT.RANGE_NOW,
         DECISION_RANGE.RANGE_THREE_YEARS,
-        '42',
-        true
+        '42'
       )
     );
 
@@ -168,8 +167,7 @@ describe('useApplicationsArchive', () => {
       true,
       SUBSIDY_IN_EFFECT.RANGE_NOW,
       DECISION_RANGE.RANGE_THREE_YEARS,
-      '42',
-      true
+      '42'
     );
     expect(result.current.t).toBe(t);
 
@@ -190,7 +188,6 @@ describe('useApplicationsArchive', () => {
     expect(mockUseSearchApplicationQuery).toHaveBeenCalledWith(
       true,
       true,
-      undefined,
       undefined,
       undefined,
       undefined

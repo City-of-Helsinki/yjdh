@@ -157,8 +157,7 @@ describe('useSearchApplicationQuery', () => {
         true,
         SUBSIDY_IN_EFFECT.RANGE_NOW,
         DECISION_RANGE.RANGE_THREE_YEARS,
-        '2026-0001',
-        true
+        '2026-0001'
       )
     );
 
@@ -176,7 +175,6 @@ describe('useSearchApplicationQuery', () => {
         subsidy_in_effect: SUBSIDY_IN_EFFECT.RANGE_NOW,
         years_since_decision: DECISION_RANGE.RANGE_THREE_YEARS,
         app_no: '2026-0001',
-        load_all: '1',
         limit: 30,
         offset: 0,
       },
@@ -197,9 +195,7 @@ describe('useSearchApplicationQuery', () => {
     axios.get.mockReturnValue(response);
     handleResponse.mockResolvedValue(response.data);
 
-    renderHook(() =>
-      useSearchApplicationQuery(false, false, undefined, undefined, undefined, false)
-    );
+    renderHook(() => useSearchApplicationQuery(false, false));
 
     await mutationFn({
       q: '',
