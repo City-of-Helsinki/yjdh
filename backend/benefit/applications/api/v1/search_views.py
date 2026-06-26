@@ -215,14 +215,27 @@ def search_applications(
             archival_application_queryset,
             search_string,
             detected_pattern,
+            request,
+            limit,
+            offset,
         )
     elif detected_pattern == SearchPattern.SSN:
         return _query_and_respond_to_ssn(
-            application_queryset, search_string, detected_pattern
+            application_queryset,
+            search_string,
+            detected_pattern,
+            request,
+            limit,
+            offset,
         )
     elif detected_pattern == SearchPattern.ARCHIVAL:
         return _query_and_respond_to_archival_application(
-            archival_application_queryset, search_string, detected_pattern
+            archival_application_queryset,
+            search_string,
+            detected_pattern,
+            request,
+            limit,
+            offset,
         )
 
     # Perform trigram query for company name
@@ -281,6 +294,9 @@ def search_applications(
         search_string,
         in_memory_results,
         in_memory_filter_string,
+        request=request,
+        limit=limit,
+        offset=offset,
     )
 
 
@@ -391,6 +407,9 @@ def _query_and_respond_to_ssn(
     application_queryset,
     search_query_string,
     detected_pattern,
+    request=None,
+    limit=30,
+    offset=0,
 ):
     """
     Because of limitation in django-searchable-encrypted-fields,
@@ -408,11 +427,19 @@ def _query_and_respond_to_ssn(
         None,
         detected_pattern,
         search_query_string,
+        request=request,
+        limit=limit,
+        offset=offset,
     )
 
 
 def _query_and_respond_to_archival_application(
-    archival_application_queryset, search_query_string, detected_pattern
+    archival_application_queryset,
+    search_query_string,
+    detected_pattern,
+    request=None,
+    limit=30,
+    offset=0,
 ):
     archival_application_queryset = archival_application_queryset.filter(
         Q(application_number__icontains=search_query_string)
@@ -423,6 +450,9 @@ def _query_and_respond_to_archival_application(
         detected_pattern=detected_pattern,
         search_query_str=search_query_string,
         serializer=ArchivalApplicationListSerializer,
+        request=request,
+        limit=limit,
+        offset=offset,
     )
 
 
@@ -431,6 +461,9 @@ def _query_and_respond_to_numbers(
     archival_application_queryset,
     search_query_str,
     detected_pattern,
+    request=None,
+    limit=30,
+    offset=0,
 ):
     """
     Perform simple LIKE query for application number, AHJO case ID and company business ID
@@ -452,6 +485,9 @@ def _query_and_respond_to_numbers(
         serialized_data=data,
         detected_pattern=detected_pattern,
         search_query_str=search_query_str,
+        request=request,
+        limit=limit,
+        offset=offset,
     )
 
 
@@ -463,17 +499,40 @@ def _create_search_response(
     in_memory_results: Union[dict, None] = None,
     in_memory_filter_str="",
     serializer=HandlerApplicationListSerializer,
+    request=None,
+    limit=30,
+    offset=0,
 ):
     if serialized_data is None:
         serialized_data = serializer(queryset, many=True).data
 
+    total_count = len(serialized_data)
+    paginated_data = serialized_data[offset : offset + limit]
+
+    if request is not None:
+        return _build_paginated_search_response(
+            request,
+            paginated_data,
+            total_count,
+            detected_pattern,
+            search_query_str,
+            limit,
+            offset,
+            in_memory_filter_str,
+            in_memory_results,
+        )
+
     return Response(
         {
             "q": search_query_str,
-            "matches": serialized_data,
+            "matches": paginated_data,
             "filter": in_memory_filter_str,
             "detected_pattern": detected_pattern,
-            "count": len(serialized_data),
+            "count": total_count,
+            "limit": limit,
+            "offset": offset,
+            "next": None,
+            "previous": None,
             "score": in_memory_results["scores"] if in_memory_results else None,
         },
         status=status.HTTP_200_OK,
