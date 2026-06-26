@@ -444,15 +444,21 @@ def _query_and_respond_to_archival_application(
     archival_application_queryset = archival_application_queryset.filter(
         Q(application_number__icontains=search_query_string)
     )
-    return _create_search_response(
-        queryset=archival_application_queryset,
-        serialized_data=None,
-        detected_pattern=detected_pattern,
-        search_query_str=search_query_string,
-        serializer=ArchivalApplicationListSerializer,
-        request=request,
-        limit=limit,
-        offset=offset,
+    data, total_count = _serialize_paginated_querysets(
+        Application.objects.none(),
+        archival_application_queryset,
+        limit,
+        offset,
+    )
+
+    return _build_paginated_search_response(
+        request,
+        data,
+        total_count,
+        detected_pattern,
+        search_query_string,
+        limit,
+        offset,
     )
 
 
@@ -473,21 +479,26 @@ def _query_and_respond_to_numbers(
         | Q(ahjo_case_id__icontains=search_query_str)
         | Q(application_number__icontains=search_query_str)
     )
-    data = HandlerApplicationListSerializer(applications, many=True).data
 
     archival_applications = archival_application_queryset.filter(
         company__business_id__icontains=search_query_str
     )
-    data += ArchivalApplicationListSerializer(archival_applications, many=True).data
 
-    return _create_search_response(
-        queryset=None,
-        serialized_data=data,
-        detected_pattern=detected_pattern,
-        search_query_str=search_query_str,
-        request=request,
-        limit=limit,
-        offset=offset,
+    data, total_count = _serialize_paginated_querysets(
+        applications,
+        archival_applications,
+        limit,
+        offset,
+    )
+
+    return _build_paginated_search_response(
+        request,
+        data,
+        total_count,
+        detected_pattern,
+        search_query_str,
+        limit,
+        offset,
     )
 
 
