@@ -15,6 +15,23 @@ type CheckboxName = keyof Pick<
   'is_unlisted_school' | 'termsAndConditions'
 >;
 
+const getAgeFromSsn = (ssn?: string): number => {
+  if (!ssn || ssn.length < 7) {
+    return 16;
+  }
+  let year = parseInt(ssn.slice(4, 6), 10);
+  const separator = ssn.charAt(6).toUpperCase();
+  if (separator === '+') {
+    year += 1800;
+  } else if (['A', 'B', 'C', 'D', 'E', 'F'].includes(separator)) {
+    year += 2000;
+  } else {
+    year += 1900;
+  }
+  const currentYear = new Date().getFullYear();
+  return currentYear - year;
+};
+
 class YouthForm extends YouthPageComponent {
   public constructor(lang?: Language) {
     super({ datatestId: 'youth-form', lang });
@@ -93,9 +110,11 @@ class YouthForm extends YouthPageComponent {
     return t.click(this.checkbox(name));
   }
 
-  public selectTargetGroup(): TestControllerPromise {
+  public selectTargetGroup(ssn?: string): TestControllerPromise {
+    const age = getAgeFromSsn(ssn);
+    const index = age === 17 ? 1 : 0;
     return this.clickSelectRadioButton(
-      this.component.findAllByRole('radio').nth(0)
+      this.component.findAllByRole('radio').nth(index)
     );
   }
 
@@ -126,7 +145,7 @@ class YouthForm extends YouthPageComponent {
     }
     await this.typeInput('phone_number', application.phone_number);
     await this.typeInput('email', application.email);
-    await this.selectTargetGroup();
+    await this.selectTargetGroup(application.social_security_number);
     await this.toggleCheckbox('termsAndConditions');
     return this.clickSendButton();
   }

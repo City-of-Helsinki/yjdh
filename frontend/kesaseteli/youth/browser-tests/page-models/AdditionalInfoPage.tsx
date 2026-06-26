@@ -1,7 +1,7 @@
 import AdditionalInfoApplication from '@frontend/kesaseteli-shared/src/types/additional-info-application';
 import AdditionalInfoReasonType from '@frontend/kesaseteli-shared/src/types/additional-info-reason-type';
 import { Language } from '@frontend/shared/src/i18n/i18n';
-import { t } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import YouthTranslations from '../../src/__tests__/utils/i18n/youth-translations';
 import YouthPageComponent from './YouthPageComponent';
@@ -24,8 +24,8 @@ class AdditionalInfoPage extends YouthPageComponent {
     name: this.translations.additionalInfo.title,
   });
 
-  private reasonOption(reason: Reason): SelectorPromise {
-    return this.withinForm.findByRole('option', {
+  private reasonOption(reason: Reason): Selector {
+    return this.screen.findByRole('option', {
       name: this.regexp(this.translations.additionalInfo.reasons[reason]),
     });
   }
@@ -58,14 +58,14 @@ class AdditionalInfoPage extends YouthPageComponent {
   public async clickAndSelectReasonsFromDropdown(
     reasons: AdditionalInfoReasonType[]
   ): Promise<void> {
-    await this.htmlElementClick('#additional_info_user_reasons-toggle-button');
+    await t.click(Selector('#additional_info_user_reasons-main-button'));
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
     for (const reason of reasons) {
       await t.click(this.reasonOption(reason));
     }
     /* eslint-enable no-await-in-loop */
-    await this.htmlElementClick('#additional_info_user_reasons-toggle-button');
+    await t.click(Selector('#additional_info_user_reasons-main-button'));
   }
 
   public async typeAdditionalInfoDescription(text: string): Promise<void> {
