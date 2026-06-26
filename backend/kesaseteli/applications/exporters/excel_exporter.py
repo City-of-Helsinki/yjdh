@@ -1,6 +1,7 @@
 import io
 from typing import Iterable, List, Literal, NamedTuple
 
+from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import reverse
@@ -136,8 +137,9 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     _("Muuta"),
 ]
 
-# The 6 new fields introduced in 2026 that should be positioned at the very end
-# of the Talpa Excel columns to avoid disrupting Talpa robot processing.
+# The fields introduced in 2026 (including the calculation status field)
+# that should be positioned at the very end of the Talpa Excel columns
+# to avoid disrupting Talpa robot processing.
 TALPA_END_FIELD_TITLES = [
     _("VTJ-tietojen luovutuskielto (ts. turvakielto)"),
     _("Maksunsaajan nimi"),
@@ -145,6 +147,7 @@ TALPA_END_FIELD_TITLES = [
     _("Pankin SWIFT / BIC koodi"),
     _("Pankin nimi"),
     _("Pankin käyntiosoite"),
+    _("Erikoistapauksen laskentatila"),
 ]
 
 
@@ -357,12 +360,26 @@ def get_reporting_columns():
 
 
 def get_talpa_columns():
+    """
+    Get columns for the Talpa Excel export.
+
+    This function filters the main FIELDS list by excluding fields present in
+    REMOVABLE_TALPA_FIELD_TITLES. Additionally:
+    - normal_fields: The baseline Talpa columns.
+    - end_fields (TALPA_END_FIELD_TITLES): The new columns introduced in 2026 (including
+      the target group status calculation column), which are positioned at the very end
+      of the sheet to avoid disrupting Talpa robot processing.
+    - If settings.EXCLUDE_2026_EXCEL_FIELDS is True, the 2026 end_fields are
+      omitted entirely, returning only normal_fields.
+    """
     normal_fields = [
         field
         for field in FIELDS
         if field.title not in REMOVABLE_TALPA_FIELD_TITLES
         and field.title not in TALPA_END_FIELD_TITLES
     ]
+    if getattr(settings, "EXCLUDE_2026_EXCEL_FIELDS", True):
+        return normal_fields
     end_fields = [field for field in FIELDS if field.title in TALPA_END_FIELD_TITLES]
     return normal_fields + end_fields
 
