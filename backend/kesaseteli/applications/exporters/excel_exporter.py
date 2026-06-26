@@ -1,6 +1,7 @@
 import io
 from typing import Iterable, List, Literal, NamedTuple
 
+from django.conf import settings
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import reverse
@@ -357,6 +358,30 @@ def get_reporting_columns():
 
 
 def get_talpa_columns():
+    """
+    Get columns for the Talpa Excel export.
+
+    This function filters the main FIELDS list by excluding fields present in
+    REMOVABLE_TALPA_FIELD_TITLES. Additionally:
+    - normal_fields: The baseline Talpa columns.
+    - end_fields (TALPA_END_FIELD_TITLES): The 6 new columns introduced in 2026,
+      which are positioned at the very end of the sheet to avoid disrupting Talpa
+      robot processing.
+    - If settings.EXCLUDE_2026_EXCEL_FIELDS is True, the 2026 end_fields and
+      the target group status calculation column are omitted entirely, returning
+      only normal_fields without the status column.
+    """
+    if getattr(settings, "EXCLUDE_2026_EXCEL_FIELDS", True):
+        # Old static column list (both 2026 columns and status column are excluded)
+        return [
+            field
+            for field in FIELDS
+            if field.title not in REMOVABLE_TALPA_FIELD_TITLES
+            and field.title not in TALPA_END_FIELD_TITLES
+            and field.title != _("Erikoistapauksen laskentatila")
+        ]
+
+    # New static column list (both 2026 columns and status column are included)
     normal_fields = [
         field
         for field in FIELDS

@@ -656,6 +656,7 @@ def test_reporting_fields():
     )
 
 
+@override_settings(EXCLUDE_2026_EXCEL_FIELDS=False)
 def test_talpa_fields():
     field_titles = get_field_titles(FIELDS)
     talpa_columns = get_talpa_columns()
@@ -669,6 +670,18 @@ def test_talpa_fields():
     end_titles = get_field_titles(talpa_columns[-len(TALPA_END_FIELD_TITLES) :])
     assert end_titles == [str(t) for t in TALPA_END_FIELD_TITLES]
     assert get_talpa_columns() == get_exportable_fields(ExcelColumns.TALPA.value)
+
+
+@pytest.mark.django_db
+@override_settings(EXCLUDE_2026_EXCEL_FIELDS=True)
+def test_talpa_fields_with_2026_fields_disabled():
+    _field_titles = get_field_titles(FIELDS)
+    talpa_columns = get_talpa_columns()
+    talpa_field_titles = get_field_titles(talpa_columns)
+    from applications.exporters.excel_exporter import TALPA_END_FIELD_TITLES
+
+    for title in TALPA_END_FIELD_TITLES:
+        assert str(title) not in talpa_field_titles
 
 
 def test_removable_reporting_field_titles():
@@ -914,9 +927,9 @@ def test_resolve_target_group_and_status_always_finnish():
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, EXCLUDE_2026_EXCEL_FIELDS=False)
 def test_talpa_excel_includes_status_field(staff_client):
-    """The calculation status field should now appear in Talpa Excel."""
+    """The calculation status field should appear in Talpa Excel when EXCLUDE_2026_EXCEL_FIELDS is False."""
     EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory(
             status=EmployerApplicationStatus.SUBMITTED
@@ -933,7 +946,26 @@ def test_talpa_excel_includes_status_field(staff_client):
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, EXCLUDE_2026_EXCEL_FIELDS=True)
+def test_talpa_excel_excludes_status_field_when_flag_enabled(staff_client):
+    """The calculation status field must be absent from Talpa Excel when EXCLUDE_2026_EXCEL_FIELDS is True."""
+    EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(
+            status=EmployerApplicationStatus.SUBMITTED
+        )
+    )
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.TALPA.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    header = [c.value for c in next(workbook.active.rows)]
+
+    assert "Erikoistapauksen laskentatila" not in header
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, EXCLUDE_2026_EXCEL_FIELDS=False)
 def test_talpa_excel_includes_2026_fields_at_end(staff_client):
     """The 6 fields must appear at the end of Talpa Excel columns."""
     EmployerSummerVoucherFactory(
@@ -958,3 +990,30 @@ def test_talpa_excel_includes_2026_fields_at_end(staff_client):
     ]
     assert header[-len(expected_end) :] == expected_end
 
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, EXCLUDE_2026_EXCEL_FIELDS=True)
+def test_talpa_excel_excludes_2026_fields_when_flag_enabled(staff_client):
+    """The 6 fields must be absent from Talpa Excel when EXCLUDE_2026_EXCEL_FIELDS is True."""
+    EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(
+            status=EmployerApplicationStatus.SUBMITTED
+        )
+    )
+
+    response = staff_client.get(
+        employer_excel_export_url("annual", ExcelColumns.TALPA.value)
+    )
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    header = [c.value for c in next(workbook.active.rows)]
+
+    expected_end = [
+        "VTJ-tietojen luovutuskielto (ts. turvakielto)",
+        "Maksunsaajan nimi",
+        "Maksunsaajan osoite",
+        "Pankin SWIFT / BIC koodi",
+        "Pankin nimi",
+        "Pankin käyntiosoite",
+    ]
+    for title in expected_end:
+        assert title not in header
