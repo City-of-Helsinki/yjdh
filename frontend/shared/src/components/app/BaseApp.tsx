@@ -1,6 +1,6 @@
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import Content from 'shared/components/content/Content';

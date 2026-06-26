@@ -52,6 +52,7 @@
 !benefit/applicant/next.config.js
 !benefit/applicant/sentry.client.config.js
 !benefit/applicant/sentry.server.config.js
+!benefit/applicant/sentry.edge.config.ts
 !benefit/applicant/next-i18next.config.js
 !benefit/applicant/package.json
 !benefit/applicant/public
@@ -61,6 +62,7 @@
 !benefit/handler/next.config.js
 !benefit/handler/sentry.client.config.js
 !benefit/handler/sentry.server.config.js
+!benefit/handler/sentry.edge.config.ts
 !benefit/handler/next-i18next.config.js
 !benefit/handler/package.json
 !benefit/handler/public
