@@ -4,6 +4,7 @@ import {
   fakeAdditionalInfoApplication,
   fakeYouthApplication,
 } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
+import { ADDITIONAL_INFO_REASON_TYPE } from '@frontend/kesaseteli-shared/src/constants/additional-info-reason-type';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
@@ -108,7 +109,12 @@ if (!isRealIntegrationsEnabled()) {
     } = getYouthTranslationsApi();
     await handlerFormPage.applicationFieldHasValue(
       'additional_info_user_reasons',
-      activatedApplication.additional_info_user_reasons
+      [...(activatedApplication.additional_info_user_reasons ?? [])]
+        .sort(
+          (leftReason, rightReason) =>
+            ADDITIONAL_INFO_REASON_TYPE.indexOf(leftReason) -
+            ADDITIONAL_INFO_REASON_TYPE.indexOf(rightReason)
+        )
         ?.map((reason) => fi.additionalInfo.reasons[reason])
         .join('. ') ?? ''
     );
