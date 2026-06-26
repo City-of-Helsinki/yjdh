@@ -92,6 +92,25 @@ def test_probe_endpoints_return_no_csp_header(client, method, url):
     assert "Content-Security-Policy" not in response.headers
 
 
+@pytest.mark.parametrize(
+    ("method", "url"),
+    [("get", "/healthz"), ("head", "/healthz"), ("get", "/readiness"), ("head", "/readiness")],
+)
+def test_probe_endpoints_return_no_permissions_policy_header(client, method, url):
+    """Verify probe endpoints do not emit a Permissions-Policy header.
+
+    Probe responses should stay free of security-policy headers, matching the
+    CSP exemption on healthz and readiness views.
+
+    Args:
+        client: Django test client for unauthenticated requests.
+        method: HTTP method to use for the request.
+        url: Probe endpoint URL under test.
+    """
+    response = getattr(client, method)(url)
+    assert "Permissions-Policy" not in response.headers
+
+
 def test_readiness_rejects_post(client):
     """Readiness only accepts GET and HEAD requests."""
     response = client.post("/readiness")
