@@ -194,7 +194,13 @@ def log_logout_event(request, user):
         request: The current Django ``HttpRequest``.
         user: The Django ``User`` instance that is logging out.
     """
-    user_id = str(user.pk) if user else "unknown"
+    # Django sends the `user_logged_out` signal unconditionally on every logout request.
+    # If the user is already logged out (or the session is anonymous), Django passes
+    # `user=None`. We skip logging in this case to avoid redundant/empty log entries.
+    if user is None or not user.is_authenticated:
+        return
+
+    user_id = str(user.pk)
     ResilientLogSource.create_structured(
         level=logging.INFO,
         message=AuthEventMessage.LOGOUT,

@@ -1,6 +1,7 @@
 from unittest import mock
 
 import pytest
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.test import override_settings, RequestFactory
 from requests.exceptions import ConnectionError as RequestsConnectionError
@@ -148,3 +149,20 @@ def test_fetch_vtj_json_raises_service_unavailable_on_value_error():
     application = YouthApplicationFactory()
     with pytest.raises(VTJServiceUnavailableError):
         VTJService.fetch_vtj_json(application, end_user="test-handler-uuid")
+
+
+@override_settings(ENABLE_AUTH_LOGGING=True)
+@pytest.mark.parametrize("user", [None, AnonymousUser()])
+def test_on_user_logged_out_does_not_log_if_anonymous_or_none(user):
+    """Anonymous or None user logout does not trigger a LOGOUT log entry."""
+    request = RequestFactory().get("/")
+    user_logged_out.send(
+        sender=user.__class__ if user else None, request=request, user=user
+    )
+
+    assert (
+        ResilientLogEntry.objects.filter(
+            context__operation=AuthEventType.LOGOUT
+        ).count()
+        == 0
+    )
