@@ -1,11 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useQuery } from 'react-query';
+
 import useApplicationsQuery from '../useApplicationsQuery';
 
 jest.mock('react-query', () => ({
   useQuery: jest.fn(),
 }));
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 jest.mock('shared/hooks/useBackendAPI', () => () => ({
   axios: {
     get: jest.fn(),
@@ -13,6 +15,7 @@ jest.mock('shared/hooks/useBackendAPI', () => () => ({
   handleResponse: jest.fn(),
 }));
 
+// eslint-disable-next-line unicorn/consistent-function-scoping
 jest.mock('shared/hooks/useErrorHandler', () => () => jest.fn());
 
 describe('useApplicationsQuery keepPreviousData behavior', () => {
@@ -38,7 +41,7 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
   });
 
   it('sets keepPreviousData to false when filter changes', () => {
-    let onlyMine = false;
+    const onlyMine = false;
     let year = '2023';
 
     const { rerender } = renderHook(() =>
