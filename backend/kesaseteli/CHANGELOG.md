@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.17.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.16.0...kesaseteli-backend-v1.17.0) (2026-06-29)
+
+
+### Features
+
+* **ks,api:** Add OpenAPI and ReDoc for kesaseteli API ([7c83767](https://github.com/City-of-Helsinki/yjdh/commit/7c837671f73de9a80055cddc9318b45a30378278))
+* **ks,backend:** Add Swagger UI documentation route ([75f4634](https://github.com/City-of-Helsinki/yjdh/commit/75f4634da6776bb64df92462e960f38774f90056))
+* **ks:** Add summer voucher attachments to Django admin ([c5be55b](https://github.com/City-of-Helsinki/yjdh/commit/c5be55b809b931cfd4ce38a5464dd58d2f4a765b))
+* **ks:** Add target group calculation and exclude 2026 columns ([a469e00](https://github.com/City-of-Helsinki/yjdh/commit/a469e0088c0480d34970fbf64f59cb457dd742b4))
+* **ks:** Add youth summer voucher inline to youth application admin ([29f0f5a](https://github.com/City-of-Helsinki/yjdh/commit/29f0f5a15a7b0faaba3556b35744939d8913c81f))
+
+
+### Bug Fixes
+
+* **ks,api:** Redact employee data lookup warning ([9ceec96](https://github.com/City-of-Helsinki/yjdh/commit/9ceec96878f33b89d45f5c47674f6a33d94bbf37))
+* **ks,api:** Return 500 when fetch employee data response is invalid ([d1b1a25](https://github.com/City-of-Helsinki/yjdh/commit/d1b1a25d5e1818186562c57495575255fce2c203))
+* **ks,backend:** Allow null home city for turvakielto applicants ([a5ceabe](https://github.com/City-of-Helsinki/yjdh/commit/a5ceabed066cf74e1b6b88580a92521a28bc268a))
+* **ks,backend:** Don't hardcode SearchField hash key into migrations ([4541277](https://github.com/City-of-Helsinki/yjdh/commit/454127792a0d3e34c1e34fc0e4bdd2e69083b7ee))
+* **ks:** Restrict handler permissions to authenticated users ([62ca32e](https://github.com/City-of-Helsinki/yjdh/commit/62ca32e1afd5b9ac9b6bbc4bf07475465a28a09f))
+
+
+### Dependencies
+
+* **kesaseteli,benefit,shared:** Update to django-resilient-logger 2.3.0 ([15a1b5f](https://github.com/City-of-Helsinki/yjdh/commit/15a1b5f92a75b7931f4f7a318d6aff4d6245f4e3))
+* **ks,backend:** Update dependencies to latest ([c202a2e](https://github.com/City-of-Helsinki/yjdh/commit/c202a2e173cf000545f5ed514e9c16baeec29c12))
+
+
+### Documentation
+
+* **ks,backend:** Document employer application crud endpoints ([25b798c](https://github.com/City-of-Helsinki/yjdh/commit/25b798c603270f962a5db329b2379c9f41aedd91))
+
 ## [1.16.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.15.0...kesaseteli-backend-v1.16.0) (2026-06-11)
 
 
