@@ -157,7 +157,7 @@ def _prepare_application_queryset(archived, subsidy_in_effect, years_since_decis
                 - relativedelta(years=years_since_decision),
             ),
         )
-    return queryset.order_by("-modified_at")
+    return queryset.order_by("-modified_at", "-id")
 
 
 def _prepare_archival_application_queryset(subsidy_in_effect, years_since_decision):
@@ -177,7 +177,7 @@ def _prepare_archival_application_queryset(subsidy_in_effect, years_since_decisi
             end_date__gte=timezone.now().date()
             - relativedelta(years=int(years_since_decision))
         )
-    return queryset.all()
+    return queryset.order_by("-modified_at", "-id")
 
 
 def search_applications(
@@ -544,7 +544,9 @@ def _create_search_response(
             "offset": offset,
             "next": None,
             "previous": None,
-            "score": in_memory_results["scores"] if in_memory_results else None,
+            "score": in_memory_results["scores"][offset : offset + limit]
+            if in_memory_results
+            else None,
         },
         status=status.HTTP_200_OK,
     )
@@ -697,23 +699,20 @@ def _build_paginated_search_response(
 ):
     next_url = None
     previous_url = None
-
-    if offset + limit < total_count:
+    if request is not None and offset + limit < total_count:
         next_params = request.query_params.copy()
         next_params["limit"] = str(limit)
         next_params["offset"] = str(offset + limit)
         next_url = request.build_absolute_uri(
             f"{request.path}?{next_params.urlencode()}"
         )
-
-    if offset > 0:
+    if request is not None and offset > 0:
         previous_params = request.query_params.copy()
         previous_params["limit"] = str(limit)
         previous_params["offset"] = str(max(offset - limit, 0))
         previous_url = request.build_absolute_uri(
             f"{request.path}?{previous_params.urlencode()}"
         )
-
     return Response(
         {
             "q": search_query_str,
