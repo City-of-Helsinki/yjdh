@@ -1,4 +1,5 @@
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { useRef } from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
@@ -34,6 +35,17 @@ const useApplicationsQuery = <T = Application[], R = Application[]>({
   const defaultErrorHandler = useErrorHandler();
   const queryYear = year === 'all' ? undefined : year;
 
+  const prevFiltersRef = useRef({ onlyMine, queryYear });
+  let keepPreviousData = true;
+
+  if (
+    prevFiltersRef.current.onlyMine !== onlyMine ||
+    prevFiltersRef.current.queryYear !== queryYear
+  ) {
+    keepPreviousData = false;
+    prevFiltersRef.current = { onlyMine, queryYear };
+  }
+
   return useQuery(
     [
       BackendEndpoint.EMPLOYER_APPLICATIONS,
@@ -55,7 +67,7 @@ const useApplicationsQuery = <T = Application[], R = Application[]>({
       staleTime: staleTime !== undefined ? staleTime : Infinity,
       retryDelay: 3000,
       onError: onError ?? defaultErrorHandler,
-      keepPreviousData: true,
+      keepPreviousData,
     }
   );
 };
