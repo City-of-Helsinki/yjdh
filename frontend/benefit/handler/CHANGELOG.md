@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.4.1...benefit-handler-v5.4.2) (2026-06-30)
+
+
+### Bug Fixes
+
+* **benefit:** Update readme to trigger release-please ([3370b9d](https://github.com/City-of-Helsinki/yjdh/commit/3370b9da2b45f7288c7d941ea684ac35c6cdf8df))
+
 ## [5.4.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.4.0...benefit-handler-v5.4.1) (2026-06-25)
 
 
