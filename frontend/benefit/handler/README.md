@@ -8,4 +8,4 @@
 
 # Handler
 
-User interface for handler to send Helsinki-benifit applications
+User interface for handler to send Helsinki-benefit applications
