@@ -17,17 +17,18 @@
     "@frontend/shared": "*",
     "axios": "^1.17.0",
     "finnish-ssn": "^2.1.2",
+    "hds-react": "^5.0.0",
     "react-query": "^3.34.0"
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.13.0",
-    "hds-react": "^5.2.0",
+    "hds-react": "^5.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "hds-react": "^5.2.0",
+    "hds-react": "^5.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }
