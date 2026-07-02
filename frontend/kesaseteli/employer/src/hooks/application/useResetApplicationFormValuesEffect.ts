@@ -93,7 +93,7 @@ const useResetApplicationFormValuesEffect = ({
     // Historical applications may have multiple vouchers, but sending them all
     // in PUT requests causes backend validation errors on the stale ones.
     // Keep only the last voucher so the payload matches what the user is editing.
-    application.summer_vouchers = [vouchers[vouchers.length - 1]];
+    application.summer_vouchers = [vouchers.at(-1) as Employment];
 
     // Comparison Hierarchy:
     // 1. On Initial Load (isDirty === false): We trust (Server Data + SessionStorage Data).
