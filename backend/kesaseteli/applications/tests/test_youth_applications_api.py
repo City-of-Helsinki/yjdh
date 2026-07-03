@@ -2941,10 +2941,6 @@ def test_list_youth_applications_staff_pagination(staff_client):
     ],
 )
 def test_list_youth_applications_staff_sorting(staff_client, field):
-    from datetime import timedelta
-
-    from django.utils import timezone
-
     app1 = AcceptedYouthApplicationFactory.create()
     app2 = AcceptedYouthApplicationFactory.create()
 

@@ -88,8 +88,8 @@ def test_youth_applications_list_get_method_not_allowed_to_anonymous_user(client
     """
     list_url = reverse("v1:youthapplication-list")
     response = client.get(list_url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert response.data is None
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.data["code"] == NotAuthenticated.default_code
     assert isinstance(response.accepted_renderer, JSONRenderer)
     assert response.wsgi_request.user.is_anonymous
 
