@@ -39,6 +39,7 @@ from applications.target_groups import (
 )
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
+from common.utils import get_age, mask_social_security_number
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
 
@@ -252,6 +253,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         allow_blank=True,
         required=False,
     )
+    youth_application_id = serializers.SerializerMethodField()
 
     class Meta:
         model = EmployerSummerVoucher
@@ -273,6 +275,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "hired_without_voucher_assessment",
             "attachments",
             "ordering",
+            "youth_application_id",
         ]
         read_only_fields = [
             "ordering",
@@ -280,8 +283,15 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "employee_birthdate",
             "employee_home_city",
             "employee_postcode",
+            "youth_application_id",
         ]
         list_serializer_class = EmployerSummerVoucherListSerializer
+
+    @extend_schema_field(OpenApiTypes.UUID)
+    def get_youth_application_id(self, obj) -> Optional[str]:
+        if obj.youth_summer_voucher and obj.youth_summer_voucher.youth_application:
+            return str(obj.youth_summer_voucher.youth_application.id)
+        return None
 
     def _validate_non_draft_required_fields(self, data):
         parent = self.parent
@@ -754,6 +764,17 @@ class SummerVoucherConfigurationSerializer(serializers.ModelSerializer):
         return get_target_group_data(obj.target_group)
 
 
+class YouthApplicationEmployerApplicationSerializer(serializers.Serializer):
+    id = serializers.UUIDField(help_text="Employer application UUID")
+    company_name = serializers.CharField(help_text="Company name")
+    company_business_id = serializers.CharField(
+        help_text="Company business ID (Y-tunnus)"
+    )
+    summer_voucher_serial_number = serializers.CharField(
+        help_text="Serial number of the summer voucher"
+    )
+
+
 class YouthApplicationSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         self.hide_vtj_data = kwargs.pop("hide_vtj_data", False)
@@ -832,6 +853,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "non_vtj_birthdate",
             "non_vtj_home_municipality",
             "is_vtj_data_restricted",
+            "employer_applications",
         ] + vtj_data_fields
         fields = read_only_fields + [
             "first_name",
@@ -860,6 +882,13 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
     )
     encrypted_handler_vtj_json = serializers.SerializerMethodField(
         "get_encrypted_handler_vtj_json"
+    )
+    employer_applications = serializers.SerializerMethodField(
+        help_text=(
+            "List of linked employer applications. "
+            "Strictly restricted to handler users. "
+            "Returns an empty list for unauthorized or public users."
+        )
     )
     creator = serializers.PrimaryKeyRelatedField(
         required=False,
@@ -896,6 +925,96 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
 
     def get_encrypted_handler_vtj_json(self, obj) -> dict:
         return self.get_encrypted_char_field_as_json(obj, "encrypted_handler_vtj_json")
+
+    @extend_schema_field(YouthApplicationEmployerApplicationSerializer(many=True))
+    def get_employer_applications(self, obj: YouthApplication) -> list:
+        request = self.context.get("request")
+        if (
+            not request
+            or not request.user
+            or not HandlerPermission.has_user_permission(request.user)
+        ):
+            return []
+
+        if not obj.has_youth_summer_voucher:
+            return []
+
+        youth_voucher = obj.youth_summer_voucher
+        employer_vouchers = youth_voucher.employer_summer_vouchers.select_related(
+            "application", "application__company"
+        ).all()
+
+        results = []
+        for ev in employer_vouchers:
+            app = ev.application
+            if app:
+                results.append(
+                    {
+                        "id": app.id,
+                        "company_name": app.company.name if app.company else "",
+                        "company_business_id": app.company.business_id
+                        if app.company
+                        else "",
+                        "summer_voucher_serial_number": ev.summer_voucher_serial_number,
+                        "submitted_at": (
+                            app.submitted_at.isoformat()
+                            if app.submitted_at
+                            else app.created.isoformat()
+                        ),
+                    }
+                )
+        return results
+
+
+class YouthApplicationListSerializer(serializers.ModelSerializer):
+    social_security_number = serializers.SerializerMethodField()
+    summer_voucher_serial_number = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
+    birth_year = serializers.SerializerMethodField()
+    target_group_name = serializers.CharField(
+        source="get_target_group_display", read_only=True
+    )
+
+    class Meta:
+        model = YouthApplication
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "social_security_number",
+            "status",
+            "created_at",
+            "target_group",
+            "target_group_name",
+            "summer_voucher_serial_number",
+            "age",
+            "birth_year",
+        ]
+
+    @extend_schema_field(serializers.CharField(allow_null=True))
+    def get_social_security_number(self, obj: YouthApplication) -> Optional[str]:
+        return mask_social_security_number(obj.social_security_number) or None
+
+    @extend_schema_field(serializers.CharField(allow_null=True))
+    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> Optional[str]:
+        if not obj.has_youth_summer_voucher:
+            return None
+        return obj.youth_summer_voucher.user_showable_serial_number
+
+    @extend_schema_field(serializers.IntegerField(allow_null=True))
+    def get_age(self, obj: YouthApplication) -> Optional[int]:
+        birthdate = obj.birthdate
+        if not birthdate:
+            return None
+        year = obj.created_at.year if obj.created_at else timezone.now().year
+        return get_age(birthdate, year)
+
+    @extend_schema_field(serializers.IntegerField(allow_null=True))
+    def get_birth_year(self, obj: YouthApplication) -> Optional[int]:
+        birthdate = obj.birthdate
+        if not birthdate:
+            return None
+        return birthdate.year
 
 
 class YouthApplicationStatusSerializer(serializers.ModelSerializer):

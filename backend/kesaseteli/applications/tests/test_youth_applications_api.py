@@ -20,7 +20,7 @@ from django.utils import timezone, translation
 from django.utils.html import strip_tags
 from django.utils.timezone import localdate
 from freezegun import freeze_time
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import YouthApplicationSerializer
@@ -52,6 +52,7 @@ from common.tests.factories import (
     AdditionalInfoProvidedYouthApplicationFactory,
     AdditionalInfoRequestedYouthApplicationFactory,
     AwaitingManualProcessingYouthApplicationFactory,
+    EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
     InactiveNeedAdditionalInfoYouthApplicationFactory,
     InactiveNoNeedAdditionalInfoYouthApplicationFactory,
@@ -71,6 +72,7 @@ from common.urls import (
     RedirectTo,
     reverse_youth_application_action,
 )
+from common.utils import mask_social_security_number
 from shared.common.lang_test_utils import (
     assert_email_body_language,
     assert_email_subject_language,
@@ -205,6 +207,7 @@ def get_read_only_fields() -> List[str]:
         "non_vtj_birthdate",
         "non_vtj_home_municipality",
         "is_vtj_data_restricted",
+        "employer_applications",
     ]
 
 
@@ -331,6 +334,7 @@ def get_test_vtj_json() -> dict:
         not in [
             ("get", "activate"),
             ("get", "detail"),
+            ("get", "list"),
             ("get", "process"),
             ("patch", "accept"),
             ("patch", "reject"),
@@ -1276,6 +1280,8 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
         ), f"{optional_field} created youth application attribute incorrect"
 
     for read_only_field in read_only_fields:
+        if read_only_field == "employer_applications":
+            continue
         assert (
             getattr(created_app, read_only_field)
             == YouthApplication._meta.get_field(read_only_field).get_default()
@@ -2862,3 +2868,263 @@ def test_retrieve_youth_application_returns_503_on_vtj_request_exception(staff_c
     assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
     assert response.data["detail"].code == "vtj_service_unavailable"
     mock_capture.assert_called_once()
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_list_youth_applications_unauthenticated(unauth_api_client):
+    response = unauth_api_client.get(get_list_url(), HTTP_ACCEPT="application/json")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_list_youth_applications_non_staff_forbidden(api_client):
+    response = api_client.get(get_list_url(), HTTP_ACCEPT="application/json")
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_list_youth_applications_staff_success(staff_client):
+    app = AcceptedYouthApplicationFactory(
+        first_name="Test",
+        last_name="User",
+        status=YouthApplicationStatus.ACCEPTED,
+    )
+    response = staff_client.get(get_list_url())
+    assert response.status_code == status.HTTP_200_OK
+
+    assert isinstance(response.data, dict)
+    assert "results" in response.data
+    results = response.data["results"]
+    assert len(results) == 1
+    item = results[0]
+
+    # Strict snapshot value validation:
+    assert item == {
+        "id": str(app.id),
+        "first_name": "Test",
+        "last_name": "User",
+        "social_security_number": mask_social_security_number(
+            app.social_security_number
+        ),
+        "status": "accepted",
+        "created_at": serializers.DateTimeField().to_representation(app.created_at),
+        "target_group": app.target_group,
+        "target_group_name": app.get_target_group_display(),
+        "summer_voucher_serial_number": app.youth_summer_voucher.user_showable_serial_number,
+        "age": app.created_at.year - app.birthdate.year if app.birthdate else None,
+        "birth_year": app.birthdate.year if app.birthdate else None,
+    }
+
+
+@pytest.mark.django_db
+def test_list_youth_applications_staff_pagination(staff_client):
+    AcceptedYouthApplicationFactory.create_batch(size=2)
+    response = staff_client.get(get_list_url(), {"limit": 1})
+    assert response.status_code == status.HTTP_200_OK
+    assert "results" in response.data
+    assert len(response.data["results"]) == 1
+    assert response.data["count"] == 2
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "field",
+    [
+        "created_at",
+        "first_name",
+        "last_name",
+        "status",
+        "target_group",
+        "id",
+    ],
+)
+def test_list_youth_applications_staff_sorting(staff_client, field):
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    app1 = AcceptedYouthApplicationFactory.create()
+    app2 = AcceptedYouthApplicationFactory.create()
+
+    if field == "created_at":
+        type(app1).objects.filter(pk=app1.pk).update(
+            created_at=timezone.now() - timedelta(days=2)
+        )
+        type(app2).objects.filter(pk=app2.pk).update(
+            created_at=timezone.now() - timedelta(days=1)
+        )
+        app1.refresh_from_db()
+        app2.refresh_from_db()
+    elif field == "first_name":
+        app1.first_name = "Aapeli"
+        app1.save()
+        app2.first_name = "Bertta"
+        app2.save()
+    elif field == "last_name":
+        app1.last_name = "Aho"
+        app1.save()
+        app2.last_name = "Virtanen"
+        app2.save()
+    elif field == "status":
+        app1.status = "submitted"
+        app1.save()
+        app2.status = "accepted"
+        app2.save()
+    elif field == "target_group":
+        app1.target_group = "target_group_1"
+        app1.save()
+        app2.target_group = "target_group_2"
+        app2.save()
+
+    # Determine expected sort order
+    val1 = getattr(app1, field)
+    val2 = getattr(app2, field)
+
+    if val1 < val2:
+        expected_asc = [str(app1.id), str(app2.id)]
+        expected_desc = [str(app2.id), str(app1.id)]
+    else:
+        expected_asc = [str(app2.id), str(app1.id)]
+        expected_desc = [str(app1.id), str(app2.id)]
+
+    # Test ascending
+    response_asc = staff_client.get(get_list_url(), {"ordering": field})
+    assert response_asc.status_code == status.HTTP_200_OK
+    assert "results" in response_asc.data
+    assert [r["id"] for r in response_asc.data["results"]] == expected_asc
+
+    # Test descending
+    response_desc = staff_client.get(get_list_url(), {"ordering": f"-{field}"})
+    assert response_desc.status_code == status.HTTP_200_OK
+    assert "results" in response_desc.data
+    assert [r["id"] for r in response_desc.data["results"]] == expected_desc
+
+
+@pytest.mark.django_db
+def test_employer_applications_field_not_leaked_to_unauthenticated_user(
+    unauth_api_client,
+    settings,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+
+    youth_application = AcceptedYouthApplicationFactory.create()
+    detail_url = get_detail_url(youth_application.pk)
+
+    # A normal GET request should redirect to the ADFS login page
+    response = unauth_api_client.get(detail_url)
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == RedirectTo.get_redirect_url(
+        RedirectTo.adfs_login, "detail", youth_application.pk
+    )
+
+    # An API GET request (Accept: json) should return 401 Unauthorized
+    response_api = unauth_api_client.get(detail_url, HTTP_ACCEPT="application/json")
+    assert response_api.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_employer_applications_field_not_leaked_to_regular_authenticated_user(
+    api_client,
+    settings,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+
+    youth_application = AcceptedYouthApplicationFactory.create()
+    detail_url = get_detail_url(youth_application.pk)
+
+    # A normal GET request should redirect to the handler 403 page
+    response = api_client.get(detail_url)
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == RedirectTo.get_redirect_url(
+        RedirectTo.handler_403, "detail", youth_application.pk
+    )
+
+    # An API GET request (Accept: json) should return 403 Forbidden
+    response_api = api_client.get(detail_url, HTTP_ACCEPT="application/json")
+    assert response_api.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "client_fixture_name",
+    ["staff_client", "superuser_client"],
+)
+def test_employer_applications_field_accessible_to_handler(
+    client_fixture_name,
+    request,
+    settings,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = False
+    client = request.getfixturevalue(client_fixture_name)
+
+    # Create a youth application and an associated youth summer voucher
+    youth_application = AcceptedYouthApplicationFactory.create()
+    youth_application.refresh_from_db()
+    youth_voucher = youth_application.youth_summer_voucher
+
+    # Create a linked employer application and an associated employer summer voucher
+    employer_app = EmployerApplicationFactory.create(
+        company__name="Test Company", company__business_id="1234567-8"
+    )
+    EmployerSummerVoucherFactory.create(
+        application=employer_app,
+        youth_summer_voucher_id=youth_voucher.summer_voucher_serial_number,
+    )
+
+    detail_url = get_detail_url(youth_application.pk)
+
+    response = client.get(detail_url)
+    assert response.status_code == status.HTTP_200_OK
+
+    employer_apps = response.data.get("employer_applications")
+    assert len(employer_apps) == 1
+
+    linked_app = employer_apps[0]
+    assert str(linked_app["id"]) == str(employer_app.id)
+    assert linked_app["company_name"] == "Test Company"
+    assert linked_app["company_business_id"] == "1234567-8"
+    assert (
+        linked_app["summer_voucher_serial_number"]
+        == youth_voucher.user_showable_serial_number
+    )
+
+
+@pytest.mark.django_db
+def test_employer_applications_field_accessible_to_regular_user_with_mock_flag(
+    api_client,
+    settings,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
+
+    # Create a youth application and an associated youth summer voucher
+    youth_application = AcceptedYouthApplicationFactory.create()
+    youth_application.refresh_from_db()
+    youth_voucher = youth_application.youth_summer_voucher
+
+    # Create a linked employer application and an associated employer summer voucher
+    employer_app = EmployerApplicationFactory.create(
+        company__name="Test Company", company__business_id="1234567-8"
+    )
+    EmployerSummerVoucherFactory.create(
+        application=employer_app,
+        youth_summer_voucher_id=youth_voucher.summer_voucher_serial_number,
+    )
+
+    detail_url = get_detail_url(youth_application.pk)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == status.HTTP_200_OK
+
+    employer_apps = response.data.get("employer_applications")
+    assert len(employer_apps) == 1
+
+    linked_app = employer_apps[0]
+    assert str(linked_app["id"]) == str(employer_app.id)
+    assert linked_app["company_name"] == "Test Company"
+    assert linked_app["company_business_id"] == "1234567-8"
+    assert (
+        linked_app["summer_voucher_serial_number"]
+        == youth_voucher.user_showable_serial_number
+    )
