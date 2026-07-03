@@ -104,5 +104,5 @@ def test_schema_excludes_unsupported_kesaseteli_operations(client: Client):
 
     assert "/v1/employersummervouchers/" not in schema["paths"]
     assert "/v1/employersummervouchers/{id}/" not in schema["paths"]
-    assert set(schema["paths"][youth_collection_path]) == {"post"}
+    assert set(schema["paths"][youth_collection_path]) == {"post", "get"}
     assert set(schema["paths"][youth_detail_path]) == {"get"}
