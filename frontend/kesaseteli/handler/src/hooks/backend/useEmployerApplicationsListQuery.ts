@@ -21,10 +21,12 @@ export type EmployerApplicationsQueryParams = {
   ordering?: string;
 };
 
-const useEmployerApplicationsListQuery = (
+const useEmployerApplicationsListQuery = <
+  T extends BaseApplication = BaseApplication
+>(
   params: EmployerApplicationsQueryParams,
-  options?: UseQueryOptions<PaginatedResponse<BaseApplication>>
-): UseQueryResult<PaginatedResponse<BaseApplication>> => {
+  options?: UseQueryOptions<PaginatedResponse<T>>
+): UseQueryResult<PaginatedResponse<T>> => {
   const { axios, handleResponse } = useBackendAPI();
   const handleError = useErrorHandler();
 
@@ -42,10 +44,9 @@ const useEmployerApplicationsListQuery = (
     [BackendEndpoint.EMPLOYER_APPLICATIONS, params] as QueryKey,
     () =>
       handleResponse(
-        axios.get<PaginatedResponse<BaseApplication>>(
-          BackendEndpoint.EMPLOYER_APPLICATIONS,
-          { params: searchParams }
-        )
+        axios.get<PaginatedResponse<T>>(BackendEndpoint.EMPLOYER_APPLICATIONS, {
+          params: searchParams,
+        })
       ),
     {
       keepPreviousData: true,
