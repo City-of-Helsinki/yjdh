@@ -1,6 +1,7 @@
 import PageComponent from '@frontend/shared/browser-tests/page-models/PageComponent';
 import {
   getErrorMessage,
+  screenContext,
   setDataToPrintOnFailure,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { t } from 'testcafe';
@@ -13,7 +14,11 @@ export default class HandlerForm<
   private expectedApplication?: A;
 
   public constructor(expectedApplication?: A) {
-    super('handler-form');
+    super(
+      screenContext(t).findByRole('region', {
+        name: /hakemuksen tiedot/i,
+      })
+    );
     this.expectedApplication = expectedApplication;
   }
 

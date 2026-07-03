@@ -4,14 +4,18 @@ import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 type Props = GridCellProps & {
   id?: string;
   type?: string;
-  value?: string;
+  value?: React.ReactNode;
   children?: React.ReactNode;
 };
+
+const $StyledGridCell = styled($GridCell)`
+  font-size: ${(props) => props.theme.fontSize.body.l};
+`;
 
 const Field: React.FC<Props> = ({
   id,
@@ -22,11 +26,9 @@ const Field: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const dataTestId = type ?? id;
-  const theme = useTheme();
   return (
-    <$GridCell
+    <$StyledGridCell
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
-      css={{ fontSize: theme.fontSize.body.l }}
       {...gridCellProps}
     >
       {type && (
@@ -36,7 +38,7 @@ const Field: React.FC<Props> = ({
       )}
       {value || '-'}
       {children}
-    </$GridCell>
+    </$StyledGridCell>
   );
 };
 

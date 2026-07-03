@@ -17,7 +17,9 @@ import merge from 'lodash/merge';
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
 import { TARGET_GROUP_AGES } from '../../constants/target-group-ages';
 import YOUTH_APPLICATION_FIELDS from '../../constants/youth-application-fields';
-import ActivatedYouthApplication from '../../types/activated-youth-application';
+import ActivatedYouthApplication, {
+  LinkedEmployerApplication,
+} from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
 import AdditionalInfoReasonType from '../../types/additional-info-reason-type';
 import CreatedYouthApplication from '../../types/created-youth-application';
@@ -286,6 +288,20 @@ export const fakeVtjData = (
     override?.encrypted_handler_vtj_json ?? {}
   );
 
+export const fakeLinkedEmployerApplication = (
+  override?: DeepPartial<LinkedEmployerApplication>
+): LinkedEmployerApplication =>
+  merge(
+    {
+      id: faker.datatype.uuid(),
+      company_name: faker.company.companyName(),
+      company_business_id: '1234567-8',
+      summer_voucher_serial_number: faker.datatype.number().toString(),
+      submitted_at: convertToBackendDateFormat(faker.date.past()),
+    },
+    override
+  );
+
 export const fakeActivatedYouthApplication = (
   override?: DeepPartial<ActivatedYouthApplication>
 ): ActivatedYouthApplication => {
@@ -305,6 +321,10 @@ export const fakeActivatedYouthApplication = (
             )
           : undefined,
       encrypted_handler_vtj_json: fakeVtjData(application),
+      employer_applications:
+        override?.employer_applications?.map((app) =>
+          fakeLinkedEmployerApplication(app)
+        ) ?? [],
     },
     override
   ) as ActivatedYouthApplication;
