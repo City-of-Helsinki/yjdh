@@ -2,10 +2,7 @@ module.exports = {
   root: true,
   extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
   rules: {
-    'no-secrets/no-secrets': [
-      'error',
-      { ignoreContent: 'https://makasiini.hel.ninja/delivery' },
-    ],
+    'no-secrets/no-secrets': ['error', { ignoreContent: 'https://makasiini.hel.ninja/delivery' }],
     'unicorn/no-array-reduce': 'off',
     'unicorn/prefer-export-from': 'off',
     'lodash/prefer-noop': 'off',
@@ -18,7 +15,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['**/*.{ts,tsx}'],
       rules: {
         '@typescript-eslint/no-misused-promises': [
           'error',
@@ -69,6 +66,6 @@ module.exports = {
         '@typescript-eslint/no-unsafe-argument': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
       },
-    }
+    },
   ],
 };

@@ -12,9 +12,7 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 function EmployerApplicationsIndex(): React.ReactElement {
   const { t } = useTranslation();
 
-  const { isLoading: isUserLoading } = useUserQuery({
-    enabled: true,
-  });
+  const { isLoading: isUserLoading } = useUserQuery();
 
   if (isUserLoading) {
     return <PageLoadingSpinner />;

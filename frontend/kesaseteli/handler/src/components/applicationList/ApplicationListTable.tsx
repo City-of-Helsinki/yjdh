@@ -25,11 +25,15 @@ const $LoadingContainer = styled.div`
   padding: var(--spacing-xl) 0;
 `;
 
+export type OrderingField<T extends BaseApplication = BaseApplication> =
+  | OrderDirection<T>
+  | string;
+
 export type HdsHeader<T extends BaseApplication = BaseApplication> = {
   key: string;
   headerName: string;
   isSortable?: boolean;
-  orderingField?: string;
+  orderingField?: OrderingField<T>;
   transform?: (row: T) => string | JSX.Element;
 };
 
@@ -45,30 +49,30 @@ type ApplicationListTableProps<T extends BaseApplication = BaseApplication> = {
   totalCount: number;
   page: number;
   setPage: (page: number) => void;
-  setOrdering: (ordering: OrderDirection<T>) => void;
+  setOrdering: (ordering: OrderingField<T>) => void;
   isLoading: boolean;
   /** Initial ordering column key (e.g. 'created_at'). Descending by default. */
-  defaultSortColumnKey?: OrderDirection<T>;
+  defaultSortColumnKey?: OrderingField<T>;
 };
 
 type TableState<T extends BaseApplication = BaseApplication> = {
   page: number;
   setPage: (page: number) => void;
-  ordering: OrderDirection<T>;
-  setOrdering: (ordering: OrderDirection<T>) => void;
+  ordering: OrderingField<T>;
+  setOrdering: (ordering: OrderingField<T>) => void;
 };
 
 /**
  * Hook to manage table state (page and ordering).
  */
 export function useTableState<T extends BaseApplication = BaseApplication>(
-  defaultOrdering = DEFAULT_ORDERING as OrderDirection<T>
+  defaultOrdering = DEFAULT_ORDERING as OrderingField<T>
 ): TableState<T> {
   const [page, setPage] = React.useState(0);
   const [ordering, setOrdering] = React.useState(defaultOrdering);
 
   // Changing the sort order should reset the user back to page 0!
-  const handleOrderingChange = (newOrdering: OrderDirection<T>): void => {
+  const handleOrderingChange = (newOrdering: OrderingField<T>): void => {
     setOrdering(newOrdering);
     setPage(0);
   };
@@ -96,10 +100,10 @@ export function useApplicationTableQuery<T extends BaseApplication>(
     status: ApplicationStatus[];
     limit: number;
     offset: number;
-    ordering: OrderDirection<T>;
+    ordering: OrderingField<T>;
   }) => UseQueryResult<PaginatedResponse<T>>,
   status: ApplicationStatus[],
-  defaultOrdering: OrderDirection<T> = DEFAULT_ORDERING as OrderDirection<T>
+  defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>
 ): TableState<T> & {
   query: UseQueryResult<PaginatedResponse<T>>;
   count: number;
@@ -154,11 +158,11 @@ export default function ApplicationListTable<
     const col = columns.find((c) => c.key === colKey);
     const backendField = col?.orderingField;
     if (backendField) {
-      setOrdering(
-        (order === 'desc'
-          ? `-${backendField}`
-          : backendField) as OrderDirection<T>
-      );
+      const ordering =
+        typeof backendField === 'string' && order === 'desc'
+          ? (`-${backendField}` as OrderingField<T>)
+          : (backendField);
+      setOrdering(ordering);
       setPage(0); // reset to first page on sort change
     }
     handleSortInternal();

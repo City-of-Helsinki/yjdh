@@ -81,10 +81,10 @@ def test_youth_application_status_openly_accessible_to_anonymous_user(client):
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
-def test_youth_applications_list_get_method_not_allowed_to_anonymous_user(client):
+def test_youth_applications_list_get_unauthorized_to_anonymous_user(client):
     """
-    Test that using GET on youth applications' list endpoint returns method not
-    allowed to anonymous users.
+    Test that using GET on youth applications' list endpoint returns 401
+    Unauthorized to anonymous users.
     """
     list_url = reverse("v1:youthapplication-list")
     response = client.get(list_url, headers=HEADERS_ACCEPT_APPLICATION_JSON)
