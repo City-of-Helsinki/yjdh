@@ -1,13 +1,19 @@
 import { Pagination, Table } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { UseQueryResult } from 'react-query/types/react/types';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import styled from 'styled-components';
 
-import { BaseApplication } from '../../types/application';
+import {
+  ApplicationStatus,
+  BaseApplication,
+  PaginatedResponse,
+} from '../../types/application';
 
 export const PAGE_SIZE = 20;
+export const DEFAULT_ORDERING = '-created_at';
 
 const $PaginationContainer = styled.div`
   margin-top: var(--spacing-xl);
@@ -19,24 +25,12 @@ const $LoadingContainer = styled.div`
   padding: var(--spacing-xl) 0;
 `;
 
-export type HdsHeader<R extends BaseApplication = BaseApplication> = {
+export type HdsHeader<T extends BaseApplication = BaseApplication> = {
   key: string;
   headerName: string;
   isSortable?: boolean;
   orderingField?: string;
-  transform?: (row: R) => string | JSX.Element;
-};
-
-type ApplicationListTableProps<R extends BaseApplication = BaseApplication> = {
-  columns: HdsHeader<R>[];
-  data: R[];
-  totalCount: number;
-  page: number;
-  setPage: (page: number) => void;
-  setOrdering: (ordering: string) => void;
-  isLoading: boolean;
-  /** Initial ordering column key (e.g. 'created_at'). Descending by default. */
-  defaultSortColumnKey?: string;
+  transform?: (row: T) => string | JSX.Element;
 };
 
 // Extract only the string keys from the model
@@ -45,24 +39,36 @@ type StringKeyOf<T> = Extract<keyof T, string>;
 // Create a union of the exact key OR the key prefixed with "-"
 type OrderDirection<T> = StringKeyOf<T> | `-${StringKeyOf<T>}`;
 
-type TableState<R extends BaseApplication = BaseApplication> = {
+type ApplicationListTableProps<T extends BaseApplication = BaseApplication> = {
+  columns: HdsHeader<T>[];
+  data: T[];
+  totalCount: number;
   page: number;
   setPage: (page: number) => void;
-  ordering: OrderDirection<R>;
-  setOrdering: (ordering: OrderDirection<R>) => void;
+  setOrdering: (ordering: OrderDirection<T>) => void;
+  isLoading: boolean;
+  /** Initial ordering column key (e.g. 'created_at'). Descending by default. */
+  defaultSortColumnKey?: OrderDirection<T>;
+};
+
+type TableState<T extends BaseApplication = BaseApplication> = {
+  page: number;
+  setPage: (page: number) => void;
+  ordering: OrderDirection<T>;
+  setOrdering: (ordering: OrderDirection<T>) => void;
 };
 
 /**
  * Hook to manage table state (page and ordering).
  */
-export function useTableState<R extends BaseApplication = BaseApplication>(
-  defaultOrdering = '-created_at' as OrderDirection<R>
-): TableState<R> {
+export function useTableState<T extends BaseApplication = BaseApplication>(
+  defaultOrdering = DEFAULT_ORDERING as OrderDirection<T>
+): TableState<T> {
   const [page, setPage] = React.useState(0);
   const [ordering, setOrdering] = React.useState(defaultOrdering);
 
   // Changing the sort order should reset the user back to page 0!
-  const handleOrderingChange = (newOrdering: OrderDirection<R>) => {
+  const handleOrderingChange = (newOrdering: OrderDirection<T>): void => {
     setOrdering(newOrdering);
     setPage(0);
   };
@@ -76,6 +82,47 @@ export function useTableState<R extends BaseApplication = BaseApplication>(
 }
 
 /**
+ * Hook that combines table state management with the application list query logic.
+ * This hook automatically handles pagination (limit/offset) and ordering for you.
+ *
+ * @param useQueryHook The query hook to use (e.g., useEmployerApplicationsListQuery).
+ * @param status The status parameter to pass to the query hook.
+ * @param defaultOrdering The default ordering string (defaults to '-created_at').
+ *
+ * @returns An object containing { page, setPage, ordering, setOrdering, query, count }
+ */
+export function useApplicationTableQuery<T extends BaseApplication>(
+  useQueryHook: (params: {
+    status: ApplicationStatus[];
+    limit: number;
+    offset: number;
+    ordering: OrderDirection<T>;
+  }) => UseQueryResult<PaginatedResponse<T>>,
+  status: ApplicationStatus[],
+  defaultOrdering: OrderDirection<T> = DEFAULT_ORDERING as OrderDirection<T>
+): TableState<T> & {
+  query: UseQueryResult<PaginatedResponse<T>>;
+  count: number;
+} {
+  const tableState = useTableState(defaultOrdering);
+
+  const query = useQueryHook({
+    status,
+    limit: PAGE_SIZE,
+    offset: tableState.page * PAGE_SIZE,
+    ordering: tableState.ordering,
+  });
+
+  const count = query.data?.count ?? 0;
+
+  return {
+    ...tableState, // spreads page, setPage, ordering, setOrdering...
+    query,
+    count,
+  };
+}
+
+/**
  * ApplicationListTable component that displays a list of applications in a table.
  * HINT: Table state can be managed with useTableState hook.
  *
@@ -83,7 +130,7 @@ export function useTableState<R extends BaseApplication = BaseApplication>(
  * const { page, setPage, ordering, setOrdering } = useTableState('-created_at');
  */
 export default function ApplicationListTable<
-  R extends BaseApplication = BaseApplication
+  T extends BaseApplication = BaseApplication
 >({
   columns,
   data,
@@ -92,8 +139,8 @@ export default function ApplicationListTable<
   setPage,
   setOrdering,
   isLoading,
-  defaultSortColumnKey = 'created_at',
-}: ApplicationListTableProps<R>): JSX.Element {
+  defaultSortColumnKey = DEFAULT_ORDERING as OrderDirection<T>,
+}: ApplicationListTableProps<T>): JSX.Element {
   const { t } = useTranslation();
   const locale = useLocale();
 
@@ -107,7 +154,11 @@ export default function ApplicationListTable<
     const col = columns.find((c) => c.key === colKey);
     const backendField = col?.orderingField;
     if (backendField) {
-      setOrdering(order === 'desc' ? `-${backendField}` : backendField);
+      setOrdering(
+        (order === 'desc'
+          ? `-${backendField}`
+          : backendField) as OrderDirection<T>
+      );
       setPage(0); // reset to first page on sort change
     }
     handleSortInternal();
@@ -121,7 +172,7 @@ export default function ApplicationListTable<
       key,
       headerName,
       isSortable: isSortable && Boolean(orderingField),
-      transform: transform ? (row: unknown) => transform(row as R) : undefined,
+      transform: transform ? (row: unknown) => transform(row as T) : undefined,
     };
   });
 
