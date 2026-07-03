@@ -1,4 +1,5 @@
 import { IconMover } from 'hds-react';
+import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
 import useLogin from 'kesaseteli/handler/hooks/backend/useLogin';
 import useLogout from 'kesaseteli/handler/hooks/backend/useLogout';
 import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
@@ -14,12 +15,32 @@ const Header: React.FC = () => {
   const locale = useLocale();
   const router = useRouter();
 
+  const enableNewBetaUI = isHandlerNewBetaUiEnabled();
+
   const navigationItems = [
-    {
-      label: t('common:header.createApplicationWithoutSsnLabel'),
-      url: '/create-application-without-ssn/',
-      icon: <IconMover />,
-    },
+    // Display new dashboard and list views only when the new Beta UI feature flag is enabled
+    ...(enableNewBetaUI
+      ? [
+          {
+            label: t('common:header.dashboardLabel'),
+            url: ROUTES.DASHBOARD,
+          },
+          {
+            label: t('common:header.youthApplicationsLabel'),
+            url: ROUTES.YOUTH_APPLICATIONS,
+          },
+          {
+            label: t('common:header.employerApplicationsLabel'),
+            url: ROUTES.EMPLOYER_APPLICATIONS,
+          },
+        ]
+      : [
+          {
+            label: t('common:header.createApplicationWithoutSsnLabel'),
+            url: ROUTES.CREATE_APPLICATION_WITHOUT_SSN,
+            icon: <IconMover />,
+          },
+        ]),
   ];
 
   const login = useLogin();

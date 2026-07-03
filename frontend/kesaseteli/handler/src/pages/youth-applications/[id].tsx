@@ -1,6 +1,6 @@
 import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
-import { GetStaticProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -13,13 +13,13 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
-function HandlerIndex(): React.ReactElement {
+function YouthApplicationDetail(): React.ReactElement {
   const { t } = useTranslation();
   const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
 
   const { isError, isLoading, isSuccess, data } =
     useYouthApplicationQuery(applicationId);
-  const notFound = isError || !applicationId;
+  const notFound = isError || (!applicationId && !isRouterLoading);
 
   if (isRouterLoading || isLoading) {
     return <PageLoadingSpinner />;
@@ -54,7 +54,19 @@ function HandlerIndex(): React.ReactElement {
   );
 }
 
+/**
+ * Using getStaticProps & getStaticPaths (SSG) for pages behind authentication is safe here
+ * because the pre-rendered static HTML is just an empty UI shell containing translations.
+ * Sensitive data is never pre-rendered or cached on the server; it is fetched dynamically
+ * on the client-side inside the component (useYouthApplicationQuery) after checking
+ * the user's session cookies in the browser.
+ */
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
 
-export default HandlerIndex;
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: 'blocking',
+});
+
+export default YouthApplicationDetail;
