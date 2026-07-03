@@ -3,7 +3,7 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import React from 'react';
 
 import fi from '../../../../public/locales/fi/common.json';
-import { ApplicationStatus } from '../../../types/application';
+import { ApplicationStatus, BaseApplication } from '../../../types/application';
 import ApplicationListTable, { HdsHeader } from '../ApplicationListTable';
 
 const mockColumns: HdsHeader[] = [
@@ -13,7 +13,7 @@ const mockColumns: HdsHeader[] = [
 const mockData = [
   { id: 'row-1', status: ApplicationStatus.SUBMITTED },
   { id: 'row-2', status: ApplicationStatus.ACCEPTED },
-];
+] as unknown as BaseApplication[];
 
 describe('ApplicationListTable', () => {
   it('shows loading spinner when isLoading is true', () => {

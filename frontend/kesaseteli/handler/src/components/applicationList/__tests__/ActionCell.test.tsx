@@ -4,7 +4,7 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import mockRouter from 'next-router-mock';
 import React from 'react';
 
-import { ApplicationStatus } from '../../../types/application';
+import { ApplicationStatus, BaseApplication } from '../../../types/application';
 import ActionCell from '../ActionCell';
 
 describe('ActionCell', () => {
@@ -16,7 +16,12 @@ describe('ActionCell', () => {
     renderComponent(
       <ActionCell
         value="SSN-123"
-        row={{ id: 'test-id-123', status: ApplicationStatus.SUBMITTED }}
+        row={
+          {
+            id: 'test-id-123',
+            status: ApplicationStatus.SUBMITTED,
+          } as BaseApplication
+        }
         type="youth"
       />,
       mockRouter
@@ -31,7 +36,12 @@ describe('ActionCell', () => {
     renderComponent(
       <ActionCell
         value="SSN-123"
-        row={{ id: 'test-id-123', status: ApplicationStatus.SUBMITTED }}
+        row={
+          {
+            id: 'test-id-123',
+            status: ApplicationStatus.SUBMITTED,
+          } as BaseApplication
+        }
         type="youth"
       />,
       mockRouter
@@ -44,7 +54,12 @@ describe('ActionCell', () => {
     renderComponent(
       <ActionCell
         value="SN-001"
-        row={{ id: 'test-id-456', status: ApplicationStatus.SUBMITTED }}
+        row={
+          {
+            id: 'test-id-456',
+            status: ApplicationStatus.SUBMITTED,
+          } as BaseApplication
+        }
         type="employer"
       />,
       mockRouter
@@ -59,7 +74,12 @@ describe('ActionCell', () => {
     renderComponent(
       <ActionCell
         value="SN-001"
-        row={{ id: 'test-id-456', status: ApplicationStatus.SUBMITTED }}
+        row={
+          {
+            id: 'test-id-456',
+            status: ApplicationStatus.SUBMITTED,
+          } as BaseApplication
+        }
         type="employer"
       />,
       mockRouter
