@@ -3,15 +3,20 @@ import {
   BackendEndPoints,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import Router from 'next/router';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
 import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
 import { isString } from 'shared/utils/type-guards';
+
+const getLanguage = (): string =>
+  Router?.locale || Router?.defaultLocale || 'fi';
 
 const createAxios = (): AxiosInstance => {
   const config: Record<string, unknown> = {
     baseURL: getBackendDomain(),
     headers: {
       'Content-Type': 'application/json',
+      'Accept-Language': getLanguage(),
       'X-CSRFToken': getLastCookieValue('yjdhcsrftoken'),
     },
     withCredentials: true,

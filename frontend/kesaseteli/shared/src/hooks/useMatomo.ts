@@ -48,21 +48,23 @@ const useMatomo = ({
   // Effect to track client-side page transitions in Next.js.
   // Uses router events to ensure page title and URL are updated in the DOM.
   useEffect(() => {
-    if (!isMatomoConfigured) {
-      return;
+    let cleanup: (() => void) | undefined;
+
+    if (isMatomoConfigured) {
+      const handleRouteChange = (routeUrl: string): void => {
+        setTimeout(() => {
+          trackPageView(routeUrl);
+        }, 0);
+      };
+
+      router.events?.on('routeChangeComplete', handleRouteChange);
+
+      cleanup = () => {
+        router.events?.off('routeChangeComplete', handleRouteChange);
+      };
     }
 
-    const handleRouteChange = (url: string) => {
-      setTimeout(() => {
-        trackPageView(url);
-      }, 0);
-    };
-
-    router.events?.on('routeChangeComplete', handleRouteChange);
-
-    return () => {
-      router.events?.off('routeChangeComplete', handleRouteChange);
-    };
+    return cleanup;
   }, [isMatomoConfigured, router.events]);
 
   return isMatomoConfigured;

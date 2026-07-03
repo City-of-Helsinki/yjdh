@@ -307,7 +307,7 @@ export const fakeActivatedYouthApplication = (
       encrypted_handler_vtj_json: fakeVtjData(application),
     },
     override
-  );
+  ) as ActivatedYouthApplication;
 };
 
 export const fakeBackendValidationErrorResponse =

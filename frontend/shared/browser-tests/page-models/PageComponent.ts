@@ -43,10 +43,14 @@ abstract class PageComponent {
       document.querySelector<HTMLElement>(cssSelector)?.click()
   );
 
-  protected constructor(datatestId?: string) {
-    this.componentSelector = this.screen.findByTestId(
-      datatestId ?? MAIN_CONTENT_ID
-    );
+  protected constructor(datatestIdOrSelector?: string | Selector) {
+    if (typeof datatestIdOrSelector === 'string') {
+      this.componentSelector = this.screen.findByTestId(datatestIdOrSelector);
+    } else if (datatestIdOrSelector) {
+      this.componentSelector = datatestIdOrSelector;
+    } else {
+      this.componentSelector = this.screen.findByTestId(MAIN_CONTENT_ID);
+    }
     this.component = this.within(this.componentSelector);
   }
 
