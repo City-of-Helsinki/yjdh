@@ -70,7 +70,9 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
         clearLocalStorage(`application-${applicationId}`);
       }
       ApplicationPersistenceService.clearAll();
-      void queryClient.invalidateQueries(BackendEndpoint.EMPLOYER_APPLICATIONS);
+      await queryClient.invalidateQueries(
+        BackendEndpoint.EMPLOYER_APPLICATIONS
+      );
       setLeaveConfirmBypassed(true);
       goToPage('/');
     }
