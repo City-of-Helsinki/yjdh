@@ -848,15 +848,15 @@ def test_youth_application_list_unallowed_methods(
     user_client,
 ):
     """
-    Test that the youth application list endpoint doesn't allow HTTP methods
-    delete, get, patch and put.
+    Test that the youth application list endpoint returns 405 for DELETE, PATCH,
+    and PUT, while GET is auth-gated and redirects unauthenticated users.
     """
     url = reverse("v1:youthapplication-list")
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert user_client.patch(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert user_client.put(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-    # Get is not allowed, and redirects to the login page.
+    # Get is auth-gated and redirects to the login page.
     assert user_client.get(url).status_code == status.HTTP_302_FOUND
 
 

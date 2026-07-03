@@ -31,10 +31,14 @@ const $PanelGrid = styled.div`
 const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
+  const vouchers = application.summer_vouchers;
 
-  // Render single-voucher applications directly without the HDS Tabs chrome
-  if (application.summer_vouchers.length <= 1) {
-    const voucher = application.summer_vouchers[0];
+  if (vouchers.length === 0) {
+    return <div data-testid="no-vouchers">-</div>;
+  }
+
+  if (vouchers.length === 1) {
+    const voucher = vouchers[0];
 
     return (
       <$PanelGrid>
@@ -53,8 +57,8 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
           </Tab>
         ))}
       </TabList>
-      {application.summer_vouchers.map((voucher) => (
-        <TabPanel key={voucher.id}>
+      {vouchers.map((voucher, index) => (
+        <TabPanel key={voucher.id || index}>
           <$PanelGrid>
             <EmployerInfoSection application={application} voucher={voucher} />
             <YouthInfoSection voucher={voucher} />

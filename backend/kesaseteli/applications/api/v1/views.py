@@ -182,12 +182,38 @@ class YouthApplicationFilter(filters.FilterSet):
                 "target_group",
                 "id",
             ]
-        ]
+        ],
+        method="order_by_with_id_tiebreaker",
     )
 
     class Meta:
         model = YouthApplication
         fields = ["status"]
+
+    def order_by_with_id_tiebreaker(self, queryset, name, value):
+        if not value:
+            return queryset
+
+        values = list(value) if isinstance(value, (list, tuple)) else [value]
+        ordered_fields = []
+
+        for field in values:
+            ordered_fields.append(field)
+            if (
+                field.lstrip("-")
+                in {
+                    "created_at",
+                    "first_name",
+                    "last_name",
+                    "status",
+                    "target_group",
+                }
+                and "id" not in ordered_fields
+                and "-id" not in ordered_fields
+            ):
+                ordered_fields.append("id")
+
+        return queryset.order_by(*ordered_fields)
 
 
 @extend_schema_view(

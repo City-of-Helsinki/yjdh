@@ -23,6 +23,7 @@
     "status": {
       "submitted": "Käsiteltävänä",
       "additional_information_requested": "Lisätietoja pyydetty",
+      "additional_information_provided": "Lisätiedot annettu",
       "handling": "Käsiteltävänä",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty"
