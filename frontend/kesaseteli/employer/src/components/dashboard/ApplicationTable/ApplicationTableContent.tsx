@@ -76,8 +76,8 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
     application.submitted_at ||
     '';
 
-  const handleEdit = React.useCallback(() => {
-    void router.push(`/${locale}/application?id=${application.id}`);
+  const handleEdit = React.useCallback(async () => {
+    await router.push(`/${locale}/application?id=${application.id}`);
   }, [router, locale, application.id]);
 
   return (
