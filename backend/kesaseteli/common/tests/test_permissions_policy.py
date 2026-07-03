@@ -1,8 +1,7 @@
 """Tests for the global Permissions-Policy header on backend responses."""
 
 import pytest
-from django.test import Client
-from django.test import override_settings
+from django.test import Client, override_settings
 from django.urls import reverse
 
 from common.middleware import PERMISSIONS_POLICY

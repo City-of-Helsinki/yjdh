@@ -4,8 +4,8 @@ Checks the excel-download page and other pages that use the global policy.
 """
 
 import pytest
-from django.urls import reverse
 from django.test import override_settings
+from django.urls import reverse
 
 from applications.enums import EmailTemplateType
 from applications.models import EmailTemplate
@@ -17,7 +17,9 @@ def assert_expected_csp(response):
     Args:
         response: Page response to check.
     """
-    assert "Content-Security-Policy" in response.headers, "CSP header missing from response"
+    assert "Content-Security-Policy" in response.headers, (
+        "CSP header missing from response"
+    )
     csp_header = response.headers["Content-Security-Policy"]
     assert "default-src 'self'" in csp_header
     assert "style-src 'self' 'unsafe-inline'" in csp_header
@@ -35,7 +37,10 @@ def test_admin_index_includes_inline_script_csp(admin_client):
     response = admin_client.get(reverse("admin:index"))
     assert response.status_code == 200
     assert_expected_csp(response)
-    assert "script-src 'self' 'unsafe-inline'" in response.headers["Content-Security-Policy"]
+    assert (
+        "script-src 'self' 'unsafe-inline'"
+        in response.headers["Content-Security-Policy"]
+    )
 
 
 @pytest.mark.django_db
@@ -67,7 +72,10 @@ def test_email_template_preview_uses_global_csp_only(admin_client):
         language="fi",
     )
     response = admin_client.get(
-        reverse("admin:applications_emailtemplate_preview", kwargs={"object_id": template.pk})
+        reverse(
+            "admin:applications_emailtemplate_preview",
+            kwargs={"object_id": template.pk},
+        )
     )
     assert response.status_code == 200
     assert_expected_csp(response)

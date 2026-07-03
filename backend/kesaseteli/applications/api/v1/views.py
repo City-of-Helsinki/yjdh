@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import F, Func
+from django.db.models import F, Func, Prefetch
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -54,6 +54,7 @@ from applications.api.v1.serializers import (
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
     YouthApplicationHandlingSerializer,
+    YouthApplicationListSerializer,
     YouthApplicationOutputSerializer,
     YouthApplicationSerializer,
     YouthApplicationStatusSerializer,
@@ -160,16 +161,68 @@ class TargetGroupListView(ListAPIView):
         return Response(serializer.data)
 
 
+class YouthApplicationPagination(LimitOffsetPagination):
+    default_limit = 100
+    max_limit = 1000
+
+
+class YouthApplicationFilter(filters.FilterSet):
+    status = filters.MultipleChoiceFilter(choices=YouthApplicationStatus.choices)
+    # TODO: In the future, define search filters
+    # (e.g., search = filters.CharFilter(method="filter_search"))
+    # once requirements for text search across name/email are finalized.
+    ordering = filters.OrderingFilter(
+        fields=[
+            (field_name, field_name)
+            for field_name in [
+                "created_at",
+                "first_name",
+                "last_name",
+                "status",
+                "target_group",
+                "id",
+            ]
+        ]
+    )
+
+    class Meta:
+        model = YouthApplication
+        fields = ["status"]
+
+
 @extend_schema_view(
-    list=extend_schema(exclude=True),
     update=extend_schema(exclude=True),
     partial_update=extend_schema(exclude=True),
     destroy=extend_schema(exclude=True),
 )
 class YouthApplicationViewSet(ModelViewSet):
+    """
+    ViewSet for handling YouthApplication instances.
+
+    Provides endpoints for handlers to list and retrieve youth applications
+    (with full access to sensitive VTJ verification details and associated
+    employer applications), and for public users to create youth applications.
+
+    Note that the serialized output changes depending on the user's role:
+    - Authenticated handlers receive complete VTJ and linked employer data.
+    - Public endpoints (unauthenticated users) strictly receive filtered and
+      sanitized payloads with no sensitive data leaked.
+    """
+
     permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
+    pagination_class = YouthApplicationPagination
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = YouthApplicationFilter
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related("youth_summer_voucher")
+            .order_by("-created_at", "id")
+        )
 
     def get_serializer_class(self):
         """
@@ -184,10 +237,14 @@ class YouthApplicationViewSet(ModelViewSet):
             return NonVtjYouthApplicationSerializer
         elif self.action == "fetch_employee_data":
             return YouthApplicationFetchEmployeeDataInputSerializer
+        elif self.action == "list":
+            return YouthApplicationListSerializer
         return super().get_serializer_class()
 
+    @enforce_handler_view_adfs_login
+    @extend_schema(responses=YouthApplicationListSerializer(many=True))
     def list(self, request: Request, *args, **kwargs) -> Response:
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().list(request, *args, **kwargs)
 
     def update(self, request: Request, *args, **kwargs) -> Response:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -215,6 +272,12 @@ class YouthApplicationViewSet(ModelViewSet):
     @enforce_handler_view_adfs_login
     @extend_schema(responses=YouthApplicationSerializer)
     def retrieve(self, request: Request, *args, **kwargs) -> Response | HttpResponse:
+        """
+        Retrieve a youth application with full details.
+
+        Only accessible by authenticated handlers. Refreshes the VTJ validation
+        cache for unhandled applications and includes linked employer applications.
+        """
         youth_application: YouthApplication = self.get_object().lock_for_update()
         # Update unhandled youth applications' encrypted_handler_vtj_json so
         # handlers can accept/reject using it
@@ -639,7 +702,12 @@ class YouthApplicationViewSet(ModelViewSet):
         },
     )
     def create(self, request: Request, *args, **kwargs):  # noqa: C901
-        """Create a VTJ-backed youth application and notify the applicant."""
+        """
+        Create a VTJ-backed youth application and notify the applicant.
+
+        Public-facing endpoint. The output response contains only non-sensitive
+        metadata, strictly excluding any VTJ or linked employer data.
+        """
         try:
             # Validate the incoming application payload first.
             serializer = self.get_serializer(data=request.data, hide_vtj_data=True)
@@ -916,7 +984,14 @@ class EmployerApplicationViewSet(ModelViewSet):
             .get_queryset()
             .select_related("company")
             .select_related("user")
-            .prefetch_related("summer_vouchers")
+            .prefetch_related(
+                Prefetch(
+                    "summer_vouchers",
+                    queryset=EmployerSummerVoucher.objects.select_related(
+                        "youth_summer_voucher__youth_application"
+                    ).prefetch_related("attachments"),
+                )
+            )
         )
 
         user = self.request.user
@@ -1020,6 +1095,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             super()
             .get_queryset()
             .select_related("application")
+            .select_related("youth_summer_voucher__youth_application")
             .prefetch_related("attachments")
         )
 

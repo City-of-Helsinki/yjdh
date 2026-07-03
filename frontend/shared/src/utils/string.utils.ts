@@ -73,12 +73,3 @@ export const formatFloatToCurrency = (
 
 export const formatFloatToEvenEuros = (value: string | number): string =>
   formatFloatToCurrency(value, 'EUR', 'fi-FI', 0);
-
-/**
- * Masks the end of a Finnish Social Security Number (SSN), replacing everything after the first 6 digits with a masked value.
- * For example: "010199-123A" becomes "010199-XXXX".
- */
-export const maskSSN = (ssn?: string): string => {
-  if (!ssn) return '';
-  return `${ssn.slice(0, 6)}-XXXX`;
-};
