@@ -12,6 +12,7 @@ import ActionCell from './ActionCell';
 import ApplicationListTable, {
   HdsHeader,
   PAGE_SIZE,
+  useTableState,
 } from './ApplicationListTable';
 
 const EMPLOYER_PENDING_STATUSES = [
@@ -100,8 +101,13 @@ export default function EmployerApplicationList(): JSX.Element {
   const [activeTab, setActiveTab] = useState(0);
 
   // Pending Tab States & Query
-  const [pendingPage, setPendingPage] = useState(0);
-  const [pendingOrdering, setPendingOrdering] = useState('-created_at');
+  const {
+    page: pendingPage,
+    setPage: setPendingPage,
+    ordering: pendingOrdering,
+    setOrdering: setPendingOrdering
+  } = useTableState('-created_at');
+
   const pendingQuery = useEmployerApplicationsListQuery({
     status: EMPLOYER_PENDING_STATUSES,
     limit: PAGE_SIZE,
@@ -110,8 +116,13 @@ export default function EmployerApplicationList(): JSX.Element {
   });
 
   // Processed Tab States & Query
-  const [processedPage, setProcessedPage] = useState(0);
-  const [processedOrdering, setProcessedOrdering] = useState('-created_at');
+  const {
+    page: processedPage,
+    setPage: setProcessedPage,
+    ordering: processedOrdering,
+    setOrdering: setProcessedOrdering
+  } = useTableState('-created_at');
+
   const processedQuery = useEmployerApplicationsListQuery({
     status: PROCESSED_STATUSES,
     limit: PAGE_SIZE,
