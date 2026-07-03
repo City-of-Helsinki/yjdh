@@ -1,18 +1,30 @@
+import axios from 'axios';
 import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
 import { useRouter } from 'next/router';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useAuth from 'shared/hooks/useAuth';
 import useGoToPage from 'shared/hooks/useGoToPage';
-import { isError } from 'shared/utils/type-guards';
 
-const isForbidden = (err: unknown): boolean =>
-  isError(err) &&
-  (err.message.includes('403') || err.message.includes('Forbidden'));
+const isForbidden = (err: unknown): boolean => {
+  if (axios.isAxiosError(err)) {
+    return err.response?.status === 403;
+  }
+  return (
+    err instanceof Error &&
+    (err.message.includes('403') || err.message.includes('Forbidden'))
+  );
+};
 
-const isNotFound = (err: unknown): boolean =>
-  isError(err) &&
-  (err.message.includes('404') || err.message.includes('Not Found'));
+const isNotFound = (err: unknown): boolean => {
+  if (axios.isAxiosError(err)) {
+    return err.response?.status === 404;
+  }
+  return (
+    err instanceof Error &&
+    (err.message.includes('404') || err.message.includes('Not Found'))
+  );
+};
 
 /**
  * HOC that ensures the user has organization authorization.
