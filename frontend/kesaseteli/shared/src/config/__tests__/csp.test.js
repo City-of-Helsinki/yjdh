@@ -1,4 +1,4 @@
-const { withKesaseteliSecurityHeaders } = require('../csp');
+import { withKesaseteliSecurityHeaders } from '../csp';
 
 const getRouteHeaders = async (config) => {
   const headers = await config.headers();

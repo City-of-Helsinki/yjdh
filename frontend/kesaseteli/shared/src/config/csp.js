@@ -1,7 +1,5 @@
-const fontOrigins = [
-  'https://makasiini.hel.fi',
-  'https://makasiini.hel.ninja',
-];
+/* eslint-disable unicorn/prefer-module */
+const fontOrigins = ['https://makasiini.hel.fi', 'https://makasiini.hel.ninja'];
 
 /**
  * Extract the origin from a URL string for CSP allowlists.
@@ -29,9 +27,8 @@ const buildKesaseteliCspPolicy = () => {
   const matomoOrigins = [
     getOriginFromUrl(process.env.NEXT_PUBLIC_MATOMO_URL),
   ].filter(Boolean);
-  const matomoSources = matomoOrigins.length
-    ? ` ${matomoOrigins.join(' ')}`
-    : '';
+  const matomoSources =
+    matomoOrigins.length > 0 ? ` ${matomoOrigins.join(' ')}` : '';
   const connectOrigins = [
     "'self'",
     getOriginFromUrl(process.env.NEXT_PUBLIC_BACKEND_URL),
@@ -100,3 +97,5 @@ const withKesaseteliSecurityHeaders = (config) => ({
 });
 
 module.exports = { withKesaseteliSecurityHeaders };
+
+/* eslint-enable unicorn/prefer-module */

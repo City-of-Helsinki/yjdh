@@ -15,14 +15,19 @@ module.exports = {
     'react/function-component-definition': 'off',
     'testing-library/await-async-query': 'off',
     'no-underscore-dangle': ['error', { allow: ['_paq'] }],
-    "@typescript-eslint/no-misused-promises": [
-      "error",
-      {
-        "checksVoidReturn": false
-      }
-    ],
   },
   overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        '@typescript-eslint/no-misused-promises': [
+          'error',
+          {
+            checksVoidReturn: false,
+          },
+        ],
+      },
+    },
     {
       files: ['*.ts'],
       rules: {
