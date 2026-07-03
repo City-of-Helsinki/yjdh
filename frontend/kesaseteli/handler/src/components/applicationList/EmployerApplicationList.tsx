@@ -11,8 +11,7 @@ import {
 import ActionCell from './ActionCell';
 import ApplicationListTable, {
   HdsHeader,
-  PAGE_SIZE,
-  useTableState,
+  useApplicationTableQuery,
 } from './ApplicationListTable';
 
 const EMPLOYER_PENDING_STATUSES = [
@@ -104,34 +103,25 @@ export default function EmployerApplicationList(): JSX.Element {
   const {
     page: pendingPage,
     setPage: setPendingPage,
-    ordering: pendingOrdering,
-    setOrdering: setPendingOrdering
-  } = useTableState('-created_at');
-
-  const pendingQuery = useEmployerApplicationsListQuery({
-    status: EMPLOYER_PENDING_STATUSES,
-    limit: PAGE_SIZE,
-    offset: pendingPage * PAGE_SIZE,
-    ordering: pendingOrdering,
-  });
+    setOrdering: setPendingOrdering,
+    query: pendingQuery,
+    count: pendingCount,
+  } = useApplicationTableQuery<EmployerApplication>(
+    useEmployerApplicationsListQuery,
+    EMPLOYER_PENDING_STATUSES
+  );
 
   // Processed Tab States & Query
   const {
     page: processedPage,
     setPage: setProcessedPage,
-    ordering: processedOrdering,
-    setOrdering: setProcessedOrdering
-  } = useTableState('-created_at');
-
-  const processedQuery = useEmployerApplicationsListQuery({
-    status: PROCESSED_STATUSES,
-    limit: PAGE_SIZE,
-    offset: processedPage * PAGE_SIZE,
-    ordering: processedOrdering,
-  });
-
-  const pendingCount = pendingQuery.data?.count ?? 0;
-  const processedCount = processedQuery.data?.count ?? 0;
+    setOrdering: setProcessedOrdering,
+    query: processedQuery,
+    count: processedCount,
+  } = useApplicationTableQuery<EmployerApplication>(
+    useEmployerApplicationsListQuery,
+    PROCESSED_STATUSES
+  );
 
   const columns = useEmployerApplicationListColumns();
 
@@ -146,7 +136,7 @@ export default function EmployerApplicationList(): JSX.Element {
         </Tab>
       </TabList>
       <TabPanel index={0}>
-        <ApplicationListTable
+        <ApplicationListTable<EmployerApplication>
           columns={columns}
           data={pendingQuery.data?.results ?? []}
           totalCount={pendingCount}
@@ -158,7 +148,7 @@ export default function EmployerApplicationList(): JSX.Element {
         />
       </TabPanel>
       <TabPanel index={1}>
-        <ApplicationListTable
+        <ApplicationListTable<EmployerApplication>
           columns={columns}
           data={processedQuery.data?.results ?? []}
           totalCount={processedCount}
