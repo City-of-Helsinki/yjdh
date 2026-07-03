@@ -39,6 +39,49 @@ type ApplicationListTableProps<R extends BaseApplication = BaseApplication> = {
   defaultSortColumnKey?: string;
 };
 
+// Extract only the string keys from the model
+type StringKeyOf<T> = Extract<keyof T, string>;
+
+// Create a union of the exact key OR the key prefixed with "-"
+type OrderDirection<T> = StringKeyOf<T> | `-${StringKeyOf<T>}`;
+
+type TableState<R extends BaseApplication = BaseApplication> = {
+  page: number;
+  setPage: (page: number) => void;
+  ordering: OrderDirection<R>;
+  setOrdering: (ordering: OrderDirection<R>) => void;
+};
+
+/**
+ * Hook to manage table state (page and ordering).
+ */
+export function useTableState<R extends BaseApplication = BaseApplication>(
+  defaultOrdering = '-created_at' as OrderDirection<R>
+): TableState<R> {
+  const [page, setPage] = React.useState(0);
+  const [ordering, setOrdering] = React.useState(defaultOrdering);
+
+  // Changing the sort order should reset the user back to page 0!
+  const handleOrderingChange = (newOrdering: OrderDirection<R>) => {
+    setOrdering(newOrdering);
+    setPage(0);
+  };
+
+  return {
+    page,
+    setPage,
+    ordering,
+    setOrdering: handleOrderingChange,
+  };
+}
+
+/**
+ * ApplicationListTable component that displays a list of applications in a table.
+ * HINT: Table state can be managed with useTableState hook.
+ *
+ * @example
+ * const { page, setPage, ordering, setOrdering } = useTableState('-created_at');
+ */
 export default function ApplicationListTable<
   R extends BaseApplication = BaseApplication
 >({

@@ -12,10 +12,10 @@ export enum ApplicationStatus {
 export type BaseApplicationFields = {
   id: string;
   status: ApplicationStatus;
+  created_at?: string;
 };
 
 export type YouthApplication = BaseApplicationFields & {
-  created_at?: string;
   first_name?: string;
   last_name?: string;
   social_security_number?: string;
