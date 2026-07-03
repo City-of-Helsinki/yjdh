@@ -10,7 +10,12 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 from applications.enums import EmployerApplicationStatus, YouthApplicationStatus
-from applications.models import Attachment, Company, YouthApplication
+from applications.models import (
+    Attachment,
+    Company,
+    YouthApplication,
+    YouthSummerVoucher,
+)
 from applications.target_groups import NinthGraderTargetGroup
 from applications.tests.data.mock_vtj import mock_vtj_person_id_query_found_content
 from common.tests.factories import (
@@ -848,9 +853,11 @@ def test_youth_application_list_unallowed_methods(
     """
     url = reverse("v1:youthapplication-list")
     assert user_client.delete(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert user_client.get(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert user_client.patch(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert user_client.put(url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+    # Get is not allowed, and redirects to the login page.
+    assert user_client.get(url).status_code == status.HTTP_302_FOUND
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -1496,8 +1503,6 @@ def test_youth_application_fetch_employee_data_unallowed_methods(user_client):
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.django_db
 def test_youth_application_fetch_employee_data_security_leak(user_client):
-    from applications.models import YouthSummerVoucher
-
     # 1. Create a youth application/voucher that is accepted
     youth_app_accepted = AcceptedYouthApplicationFactory(
         first_name="John",
