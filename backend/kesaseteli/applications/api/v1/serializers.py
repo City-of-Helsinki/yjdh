@@ -773,6 +773,9 @@ class YouthApplicationEmployerApplicationSerializer(serializers.Serializer):
     summer_voucher_serial_number = serializers.CharField(
         help_text="Serial number of the summer voucher"
     )
+    submitted_at = serializers.CharField(
+        help_text="ISO timestamp of application submission"
+    )
 
 
 class YouthApplicationSerializer(serializers.ModelSerializer):
@@ -959,7 +962,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
                         "submitted_at": (
                             app.submitted_at.isoformat()
                             if app.submitted_at
-                            else app.created.isoformat()
+                            else app.created_at.isoformat()
                         ),
                     }
                 )

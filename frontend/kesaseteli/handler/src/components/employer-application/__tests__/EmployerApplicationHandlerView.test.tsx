@@ -21,6 +21,19 @@ describe('EmployerApplicationHandlerView', () => {
     expect(screen.getByText(/nuoren tiedot/i)).toBeInTheDocument();
   });
 
+  it('renders safely when summer_vouchers array is empty', () => {
+    const emptyVouchersApp = {
+      ...mockApplicationSingleVoucher,
+      summer_vouchers: [],
+    };
+    renderComponent(
+      <EmployerApplicationHandlerView application={emptyVouchersApp} />
+    );
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(screen.getByText(/testiyritys oy/i)).toBeInTheDocument();
+    expect(screen.getByText(/nuoren tiedot/i)).toBeInTheDocument();
+  });
+
   it('renders tabs when there are multiple vouchers (legacy data)', () => {
     renderComponent(
       <EmployerApplicationHandlerView

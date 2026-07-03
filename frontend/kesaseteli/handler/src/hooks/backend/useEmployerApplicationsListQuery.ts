@@ -1,5 +1,5 @@
 import {
-  BaseApplication,
+  EmployerApplication,
   PaginatedResponse,
 } from 'kesaseteli/handler/types/application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
@@ -23,8 +23,8 @@ export type EmployerApplicationsQueryParams = {
 
 const useEmployerApplicationsListQuery = (
   params: EmployerApplicationsQueryParams,
-  options?: UseQueryOptions<PaginatedResponse<BaseApplication>>
-): UseQueryResult<PaginatedResponse<BaseApplication>> => {
+  options?: UseQueryOptions<PaginatedResponse<EmployerApplication>>
+): UseQueryResult<PaginatedResponse<EmployerApplication>> => {
   const { axios, handleResponse } = useBackendAPI();
   const handleError = useErrorHandler();
 
@@ -42,7 +42,7 @@ const useEmployerApplicationsListQuery = (
     [BackendEndpoint.EMPLOYER_APPLICATIONS, params] as QueryKey,
     () =>
       handleResponse(
-        axios.get<PaginatedResponse<BaseApplication>>(
+        axios.get<PaginatedResponse<EmployerApplication>>(
           BackendEndpoint.EMPLOYER_APPLICATIONS,
           { params: searchParams }
         )

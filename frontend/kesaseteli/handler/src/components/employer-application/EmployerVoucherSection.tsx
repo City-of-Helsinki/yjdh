@@ -42,7 +42,7 @@ const EmployerVoucherSection: React.FC<Props> = ({ voucher }) => {
       <Field
         type="employment_salary_paid"
         value={
-          voucher.employment_salary_paid
+          voucher.employment_salary_paid != null
             ? `${voucher.employment_salary_paid} €`
             : '-'
         }

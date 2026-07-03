@@ -185,6 +185,20 @@ class YouthApplicationFilter(filters.FilterSet):
         ]
     )
 
+    def filter_queryset(self, queryset):
+        """Apply filters and ensure deterministic ordering with id tiebreaker."""
+        queryset = super().filter_queryset(queryset)
+
+        # If ordering was applied and doesn't already include 'id', append it
+        # as tiebreaker
+        if queryset.query.order_by and 'id' not in [
+            f.lstrip('-') for f in queryset.query.order_by
+        ]:
+            # Preserve existing ordering and add id as final tiebreaker
+            queryset = queryset.order_by(*queryset.query.order_by, 'id')
+
+        return queryset
+
     class Meta:
         model = YouthApplication
         fields = ["status"]
