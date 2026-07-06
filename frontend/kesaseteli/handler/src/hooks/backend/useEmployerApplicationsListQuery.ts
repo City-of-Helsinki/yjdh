@@ -31,7 +31,7 @@ const useEmployerApplicationsListQuery = <
   const handleError = useErrorHandler();
 
   const searchParams = new URLSearchParams();
-  if (params.status) {
+  if (params.status && params.status.length > 0) {
     params.status.forEach((s) => searchParams.append('status', s));
   }
   searchParams.append('limit', String(params.limit));
