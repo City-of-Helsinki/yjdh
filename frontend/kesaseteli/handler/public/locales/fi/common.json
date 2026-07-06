@@ -9,6 +9,7 @@
   },
   "applicationList": {
     "filterTitle": "Rajaa hakemuksia",
+    "filterError": "Valitse vähintään yksi tila",
     "ageFormat": "{{age}}v (synt. {{birthYear}})",
     "columns": {
       "applicantName": "Hakijan nimi",
