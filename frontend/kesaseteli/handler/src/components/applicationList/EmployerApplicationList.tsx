@@ -103,7 +103,7 @@ export const useEmployerApplicationListColumns =
         key: 'submitted_at',
         headerName: t('common:applicationList.columns.receivedDate'),
         isSortable: true,
-        orderingField: 'created_at',
+        orderingField: 'submitted_at',
         transform: (row) =>
           row.submitted_at
             ? new Date(row.submitted_at).toLocaleDateString(locale)
@@ -136,7 +136,8 @@ const useEmployerApplications = (
 
   const tableQuery = useApplicationTableQuery<EmployerApplication>(
     useEmployerApplicationsListQuery,
-    selectedStatuses
+    selectedStatuses,
+    '-submitted_at'
   );
 
   const { setPage } = tableQuery;

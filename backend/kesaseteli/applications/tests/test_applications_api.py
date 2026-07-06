@@ -747,6 +747,52 @@ def test_applications_ordering_by_created_at(api_client, company, user):
 
 
 @pytest.mark.django_db
+def test_applications_ordering_by_submitted_at(api_client, company, user):
+    """Test that employer applications can be ordered by submitted_at (descending and ascending)."""
+    with freeze_time("2024-01-01 11:00:00"):
+        app_middle = EmployerApplicationFactory(
+            company=company,
+            user=user,
+            status=EmployerApplicationStatus.SUBMITTED,
+            submitted_at="2024-01-01T11:00:00Z",
+        )
+
+    with freeze_time("2024-01-01 12:00:00"):
+        app_newest = EmployerApplicationFactory(
+            company=company,
+            user=user,
+            status=EmployerApplicationStatus.SUBMITTED,
+            submitted_at="2024-01-01T12:00:00Z",
+        )
+
+    with freeze_time("2024-01-01 10:00:00"):
+        app_oldest = EmployerApplicationFactory(
+            company=company,
+            user=user,
+            status=EmployerApplicationStatus.SUBMITTED,
+            submitted_at="2024-01-01T10:00:00Z",
+        )
+
+    # Descending ordering
+    response = api_client.get(
+        get_list_url(), {"limit": 10, "ordering": "-submitted_at"}
+    )
+    assert response.status_code == 200
+    results = response.data["results"]
+    assert str(results[0]["id"]) == str(app_newest.id)
+    assert str(results[1]["id"]) == str(app_middle.id)
+    assert str(results[2]["id"]) == str(app_oldest.id)
+
+    # Ascending ordering
+    response = api_client.get(get_list_url(), {"limit": 10, "ordering": "submitted_at"})
+    assert response.status_code == 200
+    results = response.data["results"]
+    assert str(results[0]["id"]) == str(app_oldest.id)
+    assert str(results[1]["id"]) == str(app_middle.id)
+    assert str(results[2]["id"]) == str(app_newest.id)
+
+
+@pytest.mark.django_db
 def test_summer_voucher_employee_phone_number_persistence(
     api_client, application, summer_voucher
 ):
