@@ -144,7 +144,7 @@ export default function EmployerApplicationList(): JSX.Element {
           setPage={setPendingPage}
           setOrdering={setPendingOrdering}
           isLoading={pendingQuery.isLoading}
-          defaultSortColumnKey="submitted_at"
+          defaultSortColumnKey="-submitted_at"
         />
       </TabPanel>
       <TabPanel index={1}>
@@ -156,7 +156,7 @@ export default function EmployerApplicationList(): JSX.Element {
           setPage={setProcessedPage}
           setOrdering={setProcessedOrdering}
           isLoading={processedQuery.isLoading}
-          defaultSortColumnKey="submitted_at"
+          defaultSortColumnKey="-submitted_at"
         />
       </TabPanel>
     </Tabs>

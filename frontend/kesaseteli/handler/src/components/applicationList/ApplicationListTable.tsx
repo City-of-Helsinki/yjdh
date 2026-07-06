@@ -161,7 +161,7 @@ export default function ApplicationListTable<
       const ordering =
         typeof backendField === 'string' && order === 'desc'
           ? (`-${backendField}` as OrderingField<T>)
-          : (backendField);
+          : backendField;
       setOrdering(ordering);
       setPage(0); // reset to first page on sort change
     }
@@ -193,6 +193,17 @@ export default function ApplicationListTable<
     );
   }
 
+  const isDescending =
+    typeof defaultSortColumnKey === 'string' &&
+    defaultSortColumnKey.startsWith('-');
+
+  const initialSortingColumnKey =
+    typeof defaultSortColumnKey === 'string'
+      ? defaultSortColumnKey.replace(/^-/, '')
+      : defaultSortColumnKey;
+
+  const initialSortingOrder = isDescending ? 'desc' : 'asc';
+
   return (
     <>
       <Table
@@ -200,8 +211,8 @@ export default function ApplicationListTable<
         rows={data}
         indexKey="id"
         renderIndexCol={false}
-        initialSortingColumnKey={defaultSortColumnKey}
-        initialSortingOrder="desc"
+        initialSortingColumnKey={initialSortingColumnKey}
+        initialSortingOrder={initialSortingOrder}
         onSort={handleSort}
         variant="dark"
         zebra
