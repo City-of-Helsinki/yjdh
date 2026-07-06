@@ -112,45 +112,44 @@ export const useEmployerApplicationListColumns =
     ];
   };
 
-/** Result type for the hook managing pending employer applications */
-type UsePendingEmployerApplicationsResultType =
-  TableState<EmployerApplication> & {
-    /** The React Query result containing paginated application data */
-    query: UseQueryResult<PaginatedResponse<EmployerApplication>>;
-    /** Total count of applications matching the query */
-    count: number;
-    /** Function to update the selected status filters */
-    setSelectedStatuses: React.Dispatch<
-      React.SetStateAction<ApplicationStatus[]>
-    >;
-  };
+/** Result type for the hook managing employer applications */
+type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
+  /** The React Query result containing paginated application data */
+  query: UseQueryResult<PaginatedResponse<EmployerApplication>>;
+  /** Total count of applications matching the query */
+  count: number;
+  /** Function to update the selected status filters */
+  setSelectedStatuses: React.Dispatch<
+    React.SetStateAction<ApplicationStatus[]>
+  >;
+};
 
 /**
- * Hook to manage the state and data query for pending employer applications.
+ * Hook to manage the state and data query for employer applications.
  * Handles default and user-selected status filters.
  */
-const usePendingEmployerApplications =
-  (): UsePendingEmployerApplicationsResultType => {
-    const [selectedPendingStatuses, setSelectedPendingStatuses] = useState<
-      ApplicationStatus[]
-    >(DEFAULT_PENDING_STATUSES);
+const useEmployerApplications = (
+  initialStatuses: ApplicationStatus[]
+): UseEmployerApplicationsResultType => {
+  const [selectedStatuses, setSelectedStatuses] =
+    useState<ApplicationStatus[]>(initialStatuses);
 
-    const tableQuery = useApplicationTableQuery<EmployerApplication>(
-      useEmployerApplicationsListQuery,
-      selectedPendingStatuses
-    );
+  const tableQuery = useApplicationTableQuery<EmployerApplication>(
+    useEmployerApplicationsListQuery,
+    selectedStatuses
+  );
 
-    const { setPage } = tableQuery;
+  const { setPage } = tableQuery;
 
-    useEffect(() => {
-      setPage(0);
-    }, [selectedPendingStatuses, setPage]);
+  useEffect(() => {
+    setPage(0);
+  }, [selectedStatuses, setPage]);
 
-    return {
-      ...tableQuery,
-      setSelectedStatuses: setSelectedPendingStatuses,
-    };
+  return {
+    ...tableQuery,
+    setSelectedStatuses,
   };
+};
 
 export default function EmployerApplicationList(): JSX.Element {
   const { t } = useTranslation();
@@ -165,19 +164,17 @@ export default function EmployerApplicationList(): JSX.Element {
     setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
-  } = usePendingEmployerApplications();
+  } = useEmployerApplications(DEFAULT_PENDING_STATUSES);
 
   // Processed Tab States & Query
   const {
     page: processedPage,
     setPage: setProcessedPage,
     setOrdering: setProcessedOrdering,
+    setSelectedStatuses: setSelectedProcessedStatuses,
     query: processedQuery,
     count: processedCount,
-  } = useApplicationTableQuery<EmployerApplication>(
-    useEmployerApplicationsListQuery,
-    PROCESSED_STATUSES
-  );
+  } = useEmployerApplications(PROCESSED_STATUSES);
 
   const columns = useEmployerApplicationListColumns();
 
@@ -192,12 +189,17 @@ export default function EmployerApplicationList(): JSX.Element {
         </Tab>
       </$TabList>
       <TabPanel index={0}>
-        <StatusFilter
-          id="employer-application-pending-status-filter"
-          statuses={EMPLOYER_PENDING_STATUSES}
-          defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
-          onChange={setSelectedPendingStatuses}
-        />
+        <ApplicationListTable.FilterSection
+          ariaLabelledBy="employer-pending-filters-heading"
+          title={t('common:applicationList.filterTitle')}
+        >
+          <StatusFilter
+            id="employer-application-pending-status-filter"
+            statuses={EMPLOYER_PENDING_STATUSES}
+            defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
+            onChange={setSelectedPendingStatuses}
+          />
+        </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
           columns={columns}
           data={pendingQuery.data?.results ?? []}
@@ -210,6 +212,17 @@ export default function EmployerApplicationList(): JSX.Element {
         />
       </TabPanel>
       <TabPanel index={1}>
+        <ApplicationListTable.FilterSection
+          ariaLabelledBy="employer-processed-filters-heading"
+          title={t('common:applicationList.filterTitle')}
+        >
+          <StatusFilter
+            id="employer-application-processed-status-filter"
+            statuses={PROCESSED_STATUSES}
+            defaultSelectedStatuses={PROCESSED_STATUSES}
+            onChange={setSelectedProcessedStatuses}
+          />
+        </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
           columns={columns}
           data={processedQuery.data?.results ?? []}

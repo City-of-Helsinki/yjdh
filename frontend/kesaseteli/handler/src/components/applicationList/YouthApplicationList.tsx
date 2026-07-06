@@ -125,8 +125,8 @@ export const useYouthApplicationListColumns =
     ];
   };
 
-/** Result type for the hook managing pending youth applications */
-type UsePendingYouthApplicationsResultType = TableState<YouthApplication> & {
+/** Result type for the hooks managing youth applications lists */
+type UseYouthApplicationsResultType = TableState<YouthApplication> & {
   /** The React Query result containing paginated application data */
   query: UseQueryResult<PaginatedResponse<YouthApplication>>;
   /** Total count of applications matching the query */
@@ -137,30 +137,29 @@ type UsePendingYouthApplicationsResultType = TableState<YouthApplication> & {
   >;
 };
 
-const usePendingYouthApplications =
-  (): UsePendingYouthApplicationsResultType => {
-    // selected status filter options
-    const [selectedPendingStatuses, setSelectedPendingStatuses] = useState<
-      ApplicationStatus[]
-    >(DEFAULT_PENDING_STATUSES);
+const useYouthApplications = (
+  initialStatuses: ApplicationStatus[]
+): UseYouthApplicationsResultType => {
+  const [selectedStatuses, setSelectedStatuses] =
+    useState<ApplicationStatus[]>(initialStatuses);
 
-    const tableQuery = useApplicationTableQuery<YouthApplication>(
-      useYouthApplicationsListQuery,
-      selectedPendingStatuses
-    );
+  const tableQuery = useApplicationTableQuery<YouthApplication>(
+    useYouthApplicationsListQuery,
+    selectedStatuses
+  );
 
-    const { setPage } = tableQuery;
+  const { setPage } = tableQuery;
 
-    // Reset page when statuses change to avoid showing stale data
-    useEffect(() => {
-      setPage(0);
-    }, [selectedPendingStatuses, setPage]);
+  // Reset page when statuses change to avoid showing stale data
+  useEffect(() => {
+    setPage(0);
+  }, [selectedStatuses, setPage]);
 
-    return {
-      ...tableQuery,
-      setSelectedStatuses: setSelectedPendingStatuses,
-    };
+  return {
+    ...tableQuery,
+    setSelectedStatuses,
   };
+};
 
 export default function YouthApplicationList(): JSX.Element {
   const { t } = useTranslation();
@@ -174,18 +173,16 @@ export default function YouthApplicationList(): JSX.Element {
     setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
-  } = usePendingYouthApplications();
+  } = useYouthApplications(DEFAULT_PENDING_STATUSES);
 
   const {
     page: processedPage,
     setPage: setProcessedPage,
     setOrdering: setProcessedOrdering,
+    setSelectedStatuses: setSelectedProcessedStatuses,
     query: processedQuery,
     count: processedCount,
-  } = useApplicationTableQuery<YouthApplication>(
-    useYouthApplicationsListQuery,
-    PROCESSED_STATUSES
-  );
+  } = useYouthApplications(PROCESSED_STATUSES);
 
   const columns = useYouthApplicationListColumns();
 
@@ -200,12 +197,17 @@ export default function YouthApplicationList(): JSX.Element {
         </Tab>
       </$TabList>
       <TabPanel index={0}>
-        <StatusFilter
-          id="youth-application-pending-status-filter"
-          statuses={YOUTH_PENDING_STATUSES}
-          defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
-          onChange={setSelectedPendingStatuses}
-        />
+        <ApplicationListTable.FilterSection
+          ariaLabelledBy="youth-pending-filters-heading"
+          title={t('common:applicationList.filterTitle')}
+        >
+          <StatusFilter
+            id="youth-application-pending-status-filter"
+            statuses={YOUTH_PENDING_STATUSES}
+            defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
+            onChange={setSelectedPendingStatuses}
+          />
+        </ApplicationListTable.FilterSection>
         <ApplicationListTable
           columns={columns}
           data={pendingQuery.data?.results ?? []}
@@ -217,6 +219,17 @@ export default function YouthApplicationList(): JSX.Element {
         />
       </TabPanel>
       <TabPanel index={1}>
+        <ApplicationListTable.FilterSection
+          ariaLabelledBy="youth-processed-filters-heading"
+          title={t('common:applicationList.filterTitle')}
+        >
+          <StatusFilter
+            id="youth-application-processed-status-filter"
+            statuses={PROCESSED_STATUSES}
+            defaultSelectedStatuses={PROCESSED_STATUSES}
+            onChange={setSelectedProcessedStatuses}
+          />
+        </ApplicationListTable.FilterSection>
         <ApplicationListTable
           columns={columns}
           data={processedQuery.data?.results ?? []}

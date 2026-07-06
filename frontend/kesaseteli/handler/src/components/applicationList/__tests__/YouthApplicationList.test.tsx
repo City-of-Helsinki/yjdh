@@ -137,4 +137,38 @@ describe('YouthApplicationList', () => {
       })
     );
   });
+
+  it('calls useYouthApplicationsListQuery with default processed statuses initially', () => {
+    renderComponent(<YouthApplicationList />);
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+      })
+    );
+  });
+
+  it('calls useYouthApplicationsListQuery with updated processed statuses when processed filters change', async () => {
+    renderComponent(<YouthApplicationList />);
+
+    // Switch to processed tab
+    await userEvent.click(
+      screen.getByText(`${fi.applicationList.tabs.processed} (8)`)
+    );
+
+    const combobox = screen.getByRole('combobox', { name: /tila/i });
+    await userEvent.click(combobox);
+
+    const listbox = screen.getByRole('listbox');
+
+    // Deselect "Hyväksytty" (Accepted)
+    await userEvent.click(
+      within(listbox).getByText(fi.applicationList.status.accepted)
+    );
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [ApplicationStatus.REJECTED],
+      })
+    );
+  });
 });

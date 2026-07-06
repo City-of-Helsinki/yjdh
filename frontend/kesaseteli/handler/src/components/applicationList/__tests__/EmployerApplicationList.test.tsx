@@ -134,4 +134,38 @@ describe('EmployerApplicationList', () => {
       })
     );
   });
+
+  it('calls useEmployerApplicationsListQuery with default processed statuses initially', () => {
+    renderComponent(<EmployerApplicationList />);
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+      })
+    );
+  });
+
+  it('calls useEmployerApplicationsListQuery with updated processed statuses when processed filters change', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    // Switch to processed tab
+    await userEvent.click(
+      screen.getByText(`${fi.applicationList.tabs.processed} (10)`)
+    );
+
+    const combobox = screen.getByRole('combobox', { name: /tila/i });
+    await userEvent.click(combobox);
+
+    const listbox = screen.getByRole('listbox');
+
+    // Deselect "Hyväksytty" (Accepted)
+    await userEvent.click(
+      within(listbox).getByText(fi.applicationList.status.accepted)
+    );
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [ApplicationStatus.REJECTED],
+      })
+    );
+  });
 });
