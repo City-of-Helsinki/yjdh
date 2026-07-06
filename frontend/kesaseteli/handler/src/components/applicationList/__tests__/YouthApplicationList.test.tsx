@@ -6,6 +6,7 @@ import React from 'react';
 import fi from '../../../../public/locales/fi/common.json';
 import useYouthApplicationsListQuery from '../../../hooks/backend/useYouthApplicationsListQuery';
 import YouthApplicationList from '../YouthApplicationList';
+import { ApplicationStatus } from '../../../types/application';
 
 jest.mock('../../../hooks/backend/useYouthApplicationsListQuery');
 const mockUseQuery = useYouthApplicationsListQuery as jest.Mock;
@@ -73,5 +74,17 @@ describe('YouthApplicationList', () => {
     expect(screen.getByText('222222-2222')).toBeInTheDocument();
     expect(screen.getByText('Maija Meikäläinen')).toBeInTheDocument();
     expect(screen.queryByText('111111-1111')).not.toBeInTheDocument();
+  });
+
+  it('calls useYouthApplicationsListQuery with default pending statuses initially', () => {
+    renderComponent(<YouthApplicationList />);
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [
+          ApplicationStatus.SUBMITTED,
+          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ],
+      })
+    );
   });
 });

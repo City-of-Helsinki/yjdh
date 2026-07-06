@@ -6,6 +6,7 @@ import React from 'react';
 import fi from '../../../../public/locales/fi/common.json';
 import useEmployerApplicationsListQuery from '../../../hooks/backend/useEmployerApplicationsListQuery';
 import EmployerApplicationList from '../EmployerApplicationList';
+import { ApplicationStatus } from '../../../types/application';
 
 jest.mock('../../../hooks/backend/useEmployerApplicationsListQuery');
 const mockUseQuery = useEmployerApplicationsListQuery as jest.Mock;
@@ -70,5 +71,17 @@ describe('EmployerApplicationList', () => {
     // Verify processed tab content is displayed
     expect(screen.getByText('Company Processed Oy')).toBeInTheDocument();
     expect(screen.queryByText('Company Pending Oy')).not.toBeInTheDocument();
+  });
+
+  it('calls useEmployerApplicationsListQuery with default pending statuses initially', () => {
+    renderComponent(<EmployerApplicationList />);
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [
+          ApplicationStatus.SUBMITTED,
+          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ],
+      })
+    );
   });
 });
