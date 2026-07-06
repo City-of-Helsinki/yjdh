@@ -152,7 +152,10 @@ class TargetGroupListView(ListAPIView):
     serializer_class = TargetGroupSerializer
 
     def get_queryset(self) -> list[dict]:
-        identifiers = [cls().identifier for cls in AbstractTargetGroup.__subclasses__()]
+        identifiers = [
+            cls().identifier  # type: ignore
+            for cls in AbstractTargetGroup.__subclasses__()
+        ]
         return get_target_group_data(identifiers)
 
     def list(self, request: Request, *args, **kwargs) -> Response:
