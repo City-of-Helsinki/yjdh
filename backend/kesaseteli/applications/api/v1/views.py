@@ -928,6 +928,7 @@ class EmployerApplicationFilter(filters.FilterSet):
                 "id",
                 "modified_at",
                 "status",
+                "submitted_at",
                 "user__first_name",
                 "user__last_name",
                 "user_id",

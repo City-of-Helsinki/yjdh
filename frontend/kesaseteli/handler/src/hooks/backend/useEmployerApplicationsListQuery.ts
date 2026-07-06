@@ -17,7 +17,7 @@ export type EmployerApplicationsQueryParams = {
   status?: string[];
   limit: number;
   offset: number;
-  /** Valid ordering fields: created_at, company__name, company__business_id, status, modified_at */
+  /** Valid ordering fields: created_at, company__name, company__business_id, status, modified_at, submitted_at */
   ordering?: string;
 };
 
