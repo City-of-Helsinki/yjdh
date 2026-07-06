@@ -9,7 +9,7 @@ from applications.target_groups import AbstractTargetGroup
 class SummerVoucherConfigurationFactory(factory.django.DjangoModelFactory):
     year = factory.fuzzy.FuzzyInteger(2020, 2099)
     target_group = factory.Iterator(
-        [[cls().identifier] for cls in AbstractTargetGroup.__subclasses__()]
+        [[cls().identifier] for cls in AbstractTargetGroup.__subclasses__()]  # type: ignore
     )
     voucher_value_in_euros = settings.SUMMER_VOUCHER_DEFAULT_VOUCHER_VALUE
     min_work_compensation_in_euros = (

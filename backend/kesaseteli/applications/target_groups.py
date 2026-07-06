@@ -143,7 +143,7 @@ def get_target_group_class_by_age(age: int) -> type[AbstractTargetGroup] | None:
         None
     """
     for subclass in AbstractTargetGroup.__subclasses__():
-        if subclass().is_age_valid(age):
+        if subclass().is_age_valid(age):  # type: ignore
             return subclass
     return None
 
@@ -164,7 +164,8 @@ def get_target_group_choices() -> List[Tuple[str, str]]:
 
     """
     return [
-        (cls().identifier, cls().name) for cls in AbstractTargetGroup.__subclasses__()
+        (cls().identifier, cls().name)  # type: ignore
+        for cls in AbstractTargetGroup.__subclasses__()
     ]
 
 
@@ -221,7 +222,7 @@ def get_target_group_class(identifier: str) -> type[AbstractTargetGroup] | None:
     Unknown identifiers return ``None`` rather than raising.
     """
     for cls in AbstractTargetGroup.__subclasses__():
-        if cls().identifier == identifier:
+        if cls().identifier == identifier:  # type: ignore
             return cls
     return None
 
@@ -254,7 +255,7 @@ def get_target_group_data(identifiers: List[str]) -> List[dict]:
     for identifier in identifiers:
         target_group_cls = get_target_group_class(identifier)
         if target_group_cls:
-            target_group = target_group_cls()
+            target_group = target_group_cls()  # type: ignore
             target_groups.append(
                 {
                     "id": target_group.identifier,
