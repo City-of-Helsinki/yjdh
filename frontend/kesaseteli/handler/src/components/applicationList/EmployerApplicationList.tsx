@@ -1,22 +1,39 @@
 import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { UseQueryResult } from 'react-query/types/react/types';
 import useLocale from 'shared/hooks/useLocale';
 
 import useEmployerApplicationsListQuery from '../../hooks/backend/useEmployerApplicationsListQuery';
 import {
   ApplicationStatus,
   EmployerApplication,
+  PaginatedResponse,
 } from '../../types/application';
 import ActionCell from './ActionCell';
 import ApplicationListTable, {
   HdsHeader,
+  TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
+import styled from 'styled-components';
+
+const $TabList = styled(TabList)`
+  margin-bottom: 1rem;
+`;
 
 const EMPLOYER_PENDING_STATUSES = [
   ApplicationStatus.SUBMITTED,
   ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+];
+
+/**
+ * The initial and default statuses selected for the pending employer applications list query.
+ * Also used as default/fallback statuses when no specific filters are checked by the user.
+ */
+const DEFAULT_PENDING_STATUSES = [
+  ApplicationStatus.SUBMITTED,
   ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
 ];
 
@@ -94,6 +111,36 @@ export const useEmployerApplicationListColumns =
     ];
   };
 
+/** Result type for the hook managing pending employer applications */
+type UsePendingEmployerApplicationsResultType =
+  TableState<EmployerApplication> & {
+    /** The React Query result containing paginated application data */
+    query: UseQueryResult<PaginatedResponse<EmployerApplication>>;
+    /** Total count of applications matching the query */
+    count: number;
+    /** Function to update the selected status filters */
+    setSelectedStatuses: React.Dispatch<
+      React.SetStateAction<ApplicationStatus[]>
+    >;
+  };
+
+/**
+ * Hook to manage the state and data query for pending employer applications.
+ * Handles default and user-selected status filters.
+ */
+const usePendingEmployerApplications =
+  (): UsePendingEmployerApplicationsResultType => {
+    const tableQuery = useApplicationTableQuery<EmployerApplication>(
+      useEmployerApplicationsListQuery,
+      DEFAULT_PENDING_STATUSES
+    );
+
+    return {
+      ...tableQuery,
+      setSelectedStatuses: () => {},
+    };
+  };
+
 export default function EmployerApplicationList(): JSX.Element {
   const { t } = useTranslation();
 
@@ -106,10 +153,7 @@ export default function EmployerApplicationList(): JSX.Element {
     setOrdering: setPendingOrdering,
     query: pendingQuery,
     count: pendingCount,
-  } = useApplicationTableQuery<EmployerApplication>(
-    useEmployerApplicationsListQuery,
-    EMPLOYER_PENDING_STATUSES
-  );
+  } = usePendingEmployerApplications();
 
   // Processed Tab States & Query
   const {
@@ -127,14 +171,14 @@ export default function EmployerApplicationList(): JSX.Element {
 
   return (
     <Tabs index={activeTab} onChange={setActiveTab}>
-      <TabList style={{ marginBottom: '1rem' }}>
+      <$TabList>
         <Tab index={0}>
           {t('common:applicationList.tabs.pending')} ({pendingCount})
         </Tab>
         <Tab index={1}>
           {t('common:applicationList.tabs.processed')} ({processedCount})
         </Tab>
-      </TabList>
+      </$TabList>
       <TabPanel index={0}>
         <ApplicationListTable<EmployerApplication>
           columns={columns}

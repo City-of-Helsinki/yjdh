@@ -55,7 +55,7 @@ type ApplicationListTableProps<T extends BaseApplication = BaseApplication> = {
   defaultSortColumnKey?: OrderingField<T>;
 };
 
-type TableState<T extends BaseApplication = BaseApplication> = {
+export type TableState<T extends BaseApplication = BaseApplication> = {
   page: number;
   setPage: (page: number) => void;
   ordering: OrderingField<T>;
