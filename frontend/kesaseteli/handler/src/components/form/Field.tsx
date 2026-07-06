@@ -6,12 +6,12 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
-type Props = GridCellProps & {
-  id?: string;
-  type?: string;
-  value?: React.ReactNode;
-  children?: React.ReactNode;
-};
+type Props = GridCellProps &
+  React.HTMLAttributes<HTMLDivElement> & {
+    id?: string;
+    type?: string;
+    value?: React.ReactNode;
+  };
 
 const $StyledGridCell = styled($GridCell)`
   font-size: ${(props) => props.theme.fontSize.body.l};

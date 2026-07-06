@@ -92,6 +92,10 @@ const $Column = styled.div`
   gap: ${(props) => props.theme.spacing.m};
 `;
 
+const $ActionButtonsWrapper = styled.div`
+  margin-top: ${(props) => props.theme.spacing.m};
+`;
+
 const AdditionalInfoSection: React.FC<{
   t: (key: string) => string;
   providedAt?: string;
@@ -112,7 +116,7 @@ const AdditionalInfoSection: React.FC<{
     <Field
       type="additional_info_description"
       value={description}
-      css={{ marginBottom: '1rem' }}
+      style={{ marginBottom: '1rem' }}
     />
   </>
 );
@@ -205,16 +209,8 @@ const FormLayout: React.FC<FormLayoutProps> = ({
             <Field type="postcode" value={postcode} />
             <Field type="school" value={schoolValue} />
             <Field type="phone_number" value={phone_number} />
-            <Field
-              type="email"
-              value={email}
-              css={{ marginBottom: '0.5rem' }}
-            />
-            <Field
-              type="target_group"
-              value={targetGroupName}
-              css={{ marginBottom: '0.5rem' }}
-            />
+            <Field type="email" value={email} />
+            <Field type="target_group" value={targetGroupName} />
 
             {additionalInfoProvided && (
               <AdditionalInfoSection
@@ -226,9 +222,9 @@ const FormLayout: React.FC<FormLayoutProps> = ({
             )}
 
             {waitingForHandlerAction && (
-              <div style={{ marginTop: '1rem' }}>
+              <$ActionButtonsWrapper>
                 <ActionButtons application={application} />
-              </div>
+              </$ActionButtonsWrapper>
             )}
           </FormSection>
         </$Column>
