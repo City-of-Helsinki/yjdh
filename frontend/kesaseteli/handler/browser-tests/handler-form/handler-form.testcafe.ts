@@ -11,6 +11,7 @@ import requestLogger, {
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { RequestMock } from 'testcafe';
 
+import isHandlerNewBetaUiEnabled from '../../src/flags/is-handler-new-beta-ui-enabled';
 import LoginPage from '../page-models/LoginPage';
 import { getFrontendUrl } from '../utils/url.utils';
 
@@ -51,10 +52,12 @@ test.requestHooks(userinfo401Mock)(
   }
 );
 
-test.requestHooks(userinfoMock)(
-  'handler form is not found without id',
-  async () => {
-    const handlerFormPage = new HandlerForm();
-    await handlerFormPage.applicationNotFound();
-  }
-);
+if (!isHandlerNewBetaUiEnabled()) {
+  test.requestHooks(userinfoMock)(
+    'handler form is not found without id',
+    async () => {
+      const handlerFormPage = new HandlerForm();
+      await handlerFormPage.applicationNotFound();
+    }
+  );
+}
