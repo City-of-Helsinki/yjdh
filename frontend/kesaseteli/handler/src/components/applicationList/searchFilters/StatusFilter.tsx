@@ -1,6 +1,7 @@
 import { Select } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useMemo, useState } from 'react';
+import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import { OptionType } from 'shared/types/common';
 import styled from 'styled-components';
 
@@ -69,6 +70,8 @@ const StatusFilter = ({
     () => options.filter((option) => selectedStatuses.includes(option.value)),
     [options, selectedStatuses]
   );
+  // The status filter is invalid when no options are selected
+  const isInvalid = selectedStatuses.length === 0;
 
   return (
     <$Wrapper>
@@ -80,15 +83,23 @@ const StatusFilter = ({
         }}
         options={options}
         value={selectedOptions}
-        invalid={selectedStatuses.length === 0}
+        invalid={isInvalid}
         onChange={(nextSelectedOptions: OptionType<ApplicationStatus>[]) => {
           const nextStatuses = nextSelectedOptions.map(
             (option) => option.value
           );
           setSelectedStatuses(nextStatuses);
-          onChange(nextStatuses);
+          // Only update query if selection is valid (not empty) to avoid querying every status
+          if (nextStatuses.length > 0) {
+            onChange(nextStatuses);
+          }
         }}
       />
+      {isInvalid && (
+        <FieldErrorMessage data-testid={`${id}-error`}>
+          {t('common:applicationList.filterError')}
+        </FieldErrorMessage>
+      )}
     </$Wrapper>
   );
 };

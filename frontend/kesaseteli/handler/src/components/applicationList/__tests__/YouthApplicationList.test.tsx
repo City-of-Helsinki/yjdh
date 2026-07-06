@@ -112,7 +112,7 @@ describe('YouthApplicationList', () => {
     );
   });
 
-  it('calls useYouthApplicationsListQuery with empty status list when all filters are deselected', async () => {
+  it('does not trigger a new query with empty status list when all filters are deselected', async () => {
     renderComponent(<YouthApplicationList />);
 
     const combobox = screen.getByRole('combobox', { name: /tila/i });
@@ -120,20 +120,25 @@ describe('YouthApplicationList', () => {
 
     const listbox = screen.getByRole('listbox');
 
-    // Deselect "Avoin"
+    // Deselect "Avoin" (submitted) -> should query with only [additional_information_provided]
     await userEvent.click(
       within(listbox).getByText(fi.applicationList.status.submitted)
     );
-    // Deselect "Lisätiedot toimitettu"
+    // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> empty selection, should not trigger query
     await userEvent.click(
       within(listbox).getByText(
         fi.applicationList.status.additional_information_provided
       )
     );
 
-    expect(mockUseQuery).toHaveBeenCalledWith(
+    expect(mockUseQuery).not.toHaveBeenCalledWith(
       expect.objectContaining({
         status: [],
+      })
+    );
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
       })
     );
   });
