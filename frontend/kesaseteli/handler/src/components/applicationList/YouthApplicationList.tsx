@@ -1,22 +1,48 @@
 import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { UseQueryResult } from 'react-query/types/react/types';
 import useLocale from 'shared/hooks/useLocale';
+import styled from 'styled-components';
 
 import useYouthApplicationsListQuery from '../../hooks/backend/useYouthApplicationsListQuery';
-import { ApplicationStatus, YouthApplication } from '../../types/application';
+import {
+  ApplicationStatus,
+  PaginatedResponse,
+  YouthApplication,
+} from '../../types/application';
 import ActionCell from './ActionCell';
 import ApplicationListTable, {
   HdsHeader,
-  PAGE_SIZE,
+  TableState,
+  useApplicationTableQuery,
 } from './ApplicationListTable';
+const $TabList = styled(TabList)`
+  margin-bottom: 1rem;
+`;
 
+/**
+ * All possible statuses that fall under the "pending" category for youth applications.
+ * Used to define the available options in the pending status search filter component.
+ */
 const YOUTH_PENDING_STATUSES = [
   ApplicationStatus.SUBMITTED,
   ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
   ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
 ];
 
+/**
+ * The initial and default statuses selected for the pending youth applications list query.
+ * Also used as default/fallback statuses when no specific filters are checked by the user.
+ */
+const DEFAULT_PENDING_STATUSES = [
+  ApplicationStatus.SUBMITTED,
+  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+];
+
+/**
+ * All statuses considered "processed" for youth applications
+ */
 const PROCESSED_STATUSES = [
   ApplicationStatus.ACCEPTED,
   ApplicationStatus.REJECTED,
@@ -71,9 +97,9 @@ export const useYouthApplicationListColumns =
         transform: (row) =>
           row.age && row.birth_year
             ? t('common:applicationList.ageFormat', {
-              age: row.age,
-              birthYear: row.birth_year,
-            })
+                age: row.age,
+                birthYear: row.birth_year,
+              })
             : '-',
       },
       {
@@ -97,46 +123,67 @@ export const useYouthApplicationListColumns =
     ];
   };
 
+/** Result type for the hook managing pending youth applications */
+type UsePendingYouthApplicationsResultType = TableState<YouthApplication> & {
+  /** The React Query result containing paginated application data */
+  query: UseQueryResult<PaginatedResponse<YouthApplication>>;
+  /** Total count of applications matching the query */
+  count: number;
+  /** Function to update the selected status filters */
+  setSelectedStatuses: React.Dispatch<
+    React.SetStateAction<ApplicationStatus[]>
+  >;
+};
+
+const usePendingYouthApplications =
+  (): UsePendingYouthApplicationsResultType => {
+    const tableQuery = useApplicationTableQuery<YouthApplication>(
+      useYouthApplicationsListQuery,
+      DEFAULT_PENDING_STATUSES
+    );
+
+    return {
+      ...tableQuery,
+      setSelectedStatuses: () => {},
+    };
+  };
+
 export default function YouthApplicationList(): JSX.Element {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState(0);
 
-  // Pending Tab States & Query
-  const [pendingPage, setPendingPage] = useState(0);
-  const [pendingOrdering, setPendingOrdering] = useState('-created_at');
-  const pendingQuery = useYouthApplicationsListQuery({
-    status: YOUTH_PENDING_STATUSES,
-    limit: PAGE_SIZE,
-    offset: pendingPage * PAGE_SIZE,
-    ordering: pendingOrdering,
-  });
+  const {
+    page: pendingPage,
+    setPage: setPendingPage,
+    setOrdering: setPendingOrdering,
+    query: pendingQuery,
+    count: pendingCount,
+  } = usePendingYouthApplications();
 
-  // Processed Tab States & Query
-  const [processedPage, setProcessedPage] = useState(0);
-  const [processedOrdering, setProcessedOrdering] = useState('-created_at');
-  const processedQuery = useYouthApplicationsListQuery({
-    status: PROCESSED_STATUSES,
-    limit: PAGE_SIZE,
-    offset: processedPage * PAGE_SIZE,
-    ordering: processedOrdering,
-  });
-
-  const pendingCount = pendingQuery.data?.count ?? 0;
-  const processedCount = processedQuery.data?.count ?? 0;
+  const {
+    page: processedPage,
+    setPage: setProcessedPage,
+    setOrdering: setProcessedOrdering,
+    query: processedQuery,
+    count: processedCount,
+  } = useApplicationTableQuery<YouthApplication>(
+    useYouthApplicationsListQuery,
+    PROCESSED_STATUSES
+  );
 
   const columns = useYouthApplicationListColumns();
 
   return (
     <Tabs index={activeTab} onChange={setActiveTab}>
-      <TabList style={{ marginBottom: '1rem' }}>
+      <$TabList>
         <Tab index={0}>
           {t('common:applicationList.tabs.pending')} ({pendingCount})
         </Tab>
         <Tab index={1}>
           {t('common:applicationList.tabs.processed')} ({processedCount})
         </Tab>
-      </TabList>
+      </$TabList>
       <TabPanel index={0}>
         <ApplicationListTable
           columns={columns}

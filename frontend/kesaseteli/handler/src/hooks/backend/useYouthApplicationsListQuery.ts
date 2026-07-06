@@ -1,14 +1,10 @@
 import {
-  BaseApplication,
   PaginatedResponse,
+  YouthApplication,
 } from 'kesaseteli/handler/types/application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import {
-  QueryKey,
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from 'react-query';
+import { QueryKey, useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryResult } from 'react-query/types/react/types';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
@@ -22,8 +18,8 @@ export type YouthApplicationsQueryParams = {
 
 const useYouthApplicationsListQuery = (
   params: YouthApplicationsQueryParams,
-  options?: UseQueryOptions<PaginatedResponse<BaseApplication>>
-): UseQueryResult<PaginatedResponse<BaseApplication>> => {
+  options?: UseQueryOptions<PaginatedResponse<YouthApplication>>
+): UseQueryResult<PaginatedResponse<YouthApplication>> => {
   const { axios, handleResponse } = useBackendAPI();
   const handleError = useErrorHandler();
 
@@ -41,9 +37,11 @@ const useYouthApplicationsListQuery = (
     [BackendEndpoint.YOUTH_APPLICATIONS, params] as QueryKey,
     () =>
       handleResponse(
-        axios.get<PaginatedResponse<BaseApplication>>(
+        axios.get<PaginatedResponse<YouthApplication>>(
           BackendEndpoint.YOUTH_APPLICATIONS,
-          { params: searchParams }
+          {
+            params: searchParams,
+          }
         )
       ),
     {
