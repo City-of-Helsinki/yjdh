@@ -11,6 +11,7 @@ import {
   BaseApplication,
   PaginatedResponse,
 } from '../../types/application';
+import FilterSection from './searchFilters/FilterSection';
 
 export const PAGE_SIZE = 20;
 export const DEFAULT_ORDERING = '-created_at';
@@ -133,107 +134,119 @@ export function useApplicationTableQuery<T extends BaseApplication>(
  * @example
  * const { page, setPage, ordering, setOrdering } = useTableState('-created_at');
  */
-export default function ApplicationListTable<
-  T extends BaseApplication = BaseApplication
->({
-  columns,
-  data,
-  totalCount,
-  page,
-  setPage,
-  setOrdering,
-  isLoading,
-  defaultSortColumnKey = DEFAULT_ORDERING as OrderDirection<T>,
-}: ApplicationListTableProps<T>): JSX.Element {
-  const { t } = useTranslation();
-  const locale = useLocale();
-
-  const pageCount = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-
-  const handleSort = (
-    order: 'asc' | 'desc',
-    colKey: string,
-    handleSortInternal: () => void
-  ): void => {
-    const col = columns.find((c) => c.key === colKey);
-    const backendField = col?.orderingField;
-    if (backendField) {
-      const ordering =
-        typeof backendField === 'string' && order === 'desc'
-          ? (`-${backendField}` as OrderingField<T>)
-          : backendField;
-      setOrdering(ordering);
-      setPage(0); // reset to first page on sort change
-    }
-    handleSortInternal();
-  };
-
-  // Build HDS-compatible column definitions from our HdsHeader schema.
-  // Non-sortable columns (empty ordering key) have isSortable forced to false.
-  const cols = columns.map((col) => {
-    const { key, headerName, isSortable, transform, orderingField } = col;
-    return {
-      key,
-      headerName,
-      isSortable: isSortable && Boolean(orderingField),
-      transform: transform ? (row: unknown) => transform(row as T) : undefined,
-    };
-  });
-
-  const onPageChange = (e: React.MouseEvent, index: number): void => {
-    e.preventDefault();
-    setPage(index);
-  };
-
-  if (isLoading) {
-    return (
-      <$LoadingContainer>
-        <PageLoadingSpinner />
-      </$LoadingContainer>
-    );
-  }
-
-  const isDescending =
-    typeof defaultSortColumnKey === 'string' &&
-    defaultSortColumnKey.startsWith('-');
-
-  const initialSortingColumnKey =
-    typeof defaultSortColumnKey === 'string'
-      ? defaultSortColumnKey.replace(/^-/, '')
-      : defaultSortColumnKey;
-
-  const initialSortingOrder = isDescending ? 'desc' : 'asc';
-
-  return (
-    <>
-      <Table
-        cols={cols}
-        rows={data}
-        indexKey="id"
-        renderIndexCol={false}
-        initialSortingColumnKey={initialSortingColumnKey}
-        initialSortingOrder={initialSortingOrder}
-        onSort={handleSort}
-        variant="dark"
-        zebra
-        caption={
-          data.length === 0
-            ? t('common:applicationList.noApplications')
-            : undefined
-        }
-      />
-      {pageCount > 1 && (
-        <$PaginationContainer>
-          <Pagination
-            pageHref={() => '#'}
-            pageIndex={page}
-            pageCount={pageCount}
-            paginationAriaLabel={t('common:utility.pagination')}
-            onChange={onPageChange}
-            language={locale}
-          />
-        </$PaginationContainer>
-      )}
-    </>
-  );
+interface ApplicationListTableComponent {
+  <T extends BaseApplication = BaseApplication>(
+    props: ApplicationListTableProps<T>
+  ): JSX.Element;
+  FilterSection: typeof FilterSection;
 }
+
+const ApplicationListTable: ApplicationListTableComponent =
+  function ApplicationListTable<T extends BaseApplication = BaseApplication>({
+    columns,
+    data,
+    totalCount,
+    page,
+    setPage,
+    setOrdering,
+    isLoading,
+    defaultSortColumnKey = DEFAULT_ORDERING as OrderDirection<T>,
+  }: ApplicationListTableProps<T>): JSX.Element {
+    const { t } = useTranslation();
+    const locale = useLocale();
+
+    const pageCount = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+    const handleSort = (
+      order: 'asc' | 'desc',
+      colKey: string,
+      handleSortInternal: () => void
+    ): void => {
+      const col = columns.find((c) => c.key === colKey);
+      const backendField = col?.orderingField;
+      if (backendField) {
+        const ordering =
+          typeof backendField === 'string' && order === 'desc'
+            ? (`-${backendField}` as OrderingField<T>)
+            : backendField;
+        setOrdering(ordering);
+        setPage(0); // reset to first page on sort change
+      }
+      handleSortInternal();
+    };
+
+    // Build HDS-compatible column definitions from our HdsHeader schema.
+    // Non-sortable columns (empty ordering key) have isSortable forced to false.
+    const cols = columns.map((col) => {
+      const { key, headerName, isSortable, transform, orderingField } = col;
+      return {
+        key,
+        headerName,
+        isSortable: isSortable && Boolean(orderingField),
+        transform: transform
+          ? (row: unknown) => transform(row as T)
+          : undefined,
+      };
+    });
+
+    const onPageChange = (e: React.MouseEvent, index: number): void => {
+      e.preventDefault();
+      setPage(index);
+    };
+
+    if (isLoading) {
+      return (
+        <$LoadingContainer>
+          <PageLoadingSpinner />
+        </$LoadingContainer>
+      );
+    }
+
+    const isDescending =
+      typeof defaultSortColumnKey === 'string' &&
+      defaultSortColumnKey.startsWith('-');
+
+    const initialSortingColumnKey =
+      typeof defaultSortColumnKey === 'string'
+        ? defaultSortColumnKey.replace(/^-/, '')
+        : defaultSortColumnKey;
+
+    const initialSortingOrder = isDescending ? 'desc' : 'asc';
+
+    return (
+      <>
+        <Table
+          cols={cols}
+          rows={data}
+          indexKey="id"
+          renderIndexCol={false}
+          initialSortingColumnKey={initialSortingColumnKey}
+          initialSortingOrder={initialSortingOrder}
+          onSort={handleSort}
+          variant="dark"
+          zebra
+          caption={
+            data.length === 0
+              ? t('common:applicationList.noApplications')
+              : undefined
+          }
+        />
+        {pageCount > 1 && (
+          <$PaginationContainer>
+            <Pagination
+              pageHref={() => '#'}
+              pageIndex={page}
+              pageCount={pageCount}
+              paginationAriaLabel={t('common:utility.pagination')}
+              onChange={onPageChange}
+              language={locale}
+            />
+          </$PaginationContainer>
+        )}
+      </>
+    );
+  };
+
+ApplicationListTable.FilterSection = FilterSection;
+
+export default ApplicationListTable;

@@ -8,6 +8,7 @@
     "pagination": "Sivutus"
   },
   "applicationList": {
+    "filterTitle": "Rajaa hakemuksia",
     "ageFormat": "{{age}}v (synt. {{birthYear}})",
     "columns": {
       "applicantName": "Hakijan nimi",
