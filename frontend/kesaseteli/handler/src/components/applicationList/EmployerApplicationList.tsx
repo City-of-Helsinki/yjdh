@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query/types/react/types';
 import useLocale from 'shared/hooks/useLocale';
+import styled from 'styled-components';
 
 import useEmployerApplicationsListQuery from '../../hooks/backend/useEmployerApplicationsListQuery';
 import {
@@ -16,7 +17,7 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
-import styled from 'styled-components';
+import StatusFilter from './searchFilters/StatusFilter';
 
 const $TabList = styled(TabList)`
   margin-bottom: 1rem;
@@ -130,14 +131,24 @@ type UsePendingEmployerApplicationsResultType =
  */
 const usePendingEmployerApplications =
   (): UsePendingEmployerApplicationsResultType => {
+    const [selectedPendingStatuses, setSelectedPendingStatuses] = useState<
+      ApplicationStatus[]
+    >(DEFAULT_PENDING_STATUSES);
+
     const tableQuery = useApplicationTableQuery<EmployerApplication>(
       useEmployerApplicationsListQuery,
-      DEFAULT_PENDING_STATUSES
+      selectedPendingStatuses
     );
+
+    const { setPage } = tableQuery;
+
+    useEffect(() => {
+      setPage(0);
+    }, [selectedPendingStatuses, setPage]);
 
     return {
       ...tableQuery,
-      setSelectedStatuses: () => {},
+      setSelectedStatuses: setSelectedPendingStatuses,
     };
   };
 
@@ -151,6 +162,7 @@ export default function EmployerApplicationList(): JSX.Element {
     page: pendingPage,
     setPage: setPendingPage,
     setOrdering: setPendingOrdering,
+    setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
   } = usePendingEmployerApplications();
@@ -180,6 +192,12 @@ export default function EmployerApplicationList(): JSX.Element {
         </Tab>
       </$TabList>
       <TabPanel index={0}>
+        <StatusFilter
+          id="employer-application-pending-status-filter"
+          statuses={EMPLOYER_PENDING_STATUSES}
+          defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
+          onChange={setSelectedPendingStatuses}
+        />
         <ApplicationListTable<EmployerApplication>
           columns={columns}
           data={pendingQuery.data?.results ?? []}

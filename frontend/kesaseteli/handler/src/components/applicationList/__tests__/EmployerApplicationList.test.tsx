@@ -1,12 +1,12 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 
 import fi from '../../../../public/locales/fi/common.json';
 import useEmployerApplicationsListQuery from '../../../hooks/backend/useEmployerApplicationsListQuery';
-import EmployerApplicationList from '../EmployerApplicationList';
 import { ApplicationStatus } from '../../../types/application';
+import EmployerApplicationList from '../EmployerApplicationList';
 
 jest.mock('../../../hooks/backend/useEmployerApplicationsListQuery');
 const mockUseQuery = useEmployerApplicationsListQuery as jest.Mock;
@@ -81,6 +81,56 @@ describe('EmployerApplicationList', () => {
           ApplicationStatus.SUBMITTED,
           ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ],
+      })
+    );
+  });
+
+  it('calls useEmployerApplicationsListQuery with updated statuses when filters change', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    const combobox = screen.getByRole('combobox', { name: /tila/i });
+    await userEvent.click(combobox);
+
+    // Select "Lisätietoja pyydetty" to check it
+    await userEvent.click(
+      screen.getByText(
+        fi.applicationList.status.additional_information_requested
+      )
+    );
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [
+          ApplicationStatus.SUBMITTED,
+          ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ],
+      })
+    );
+  });
+
+  it('calls useEmployerApplicationsListQuery with empty status list when all filters are deselected', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    const combobox = screen.getByRole('combobox', { name: /tila/i });
+    await userEvent.click(combobox);
+
+    const listbox = screen.getByRole('listbox');
+
+    // Deselect "Avoin"
+    await userEvent.click(
+      within(listbox).getByText(fi.applicationList.status.submitted)
+    );
+    // Deselect "Lisätiedot toimitettu"
+    await userEvent.click(
+      within(listbox).getByText(
+        fi.applicationList.status.additional_information_provided
+      )
+    );
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [],
       })
     );
   });

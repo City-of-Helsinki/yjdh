@@ -82,4 +82,29 @@ describe('useEmployerApplicationsListQuery', () => {
     await waitFor(() => result.current.isError);
     expect(mockErrorHandler).toHaveBeenCalled();
   });
+
+  it('does not include status parameter when status list is empty', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.EMPLOYER_APPLICATIONS)
+      .query(
+        (queryObj) =>
+          !('status' in queryObj) &&
+          queryObj.limit === '20' &&
+          queryObj.offset === '0'
+      )
+      .reply(200, mockListResponse);
+
+    const { result, waitFor } = renderHook(
+      () =>
+        useEmployerApplicationsListQuery({
+          status: [],
+          limit: 20,
+          offset: 0,
+        }),
+      { wrapper }
+    );
+    await waitFor(() => result.current.isSuccess);
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
 });

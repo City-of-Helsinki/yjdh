@@ -17,6 +17,8 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
+import StatusFilter from './searchFilters/StatusFilter';
+
 const $TabList = styled(TabList)`
   margin-bottom: 1rem;
 `;
@@ -137,14 +139,26 @@ type UsePendingYouthApplicationsResultType = TableState<YouthApplication> & {
 
 const usePendingYouthApplications =
   (): UsePendingYouthApplicationsResultType => {
+    // selected status filter options
+    const [selectedPendingStatuses, setSelectedPendingStatuses] = useState<
+      ApplicationStatus[]
+    >(DEFAULT_PENDING_STATUSES);
+
     const tableQuery = useApplicationTableQuery<YouthApplication>(
       useYouthApplicationsListQuery,
-      DEFAULT_PENDING_STATUSES
+      selectedPendingStatuses
     );
+
+    const { setPage } = tableQuery;
+
+    // Reset page when statuses change to avoid showing stale data
+    useEffect(() => {
+      setPage(0);
+    }, [selectedPendingStatuses, setPage]);
 
     return {
       ...tableQuery,
-      setSelectedStatuses: () => {},
+      setSelectedStatuses: setSelectedPendingStatuses,
     };
   };
 
@@ -157,6 +171,7 @@ export default function YouthApplicationList(): JSX.Element {
     page: pendingPage,
     setPage: setPendingPage,
     setOrdering: setPendingOrdering,
+    setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
   } = usePendingYouthApplications();
@@ -185,6 +200,12 @@ export default function YouthApplicationList(): JSX.Element {
         </Tab>
       </$TabList>
       <TabPanel index={0}>
+        <StatusFilter
+          id="youth-application-pending-status-filter"
+          statuses={YOUTH_PENDING_STATUSES}
+          defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
+          onChange={setSelectedPendingStatuses}
+        />
         <ApplicationListTable
           columns={columns}
           data={pendingQuery.data?.results ?? []}
