@@ -1,26 +1,109 @@
-import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { Notification, Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
-import EmployerInfoSection from './EmployerInfoSection';
-import YouthInfoSection from './YouthInfoSection';
+import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
+import EmployerApplicationStatusSection from './EmployerApplicationStatusFieldsSection';
+import EmployerCompanyFieldsSection from './EmployerCompanyFieldsSection';
+import EmployerContactPersonFieldsSection from './EmployerContactPersonFieldsSection';
+import EmployerInvoicerFieldsSection from './EmployerInvoicerFieldsSection';
+import EmployerPaymentFieldsSection from './EmployerPaymentFieldsSection';
+import EmployerVoucherFieldsSection from './EmployerVoucherFieldsSection';
+import YouthInfoFieldsSection from './YouthInfoFieldsSection';
 
 type Props = {
   application: HandlerEmployerApplication;
 };
 
 const $PanelGrid = styled.div`
-  display: flex;
+  display: grid;
   gap: 2rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  > section {
-    flex: 1 1 400px;
-    min-width: 0;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    'status . .'
+    'company voucher youth'
+    'contact payment invoicer';
+
+  > div {
+    padding: var(--spacing-m);
+  }
+
+  @media (max-width: ${(props: { theme: DefaultTheme }) =>
+      props.theme.breakpoints.m}) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'status'
+      'company'
+      'voucher'
+      'youth'
+      'contact'
+      'payment'
+      'invoicer';
   }
 `;
+
+const $StatusSection = styled.div`
+  grid-area: status;
+`;
+
+const $CompanySection = styled.div`
+  grid-area: company;
+`;
+
+const $VoucherSection = styled.div`
+  grid-area: voucher;
+  background-color: var(--color-fog-light);
+`;
+
+const $YouthSection = styled.div`
+  grid-area: youth;
+  background-color: var(--color-bus-light);
+`;
+
+const $ContactSection = styled.div`
+  grid-area: contact;
+`;
+
+const $PaymentSection = styled.div`
+  grid-area: payment;
+`;
+
+const $InvoicerSection = styled.div`
+  grid-area: invoicer;
+`;
+
+const EmployerApplicationPanel: React.FC<
+  Props & { voucher: HandlerSummerVoucher }
+> = ({ application, voucher }) => (
+  <$PanelGrid>
+    <$StatusSection>
+      <EmployerApplicationStatusSection
+        application={application}
+        withoutTitle
+      />
+    </$StatusSection>
+    <$CompanySection>
+      <EmployerCompanyFieldsSection application={application} />
+    </$CompanySection>
+    <$VoucherSection>
+      <EmployerVoucherFieldsSection voucher={voucher} />
+    </$VoucherSection>
+    <$YouthSection>
+      <YouthInfoFieldsSection voucher={voucher} />
+    </$YouthSection>
+    <$ContactSection>
+      <EmployerContactPersonFieldsSection application={application} />
+    </$ContactSection>
+    <$PaymentSection>
+      <EmployerPaymentFieldsSection application={application} />
+    </$PaymentSection>
+    <$InvoicerSection>
+      <EmployerInvoicerFieldsSection application={application} />
+    </$InvoicerSection>
+  </$PanelGrid>
+);
 
 /**
  * Renders the handler's detail view of an employer application.
@@ -41,31 +124,41 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
     const voucher = vouchers[0];
 
     return (
-      <$PanelGrid>
-        <EmployerInfoSection application={application} voucher={voucher} />
-        <YouthInfoSection voucher={voucher} />
-      </$PanelGrid>
+      <EmployerApplicationPanel application={application} voucher={voucher} />
     );
   }
 
+  // NOTE: There should be multiple vouchers only in legacy cases.
+  // These will be handled as new one-to-one applications in the future.
+
   return (
-    <Tabs index={activeTab} onChange={setActiveTab}>
-      <TabList>
-        {application.summer_vouchers.map((voucher, index) => (
-          <Tab key={voucher.id || index}>
-            {t('common:handlerApplication.voucherTab', { number: index + 1 })}
-          </Tab>
+    <>
+      <Notification
+        label={t('common:handlerApplication.multipleVouchersNotification')}
+        type="info"
+        displayCloseButton={false}
+        dismissable={false}
+      />
+      <Tabs index={activeTab} onChange={setActiveTab}>
+        <TabList>
+          {vouchers.map((voucher, index) => (
+            <Tab key={voucher.id || index}>
+              {t('common:handlerApplication.voucherTab', {
+                number: index + 1,
+              })}
+            </Tab>
+          ))}
+        </TabList>
+        {vouchers.map((voucher, index) => (
+          <TabPanel key={voucher.id || index}>
+            <EmployerApplicationPanel
+              application={application}
+              voucher={voucher}
+            />
+          </TabPanel>
         ))}
-      </TabList>
-      {vouchers.map((voucher, index) => (
-        <TabPanel key={voucher.id || index}>
-          <$PanelGrid>
-            <EmployerInfoSection application={application} voucher={voucher} />
-            <YouthInfoSection voucher={voucher} />
-          </$PanelGrid>
-        </TabPanel>
-      ))}
-    </Tabs>
+      </Tabs>
+    </>
   );
 };
 

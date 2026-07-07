@@ -1,4 +1,7 @@
 {
+  "common": {
+    "close": "Sulje"
+  },
   "appName": "Kesäsetelin käsittelijäliittymä",
   "cookieSettings": "Evästeasetukset",
   "dashboard": {
@@ -97,8 +100,10 @@
     "submitted_at": "Vastaanotettu",
     "status": "Tila",
     "employerApplicationTitle": "Työnantajan tiedot",
+    "employerCompanySectionTitle": "Yrityksen tiedot",
     "employerApplicationsTitle": "Liitetyt työnantajahakemukset",
     "employerApplicationLinkText": "Avaa työnantajan {{companyName}} hakemus ({{date}})",
+    "multipleVouchersNotification": "Tähän hakemukseen on poikkeuksellisesti liitetty useita kesäseteleitä. Tämä poikkeaa nykyisestä käytännöstä ja johtuu aiemmista tietomalli- ja käyttöliittymäratkaisuista.",
     "company": "Yritys",
     "business_id": "Y-tunnus",
     "industry": "Toimiala",

@@ -3,7 +3,7 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import React from 'react';
 
 import { mockVoucher1 } from '../fixtures';
-import YouthInfoSection from '../YouthInfoSection';
+import YouthInfoSection from '../YouthInfoFieldsSection';
 
 describe('YouthInfoSection', () => {
   it('renders all employee fields', () => {

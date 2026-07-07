@@ -1,6 +1,8 @@
 import { NotificationType } from 'hds-react';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
-import Field from 'kesaseteli/handler/components/form/Field';
+import Field, {
+  $DescriptionList,
+} from 'kesaseteli/handler/components/form/Field';
 import LinkedEmployerApplications from 'kesaseteli/handler/components/form/LinkedEmployerApplications';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
@@ -104,20 +106,22 @@ const AdditionalInfoSection: React.FC<{
 }> = ({ t, providedAt, reasons, description }) => (
   <>
     <FormSectionHeading
-      size="s"
-      as="h3"
+      id="additional-info-heading"
+      as="h4"
       header={t('common:handlerApplication.additionalInfoTitle')}
     />
-    <Field
-      id="additional_info_provided_at"
-      value={convertToUIDateAndTimeFormat(providedAt)}
-    />
-    <Field type="additional_info_user_reasons" value={reasons} />
-    <Field
-      type="additional_info_description"
-      value={description}
-      style={{ marginBottom: '1rem' }}
-    />
+    <$DescriptionList aria-labelledby="additional-info-heading">
+      <Field
+        id="additional_info_provided_at"
+        value={convertToUIDateAndTimeFormat(providedAt)}
+      />
+      <Field type="additional_info_user_reasons" value={reasons} />
+      <Field
+        type="additional_info_description"
+        value={description}
+        style={{ marginBottom: '1rem' }}
+      />
+    </$DescriptionList>
   </>
 );
 
@@ -179,38 +183,40 @@ const FormLayout: React.FC<FormLayoutProps> = ({
       <$PanelGrid>
         <$Column>
           <FormSection columns={1} withoutDivider>
-            {receipt_confirmed_at && (
-              <Field
-                id="receipt_confirmed_at"
-                value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
-              />
-            )}
-            <Field type="name" value={`${first_name} ${last_name}`} />
+            <$DescriptionList aria-label={t('common:handlerApplication.title')}>
+              {receipt_confirmed_at && (
+                <Field
+                  id="receipt_confirmed_at"
+                  value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
+                />
+              )}
+              <Field type="name" value={`${first_name} ${last_name}`} />
 
-            {social_security_number && (
-              <Field
-                type="social_security_number"
-                value={social_security_number}
-              />
-            )}
-            {non_vtj_birthdate && (
-              <Field
-                type="non_vtj_birthdate"
-                value={convertToUIDateFormat(non_vtj_birthdate)}
-              />
-            )}
-            {non_vtj_home_municipality && (
-              <Field
-                type="non_vtj_home_municipality"
-                value={non_vtj_home_municipality}
-              />
-            )}
+              {social_security_number && (
+                <Field
+                  type="social_security_number"
+                  value={social_security_number}
+                />
+              )}
+              {non_vtj_birthdate && (
+                <Field
+                  type="non_vtj_birthdate"
+                  value={convertToUIDateFormat(non_vtj_birthdate)}
+                />
+              )}
+              {non_vtj_home_municipality && (
+                <Field
+                  type="non_vtj_home_municipality"
+                  value={non_vtj_home_municipality}
+                />
+              )}
 
-            <Field type="postcode" value={postcode} />
-            <Field type="school" value={schoolValue} />
-            <Field type="phone_number" value={phone_number} />
-            <Field type="email" value={email} />
-            <Field type="target_group" value={targetGroupName} />
+              <Field type="postcode" value={postcode} />
+              <Field type="school" value={schoolValue} />
+              <Field type="phone_number" value={phone_number} />
+              <Field type="email" value={email} />
+              <Field type="target_group" value={targetGroupName} />
+            </$DescriptionList>
 
             {additionalInfoProvided && (
               <AdditionalInfoSection
