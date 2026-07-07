@@ -1,7 +1,8 @@
 import { Notification, Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme, useTheme } from 'styled-components';
+import useMediaQuery from 'shared/hooks/useMediaQuery';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
@@ -116,6 +117,9 @@ const EmployerApplicationPanel: React.FC<
 const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(true);
   const vouchers = application.summer_vouchers;
 
   if (vouchers.length === 0) {
@@ -140,12 +144,16 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
 
   return (
     <>
-      <Notification
-        label={t('common:handlerApplication.multipleVouchersNotification')}
-        type="info"
-        displayCloseButton={false}
-        dismissable={false}
-      />
+      {isNotificationOpen && (
+        <Notification
+          label={t('common:handlerApplication.multipleVouchersNotification')}
+          type="info"
+          position={isMobile ? 'bottom-right' : 'inline'}
+          dismissible={isMobile}
+          closeButtonLabelText={t('common:common.close')}
+          onClose={() => setIsNotificationOpen(false)}
+        />
+      )}
       <Tabs index={activeTab} onChange={setActiveTab}>
         <TabList>
           {vouchers.map((voucher, index) => (
