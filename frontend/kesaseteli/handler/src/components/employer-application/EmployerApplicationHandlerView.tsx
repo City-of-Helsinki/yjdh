@@ -10,6 +10,7 @@ import EmployerCompanyFieldsSection from './EmployerCompanyFieldsSection';
 import EmployerContactPersonFieldsSection from './EmployerContactPersonFieldsSection';
 import EmployerInvoicerFieldsSection from './EmployerInvoicerFieldsSection';
 import EmployerPaymentFieldsSection from './EmployerPaymentFieldsSection';
+import EmployerVoucherAttachments from './EmployerVoucherAttachments';
 import EmployerVoucherFieldsSection from './EmployerVoucherFieldsSection';
 import YouthInfoFieldsSection from './YouthInfoFieldsSection';
 
@@ -89,6 +90,7 @@ const EmployerApplicationPanel: React.FC<
     </$CompanySection>
     <$VoucherSection>
       <EmployerVoucherFieldsSection voucher={voucher} />
+      <EmployerVoucherAttachments voucher={voucher} />
     </$VoucherSection>
     <$YouthSection>
       <YouthInfoFieldsSection voucher={voucher} />
@@ -130,6 +132,11 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
 
   // NOTE: There should be multiple vouchers only in legacy cases.
   // These will be handled as new one-to-one applications in the future.
+  console.warn(
+    'Multiple vouchers for 1 employer application.',
+    'This should happen only with legacy applications.',
+    { application_id: application.id }
+  );
 
   return (
     <>
