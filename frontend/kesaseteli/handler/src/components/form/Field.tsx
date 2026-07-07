@@ -4,7 +4,7 @@ import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 type Props = GridCellProps &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -13,8 +13,26 @@ type Props = GridCellProps &
     value?: React.ReactNode;
   };
 
+export const $DescriptionList = styled.dl`
+  display: contents;
+`;
+
 const $StyledGridCell = styled($GridCell)`
   font-size: ${(props) => props.theme.fontSize.body.l};
+`;
+
+const $Label = styled.dt`
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.m};
+  font-weight: 600;
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black60};
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs2};
+`;
+
+const $Value = styled.dd`
+  font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.l};
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black90};
+  margin: 0;
+  margin-inline-start: 0;
 `;
 
 const Field: React.FC<Props> = ({
@@ -31,13 +49,11 @@ const Field: React.FC<Props> = ({
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
       {...gridCellProps}
     >
-      {type && (
-        <>
-          <strong>{t(`common:handlerApplication.${type}`)}</strong>:{' '}
-        </>
-      )}
-      {value || '-'}
-      {children}
+      {type && <$Label>{t(`common:handlerApplication.${type}`)}</$Label>}
+      <$Value>
+        {value || '-'}
+        {children}
+      </$Value>
     </$StyledGridCell>
   );
 };
