@@ -26,7 +26,8 @@ const $PanelGrid = styled.div`
   grid-template-areas:
     'status . .'
     'company voucher youth'
-    'contact payment invoicer';
+    'contact payment invoicer'
+    'attachments attachments attachments';
 
   > div {
     padding: var(--spacing-m);
@@ -42,7 +43,8 @@ const $PanelGrid = styled.div`
       'youth'
       'contact'
       'payment'
-      'invoicer';
+      'invoicer'
+      'attachments';
   }
 `;
 
@@ -76,6 +78,11 @@ const $InvoicerSection = styled.div`
   grid-area: invoicer;
 `;
 
+const $AttachmentsSection = styled.div`
+  grid-area: attachments;
+  // background-color: var(--color-silver-light);
+`;
+
 const $StickyTabs = styled(Tabs)`
   div[class*='Tabs-module_tablistBar'] {
     position: sticky;
@@ -100,7 +107,6 @@ const EmployerApplicationPanel: React.FC<
     </$CompanySection>
     <$VoucherSection>
       <EmployerVoucherFieldsSection voucher={voucher} />
-      <EmployerVoucherAttachments voucher={voucher} />
     </$VoucherSection>
     <$YouthSection>
       <YouthInfoFieldsSection voucher={voucher} />
@@ -114,6 +120,9 @@ const EmployerApplicationPanel: React.FC<
     <$InvoicerSection>
       <EmployerInvoicerFieldsSection application={application} />
     </$InvoicerSection>
+    <$AttachmentsSection>
+      <EmployerVoucherAttachments voucher={voucher} />
+    </$AttachmentsSection>
   </$PanelGrid>
 );
 
