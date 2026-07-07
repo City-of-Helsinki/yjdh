@@ -11,13 +11,6 @@ const EmployerContactPersonFieldsSection: React.FC<{
 }> = ({ application }) => {
   const { t } = useTranslation();
 
-  if (
-    !application.contact_person_name &&
-    !application.contact_person_email &&
-    !application.contact_person_phone_number
-  ) {
-    return null;
-  }
 
   return (
     <FormSection columns={1} withoutDivider>
