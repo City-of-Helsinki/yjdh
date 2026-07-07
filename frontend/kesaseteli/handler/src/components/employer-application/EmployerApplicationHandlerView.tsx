@@ -1,8 +1,8 @@
 import { Notification, Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
-import styled, { DefaultTheme, useTheme } from 'styled-components';
 import useMediaQuery from 'shared/hooks/useMediaQuery';
+import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
@@ -74,6 +74,15 @@ const $PaymentSection = styled.div`
 
 const $InvoicerSection = styled.div`
   grid-area: invoicer;
+`;
+
+const $StickyTabs = styled(Tabs)`
+  div[class*='Tabs-module_tablistBar'] {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--color-white);
+  }
 `;
 
 const EmployerApplicationPanel: React.FC<
@@ -154,7 +163,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
           onClose={() => setIsNotificationOpen(false)}
         />
       )}
-      <Tabs index={activeTab} onChange={setActiveTab}>
+      <$StickyTabs index={activeTab} onChange={setActiveTab}>
         <TabList>
           {vouchers.map((voucher, index) => (
             <Tab key={voucher.id || index}>
@@ -172,7 +181,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
             />
           </TabPanel>
         ))}
-      </Tabs>
+      </$StickyTabs>
     </>
   );
 };
