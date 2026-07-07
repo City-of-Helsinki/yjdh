@@ -34,6 +34,8 @@ describe('EmployerApplicationHandlerView', () => {
     expect(
       screen.getByRole('tab', { name: /kesäseteli 2/i })
     ).toBeInTheDocument();
+    // Assert company name is rendered (outside tabs)
+    expect(screen.getByText(/testiyritys oy/i)).toBeInTheDocument();
   });
 
   it('shows the first voucher panel by default and switches on tab click', async () => {

@@ -6,8 +6,6 @@ import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import FormSection from 'shared/components/forms/section/FormSection';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
@@ -31,31 +29,21 @@ function EmployerApplicationDetail(): React.ReactElement {
       <Head>
         <title>{t(`common:appName`)}</title>
       </Head>
-      <FormSection
-        columns={2}
-        withoutDivider
-        aria-label={t('common:handlerApplication.title')}
-      >
-        <FormSectionHeading
-          $colSpan={2}
-          size="s"
-          header={t('common:handlerApplication.title')}
-          as="h3"
+
+      <FormSectionHeading
+        $colSpan={2}
+        header={t('common:handlerApplication.title')}
+        as="h2"
+      />
+      {isSuccess && data && (
+        <EmployerApplicationHandlerView application={data} />
+      )}
+      {notFound && (
+        <$Notification
+          label={t('common:handlerApplication.notFound')}
+          type="alert"
         />
-        {isSuccess && data && (
-          <$GridCell $colSpan={2}>
-            <EmployerApplicationHandlerView application={data} />
-          </$GridCell>
-        )}
-        {notFound && (
-          <$GridCell>
-            <$Notification
-              label={t('common:handlerApplication.notFound')}
-              type="alert"
-            />
-          </$GridCell>
-        )}
-      </FormSection>
+      )}
     </Container>
   );
 }

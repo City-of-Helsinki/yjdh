@@ -1,5 +1,7 @@
 import { NotificationSize } from 'hds-react';
-import Field from 'kesaseteli/handler/components/form/Field';
+import Field, {
+  $DescriptionList,
+} from 'kesaseteli/handler/components/form/Field';
 import VtjErrorMessage from 'kesaseteli/handler/components/form/VtjErrorMessage';
 import VtjErrorNotification from 'kesaseteli/handler/components/form/VtjErrorNotification';
 import VtjRawDataAccordion from 'kesaseteli/handler/components/form/VtjRawData';
@@ -79,35 +81,41 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
           type="info"
         >
           <FormSection columns={1} withoutDivider>
-            <Field id="vtjInfo.providedAt" value={providedAt} />
-            <Field type="vtjInfo.name" value={fullName}>
-              {differentLastName && (
-                <VtjErrorMessage
-                  reason="differentLastName"
-                  params={{ last_name }}
-                />
-              )}
-            </Field>
-            <Field type="vtjInfo.ssn" value={socialSecurityNumber}>
-              {notInTargetAgeGroup && (
-                <VtjErrorMessage
-                  reason="notInTargetAgeGroup"
-                  params={{ age }}
-                />
-              )}
-            </Field>
-            <Field type="vtjInfo.address" value={fullAddress}>
-              {addressNotFound && <VtjErrorMessage reason="addressNotFound" />}
-              {!addressNotFound && differentPostCode && (
-                <VtjErrorMessage
-                  reason="differentPostCode"
-                  params={{ postcode }}
-                />
-              )}
-              {!addressNotFound && outsideHelsinki && (
-                <VtjErrorMessage reason="outsideHelsinki" />
-              )}
-            </Field>
+            <$DescriptionList
+              aria-label={t('common:handlerApplication.vtjInfo.title')}
+            >
+              <Field id="vtjInfo.providedAt" value={providedAt} />
+              <Field type="vtjInfo.name" value={fullName}>
+                {differentLastName && (
+                  <VtjErrorMessage
+                    reason="differentLastName"
+                    params={{ last_name }}
+                  />
+                )}
+              </Field>
+              <Field type="vtjInfo.ssn" value={socialSecurityNumber}>
+                {notInTargetAgeGroup && (
+                  <VtjErrorMessage
+                    reason="notInTargetAgeGroup"
+                    params={{ age }}
+                  />
+                )}
+              </Field>
+              <Field type="vtjInfo.address" value={fullAddress}>
+                {addressNotFound && (
+                  <VtjErrorMessage reason="addressNotFound" />
+                )}
+                {!addressNotFound && differentPostCode && (
+                  <VtjErrorMessage
+                    reason="differentPostCode"
+                    params={{ postcode }}
+                  />
+                )}
+                {!addressNotFound && outsideHelsinki && (
+                  <VtjErrorMessage reason="outsideHelsinki" />
+                )}
+              </Field>
+            </$DescriptionList>
             <VtjRawDataAccordion data={vtjData} />
           </FormSection>
         </$Notification>
