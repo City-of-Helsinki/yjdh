@@ -25,16 +25,45 @@ describe('LinkedEmployerApplications', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders employer application links when data is present', () => {
+  it('renders a single employer application link with singular title and description', () => {
     renderComponent(
       <LinkedEmployerApplications employerApplications={mockApplications} />
     );
     expect(
-      screen.getByText(fi.handlerApplication.employerApplicationsTitle)
+      screen.getByText(fi.handlerApplication.employerApplicationTitleLinked)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(fi.handlerApplication.employerApplicationDescription)
     ).toBeInTheDocument();
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', '/employer-applications/emp-1');
     expect(link).toHaveTextContent('Test Oy');
     expect(link).toHaveTextContent('10.5.2024');
+  });
+
+  it('renders multiple employer application links with plural title and description', () => {
+    const multipleMocks = [
+      ...mockApplications,
+      {
+        id: 'emp-2',
+        company_name: 'Example Oy',
+        company_business_id: '7654321-0',
+        summer_voucher_serial_number: '54321',
+        submitted_at: '2024-06-15',
+      },
+    ];
+    renderComponent(
+      <LinkedEmployerApplications employerApplications={multipleMocks} />
+    );
+    expect(
+      screen.getByText(fi.handlerApplication.employerApplicationsTitle)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(fi.handlerApplication.employerApplicationsDescription)
+    ).toBeInTheDocument();
+    const links = screen.getAllByRole('link');
+    expect(links).toHaveLength(2);
+    expect(links[0]).toHaveAttribute('href', '/employer-applications/emp-1');
+    expect(links[1]).toHaveAttribute('href', '/employer-applications/emp-2');
   });
 });

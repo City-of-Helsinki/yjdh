@@ -1,55 +1,52 @@
-import { NotificationSize } from 'hds-react';
 import Field, {
   $DescriptionList,
 } from 'kesaseteli/handler/components/form/Field';
 import VtjErrorMessage from 'kesaseteli/handler/components/form/VtjErrorMessage';
-import VtjErrorNotification from 'kesaseteli/handler/components/form/VtjErrorNotification';
 import VtjRawDataAccordion from 'kesaseteli/handler/components/form/VtjRawData';
-import { mapVtjData } from 'kesaseteli/handler/utils/map-vtj-data';
+import {
+  getVtjException,
+  mapVtjData,
+} from 'kesaseteli/handler/utils/map-vtj-data';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
+import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { $Notification } from 'shared/components/notification/Notification.sc';
-import { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 
 type Props = {
   application: ActivatedYouthApplication;
 };
 
+const $RestrictedNotification = styled($Notification)`
+  margin-bottom: ${(props) => props.theme.spacing.m};
+`;
+
+const $VtjCard = styled.div`
+  background-color: var(--color-fog-light);
+  border: 1px solid ${(props) => props.theme.colors.black10};
+  padding: ${(props) => props.theme.spacing.m};
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: ${(props) => props.theme.spacing.m};
+  align-content: start;
+`;
+
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const {
     encrypted_handler_vtj_json: vtjData,
-    social_security_number,
     last_name,
     postcode,
     is_vtj_data_restricted,
   } = application;
 
-  if (!social_security_number) {
-    return (
-      <VtjErrorNotification
-        reason="missingSsn"
-        type="error"
-        size={NotificationSize.Large}
-      />
-    );
-  }
-
-  if (!vtjData || !('Henkilo' in vtjData)) {
-    return (
-      <VtjErrorNotification
-        reason="notFound"
-        type="error"
-        size={NotificationSize.Large}
-        params={{ social_security_number }}
-      />
-    );
+  const vtjException = getVtjException(application);
+  if (vtjException) {
+    return null;
   }
 
   const {
-    notFound,
     providedAt,
     fullName,
     differentLastName,
@@ -60,79 +57,56 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
     differentPostCode,
     age,
     notInTargetAgeGroup,
-    isDead,
   } = mapVtjData(application);
 
   return (
     <span data-testid="vtj-info">
       {is_vtj_data_restricted && (
-        <$Notification
+        <$RestrictedNotification
           label={t('common:handlerApplication.vtjInfo.dataRestricted')}
           type="info"
-          css={`
-            margin-bottom: ${({ theme }: { theme: DefaultTheme }) =>
-              theme.spacing.m};
-          `}
         />
       )}
-      {!notFound && (
-        <$Notification
-          label={t(`common:handlerApplication.vtjInfo.title`)}
-          type="info"
-        >
-          <FormSection columns={1} withoutDivider>
-            <$DescriptionList
-              aria-label={t('common:handlerApplication.vtjInfo.title')}
-            >
-              <Field
-                id="vtjInfo.providedAt"
-                type="vtjInfo.providedAt"
-                value={providedAt}
+      <$VtjCard>
+        <FormSectionHeading
+          id="vtj-info-heading"
+          header={t('common:handlerApplication.vtjInfo.title')}
+          as="h4"
+        />
+        <$DescriptionList aria-labelledby="vtj-info-heading">
+          <Field
+            id="vtjInfo.providedAt"
+            type="vtjInfo.providedAt"
+            value={providedAt}
+          />
+          <Field type="vtjInfo.name" value={fullName}>
+            {differentLastName && (
+              <VtjErrorMessage
+                reason="differentLastName"
+                params={{ last_name }}
               />
-              <Field type="vtjInfo.name" value={fullName}>
-                {differentLastName && (
-                  <VtjErrorMessage
-                    reason="differentLastName"
-                    params={{ last_name }}
-                  />
-                )}
-              </Field>
-              <Field type="vtjInfo.ssn" value={socialSecurityNumber}>
-                {notInTargetAgeGroup && (
-                  <VtjErrorMessage
-                    reason="notInTargetAgeGroup"
-                    params={{ age }}
-                  />
-                )}
-              </Field>
-              <Field type="vtjInfo.address" value={fullAddress}>
-                {addressNotFound && (
-                  <VtjErrorMessage reason="addressNotFound" />
-                )}
-                {!addressNotFound && differentPostCode && (
-                  <VtjErrorMessage
-                    reason="differentPostCode"
-                    params={{ postcode }}
-                  />
-                )}
-                {!addressNotFound && outsideHelsinki && (
-                  <VtjErrorMessage reason="outsideHelsinki" />
-                )}
-              </Field>
-            </$DescriptionList>
-            <VtjRawDataAccordion data={vtjData} />
-          </FormSection>
-        </$Notification>
-      )}
-      {notFound && (
-        <VtjErrorNotification
-          reason="notFound"
-          type="error"
-          size={NotificationSize.Large}
-          params={{ social_security_number }}
-        />
-      )}
-      {isDead && <VtjErrorNotification reason="isDead" type="error" />}
+            )}
+          </Field>
+          <Field type="vtjInfo.ssn" value={socialSecurityNumber}>
+            {notInTargetAgeGroup && (
+              <VtjErrorMessage reason="notInTargetAgeGroup" params={{ age }} />
+            )}
+          </Field>
+          <Field type="vtjInfo.address" value={fullAddress}>
+            {addressNotFound && <VtjErrorMessage reason="addressNotFound" />}
+            {!addressNotFound && differentPostCode && (
+              <VtjErrorMessage
+                reason="differentPostCode"
+                params={{ postcode }}
+              />
+            )}
+            {!addressNotFound && outsideHelsinki && (
+              <VtjErrorMessage reason="outsideHelsinki" />
+            )}
+          </Field>
+        </$DescriptionList>
+        <VtjRawDataAccordion data={vtjData} />
+      </$VtjCard>
     </span>
   );
 };

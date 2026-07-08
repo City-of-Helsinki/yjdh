@@ -1,4 +1,10 @@
-import { NotificationType } from 'hds-react';
+import {
+  IconAlertCircle,
+  IconCheckCircle,
+  IconClock,
+  StatusLabel,
+  Tooltip,
+} from 'hds-react';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
 import Field, {
   $DescriptionList,
@@ -6,11 +12,9 @@ import Field, {
 import LinkedEmployerApplications from 'kesaseteli/handler/components/form/LinkedEmployerApplications';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
-import {
-  YOUTH_APPLICATION_STATUS_COMPLETED,
-  YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
-  YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION,
-} from 'kesaseteli-shared/constants/youth-application-status';
+import { ApplicationStatus } from 'kesaseteli/handler/types/application';
+import { getVtjException } from 'kesaseteli/handler/utils/map-vtj-data';
+import { YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION } from 'kesaseteli-shared/constants/youth-application-status';
 import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
 import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
@@ -35,16 +39,6 @@ const includesStatus = (
   arr: ReadonlyArray<YouthApplicationStatusType>,
   val: YouthApplicationStatusType
 ): boolean => arr.includes(val);
-
-const getNotificationType = (
-  status: YouthApplicationStatusType,
-  waitingForUserAction: boolean
-): NotificationType | undefined => {
-  if (waitingForUserAction) return 'error';
-  if (status === 'accepted') return 'success';
-  if (status === 'rejected') return 'alert';
-  return undefined;
-};
 
 type TargetGroupParams = {
   receiptConfirmedAt?: string;
@@ -73,6 +67,39 @@ const getTargetGroupName = ({
   );
 };
 
+const getStatusLabelProps = (
+  status: YouthApplicationStatusType
+): {
+  type: 'success' | 'error' | 'alert' | 'info';
+  icon: React.ReactNode;
+} => {
+  switch (status) {
+    case ApplicationStatus.ACCEPTED:
+      return {
+        type: 'success' as const,
+        icon: <IconCheckCircle aria-hidden />,
+      };
+
+    case ApplicationStatus.REJECTED:
+      return { type: 'error' as const, icon: <IconAlertCircle aria-hidden /> };
+
+    case ApplicationStatus.AWAITING_MANUAL_PROCESSING:
+    case ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED:
+      return { type: 'alert' as const, icon: <IconClock aria-hidden /> };
+
+    case ApplicationStatus.SUBMITTED:
+    case ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
+    default:
+      return { type: 'info' as const, icon: <IconAlertCircle aria-hidden /> };
+  }
+};
+
+const $StatusValueWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.xs2};
+`;
+
 const $PanelGrid = styled.div`
   display: flex;
   gap: 2rem;
@@ -84,18 +111,22 @@ const $PanelGrid = styled.div`
   }
 `;
 
-const $StatusNotification = styled($Notification)`
-  margin-bottom: ${(props) => props.theme.spacing.m};
-`;
-
 const $Column = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${(props) => props.theme.spacing.m};
 `;
 
+const $VtjBlockerNotification = styled($Notification)`
+  margin-bottom: ${(props) => props.theme.spacing.m};
+`;
+
 const $ActionButtonsWrapper = styled.div`
   margin-top: ${(props) => props.theme.spacing.m};
+`;
+
+const $DescriptionField = styled(Field)`
+  margin-bottom: ${(props) => props.theme.spacing.s};
 `;
 
 const AdditionalInfoSection: React.FC<{
@@ -117,10 +148,9 @@ const AdditionalInfoSection: React.FC<{
         value={convertToUIDateAndTimeFormat(providedAt)}
       />
       <Field type="additional_info_user_reasons" value={reasons} />
-      <Field
+      <$DescriptionField
         type="additional_info_description"
         value={description}
-        style={{ marginBottom: '1rem' }}
       />
     </$DescriptionList>
   </>
@@ -128,11 +158,9 @@ const AdditionalInfoSection: React.FC<{
 
 type FormLayoutProps = {
   application: ActivatedYouthApplication;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, string | number>) => string;
   waitingForHandlerAction: boolean;
-  isCompleted: boolean;
   additionalInfoProvided: boolean;
-  notificationType: NotificationType | undefined;
   targetGroupName: string;
   schoolValue: string;
   additionalInfoReasons: string;
@@ -144,9 +172,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
   application,
   t,
   waitingForHandlerAction,
-  isCompleted,
   additionalInfoProvided,
-  notificationType,
   targetGroupName,
   schoolValue,
   additionalInfoReasons,
@@ -169,22 +195,45 @@ const FormLayout: React.FC<FormLayoutProps> = ({
     employer_applications,
   } = application;
 
+  const vtjException = showVtj ? getVtjException(application) : undefined;
+  const statusProps = getStatusLabelProps(status);
+
   return (
     <$GridCell $colSpan={2}>
-      {!waitingForHandlerAction && (
-        <$StatusNotification
-          data-testid={`status-notification-${status}`}
-          label={t(`common:handlerApplication.notification.${status}`)}
-          type={notificationType}
+      {vtjException && (
+        <$VtjBlockerNotification
+          data-testid={`vtj-exception-${vtjException}`}
+          label={t('common:handlerApplication.vtjException.alertTitle')}
+          type="error"
         >
-          {isCompleted && email && <a href={`mailto:${email}`}>{email}</a>}
-        </$StatusNotification>
+          {t(`common:handlerApplication.vtjException.${vtjException}`, {
+            social_security_number,
+          })}
+        </$VtjBlockerNotification>
       )}
 
       <$PanelGrid>
         <$Column>
           <FormSection columns={1} withoutDivider>
             <$DescriptionList aria-label={t('common:handlerApplication.title')}>
+              <Field
+                type="status"
+                value={
+                  <$StatusValueWrapper>
+                    <StatusLabel
+                      type={statusProps.type}
+                      iconStart={statusProps.icon}
+                    >
+                      {t(
+                        `common:handlerApplication.applicationStatus.${status}`
+                      )}
+                    </StatusLabel>
+                    <Tooltip>
+                      {t(`common:handlerApplication.statusTooltip.${status}`)}
+                    </Tooltip>
+                  </$StatusValueWrapper>
+                }
+              />
               {receipt_confirmed_at && (
                 <Field
                   id="receipt_confirmed_at"
@@ -216,7 +265,12 @@ const FormLayout: React.FC<FormLayoutProps> = ({
               <Field type="postcode" value={postcode} />
               <Field type="school" value={schoolValue} />
               <Field type="phone_number" value={phone_number} />
-              <Field type="email" value={email} />
+              <Field
+                type="email"
+                value={
+                  email ? <a href={`mailto:${email}`}>{email}</a> : undefined
+                }
+              />
               <Field type="target_group" value={targetGroupName} />
             </$DescriptionList>
 
@@ -266,21 +320,13 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     employer_applications,
   } = application;
 
-  const waitingForUserAction = includesStatus(
-    YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION,
-    status
-  );
   const waitingForHandlerAction = includesStatus(
     YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
     status
   );
-  const isCompleted = includesStatus(
-    YOUTH_APPLICATION_STATUS_COMPLETED,
-    status
-  );
-  const additionalInfoProvided = status === 'additional_information_provided';
+  const additionalInfoProvided =
+    status === ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED;
 
-  const notificationType = getNotificationType(status, waitingForUserAction);
   const showVtj = !isVtjDisabled();
   const showEmployerApps =
     isHandlerNewBetaUiEnabled() && (employer_applications?.length ?? 0) > 0;
@@ -304,9 +350,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
       application={application}
       t={t}
       waitingForHandlerAction={waitingForHandlerAction}
-      isCompleted={isCompleted}
       additionalInfoProvided={additionalInfoProvided}
-      notificationType={notificationType}
       targetGroupName={targetGroupName}
       schoolValue={schoolValue}
       additionalInfoReasons={additionalInfoReasons}
