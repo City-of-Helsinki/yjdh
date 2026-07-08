@@ -5,7 +5,9 @@ import { UseQueryResult } from 'react-query/types/react/types';
 import useLocale from 'shared/hooks/useLocale';
 import styled from 'styled-components';
 
+import { SESSION_STORAGE_KEYS } from '../../constants/session-storage-keys';
 import useEmployerApplicationsListQuery from '../../hooks/backend/useEmployerApplicationsListQuery';
+import useSessionStorageState from '../../hooks/useSessionStorageState';
 import {
   ApplicationStatus,
   EmployerApplication,
@@ -155,7 +157,10 @@ const useEmployerApplications = (
 export default function EmployerApplicationList(): JSX.Element {
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useSessionStorageState(
+    SESSION_STORAGE_KEYS.EMPLOYER_APPLICATIONS_ACTIVE_TAB,
+    0
+  );
 
   // Pending Tab States & Query
   const {
@@ -180,12 +185,12 @@ export default function EmployerApplicationList(): JSX.Element {
   const columns = useEmployerApplicationListColumns();
 
   return (
-    <Tabs index={activeTab} onChange={setActiveTab}>
+    <Tabs initiallyActiveTab={activeTab}>
       <$TabList>
-        <Tab index={0}>
+        <Tab index={0} onClick={() => setActiveTab(0)}>
           {t('common:applicationList.tabs.pending')} ({pendingCount})
         </Tab>
-        <Tab index={1}>
+        <Tab index={1} onClick={() => setActiveTab(1)}>
           {t('common:applicationList.tabs.processed')} ({processedCount})
         </Tab>
       </$TabList>
