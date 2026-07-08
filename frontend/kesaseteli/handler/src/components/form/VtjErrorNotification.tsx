@@ -21,7 +21,7 @@ const VtjErrorNotification: React.FC<Props> = ({
   return (
     <$VtjException
       data-testid={`vtj-exception-${reason}`}
-      label=" "
+      label={t('common:handlerApplication.vtjException.alertTitle')}
       type={type}
       size={size}
     >

@@ -1,4 +1,7 @@
 import { FinnishSSN } from 'finnish-ssn';
+import VtjException, {
+  VtjExceptionValue,
+} from 'kesaseteli/handler/constants/vtj-exception';
 import { TARGET_GROUP_AGES } from 'kesaseteli-shared/constants/target-group-ages';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import VtjAddress from 'kesaseteli-shared/types/vtj-address';
@@ -101,4 +104,38 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
     notInTargetAgeGroup,
     isDead,
   };
+};
+
+/**
+ * Determines whether a youth application has a global blocker-level VTJ exception
+ * that prevents normal rendering of VTJ details. Covers:
+ * - Missing SSN (no lookup possible)
+ * - VTJ record not found or invalid (lookup returned no usable Henkilo node)
+ * - Person is deceased
+ *
+ * Field-level warnings (name mismatch, postcode mismatch, etc.) are NOT covered
+ * here — they are rendered inline inside VtjInfo.
+ *
+ * @param application The activated youth application object.
+ * @returns The matching VtjExceptionValue, or undefined if no blocker is found.
+ */
+export const getVtjException = (
+  application: ActivatedYouthApplication
+): VtjExceptionValue | undefined => {
+  const { encrypted_handler_vtj_json: vtjData, social_security_number } =
+    application;
+
+  if (!social_security_number) {
+    return VtjException.MISSING_SSN;
+  }
+  if (!vtjData || !('Henkilo' in vtjData)) {
+    return VtjException.NOT_FOUND;
+  }
+  if (vtjData.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1') {
+    return VtjException.NOT_FOUND;
+  }
+  if (vtjData.Henkilo?.Kuolintiedot?.Kuollut === '1') {
+    return VtjException.IS_DEAD;
+  }
+  return undefined;
 };

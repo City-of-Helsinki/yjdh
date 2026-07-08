@@ -58,21 +58,21 @@ export default class HandlerForm<
     }
   );
 
-  private notYetActivated = this.component.findByRole('heading', {
-    name: /nuori ei ole vielä aktivoinut hakemusta/i,
-  });
+  private notYetActivated = this.component
+    .findByTestId('handlerApplication-status')
+    .withText(/lähetetty/i);
 
-  private additionalInfoRequested = this.component.findByRole('heading', {
-    name: /nuori ei ole vielä täyttänyt lisätietohakemusta/i,
-  });
+  private additionalInfoRequested = this.component
+    .findByTestId('handlerApplication-status')
+    .withText(/lisätietoja pyydetty/i);
 
-  private isAccepted = this.component.findByRole('heading', {
-    name: /hyväksytty/i,
-  });
+  private isAccepted = this.component
+    .findByTestId('handlerApplication-status')
+    .withText(/hyväksytty/i);
 
-  private isRejected = this.component.findByRole('heading', {
-    name: /hylätty/i,
-  });
+  private isRejected = this.component
+    .findByTestId('handlerApplication-status')
+    .withText(/hylätty/i);
 
   public applicantIsNotInTargetGroup(age: number) {
     return this.expect(

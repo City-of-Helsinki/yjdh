@@ -103,7 +103,10 @@
     "status": "Tila",
     "employerApplicationTitle": "Työnantajan tiedot",
     "employerCompanySectionTitle": "Yrityksen tiedot",
+    "employerApplicationTitleLinked": "Liitetty työnantajahakemus",
     "employerApplicationsTitle": "Liitetyt työnantajahakemukset",
+    "employerApplicationDescription": "Seuraava työnantajahakemus on liitetty tähän nuoren hakemukseen.",
+    "employerApplicationsDescription": "Seuraavat työnantajahakemukset on liitetty tähän nuoren hakemukseen.",
     "employerApplicationLinkText": "Avaa työnantajan {{companyName}} hakemus ({{date}})",
     "multipleVouchersNotification": "Tähän hakemukseen on poikkeuksellisesti liitetty useita kesäseteleitä. Tämä poikkeaa nykyisestä käytännöstä ja johtuu aiemmista tietomalli- ja käyttöliittymäratkaisuista.",
     "company": "Yritys",
@@ -171,10 +174,19 @@
       "submitted": "Lähetetty",
       "additional_information_requested": "Lisätietoja pyydetty",
       "additional_information_provided": "Lisätietoja toimitettu",
+      "awaiting_manual_processing": "Odottaa käsittelyä",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty",
       "draft": "Luonnos",
       "deleted_by_customer": "Poistettu"
+    },
+    "statusTooltip": {
+      "submitted": "Nuori on täyttänyt hakemuksen, mutta ei ole vielä aktivoinut sitä sähköpostiinsa tulleesta vahvistuslinkistä.",
+      "awaiting_manual_processing": "Hakemus odottaa käsittelijän tarkistusta ja päätöstä (hyväksymistä tai hylkäämistä).",
+      "additional_information_requested": "Hakemukseen on pyydetty lisätietoja. Odotetaan nuoren vastausta.",
+      "additional_information_provided": "Hakija on toimittanut pyydetyt lisätiedot. Hakemus odottaa käsittelijän tarkistusta.",
+      "accepted": "Hakemus on hyväksytty ja kesäseteli on lähetetty sähköpostitse.",
+      "rejected": "Hakemus on hylätty."
     },
     "vtjInfo": {
       "title": "Tiedot väestötietojärjestelmästä",
@@ -186,6 +198,7 @@
       "dataRestricted": "Hakijalla on turvakielto VTJ:ssä. Kaikkia tietoja ei ole saatavilla."
     },
     "vtjException": {
+      "alertTitle": "Ongelma VTJ-tiedoissa",
       "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella: {{ social_security_number }}!",
       "missingSsn": "Henkilötunnus puuttuu!",
       "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä ({{ last_name }})",

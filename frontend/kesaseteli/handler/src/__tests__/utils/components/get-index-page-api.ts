@@ -7,6 +7,7 @@ import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/g
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
+import type YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import {
   waitForBackendRequestsToComplete,
   waitForLoadingCompleted,
@@ -179,15 +180,17 @@ const getIndexPageApi = async (
       ).toBeDisabled();
     },
     statusNotificationIsPresent: async (
-      status: keyof typeof translations.handlerApplication.notification
-    ): Promise<HTMLElement> =>
-      screen.findByRole(
-        'heading',
-        {
-          name: translations.handlerApplication.notification[status],
-        },
-        { timeout: 20_000 }
-      ),
+      status: YouthApplicationStatusType
+    ): Promise<HTMLElement> => {
+      const statusText =
+        translations.handlerApplication.applicationStatus[
+          status as keyof typeof translations.handlerApplication.applicationStatus
+        ] ??
+        translations.handlerApplication.notification[
+          status as keyof typeof translations.handlerApplication.notification
+        ];
+      return screen.findByText(statusText, {}, { timeout: 20_000 });
+    },
     showsConfirmDialog: async (type: CompleteOperation['type']) => {
       const dialog = await screen.findByRole('dialog');
       return within(dialog).findByText(translations.dialog[type].content);

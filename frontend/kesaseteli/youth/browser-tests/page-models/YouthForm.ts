@@ -113,9 +113,8 @@ class YouthForm extends YouthPageComponent {
   public selectTargetGroup(ssn?: string): TestControllerPromise {
     const age = getAgeFromSsn(ssn);
     const index = age === 17 ? 1 : 0;
-    return this.clickSelectRadioButton(
-      this.component.findAllByRole('radio').nth(index)
-    );
+    const radioInput = this.component.findAllByRole('radio').nth(index);
+    return this.clickSelectRadioButton(radioInput.parent().find('label'));
   }
 
   public clickSendButton(): TestControllerPromise {
