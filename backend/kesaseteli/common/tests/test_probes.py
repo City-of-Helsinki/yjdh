@@ -78,7 +78,12 @@ def test_readiness_returns_503_when_db_down(mock_connection, client):
 
 @pytest.mark.parametrize(
     ("method", "url"),
-    [("get", "/healthz"), ("head", "/healthz"), ("get", "/readiness"), ("head", "/readiness")],
+    [
+        ("get", "/healthz"),
+        ("head", "/healthz"),
+        ("get", "/readiness"),
+        ("head", "/readiness"),
+    ],
 )
 def test_probe_endpoints_return_no_csp_header(client, method, url):
     """Verify probe endpoints do not emit a Content-Security-Policy header.
@@ -94,7 +99,12 @@ def test_probe_endpoints_return_no_csp_header(client, method, url):
 
 @pytest.mark.parametrize(
     ("method", "url"),
-    [("get", "/healthz"), ("head", "/healthz"), ("get", "/readiness"), ("head", "/readiness")],
+    [
+        ("get", "/healthz"),
+        ("head", "/healthz"),
+        ("get", "/readiness"),
+        ("head", "/readiness"),
+    ],
 )
 def test_probe_endpoints_return_no_permissions_policy_header(client, method, url):
     """Verify probe endpoints do not emit a Permissions-Policy header.

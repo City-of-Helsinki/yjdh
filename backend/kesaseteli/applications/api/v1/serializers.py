@@ -41,7 +41,10 @@ from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
 from common.utils import get_age, mask_social_security_number
 from companies.api.v1.serializers import CompanySerializer
-from companies.services import get_or_create_company_using_organization_roles
+from companies.services import (
+    get_or_create_company_using_organization_roles,
+    update_company_from_ytj,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -526,8 +529,42 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["created_at", "modified_at", "submitted_at", "user"]
 
+    def _schedule_ytj_update(self, company):
+        """
+        Schedule a refresh of the company data from the YTJ API.
+
+        The YTJ refresh fetches data via a blocking HTTP call. We wrap
+        this in on_commit to run it outside the atomic transaction block,
+        which prevents holding database locks during the external request.
+
+        The company object is refreshed from the database within the callback
+        to ensure we are working with the latest committed database state.
+        """
+
+        def _refresh_and_update_company():
+            company.refresh_from_db()
+            update_company_from_ytj(company)
+
+        transaction.on_commit(_refresh_and_update_company)
+
     @transaction.atomic
     def update(self, instance, validated_data):
+        """
+        Update company data from YTJ on application submission.
+
+        If the application status is changed to SUBMITTED and the
+        UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT feature flag is enabled, the company
+        data is refreshed from the YTJ API. The refresh happens asynchronously
+        after the database transaction commits to avoid holding database locks during
+        the external HTTP request.
+
+        Args:
+            instance: The EmployerApplication instance to update.
+            validated_data: The validated data for the update.
+
+        Returns:
+            The updated EmployerApplication instance.
+        """
         request = self.context.get("request")
         summer_vouchers_data = validated_data.pop("summer_vouchers", []) or []
         if request and request.method == "PUT":
@@ -553,6 +590,11 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
                 },
             )
             validated_data["submitted_at"] = timezone.now()
+
+            # Refresh company data from YTJ service upon application submission.
+            # This is best-effort: errors are logged but do NOT block submission.
+            if settings.UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT:
+                self._schedule_ytj_update(instance.company)
 
         return super().update(instance, validated_data)
 
