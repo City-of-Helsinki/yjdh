@@ -6,6 +6,7 @@ import pytest
 from django.conf import settings
 from django.test import override_settings
 
+from applications.enums import OrganizationType
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import (
@@ -150,9 +151,18 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
         f
         for f in Company._meta.fields
         if f.name
-        not in ["id", "name", "business_id", "ytj_json", "created_at", "modified_at"]
+        not in [
+            "id",
+            "name",
+            "business_id",
+            "organization_type",
+            "ytj_json",
+            "created_at",
+            "modified_at",
+        ]
     ]:
         assert response.data.get(field.name, "") == ""
+    assert response.data.get("organization_type") == OrganizationType.COMPANY
 
 
 @pytest.mark.django_db
@@ -188,6 +198,15 @@ def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user, 
         f
         for f in Company._meta.fields
         if f.name
-        not in ["id", "name", "business_id", "ytj_json", "created_at", "modified_at"]
+        not in [
+            "id",
+            "name",
+            "business_id",
+            "organization_type",
+            "ytj_json",
+            "created_at",
+            "modified_at",
+        ]
     ]:
         assert response.data.get(field.name, "") == ""
+    assert response.data.get("organization_type") == OrganizationType.COMPANY

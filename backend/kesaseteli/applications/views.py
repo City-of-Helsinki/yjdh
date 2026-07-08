@@ -16,6 +16,7 @@ EXCEL_DOWNLOAD_CSP = {
     "style-src": ["cdn.jsdelivr.net"],
 }
 
+
 @method_decorator(csp_update(EXCEL_DOWNLOAD_CSP), name="dispatch")
 class EmployerExcelDownloadPageView(TemplateView):
     """Handler landing page with forms that link to Excel export endpoints.

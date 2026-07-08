@@ -73,6 +73,7 @@ env = environ.Env(
     CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi/opendata-ytj-api/v3"),
     YTJ_TIMEOUT=(int, 30),
+    UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT=(bool, False),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
@@ -482,6 +483,10 @@ SPECTACULAR_SETTINGS = {
 
 YTJ_BASE_URL = env.str("YTJ_BASE_URL")
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
+
+# When an employer application is submitted, trigger a background update
+# of the company details (name, company form, address etc.) from YTJ.
+UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT = env.bool("UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT")
 
 # Mock flag for testing purposes
 NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
