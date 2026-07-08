@@ -1,3 +1,4 @@
+/* eslint-disable scanjs-rules/property_sessionStorage, scanjs-rules/identifier_sessionStorage */
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
@@ -30,6 +31,7 @@ const mockProcessedApps = [
 
 describe('EmployerApplicationList', () => {
   beforeEach(() => {
+    window.sessionStorage.clear();
     mockUseQuery.mockImplementation((params) => {
       if (
         params?.status?.includes('accepted') ||
@@ -174,3 +176,6 @@ describe('EmployerApplicationList', () => {
     );
   });
 });
+
+/* eslint-enable scanjs-rules/property_sessionStorage, scanjs-rules/identifier_sessionStorage */
+
