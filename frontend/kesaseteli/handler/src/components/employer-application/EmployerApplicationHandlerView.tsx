@@ -154,6 +154,8 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
 
   // NOTE: There should be multiple vouchers only in legacy cases.
   // These will be handled as new one-to-one applications in the future.
+
+  // eslint-disable-next-line no-console
   console.warn(
     'Multiple vouchers for 1 employer application.',
     'This should happen only with legacy applications.',

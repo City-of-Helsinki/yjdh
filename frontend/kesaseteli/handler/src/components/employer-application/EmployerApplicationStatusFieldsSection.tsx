@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 import Field, { $DescriptionList } from '../form/Field';
 
@@ -31,11 +32,7 @@ const EmployerApplicationStatusSection: React.FC<{
         />
         <Field
           type="submitted_at"
-          value={
-            application.submitted_at
-              ? new Date(application.submitted_at).toLocaleDateString('fi-FI')
-              : '-'
-          }
+          value={convertToUIDateFormat(application.submitted_at) || '-'}
         />
       </$DescriptionList>
     </FormSection>

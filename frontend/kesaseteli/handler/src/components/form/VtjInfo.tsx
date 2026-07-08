@@ -84,7 +84,11 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
             <$DescriptionList
               aria-label={t('common:handlerApplication.vtjInfo.title')}
             >
-              <Field id="vtjInfo.providedAt" value={providedAt} />
+              <Field
+                id="vtjInfo.providedAt"
+                type="vtjInfo.providedAt"
+                value={providedAt}
+              />
               <Field type="vtjInfo.name" value={fullName}>
                 {differentLastName && (
                   <VtjErrorMessage

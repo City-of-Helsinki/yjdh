@@ -33,9 +33,13 @@ const EmployerVoucherFieldsSection: React.FC<Props> = ({ voucher }) => {
         />
         <Field
           type="employment_period"
-          value={`${convertToUIDateFormat(
-            voucher.employment_start_date
-          )} – ${convertToUIDateFormat(voucher.employment_end_date)}`}
+          value={
+            !voucher.employment_start_date && !voucher.employment_end_date
+              ? '-'
+              : `${convertToUIDateFormat(
+                  voucher.employment_start_date
+                )} – ${convertToUIDateFormat(voucher.employment_end_date)}`
+          }
         />
         <Field
           type="employment_work_hours"

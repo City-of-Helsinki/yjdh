@@ -98,6 +98,8 @@
     "email": "Sähköposti",
     "target_group": "Kohderyhmä",
     "submitted_at": "Vastaanotettu",
+    "receipt_confirmed_at": "Vastaanotettu",
+    "additional_info_provided_at": "Toimitettu",
     "status": "Tila",
     "employerApplicationTitle": "Työnantajan tiedot",
     "employerCompanySectionTitle": "Yrityksen tiedot",
@@ -176,6 +178,7 @@
     },
     "vtjInfo": {
       "title": "Tiedot väestötietojärjestelmästä",
+      "providedAt": "Tiedot haettu",
       "name": "Nimi",
       "ssn": "Henkilötunnus",
       "address": "Osoite",
