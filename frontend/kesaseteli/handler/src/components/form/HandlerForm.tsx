@@ -113,6 +113,7 @@ const AdditionalInfoSection: React.FC<{
     <$DescriptionList aria-labelledby="additional-info-heading">
       <Field
         id="additional_info_provided_at"
+        type="additional_info_provided_at"
         value={convertToUIDateAndTimeFormat(providedAt)}
       />
       <Field type="additional_info_user_reasons" value={reasons} />
@@ -187,6 +188,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
               {receipt_confirmed_at && (
                 <Field
                   id="receipt_confirmed_at"
+                  type="receipt_confirmed_at"
                   value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
                 />
               )}

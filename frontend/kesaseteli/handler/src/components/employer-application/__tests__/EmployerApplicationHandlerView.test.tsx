@@ -12,6 +12,8 @@ import {
 
 describe('EmployerApplicationHandlerView', () => {
   let matchMediaMatches = false;
+  const WARNING_NOTIFICATION_REGEX =
+    /tähän hakemukseen on poikkeuksellisesti liitetty useita kesäseteleitä/i;
 
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -39,11 +41,7 @@ describe('EmployerApplicationHandlerView', () => {
         application={mockApplicationTwoVouchers}
       />
     );
-    expect(
-      screen.getByText(
-        /Tähän hakemukseen on poikkeuksellisesti liitetty useita kesäseteleitä/i
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText(WARNING_NOTIFICATION_REGEX)).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: /sulje/i })
     ).not.toBeInTheDocument();
@@ -56,15 +54,15 @@ describe('EmployerApplicationHandlerView', () => {
         application={mockApplicationTwoVouchers}
       />
     );
-    const notificationText =
-      /Tähän hakemukseen on poikkeuksellisesti liitetty useita kesäseteleitä/i;
-    expect(screen.getByText(notificationText)).toBeInTheDocument();
+    expect(screen.getByText(WARNING_NOTIFICATION_REGEX)).toBeInTheDocument();
     const closeBtn = screen.getByRole('button', { name: /sulje/i });
     expect(closeBtn).toBeInTheDocument();
 
     await userEvent.click(closeBtn);
     await waitFor(() => {
-      expect(screen.queryByText(notificationText)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(WARNING_NOTIFICATION_REGEX)
+      ).not.toBeInTheDocument();
     });
   });
 

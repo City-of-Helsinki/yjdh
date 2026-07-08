@@ -10,6 +10,7 @@ type Props = GridCellProps &
   React.HTMLAttributes<HTMLDivElement> & {
     id?: string;
     type?: string;
+    label?: string;
     value?: React.ReactNode;
   };
 
@@ -38,18 +39,21 @@ const $Value = styled.dd`
 const Field: React.FC<Props> = ({
   id,
   type,
+  label,
   value,
   children,
   ...gridCellProps
 }) => {
   const { t } = useTranslation();
   const dataTestId = type ?? id;
+  const labelContent = type ? t(`common:handlerApplication.${type}`) : label;
+
   return (
     <$StyledGridCell
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
       {...gridCellProps}
     >
-      {type && <$Label>{t(`common:handlerApplication.${type}`)}</$Label>}
+      {labelContent && <$Label>{labelContent}</$Label>}
       <$Value>
         {value || '-'}
         {children}
