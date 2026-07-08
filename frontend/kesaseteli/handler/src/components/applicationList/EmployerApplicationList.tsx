@@ -187,14 +187,14 @@ export default function EmployerApplicationList(): JSX.Element {
   return (
     <Tabs initiallyActiveTab={activeTab}>
       <$TabList>
-        <Tab index={0} onClick={() => setActiveTab(0)}>
+        <Tab onClick={() => setActiveTab(0)}>
           {t('common:applicationList.tabs.pending')} ({pendingCount})
         </Tab>
-        <Tab index={1} onClick={() => setActiveTab(1)}>
+        <Tab onClick={() => setActiveTab(1)}>
           {t('common:applicationList.tabs.processed')} ({processedCount})
         </Tab>
       </$TabList>
-      <TabPanel index={0}>
+      <TabPanel>
         <ApplicationListTable.FilterSection
           ariaLabelledBy="employer-pending-filters-heading"
           title={t('common:applicationList.filterTitle')}
@@ -217,7 +217,7 @@ export default function EmployerApplicationList(): JSX.Element {
           defaultSortColumnKey="-submitted_at"
         />
       </TabPanel>
-      <TabPanel index={1}>
+      <TabPanel>
         <ApplicationListTable.FilterSection
           ariaLabelledBy="employer-processed-filters-heading"
           title={t('common:applicationList.filterTitle')}
