@@ -166,3 +166,8 @@ nohup.out
 
 # do not include testcafe videos
 1.mp4
+
+# Scripts output directories
+**/scripts/data
+# AI output directories
+**/scratch
