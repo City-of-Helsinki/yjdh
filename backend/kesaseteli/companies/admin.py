@@ -11,13 +11,16 @@ from companies.services import update_company_from_ytj
 
 
 class CompanyAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin):
-    list_display = [
+    list_display = (
         "name",
         "business_id",
         "city",
-    ]
-    list_filter = ["city"]
+        "organization_type",
+        "created_at",
+    )
+    list_filter = ["created_at", "organization_type", "city"]
     search_fields = ["name", "business_id"]
+    date_hierarchy = "created_at"
     readonly_fields = ["ytj_json"]
     actions = ["update_from_ytj"]
 
