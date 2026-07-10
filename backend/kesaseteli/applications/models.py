@@ -9,6 +9,7 @@ from urllib.parse import quote, urljoin
 
 import base32_lib
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
@@ -224,6 +225,8 @@ def get_social_security_number_hash_key():
 
 
 class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
+    notes = GenericRelation("handler_notes.Note")
+
     first_name = models.CharField(
         max_length=128,
         verbose_name=_("first name"),
@@ -1246,6 +1249,8 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
 
 
 class EmployerApplication(TimeStampedModel, UUIDModel):
+    notes = GenericRelation("handler_notes.Note")
+
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
@@ -1610,6 +1615,8 @@ class Attachment(UUIDModel, TimeStampedModel):
     """
     created_at field from TimeStampedModel provides the upload timestamp.
     """
+
+    notes = GenericRelation("handler_notes.Note")
 
     summer_voucher = models.ForeignKey(
         EmployerSummerVoucher,
