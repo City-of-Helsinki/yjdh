@@ -14,6 +14,7 @@ from applications.views import EmployerExcelDownloadPageView
 from common.openapi_views import KesaseteliRedocView, KesaseteliSwaggerView
 from common.views import healthz, readiness
 from companies.api.v1.views import GetCompanyView
+from handler_notes.api.v1.views import NoteViewSet
 from shared.suomi_fi.views import (
     HelsinkiSaml2LogoutServiceView,
     HelsinkiSaml2LogoutView,
@@ -27,6 +28,7 @@ router.register(r"youthapplications", application_views.YouthApplicationViewSet)
 router.register(
     r"employersummervouchers", application_views.EmployerSummerVoucherViewSet
 )
+router.register(r"handlernotes", NoteViewSet, basename="handlernotes")
 
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),

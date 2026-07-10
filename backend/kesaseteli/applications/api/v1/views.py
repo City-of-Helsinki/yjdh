@@ -80,6 +80,8 @@ from applications.target_groups import (
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
+from handler_notes.api.v1.serializers import NoteSerializer
+from handler_notes.models import Note
 from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
@@ -252,6 +254,22 @@ class YouthApplicationViewSet(ModelViewSet):
             .select_related("youth_summer_voucher")
             .order_by("-created_at", "id")
         )
+
+    @enforce_handler_view_adfs_login
+    @action(detail=True, methods=["get"])
+    def timeline(self, request, pk=None):
+        """
+        Returns a unified chronological timeline for the application.
+        Aggregates notes linked to the application AND notes linked to any
+        of its child models (like Attachments).
+
+        This contains sensitive data, so only handlers should be able to read
+        the timeline.
+        """
+        application = self.get_object()
+        qs = Note.objects.for_application_timeline(application)
+        serializer = NoteSerializer(qs, many=True)
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         """
@@ -1051,6 +1069,19 @@ class EmployerApplicationViewSet(ModelViewSet):
             "(not representing any company)."
         )
         return queryset.none()
+
+    @enforce_handler_view_adfs_login
+    @action(detail=True, methods=["get"])
+    def timeline(self, request, pk=None):
+        """
+        Returns a unified chronological timeline for the application.
+        Aggregates notes linked to the application AND notes linked to any
+        of its child models (like Attachments).
+        """
+        application = self.get_object()
+        qs = Note.objects.for_application_timeline(application)
+        serializer = NoteSerializer(qs, many=True)
+        return Response(serializer.data)
 
     def create(self, request: Request, *args, **kwargs) -> Response:
         """

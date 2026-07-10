@@ -285,6 +285,7 @@ INSTALLED_APPS = [
     # local apps
     "applications",
     "companies",
+    "handler_notes",
     "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
     "django.contrib.postgres",
     "resilient_logger",

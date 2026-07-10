@@ -58,6 +58,7 @@ AUDITLOG_INCLUDE_TRACKING_MODELS = (
         "model": "auth.user",
         "exclude_fields": ["last_login"],  # To reduce excessive logging
     },
+    "handler_notes.note",
     "auth.user_groups",
     "auth.user_user_permissions",
     "companies.company",
