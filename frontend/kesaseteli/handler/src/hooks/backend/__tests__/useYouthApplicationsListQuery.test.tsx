@@ -15,7 +15,7 @@ jest.mock('shared/hooks/useErrorHandler', () => ({
   default: jest.fn(),
 }));
 
-const API_BASE_TEST_URL = 'http://kesaseteli-api';
+const API_BASE_TEST_URL = 'https://kesaseteli-api-unit-test.invalid';
 const mockListResponse = { count: 3, next: null, previous: null, results: [] };
 
 describe('useYouthApplicationsListQuery', () => {

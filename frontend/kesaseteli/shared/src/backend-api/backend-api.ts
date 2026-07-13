@@ -22,6 +22,7 @@ export const BackendEndpoint = {
   COMPANY: '/v1/company/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
+  HANDLER_NOTES: '/v1/handlernotes/',
   ATTACHMENTS: '/attachments/',
   USER: '/oidc/userinfo/',
   YOUTH_APPLICATIONS: '/v1/youthapplications/',
@@ -56,3 +57,19 @@ export const getAdditionalInfoQueryKey = (id: string): string =>
 
 export const getLogoutRedirectUrl = (locale?: string): string =>
   new URL(locale ?? '', window.location.origin).toString();
+
+// Handler notes timeline helpers
+export const getEmployerApplicationQueryKey = (id: string): string =>
+  `${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/`;
+
+export const getYouthApplicationTimelineKey = (id: string): string =>
+  `${BackendEndpoint.YOUTH_APPLICATIONS}${id}/timeline/`;
+
+export const getEmployerApplicationTimelineKey = (id: string): string =>
+  `${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/timeline/`;
+
+export const getHandlerNotesQueryKey = (
+  targetType: string,
+  targetId: string
+): string =>
+  `${BackendEndpoint.HANDLER_NOTES}?target_type=${targetType}&target_id=${targetId}`;

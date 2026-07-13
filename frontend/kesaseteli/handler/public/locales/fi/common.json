@@ -1,6 +1,9 @@
 {
   "common": {
-    "close": "Sulje"
+    "close": "Sulje",
+    "cancel": "Peruuta",
+    "saving": "Tallennetaan...",
+    "deleting": "Poistetaan..."
   },
   "appName": "Kesäsetelin käsittelijäliittymä",
   "cookieSettings": "Evästeasetukset",
@@ -293,6 +296,41 @@
       "title": "Hienoa! Olet lähettänyt tiedot kesäsetelijärjestelmään",
       "message": "Hakemuksen käsittelylinkki löytyy käsittelijöiden sähköpostista.",
       "processingLinkLabel": "KÄSITTELE"
+    }
+  },
+  "handlerNotes": {
+    "sectionTitle": "Käsittelijän huomiot",
+    "addNote": "Lisää huomio",
+    "saveNote": "Tallenna huomio",
+    "editNote": "Muokkaa",
+    "editError": "Huomion tallentaminen epäonnistui.",
+    "deleteError": "Huomion poistaminen epäonnistui.",
+    "deleteNote": "Poista",
+    "deleteConfirmTitle": "Poistetaanko huomio?",
+    "deleteConfirmText": "Toimintoa ei voi peruuttaa.",
+    "deleteConfirmButton": "Poista",
+    "notePlaceholder": "Kirjoita huomio...",
+    "noteTypeLabel": "Huomion tyyppi",
+    "noteType": {
+      "internal": "Sisäinen huomio",
+      "external_message": "Ulkoinen viesti"
+    },
+    "noteTypeHelperText": "Huomion tyyppi vaikuttaa vain sen ulkoasuun tässä näkymässä. Ulkoinen viesti ei vielä lähetä viestiä hakijalle.",
+    "isImportantLabel": "Merkitse tärkeäksi",
+    "authorAt": "{{author}} · {{date}}",
+    "showAll": "Näytä kaikki ({{count}})",
+    "noNotes": "Ei vielä huomioita.",
+    "jumpToNote": "Siirry huomioon →"
+  },
+  "timeline": {
+    "title": "Aikajana",
+    "sidebarToggleOpen": "Avaa aikajana",
+    "sidebarToggleClose": "Sulje aikajana",
+    "emptyState": "Ei vielä tapahtumia aikajanalla.",
+    "jumpToNote": "Siirry huomioon →",
+    "developerNote": {
+      "label": "Kehittäjän huomiot",
+      "content": "Sivupalkki on testikäytössä. Sivupalkin aikajanan tarkoituksena on näyttää tulevaisuudessa kommenttien lisäksi myös mm. hakemuksen tilamuutokset. Näin ollen se eroaa päänäkymän \"käsittelijän huomiot\" -osiosta, jossa listataan toistaiseksi vain huomioita. Sivupalkista voitaisiin luopua kokonaan ja listata kaikki yllämainitut asiat samassa päänäkymän huomio-osiossa, eli huomio-osio vaihdettaisiin aikajanaksi. Tällöin sivupalkkia ei tarvita ollenkaan."
     }
   }
 }
