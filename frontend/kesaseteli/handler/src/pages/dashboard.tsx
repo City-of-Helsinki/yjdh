@@ -1,5 +1,5 @@
 import { ButtonVariant, Card, IconArrowRight } from 'hds-react';
-import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
+import useUser from 'kesaseteli/handler/hooks/useUser';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -9,7 +9,6 @@ import React from 'react';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
@@ -32,9 +31,7 @@ const Dashboard: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { isLoading, data } = useUserQuery({
-    enabled: true,
-  });
+  const { user } = useUser();
 
   const handleYouthApplicationsClick = React.useCallback(
     () => void router.push(ROUTES.YOUTH_APPLICATIONS),
@@ -46,11 +43,7 @@ const Dashboard: NextPage = () => {
     [router]
   );
 
-  if (isLoading) {
-    return <PageLoadingSpinner />;
-  }
-
-  const name = data?.name ?? '';
+  const name = user?.name ?? '';
 
   return (
     <Container>

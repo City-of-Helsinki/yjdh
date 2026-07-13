@@ -1,6 +1,5 @@
 import { ButtonVariant, IconPlus } from 'hds-react';
 import YouthApplicationList from 'kesaseteli/handler/components/applicationList/YouthApplicationList';
-import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
@@ -10,7 +9,6 @@ import React from 'react';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
@@ -27,14 +25,6 @@ function YouthApplicationsIndex(): React.ReactElement {
     () => void router.push(ROUTES.CREATE_APPLICATION_WITHOUT_SSN),
     [router]
   );
-
-  const { isLoading: isUserLoading } = useUserQuery({
-    enabled: true,
-  });
-
-  if (isUserLoading) {
-    return <PageLoadingSpinner />;
-  }
 
   return (
     <Container>

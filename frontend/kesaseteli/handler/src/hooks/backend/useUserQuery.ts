@@ -13,17 +13,16 @@ import useIsRouting from 'shared/hooks/useIsRouting';
 import User from 'shared/types/user';
 
 const useUserQuery = <T = User>({
-  refetchInterval,
+  refetchInterval = 5 * 60 * 1000,
   select,
   enabled = true,
-}: UseQueryOptions<T> = {}): UseQueryResult<T> => {
+}: UseQueryOptions<User, Error, T> = {}): UseQueryResult<T, Error> => {
   const isRouting = useIsRouting();
   const goToPage = useGoToPage();
   const router = useRouter();
   return useQuery(BackendEndpoint.USER as QueryKey, {
     enabled: !!enabled && !isRouting,
     onError: useErrorHandler({
-      onServerError: () => goToPage(`${ROUTES.LOGIN}?error=true`),
       onAuthError: () => {
         const skipRedirectRoutes: string[] = [
           ROUTES.LOGIN,
