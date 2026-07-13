@@ -50,6 +50,7 @@ class MockUserInfoView(View):
         if request.user.is_authenticated:
             user = request.user
             userinfo = {
+                "id": user.username,
                 "given_name": user.first_name,
                 "family_name": user.last_name,
                 "name": f"{user.first_name} {user.last_name}",
