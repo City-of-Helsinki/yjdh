@@ -144,6 +144,7 @@ class HelsinkiOIDCUserInfoView(View):
     def get_userinfo(self, request):
         response = get_userinfo(request)
         userinfo = {
+            "id": request.user.username if request.user.is_authenticated else "",
             "given_name": response.get("given_name", ""),
             "family_name": response.get("family_name", ""),
             "name": response.get("name", ""),
@@ -157,6 +158,7 @@ class HelsinkiOIDCUserInfoView(View):
         if suomifi_enabled and request.user.is_authenticated:
             # TODO Refactor this SAML related userinfo e.g. to a separate view
             userinfo = {
+                "id": request.user.username,
                 "given_name": request.user.first_name,
                 "family_name": request.user.last_name,
                 "name": request.user.get_full_name(),
