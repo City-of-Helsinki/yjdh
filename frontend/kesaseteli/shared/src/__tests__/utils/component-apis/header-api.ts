@@ -34,11 +34,12 @@ const expectations = {
     await waitFor(() => {
       // eslint-disable-next-line unicorn/prefer-query-selector
       const toast = document.getElementById('HDSToastContainer');
-      if (toast) {
-        expect(
-          within(toast).getByRole('heading', { name: errorMessage })
-        ).toBeInTheDocument();
-      }
+      expect(toast).not.toBeNull();
+      expect(
+        within(toast as HTMLElement).getByRole('heading', {
+          name: errorMessage,
+        })
+      ).toBeInTheDocument();
     });
   },
 };

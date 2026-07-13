@@ -33,7 +33,6 @@ jest.mock('next/router', () => ({
 
 jest.mock('kesaseteli-shared/hooks/useMatomo');
 
-// Mock components used in BaseApp / App
 jest.mock('kesaseteli/handler/components/footer/Footer', () => () => (
   <div data-testid="footer">Footer</div>
 ));
@@ -46,6 +45,14 @@ jest.mock(
     ({ children }: { children: React.ReactNode }) =>
       <div data-testid="base-app">{children}</div>
 );
+jest.mock('kesaseteli/handler/contexts/UserContext', () => ({
+  UserProvider: ({ children }: { children: React.ReactNode }) => children,
+  useUser: () => ({
+    user: undefined,
+    isLoading: false,
+    isAuthenticated: false,
+  }),
+}));
 
 describe('_app.tsx CookieConsent rendering', () => {
   const originalEnv = process.env;

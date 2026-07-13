@@ -3,6 +3,7 @@ import 'hds-design-tokens';
 
 import Footer from 'kesaseteli/handler/components/footer/Footer';
 import Header from 'kesaseteli/handler/components/header/Header';
+import { UserProvider } from 'kesaseteli/handler/contexts/UserContext';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-consent';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
@@ -42,17 +43,19 @@ const App: React.FC<AppProps> = (appProps: AppProps) => {
   return (
     <BackendAPIProvider baseURL={getBackendDomain()}>
       <QueryClientProvider client={queryClient}>
-        <DialogContextProvider>
-          {showCookieBanner && (
-            <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
-          )}
-          <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
-          <Portal>
-            <DialogContext.Consumer>
-              {([state]) => <ConfirmDialog {...state} />}
-            </DialogContext.Consumer>
-          </Portal>
-        </DialogContextProvider>
+        <UserProvider>
+          <DialogContextProvider>
+            {showCookieBanner && (
+              <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
+            )}
+            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+            <Portal>
+              <DialogContext.Consumer>
+                {([state]) => <ConfirmDialog {...state} />}
+              </DialogContext.Consumer>
+            </Portal>
+          </DialogContextProvider>
+        </UserProvider>
       </QueryClientProvider>
     </BackendAPIProvider>
   );

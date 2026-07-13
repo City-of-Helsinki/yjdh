@@ -46,16 +46,14 @@ describe('useUserQuery error handling', () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
-  it('sets up useErrorHandler with correct onServerError callback and redirects to login with error', () => {
+  it('sets up useErrorHandler without overriding onServerError to avoid login redirects on 500', () => {
     const { wrapper } = createWrapper();
     renderHook(() => useUserQuery(), { wrapper });
 
     expect(useErrorHandler).toHaveBeenCalled();
     const errorHandlerConfig = (useErrorHandler as jest.Mock).mock.calls[0][0];
 
-    expect(errorHandlerConfig).toHaveProperty('onServerError');
-    errorHandlerConfig.onServerError();
-    expect(mockGoToPage).toHaveBeenCalledWith(`${ROUTES.LOGIN}?error=true`);
+    expect(errorHandlerConfig).not.toHaveProperty('onServerError');
   });
 
   describe('onAuthError callback', () => {
