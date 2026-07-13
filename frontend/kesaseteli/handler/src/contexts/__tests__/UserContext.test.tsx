@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ROUTES } from 'kesaseteli-shared/constants/routes';
-import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import User from 'shared/types/user';
 
-import { useUser, UserProvider } from '../UserContext';
+import { UserProvider,useUser } from '../UserContext';
 
 jest.mock('kesaseteli/handler/hooks/backend/useUserQuery');
 jest.mock('next/router', () => ({
@@ -22,7 +22,10 @@ const mockUser: User = {
   name: 'Test User',
 };
 
-const createWrapper = () => {
+const createWrapper = (): {
+  queryClient: QueryClient;
+  wrapper: React.FC<{ children: React.ReactNode }>;
+} => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -46,11 +49,16 @@ const TestComponent: React.FC = () => {
       <span data-testid="is-loading">{String(isLoading)}</span>
       <span data-testid="is-fetching">{String(isFetching)}</span>
       <span data-testid="is-authenticated">{String(isAuthenticated)}</span>
-      <button onClick={clearUser} data-testid="clear-user-btn">
+      <button type="button" onClick={clearUser} data-testid="clear-user-btn">
         Clear User
       </button>
     </div>
   );
+};
+
+const BuggyComponent: React.FC = () => {
+  useUser();
+  return null;
 };
 
 describe('UserContext and UserProvider', () => {
@@ -65,10 +73,6 @@ describe('UserContext and UserProvider', () => {
 
   it('throws error when useUser is used outside UserProvider', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const BuggyComponent = () => {
-      useUser();
-      return null;
-    };
     expect(() => render(<BuggyComponent />)).toThrow(
       'useUser must be used within a UserProvider'
     );

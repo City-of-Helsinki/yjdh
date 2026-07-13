@@ -8,7 +8,7 @@ import createReactQueryTestClient from 'shared/__tests__/utils/react-query/creat
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
-import useEmployerApplicationQuery from '../useEmployerApplicationQuery';
+import useApplicationTimelineQuery from '../useApplicationTimelineQuery';
 
 jest.mock('shared/hooks/useErrorHandler', () => ({
   __esModule: true,
@@ -17,9 +17,10 @@ jest.mock('shared/hooks/useErrorHandler', () => ({
 
 const API_BASE_TEST_URL = 'https://kesaseteli-api-unit-test.invalid';
 const TEST_ID = 'abc-123';
-const ENDPOINT = `${BackendEndpoint.EMPLOYER_APPLICATIONS}${TEST_ID}/`;
+const YOUTH_ENDPOINT = `${BackendEndpoint.YOUTH_APPLICATIONS}${TEST_ID}/timeline/`;
+const EMPLOYER_ENDPOINT = `${BackendEndpoint.EMPLOYER_APPLICATIONS}${TEST_ID}/timeline/`;
 
-describe('useEmployerApplicationQuery', () => {
+describe('useApplicationTimelineQuery', () => {
   const axios = createAxiosTestContext(API_BASE_TEST_URL);
   const queryClient = createReactQueryTestClient(axios, API_BASE_TEST_URL);
   const mockErrorHandler = jest.fn();
@@ -44,15 +45,35 @@ describe('useEmployerApplicationQuery', () => {
   });
 
   it('does not fetch when no id is provided', () => {
-    renderHook(() => useEmployerApplicationQuery(), { wrapper });
-    expect(nock.activeMocks()).toHaveLength(0);
+    const interceptor = nock(API_BASE_TEST_URL)
+      .get(new RegExp(BackendEndpoint.YOUTH_APPLICATIONS))
+      .reply(200, []);
+
+    const { result } = renderHook(() => useApplicationTimelineQuery(undefined, 'youth'), {
+      wrapper,
+    });
+
+    expect(result.current.isIdle).toBe(true);
+    expect(interceptor.isDone()).toBe(false);
   });
 
-  it('fetches application data successfully by id', async () => {
-    const mockData = { id: TEST_ID, status: 'submitted' };
-    nock(API_BASE_TEST_URL).get(ENDPOINT).reply(200, mockData);
+  it('fetches youth application timeline successfully by id', async () => {
+    const mockData = [{ id: '1', content: 'test note 1' }];
+    nock(API_BASE_TEST_URL).get(YOUTH_ENDPOINT).reply(200, mockData);
     const { result, waitFor } = renderHook(
-      () => useEmployerApplicationQuery(TEST_ID),
+      () => useApplicationTimelineQuery(TEST_ID, 'youth'),
+      { wrapper }
+    );
+    await waitFor(() => result.current.isSuccess);
+    expect(result.current.data).toEqual(mockData);
+    expect(nock.isDone()).toBe(true);
+  });
+
+  it('fetches employer application timeline successfully by id', async () => {
+    const mockData = [{ id: '2', content: 'test note 2' }];
+    nock(API_BASE_TEST_URL).get(EMPLOYER_ENDPOINT).reply(200, mockData);
+    const { result, waitFor } = renderHook(
+      () => useApplicationTimelineQuery(TEST_ID, 'employer'),
       { wrapper }
     );
     await waitFor(() => result.current.isSuccess);
@@ -61,22 +82,12 @@ describe('useEmployerApplicationQuery', () => {
   });
 
   it('calls useErrorHandler on 500 error', async () => {
-    nock(API_BASE_TEST_URL).get(ENDPOINT).reply(500, 'server error');
+    nock(API_BASE_TEST_URL).get(YOUTH_ENDPOINT).reply(500, 'server error');
     const { result, waitFor } = renderHook(
-      () => useEmployerApplicationQuery(TEST_ID),
+      () => useApplicationTimelineQuery(TEST_ID, 'youth'),
       { wrapper }
     );
     await waitFor(() => result.current.isError);
     expect(mockErrorHandler).toHaveBeenCalled();
-  });
-
-  it('does NOT call useErrorHandler on 404 error', async () => {
-    nock(API_BASE_TEST_URL).get(ENDPOINT).reply(404, 'not found');
-    const { result, waitFor } = renderHook(
-      () => useEmployerApplicationQuery(TEST_ID),
-      { wrapper }
-    );
-    await waitFor(() => result.current.isError);
-    expect(mockErrorHandler).not.toHaveBeenCalled();
   });
 });

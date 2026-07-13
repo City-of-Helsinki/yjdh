@@ -10,7 +10,7 @@ import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 
 import useCreateYouthApplicationWithoutSsnQuery from '../useCreateYouthApplicationWithoutSsnQuery';
 
-const API_BASE_TEST_URL = 'http://kesaseteli-api';
+const API_BASE_TEST_URL = 'https://kesaseteli-api-unit-test.invalid';
 
 describe('useCreateYouthApplicationWithoutSsnQuery (Integration)', () => {
   beforeAll(() => {

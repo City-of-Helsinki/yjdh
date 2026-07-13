@@ -10,7 +10,7 @@ import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
 
-const API_BASE_TEST_URL = 'http://kesaseteli-api';
+const API_BASE_TEST_URL = 'https://kesaseteli-api-unit-test.invalid';
 
 const mockConfigurationData = [
   {
