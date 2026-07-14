@@ -1,4 +1,4 @@
-import { Notification, NotificationProps, Tabs } from 'hds-react';
+import { Notification, NotificationProps, TabPanel, Tabs } from 'hds-react';
 import styled, { createGlobalStyle, DefaultTheme } from 'styled-components';
 
 export const SIDEBAR_WIDTH = '380px';
@@ -10,7 +10,7 @@ export const $GlobalSidebarStyle = createGlobalStyle<{
   [data-testid="header"] {
     transition: padding-right 0.25s ease-in-out;
     padding-right: ${({ $isOpen, $isMobile }) =>
-      $isOpen && !$isMobile ? SIDEBAR_WIDTH : '0'};
+    $isOpen && !$isMobile ? SIDEBAR_WIDTH : '0'};
   }
 `;
 
@@ -80,7 +80,7 @@ export const $SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   @media (max-width: ${({ theme }: { theme: DefaultTheme }) =>
-      theme.breakpoints.m}) {
+    theme.breakpoints.m}) {
     padding: 0 var(--spacing-m);
   }
 `;
@@ -104,8 +104,8 @@ export const $TimelineNotePreview = styled.p`
   font-size: var(--fontsize-body-s);
 `;
 
-export const $DeveloperNote = styled(Notification)<NotificationProps>`
-  margin: var(--spacing-m);
+export const $DeveloperNote = styled(Notification) <NotificationProps>`
+
   width: unset;
 
   & div {
@@ -121,4 +121,11 @@ export const $StickyTabs = styled(Tabs)`
     z-index: 1000;
     background-color: var(--color-white);
   }
+`;
+
+
+export const $TabPanel = styled(TabPanel)`
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-m);
 `;

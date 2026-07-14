@@ -3,7 +3,6 @@ import {
   IconAngleRight,
   Tab,
   TabList,
-  TabPanel,
 } from 'hds-react';
 import { ApplicationListType } from 'kesaseteli/handler/types/application';
 import { useTranslation } from 'next-i18next';
@@ -20,6 +19,7 @@ import {
   $SidebarOverlay,
   $SidebarPanel,
   $StickyTabs,
+  $TabPanel
 } from './ApplicationSidebar.sc';
 import ApplicationTimeline from './ApplicationTimeline';
 
@@ -88,7 +88,7 @@ const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({
             <TabList>
               <Tab>{t(TIMELINE_TITLE_KEY)}</Tab>
             </TabList>
-            <TabPanel>
+            <$TabPanel>
               {showDeveloperNote && (
                 <$DeveloperNote
                   label={t('common:timeline.developerNote.label')}
@@ -107,7 +107,7 @@ const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({
                   onToggle={onToggle}
                 />
               )}
-            </TabPanel>
+            </$TabPanel>
           </$StickyTabs>
         </$SidebarContent>
       </$SidebarPanel>

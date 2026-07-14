@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { TIMELINE_AVATAR_SIZE, TIMELINE_COLUMN_WIDTH } from './Timeline.sc';
 import {
   getItemBackgroundColor,
   getItemBorderColor,
@@ -7,49 +8,55 @@ import {
   NoteItemType,
 } from './TimelineTheme';
 
+const getBorderColor = ({
+  $type,
+  $isImportant,
+}: {
+  $type: NoteItemType;
+  $isImportant: boolean;
+}): string => getItemBorderColor($type, $isImportant);
+
+const getBackgroundColor = ({
+  $type,
+  $isImportant,
+}: {
+  $type: NoteItemType;
+  $isImportant: boolean;
+}): string => getItemBackgroundColor($type, $isImportant);
+
+const getAvatarSize = ($size?: 'small' | 'large'): string =>
+  $size === 'small'
+    ? `${TIMELINE_AVATAR_SIZE.small}px`
+    : `${TIMELINE_AVATAR_SIZE.large}px`;
+
+const getSvgSize = ($size?: 'small' | 'large'): string =>
+  $size === 'small' ? '14px' : '18px';
+
 export const $TimelineItemCard = styled.li<{ $size?: 'small' | 'large' }>`
-  --timeline-item-line-color: ${({
-    $type,
-    $isImportant,
-  }: {
-    $type: NoteItemType;
-    $isImportant: boolean;
-  }) => getItemBorderColor($type, $isImportant)};
+  --timeline-item-line-color: ${getBorderColor};
+  --timeline-item-border-color: ${getBorderColor};
+  --timeline-item-background-color: ${getBackgroundColor};
 
-  --timeline-item-border-color: ${({
-    $type,
-    $isImportant,
-  }: {
-    $type: NoteItemType;
-    $isImportant: boolean;
-  }) => getItemBorderColor($type, $isImportant)};
-
-  --timeline-item-background-color: ${({
-    $type,
-    $isImportant,
-  }: {
-    $type: NoteItemType;
-    $isImportant: boolean;
-  }) => getItemBackgroundColor($type, $isImportant)};
-
-  --timeline-item-padding: ${({ $size }) =>
+  --timeline-item-padding: ${({ $size }: { $size?: 'small' | 'large' }) =>
     $size === 'small'
       ? 'var(--spacing-xs) var(--spacing-s)'
       : 'var(--spacing-s) var(--spacing-m) var(--spacing-s) var(--spacing-s)'};
   position: relative;
   z-index: 0;
   display: grid;
-  grid-template-columns: ${({ $size }) => ($size === 'small' ? '24px' : '40px')} 1fr;
+  grid-template-columns: ${({ $size }: { $size?: 'small' | 'large' }) =>
+      $size === 'small'
+        ? `${TIMELINE_COLUMN_WIDTH.small}px`
+        : `${TIMELINE_COLUMN_WIDTH.large}px`} 1fr;
   gap: var(--spacing-s);
   align-items: flex-start;
   /* TODO: border-right would bring some visual clarity, but it looks bad with current layout. */
   /*
-  border-right: ${({ $size }) =>
+  border-right: ${({ $size }: { $size?: 'small' | 'large' }) =>
     $size === 'small' ? '2px' : '3px'} solid var(--timeline-item-border-color);
   border-radius: 0 4px 4px 0;
   */
   background-color: var(--timeline-item-background-color);
-  padding: var(--timeline-item-padding);
   margin-bottom: var(--spacing-m);
 
   &&::before {
@@ -66,18 +73,18 @@ export const $TimelineItemAvatar = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $size }) => ($size === 'small' ? '24px' : '36px')};
-  height: ${({ $size }) => ($size === 'small' ? '24px' : '36px')};
+  width: ${({ $size }: { $size?: 'small' | 'large' }) => getAvatarSize($size)};
+  height: ${({ $size }: { $size?: 'small' | 'large' }) => getAvatarSize($size)};
   border-radius: 50%;
   flex-shrink: 0;
-  background-color: ${({ $type }) =>
-    NOTE_TYPE_CONFIGS[$type as NoteItemType]?.avatarBackground};
-  color: ${({ $type }) =>
-    NOTE_TYPE_CONFIGS[$type as NoteItemType]?.avatarColor};
+  background-color: ${({ $type }: { $type: NoteItemType }) =>
+    NOTE_TYPE_CONFIGS[$type]?.avatarBackground};
+  color: ${({ $type }: { $type: NoteItemType }) =>
+    NOTE_TYPE_CONFIGS[$type]?.avatarColor};
 
   svg {
-    width: ${({ $size }) => ($size === 'small' ? '14px' : '18px')};
-    height: ${({ $size }) => ($size === 'small' ? '14px' : '18px')};
+    width: ${({ $size }: { $size?: 'small' | 'large' }) => getSvgSize($size)};
+    height: ${({ $size }: { $size?: 'small' | 'large' }) => getSvgSize($size)};
     display: block;
   }
 `;
@@ -87,6 +94,7 @@ export const $TimelineItemBody = styled.div<{ $size?: 'small' | 'large' }>`
   flex-grow: 1;
   margin-top: ${({ $size }) =>
     $size === 'small' ? '2px' : 'var(--spacing-2-xs)'};
+  padding-right: var(--spacing-s);
 `;
 
 export const $TimelineItemHeader = styled.strong`
