@@ -6,6 +6,7 @@ import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/Applicatio
 import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
 import useEmployerApplicationQuery from 'kesaseteli/handler/hooks/backend/useEmployerApplicationQuery';
+import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
 import type HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -43,6 +44,16 @@ function EmployerApplicationDetail(): React.ReactElement {
     useEmployerApplicationQuery<HandlerEmployerApplication>(applicationId);
   const notFound = isError || (!applicationId && !isRouterLoading);
 
+  const { data: notes } = useHandlerNotesQuery(
+    NoteTargetType.EMPLOYER_APPLICATION,
+    applicationId
+  );
+
+  const attachmentsCount =
+    data?.summer_vouchers?.flatMap((voucher) => voucher.attachments || [])
+      .length ?? 0;
+  const notesCount = notes?.length ?? 0;
+
   if (isRouterLoading || isLoading) {
     return <PageLoadingSpinner />;
   }
@@ -69,10 +80,11 @@ function EmployerApplicationDetail(): React.ReactElement {
           />
         )}
         {isSuccess && applicationId && (
-
           <>
             <$AccordionSection
-              heading={t('common:handlerApplication.attachmentsTitle')}
+              heading={t('common:handlerApplication.attachmentsTitle', {
+                count: attachmentsCount,
+              })}
               initiallyOpen
               card
               border
@@ -81,7 +93,9 @@ function EmployerApplicationDetail(): React.ReactElement {
             </$AccordionSection>
 
             <$AccordionSection
-              heading={t('common:handlerNotes.sectionTitle')}
+              heading={t('common:handlerNotes.sectionTitle', {
+                count: notesCount,
+              })}
               initiallyOpen
               card
               border

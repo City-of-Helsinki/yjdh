@@ -148,6 +148,8 @@
     "employment_contract": "Työsopimus",
     "payslip": "Palkkatodistus",
     "attachmentsTitle": "Liitteet",
+    "attachmentsTitle_one": "Liitteet ({{count}} kpl)",
+    "attachmentsTitle_other": "Liitteet ({{count}} kpl)",
     "attachments": {
       "developerPreviewTitle": "Kehitysvaiheessa",
       "developerPreviewBody": "Tämä osio on vielä kehitysvaiheessa. Valitettavasti käsittelijät eivät pysty vielä lisäämään tiedostoja."
@@ -313,6 +315,8 @@
   },
   "handlerNotes": {
     "sectionTitle": "Käsittelijän huomiot",
+    "sectionTitle_one": "Käsittelijän huomiot ({{count}} kpl)",
+    "sectionTitle_other": "Käsittelijän huomiot ({{count}} kpl)",
     "addNote": "Lisää huomio",
     "saveNote": "Tallenna huomio",
     "editNote": "Muokkaa",
