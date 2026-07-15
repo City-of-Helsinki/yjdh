@@ -4,6 +4,7 @@ import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
 import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
 import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
+import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -38,6 +39,12 @@ function YouthApplicationDetail(): React.ReactElement {
     useYouthApplicationQuery(applicationId);
   const notFound = isError || (!applicationId && !isRouterLoading);
 
+  const { data: notes } = useHandlerNotesQuery(
+    NoteTargetType.YOUTH_APPLICATION,
+    applicationId
+  );
+  const notesCount = notes?.length ?? 0;
+
   if (isRouterLoading || isLoading) {
     return <PageLoadingSpinner />;
   }
@@ -70,7 +77,9 @@ function YouthApplicationDetail(): React.ReactElement {
         </FormSection>
         {isSuccess && applicationId && (
           <$AccordionSection
-            heading={t('common:handlerNotes.sectionTitle')}
+            heading={t('common:handlerNotes.sectionTitle', {
+              count: notesCount,
+            })}
             initiallyOpen
             card
             border

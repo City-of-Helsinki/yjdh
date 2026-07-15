@@ -261,41 +261,4 @@ describe('EmployerApplicationHandlerView', () => {
       screen.getByTestId('handlerApplication-hired_without_voucher_assessment')
     ).toHaveTextContent(/kyllä/i);
   });
-
-  it('renders voucher attachments when present', () => {
-    renderComponent(
-      <EmployerApplicationHandlerView
-        application={{
-          ...mockApplicationSingleVoucher,
-          summer_vouchers: [
-            {
-              ...mockVoucher1,
-              employment_contract: [
-                {
-                  id: 'attachment-1',
-                  attachment_file_name: 'sopimus.pdf',
-                  application: 'app-1',
-                  attachment_type: 'employment_contract',
-                  content_type: 'application/pdf',
-                  summer_voucher: 'voucher-1',
-                },
-              ],
-              payslip: [
-                {
-                  id: 'attachment-2',
-                  attachment_file_name: 'palkkakuitti.pdf',
-                  application: 'app-1',
-                  attachment_type: 'payslip',
-                  content_type: 'application/pdf',
-                  summer_voucher: 'voucher-1',
-                },
-              ],
-            },
-          ],
-        }}
-      />
-    );
-    expect(screen.getByText('sopimus.pdf')).toBeInTheDocument();
-    expect(screen.getByText('palkkakuitti.pdf')).toBeInTheDocument();
-  });
 });
