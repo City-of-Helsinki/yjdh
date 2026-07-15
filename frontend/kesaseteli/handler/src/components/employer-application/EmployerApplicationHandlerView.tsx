@@ -7,7 +7,6 @@ import { useTheme } from 'styled-components';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
 import {
-  $AttachmentsSection,
   $CompanySection,
   $ContactSection,
   $InvoicerSection,
@@ -23,7 +22,6 @@ import EmployerCompanyFieldsSection from './EmployerCompanyFieldsSection';
 import EmployerContactPersonFieldsSection from './EmployerContactPersonFieldsSection';
 import EmployerInvoicerFieldsSection from './EmployerInvoicerFieldsSection';
 import EmployerPaymentFieldsSection from './EmployerPaymentFieldsSection';
-import EmployerVoucherAttachments from './EmployerVoucherAttachments';
 import EmployerVoucherFieldsSection from './EmployerVoucherFieldsSection';
 import YouthInfoFieldsSection from './YouthInfoFieldsSection';
 
@@ -59,9 +57,6 @@ const EmployerApplicationPanel: React.FC<
     <$InvoicerSection>
       <EmployerInvoicerFieldsSection application={application} />
     </$InvoicerSection>
-    <$AttachmentsSection>
-      <EmployerVoucherAttachments voucher={voucher} />
-    </$AttachmentsSection>
   </$PanelGrid>
 );
 
