@@ -1,3 +1,4 @@
+import EmployerApplicationAttachments from 'kesaseteli/handler/components/employer-application/EmployerApplicationAttachments';
 import EmployerApplicationHandlerView from 'kesaseteli/handler/components/employer-application/EmployerApplicationHandlerView';
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
@@ -25,6 +26,11 @@ const $DetailPageWrapper = styled.div<{ $sidebarOpen: boolean }>`
 
   @media (max-width: 768px) {
     padding-right: 0;
+  }
+
+  // Prevent wide tables or overflow contents from blowing out the grid width
+  & > div > div {
+    min-width: 0;
   }
 `;
 
@@ -63,17 +69,29 @@ function EmployerApplicationDetail(): React.ReactElement {
           />
         )}
         {isSuccess && applicationId && (
-          <$AccordionSection
-            heading={t('common:handlerNotes.sectionTitle')}
-            initiallyOpen
-            card
-            border
-          >
-            <NotesSection
-              applicationId={applicationId}
-              targetType={NoteTargetType.EMPLOYER_APPLICATION}
-            />
-          </$AccordionSection>
+
+          <>
+            <$AccordionSection
+              heading={t('common:handlerApplication.attachmentsTitle')}
+              initiallyOpen
+              card
+              border
+            >
+              <EmployerApplicationAttachments application={data} />
+            </$AccordionSection>
+
+            <$AccordionSection
+              heading={t('common:handlerNotes.sectionTitle')}
+              initiallyOpen
+              card
+              border
+            >
+              <NotesSection
+                applicationId={applicationId}
+                targetType={NoteTargetType.EMPLOYER_APPLICATION}
+              />
+            </$AccordionSection>
+          </>
         )}
       </Container>
       {isSuccess && applicationId && (

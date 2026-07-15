@@ -7,7 +7,6 @@ import EmployerApplicationHandlerView from '../EmployerApplicationHandlerView';
 import {
   mockApplicationSingleVoucher,
   mockApplicationTwoVouchers,
-  mockVoucher1,
 } from '../fixtures';
 
 describe('EmployerApplicationHandlerView', () => {
