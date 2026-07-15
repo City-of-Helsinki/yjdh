@@ -1,9 +1,7 @@
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
-import useMediaQuery from 'shared/hooks/useMediaQuery';
 
 import { fakeNotes } from '../../../__tests__/utils/backend/fake-notes';
 import useHandlerNotesQuery from '../../../hooks/backend/useHandlerNotesQuery';
@@ -15,7 +13,6 @@ import NotesSection from '../NotesSection';
 jest.mock('../../../hooks/backend/useHandlerNotesQuery');
 jest.mock('../../../hooks/useUser');
 jest.mock('shared/hooks/useLocale', () => jest.fn());
-jest.mock('shared/hooks/useMediaQuery');
 
 const mockNotes = fakeNotes(4);
 
@@ -38,7 +35,6 @@ describe('NotesSection', () => {
       data: [],
       isLoading: false,
     });
-    (useMediaQuery as jest.Mock).mockReturnValue(false);
 
     renderComponent(
       <$AccordionSection
@@ -60,12 +56,11 @@ describe('NotesSection', () => {
     expect(screen.getByText(/ei vielä huomioita/i)).toBeInTheDocument();
   });
 
-  it('renders all notes on desktop viewport', () => {
+  it('renders all notes', () => {
     (useHandlerNotesQuery as jest.Mock).mockReturnValue({
       data: mockNotes,
       isLoading: false,
     });
-    (useMediaQuery as jest.Mock).mockReturnValue(false);
 
     renderComponent(
       <NotesSection
@@ -81,33 +76,5 @@ describe('NotesSection', () => {
     expect(
       screen.queryByRole('button', { name: /näytä kaikki/i })
     ).not.toBeInTheDocument();
-  });
-
-  it('limits notes to 3 and renders a show all button on mobile viewport', async () => {
-    (useHandlerNotesQuery as jest.Mock).mockReturnValue({
-      data: mockNotes,
-      isLoading: false,
-    });
-    (useMediaQuery as jest.Mock).mockReturnValue(true);
-
-    renderComponent(
-      <NotesSection
-        applicationId="app-1"
-        targetType={NoteTargetType.YOUTH_APPLICATION}
-      />
-    );
-
-    expect(screen.getByText('note 1')).toBeInTheDocument();
-    expect(screen.getByText('note 2')).toBeInTheDocument();
-    expect(screen.getByText('note 3')).toBeInTheDocument();
-    expect(screen.queryByText('note 4')).not.toBeInTheDocument();
-
-    const showAllBtn = screen.getByRole('button', { name: /näytä kaikki/i });
-    expect(showAllBtn).toBeInTheDocument();
-
-    await userEvent.click(showAllBtn);
-
-    expect(screen.getByText('note 4')).toBeInTheDocument();
-    expect(showAllBtn).not.toBeInTheDocument();
   });
 });

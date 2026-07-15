@@ -1,9 +1,6 @@
-import { ButtonSize, ButtonVariant, IconAngleDown } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { useState } from 'react';
+import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
-import useMediaQuery from 'shared/hooks/useMediaQuery';
-import { useTheme } from 'styled-components';
 
 import useCreateNoteMutation from '../../hooks/backend/useCreateNoteMutation';
 import useHandlerNotesQuery from '../../hooks/backend/useHandlerNotesQuery';
@@ -13,9 +10,7 @@ import { getNoteTypeIcon } from '../timeline/TimelineTheme';
 import NoteCard from './NoteCard';
 import { $NoteTypeBadge } from './NoteCard.sc';
 import NoteForm from './NoteForm';
-import { $NotesContainer, $ShowAllButton } from './NotesSection.sc';
-
-const MOBILE_INITIAL_COUNT = 3;
+import { $NotesContainer } from './NotesSection.sc';
 
 type Props = {
   applicationId: string | undefined;
@@ -24,9 +19,6 @@ type Props = {
 
 const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
-  const [showAll, setShowAll] = useState(false);
   const locale = useLocale();
 
   const { data: notes = [] } = useHandlerNotesQuery(targetType, applicationId);
@@ -35,10 +27,6 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
     targetType,
     applicationId || ''
   );
-
-  const visibleNotes =
-    isMobile && !showAll ? notes.slice(0, MOBILE_INITIAL_COUNT) : notes;
-  const hiddenCount = notes.length - MOBILE_INITIAL_COUNT;
 
   return (
     <$NotesContainer>
@@ -58,7 +46,7 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
         aria-label={t('common:handlerNotes.sectionTitle')}
         emptyState={t('common:handlerNotes.noNotes')}
       >
-        {visibleNotes.map((note) => {
+        {notes.map((note) => {
           const TypeIcon = getNoteTypeIcon(note.note_type);
           const formattedDate = new Date(note.created_at).toLocaleString(
             locale
@@ -90,17 +78,6 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
           );
         })}
       </Timeline>
-
-      {isMobile && !showAll && hiddenCount > 0 && notes.length > 0 && (
-        <$ShowAllButton
-          variant={ButtonVariant.Supplementary}
-          size={ButtonSize.Small}
-          iconStart={<IconAngleDown aria-hidden />}
-          onClick={() => setShowAll(true)}
-        >
-          {t('common:handlerNotes.showAll', { count: notes.length })}
-        </$ShowAllButton>
-      )}
     </$NotesContainer>
   );
 };
