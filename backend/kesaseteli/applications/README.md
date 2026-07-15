@@ -18,6 +18,10 @@
     - [API Endpoint](#api-endpoint)
   - [Youth Summer Vouchers](#youth-summer-vouchers)
     - [Resend Summer Voucher](#resend-summer-voucher)
+  - [Timeline Activity Log](#timeline-activity-log)
+    - [Architecture Decision Story](#architecture-decision-story)
+    - [Secure and Configurable Log Parsing](#secure-and-configurable-log-parsing)
+    - [Unified Timeline Schema](#unified-timeline-schema)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -154,3 +158,43 @@ In cases where a youth needs their voucher email resent (e.g., accidental deleti
 
 The system will attempt to resend the voucher email to the youth's email address and report the number of successful and failed attempts.
 
+
+## Timeline Activity Log
+
+This section describes the design and implementation of the Phase 3 activity log for Youth and Employer applications.
+
+### Architecture Decision Story
+
+When designing the timeline activity log, we explored three main approaches:
+
+1. **Custom Model + Django Signals:** Add a new `ActivityLogEntry` model using `ContentType` to link generic actions. While clean, Signals do not have access to the HTTP request object. Capturing the user (`author`) would require adding middleware to store the current user in thread-local context (e.g. `django-crum`). This adds extra complexity and maintenance overhead.
+2. **Explicit Logging in ViewSets:** Log the changes explicitly inside API views and serializers. While highly transparent, this misses any changes made via Django Admin, command-line management commands, or automated background processes.
+3. **Reusing django-auditlog (Selected):** `django-auditlog` is already set up and configured in the project. It tracks status changes automatically on all registered models, resolves the request user through its built-in middleware, and stores changes as a structured JSON/dict payload (`changes`). By reusing this existing database, we avoid duplication of database tables, avoid extra signals, and leverage tested middleware.
+
+### Secure and Configurable Log Parsing
+
+Because audit logs can contain highly sensitive information (such as personal data, encrypted VTJ results, etc.), we explicitly filter which models and fields are exposed on the public or handler-facing timeline.
+
+The allowlist lives in `TimelineService.ALLOWED_TIMELINE_FIELDS` in `applications/services.py`:
+
+```python
+ALLOWED_TIMELINE_FIELDS: dict[str, dict[str, ActionType]] = {
+    "youthapplication": {
+        "status": ActionType.APPLICATION_STATUS_CHANGE,
+    },
+    "employerapplication": {
+        "status": ActionType.APPLICATION_STATUS_CHANGE,
+    },
+}
+```
+
+Only models and fields matching this exact registry are surfaced. Any other keys inside `LogEntry.changes` are ignored and completely stripped before returning data to the client.
+
+### Unified Timeline Schema
+
+The `/timeline/` API endpoints merge notes and auditlog activities into a single chronologically sorted array. To distinguish them, each item has an `item_type` field:
+
+- `note`: Generated from handler internal/external notes.
+- `activity`: Generated from auditlog entries (e.g. status changes).
+
+Optional filtering is supported via the `item_types` query parameter (e.g. `/timeline/?item_types=note`). When omitted, all types are returned.

@@ -1,10 +1,13 @@
 import uuid
 
+import factory as factory_boy
 import pytest
+from django.db.models.signals import post_save
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework import serializers, status
 
+from applications.enums import ActionType, TimelineItemType
 from common.tests.factories import (
     AttachmentFactory,
     EmployerApplicationFactory,
@@ -18,6 +21,7 @@ from shared.common.tests.factories import UserFactory
 
 @pytest.mark.django_db
 def test_create_note_api(staff_client, user):
+    """Test creating a handler note via API succeeds for staff users."""
     app = YouthApplicationFactory()
     url = reverse("v1:handlernotes-list")
 
@@ -40,7 +44,7 @@ def test_create_note_api(staff_client, user):
 
 @pytest.mark.django_db
 def test_youth_application_timeline_api(staff_client):
-    # Tests the timeline @action defined on YouthApplicationViewSet (applications app)
+    """Test fetching the timeline of a youth application returns its notes."""
     app = YouthApplicationFactory()
     NoteFactory(content_object=app, content="Note 1")
     NoteFactory(content_object=app, content="Note 2")
@@ -57,8 +61,12 @@ def test_youth_application_timeline_api(staff_client):
 
 @pytest.mark.django_db
 def test_employer_application_timeline_api(staff_client):
-    # Tests the timeline @action defined on EmployerApplicationViewSet (applications app)
-    app = EmployerApplicationFactory()
+    """Test fetching the timeline of an employer application returns notes."""
+    # Mute signals during factory creation to avoid recording the initial status creation
+    # in the audit log (which is factory setup and not part of the timeline notes we are testing).
+    with factory_boy.django.mute_signals(post_save):
+        app = EmployerApplicationFactory()
+
     NoteFactory(content_object=app, content="Emp Note 1")
     NoteFactory(content_object=app, content="Emp Note 2")
 
@@ -81,6 +89,7 @@ def test_employer_application_timeline_api(staff_client):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_note_list_permissions_unauthenticated(api_client):
+    """Test listing notes fails with a 401/403 for unauthenticated requests."""
     url = reverse("v1:handlernotes-list")
     response = api_client.get(url)
     assert response.status_code in [
@@ -92,6 +101,7 @@ def test_note_list_permissions_unauthenticated(api_client):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_note_list_permissions_non_handler(api_client, user):
+    """Test listing notes fails with a 403 for authenticated non-handler/non-staff users."""
     url = reverse("v1:handlernotes-list")
     api_client.force_authenticate(user=user)
     response = api_client.get(url)
@@ -101,6 +111,7 @@ def test_note_list_permissions_non_handler(api_client, user):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_note_detail_permissions_unauthenticated(api_client):
+    """Test accessing note details fails with a 401/403 for unauthenticated requests."""
     note = NoteFactory()
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
     response = api_client.get(url)
@@ -113,6 +124,7 @@ def test_note_detail_permissions_unauthenticated(api_client):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_note_detail_permissions_non_handler(api_client, user):
+    """Test accessing note details fails with a 403 for authenticated non-staff users."""
     note = NoteFactory()
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
     api_client.force_authenticate(user=user)
@@ -122,6 +134,7 @@ def test_note_detail_permissions_non_handler(api_client, user):
 
 @pytest.mark.django_db
 def test_attachment_external_note_invalid(staff_client):
+    """Test that external messages cannot be created for attachments."""
     attachment = AttachmentFactory(summer_voucher=EmployerSummerVoucherFactory())
     url = reverse("v1:handlernotes-list")
 
@@ -141,6 +154,7 @@ def test_attachment_external_note_invalid(staff_client):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_youth_application_timeline_permissions(api_client, user):
+    """Test that fetching the youth application timeline requires staff authentication."""
     app = YouthApplicationFactory()
     url = reverse("v1:youthapplication-timeline", kwargs={"pk": app.id})
 
@@ -160,6 +174,7 @@ def test_youth_application_timeline_permissions(api_client, user):
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_employer_application_timeline_permissions(api_client, user):
+    """Test that fetching the employer application timeline requires staff authentication."""
     app = EmployerApplicationFactory()
     url = reverse("v1:employerapplication-timeline", kwargs={"pk": app.id})
 
@@ -178,6 +193,7 @@ def test_employer_application_timeline_permissions(api_client, user):
 
 @pytest.mark.django_db
 def test_update_note_author(staff_client, user):
+    """Test that the note author can successfully update their own note."""
     note = NoteFactory(author=user, content="Original content")
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
 
@@ -190,6 +206,7 @@ def test_update_note_author(staff_client, user):
 
 @pytest.mark.django_db
 def test_update_note_non_author(staff_client):
+    """Test that updating another user's note fails with a 403 Forbidden."""
     other_user = UserFactory(is_staff=True)
     note = NoteFactory(author=other_user, content="Original content")
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
@@ -204,6 +221,7 @@ def test_update_note_non_author(staff_client):
 
 @pytest.mark.django_db
 def test_delete_note_author(staff_client, user):
+    """Test that the note author can successfully delete their own note."""
     note = NoteFactory(author=user)
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
 
@@ -214,6 +232,7 @@ def test_delete_note_author(staff_client, user):
 
 @pytest.mark.django_db
 def test_delete_note_non_author(staff_client):
+    """Test that deleting another user's note fails with a 403 Forbidden."""
     other_user = UserFactory(is_staff=True)
     note = NoteFactory(author=other_user)
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
@@ -226,6 +245,7 @@ def test_delete_note_non_author(staff_client):
 
 @pytest.mark.django_db
 def test_note_serializer_fields(staff_client, user):
+    """Test that the serialized note response contains all expected fields."""
     note = NoteFactory(
         author=user,
         content="Serializer test note content",
@@ -238,6 +258,7 @@ def test_note_serializer_fields(staff_client, user):
     # Strict snapshot/structure validation
     assert response.data == {
         "id": str(note.id),
+        "item_type": "note",
         "content": "Serializer test note content",
         "author_username": user.username,
         "author_name": user.get_full_name(),
@@ -252,6 +273,7 @@ def test_note_serializer_fields(staff_client, user):
 
 @pytest.mark.django_db
 def test_create_note_partial_target_type_fails(staff_client):
+    """Test that creating a note with only target_type fails validation."""
     url = reverse("v1:handlernotes-list")
     data = {
         "target_type": "youthapplication",
@@ -264,6 +286,7 @@ def test_create_note_partial_target_type_fails(staff_client):
 
 @pytest.mark.django_db
 def test_create_note_partial_target_id_fails(staff_client):
+    """Test that creating a note with only target_id fails validation."""
     url = reverse("v1:handlernotes-list")
     data = {
         "target_id": uuid.uuid4(),
@@ -276,6 +299,7 @@ def test_create_note_partial_target_id_fails(staff_client):
 
 @pytest.mark.django_db
 def test_note_serializer_no_author(staff_client):
+    """Test that serializing a note with a null author is handled safely."""
     note = NoteFactory(
         author=None,
         content="No author test content",
@@ -290,6 +314,7 @@ def test_note_serializer_no_author(staff_client):
 
 @pytest.mark.django_db
 def test_create_note_no_target_fails(staff_client):
+    """Test that creating a note without any target identifier fails validation."""
     url = reverse("v1:handlernotes-list")
     data = {
         "content": "API test note with no target at all",
@@ -301,6 +326,7 @@ def test_create_note_no_target_fails(staff_client):
 
 @pytest.mark.django_db
 def test_list_notes_no_target_returns_empty(staff_client):
+    """Test that listing notes without target query parameters returns an empty list."""
     NoteFactory()
     url = reverse("v1:handlernotes-list")
     response = staff_client.get(url)
@@ -310,6 +336,7 @@ def test_list_notes_no_target_returns_empty(staff_client):
 
 @pytest.mark.django_db
 def test_list_notes_partial_target_returns_empty(staff_client):
+    """Test that listing notes with incomplete target query parameters returns an empty list."""
     app = YouthApplicationFactory()
     NoteFactory(content_object=app)
     url = reverse("v1:handlernotes-list")
@@ -327,6 +354,7 @@ def test_list_notes_partial_target_returns_empty(staff_client):
 
 @pytest.mark.django_db
 def test_detail_note_works_without_query_params(staff_client, user):
+    """Test that accessing a note's detail view succeeds without target query params."""
     note = NoteFactory(author=user)
     url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
     response = staff_client.get(url)
@@ -377,3 +405,147 @@ def test_update_note_with_different_target_fails(staff_client, user):
     response = staff_client.put(url, data)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "target_type" in response.data
+
+
+@pytest.mark.django_db
+@override_settings(AUDITLOG_INCLUDE_ALL_MODELS=True)
+@pytest.mark.parametrize(
+    "factory,url_name,initial_status,updated_status,note_content",
+    [
+        (
+            YouthApplicationFactory,
+            "v1:youthapplication-timeline",
+            "submitted",
+            "accepted",
+            "First note",
+        ),
+        (
+            EmployerApplicationFactory,
+            "v1:employerapplication-timeline",
+            "draft",
+            "submitted",
+            "Application note",
+        ),
+    ],
+)
+def test_application_timeline_includes_notes_and_activities(
+    staff_client, factory, url_name, initial_status, updated_status, note_content
+):
+    """The timeline endpoint must return a combined, descending-chronological
+    list containing both item_type='note' entries (from handler notes) and
+    item_type='activity' entries (from status changes)."""
+    # Mute signals during factory creation to avoid recording the initial status creation
+    # in the audit log (which is factory setup and not part of the status update timeline
+    # activity we are testing).
+    with factory_boy.django.mute_signals(post_save):
+        app = factory(status=initial_status)
+
+    NoteFactory(content_object=app, content=note_content)
+
+    # Change status to generate a LogEntry
+    app.status = updated_status
+    app.save()
+
+    url = reverse(url_name, kwargs={"pk": app.id})
+    response = staff_client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+
+    # Since descending chronological, let's verify item types and keys
+    activity = response.data[0]
+    note = response.data[1]
+
+    assert activity["item_type"] == TimelineItemType.ACTIVITY.value
+    assert activity["action_type"] == ActionType.APPLICATION_STATUS_CHANGE.value
+    assert activity["old_value"] == initial_status
+    assert activity["new_value"] == updated_status
+
+    assert note["item_type"] == TimelineItemType.NOTE.value
+    assert note["content"] == note_content
+
+
+@pytest.mark.django_db
+@override_settings(AUDITLOG_INCLUDE_ALL_MODELS=True)
+def test_timeline_filtered_to_notes_excludes_activities(staff_client):
+    """When ?item_types=note is passed, the response must contain only
+    item_type='note' entries. No activity entries are present."""
+    app = YouthApplicationFactory(status="submitted")
+    NoteFactory(content_object=app, content="First note")
+    NoteFactory(content_object=app, content="Second note")
+
+    # Generate an activity log entry
+    app.status = "accepted"
+    app.save()
+
+    url = reverse("v1:youthapplication-timeline", kwargs={"pk": app.id})
+    response = staff_client.get(f"{url}?item_types=note")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+    assert all(
+        item["item_type"] == TimelineItemType.NOTE.value for item in response.data
+    )
+    assert {item["content"] for item in response.data} == {"First note", "Second note"}
+
+
+@pytest.mark.django_db
+@override_settings(AUDITLOG_INCLUDE_ALL_MODELS=True)
+def test_timeline_filtered_to_activities_excludes_notes(staff_client):
+    """When ?item_types=activity is passed, the response must contain only
+    item_type='activity' entries. No note entries are present."""
+    app = YouthApplicationFactory(status="submitted")
+    NoteFactory(content_object=app, content="First note")
+
+    # Generate first status change activity
+    app.status = "additional_information_needed"
+    app.save()
+
+    # Generate second status change activity
+    app.status = "accepted"
+    app.save()
+
+    url = reverse("v1:youthapplication-timeline", kwargs={"pk": app.id})
+    response = staff_client.get(f"{url}?item_types=activity")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+    assert all(
+        item["item_type"] == TimelineItemType.ACTIVITY.value for item in response.data
+    )
+
+    old_new_pairs = {(item["old_value"], item["new_value"]) for item in response.data}
+    assert old_new_pairs == {
+        ("submitted", "additional_information_needed"),
+        ("additional_information_needed", "accepted"),
+    }
+
+
+@pytest.mark.django_db
+@override_settings(AUDITLOG_INCLUDE_ALL_MODELS=True)
+def test_timeline_without_filter_returns_all_types(staff_client):
+    """When no item_types query param is provided, both note and activity
+    entries are returned — the default is to include everything."""
+    app = YouthApplicationFactory(status="submitted")
+    NoteFactory(content_object=app, content="First note")
+
+    app.status = "accepted"
+    app.save()
+
+    url = reverse("v1:youthapplication-timeline", kwargs={"pk": app.id})
+    response = staff_client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+
+    # Descending chronological order: newest status change activity first, then the note.
+    activity = response.data[0]
+    note_data = response.data[1]
+
+    assert activity["item_type"] == TimelineItemType.ACTIVITY.value
+    assert activity["action_type"] == ActionType.APPLICATION_STATUS_CHANGE.value
+    assert activity["old_value"] == "submitted"
+    assert activity["new_value"] == "accepted"
+
+    assert note_data["item_type"] == TimelineItemType.NOTE.value
+    assert note_data["content"] == "First note"

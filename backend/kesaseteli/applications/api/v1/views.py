@@ -50,6 +50,7 @@ from applications.api.v1.serializers import (
     SchoolSerializer,
     SummerVoucherConfigurationSerializer,
     TargetGroupSerializer,
+    validate_timeline_item_types,
     YouthApplicationAdditionalInfoSerializer,
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
@@ -72,7 +73,7 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.services import AuditAccessLogService, VTJService
+from applications.services import AuditAccessLogService, TimelineService, VTJService
 from applications.target_groups import (
     AbstractTargetGroup,
     get_target_group_data,
@@ -80,8 +81,6 @@ from applications.target_groups import (
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
-from handler_notes.api.v1.serializers import NoteSerializer
-from handler_notes.models import Note
 from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
@@ -267,9 +266,13 @@ class YouthApplicationViewSet(ModelViewSet):
         the timeline.
         """
         application = self.get_object()
-        qs = Note.objects.for_application_timeline(application)
-        serializer = NoteSerializer(qs, many=True)
-        return Response(serializer.data)
+        requested_types = validate_timeline_item_types(
+            set(request.query_params.getlist("item_types"))
+        )
+        combined_data = TimelineService.get_application_timeline_data(
+            application, requested_types
+        )
+        return Response(combined_data)
 
     def get_serializer_class(self):
         """
@@ -1079,9 +1082,13 @@ class EmployerApplicationViewSet(ModelViewSet):
         of its child models (like Attachments).
         """
         application = self.get_object()
-        qs = Note.objects.for_application_timeline(application)
-        serializer = NoteSerializer(qs, many=True)
-        return Response(serializer.data)
+        requested_types = validate_timeline_item_types(
+            set(request.query_params.getlist("item_types"))
+        )
+        combined_data = TimelineService.get_application_timeline_data(
+            application, requested_types
+        )
+        return Response(combined_data)
 
     def create(self, request: Request, *args, **kwargs) -> Response:
         """

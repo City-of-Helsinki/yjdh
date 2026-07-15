@@ -17,10 +17,12 @@ from rest_framework.exceptions import APIException
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
+    ActionType,
     AdditionalInfoUserReason,
     AttachmentType,
     EmployerApplicationStatus,
     get_supported_languages,
+    TimelineItemType,
     YouthApplicationStatus,
 )
 from applications.exporters.excel_exporter import resolve_target_group_and_status
@@ -47,6 +49,25 @@ from companies.services import (
 )
 
 LOGGER = logging.getLogger(__name__)
+
+VALID_TIMELINE_ITEM_TYPES = {choice[0] for choice in TimelineItemType.choices}
+
+
+def validate_timeline_item_types(requested_types: set) -> set:
+    """
+    Validate requested item_types against the documented enum.
+    Returns the validated set (empty means all types).
+    Raises ValidationError for unsupported values.
+    """
+    if not requested_types:
+        return requested_types
+    invalid = requested_types - VALID_TIMELINE_ITEM_TYPES
+    if invalid:
+        raise serializers.ValidationError(
+            f"Unsupported item_types: {', '.join(sorted(invalid))}. "
+            f"Valid values: {', '.join(sorted(VALID_TIMELINE_ITEM_TYPES))}"
+        )
+    return requested_types
 
 
 class EmployerApplicationStatusValidator:
@@ -1447,3 +1468,20 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
             "vtj_home_municipality",
             "vtj_last_name",
         ]
+
+
+class ActivityLogItemSerializer(serializers.Serializer):
+    """
+    Serializer for a single parsed timeline activity item (ActivityLogItem DTO).
+    Represents actions like status changes recorded by the application's audit log.
+    """
+
+    item_type = serializers.SerializerMethodField()
+    action_type = serializers.ChoiceField(choices=ActionType.choices)
+    old_value = serializers.CharField(allow_blank=True)
+    new_value = serializers.CharField(allow_blank=True)
+    author_name = serializers.CharField(allow_blank=True)
+    created_at = serializers.DateTimeField()
+
+    def get_item_type(self, obj) -> str:
+        return TimelineItemType.ACTIVITY
