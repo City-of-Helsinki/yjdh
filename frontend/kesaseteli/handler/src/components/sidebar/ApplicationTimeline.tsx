@@ -1,25 +1,19 @@
 import { ApplicationListType } from 'kesaseteli/handler/types/application';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
-import styled from 'styled-components';
 
 import useApplicationTimelineQuery from '../../hooks/backend/useApplicationTimelineQuery';
-import { $NoteContent, $NoteTypeBadge } from '../notes/NoteCard.sc';
+import { ActionType, TimelineItemType } from '../../types/timeline';
 import Timeline, { TimelineSize } from '../timeline/Timeline';
-import { getNoteTypeIcon } from '../timeline/TimelineTheme';
+import { getTimelineIcon } from '../timeline/TimelineTheme';
+import { $PreWrapParagraph, $StatusValue } from './ApplicationTimeline.sc';
 
 export type ApplicationTimelineProps = {
   applicationId: string;
   applicationType: ApplicationListType;
   onToggle: () => void;
 };
-
-const $TimelineItemAuthor = styled.b`
-  display: block;
-  margin-top: var(--spacing-s);
-`;
-
 
 const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
   applicationId,
@@ -45,36 +39,68 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
       aria-label={t('common:timeline.title')}
       emptyState={t('common:timeline.emptyState')}
     >
-      {timeline.map((note) => {
-        const TypeIcon = getNoteTypeIcon(note.note_type);
-        const formattedDate = new Date(note.created_at).toLocaleString(locale);
+      {timeline.map((item) => {
+        const isActivity = item.item_type === TimelineItemType.ACTIVITY;
+        const noteType = isActivity ? 'activity' : item.note_type;
+        const TypeIcon = getTimelineIcon(noteType);
+        const formattedDate = new Date(item.created_at).toLocaleString(locale);
+        const key = isActivity
+          ? `activity-${item.created_at}-${item.action_type}`
+          : item.id;
+        const isImportant = isActivity ? false : item.is_important;
 
         return (
           <Timeline.Item
-            key={note.id}
-            type={note.note_type}
-            isImportant={note.is_important}
+            key={key}
+            type={noteType}
+            isImportant={isImportant}
             icon={TypeIcon}
             size={TimelineSize.small}
           >
             <Timeline.Item.Header>
-              <$NoteTypeBadge $type={note.note_type}>
-                {t(`common:handlerNotes.noteType.${note.note_type}`)}
-              </$NoteTypeBadge>
-              <$TimelineItemAuthor>{t('common:handlerNotes.authorAt', {
-                author: note.author_name,
-                date: formattedDate,
-              })}</$TimelineItemAuthor>
+              <Timeline.Item.Badge $type={noteType}>
+                {t(`common:handlerNotes.noteType.${noteType}`)}
+              </Timeline.Item.Badge>
+              <Timeline.Item.Author>
+                {item.author_name
+                  ? t('common:handlerNotes.authorAt', {
+                      author: item.author_name,
+                      date: formattedDate,
+                    })
+                  : formattedDate}
+              </Timeline.Item.Author>
             </Timeline.Item.Header>
             <Timeline.Item.Content>
-              <$NoteContent>{note.content}</$NoteContent>
+              {isActivity &&
+              item.action_type === ActionType.APPLICATION_STATUS_CHANGE ? (
+                <$PreWrapParagraph>
+                  <Trans
+                    i18nKey="common:timeline.statusChange"
+                    values={{
+                      oldStatus: t(
+                        `common:handlerApplication.applicationStatus.${item.old_value}`
+                      ),
+                      newStatus: t(
+                        `common:handlerApplication.applicationStatus.${item.new_value}`
+                      ),
+                    }}
+                    components={{ statusValue: <$StatusValue /> }}
+                  />
+                </$PreWrapParagraph>
+              ) : (
+                <$PreWrapParagraph>
+                  {!isActivity ? item.content : ''}
+                </$PreWrapParagraph>
+              )}
             </Timeline.Item.Content>
-            <Timeline.Item.Link
-              href={`#note-${note.id}`}
-              onClick={handleNoteClick}
-            >
-              {t('common:timeline.jumpToNote')}
-            </Timeline.Item.Link>
+            {!isActivity && (
+              <Timeline.Item.Link
+                href={`#note-${item.id}`}
+                onClick={handleNoteClick}
+              >
+                {t('common:timeline.jumpToNote')}
+              </Timeline.Item.Link>
+            )}
           </Timeline.Item>
         );
       })}

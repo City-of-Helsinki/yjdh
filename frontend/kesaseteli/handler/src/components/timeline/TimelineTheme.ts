@@ -1,11 +1,11 @@
-import { IconEnvelope, IconPaperclip, IconSpeechbubbleText } from 'hds-react';
+import { IconEnvelope, IconHistory, IconPaperclip, IconSpeechbubbleText } from 'hds-react';
 import React from 'react';
 
 import { NoteType } from '../../types/note';
 
-export type NoteItemType = NoteType | 'attachment';
+export type TimelineItemThemeType = NoteType | 'attachment' | 'activity';
 
-export interface NoteTypeConfig {
+export interface TimelineItemThemeConfig {
   icon: React.ComponentType;
   background: string;
   avatarBackground: string;
@@ -15,7 +15,7 @@ export interface NoteTypeConfig {
 
 const COLOR_WHITE = 'var(--color-white)';
 
-export const NOTE_TYPE_CONFIGS: Record<NoteItemType, NoteTypeConfig> = {
+export const TIMELINE_ITEM_THEME_CONFIGS: Record<TimelineItemThemeType, TimelineItemThemeConfig> = {
   [NoteType.INTERNAL]: {
     icon: IconSpeechbubbleText,
     background: COLOR_WHITE,
@@ -37,27 +37,34 @@ export const NOTE_TYPE_CONFIGS: Record<NoteItemType, NoteTypeConfig> = {
     avatarColor: 'var(--color-black-70)',
     borderColor: 'var(--color-black-20)',
   },
+  activity: {
+    icon: IconHistory,
+    background: COLOR_WHITE,
+    avatarBackground: 'var(--color-tram-light)',
+    avatarColor: 'var(--color-tram)',
+    borderColor: 'var(--color-tram)',
+  },
 };
 
 export const getItemBorderColor = (
-  type: NoteItemType,
+  type: TimelineItemThemeType,
   isImportant?: boolean
 ): string => {
   if (isImportant) {
     return 'var(--color-alert)';
   }
-  return NOTE_TYPE_CONFIGS[type]?.borderColor || 'var(--color-black-20)';
+  return TIMELINE_ITEM_THEME_CONFIGS[type]?.borderColor || 'var(--color-black-20)';
 };
 
 export const getItemBackgroundColor = (
-  type: NoteItemType,
+  type: TimelineItemThemeType,
   isImportant?: boolean
 ): string => {
   if (isImportant) {
     return 'var(--color-alert-light)';
   }
-  return NOTE_TYPE_CONFIGS[type]?.background || COLOR_WHITE;
+  return TIMELINE_ITEM_THEME_CONFIGS[type]?.background || COLOR_WHITE;
 };
 
-export const getNoteTypeIcon = (type: NoteItemType): React.ComponentType =>
-  NOTE_TYPE_CONFIGS[type]?.icon || IconSpeechbubbleText;
+export const getTimelineIcon = (type: TimelineItemThemeType): React.ComponentType =>
+  TIMELINE_ITEM_THEME_CONFIGS[type]?.icon || IconSpeechbubbleText;

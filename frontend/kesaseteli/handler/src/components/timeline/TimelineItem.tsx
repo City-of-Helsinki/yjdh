@@ -1,18 +1,20 @@
 import React from 'react';
 
 import {
+  $TimelineItemAuthor,
   $TimelineItemAvatar,
+  $TimelineItemBadge,
   $TimelineItemBody,
   $TimelineItemCard,
   $TimelineItemContent,
   $TimelineItemHeader,
   $TimelineItemLink,
 } from './TimelineItem.sc';
-import { NoteItemType } from './TimelineTheme';
+import { TimelineItemThemeType } from './TimelineTheme';
 
 export type TimelineCardProps = {
   children: React.ReactNode;
-  type: NoteItemType;
+  type: TimelineItemThemeType;
   isImportant?: boolean;
   size?: 'small' | 'large';
   icon?: React.ComponentType;
@@ -24,6 +26,8 @@ export const TimelineItem: React.FC<TimelineCardProps> & {
   Header: typeof $TimelineItemHeader;
   Content: typeof $TimelineItemContent;
   Link: typeof $TimelineItemLink;
+  Badge: typeof $TimelineItemBadge;
+  Author: typeof $TimelineItemAuthor;
 } = ({
   children,
   type,
@@ -52,3 +56,5 @@ export const TimelineItem: React.FC<TimelineCardProps> & {
 TimelineItem.Header = $TimelineItemHeader;
 TimelineItem.Content = $TimelineItemContent;
 TimelineItem.Link = $TimelineItemLink;
+TimelineItem.Badge = $TimelineItemBadge;
+TimelineItem.Author = $TimelineItemAuthor;

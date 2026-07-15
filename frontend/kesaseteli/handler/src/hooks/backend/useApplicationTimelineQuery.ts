@@ -1,5 +1,8 @@
-import { ApplicationListType } from 'kesaseteli/handler/types/application';
-import { HandlerNote } from 'kesaseteli/handler/types/note';
+import {
+  APPLICATION_LIST_TYPES,
+  ApplicationListType,
+} from 'kesaseteli/handler/types/application';
+import { TimelineItem } from 'kesaseteli/handler/types/timeline';
 import {
   getEmployerApplicationTimelineKey,
   getYouthApplicationTimelineKey,
@@ -11,18 +14,19 @@ import useErrorHandler from 'shared/hooks/useErrorHandler';
 const useApplicationTimelineQuery = (
   applicationId: string | undefined,
   applicationType: ApplicationListType
-): UseQueryResult<HandlerNote[]> => {
+): UseQueryResult<TimelineItem[]> => {
   const { axios, handleResponse } = useBackendAPI();
   const handleError = useErrorHandler();
 
   const timelineKey =
-    applicationType === 'youth'
+    applicationType === APPLICATION_LIST_TYPES.YOUTH
       ? getYouthApplicationTimelineKey(applicationId ?? '')
       : getEmployerApplicationTimelineKey(applicationId ?? '');
 
   return useQuery(
     timelineKey,
-    () => handleResponse<HandlerNote[]>(axios.get<HandlerNote[]>(timelineKey)),
+    () =>
+      handleResponse<TimelineItem[]>(axios.get<TimelineItem[]>(timelineKey)),
     {
       enabled: Boolean(applicationId),
       onError: handleError,
