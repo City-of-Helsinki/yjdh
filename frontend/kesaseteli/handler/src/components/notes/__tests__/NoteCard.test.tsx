@@ -86,13 +86,13 @@ describe('NoteCard', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /muokkaa/i }));
 
-    const textArea = screen.getByLabelText(/muokkaa/i);
+    const textArea = screen.getByRole('textbox', { name: /muokkaa/i });
     expect(textArea).toBeInTheDocument();
     expect(textArea).toHaveValue('Original note content');
 
     await userEvent.click(screen.getByRole('button', { name: /peruuta/i }));
 
-    expect(screen.queryByLabelText(/muokkaa/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /muokkaa/i })).not.toBeInTheDocument();
     expect(screen.getByText('Original note content')).toBeInTheDocument();
   });
 
@@ -101,7 +101,7 @@ describe('NoteCard', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /muokkaa/i }));
 
-    const textArea = screen.getByLabelText(/muokkaa/i);
+    const textArea = screen.getByRole('textbox', { name: /muokkaa/i });
     await userEvent.clear(textArea);
     await userEvent.type(textArea, 'Updated note content');
 
