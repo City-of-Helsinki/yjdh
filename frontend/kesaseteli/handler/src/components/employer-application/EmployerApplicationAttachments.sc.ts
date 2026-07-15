@@ -67,3 +67,19 @@ export const $AttachmentsContainer = styled.div`
   min-width: 0;
   overflow: hidden;
 `;
+
+export const $AttachmentLink = styled.button.attrs({ type: 'button' })`
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.coatOfArms};
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props: { theme: DefaultTheme }) =>
+      props.theme.colors.coatOfArmsDark};
+  }
+`;

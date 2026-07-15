@@ -1,11 +1,18 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
-
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 
 import EmployerApplicationAttachments from '../EmployerApplicationAttachments';
 import { mockApplicationSingleVoucher, mockVoucher1 } from '../fixtures';
+
+const mockOpenAttachment = jest.fn();
+
+jest.mock('../../../hooks/backend/useOpenAttachment', () => ({
+  __esModule: true,
+  default: () => mockOpenAttachment,
+}));
 
 describe('EmployerApplicationAttachments', () => {
   const fakeObjectFactory = new FakeObjectFactory();
@@ -24,6 +31,10 @@ describe('EmployerApplicationAttachments', () => {
         dispatchEvent: jest.fn(),
       })),
     });
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('renders "no attachments" placeholder when empty', () => {
@@ -70,5 +81,39 @@ describe('EmployerApplicationAttachments', () => {
     );
     expect(screen.getByText('sopimus.pdf')).toBeInTheDocument();
     expect(screen.getByText('palkkakuitti.pdf')).toBeInTheDocument();
+  });
+
+  it('calls openAttachment when clicking an attachment name link', async () => {
+    const attachment = {
+      ...fakeObjectFactory.fakeAttachment('employment_contract'),
+      id: 'attachment-1',
+      attachment_file_name: 'sopimus.pdf',
+    };
+
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={{
+          ...mockApplicationSingleVoucher,
+          summer_vouchers: [
+            {
+              ...mockVoucher1,
+              attachments: [attachment],
+            },
+          ],
+        }}
+      />
+    );
+
+    const attachmentLink = screen.getByText('sopimus.pdf');
+    expect(attachmentLink).toBeInTheDocument();
+
+    await userEvent.click(attachmentLink);
+
+    expect(mockOpenAttachment).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: attachment.id,
+        attachment_file_name: attachment.attachment_file_name,
+      })
+    );
   });
 });

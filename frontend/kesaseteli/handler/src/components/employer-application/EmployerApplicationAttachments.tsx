@@ -5,8 +5,10 @@ import useMediaQuery from 'shared/hooks/useMediaQuery';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
+import useOpenAttachment from '../../hooks/backend/useOpenAttachment';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import {
+  $AttachmentLink,
   $AttachmentsContainer,
   $PlaceholderArea,
   $PlaceholderInputArea,
@@ -27,7 +29,7 @@ const EmployerApplicationAttachmentsForm: React.FC = () => {
     <>
       <Notification
         label={t('common:handlerApplication.attachments.developerPreviewTitle')}
-        type='alert'
+        type="alert"
       >
         {t('common:handlerApplication.attachments.developerPreviewBody')}
       </Notification>
@@ -54,6 +56,7 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
+  const openAttachment = useOpenAttachment();
 
   const attachments = application.summer_vouchers.flatMap(
     (voucher) => voucher.attachments || []
@@ -67,25 +70,15 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
       <$TableWrapper>
         <$Table>
           {/* Visually hidden caption for screen readers to describe the table content */}
-          <caption>
-            {t('common:handlerApplication.attachmentsTitle')}
-          </caption>
+          <caption>{t('common:handlerApplication.attachmentsTitle')}</caption>
           <thead>
             <tr>
-              <th>
-                {t('common:handlerApplication.attachmentName')}
-              </th>
-              <th>
-                {t('common:handlerApplication.attachmentType')}
-              </th>
+              <th>{t('common:handlerApplication.attachmentName')}</th>
+              <th>{t('common:handlerApplication.attachmentType')}</th>
               {!isMobile && (
                 <>
-                  <th>
-                    {t('common:handlerApplication.attachmentAddedBy')}
-                  </th>
-                  <th>
-                    {t('common:handlerApplication.attachmentAddedAt')}
-                  </th>
+                  <th>{t('common:handlerApplication.attachmentAddedBy')}</th>
+                  <th>{t('common:handlerApplication.attachmentAddedAt')}</th>
                 </>
               )}
             </tr>
@@ -94,7 +87,11 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
             {hasAttachments ? (
               attachments.map((attachment) => (
                 <tr key={attachment.id}>
-                  <td>{attachment.attachment_file_name}</td>
+                  <td>
+                    <$AttachmentLink onClick={() => openAttachment(attachment)}>
+                      {attachment.attachment_file_name}
+                    </$AttachmentLink>
+                  </td>
                   <td>
                     {attachment.attachment_type === 'employment_contract'
                       ? t('common:handlerApplication.employment_contract')
