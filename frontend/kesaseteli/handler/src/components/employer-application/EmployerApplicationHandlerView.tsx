@@ -1,11 +1,23 @@
-import { Notification, Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { Notification, Tab, TabList, TabPanel } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import useMediaQuery from 'shared/hooks/useMediaQuery';
-import styled, { DefaultTheme, useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
+import {
+  $AttachmentsSection,
+  $CompanySection,
+  $ContactSection,
+  $InvoicerSection,
+  $PanelGrid,
+  $PaymentSection,
+  $StatusSection,
+  $StickyTabs,
+  $VoucherSection,
+  $YouthSection,
+} from './EmployerApplicationHandlerView.sc';
 import EmployerApplicationStatusSection from './EmployerApplicationStatusFieldsSection';
 import EmployerCompanyFieldsSection from './EmployerCompanyFieldsSection';
 import EmployerContactPersonFieldsSection from './EmployerContactPersonFieldsSection';
@@ -18,79 +30,6 @@ import YouthInfoFieldsSection from './YouthInfoFieldsSection';
 type Props = {
   application: HandlerEmployerApplication;
 };
-
-const $PanelGrid = styled.div`
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas:
-    'status . .'
-    'company voucher youth'
-    'contact payment invoicer'
-    'attachments attachments attachments';
-
-  > div {
-    padding: var(--spacing-m);
-  }
-
-  @media (max-width: ${(props: { theme: DefaultTheme }) =>
-      props.theme.breakpoints.m}) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'status'
-      'company'
-      'voucher'
-      'youth'
-      'contact'
-      'payment'
-      'invoicer'
-      'attachments';
-  }
-`;
-
-const $StatusSection = styled.div`
-  grid-area: status;
-`;
-
-const $CompanySection = styled.div`
-  grid-area: company;
-`;
-
-const $VoucherSection = styled.div`
-  grid-area: voucher;
-  background-color: var(--color-fog-light);
-`;
-
-const $YouthSection = styled.div`
-  grid-area: youth;
-  background-color: var(--color-bus-light);
-`;
-
-const $ContactSection = styled.div`
-  grid-area: contact;
-`;
-
-const $PaymentSection = styled.div`
-  grid-area: payment;
-`;
-
-const $InvoicerSection = styled.div`
-  grid-area: invoicer;
-`;
-
-const $AttachmentsSection = styled.div`
-  grid-area: attachments;
-  // background-color: var(--color-silver-light);
-`;
-
-const $StickyTabs = styled(Tabs)`
-  div[class*='Tabs-module_tablistBar'] {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-white);
-  }
-`;
 
 const EmployerApplicationPanel: React.FC<
   Props & { voucher: HandlerSummerVoucher }
