@@ -75,6 +75,16 @@ export const $Separator = styled.span`
 export const $FormActions = styled.div`
   display: flex;
   gap: var(--spacing-s);
+
+  @media (max-width: ${({ theme }: { theme: DefaultTheme }) => theme.breakpoints.m}) {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    width: 100%;
+
+    & > * {
+      width: 100%;
+    }
+  }
 `;
 
 export const $CharCounter = styled.small<{ $isNearLimit: boolean }>`

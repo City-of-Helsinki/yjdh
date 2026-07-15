@@ -14,6 +14,7 @@ import useUser from '../../hooks/useUser';
 import { HandlerNote, UpdateNotePayload } from '../../types/note';
 import DeleteNoteDialog from './DeleteNoteDialog';
 import {
+  $ButtonText,
   $NoteActions,
   $NoteCardContainer,
   $NoteContent,
@@ -70,14 +71,19 @@ const NoteCard: React.FC<Props> = ({ note }) => {
           <$NoteContent>{note.content}</$NoteContent>
           {isAuthor && (
             <$NoteActions>
+              {/*
+                $ButtonText visually hides the label text on mobile view to prevent layout breaking/wrapping,
+                while the button's aria-label ensures the action remains fully accessible to screen readers.
+              */}
               <Button
                 variant={ButtonVariant.Supplementary}
                 size={ButtonSize.Small}
                 iconStart={<IconPenLine aria-hidden />}
                 onClick={() => setIsEditing(true)}
                 data-testid={`note-edit-button-${note.id}`}
+                aria-label={t('common:handlerNotes.editNote')}
               >
-                {t('common:handlerNotes.editNote')}
+                <$ButtonText>{t('common:handlerNotes.editNote')}</$ButtonText>
               </Button>
               <Button
                 variant={ButtonVariant.Supplementary}
@@ -85,8 +91,9 @@ const NoteCard: React.FC<Props> = ({ note }) => {
                 iconStart={<IconTrash aria-hidden />}
                 onClick={() => setIsDeleteDialogOpen(true)}
                 data-testid={`note-delete-button-${note.id}`}
+                aria-label={t('common:handlerNotes.deleteNote')}
               >
-                {t('common:handlerNotes.deleteNote')}
+                <$ButtonText>{t('common:handlerNotes.deleteNote')}</$ButtonText>
               </Button>
             </$NoteActions>
           )}
