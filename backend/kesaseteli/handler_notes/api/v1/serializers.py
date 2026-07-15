@@ -2,12 +2,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from applications.enums import TimelineItemType
 from handler_notes.enums import NoteType
 from handler_notes.models import Note
 from handler_notes.utils import get_note_target_model
 
 
 class NoteSerializer(serializers.ModelSerializer):
+    item_type = serializers.SerializerMethodField()
     author_username = serializers.SlugRelatedField(
         slug_field="username", read_only=True, source="author"
     )
@@ -19,6 +21,7 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = [
             "id",
+            "item_type",
             "content",
             "author_username",
             "author_name",
@@ -112,6 +115,9 @@ class NoteSerializer(serializers.ModelSerializer):
         if obj.author:
             return obj.author.get_full_name()
         return ""
+
+    def get_item_type(self, obj) -> str:
+        return TimelineItemType.NOTE
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -251,3 +251,24 @@ class EmailTemplateType(models.TextChoices):
     )
     PROCESSING = "processing", _("Processing")
     YOUTH_SUMMER_VOUCHER = "youth_summer_voucher", _("Youth summer voucher")
+
+
+class TimelineItemType(models.TextChoices):
+    """
+    Specifies the type of an item displayed on the application timeline.
+    """
+
+    NOTE = "note", _("Note")
+    ACTIVITY = "activity", _("Activity")
+
+
+class ActionType(models.TextChoices):
+    """
+    Identifies the specific action performed on a tracked model instance.
+    Used to categorize audit log activities on the timeline.
+    """
+
+    APPLICATION_STATUS_CHANGE = (
+        "application_status_change",
+        _("Application status change"),
+    )

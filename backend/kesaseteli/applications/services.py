@@ -1,12 +1,15 @@
 import json
 import logging
-from typing import Optional, TYPE_CHECKING
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
 
 import jsonpath_ng
 import sentry_sdk
 from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
@@ -16,13 +19,16 @@ from requests.exceptions import RequestException
 import applications.target_groups
 from applications.api.v1.exceptions import VTJServiceUnavailableError
 from applications.enums import (
+    ActionType,
     APPLICATION_LANGUAGE_CHOICES,
     EmailTemplateType,
+    TimelineItemType,
     VtjTestCase,
 )
 from applications.mock_context_service import MockContextService
 from applications.models import (
     EmailTemplate,
+    EmployerApplication,
     School,
     SummerVoucherConfiguration,
     YouthApplication,
@@ -34,10 +40,6 @@ from applications.tests.data.mock_vtj import (
 )
 from common.utils import are_same_texts, html_to_text, send_mail_with_error_logging
 from shared.vtj.vtj_client import VTJClient
-
-if TYPE_CHECKING:
-    from django.contrib.contenttypes.models import ContentType
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -495,3 +497,122 @@ class VTJService:
             return []
         matches = jsonpath_ng.parse(expression).find(vtj_json_dict)
         return [match.value for match in matches]
+
+
+@dataclass(frozen=True)
+class ActivityLogItem:
+    """
+    Data transfer object (DTO) representing a single parsed timeline activity.
+
+    This dataclass maps a secure and filtered subset of fields from a django-auditlog
+    `LogEntry` instance. It decouples the raw model (which contains complete,
+    potentially sensitive `changes` dicts and internal FK relationships) from the API
+    serialization layer, allowing activity events to be easily sorted and combined with
+    notes before delivery.
+
+    Attributes:
+        action_type (str): The mapped ActionType enum value
+            (e.g. 'application_status_change').
+        old_value (str): The previous value of the tracked field (coerced to a string).
+        new_value (str): The updated value of the tracked field (coerced to a string).
+        author_name (str): The full name of the user who performed the action,
+            or an empty string.
+        created_at (datetime): The timestamp when the change was recorded.
+    """
+
+    action_type: str
+    old_value: str
+    new_value: str
+    author_name: str
+    created_at: datetime
+
+
+class TimelineService:
+    """
+    Service for aggregating and formatting the application timeline,
+    combining audit log activities and handler notes.
+    """
+
+    ALLOWED_TIMELINE_FIELDS = {
+        YouthApplication._meta.model_name: {
+            "status": ActionType.APPLICATION_STATUS_CHANGE,
+        },
+        EmployerApplication._meta.model_name: {
+            "status": ActionType.APPLICATION_STATUS_CHANGE,
+        },
+    }
+
+    @classmethod
+    def get_activity_logs_for_application(cls, application) -> list[ActivityLogItem]:
+        """
+        Securely fetch and parse audit log entries for an application.
+        Only fields declared in ALLOWED_TIMELINE_FIELDS are surfaced.
+        """
+        model_name = application._meta.model_name
+        allowed_fields = cls.ALLOWED_TIMELINE_FIELDS.get(model_name)
+        if not allowed_fields:
+            return []
+
+        ct = ContentType.objects.get_for_model(application)
+        log_entries = (
+            LogEntry.objects.filter(content_type=ct, object_pk=str(application.pk))
+            .select_related("actor")
+            .order_by("timestamp")
+        )
+
+        items: list[ActivityLogItem] = []
+        for entry in log_entries:
+            if not isinstance(entry.changes, dict):
+                continue
+
+            for field_name, action_type in allowed_fields.items():
+                change = entry.changes.get(field_name)
+                if not isinstance(change, list) or len(change) != 2:
+                    continue
+
+                old_value, new_value = change
+                if old_value == new_value:
+                    continue
+
+                items.append(
+                    ActivityLogItem(
+                        action_type=action_type.value,
+                        old_value=str(old_value) if old_value is not None else "",
+                        new_value=str(new_value) if new_value is not None else "",
+                        author_name=entry.actor.get_full_name() if entry.actor else "",
+                        created_at=entry.timestamp,
+                    )
+                )
+        return items
+
+    @classmethod
+    def get_application_timeline_data(
+        cls, application, requested_types: set[str]
+    ) -> list[dict]:
+        """
+        Get combined, sorted notes and activity log data for an application timeline.
+        """
+        # Dynamic imports to avoid circular imports.
+        from applications.api.v1.serializers import ActivityLogItemSerializer
+        from handler_notes.api.v1.serializers import NoteSerializer
+        from handler_notes.models import Note
+
+        include_all = not requested_types
+
+        notes_data = []
+        if include_all or TimelineItemType.NOTE.value in requested_types:
+            notes_qs = Note.objects.for_application_timeline(application)
+            notes_data = list(NoteSerializer(notes_qs, many=True).data)
+
+        activity_data = []
+        if include_all or TimelineItemType.ACTIVITY.value in requested_types:
+            activity_items = cls.get_activity_logs_for_application(application)
+            activity_data = list(
+                ActivityLogItemSerializer(activity_items, many=True).data
+            )
+
+        return sorted(
+            notes_data + activity_data,
+            key=lambda x: datetime.fromisoformat(x["created_at"]),
+            reverse=True,
+        )
