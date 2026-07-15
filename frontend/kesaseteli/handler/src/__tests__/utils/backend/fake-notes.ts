@@ -1,14 +1,21 @@
-import { HandlerNote, NoteTargetType, NoteType } from '../../../types/note';
+import { NoteTargetType, NoteType } from '../../../types/note';
+import {
+  ActionType,
+  ActivityLogItem,
+  TimelineItemType,
+  TimelineNoteItem,
+} from '../../../types/timeline';
 
 export const fakeNote = (
-  overrides?: Partial<HandlerNote>,
+  overrides?: Partial<TimelineNoteItem>,
   index = 0
-): HandlerNote => {
+): TimelineNoteItem => {
   const id = overrides?.id ?? `note-${index + 1}`;
   const timeOffset = index * 60 * 1000; // each note is 1 minute older than the previous
   const defaultCreated = new Date(Date.now() - timeOffset).toISOString();
 
   return {
+    item_type: TimelineItemType.NOTE,
     id,
     content: `note ${index + 1}`,
     author_username: overrides?.author_username ?? 'user-1',
@@ -25,8 +32,10 @@ export const fakeNote = (
 
 export const fakeNotes = (
   count: number,
-  overrides?: Partial<HandlerNote>[] | ((index: number) => Partial<HandlerNote>)
-): HandlerNote[] =>
+  overrides?:
+    | Partial<TimelineNoteItem>[]
+    | ((index: number) => Partial<TimelineNoteItem>)
+): TimelineNoteItem[] =>
   Array.from({ length: count }, (_, index) => {
     const override =
       typeof overrides === 'function'
@@ -34,3 +43,21 @@ export const fakeNotes = (
         : overrides?.[index] ?? {};
     return fakeNote(override, index);
   });
+
+export const fakeActivityLogItem = (
+  overrides?: Partial<ActivityLogItem>,
+  index = 0
+): ActivityLogItem => {
+  const timeOffset = index * 60 * 1000;
+  const defaultCreated = new Date(Date.now() - timeOffset).toISOString();
+
+  return {
+    item_type: TimelineItemType.ACTIVITY,
+    action_type: ActionType.APPLICATION_STATUS_CHANGE,
+    old_value: 'submitted',
+    new_value: 'additional_information_requested',
+    author_name: 'Author 1',
+    created_at: defaultCreated,
+    ...overrides,
+  };
+};

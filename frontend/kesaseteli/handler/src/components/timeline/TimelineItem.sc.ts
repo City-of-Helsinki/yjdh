@@ -4,15 +4,15 @@ import { TIMELINE_AVATAR_SIZE, TIMELINE_COLUMN_WIDTH } from './Timeline.sc';
 import {
   getItemBackgroundColor,
   getItemBorderColor,
-  NOTE_TYPE_CONFIGS,
-  NoteItemType,
+  TIMELINE_ITEM_THEME_CONFIGS,
+  TimelineItemThemeType,
 } from './TimelineTheme';
 
 const getBorderColor = ({
   $type,
   $isImportant,
 }: {
-  $type: NoteItemType;
+  $type: TimelineItemThemeType;
   $isImportant: boolean;
 }): string => getItemBorderColor($type, $isImportant);
 
@@ -20,7 +20,7 @@ const getBackgroundColor = ({
   $type,
   $isImportant,
 }: {
-  $type: NoteItemType;
+  $type: TimelineItemThemeType;
   $isImportant: boolean;
 }): string => getItemBackgroundColor($type, $isImportant);
 
@@ -65,7 +65,7 @@ export const $TimelineItemCard = styled.li<{ $size?: 'small' | 'large' }>`
 `;
 
 export const $TimelineItemAvatar = styled.div<{
-  $type: NoteItemType;
+  $type: TimelineItemThemeType;
   $size?: 'small' | 'large';
 }>`
   position: relative;
@@ -77,10 +77,10 @@ export const $TimelineItemAvatar = styled.div<{
   height: ${({ $size }: { $size?: 'small' | 'large' }) => getAvatarSize($size)};
   border-radius: 50%;
   flex-shrink: 0;
-  background-color: ${({ $type }: { $type: NoteItemType }) =>
-    NOTE_TYPE_CONFIGS[$type]?.avatarBackground};
-  color: ${({ $type }: { $type: NoteItemType }) =>
-    NOTE_TYPE_CONFIGS[$type]?.avatarColor};
+  background-color: ${({ $type }: { $type: TimelineItemThemeType }) =>
+    TIMELINE_ITEM_THEME_CONFIGS[$type]?.avatarBackground};
+  color: ${({ $type }: { $type: TimelineItemThemeType }) =>
+    TIMELINE_ITEM_THEME_CONFIGS[$type]?.avatarColor};
 
   svg {
     width: ${({ $size }: { $size?: 'small' | 'large' }) => getSvgSize($size)};
@@ -122,4 +122,20 @@ export const $TimelineItemLink = styled.a`
   &:hover {
     color: var(--color-coat-of-arms-dark);
   }
+`;
+
+export const $TimelineItemBadge = styled.span<{ $type: TimelineItemThemeType }>`
+  display: inline-block;
+  font-size: var(--fontsize-body-xs);
+  padding: 2px 8px;
+  border-radius: 12px;
+  background-color: ${({ $type }: { $type: TimelineItemThemeType }) =>
+    TIMELINE_ITEM_THEME_CONFIGS[$type]?.avatarBackground};
+  color: var(--color-black-90);
+  margin-right: var(--spacing-xs);
+`;
+
+export const $TimelineItemAuthor = styled.b`
+  display: block;
+  margin-top: var(--spacing-s);
 `;

@@ -1,4 +1,9 @@
-export type ApplicationListType = 'youth' | 'employer';
+export const APPLICATION_LIST_TYPES = {
+  YOUTH: 'youth',
+  EMPLOYER: 'employer',
+} as const;
+
+export type ApplicationListType = typeof APPLICATION_LIST_TYPES[keyof typeof APPLICATION_LIST_TYPES];
 
 export enum ApplicationStatus {
   SUBMITTED = 'submitted',

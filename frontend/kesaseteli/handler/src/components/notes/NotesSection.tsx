@@ -6,9 +6,8 @@ import useCreateNoteMutation from '../../hooks/backend/useCreateNoteMutation';
 import useHandlerNotesQuery from '../../hooks/backend/useHandlerNotesQuery';
 import { CreateNotePayload, NoteTargetType } from '../../types/note';
 import Timeline, { TimelineSize } from '../timeline/Timeline';
-import { getNoteTypeIcon } from '../timeline/TimelineTheme';
+import { getTimelineIcon } from '../timeline/TimelineTheme';
 import NoteCard from './NoteCard';
-import { $NoteTypeBadge } from './NoteCard.sc';
 import NoteForm from './NoteForm';
 import { $NotesContainer } from './NotesSection.sc';
 
@@ -23,10 +22,7 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
 
   const { data: notes = [] } = useHandlerNotesQuery(targetType, applicationId);
 
-  const createMutation = useCreateNoteMutation(
-    targetType,
-    applicationId || ''
-  );
+  const createMutation = useCreateNoteMutation(targetType, applicationId || '');
 
   return (
     <$NotesContainer>
@@ -47,7 +43,7 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
         emptyState={t('common:handlerNotes.noNotes')}
       >
         {notes.map((note) => {
-          const TypeIcon = getNoteTypeIcon(note.note_type);
+          const TypeIcon = getTimelineIcon(note.note_type);
           const formattedDate = new Date(note.created_at).toLocaleString(
             locale
           );
@@ -63,9 +59,9 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
               size={TimelineSize.large}
             >
               <Timeline.Item.Header>
-                <$NoteTypeBadge $type={note.note_type}>
+                <Timeline.Item.Badge $type={note.note_type}>
                   {t(`common:handlerNotes.noteType.${note.note_type}`)}
-                </$NoteTypeBadge>
+                </Timeline.Item.Badge>
                 {t('common:handlerNotes.authorAt', {
                   author: note.author_name,
                   date: formattedDate,

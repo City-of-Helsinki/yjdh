@@ -196,7 +196,8 @@
       "accepted": "Hyväksytty",
       "rejected": "Hylätty",
       "draft": "Luonnos",
-      "deleted_by_customer": "Poistettu"
+      "deleted_by_customer": "Poistettu",
+      "None": "Ei asetettu"
     },
     "statusTooltip": {
       "submitted": "Nuori on täyttänyt hakemuksen, mutta ei ole vielä aktivoinut sitä sähköpostiinsa tulleesta vahvistuslinkistä.",
@@ -330,7 +331,8 @@
     "noteTypeLabel": "Huomion tyyppi",
     "noteType": {
       "internal": "Sisäinen huomio",
-      "external_message": "Ulkoinen viesti"
+      "external_message": "Ulkoinen viesti",
+      "activity": "Tilamuutos"
     },
     "noteTypeHelperText": "Huomion tyyppi vaikuttaa vain sen ulkoasuun tässä näkymässä. Ulkoinen viesti ei vielä lähetä viestiä hakijalle.",
     "isImportantLabel": "Merkitse tärkeäksi",
@@ -345,6 +347,7 @@
     "sidebarToggleClose": "Sulje aikajana",
     "emptyState": "Ei vielä tapahtumia aikajanalla.",
     "jumpToNote": "Siirry huomioon →",
+    "statusChange": "Tila muuttunut: <statusValue>{{oldStatus}}</statusValue> → <statusValue>{{newStatus}}</statusValue>",
     "developerNote": {
       "label": "Kehittäjän huomiot",
       "content": "Sivupalkki on testikäytössä. Sivupalkin aikajanan tarkoituksena on näyttää tulevaisuudessa kommenttien lisäksi myös mm. hakemuksen tilamuutokset. Näin ollen se eroaa päänäkymän \"käsittelijän huomiot\" -osiosta, jossa listataan toistaiseksi vain huomioita. Sivupalkista voitaisiin luopua kokonaan ja listata kaikki yllämainitut asiat samassa päänäkymän huomio-osiossa, eli huomio-osio vaihdettaisiin aikajanaksi. Tällöin sivupalkkia ei tarvita ollenkaan."

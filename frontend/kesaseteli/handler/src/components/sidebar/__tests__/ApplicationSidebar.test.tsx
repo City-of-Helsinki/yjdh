@@ -5,7 +5,10 @@ import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 import useMediaQuery from 'shared/hooks/useMediaQuery';
 
-import { fakeNotes } from '../../../__tests__/utils/backend/fake-notes';
+import {
+  fakeActivityLogItem,
+  fakeNotes,
+} from '../../../__tests__/utils/backend/fake-notes';
 import useApplicationTimelineQuery from '../../../hooks/backend/useApplicationTimelineQuery';
 import ApplicationSidebar from '../ApplicationSidebar';
 
@@ -13,11 +16,17 @@ jest.mock('../../../hooks/backend/useApplicationTimelineQuery');
 jest.mock('shared/hooks/useLocale', () => jest.fn());
 jest.mock('shared/hooks/useMediaQuery', () => jest.fn());
 
-const mockTimelineNotes = fakeNotes(1, [
-  {
-    content: 'timeline note 1 content',
-  },
-]);
+const mockTimelineNotes = [
+  ...fakeNotes(1, [
+    {
+      content: 'timeline note 1 content',
+    },
+  ]),
+  fakeActivityLogItem({
+    old_value: 'submitted',
+    new_value: 'additional_information_requested',
+  }),
+];
 
 describe('ApplicationSidebar', () => {
   const mockOnToggle = jest.fn();
@@ -78,5 +87,31 @@ describe('ApplicationSidebar', () => {
     await userEvent.click(link);
 
     expect(mockOnToggle).toHaveBeenCalled();
+  });
+
+  it('renders activity log items correctly', () => {
+    renderComponent(
+      <ApplicationSidebar
+        applicationId="app-1"
+        applicationType="youth"
+        isOpen
+        onToggle={mockOnToggle}
+      />
+    );
+
+    expect(screen.getByText('Tilamuutos')).toBeInTheDocument();
+
+    // Test for the prefix text first
+    expect(screen.getByText(/tila muuttunut:/i)).toBeInTheDocument();
+
+    // The inner content within Trans components should be accessible via regular getByText
+    expect(screen.getByText('Lähetetty')).toBeInTheDocument();
+    expect(screen.getByText('Lisätietoja pyydetty')).toBeInTheDocument();
+
+    // Verify 'Siirry huomioon' is NOT present for the activity item.
+    // There is one note and one activity, so there should only be one 'Siirry huomioon' link.
+    expect(
+      screen.getByRole('link', { name: /siirry huomioon/i })
+    ).toBeInTheDocument();
   });
 });
