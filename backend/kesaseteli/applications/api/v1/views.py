@@ -22,6 +22,7 @@ from drf_spectacular.utils import (
     extend_schema_view,
     OpenApiParameter,
     OpenApiResponse,
+    PolymorphicProxySerializer,
 )
 from rest_framework import status
 from rest_framework.decorators import action
@@ -42,6 +43,7 @@ from applications.api.v1.permissions import (
     get_user_company,
 )
 from applications.api.v1.serializers import (
+    ActivityLogItemSerializer,
     AttachmentSerializer,
     EmployerApplicationSerializer,
     EmployerSummerVoucherAttachmentUploadInputSerializer,
@@ -81,6 +83,7 @@ from applications.target_groups import (
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
 from common.permissions import HandlerPermission
+from handler_notes.api.v1.serializers import NoteSerializer
 from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
@@ -224,6 +227,38 @@ class YouthApplicationFilter(filters.FilterSet):
     update=extend_schema(exclude=True),
     partial_update=extend_schema(exclude=True),
     destroy=extend_schema(exclude=True),
+    timeline=extend_schema(
+        description=(
+            "Returns a unified chronological timeline for the application. "
+            "Aggregates notes linked to the application AND notes linked to any "
+            "of its child models (like Attachments)."
+        ),
+        parameters=[
+            OpenApiParameter(
+                name="item_types",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                many=True,
+                explode=True,
+                description=(
+                    "Filter timeline items by type. If omitted, all types are returned."
+                ),
+                enum=["note", "activity"],
+            ),
+        ],
+        responses={
+            200: PolymorphicProxySerializer(
+                component_name="TimelineItem",
+                serializers={
+                    "note": NoteSerializer,
+                    "activity": ActivityLogItemSerializer,
+                },
+                resource_type_field_name="item_type",
+                many=True,
+            ),
+        },
+    ),
 )
 class YouthApplicationViewSet(ModelViewSet):
     """
@@ -255,7 +290,7 @@ class YouthApplicationViewSet(ModelViewSet):
         )
 
     @enforce_handler_view_adfs_login
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], pagination_class=None, filter_backends=[])
     def timeline(self, request, pk=None):
         """
         Returns a unified chronological timeline for the application.
@@ -1020,6 +1055,38 @@ class EmployerApplicationFilter(filters.FilterSet):
         description="Delete an employer summer voucher application.",
         responses=OpenApiResponse(description="Application deleted."),
     ),
+    timeline=extend_schema(
+        description=(
+            "Returns a unified chronological timeline for the application. "
+            "Aggregates notes linked to the application AND notes linked to any "
+            "of its child models (like Attachments)."
+        ),
+        parameters=[
+            OpenApiParameter(
+                name="item_types",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                many=True,
+                explode=True,
+                description=(
+                    "Filter timeline items by type. If omitted, all types are returned."
+                ),
+                enum=["note", "activity"],
+            ),
+        ],
+        responses={
+            200: PolymorphicProxySerializer(
+                component_name="TimelineItem",
+                serializers={
+                    "note": NoteSerializer,
+                    "activity": ActivityLogItemSerializer,
+                },
+                resource_type_field_name="item_type",
+                many=True,
+            ),
+        },
+    ),
 )
 class EmployerApplicationViewSet(ModelViewSet):
     queryset = EmployerApplication.objects.all()
@@ -1074,7 +1141,7 @@ class EmployerApplicationViewSet(ModelViewSet):
         return queryset.none()
 
     @enforce_handler_view_adfs_login
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], pagination_class=None, filter_backends=[])
     def timeline(self, request, pk=None):
         """
         Returns a unified chronological timeline for the application.
