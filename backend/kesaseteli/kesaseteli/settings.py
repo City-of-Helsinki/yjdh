@@ -283,7 +283,7 @@ INSTALLED_APPS = [
     # shared apps
     "shared.oidc",
     # local apps
-    "applications",
+    "applications.apps.ApplicationsConfig",
     "companies",
     "handler_notes",
     "staff_admin_permissions.apps.StaffAdminPermissionsConfig",
