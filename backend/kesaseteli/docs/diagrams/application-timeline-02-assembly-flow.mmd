@@ -1,0 +1,49 @@
+---
+title: Application Timeline Assembly Flow
+---
+flowchart TD
+    subgraph "Signal Layer"
+        YouthAppSave["YouthApplication.save()"]
+        EmployerAppSave["EmployerApplication.save()"]
+        AppPostSaveSignal["post_save Signal<br/>track_*_status_change()"]
+    end
+
+    TimelineActivityLog["TimelineActivityLog"]
+
+    YouthAppSave --> AppPostSaveSignal
+    EmployerAppSave --> AppPostSaveSignal
+    AppPostSaveSignal -->|"status changed? → create"| TimelineActivityLog
+    AppPostSaveSignal -->|"status unchanged"| Skip["Do nothing"]
+
+    subgraph "GET /api/v1/{appType}/{id}/timeline/"
+        TimelineService["TimelineService<br/>.get_application_timeline_data()"]
+        NoteQuery["Note.objects<br/>.for_application_timeline()"]
+        ActivityLogsQuery["TimelineService<br/>.get_activity_logs_for_application()"]
+
+        subgraph "For YouthApplication"
+            YouthAppNotes["Notes on YouthApp only"]
+        end
+
+        subgraph "For EmployerApplication"
+            EmployerAppNotes["Notes on EmployerApp"]
+            AttachmentNotes["Notes on child Attachments"]
+        end
+
+        TimelineService --> NoteQuery
+        NoteQuery --> YouthAppNotes
+        NoteQuery --> EmployerAppNotes
+        NoteQuery --> AttachmentNotes
+        TimelineService --> ActivityLogsQuery
+    end
+
+    MergeAndSort["Merge + Sort<br/>by created_at DESC"]
+    Serialize["Serialize via<br/>NoteSerializer / ActivityLogItemSerializer"]
+    JSON["JSON Response:<br/>TimelineItem[]"]
+
+    TimelineActivityLog --> ActivityLogsQuery
+    YouthAppNotes --> MergeAndSort
+    EmployerAppNotes --> MergeAndSort
+    AttachmentNotes --> MergeAndSort
+    ActivityLogsQuery --> MergeAndSort
+    MergeAndSort --> Serialize
+    Serialize --> JSON
