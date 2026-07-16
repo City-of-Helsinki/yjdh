@@ -1686,3 +1686,57 @@ class EmailTemplate(TimeStampedModel, UUIDModel):
         # Always regenerate text body from HTML body
         self.text_body = html_to_text(self.html_body)
         super().save(*args, **kwargs)
+
+
+class TimelineActivityLog(TimeStampedModel, UUIDModel):
+    """
+    Record of application status changes.
+    """
+
+    application_type = models.CharField(
+        max_length=64,
+        verbose_name=_("application type"),
+    )
+    application_id = models.UUIDField(
+        verbose_name=_("application id"),
+    )
+    from_status = models.CharField(
+        max_length=64,
+        blank=True,
+        verbose_name=_("from status"),
+    )
+    to_status = models.CharField(
+        max_length=64,
+        verbose_name=_("to status"),
+    )
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("actor"),
+    )
+    actor_name = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("actor name snapshot"),
+        help_text=_('actor name snapshot or "Deleted User"'),
+    )
+
+    class Meta:
+        db_table = "applications_timelineactivitylog"
+        verbose_name = _("timeline activity log")
+        verbose_name_plural = _("timeline activity logs")
+        indexes = [
+            models.Index(
+                fields=["application_type", "application_id", "created_at"],
+                name="tl_activity_app_type_id_ts_idx",
+            ),
+        ]
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"{self.application_type}:{self.application_id} | "
+            f"{self.from_status or 'N/A'} -> {self.to_status}"
+        )

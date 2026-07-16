@@ -32,6 +32,7 @@ AUDITLOG_EXCLUDE_TRACKING_MODELS = (
     "sessions.session",  # auth model
     # resilient-logger internal model, not subject to audit
     "resilient_logger.resilientlogentry",
+    "applications.timelineactivitylog",  # permanent timeline log, not subject to audit
 )
 
 AUDITLOG_INCLUDE_TRACKING_MODELS = (
