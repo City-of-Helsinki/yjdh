@@ -328,7 +328,6 @@ def test_employer_summer_voucher_handle_attachment_viewable_statuses(
 @pytest.mark.parametrize(
     "application_status",
     [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         EmployerApplicationStatus.ACCEPTED,
         EmployerApplicationStatus.REJECTED,
@@ -408,8 +407,8 @@ def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
             "user1", "company1", "user2", "company2", 404, id="other_company_access"
         ),  # Targeting other company's application
         pytest.param(
-            "staff", "none", "user1", "company1", 403, id="staff_access"
-        ),  # Staff/Handler (No company)
+            "staff", "none", "user1", "company1", 204, id="staff_access"
+        ),  # Staff/Handler (No company) — handlers bypass company/status checks
     ],
 )
 @pytest.mark.django_db
@@ -530,7 +529,6 @@ def test_employer_summer_voucher_handle_attachment_delete_submitted(
 @pytest.mark.parametrize(
     "application_status",
     [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         EmployerApplicationStatus.ACCEPTED,
         EmployerApplicationStatus.REJECTED,
@@ -674,7 +672,6 @@ def test_employer_summer_voucher_detail_unallowed_methods(
 @pytest.mark.parametrize(
     "application_status",
     [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         EmployerApplicationStatus.ACCEPTED,
         EmployerApplicationStatus.REJECTED,
@@ -716,7 +713,6 @@ def test_employer_application_list_non_viewable_statuses(
 @pytest.mark.parametrize(
     "application_status",
     [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         EmployerApplicationStatus.ACCEPTED,
         EmployerApplicationStatus.REJECTED,
@@ -807,7 +803,10 @@ def test_employer_application_detail_partially_unallowed_methods(
     set_company_business_id_to_client(company, user_client)
     if application_status == EmployerApplicationStatus.DRAFT:
         assert user_client.delete(url).status_code == status.HTTP_204_NO_CONTENT
-    elif application_status == EmployerApplicationStatus.SUBMITTED:
+    elif application_status in (
+        EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+    ):
         assert user_client.delete(url).status_code == status.HTTP_400_BAD_REQUEST
     else:
         assert user_client.delete(url).status_code == status.HTTP_404_NOT_FOUND

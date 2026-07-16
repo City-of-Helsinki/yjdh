@@ -1,4 +1,5 @@
 import logging
+import uuid
 from functools import cached_property
 
 from django.conf import settings
@@ -36,7 +37,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from applications.api.v1.permissions import (
-    ALLOWED_APPLICATION_UPDATE_STATUSES,
+    ALLOWED_APPLICATION_DELETE_STATUSES,
+    ALLOWED_APPLICATION_MODIFY_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
     EmployerApplicationPermission,
     EmployerSummerVoucherPermission,
@@ -87,6 +89,8 @@ from handler_notes.api.v1.serializers import NoteSerializer
 from shared.vtj.vtj_client import VTJClient
 
 LOGGER = logging.getLogger(__name__)
+
+FILE_NOT_FOUND_MESSAGE = "File not found"
 
 
 @extend_schema(responses=SchoolSerializer(many=True))
@@ -1175,7 +1179,7 @@ class EmployerApplicationViewSet(ModelViewSet):
         Allow to update only DRAFT status applications.
         """
         instance = self.get_object()
-        if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+        if instance.status != EmployerApplicationStatus.DRAFT:
             raise ValidationError("Only DRAFT applications can be updated")
 
         # Ensure that visibility and modification are strictly tied to the
@@ -1192,7 +1196,7 @@ class EmployerApplicationViewSet(ModelViewSet):
         Allow to delete only DRAFT status applications.
         """
         instance = self.get_object()
-        if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+        if instance.status not in ALLOWED_APPLICATION_DELETE_STATUSES:
             raise ValidationError("Only DRAFT applications can be deleted")
 
         # Ensure that visibility and modification are strictly tied to the
@@ -1288,17 +1292,21 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         """
         obj = self.get_object()
 
-        if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
-            raise ValidationError(
-                "Attachments can be uploaded only for DRAFT applications"
-            )
+        is_handler = HandlerPermission.has_user_permission(request.user)
 
-        # Ensure that visibility and modification are strictly tied to the
-        # organization the user currently represents. Even the original creator
-        # must have an active organization association to post an attachment.
-        user_company = get_user_company(request)
-        if not user_company or obj.application.company != user_company:
-            raise PermissionDenied("Only company members can post attachment to it")
+        if not is_handler:
+            if obj.application.status not in ALLOWED_APPLICATION_MODIFY_STATUSES:
+                raise ValidationError(
+                    "Attachments can be uploaded only for DRAFT or "
+                    "ADDITIONAL_INFORMATION_REQUESTED applications"
+                )
+
+            # Ensure that visibility and modification are strictly tied to the
+            # organization the user currently represents. Even the original creator
+            # must have an active organization association to post an attachment.
+            user_company = get_user_company(request)
+            if not user_company or obj.application.company != user_company:
+                raise PermissionDenied("Only company members can post attachment to it")
 
         upload_serializer = EmployerSummerVoucherAttachmentUploadInputSerializer(
             data=request.data
@@ -1306,17 +1314,93 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         upload_serializer.is_valid(raise_exception=True)
         uploaded = upload_serializer.validated_data
 
+        context = self.get_serializer_context()
+        context["is_handler"] = is_handler
+
         serializer = AttachmentSerializer(
             data={
                 "summer_voucher": obj.id,
                 "attachment_file": uploaded["attachment_file"],
                 "content_type": uploaded["attachment_file"].content_type,
                 "attachment_type": uploaded["attachment_type"],
-            }
+            },
+            context=context,
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def _get_attachment(
+        self, request: Request, obj: EmployerSummerVoucher, attachment_pk: str
+    ) -> HttpResponse | Response:
+        """Download a single attachment as a file.
+
+        Available only for company members (authors) and handlers.
+        """
+        is_handler = HandlerPermission.has_user_permission(request.user)
+
+        if not is_handler:
+            # Employer path: check company membership and status.
+            user_company = get_user_company(request)
+            if not user_company or obj.application.company != user_company:
+                raise PermissionDenied(
+                    "Only company members can read attachment from it"
+                )
+
+        attachment = obj.attachments.filter(pk=attachment_pk).first()
+        if not attachment or not attachment.attachment_file:
+            return Response(
+                {
+                    "detail": format_lazy(
+                        _(f"{FILE_NOT_FOUND_MESSAGE}."),
+                    )
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return FileResponse(attachment.attachment_file)
+
+    def _delete_attachment(
+        self, request: Request, obj: EmployerSummerVoucher, attachment_pk: str
+    ) -> Response:
+        """Delete a single attachment.
+
+        Handlers (staff/superuser) may delete from any application status.
+        Employers retain the existing company-ownership + status restriction.
+        """
+        is_handler = HandlerPermission.has_user_permission(request.user)
+
+        if not is_handler:
+            # 1. Visibility Check (404 Not Found):
+            # Unauthorized users from different companies are already filtered out
+            # by get_queryset() and will receive a 404 from self.get_object() above.
+
+            # 2. Identity Check (403 Permission Denied):
+            # Deny if the user is not representing the organization associated
+            # with the application. This ensures that even the original creator
+            # cannot delete attachments if they no longer represent the company.
+            user_company = get_user_company(request)
+            if not user_company or obj.application.company != user_company:
+                raise PermissionDenied(
+                    "Only company members can delete attachment from it"
+                )
+
+            # 3. Status Check (403 Permission Denied):
+            # Deny if the application is NOT in a DRAFT state. Employers may only
+            # delete attachments while the application is still editable.
+            if obj.application.status not in ALLOWED_APPLICATION_DELETE_STATUSES:
+                raise PermissionDenied(
+                    "Operation not allowed for this application status."
+                )
+
+        try:
+            instance = obj.attachments.get(id=attachment_pk)
+        except exceptions.ObjectDoesNotExist:
+            return Response(
+                {"detail": f"{FILE_NOT_FOUND_MESSAGE}."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
         methods=["GET"],
@@ -1330,7 +1414,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         ],
         responses={
             (200, "application/octet-stream"): OpenApiTypes.BINARY,
-            404: OpenApiResponse(description="File not found"),
+            404: OpenApiResponse(description=FILE_NOT_FOUND_MESSAGE),
         },
     )
     @extend_schema(
@@ -1345,7 +1429,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         ],
         responses={
             204: OpenApiResponse(description="Attachment deleted"),
-            404: OpenApiResponse(description="File not found"),
+            404: OpenApiResponse(description=FILE_NOT_FOUND_MESSAGE),
         },
     )
     @action(
@@ -1360,62 +1444,21 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
         self, request: Request, attachment_pk: str, *args, **kwargs
     ) -> HttpResponse | Response:
         """Download or delete a single attachment identified by its UUID."""
+        try:
+            uuid.UUID(attachment_pk)
+        except ValueError:
+            return Response(
+                {"detail": _(FILE_NOT_FOUND_MESSAGE)},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
         obj = self.get_object()
 
         if request.method == "GET":
-            """
-            Read a single attachment as file.
-            """
-            attachment = obj.attachments.filter(pk=attachment_pk).first()
-            if not attachment or not attachment.attachment_file:
-                return Response(
-                    {
-                        "detail": format_lazy(
-                            _("File not found."),
-                        )
-                    },
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-            return FileResponse(attachment.attachment_file)
+            return self._get_attachment(request, obj, attachment_pk)
 
-        elif request.method == "DELETE":
-            """
-            Delete a single attachment as file.
-            """
-            # 1. Visibility Check (404 Not Found):
-            # Unauthorized users from different companies are already filtered out
-            # by get_queryset() and will receive a 404 from self.get_object() above.
-
-            # 2. Identity Check (403 Permission Denied):
-            # Deny if the user is not representing the organization associated
-            # with the application. This ensures that even the original creator
-            # cannot delete attachments if they no longer represent the company.
-            user_company = get_user_company(request)
-            if not user_company or obj.application.company != user_company:
-                raise PermissionDenied(
-                    "Only company members can delete attachment from it"  # noqa: E501
-                )
-
-            # 3. Status Check (403 Permission Denied):
-            # Deny if the application is NOT in a modifiable state (must be DRAFT or
-            # requested for info). Consolidates both identity and status under 403 for
-            # consistent security testing.
-            if (
-                obj.application.status
-                not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-            ):
-                raise PermissionDenied(
-                    "Operation not allowed for this application status."
-                )
-
-            try:
-                instance = obj.attachments.get(id=attachment_pk)
-            except exceptions.ObjectDoesNotExist:
-                return Response(
-                    {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
-                )
-            instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.method == "DELETE":
+            return self._delete_attachment(request, obj, attachment_pk)
 
         return Response(
             {"detail": format_lazy(_("Method not allowed."))},

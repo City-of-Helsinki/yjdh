@@ -12,9 +12,15 @@ from companies.services import get_or_create_company_using_organization_roles
 ALLOWED_APPLICATION_VIEW_STATUSES = [
     EmployerApplicationStatus.DRAFT,
     EmployerApplicationStatus.SUBMITTED,
+    EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
 ]
 
-ALLOWED_APPLICATION_UPDATE_STATUSES = [
+ALLOWED_APPLICATION_MODIFY_STATUSES = [
+    EmployerApplicationStatus.DRAFT,
+    EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+]
+
+ALLOWED_APPLICATION_DELETE_STATUSES = [
     EmployerApplicationStatus.DRAFT,
 ]
 
@@ -35,7 +41,8 @@ def has_employer_application_permission(
     Allow access to employer applications.
     - Staff and superusers have full access.
     - Standard users must belong to the same company as the application.
-    - For standard users, only DRAFT and SUBMITTED applications are viewable.
+    - For standard users, DRAFT, SUBMITTED and ADDITIONAL_INFORMATION_REQUESTED
+      applications are viewable.
     """
     if request.user.is_staff or request.user.is_superuser:
         return True

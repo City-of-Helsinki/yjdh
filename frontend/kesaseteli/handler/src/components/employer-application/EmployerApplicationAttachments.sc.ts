@@ -31,15 +31,35 @@ export const $Table = styled.table`
   }
 `;
 
-export const $PlaceholderArea = styled.div`
+export const $DragDropArea = styled.div<{ $isDragging: boolean }>`
   margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
   border: 2px dashed
-    ${(props: { theme: DefaultTheme }) => props.theme.colors.black50};
+    ${({ $isDragging, theme }: { $isDragging: boolean; theme: DefaultTheme }) =>
+      $isDragging ? theme.colors.coatOfArms : theme.colors.black50};
   padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
   text-align: center;
   margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
-  background-color: ${(props: { theme: DefaultTheme }) =>
-    props.theme.colors.black5};
+  background-color: ${({
+    $isDragging,
+    theme,
+  }: {
+    $isDragging: boolean;
+    theme: DefaultTheme;
+  }) => ($isDragging ? theme.colors.coatOfArmsLight : theme.colors.black5)};
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  cursor: pointer;
+`;
+
+export const $PlaceholderArea = $DragDropArea;
+
+export const $AttachmentTypeGroup = styled.fieldset`
+  border: none;
+  padding: 0;
+  margin: 0 0 ${(props: { theme: DefaultTheme }) => props.theme.spacing.m} 0;
+  display: flex;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+  flex-wrap: wrap;
+  align-items: center;
 `;
 
 export const $PlaceholderInputArea = styled.div`
@@ -82,4 +102,14 @@ export const $AttachmentLink = styled.button.attrs({ type: 'button' })`
     color: ${(props: { theme: DefaultTheme }) =>
       props.theme.colors.coatOfArmsDark};
   }
+`;
+
+export const $MultiVoucherWarning = styled.div`
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+  font-size: var(--fontsize-body-m);
+  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black70};
+`;
+
+export const $HiddenFileInput = styled.input`
+  display: none;
 `;
