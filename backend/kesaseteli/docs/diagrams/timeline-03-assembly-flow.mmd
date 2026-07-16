@@ -1,0 +1,45 @@
+flowchart TD
+    subgraph "Signal Layer"
+        SAVE_YA["YouthApplication.save()"]
+        SAVE_EA["EmployerApplication.save()"]
+        SIG["pre_save Signal<br/>track_*_status_change()"]
+        TAL["TimelineActivityLog<br/>(append-only record)"]
+    end
+
+    SAVE_YA --> SIG
+    SAVE_EA --> SIG
+    SIG -->|"status changed?"| TAL
+    SIG -->|"no change"| SKIP["Skip"]
+
+    subgraph "GET /api/v1/{appType}/{id}/timeline/"
+        TS["TimelineService<br/>.get_application_timeline_data()"]
+        NQ["Note.objects<br/>.for_application_timeline()"]
+        AQL["TimelineService<br/>.get_activity_logs_for_application()"]
+
+        subgraph "For YouthApplication"
+            YN["Notes on YouthApp only"]
+        end
+
+        subgraph "For EmployerApplication"
+            EN1["Notes on EmployerApp"]
+            EN2["Notes on child Attachments<br/>(rolled up)"]
+        end
+
+        TS --> NQ
+        NQ --> YN
+        NQ --> EN1
+        NQ --> EN2
+        TS --> AQL
+    end
+
+    MERGE["Merge + Sort<br/>by created_at DESC"]
+    SER["Serialize via<br/>NoteSerializer / ActivityLogItemSerializer"]
+    JSON["JSON Response:<br/>TimelineItem[]"]
+
+    TAL --> AQL
+    YN --> MERGE
+    EN1 --> MERGE
+    EN2 --> MERGE
+    AQL --> MERGE
+    MERGE --> SER
+    SER --> JSON

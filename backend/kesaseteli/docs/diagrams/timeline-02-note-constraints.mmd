@@ -1,0 +1,22 @@
+flowchart TD
+    subgraph "Note Can Attach To..."
+        YA[YouthApplication]
+        EA[EmployerApplication]
+        AT[Attachment]
+    end
+
+    subgraph "NoteType Options"
+        INT["🔵 INTERNAL<br/>(handler-to-handler comments)"]
+        EXT["🟣 EXTERNAL_MESSAGE<br/>(documenting emails/calls)"]
+    end
+
+    INT --> YA
+    INT --> EA
+    INT --> AT
+    EXT --> YA
+    EXT --> EA
+
+    EXT -.->|"❌ BLOCKED"| AT
+
+    style EXT fill:#f9f,stroke:#333
+    style AT fill:#e0e0e0,stroke:#333

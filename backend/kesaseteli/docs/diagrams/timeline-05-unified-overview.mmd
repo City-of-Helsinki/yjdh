@@ -1,0 +1,57 @@
+flowchart TB
+    subgraph "Timeline Entry Types"
+        direction LR
+
+        subgraph "NOTE items"
+            N_INT["🔵 Internal Note<br/><i>handler comments</i>"]
+            N_EXT["🟣 External Message<br/><i>documented correspondence</i>"]
+        end
+
+        subgraph "ACTIVITY items"
+            A_STAT["🟢 Status Change<br/><i>application_state → new_state</i>"]
+        end
+    end
+
+    subgraph "Where Notes Live"
+        direction LR
+        YA_NOTES["YouthApplication<br/>→ own notes"]
+        EA_NOTES["EmployerApplication<br/>→ own notes<br/>+ attachment notes rolled up"]
+        AT_NOTES["Attachment<br/>→ own notes<br/>internal only"]
+    end
+
+    subgraph "Two UI Surfaces"
+        direction LR
+
+        SIDEBAR["📋 Sidebar Timeline<br/>ApplicationTimeline.tsx<br/>━━━━━━━━━━━━━━━<br/>Combined: notes + activities<br/>Small size<br/>Chronological newest first<br/>Click note → scroll to NotesSection"]
+
+        NOTES_SEC["📝 Notes Section<br/>NotesSection.tsx<br/>━━━━━━━━━━━━━━━<br/>Notes only no activities<br/>Large size<br/>Newest first<br/>Create / Edit / Delete"]
+    end
+
+    subgraph "Theme / Visual Identity"
+        direction LR
+        T_INT["🔵 Blue speech bubble<br/>var(--color-coat-of-arms)"]
+        T_EXT["🟣 Purple envelope<br/>var(--color-bus)"]
+        T_ATC["⚪ Grey paperclip<br/>var(--color-black-70)"]
+        T_ACT["🟢 Green history<br/>var(--color-tram)"]
+        T_IMP["🔴 Red border/bg<br/>when is_important=true"]
+    end
+
+    YA_NOTES --> SIDEBAR
+    EA_NOTES --> SIDEBAR
+    AT_NOTES --> SIDEBAR
+    YA_NOTES --> NOTES_SEC
+    EA_NOTES --> NOTES_SEC
+    AT_NOTES --> NOTES_SEC
+
+    N_INT --> SIDEBAR
+    N_EXT --> SIDEBAR
+    A_STAT --> SIDEBAR
+    N_INT --> NOTES_SEC
+    N_EXT --> NOTES_SEC
+
+    N_INT -.-> T_INT
+    N_EXT -.-> T_EXT
+    A_STAT -.-> T_ACT
+
+    style SIDEBAR fill:#e3f2fd,stroke:#1565c0
+    style NOTES_SEC fill:#fff8e1,stroke:#f9a825

@@ -1,0 +1,64 @@
+classDiagram
+    direction LR
+
+    class YouthApplication {
+        UUID id
+        String status
+        +GenericRelation notes
+    }
+
+    class EmployerApplication {
+        UUID id
+        String status
+        +GenericRelation notes
+    }
+
+    class EmployerSummerVoucher {
+        UUID id
+        FK → EmployerApplication
+    }
+
+    class Attachment {
+        UUID id
+        +GenericRelation notes
+        FK → EmployerSummerVoucher
+        AttachmentType attachment_type
+        String content_type
+        File attachment_file
+    }
+
+    class Note {
+        UUID id
+        FK → ContentType (content_type)
+        UUID object_id
+        GenericForeignKey content_object
+        NoteType note_type
+        Boolean is_important
+        Text content
+        FK → User author
+        DateTime created_at
+    }
+
+    class NoteType {
+        <<enum>>
+        INTERNAL = "internal"
+        EXTERNAL_MESSAGE = "external_message"
+    }
+
+    class TimelineActivityLog {
+        UUID id
+        String application_type
+        UUID application_id
+        String from_status
+        String to_status
+        FK → User actor
+        String actor_name
+        DateTime created_at
+    }
+
+    EmployerApplication "1" --> "0..*" EmployerSummerVoucher
+    EmployerSummerVoucher "1" --> "0..*" Attachment
+    YouthApplication ..> Note : GenericRelation
+    EmployerApplication ..> Note : GenericRelation
+    Attachment ..> Note : GenericRelation
+    NoteType --> Note : note_type

@@ -21,6 +21,7 @@
 - [Environment Variables](#environment-variables)
 - [Audit Logging](#audit-logging)
 - [Documentation](#documentation)
+  - [Handler Timeline](#handler-timeline)
   - [Summer Voucher Configuration](#summer-voucher-configuration)
   - [Management Commands](#management-commands)
     - [Create Summer Voucher Configuration](#create-summer-voucher-configuration)
@@ -236,6 +237,15 @@ shipping pipeline.
 -   [Applications Module](applications/README.md): Documentation for Summer Voucher Configuration, Email Templates, Target Groups, and School Management.
 -   [Staff Admin Permissions](staff_admin_permissions/README.md): Documentation for handling staff user permissions and AD group mappings.
 -   [Auth & Compliance Logging](kesaseteli/AUTH_LOGGING.md): DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events — retention requirements and log entry structure.
+
+### Handler Timeline
+
+The handler UI presents a unified chronological timeline on application detail pages, combining handler notes and application status changes. Architecture diagrams are in [`docs/diagrams/`](docs/diagrams/):
+
+-   [`timeline-01-data-models.mmd`](docs/diagrams/timeline-01-data-models.mmd) — Data model relationships (Note, TimelineActivityLog, Attachment, etc.)
+-   [`timeline-02-note-constraints.mmd`](docs/diagrams/timeline-02-note-constraints.mmd) — Which note types can attach to which models (external messages blocked on attachments)
+-   [`timeline-03-assembly-flow.mmd`](docs/diagrams/timeline-03-assembly-flow.mmd) — How the API assembles the timeline (signals, queries, merge)
+-   [`timeline-05-unified-overview.mmd`](docs/diagrams/timeline-05-unified-overview.mmd) — How notes, activities, and themes come together across both UI surfaces
 
 The OpenAPI schema is served from `/openapi/`.
 Swagger UI is served from `/api_docs/swagger/`.
