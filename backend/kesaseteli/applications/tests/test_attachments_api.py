@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.utils import validate_file_name
 from django.http import FileResponse
+from django.test import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 from PIL import Image
@@ -211,25 +212,38 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
-    "status, response_code",
+    "client_fixture, status, expected_code",
     [
-        (EmployerApplicationStatus.SUBMITTED, 400),
-        (EmployerApplicationStatus.ACCEPTED, 404),
-        (EmployerApplicationStatus.DELETED_BY_CUSTOMER, 404),
-        (EmployerApplicationStatus.REJECTED, 404),
+        ("api_client", EmployerApplicationStatus.SUBMITTED, 400),
+        ("api_client", EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED, 201),
+        ("api_client", EmployerApplicationStatus.ACCEPTED, 404),
+        ("api_client", EmployerApplicationStatus.DELETED_BY_CUSTOMER, 404),
+        ("api_client", EmployerApplicationStatus.REJECTED, 404),
+        ("staff_client", EmployerApplicationStatus.SUBMITTED, 201),
+        ("staff_client", EmployerApplicationStatus.ACCEPTED, 201),
+        ("staff_client", EmployerApplicationStatus.DELETED_BY_CUSTOMER, 201),
+        ("staff_client", EmployerApplicationStatus.REJECTED, 201),
     ],
 )
 def test_attachment_upload_invalid_status(
-    request, api_client, application, summer_voucher, status, response_code
+    request,
+    client_fixture,
+    status,
+    expected_code,
+    api_client,
+    staff_client,
+    application,
+    summer_voucher,
 ):
+    client = api_client if client_fixture == "api_client" else staff_client
     application.status = status
     application.save()
     response = _upload_file(
-        request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
+        request, client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
     )
-    assert response.status_code == response_code
-    assert len(summer_voucher.attachments.all()) == 0
+    assert response.status_code == expected_code
 
 
 @pytest.mark.django_db
@@ -298,10 +312,11 @@ def test_get_attachment_with_invalid_uuid(
 @pytest.mark.parametrize(
     "attachment_type", [attachment_type for attachment_type in AttachmentType.values]
 )
-def test_delete_attachment(request, api_client, summer_voucher, attachment_type):
+def test_delete_draft_attachment(request, api_client, summer_voucher, attachment_type):
     """
-    Test that deleting an attachment from an employer summer voucher works.
+    Test that employers can delete an attachment from a DRAFT employer summer voucher.
     """
+    assert summer_voucher.application.status == EmployerApplicationStatus.DRAFT
     _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
     attachment = Attachment.objects.first()
     attachment_delete_url = handle_attachment_url(summer_voucher, attachment.pk)
@@ -356,6 +371,7 @@ def test_delete_attachment_that_does_not_exist(
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_delete_attachment_for_submitted_application(
     api_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
@@ -411,6 +427,7 @@ def test_get_attachment_for_other_user(
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_upload_attachment_for_submitted_application(
     request, api_client, submitted_summer_voucher
 ):
@@ -422,6 +439,163 @@ def test_upload_attachment_for_submitted_application(
         AttachmentType.EMPLOYMENT_CONTRACT,
     )
     assert response.status_code == 400
-    assert "Attachments can be uploaded only for DRAFT applications" in response.data
+    assert (
+        "Attachments can be uploaded only for DRAFT or ADDITIONAL_INFORMATION_REQUESTED applications"
+        in response.data
+    )
     submitted_summer_voucher.refresh_from_db()
     assert submitted_summer_voucher.attachments.count() == 0
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "attachment_type", [attachment_type for attachment_type in AttachmentType.values]
+)
+def test_handler_can_delete_draft_attachment(
+    request, api_client, staff_client, summer_voucher, attachment_type
+):
+    """
+    Handlers may delete attachments (also) from DRAFT applications.
+    `api_client` (employer) uploads first; `staff_client` (handler) deletes.
+    """
+    _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
+    attachment = Attachment.objects.first()
+    attachment_delete_url = handle_attachment_url(summer_voucher, attachment.pk)
+
+    response = staff_client.delete(attachment_delete_url)
+
+    assert response.status_code == 204
+    assert not Attachment.objects.filter(pk=attachment.pk).exists()
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_handler_can_delete_submitted_attachment(
+    staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    """
+    Handlers may delete attachments from SUBMITTED applications (no status restriction).
+    """
+    attachment_delete_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
+    )
+    response = staff_client.delete(attachment_delete_url)
+    assert response.status_code == 204
+    assert not Attachment.objects.filter(
+        pk=submitted_employment_contract_attachment.pk
+    ).exists()
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_employer_cannot_delete_submitted_attachment(
+    api_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    """
+    Employers still cannot delete attachments from SUBMITTED applications.
+    Regression guard: existing status restriction must not have been removed.
+    """
+    attachment_delete_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
+    )
+    response = api_client.delete(attachment_delete_url)
+    assert response.status_code == 403
+    assert Attachment.objects.filter(
+        pk=submitted_employment_contract_attachment.pk
+    ).exists()
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_employer_cannot_delete_additional_info_attachment(
+    api_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    """
+    Employers cannot delete attachments when the application is in
+    ADDITIONAL_INFORMATION_REQUESTED status (only DRAFT is allowed).
+    """
+    submitted_summer_voucher.application.status = (
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    )
+    submitted_summer_voucher.application.save()
+    attachment_delete_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
+    )
+    response = api_client.delete(attachment_delete_url)
+    assert response.status_code == 403
+    assert Attachment.objects.filter(
+        pk=submitted_employment_contract_attachment.pk
+    ).exists()
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_handler_can_upload_attachment(request, staff_client, submitted_summer_voucher):
+    """
+    Handlers may upload attachments to applications in any status (e.g. SUBMITTED).
+    """
+    response = _upload_file(
+        request,
+        staff_client,
+        submitted_summer_voucher,
+        "pdf",
+        AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == 201
+    assert submitted_summer_voucher.attachments.count() == 1
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_handler_can_read_attachment(
+    staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    """
+    Handlers may read and download attachments.
+    """
+    attachment_get_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
+    )
+    response = staff_client.get(attachment_get_url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_unauthorized_employer_cannot_read_attachment(
+    api_client2, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    """
+    Employers from different companies cannot read/download attachments.
+    """
+    attachment_get_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
+    )
+    response = api_client2.get(attachment_get_url)
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "status", [status for status in EmployerApplicationStatus.values]
+)
+def test_handler_can_upload_to_any_application_status(
+    request, staff_client, summer_voucher, status
+):
+    """
+    Handlers may upload attachments to applications in any status.
+    """
+    summer_voucher.application.status = status
+    summer_voucher.application.save()
+
+    response = _upload_file(
+        request,
+        staff_client,
+        summer_voucher,
+        "pdf",
+        AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == 201
+    assert summer_voucher.attachments.count() == 1

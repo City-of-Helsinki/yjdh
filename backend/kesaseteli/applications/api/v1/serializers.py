@@ -161,13 +161,17 @@ class AttachmentSerializer(serializers.ModelSerializer):
     def get_attachment_file_name(self, obj) -> str:
         return getattr(obj.attachment_file, "name", "")
 
+    def get_is_handler(self) -> bool:
+        return self.context.get("is_handler", False)
+
     def validate(self, data):
         """
         Perform rudimentary validation of file content to guard against
         accidentally uploading invalid files.
         """
 
-        if (
+        is_handler = self.get_is_handler()
+        if not is_handler and (
             data["summer_voucher"].application.status
             not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
         ):

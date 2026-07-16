@@ -137,7 +137,7 @@ dmypy.json
 **/.idea/**
 *.iml
 
-# antigravity
+# AI agents
 .vscode
 .agent/**
 .agents/**
@@ -146,6 +146,7 @@ dmypy.json
 .ag_cache/
 .claude
 .continue
+**/scratch
 
 node_modules
 
@@ -171,5 +172,3 @@ nohup.out
 
 # Scripts output directories
 **/scripts/data
-# AI output directories
-**/scratch
