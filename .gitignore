@@ -144,6 +144,8 @@ dmypy.json
 .gemini/**
 .*antigravity*
 .ag_cache/
+.claude
+.continue
 
 node_modules
 
