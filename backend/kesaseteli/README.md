@@ -21,6 +21,8 @@
 - [Environment Variables](#environment-variables)
 - [Audit Logging](#audit-logging)
 - [Documentation](#documentation)
+  - [Handler Timeline](#handler-timeline)
+  - [API Documentation](#api-documentation)
   - [Summer Voucher Configuration](#summer-voucher-configuration)
   - [Management Commands](#management-commands)
     - [Create Summer Voucher Configuration](#create-summer-voucher-configuration)
@@ -236,6 +238,15 @@ shipping pipeline.
 -   [Applications Module](applications/README.md): Documentation for Summer Voucher Configuration, Email Templates, Target Groups, and School Management.
 -   [Staff Admin Permissions](staff_admin_permissions/README.md): Documentation for handling staff user permissions and AD group mappings.
 -   [Auth & Compliance Logging](kesaseteli/AUTH_LOGGING.md): DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events — retention requirements and log entry structure.
+
+### Handler Timeline
+
+The handler UI presents a unified chronological timeline on application detail pages, combining handler notes and application status changes. Architecture diagrams are in [`docs/diagrams/`](docs/diagrams/):
+
+-   [`application-timeline-01-data-models.mmd`](docs/diagrams/application-timeline-01-data-models.mmd) — Data model relationships (Note, TimelineActivityLog, Attachment, etc.)
+-   [`application-timeline-02-assembly-flow.mmd`](docs/diagrams/application-timeline-02-assembly-flow.mmd) — How the API assembles the timeline (signals, queries, merge)
+
+### API Documentation
 
 The OpenAPI schema is served from `/openapi/`.
 Swagger UI is served from `/api_docs/swagger/`.
