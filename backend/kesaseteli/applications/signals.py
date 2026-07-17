@@ -1,6 +1,6 @@
 from auditlog_extra.context import get_actor
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save, pre_delete, pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from applications.models import (
@@ -107,15 +107,3 @@ def track_application_status_change(
     if update_fields is not None and "status" not in update_fields:
         return
     _track_status_change(sender._meta.model_name, instance)
-
-
-@receiver(pre_delete, sender=get_user_model())
-def anonymize_actor_name_on_user_delete(sender, instance, **kwargs):
-    """
-    Anonymize actor_name for TimelineActivityLog entries when a user is deleted.
-
-    Uses pre_delete so the SET_NULL cascade hasn't nulled the FK yet;
-    by the time post_delete fires the actor column is already NULL and
-    filter(actor=instance) would match nothing.
-    """
-    TimelineActivityLog.objects.filter(actor=instance).update(actor_name="Deleted User")

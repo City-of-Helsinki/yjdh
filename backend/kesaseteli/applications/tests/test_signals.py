@@ -8,8 +8,6 @@ Coverage:
   _track_status_change    - creates / skips TimelineActivityLog correctly
   track_application_status_change (post_save receiver)
                           - integration: status change logged via .save()
-  anonymize_actor_name_on_user_delete (post_delete receiver)
-                          - bulk-anonymizes actor_name on user removal
 """
 
 from unittest.mock import patch
@@ -238,50 +236,3 @@ def test_no_log_created_on_initial_creation():
     """Creating a new application does not produce a log entry."""
     app = YouthApplicationFactory(status="submitted")
     assert not TimelineActivityLog.objects.filter(application_id=app.pk).exists()
-
-
-# ---------------------------------------------------------------------------
-# anonymize_actor_name_on_user_delete (post_delete receiver)
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.django_db
-def test_user_deletion_anonymizes_actor_name():
-    """Deleting a user sets actor_name to 'Deleted User' on related logs."""
-    actor = HandlerUserFactory()
-    app = YouthApplicationFactory(status="submitted")
-    TimelineActivityLog.objects.create(
-        application_type="youthapplication",
-        application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
-        actor=actor,
-        actor_name=actor.get_full_name(),
-    )
-
-    actor.delete()
-
-    log = TimelineActivityLog.objects.get(application_id=app.pk)
-    assert log.actor is None  # FK is SET_NULL on the model
-    assert log.actor_name == "Deleted User"
-
-
-@pytest.mark.django_db
-def test_user_deletion_only_affects_related_logs():
-    """Logs for other actors are not modified when a different user is deleted."""
-    actor_a = HandlerUserFactory()
-    actor_b = HandlerUserFactory()
-    app = YouthApplicationFactory(status="submitted")
-    TimelineActivityLog.objects.create(
-        application_type="youthapplication",
-        application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
-        actor=actor_b,
-        actor_name="Keep This Name",
-    )
-
-    actor_a.delete()
-
-    log = TimelineActivityLog.objects.get(application_id=app.pk)
-    assert log.actor_name == "Keep This Name"
