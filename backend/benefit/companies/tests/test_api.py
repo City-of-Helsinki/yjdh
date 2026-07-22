@@ -3,8 +3,6 @@ from copy import deepcopy
 from unittest.mock import patch
 
 import pytest
-from django.conf import settings
-from django.test import override_settings
 from requests import HTTPError
 
 from applications.tests.conftest import *  # noqa
@@ -18,27 +16,12 @@ from companies.tests.data.company_data import (
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.tests.factories import TermsOfServiceApprovalFactory
 
-SERVICE_BUS_INFO_PATH = f"{settings.SERVICE_BUS_BASE_URL}/GetCompany"
-YRTTI_BASIC_INFO_PATH = f"{settings.YRTTI_BASE_URL}/BasicInfo"
-
 
 def get_company_api_url(business_id=""):
     url = "/v1/company/"
     if business_id:
         url = f"{url}get/{business_id}/"
     return url
-
-
-def set_up_ytj_mock_requests(
-    ytj_response: dict, business_details_response: dict, requests_mock
-):
-    """Set up the mock responses."""
-    business_id = ytj_response["results"][0]["businessId"]
-    ytj_url = f"{settings.YTJ_BASE_URL}/{business_id}"
-    business_details_url = ytj_response["results"][0]["bisDetailsUri"]
-
-    requests_mock.get(ytj_url, json=ytj_response)
-    requests_mock.get(business_details_url, json=business_details_response)
 
 
 @pytest.fixture(autouse=True)
@@ -57,6 +40,24 @@ def setup_settings(settings):
     settings.YRTTI_DISABLE = False
 
 
+@pytest.fixture
+def mock_service_bus_get_company_post(requests_mock, settings):
+    def _mock_service_bus_get_company_post(**kwargs):
+        matcher = re.compile(re.escape(f"{settings.SERVICE_BUS_BASE_URL}/GetCompany"))
+        requests_mock.post(matcher, **kwargs)
+
+    return _mock_service_bus_get_company_post
+
+
+@pytest.fixture
+def mock_yrtti_basic_info_post(requests_mock, settings):
+    def _mock_yrtti_basic_info_post(**kwargs):
+        matcher = re.compile(re.escape(f"{settings.YRTTI_BASE_URL}/BasicInfo"))
+        requests_mock.post(matcher, **kwargs)
+
+    return _mock_yrtti_basic_info_post
+
+
 @pytest.mark.django_db
 def test_get_company_unauthenticated(anonymous_client):
     response = anonymous_client.get(get_company_api_url())
@@ -65,8 +66,9 @@ def test_get_company_unauthenticated(anonymous_client):
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
-def test_get_mock_company(api_client, mock_get_organisation_roles_and_create_company):
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
+def test_get_mock_company(api_client, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
     response = api_client.get(get_company_api_url())
 
     assert response.status_code == 200
@@ -75,10 +77,9 @@ def test_get_mock_company(api_client, mock_get_organisation_roles_and_create_com
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
-def test_get_mock_company_results_in_error(
-    api_client, mock_get_organisation_roles_and_create_company
-):
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
+def test_get_mock_company_results_in_error(api_client, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
     api_client.credentials(HTTP_SESSION_ID="-1")
     response = api_client.get(get_company_api_url())
     assert response.status_code == 404
@@ -89,8 +90,9 @@ def test_get_mock_company_results_in_error(
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
 def test_get_company_from_service_bus_invalid_response(
-    api_client, requests_mock, mock_get_organisation_roles_and_create_company
+    api_client, mock_service_bus_get_company_post
 ):
     business_id = DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
         "BusinessId"
@@ -98,8 +100,7 @@ def test_get_company_from_service_bus_invalid_response(
     response = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
     response["GetCompanyResult"]["Company"] = {}
 
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, json=response)
+    mock_service_bus_get_company_post(json=response)
     response = api_client.get(get_company_api_url(business_id))
 
     assert response.status_code == 500
@@ -110,14 +111,13 @@ def test_get_company_from_service_bus_invalid_response(
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
 def test_get_organisation_from_service_bus(
     api_client,
     bf_user,
-    requests_mock,
-    mock_get_organisation_roles_and_create_company,
+    mock_service_bus_get_company_post,
 ):
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, json=DUMMY_SERVICE_BUS_RESPONSE)
+    mock_service_bus_get_company_post(json=DUMMY_SERVICE_BUS_RESPONSE)
     business_id = DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
         "BusinessId"
     ]
@@ -135,16 +135,15 @@ def test_get_organisation_from_service_bus(
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
 def test_get_organisation_from_service_bus_missing_business_line(
     api_client,
     bf_user,
-    requests_mock,
-    mock_get_organisation_roles_and_create_company,
+    mock_service_bus_get_company_post,
 ):
     dummy_copy = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
     dummy_copy["GetCompanyResult"]["Company"]["BusinessLine"] = None
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, json=dummy_copy)
+    mock_service_bus_get_company_post(json=dummy_copy)
     response = api_client.get(get_company_api_url())
     assert response.status_code == 200
 
@@ -167,7 +166,8 @@ def test_get_company_from_yrtti(
     api_client,
     bf_user,
     terms_of_service,
-    requests_mock,
+    mock_service_bus_get_company_post,
+    mock_yrtti_basic_info_post,
     mock_get_organisation_roles_and_create_association,
 ):
     TermsOfServiceApprovalFactory(
@@ -176,10 +176,8 @@ def test_get_company_from_yrtti(
         terms=terms_of_service,
     )
     business_id = DUMMY_YRTTI_RESPONSE["BasicInfoResponse"]["BusinessId"]
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
-    requests_mock.post(matcher, json=DUMMY_YRTTI_RESPONSE)
+    mock_service_bus_get_company_post(text="Error", status_code=404)
+    mock_yrtti_basic_info_post(json=DUMMY_YRTTI_RESPONSE)
     response = api_client.get(get_company_api_url(business_id))
     assert response.status_code == 200
 
@@ -198,12 +196,13 @@ def test_get_company_from_yrtti(
 
 @pytest.mark.django_db
 def test_get_company_from_service_bus_and_yrtti_results_in_error(
-    api_client, requests_mock, mock_get_organisation_roles_and_create_company
+    api_client,
+    mock_service_bus_get_company_post,
+    mock_yrtti_basic_info_post,
+    mock_get_organisation_roles_and_create_company,
 ):
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
-    requests_mock.post(matcher, text="Error", status_code=404)
+    mock_service_bus_get_company_post(text="Error", status_code=404)
+    mock_yrtti_basic_info_post(text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
     with pytest.raises(HTTPError):
@@ -211,11 +210,11 @@ def test_get_company_from_service_bus_and_yrtti_results_in_error(
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
 def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
-    api_client, requests_mock, mock_get_organisation_roles_and_create_company
+    api_client, mock_service_bus_get_company_post, mock_yrtti_basic_info_post
 ):
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, json=DUMMY_SERVICE_BUS_RESPONSE)
+    mock_service_bus_get_company_post(json=DUMMY_SERVICE_BUS_RESPONSE)
     response = api_client.get(get_company_api_url())
 
     # First request to save Company to DB
@@ -223,10 +222,8 @@ def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     assert Company.objects.count() == 1
 
     # Now assuming request to YTJ & YRTTI doesn't return any data
-    matcher = re.compile(re.escape(SERVICE_BUS_INFO_PATH))
-    requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(YRTTI_BASIC_INFO_PATH))
-    requests_mock.post(matcher, text="Error", status_code=404)
+    mock_service_bus_get_company_post(text="Error", status_code=404)
+    mock_yrtti_basic_info_post(text="Error", status_code=404)
 
     response = api_client.get(get_company_api_url())
     # Still be able to query company data
@@ -334,8 +331,8 @@ def get_search_url(name):
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
-def test_search_organisations_mock(api_client):
+def test_search_organisations_mock(api_client, settings):
+    settings.NEXT_PUBLIC_MOCK_FLAG = True
     response = api_client.get(get_search_url("test"))
     assert response.status_code == 200
     assert isinstance(response.data, list)
