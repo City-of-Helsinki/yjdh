@@ -41,6 +41,22 @@ def set_up_ytj_mock_requests(
     requests_mock.get(business_details_url, json=business_details_response)
 
 
+@pytest.fixture(autouse=True)
+def setup_settings(settings):
+    settings.SERVICE_BUS_BASE_URL = "https://service-bus.test"
+    settings.SERVICE_BUS_AUTH_USERNAME = "service_bus_username"
+    settings.SERVICE_BUS_AUTH_PASSWORD = "service_bus_password"
+    settings.SERVICE_BUS_TIMEOUT = 30
+    settings.SERVICE_BUS_SEARCH_LIMIT = 10
+
+    settings.YRTTI_BASE_URL = "https://yrtti.test"
+    settings.YRTTI_AUTH_USERNAME = "yrtti_username"
+    settings.YRTTI_AUTH_PASSWORD = "yrtti_password"
+    settings.YRTTI_TIMEOUT = 30
+    settings.YRTTI_SEARCH_LIMIT = 10
+    settings.YRTTI_DISABLE = False
+
+
 @pytest.mark.django_db
 def test_get_company_unauthenticated(anonymous_client):
     response = anonymous_client.get(get_company_api_url())
