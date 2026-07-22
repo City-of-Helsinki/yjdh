@@ -38,6 +38,12 @@ def ahjo_open_case_request(application_with_ahjo_case_id):
     return AhjoOpenCaseRequest(application_with_ahjo_case_id)
 
 
+@pytest.fixture(autouse=True)
+def setup_settings(settings):
+    settings.API_BASE_URL = "http://test.test"
+    settings.AHJO_REST_API_URL = "http://ahjo-rest-api-url.test"
+
+
 @pytest.mark.parametrize(
     "ahjo_request_class, request_type, request_method, url_part",
     [
@@ -76,8 +82,6 @@ def test_ahjo_requests_without_application(
     AhjoSetting.objects.create(
         name=AhjoSettingName.SIGNER_ORG_IDS, data=["1234567", "7654321"]
     )
-
-    settings.API_BASE_URL = "http://test.com"
     request_instance = ahjo_request_class()
 
     assert request_instance.request_type == request_type
@@ -176,7 +180,6 @@ def test_ahjo_application_requests(
     handler = application.calculation.handler
     handler.ad_username = "test"
     handler.save()
-    settings.API_BASE_URL = "http://test.com"
 
     request = ahjo_request_class(application)
     assert request.application == application

@@ -398,6 +398,7 @@ def test_get_attachment_unauthorized_ip_not_allowed(
     ahjo_client, ahjo_user_token, attachment, settings
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = False
+    settings.DISABLE_AHJO_SAFE_LIST_CHECK = False
     url = reverse("ahjo_attachment_url", kwargs={"uuid": attachment.id})
     auth_headers = {"HTTP_AUTHORIZATION": "Token " + ahjo_user_token.key}
 
@@ -714,6 +715,7 @@ def test_ahjo_callback_unauthorized_ip_not_allowed(
     ahjo_client, ahjo_user_token, decided_application, settings, request_type
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = False
+    settings.DISABLE_AHJO_SAFE_LIST_CHECK = False
     url = reverse(
         "ahjo_callback_url",
         kwargs={"request_type": request_type, "uuid": decided_application.id},

@@ -15,6 +15,14 @@ from applications.services.ahjo_authentication import (
 TOKEN_EXPIRY_SECONDS = 30000
 
 
+@pytest.fixture(autouse=True)
+def ahjo_connector_settings(settings):
+    settings.AHJO_TOKEN_URL = "https://ahjo-token-url.test"
+    settings.AHJO_CLIENT_ID = "ahjo-client-id"
+    settings.AHJO_CLIENT_SECRET = "ahjo-client-secret"
+    settings.AHJO_REDIRECT_URL = "https://ahjo-redirect-url.test"
+
+
 @pytest.fixture
 def ahjo_connector():
     return AhjoConnector()
@@ -61,15 +69,33 @@ def ahjo_code():
     )
 
 
-def test_is_configured(ahjo_connector):
-    ahjo_connector.AHJO_TOKEN_URL = "http://example.com/token"
-    ahjo_connector.AHJO_CLIENT_ID = "client_id"
-    ahjo_connector.AHJO_CLIENT_SECRET = "client_secret"
-    ahjo_connector.AHJO_REDIRECT_URL = "http://example.com/redirect"
+def test_is_configured_success():
+    ahjo_connector = AhjoConnector()
+    ahjo_connector.token_url = "https://ahjo-token-url.test"
+    ahjo_connector.client_id = "client_id"
+    ahjo_connector.client_secret = "client_secret"
+    ahjo_connector.redirect_uri = "https://ahjo-redirect-url.test"
     assert ahjo_connector.is_configured() is True
 
-    # Test with missing config options
-    ahjo_connector.token_url = ""
+
+@pytest.mark.parametrize("token_url", ["https://ahjo-token-url.test", ""])
+@pytest.mark.parametrize("client_id", ["client_id", ""])
+@pytest.mark.parametrize("client_secret", ["client_secret", ""])
+@pytest.mark.parametrize("redirect_uri", ["https://ahjo-redirect-url.test", ""])
+def test_is_configured_failure(
+    token_url: str,
+    client_id: str,
+    client_secret: str,
+    redirect_uri: str,
+):
+    if token_url and client_id and client_secret and redirect_uri:
+        pytest.skip("success case is covered by test_is_configured_success")
+
+    ahjo_connector = AhjoConnector()
+    ahjo_connector.token_url = token_url
+    ahjo_connector.client_id = client_id
+    ahjo_connector.client_secret = client_secret
+    ahjo_connector.redirect_uri = redirect_uri
     assert ahjo_connector.is_configured() is False
 
 
@@ -78,7 +104,7 @@ def test_get_new_token(ahjo_connector, ahjo_code, token_response):
     # Test with valid auth code
     with requests_mock.Mocker() as m:
         m.post(
-            "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
+            ahjo_connector.token_url,
             json=token_response,
         )
 
@@ -101,7 +127,7 @@ def test_refresh_token(ahjo_connector, ahjo_setting, token_response):
 
     with requests_mock.Mocker() as m:
         m.post(
-            "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
+            ahjo_connector.token_url,
             json=token_response,
         )
 
@@ -124,7 +150,7 @@ def test_refresh_expired_token(ahjo_connector, ahjo_setting, token_response):
     ahjo_setting.save()
     with requests_mock.Mocker() as m:
         m.post(
-            "https://johdontyopoytahyte.hel.fi/ids4/connect/token",
+            ahjo_connector.token_url,
             json=token_response,
         )
 
@@ -137,9 +163,7 @@ def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
     # Test with successful request
 
     with requests_mock.Mocker() as m:
-        m.post(
-            "https://johdontyopoytahyte.hel.fi/ids4/connect/token", json=token_response
-        )
+        m.post(ahjo_connector.token_url, json=token_response)
 
         token = ahjo_connector.do_token_request({})
         assert isinstance(token, AhjoToken)
@@ -148,7 +172,7 @@ def test_do_token_request(ahjo_connector: AhjoConnector, token_response):
         assert isinstance(token.expires_in, int)
 
         # Test with failed request
-        m.post("https://johdontyopoytahyte.hel.fi/ids4/connect/token", status_code=400)
+        m.post(ahjo_connector.token_url, status_code=400)
         with pytest.raises(AhjoTokenRetrievalError):
             ahjo_connector.do_token_request({})
 
@@ -166,7 +190,7 @@ def test_get_token_from_db(ahjo_connector: AhjoConnector, ahjo_setting):
     # Test with no token in database
     AhjoSetting.objects.all().delete()
     with pytest.raises(ImproperlyConfigured):
-        token = ahjo_connector.get_token_from_db()
+        ahjo_connector.get_token_from_db()
 
 
 def test_check_if_token_is_expired(expired_token, non_expired_token):
