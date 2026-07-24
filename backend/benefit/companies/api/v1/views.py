@@ -13,6 +13,11 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from stdnum.fi import ytunnus
+from suomifi_on_behalf import (
+    CompanyResolutionError,
+    get_company,
+    get_organization_roles,
+)
 
 from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from companies.api.v1.serializers import (
@@ -22,11 +27,11 @@ from companies.api.v1.serializers import (
 )
 from companies.models import Company
 from companies.services import (
+    get_or_create_company_using_company_data,
     get_or_create_organisation_with_business_id,
     search_organisations,
 )
 from companies.tests.data.company_data import get_dummy_company_data
-from shared.oidc.utils import get_organization_roles
 
 LOGGER = logging.getLogger(__name__)
 
@@ -101,16 +106,13 @@ class GetUsersOrganizationView(APIView):
                 status.HTTP_404_NOT_FOUND,
             )
         try:
-            company = get_or_create_organisation_with_business_id(business_id)
-        except HTTPError:
-            # Since YTJ public API is not 100% reliable, we can use the Company data
-            # saved in our DB as a fallback data, this Company data should be the
-            # data that we got from the latest request to YTJ
-            try:
-                company = Company.objects.get(business_id=business_id)
-            except Company.DoesNotExist:
-                # Throw error if API failed or no object found in both places
-                return self.ytj_api_error
+            company_data = get_company(request)
+        except CompanyResolutionError:
+            # The upstream YTJ/YRTTI APIs are unavailable and no company is stored
+            # locally as a fallback.
+            return self.ytj_api_error
+        try:
+            company = get_or_create_company_using_company_data(company_data)
         except (ValueError, KeyError) as err:
             LOGGER.debug(
                 "Could not handle the response from Palveluväylä and YRTTI API,"

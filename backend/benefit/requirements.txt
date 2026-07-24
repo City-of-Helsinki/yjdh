@@ -61,6 +61,7 @@ django==5.2.15
     #   django-cors-headers
     #   django-extensions
     #   django-filter
+    #   django-helsinki-suomifi-on-behalf
     #   django-helusers
     #   django-localflavor
     #   django-logger-extra
@@ -93,6 +94,8 @@ django-extensions==4.1
     #   -r requirements.in
     #   yjdh-backend-shared
 django-filter==25.2
+    # via -r requirements.in
+django-helsinki-suomifi-on-behalf @ https://github.com/City-of-Helsinki/django-helsinki-suomifi-on-behalf/archive/refs/heads/HP-3084/add-companies.tar.gz
     # via -r requirements.in
 django-helusers==1.1.0
     # via
@@ -248,6 +251,7 @@ requests==2.33.1
     #   -r requirements.in
     #   azure-core
     #   django-auth-adfs
+    #   django-helsinki-suomifi-on-behalf
     #   django-helusers
     #   drf-oidc-auth
     #   mozilla-django-oidc
