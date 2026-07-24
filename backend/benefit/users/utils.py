@@ -1,5 +1,7 @@
 from django.conf import settings
-from suomifi_on_behalf import get_organization_roles
+from django.http import Http404
+from requests.exceptions import RequestException
+from suomifi_on_behalf import CompanyResolutionError, get_organization_roles
 
 from companies.models import Company
 from companies.services import get_or_create_organisation_with_business_id
@@ -32,7 +34,14 @@ def get_company_from_request(request):
             # In case we cannot find the Company in DB, try to query it from 3rd party
             # source
             # This should cover the case when first applicant of company log in because
-            # their company hasn't been created yet
-            return get_or_create_organisation_with_business_id(business_id)
+            # their company hasn't been created yet.
+            # Map upstream failures (YTJ/YRTTI unavailable, or no company found) to a
+            # single CompanyResolutionError so every caller gets a consistent,
+            # controlled response via the global exception handler instead of an
+            # uncaught HTTPError/Http404 surfacing as a 500.
+            try:
+                return get_or_create_organisation_with_business_id(business_id)
+            except (RequestException, Http404) as exc:
+                raise CompanyResolutionError(str(exc)) from exc
     else:
         return None

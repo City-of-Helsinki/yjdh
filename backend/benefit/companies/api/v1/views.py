@@ -14,11 +14,11 @@ from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from stdnum.fi import ytunnus
 from suomifi_on_behalf import (
-    CompanyResolutionError,
     get_company,
     get_organization_roles,
 )
 
+from common.exception_handlers import COMPANY_RESOLUTION_ERROR_MESSAGE
 from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from companies.api.v1.serializers import (
     CompanySearchSerializer,
@@ -44,10 +44,7 @@ class GetUsersOrganizationView(APIView):
     @property
     def ytj_api_error(self):
         return Response(
-            __(
-                "YTJ API is under heavy load or no company found with the given"
-                " business id"
-            ),
+            COMPANY_RESOLUTION_ERROR_MESSAGE,
             status.HTTP_404_NOT_FOUND,
         )
 
@@ -105,12 +102,10 @@ class GetUsersOrganizationView(APIView):
                 "No business id found for the user",
                 status.HTTP_404_NOT_FOUND,
             )
-        try:
-            company_data = get_company(request)
-        except CompanyResolutionError:
-            # The upstream YTJ/YRTTI APIs are unavailable and no company is stored
-            # locally as a fallback.
-            return self.ytj_api_error
+        # If the upstream YTJ/YRTTI APIs are unavailable and no company is stored
+        # locally as a fallback, get_company raises CompanyResolutionError, which the
+        # global exception handler (common.exception_handlers) maps to a controlled 404.
+        company_data = get_company(request)
         try:
             company = get_or_create_company_using_company_data(company_data)
         except (ValueError, KeyError) as err:

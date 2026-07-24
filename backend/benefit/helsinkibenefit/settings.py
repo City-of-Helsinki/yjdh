@@ -463,6 +463,7 @@ REST_FRAMEWORK = {
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "common.exception_handlers.benefit_exception_handler",
 }  # TODO: Replace with actual authentication & permissions.
 
 SPECTACULAR_SETTINGS = {
