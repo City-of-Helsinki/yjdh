@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.2.0...kesaseteli-youth-v2.3.0) (2026-07-24)
+
+
+### Features
+
+* **ks,frontend:** Add csp headers to frontend ([900cbcb](https://github.com/City-of-Helsinki/yjdh/commit/900cbcb00187a41d65cabb24d1d4998b15e3f6a6))
+* **ks,handler:** Redesign youth application view layout and alerts ([6dc5c76](https://github.com/City-of-Helsinki/yjdh/commit/6dc5c76939d0be9656465d936e1165382e7c2535))
+
+
+### Bug Fixes
+
+* **ks,backend:** Unblock django admin without widening global csp ([5b60c6b](https://github.com/City-of-Helsinki/yjdh/commit/5b60c6bad10f8d6bd75fb1bc1deaddd5b5b6aa66))
+* **ks,youth:** Fix browser tests and additional info form selection ([9367dd1](https://github.com/City-of-Helsinki/yjdh/commit/9367dd1fe417ba970fc415077b7d91e0ab4b8d1d))
+* **ks:** Add missing and fix wrong favicons ([0d116d0](https://github.com/City-of-Helsinki/yjdh/commit/0d116d0054b160abca1e6fede0c34404ef9e28f8))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.1.0...kesaseteli-youth-v2.2.0) (2026-06-11)
 
 
