@@ -6,4 +6,8 @@ export interface SearchResponse {
   filter: string;
   search_mode: string;
   count: number;
+  limit?: number;
+  offset?: number;
+  next?: string | null;
+  previous?: string | null;
 }

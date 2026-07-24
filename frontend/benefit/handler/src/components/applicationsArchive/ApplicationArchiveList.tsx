@@ -12,6 +12,7 @@ import {
   IconCheck,
   IconCross,
   IconHistory,
+  Pagination,
   Table,
   Tag,
 } from 'hds-react';
@@ -31,6 +32,10 @@ import { prepareSearchData } from './useApplicationsArchive';
 
 type SearchProps = {
   data: ApplicationData[];
+  totalCount: number;
+  currentPage: number;
+  pageCount: number;
+  onPageChange: (page: number) => void;
   isSearchLoading: boolean;
 };
 
@@ -48,6 +53,10 @@ const sortByStatus = (
 
 const ApplicationArchiveList: React.FC<SearchProps> = ({
   data = [],
+  totalCount,
+  currentPage,
+  pageCount,
+  onPageChange,
   isSearchLoading,
 }) => {
   const { t } = useTranslation();
@@ -177,7 +186,7 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
       {hasSearchLoadedWithResults && (
         <>
           <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
-            count: data?.length || 0,
+            count: totalCount,
           })}`}</$ArchiveCount>
           <Table
             aria-live="polite"
@@ -189,6 +198,19 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
             cols={cols}
             zebra
           />
+          {pageCount > 1 && (
+            <Pagination
+              pageHref={() => '#'}
+              pageIndex={currentPage - 1}
+              pageCount={pageCount}
+              paginationAriaLabel={t('common:utility.pagination')}
+              onChange={(event, index) => {
+                event.preventDefault();
+                onPageChange(index + 1);
+              }}
+              language="fi"
+            />
+          )}
         </>
       )}
 
