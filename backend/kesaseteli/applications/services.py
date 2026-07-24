@@ -31,6 +31,7 @@ from applications.models import (
     EmployerApplication,
     School,
     SummerVoucherConfiguration,
+    TimelineActivityLog,
     YouthApplication,
 )
 from applications.tests.data.mock_vtj import (
@@ -545,42 +546,30 @@ class TimelineService:
     @classmethod
     def get_activity_logs_for_application(cls, application) -> list[ActivityLogItem]:
         """
-        Securely fetch and parse audit log entries for an application.
-        Only fields declared in ALLOWED_TIMELINE_FIELDS are surfaced.
+        Fetch permanent timeline activity log entries for an application.
+        Only models declared in ALLOWED_TIMELINE_FIELDS are surfaced.
         """
         model_name = application._meta.model_name
         allowed_fields = cls.ALLOWED_TIMELINE_FIELDS.get(model_name)
         if not allowed_fields:
             return []
 
-        ct = ContentType.objects.get_for_model(application)
-        log_entries = (
-            LogEntry.objects.filter(content_type=ct, object_pk=str(application.pk))
-            .select_related("actor")
-            .order_by("timestamp")
-        )
+        log_entries = TimelineActivityLog.objects.filter(
+            application_type=model_name,
+            application_id=str(application.pk),
+        ).order_by("created_at")
 
         items: list[ActivityLogItem] = []
         for entry in log_entries:
-            if not isinstance(entry.changes, dict):
-                continue
-
-            for field_name, action_type in allowed_fields.items():
-                change = entry.changes.get(field_name)
-                if not isinstance(change, list) or len(change) != 2:
-                    continue
-
-                old_value, new_value = change
-                if old_value == new_value:
-                    continue
-
+            action_type = allowed_fields.get("status")
+            if action_type:
                 items.append(
                     ActivityLogItem(
                         action_type=action_type.value,
-                        old_value=str(old_value) if old_value is not None else "",
-                        new_value=str(new_value) if new_value is not None else "",
-                        author_name=entry.actor.get_full_name() if entry.actor else "",
-                        created_at=entry.timestamp,
+                        old_value=entry.from_status,
+                        new_value=entry.to_status,
+                        author_name=entry.actor_name,
+                        created_at=entry.created_at,
                     )
                 )
         return items
