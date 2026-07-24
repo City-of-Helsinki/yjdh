@@ -1,5 +1,46 @@
 # Changelog
 
+## [2.3.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.2.0...kesaseteli-handler-v2.3.0) (2026-07-24)
+
+
+### Features
+
+* **ks,frontend:** Add csp headers to frontend ([900cbcb](https://github.com/City-of-Helsinki/yjdh/commit/900cbcb00187a41d65cabb24d1d4998b15e3f6a6))
+* **ks,handler,youth:** Show amount of items in accordion headings ([999977f](https://github.com/City-of-Helsinki/yjdh/commit/999977f19ad556bb8e13838deeed7956c92b5c85))
+* **ks,handler:** Adapt timeline UI to support activity log items ([66e1de1](https://github.com/City-of-Helsinki/yjdh/commit/66e1de10cf82715555c1536fbcd439d0db5b20b9))
+* **ks,handler:** Add attachments accordion to employer detail view ([eb78561](https://github.com/City-of-Helsinki/yjdh/commit/eb785616ed8de8933d8e0ee3fb2d46ccdd484bdf))
+* **ks,handler:** Add status filters for youth and employer lists ([7d52741](https://github.com/City-of-Helsinki/yjdh/commit/7d5274185a6a6592e88f55faf4b63e48f9a775c6))
+* **ks,handler:** Add status filters to youth and employer lists ([e360544](https://github.com/City-of-Helsinki/yjdh/commit/e360544635cf5d2315b4a46832c6e907f744d310))
+* **ks,handler:** Handler attachment mgmt for employer apps ([c1a43a3](https://github.com/City-of-Helsinki/yjdh/commit/c1a43a36cc66ff74e858b0349f8c0fbc4b62b8fc))
+* **ks,handler:** Implement common FilterSection component ([d2af4ed](https://github.com/City-of-Helsinki/yjdh/commit/d2af4ed02f2a91056ada435efbe7373b4f7750ab))
+* **ks,handler:** Implement dismissible warning notification on mobile ([dca20b3](https://github.com/City-of-Helsinki/yjdh/commit/dca20b3eb28315b9f15417dcd280d5872acb5642))
+* **ks,handler:** Implement new dashboard and application lists ([cd5cafa](https://github.com/City-of-Helsinki/yjdh/commit/cd5cafa86707cc63beb93c44d5c5483f87527e28))
+* **ks,handler:** Implement user context and improve auth flow ([4f75e31](https://github.com/City-of-Helsinki/yjdh/commit/4f75e31e531200ea4118afc6931dfd0c5fd41ee8))
+* **ks,handler:** Introduce React Query hooks and type definitions ([c3c8c13](https://github.com/City-of-Helsinki/yjdh/commit/c3c8c13634f034e14fed46ce693180679d43190c))
+* **ks,handler:** Make voucher navigation tabs sticky during scroll ([3adaf1f](https://github.com/City-of-Helsinki/yjdh/commit/3adaf1fb5f350752bd31b57036768377fa2ffc00))
+* **ks,handler:** Persist active tab state in application lists ([3dbab99](https://github.com/City-of-Helsinki/yjdh/commit/3dbab99ca76af734c60a8f9fbf7b5e4b36af980c))
+* **ks,handler:** Redesign youth application view layout and alerts ([6dc5c76](https://github.com/City-of-Helsinki/yjdh/commit/6dc5c76939d0be9656465d936e1165382e7c2535))
+* **ks,shared,handler:** Add masking utils and shared configs ([5845e7f](https://github.com/City-of-Helsinki/yjdh/commit/5845e7f629d0a38bdb481d5d7303674b653077e0))
+* **ks,shared,handler:** Integrate handler notes and timeline UI ([3f5c74b](https://github.com/City-of-Helsinki/yjdh/commit/3f5c74b6f90aa710a33502fbf430481656eded34))
+* **ks:** Make attachment file names clickable download links ([7019948](https://github.com/City-of-Helsinki/yjdh/commit/7019948de608c11428564d10e632d04e33dccfd3))
+* **ks:** Show detailed employer application view and form refactor ([5d1faa9](https://github.com/City-of-Helsinki/yjdh/commit/5d1faa9142aacc4f71fda193684a167f6f97a246))
+
+
+### Bug Fixes
+
+* **ks,backend:** Unblock django admin without widening global csp ([5b60c6b](https://github.com/City-of-Helsinki/yjdh/commit/5b60c6bad10f8d6bd75fb1bc1deaddd5b5b6aa66))
+* **ks,handler:** Resolve handler lint, format, and semantic bugs ([a8a760d](https://github.com/City-of-Helsinki/yjdh/commit/a8a760d829c857a742da8b681f3bd2f434e3f150))
+* **ks:** Add missing and fix wrong favicons ([0d116d0](https://github.com/City-of-Helsinki/yjdh/commit/0d116d0054b160abca1e6fede0c34404ef9e28f8))
+* **ks:** Avoid querying backend when status filter is empty ([440b235](https://github.com/City-of-Helsinki/yjdh/commit/440b235ddfaf40442b1b50ae3a2b8d42a1f22d58))
+* **ks:** Fix employer application list initial sorting mismatch ([b4eb10d](https://github.com/City-of-Helsinki/yjdh/commit/b4eb10d4fc9295c00a4e0ecb069dcaa0d86b0cbe))
+* **ks:** Ordering, serializer, locale, and query typing ([ff9566e](https://github.com/City-of-Helsinki/yjdh/commit/ff9566ee4591df037e9c8286bf1f67bf34002a5b))
+* Resolve application sorting, serialization, and UI rendering bugs ([ff9566e](https://github.com/City-of-Helsinki/yjdh/commit/ff9566ee4591df037e9c8286bf1f67bf34002a5b))
+
+
+### Documentation
+
+* **ks,handler:** Establish architectural docs and configurations ([e9e0e71](https://github.com/City-of-Helsinki/yjdh/commit/e9e0e71939ecb06655910affe27c770dc33ef24c))
+
 ## [2.2.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.1.0...kesaseteli-handler-v2.2.0) (2026-06-11)
 
 
