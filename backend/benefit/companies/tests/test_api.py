@@ -3,7 +3,6 @@ from copy import deepcopy
 from unittest.mock import patch
 
 import pytest
-from requests import HTTPError
 
 from applications.tests.conftest import *  # noqa
 from companies.api.v1.serializers import CompanySerializer
@@ -201,16 +200,26 @@ def test_get_company_from_service_bus_and_yrtti_results_in_error(
     mock_yrtti_basic_info_post,
     mock_get_organisation_roles_and_create_company,
 ):
-    # NOTE: the HTTPError raised here originates in the TermsOfServiceAccepted
-    # permission (get_company_from_request -> get_or_create_organisation_with_business_id),
-    # which runs before the view body. The view's own get_company()/CompanyResolutionError
-    # branch is exercised separately in the test below.
+    # The upstream failure here originates in the TermsOfServiceAccepted permission
+    # (get_company_from_request -> get_or_create_organisation_with_business_id), which
+    # runs before the view body. The permission catches the upstream HTTPError and maps
+    # it to the same controlled 404 the view body returns, instead of letting it surface
+    # as a 500. The view's own get_company()/CompanyResolutionError branch is exercised
+    # separately in the test below.
     mock_service_bus_get_company_post(text="Error", status_code=404)
     mock_yrtti_basic_info_post(text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
-    with pytest.raises(HTTPError):
-        api_client.get(get_company_api_url())
+
+    response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 404
+    # The permission raises DRF's NotFound, so the body uses the standard
+    # {"detail": ...} envelope rather than the view's bare-string body.
+    assert (
+        response.data["detail"]
+        == "YTJ API is under heavy load or no company found with the given business id"
+    )
 
 
 @pytest.mark.django_db
