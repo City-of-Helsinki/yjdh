@@ -1,5 +1,29 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.3.1...kesaseteli-employer-v2.4.0) (2026-07-24)
+
+
+### Features
+
+* **ks,employer:** Add dashboard edit button, split cancel from delete ([4a5974a](https://github.com/City-of-Helsinki/yjdh/commit/4a5974a480a24a519b959d67ab3e8a5536f13d78))
+* **ks,employer:** Add pagination and restructure table ([56d4633](https://github.com/City-of-Helsinki/yjdh/commit/56d463344df5c0f4907bd3759bb22f8b62c070c8))
+* **ks,employer:** Add year filtering to employer dashboard ([2df3322](https://github.com/City-of-Helsinki/yjdh/commit/2df3322ea93ab7cb18defe07529e939c949b6dc3))
+* **ks,frontend:** Add csp headers to frontend ([900cbcb](https://github.com/City-of-Helsinki/yjdh/commit/900cbcb00187a41d65cabb24d1d4998b15e3f6a6))
+
+
+### Bug Fixes
+
+* **ks,backend:** Unblock django admin without widening global csp ([5b60c6b](https://github.com/City-of-Helsinki/yjdh/commit/5b60c6bad10f8d6bd75fb1bc1deaddd5b5b6aa66))
+* **ks,employer:** Resolve floating promises lint errors ([5df4aa7](https://github.com/City-of-Helsinki/yjdh/commit/5df4aa7601901f6b0d38bf25f4030ae234063458))
+* **ks,employer:** Scope keepPreviousData to pagination only ([b31ab5a](https://github.com/City-of-Helsinki/yjdh/commit/b31ab5ae96854864d8c5ab4c8393a695633f1549))
+* **ks,employer:** Send only the current summer voucher in PUT payload ([fb1aef1](https://github.com/City-of-Helsinki/yjdh/commit/fb1aef11ef61be3628610ba19843a599e5110ec3))
+* **ks:** Redirect to 404 page when application ID is not found ([2fcffbd](https://github.com/City-of-Helsinki/yjdh/commit/2fcffbd43570e0c55018f7c1b275203d0fb00a75))
+
+
+### Documentation
+
+* **ks,employer:** Create robust readme for employer UI ([dc2aaf7](https://github.com/City-of-Helsinki/yjdh/commit/dc2aaf73244eec854dac720be965c433c8cddd0d))
+
 ## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.3.0...kesaseteli-employer-v2.3.1) (2026-06-22)
 
 
