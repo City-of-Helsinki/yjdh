@@ -201,12 +201,42 @@ def test_get_company_from_service_bus_and_yrtti_results_in_error(
     mock_yrtti_basic_info_post,
     mock_get_organisation_roles_and_create_company,
 ):
+    # NOTE: the HTTPError raised here originates in the TermsOfServiceAccepted
+    # permission (get_company_from_request -> get_or_create_organisation_with_business_id),
+    # which runs before the view body. The view's own get_company()/CompanyResolutionError
+    # branch is exercised separately in the test below.
     mock_service_bus_get_company_post(text="Error", status_code=404)
     mock_yrtti_basic_info_post(text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
     with pytest.raises(HTTPError):
         api_client.get(get_company_api_url())
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures("mock_get_organisation_roles_and_create_company")
+def test_get_company_upstream_failure_no_local_fallback_returns_ytj_api_error(
+    api_client,
+    settings,
+    mock_service_bus_get_company_post,
+    mock_yrtti_basic_info_post,
+):
+    # Bypass the TermsOfServiceAccepted permission so the request reaches the view
+    # body; otherwise the permission resolves the company itself and raises first.
+    settings.DISABLE_TOS_APPROVAL_CHECK = True
+    mock_service_bus_get_company_post(text="Error", status_code=404)
+    mock_yrtti_basic_info_post(text="Error", status_code=404)
+    # No company stored locally, so the DbCompanyResolver fallback also fails and
+    # get_company() raises CompanyResolutionError.
+    Company.objects.all().delete()
+
+    response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 404
+    assert (
+        response.data
+        == "YTJ API is under heavy load or no company found with the given business id"
+    )
 
 
 @pytest.mark.django_db
