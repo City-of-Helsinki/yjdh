@@ -1882,6 +1882,9 @@
       "companyContactPersonEmail": {
         "label": "Yhteyshenkilön sähköposti"
       },
+      "companyNumberOfEmployees": {
+        "label": "Työntekijöiden määrä ennen työllistettyä"
+      },
       "deMinimisAid": {
         "label": "De minimis -tuet"
       },

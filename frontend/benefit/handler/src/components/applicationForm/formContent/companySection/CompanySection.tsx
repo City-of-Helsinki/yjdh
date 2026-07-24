@@ -394,8 +394,10 @@ const CompanySection: React.FC<Props> = ({
             id={`${fields.purchasedService.name}`}
             label={fields.purchasedService.label}
             direction="vertical"
-            required
+            invalid={!!getErrorMessage(fields.purchasedService.name)}
             errorText={getErrorMessage(fields.purchasedService.name)}
+            aria-invalid={!!getErrorMessage(fields.purchasedService.name)}
+            required
           >
             <$RadioButton
               id={`${fields.purchasedService.name}False`}
@@ -585,6 +587,8 @@ const CompanySection: React.FC<Props> = ({
             direction="vertical"
             required
             errorText={getErrorMessage(fields.coOperationNegotiations.name)}
+            invalid={!!getErrorMessage(fields.coOperationNegotiations.name)}
+            aria-invalid={!!getErrorMessage(fields.coOperationNegotiations.name)}
           >
             <$RadioButton
               id={`${fields.coOperationNegotiations.name}False`}

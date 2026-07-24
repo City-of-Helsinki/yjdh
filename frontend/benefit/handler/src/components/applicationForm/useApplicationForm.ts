@@ -25,7 +25,7 @@ import {
   ApplicationData,
   DeMinimisAid,
 } from 'benefit-shared/types/application';
-import { FormikErrors, FormikProps, useFormik } from 'formik';
+import { FormikErrors, FormikProps, FormikTouched, useFormik } from 'formik';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import { NextRouter, useRouter } from 'next/router';
@@ -59,10 +59,10 @@ type ExtendedComponentProps = {
   application: Application;
   formik: FormikProps<Partial<Application>>;
   fields: ApplicationFields;
-  handleSave: () => void;
-  handleSaveDraft: () => void;
+  handleSave: () => Promise<void>;
+  handleSaveDraft: () => Promise<void>;
   handleDelete: () => void;
-  handleSubmit: () => void;
+  handleSubmit: () => Promise<void>;
   handleQuietSave: () => Promise<ApplicationData | void>;
   handleValidation: () => Promise<boolean>;
   showDeminimisSection: boolean;
@@ -82,6 +82,26 @@ type ExtendedComponentProps = {
   initialApplication: Application | null;
   user: User | undefined;
 };
+
+const getTouchedFromErrors = <TValues,>(
+  errors: FormikErrors<TValues>
+): FormikTouched<TValues> =>
+  Object.keys(errors).reduce((touched, key) => {
+    const error = errors[key as keyof FormikErrors<TValues>];
+
+    return {
+      ...touched,
+      [key]: Array.isArray(error)
+        ? error.map((item) =>
+          item && typeof item === 'object'
+            ? getTouchedFromErrors(item as FormikErrors<unknown>)
+            : true
+        )
+        : error && typeof error === 'object'
+          ? getTouchedFromErrors(error as FormikErrors<unknown>)
+          : true,
+    };
+  }, {} as FormikTouched<TValues>);
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const useApplicationForm = (): ExtendedComponentProps => {
@@ -299,18 +319,24 @@ export const useApplicationForm = (): ExtendedComponentProps => {
       return;
     }
 
+    if (Object.keys(errors).length > 0) {
+      await formik.setTouched(getTouchedFromErrors(errors), true);
+    }
+
     if (!errorActions(errors)) {
       await formik.submitForm();
     }
   };
 
-  const handleValidation = (): Promise<boolean> =>
-    formik.validateForm().then((errors) => {
-      if (!errorActions(errors)) {
-        return true;
-      }
-      return false;
-    });
+  const handleValidation = async (): Promise<boolean> => {
+    const errors = await formik.validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      await formik.setTouched(getTouchedFromErrors(errors), true);
+    }
+
+    return !errorActions(errors);
+  };
 
   const handleSubmit = async (): Promise<void> => {
     await onSubmit(values, id ?? undefined);
