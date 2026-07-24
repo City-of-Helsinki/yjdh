@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.18.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.17.0...kesaseteli-backend-v1.18.0) (2026-07-24)
+
+
+### Features
+
+* **ks,backend:** Add permissions-policy to django html pages ([290ad2e](https://github.com/City-of-Helsinki/yjdh/commit/290ad2e9093d9ebccf9c61d111f72aae7ef9dd20))
+* **ks,employer:** Add year filtering to employer dashboard ([2df3322](https://github.com/City-of-Helsinki/yjdh/commit/2df3322ea93ab7cb18defe07529e939c949b6dc3))
+* **ks,handler:** Handler attachment mgmt for employer apps ([c1a43a3](https://github.com/City-of-Helsinki/yjdh/commit/c1a43a36cc66ff74e858b0349f8c0fbc4b62b8fc))
+* **ks:** Add csp middleware ([e051f21](https://github.com/City-of-Helsinki/yjdh/commit/e051f213b6a01b4f319c8046d2b3ef14a6e25510))
+* **ks:** Add EXCLUDE_2026_EXCEL_FIELDS feature flag ([2246f02](https://github.com/City-of-Helsinki/yjdh/commit/2246f024ea57dea6b3a733a9396aa350049a1a57))
+* **ks:** Add search and filter features to company admin ([fe1eeed](https://github.com/City-of-Helsinki/yjdh/commit/fe1eeedf95896d2f55db8331170f6559feb6a941))
+* **ks:** Add update_from_ytj action to company admin ([e429f50](https://github.com/City-of-Helsinki/yjdh/commit/e429f50620fd19926d5f30bed324e6b8ea9756a8))
+* **ks:** Add YTJ data bulk-backfill scripts and README ([9fa91a4](https://github.com/City-of-Helsinki/yjdh/commit/9fa91a444039960dc61ef1030a849b01eaa9ae09))
+* **ks:** Enable target group calculation status in Talpa Excel ([8fa9b7a](https://github.com/City-of-Helsinki/yjdh/commit/8fa9b7a40954582b38f59fd1c8e5a83e95a5f06d))
+* **ks:** Implement handler notes system and application timeline ([bb4d00b](https://github.com/City-of-Helsinki/yjdh/commit/bb4d00b07941fba97cc347a736cbc5c2c7d2f028))
+* **ks:** Implement timeline activity log for applications ([81a979d](https://github.com/City-of-Helsinki/yjdh/commit/81a979d31ed0e7cff22f0078f775bd85e15a655e))
+* **ks:** Restore and move 2026 columns to end of Talpa Excel ([029b288](https://github.com/City-of-Helsinki/yjdh/commit/029b2881aa2efb83072e5cd2844af67fb90a6e91))
+* **ks:** Secure youth applications listing and linked employer APIs ([79f198e](https://github.com/City-of-Helsinki/yjdh/commit/79f198e6bb8f24f1fcee9a80b7e30d624e23c192))
+* **ks:** Update company data from YTJ on application submission ([119b498](https://github.com/City-of-Helsinki/yjdh/commit/119b49877e215ac96d145d49469d3299e8b1ea16))
+
+
+### Bug Fixes
+
+* **ks,backend:** Allow bootstrap CDN on excel-download page only ([c609c26](https://github.com/City-of-Helsinki/yjdh/commit/c609c26f4652be92499bf4ff2f9632267135a10a))
+* **ks,backend:** Allow cdn sources on openapi doc pages ([3b3bcea](https://github.com/City-of-Helsinki/yjdh/commit/3b3bcea08c66fef18aa92b17331547095b807ed9))
+* **ks,backend:** Drop connect-src from excel-download csp ([1394822](https://github.com/City-of-Helsinki/yjdh/commit/1394822b527bba4a93283e5afe547e2e05da1bc4))
+* **ks,backend:** Skip permissions-policy on csp-exempt probes ([cf0f48b](https://github.com/City-of-Helsinki/yjdh/commit/cf0f48b5f4aa7dfdb3285e0273c50f1f6332e742))
+* **ks,backend:** Unblock django admin without widening global csp ([5b60c6b](https://github.com/City-of-Helsinki/yjdh/commit/5b60c6bad10f8d6bd75fb1bc1deaddd5b5b6aa66))
+* **ks:** Ensure get_mock returns the session-based company ([cc9b09c](https://github.com/City-of-Helsinki/yjdh/commit/cc9b09cab8055a6704f7edeeda99b4f1df395143))
+* **ks:** Fix AbstractTargetGroup abstract instantiation type errors ([d93a675](https://github.com/City-of-Helsinki/yjdh/commit/d93a6758b2f915a1438ab41ebd3575ad553211f9))
+* **ks:** Fix employer application list initial sorting mismatch ([b4eb10d](https://github.com/City-of-Helsinki/yjdh/commit/b4eb10d4fc9295c00a4e0ecb069dcaa0d86b0cbe))
+* **ks:** Ordering, serializer, locale, and query typing ([ff9566e](https://github.com/City-of-Helsinki/yjdh/commit/ff9566ee4591df037e9c8286bf1f67bf34002a5b))
+* **ks:** Skip redundant logout logs for already logged out users ([584797a](https://github.com/City-of-Helsinki/yjdh/commit/584797a79e073a471f35402146ee599306626be5))
+* Resolve application sorting, serialization, and UI rendering bugs ([ff9566e](https://github.com/City-of-Helsinki/yjdh/commit/ff9566ee4591df037e9c8286bf1f67bf34002a5b))
+
+
+### Dependencies
+
+* Bump pillow from 12.2.0 to 12.3.0 in /backend/kesaseteli ([71be4c4](https://github.com/City-of-Helsinki/yjdh/commit/71be4c4343f5ede4abc1db48067440273164285f))
+
+
+### Documentation
+
+* **ks:** Fix openapi schema for timeline retrieve endpoints ([40290d9](https://github.com/City-of-Helsinki/yjdh/commit/40290d98db88c0e9d97d0d2b1ec35540ffabbb0b))
+
 ## [1.17.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.16.0...kesaseteli-backend-v1.17.0) (2026-06-29)
 
 
