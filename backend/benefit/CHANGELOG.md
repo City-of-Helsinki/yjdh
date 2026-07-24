@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.24.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.1...benefit-backend-v2.24.2) (2026-07-24)
+
+
+### Dependencies
+
+* Bump django from 5.2.14 to 5.2.15 in /backend/benefit ([1cb04c1](https://github.com/City-of-Helsinki/yjdh/commit/1cb04c17d75c5ee2bd1e8cd64d0a5eaaf2f56665))
+* Bump pillow from 12.2.0 to 12.3.0 in /backend/benefit ([3823a89](https://github.com/City-of-Helsinki/yjdh/commit/3823a8981e75dc76b33818f10252246b1c07f141))
+* Bump pyasn1 from 0.6.3 to 0.6.4 in /backend/benefit ([39e0a78](https://github.com/City-of-Helsinki/yjdh/commit/39e0a7884708a93705929b16210dcb8d5cde0a1a))
+
 ## [2.24.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.0...benefit-backend-v2.24.1) (2026-06-25)
 
 
