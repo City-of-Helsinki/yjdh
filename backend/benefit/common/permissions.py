@@ -2,8 +2,8 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
+from suomifi_on_behalf import get_organization_roles
 
-from shared.oidc.utils import get_organization_roles
 from users.utils import get_company_from_request
 
 

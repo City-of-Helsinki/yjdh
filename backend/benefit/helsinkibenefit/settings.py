@@ -201,6 +201,7 @@ env = environ.Env(
     SOCIAL_AUTH_TUNNISTAMO_SECRET=(str, ""),
     SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT=(str, ""),
     HELUSERS_BACK_CHANNEL_LOGOUT_ENABLED=(bool, True),
+    SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE=(str, "profile-api-test"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -594,6 +595,43 @@ OIDC_REDIRECT_ALLOWED_HOSTS = env.list(
     default=[urlparse(ADFS_LOGIN_REDIRECT_URL).netloc],
 )
 OIDC_REDIRECT_REQUIRE_HTTPS = env.bool("OIDC_REDIRECT_REQUIRE_HTTPS", default=True)
+
+# django-helsinki-suomifi-on-behalf (Suomi.fi eAuthorizations / Valtuudet on-behalf).
+# Existing env-driven settings are mapped to the library's namespaced settings so no
+# deployment configuration needs to change.
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_BASE_URL = EAUTHORIZATIONS_BASE_URL
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_ID = EAUTHORIZATIONS_CLIENT_ID
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_SECRET = EAUTHORIZATIONS_CLIENT_SECRET
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_API_OAUTH_SECRET = EAUTHORIZATIONS_API_OAUTH_SECRET
+
+SUOMIFI_ON_BEHALF_LOGIN_ERROR_URL = LOGIN_REDIRECT_URL_FAILURE
+
+SUOMIFI_ON_BEHALF_OIDC_USERINFO_ENDPOINT = OIDC_OP_USER_ENDPOINT
+
+SUOMIFI_ON_BEHALF_REDIRECT_ALLOWED_HOSTS = OIDC_REDIRECT_ALLOWED_HOSTS
+SUOMIFI_ON_BEHALF_REDIRECT_REQUIRE_HTTPS = OIDC_REDIRECT_REQUIRE_HTTPS
+
+SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_API_URL = HELSINKI_PROFILE_API_URL
+SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_SCOPE = HELSINKI_PROFILE_SCOPE
+SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE = env.str(
+    "SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE"
+)
+SUOMIFI_ON_BEHALF_TUNNISTUS_API_TOKENS_ENDPOINT = TUNNISTUS_API_TOKENS_ENDPOINT
+
+SUOMIFI_ON_BEHALF_SSN_RESOLVERS = [
+    "suomifi_on_behalf.ssn.OidcUserinfoSsnResolver",
+    "suomifi_on_behalf.ssn.HelsinkiProfileSsnResolver",
+]
+
+SUOMIFI_ON_BEHALF_COMPANY_RESOLVERS = [
+    "companies.resolvers.ServiceBusCompanyResolver",
+    "companies.resolvers.YrttiCompanyResolver",
+    "companies.resolvers.DbCompanyResolver",
+]
+
+# benefit's Company model is the source of truth, so the library must not cache company
+# data in the session (nothing in benefit reads request.session["company"]).
+SUOMIFI_ON_BEHALF_CACHE_COMPANY_IN_SESSION = False
 # Authentication settings end
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]

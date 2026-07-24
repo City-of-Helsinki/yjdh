@@ -4,6 +4,7 @@ django-cors-headers
 django-environ
 django-extensions
 django-filter
+django-helsinki-suomifi-on-behalf @ https://github.com/City-of-Helsinki/django-helsinki-suomifi-on-behalf/archive/refs/heads/HP-3084/add-companies.tar.gz
 django-helusers
 social-auth-app-django
 django-localflavor
