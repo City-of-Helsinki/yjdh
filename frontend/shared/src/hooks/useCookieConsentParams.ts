@@ -1,5 +1,6 @@
 import { CookieConsentChangeEvent, CookieConsentContextProps } from 'hds-react';
 import { useMemo } from 'react';
+
 import { trackPageView } from '../utils/matomo';
 
 const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED;
