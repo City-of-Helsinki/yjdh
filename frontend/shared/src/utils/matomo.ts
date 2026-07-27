@@ -65,9 +65,11 @@ export function trackPageView(url?: string): void {
   if (previousUrl && previousUrl !== currentUrl) {
     window._paq.push(['setReferrerUrl', previousUrl]);
   }
-  window._paq.push(['setCustomUrl', currentUrl]);
-  window._paq.push(['setDocumentTitle', document.title]);
-  window._paq.push(['trackPageView']);
+  window._paq.push(
+    ['setCustomUrl', currentUrl],
+    ['setDocumentTitle', document.title],
+    ['trackPageView']
+  );
 
   previousUrl = currentUrl;
 }

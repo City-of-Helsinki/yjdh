@@ -31,15 +31,15 @@ const expectations = {
   errorToastIsShown: async (
     errorMessage = /tapahtui tuntematon virhe/i
   ): Promise<void> => {
+    let toast: HTMLElement | null = null;
     await waitFor(() => {
-      // eslint-disable-next-line unicorn/prefer-query-selector
-      const toast = document.getElementById('HDSToastContainer');
-      expect(toast).not.toBeNull();
-      expect(
-        within(toast as HTMLElement).getByRole('heading', {
-          name: errorMessage,
-        })
-      ).toBeInTheDocument();
+      const toastElement = document.querySelector('#HDSToastContainer');
+      expect(toastElement).not.toBeNull();
+      toast = toastElement as HTMLElement;
+    });
+
+    await within(toast!).findByRole('heading', {
+      name: errorMessage,
     });
   },
 };
