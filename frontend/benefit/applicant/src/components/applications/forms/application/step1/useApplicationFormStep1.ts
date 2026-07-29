@@ -294,7 +294,7 @@ const useApplicationFormStep1 = (
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
-    setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
+    void setFieldValue(APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID, null);
   }, [setDeMinimisAids, setFieldValue]);
 
   const showDeminimisSection = hasBusinessActivitiesOrIsCompany(

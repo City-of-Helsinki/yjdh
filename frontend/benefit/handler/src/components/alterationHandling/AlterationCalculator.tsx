@@ -22,6 +22,7 @@ import {
   Fieldset,
   Notification,
   TextInput,
+  Tooltip,
 } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -168,7 +169,7 @@ const AlterationCalculator = ({
     setCalculationRangeValid(true);
 
     if (!startDate || !endDate || startDate > endDate) {
-      formik.setFieldValue('recoveryAmount', '0');
+      void formik.setFieldValue('recoveryAmount', '0');
       setCalculationDescription(null);
       return;
     }
@@ -180,7 +181,7 @@ const AlterationCalculator = ({
       })
     ) {
       setCalculationRangeValid(false);
-      formik.setFieldValue('recoveryAmount', '0');
+      void formik.setFieldValue('recoveryAmount', '0');
       setCalculationDescription(null);
       setCalculationOutOfDate(false);
       return;
@@ -190,7 +191,7 @@ const AlterationCalculator = ({
       ? getNumberValue(formik.values?.manualRecoveryAmount || 0)
       : calculateAutomaticRecoveryAmount(startDate, endDate);
 
-    formik.setFieldValue('recoveryAmount', total.toFixed(2));
+    void formik.setFieldValue('recoveryAmount', total.toFixed(2));
     setCalculationDescription(
       t(`${translationBase}.calculation.resultDescription`, {
         months: diffMonths(endDate, startDate),
@@ -211,13 +212,13 @@ const AlterationCalculator = ({
   const handleChange =
     (field: string) =>
     (value: unknown): void => {
-      formik.setFieldValue(field, value);
+      void formik.setFieldValue(field, value);
       setCalculationOutOfDate(true);
       onCalculationChange(true);
     };
 
   const selectTab = (manualTab: boolean): void => {
-    formik.setFieldValue('isManual', manualTab);
+    void formik.setFieldValue('isManual', manualTab);
     setCalculationOutOfDate(true);
     onCalculationChange(true);
   };
@@ -261,9 +262,11 @@ const AlterationCalculator = ({
           <$GridCell $colSpan={6}>
             <Fieldset
               heading={t(`${translationBase}.fields.recoveryPeriod.label`)}
-              tooltipText={t(
-                `${translationBase}.fields.recoveryPeriod.helpText`
-              )}
+              tooltip={
+                <Tooltip>
+                  {t(`${translationBase}.fields.recoveryPeriod.helpText`)}
+                </Tooltip>
+              }
             >
               <$DateRange>
                 <DateInput

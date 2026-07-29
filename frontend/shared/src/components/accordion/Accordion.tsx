@@ -22,7 +22,16 @@ const Accordion: React.FC<AccordionProps> = (props: AccordionProps) => {
     id,
     initiallyOpen = false,
     onToggle = noop,
+    card,
+    border,
+    headerBackgroundColor,
   } = props;
+
+  const styleProps = {
+    card,
+    border,
+    headerBackgroundColor,
+  };
 
   const { isOpen, buttonProps, contentProps } = useAccordion({
     initiallyOpen,
@@ -32,8 +41,11 @@ const Accordion: React.FC<AccordionProps> = (props: AccordionProps) => {
   const angleIcon = isOpen ? <IconAngleUp /> : <IconAngleDown />;
 
   return (
-    <$Accordion {...props} data-testid={`${id}-${isOpen ? 'open' : 'closed'}`}>
-      <$AccordionHeader {...props}>
+    <$Accordion
+      {...styleProps}
+      data-testid={`${id}-${isOpen ? 'open' : 'closed'}`}
+    >
+      <$AccordionHeader {...styleProps}>
         <$HeadingContainer
           role="button"
           tabIndex={0}

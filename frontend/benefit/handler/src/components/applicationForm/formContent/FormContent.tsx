@@ -147,7 +147,10 @@ const FormContent: React.FC<Props> = ({
               language={language}
               onBlur={formik.handleBlur}
               onChange={(value) =>
-                formik.setFieldValue(fields.paperApplicationDate.name, value)
+                void formik.setFieldValue(
+                  fields.paperApplicationDate.name,
+                  value
+                )
               }
               value={formik.values.paperApplicationDate ?? ''}
               invalid={!!getErrorMessage(fields.paperApplicationDate.name)}
@@ -270,7 +273,7 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.no`
                 )}
                 onChange={() => {
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     false
                   );
@@ -288,7 +291,7 @@ const FormContent: React.FC<Props> = ({
                   `${translationsBase}.fields.${fields.associationImmediateManagerCheck.name}.yes`
                 )}
                 onChange={() =>
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationImmediateManagerCheck.name,
                     true
                   )
@@ -316,7 +319,7 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -331,7 +334,7 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -356,11 +359,14 @@ const FormContent: React.FC<Props> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherSubsidisedEmployed.name,
                   false
                 );
-                formik.setFieldValue(fields.otherSubsidisedNumber.name, null);
+                void formik.setFieldValue(
+                  fields.otherSubsidisedNumber.name,
+                  null
+                );
               }}
               checked={formik.values.otherSubsidisedEmployed === false}
             />
@@ -370,7 +376,10 @@ const FormContent: React.FC<Props> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
+                void formik.setFieldValue(
+                  fields.otherSubsidisedEmployed.name,
+                  true
+                );
               }}
               checked={formik.values.otherSubsidisedEmployed === true}
             />
@@ -427,7 +436,7 @@ const FormContent: React.FC<Props> = ({
               label={fields.employee.workingHours.label}
               onBlur={formik.handleBlur}
               onChange={(e) =>
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.employee.workingHours.name,
                   stringFloatToFixed(e.target.value)
                 )
@@ -515,7 +524,7 @@ const FormContent: React.FC<Props> = ({
               label={fields.employee.monthlyPay.label}
               onBlur={formik.handleBlur}
               onChange={(e) =>
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.employee.monthlyPay.name,
                   stringFloatToFixed(e.target.value)
                 )
@@ -535,7 +544,7 @@ const FormContent: React.FC<Props> = ({
               label={fields.employee.vacationMoney.label}
               onBlur={formik.handleBlur}
               onChange={(e) =>
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.employee.vacationMoney.name,
                   stringFloatToFixed(e.target.value)
                 )
@@ -559,7 +568,7 @@ const FormContent: React.FC<Props> = ({
               label={fields.employee.otherExpenses.label}
               onBlur={formik.handleBlur}
               onChange={(e) =>
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.employee.otherExpenses.name,
                   stringFloatToFixed(e.target.value)
                 )
@@ -595,7 +604,10 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  false
+                );
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -607,7 +619,10 @@ const FormContent: React.FC<Props> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  true
+                );
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />
@@ -630,7 +645,7 @@ const FormContent: React.FC<Props> = ({
             language={language}
             onBlur={formik.handleBlur}
             onChange={(value) =>
-              formik.setFieldValue(fields.startDate.name, value)
+              void formik.setFieldValue(fields.startDate.name, value)
             }
             value={formik.values.startDate ?? ''}
             invalid={!!getErrorMessage(fields.startDate.name)}
@@ -654,7 +669,7 @@ const FormContent: React.FC<Props> = ({
             language={language}
             onBlur={formik.handleBlur}
             onChange={(value) =>
-              formik.setFieldValue(fields.endDate.name, value)
+              void formik.setFieldValue(fields.endDate.name, value)
             }
             value={formik.values.endDate ?? ''}
             invalid={!!getErrorMessage(fields.endDate.name)}

@@ -51,7 +51,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
           key={attachment.attachmentFileName}
         >
           <IconPaperclip aria-label={attachment.attachmentFileName} />
-          <span css={{ textDecoration: 'underline' }}>
+          <span style={{ textDecoration: 'underline' }}>
             {attachment.attachmentFileName}
           </span>
         </$ViewField>

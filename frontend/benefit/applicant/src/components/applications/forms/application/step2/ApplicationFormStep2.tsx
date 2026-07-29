@@ -211,7 +211,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   false
                 );
@@ -226,7 +226,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherFinancialSupportForEmployment.name,
                   true
                 );
@@ -251,7 +251,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="false"
               label={t('common:utility.no')}
               onChange={() => {
-                formik.setFieldValue(
+                void formik.setFieldValue(
                   fields.otherSubsidisedEmployed.name,
                   false
                 );
@@ -264,7 +264,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               value="true"
               label={t('common:utility.yes')}
               onChange={() => {
-                formik.setFieldValue(fields.otherSubsidisedEmployed.name, true);
+                void formik.setFieldValue(
+                  fields.otherSubsidisedEmployed.name,
+                  true
+                );
               }}
               checked={formik.values.otherSubsidisedEmployed === true}
             />
@@ -588,7 +591,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, false);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  false
+                );
               }}
               checked={formik.values.apprenticeshipProgram === false}
             />
@@ -600,7 +606,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
               )}
               onChange={() => {
-                formik.setFieldValue(fields.apprenticeshipProgram.name, true);
+                void formik.setFieldValue(
+                  fields.apprenticeshipProgram.name,
+                  true
+                );
               }}
               checked={formik.values.apprenticeshipProgram === true}
             />
