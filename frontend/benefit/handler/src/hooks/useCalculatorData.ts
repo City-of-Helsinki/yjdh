@@ -66,23 +66,23 @@ const useCalculatorData = (
    */
   const handleClear = (confirm: boolean): true => {
     if (confirm) {
-      formik.setFieldValue('endDate', '');
-      formik.setFieldValue('startDate', '');
-      formik.setFieldValue(
+      void formik.setFieldValue('endDate', '');
+      void formik.setFieldValue('startDate', '');
+      void formik.setFieldValue(
         'workTimePercent',
         String(PAY_SUBSIDY_PERCENT.DEFAULT)
       );
-      formik.setFieldValue('monthlyAmount', '');
-      formik.setFieldValue(
+      void formik.setFieldValue('monthlyAmount', '');
+      void formik.setFieldValue(
         'paySubsidies',
         application.paySubsidyGranted === PAY_SUBSIDY_GRANTED.NOT_GRANTED
           ? []
           : [PAY_SUBSIDIES_OVERRIDE]
       );
-      formik.setFieldValue('trainingCompensations', []);
+      void formik.setFieldValue('trainingCompensations', []);
       // Manual calculation fields
-      formik.setFieldValue('overrideMonthlyBenefitAmount', '');
-      formik.setFieldValue('overrideMonthlyBenefitAmountComment', '');
+      void formik.setFieldValue('overrideMonthlyBenefitAmount', '');
+      void formik.setFieldValue('overrideMonthlyBenefitAmountComment', '');
     }
     setTimeout(() => {
       focusAndScroll('monthlyPay');

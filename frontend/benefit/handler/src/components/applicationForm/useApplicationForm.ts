@@ -26,7 +26,6 @@ import {
   DeMinimisAid,
 } from 'benefit-shared/types/application';
 import { FormikErrors, FormikProps, useFormik } from 'formik';
-import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import { NextRouter, useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
@@ -166,7 +165,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
       !isEqual(formik.values.attachments, application.attachments)
     ) {
       const applicationWithUpdatedAttachments = {
-        ...cloneDeep(formik.values),
+        ...structuredClone(formik.values),
         attachments: getApplication(data).attachments,
       };
       setApplication(applicationWithUpdatedAttachments);
@@ -175,8 +174,8 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     // Set initial application data to formik and to review changes on submit
     if (data && initialApplication === null) {
       const app = getApplication(data);
-      setApplication(cloneDeep(app));
-      setInitialApplication(cloneDeep(app));
+      setApplication(structuredClone(app));
+      setInitialApplication(structuredClone(app));
     }
 
     if (applicationDataError) {

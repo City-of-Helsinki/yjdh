@@ -6,7 +6,13 @@ import { ALTERATION_STATE, ALTERATION_TYPE } from 'benefit-shared/constants';
 import AlterationFormContext from 'benefit-shared/context/AlterationFormContext';
 import { Application } from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
-import { DateInput, RadioButton, SelectionGroup, TextInput } from 'hds-react';
+import {
+  DateInput,
+  RadioButton,
+  SelectionGroup,
+  TextInput,
+  Tooltip,
+} from 'hds-react';
 import React, { useContext, useMemo } from 'react';
 import {
   $Grid,
@@ -287,9 +293,11 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
                 placeholder={t(
                   `${translationBase}.fields.einvoiceAddress.placeholder`
                 )}
-                tooltipText={t(
-                  `${translationBase}.fields.einvoiceAddress.tooltip`
-                )}
+                tooltip={
+                  <Tooltip>
+                    {t(`${translationBase}.fields.einvoiceAddress.tooltip`)}
+                  </Tooltip>
+                }
                 value={formik.values.einvoiceAddress}
                 id="alteration-einvoice-address"
                 name="einvoiceAddress"

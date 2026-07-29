@@ -98,7 +98,7 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
   ): void => {
     const newPaySubsidies = [...(formik.values.paySubsidies || [])];
     newPaySubsidies[index] = { ...newPaySubsidies[index], ...newValues };
-    formik.setFieldValue(fields.paySubsidies.name, newPaySubsidies);
+    void formik.setFieldValue(fields.paySubsidies.name, newPaySubsidies);
   };
 
   if ((formik.values.paySubsidies?.length ?? 0) === 0) return null;
@@ -568,7 +568,7 @@ const SalaryBenefitCalculatorView: React.FC<
           name={fields.monthlyPay.name}
           label={fields.monthlyPay.label}
           onChange={(e) =>
-            formik.setFieldValue(fields.monthlyPay.name, e.target.value)
+            void formik.setFieldValue(fields.monthlyPay.name, e.target.value)
           }
           value={formatStringFloatValue(formik.values.monthlyPay)}
           invalid={!!getErrorMessage(fields.monthlyPay.name)}
@@ -584,7 +584,7 @@ const SalaryBenefitCalculatorView: React.FC<
           name={fields.otherExpenses.name}
           label={fields.otherExpenses.label}
           onChange={(e) =>
-            formik.setFieldValue(fields.otherExpenses.name, e.target.value)
+            void formik.setFieldValue(fields.otherExpenses.name, e.target.value)
           }
           value={formatStringFloatValue(formik.values.otherExpenses)}
           invalid={!!getErrorMessage(fields.otherExpenses.name)}
@@ -600,7 +600,7 @@ const SalaryBenefitCalculatorView: React.FC<
           name={fields.vacationMoney.name}
           label={fields.vacationMoney.label}
           onChange={(e) =>
-            formik.setFieldValue(fields.vacationMoney.name, e.target.value)
+            void formik.setFieldValue(fields.vacationMoney.name, e.target.value)
           }
           value={formatStringFloatValue(formik.values.vacationMoney)}
           invalid={!!getErrorMessage(fields.vacationMoney.name)}
@@ -628,7 +628,7 @@ const SalaryBenefitCalculatorView: React.FC<
               onChange={(selectedOptions: OptionType[]) => {
                 const selectedValue = Number(selectedOptions?.[0]?.value);
                 if (!Number.isNaN(selectedValue)) {
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.stateAidMaxPercentage.name,
                     selectedValue
                   );
@@ -724,7 +724,7 @@ const SalaryBenefitCalculatorView: React.FC<
           placeholder={fields.startDate.placeholder}
           language={language}
           onChange={(value) => {
-            formik.setFieldValue(fields.startDate.name, value);
+            void formik.setFieldValue(fields.startDate.name, value);
           }}
           value={formik.values.startDate ?? ''}
           invalid={!!getErrorMessage(fields.startDate.name)}
@@ -741,7 +741,7 @@ const SalaryBenefitCalculatorView: React.FC<
           placeholder={fields.endDate.placeholder}
           language={language}
           onChange={(value) => {
-            formik.setFieldValue(fields.endDate.name, value);
+            void formik.setFieldValue(fields.endDate.name, value);
           }}
           value={formik.values.endDate ?? ''}
           invalid={!!getErrorMessage(fields.endDate.name)}

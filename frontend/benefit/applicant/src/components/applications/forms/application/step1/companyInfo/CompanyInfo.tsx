@@ -368,7 +368,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                   `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
                 )}
                 onChange={() =>
-                  formik.setFieldValue(
+                  void formik.setFieldValue(
                     fields.associationHasBusinessActivities.name,
                     true
                   )
@@ -388,7 +388,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={fields.companyNumberOfEmployees.label}
           onBlur={formik.handleBlur}
           onChange={(event) => {
-            formik.setFieldValue(
+            void formik.setFieldValue(
               fields.companyNumberOfEmployees.name,
               event.target.value.replace(/\D/g, '')
             );
@@ -433,7 +433,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             value="false"
             label={t('common:utility.no')}
             onChange={() => {
-              formik.setFieldValue(fields.purchasedService.name, false);
+              void formik.setFieldValue(fields.purchasedService.name, false);
             }}
             checked={formik.values.purchasedService === false}
           />
@@ -443,7 +443,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             value="true"
             label={t('common:utility.yes')}
             onChange={() =>
-              formik.setFieldValue(fields.purchasedService.name, true)
+              void formik.setFieldValue(fields.purchasedService.name, true)
             }
             checked={formik.values.purchasedService === true}
           />
