@@ -1,4 +1,4 @@
-import { ButtonPresetTheme, ButtonProps } from 'hds-react';
+import { ButtonPresetTheme } from 'hds-react';
 import React from 'react';
 import {
   FieldValues,
@@ -12,7 +12,7 @@ import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 type Props<FormData extends FieldValues, BackendResponseData> = Omit<
-  ButtonProps,
+  React.ComponentProps<typeof Button | typeof LinkButton>,
   'onClick' | 'onError'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;

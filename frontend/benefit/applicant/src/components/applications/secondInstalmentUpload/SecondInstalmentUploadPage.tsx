@@ -7,7 +7,6 @@ import useSecondInstalmentRespondMutation from 'benefit/applicant/hooks/useSecon
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ATTACHMENT_TYPES } from 'benefit-shared/constants';
 import {
-  Button,
   ButtonPresetTheme,
   ButtonVariant,
   IconArrowRight,
@@ -15,6 +14,7 @@ import {
 } from 'hds-react';
 import { useRouter } from 'next/router';
 import React from 'react';
+import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import {
@@ -262,7 +262,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
         </p>
       )}
       <$Grid columns={1}>
-        <$GridCell colSpan={1}>
+        <$GridCell $colSpan={1}>
           <$Checkbox
             id="employer-assurance"
             name="employer-assurance"
@@ -275,7 +275,7 @@ const SecondInstalmentUploadPage: React.FC = () => {
             required
           />
         </$GridCell>
-        <$GridCell colSpan={1}>
+        <$GridCell $colSpan={1}>
           <ul>
             <AttachmentsList
               as="li"

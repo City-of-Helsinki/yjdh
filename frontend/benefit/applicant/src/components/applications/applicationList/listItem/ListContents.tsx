@@ -7,7 +7,7 @@ import {
 import ListItem from 'benefit/applicant/components/applications/applicationList/listItem/ListItem';
 import { ApplicationListProps } from 'benefit/applicant/components/applications/applicationList/useApplicationList';
 import ApplicationListProvider from 'benefit/applicant/context/ApplicationListProvider';
-import { Select } from 'hds-react';
+import { Option, Select } from 'hds-react';
 import React, { useEffect } from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
@@ -76,9 +76,9 @@ const ListContents = ({
               {(orderByOptions?.length ?? 0) > 1 && (
                 <Select
                   id={`application-list-${status.join('-')}-order-by`}
-                  options={orderByOptions || []}
-                  defaultValue={orderBy}
-                  value={[orderBy].filter(Boolean)}
+                  options={(orderByOptions as Option[]) || []}
+                  defaultValue={orderBy?.value}
+                  value={[orderBy].filter(Boolean) as Option[]}
                   onChange={(selectedOptions: OptionType[]) =>
                     setOrderBy(selectedOptions[0])
                   }

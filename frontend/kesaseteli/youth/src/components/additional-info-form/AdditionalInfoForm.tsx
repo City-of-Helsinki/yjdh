@@ -1,3 +1,4 @@
+import { ButtonPresetTheme, NotificationSize } from 'hds-react';
 import useCreateAdditionalInfoQuery from 'kesaseteli/youth/hooks/backend/useCreateAdditionalInfoQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
@@ -40,7 +41,7 @@ const AdditionalInfoForm: React.FC<Props> = ({ applicationId }) => {
       <$Notification
         label={t(`common:additionalInfo.notification.confirmed`)}
         type="success"
-        size="large"
+        size={NotificationSize.Large}
       >
         {t(`common:additionalInfo.notification.confirmedDescription`)}
       </$Notification>
@@ -75,7 +76,7 @@ const AdditionalInfoForm: React.FC<Props> = ({ applicationId }) => {
           <$GridCell>
             <SaveFormButton
               saveQuery={useCreateAdditionalInfoQuery(applicationId)}
-              theme="black"
+              theme={ButtonPresetTheme.Black}
             >
               {t(`common:additionalInfo.form.sendButton`)}
             </SaveFormButton>

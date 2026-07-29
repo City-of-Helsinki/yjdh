@@ -4,10 +4,11 @@ import React from 'react';
 
 import $LinkButton from './LinkButton.sc';
 
-type Props = Omit<ButtonProps, 'size' | 'variant'> & {
-  isLoading?: boolean;
-  loadingText?: string;
-};
+type Props = Omit<ButtonProps, 'children' | 'size' | 'variant'> &
+  React.PropsWithChildren<{
+    isLoading?: boolean;
+    loadingText?: string;
+  }>;
 
 /**
  * LinkButton is a button that looks like a link.

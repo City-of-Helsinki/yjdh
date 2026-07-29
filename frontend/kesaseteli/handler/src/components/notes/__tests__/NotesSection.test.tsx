@@ -41,7 +41,6 @@ describe('NotesSection', () => {
         id="notes-accordion"
         heading="Käsittelijän huomiot"
         initiallyOpen
-        onToggle={() => { }}
       >
         <NotesSection
           applicationId="app-1"

@@ -196,6 +196,14 @@ jest.mock('hds-react', () => {
     ButtonPresetTheme: {
       Coat: 'Coat',
     },
+    ButtonVariant: {
+      Primary: 'primary',
+      Secondary: 'secondary',
+      Supplementary: 'supplementary',
+      Success: 'success',
+      Danger: 'danger',
+      Clear: 'clear',
+    },
     IconInfoCircleFill: () =>
       ReactLocal.createElement('span', { 'data-testid': 'info-icon' }),
     LoadingSpinner: () =>

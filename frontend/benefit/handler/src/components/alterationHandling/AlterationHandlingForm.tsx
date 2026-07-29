@@ -219,7 +219,6 @@ const AlterationHandlingForm = ({
         >
           <$Grid>
             <$GridCell $colSpan={8}>
-              {/* @ts-expect-error TS2740: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
               <TextArea
                 label={
                   formik.values.isRecoverable

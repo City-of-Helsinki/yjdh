@@ -7,7 +7,11 @@ import {
   APPLICATION_FIELDS_STEP1_KEYS,
   ORGANIZATION_TYPES,
 } from 'benefit-shared/constants';
-import { Application, ApplicationData, DeMinimisAid } from 'benefit-shared/types/application';
+import {
+  Application,
+  ApplicationData,
+  DeMinimisAid,
+} from 'benefit-shared/types/application';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import { FormikProps, FormikValues, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
@@ -158,6 +162,7 @@ const useFormikInstance = (
       formik
         .setFieldValue('attachments', application.attachments)
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.error('Failed to update attachments:', error);
         });
     }

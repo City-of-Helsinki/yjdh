@@ -4200,10 +4200,10 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.9.tgz#b6f785caa7ea1fe4414d9df42ee0ab67f23d8a6d"
   integrity sha512-n1yyPsugYNSmHgxDFjicaI2+gCNjsBck8UX9kuofAKlc0h1bL+20oSF72KeNaW2DUlesbEVCFgyV2dPGTiY42g==
 
-"@types/react-dom@^18.0.0":
-  version "18.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.3.tgz#a022ea08c75a476fe5e96b675c3e673363853831"
-  integrity sha512-1RRW9kst+67gveJRYPxGmVy8eVJ05O43hg77G2j5m76/RFJtMbcfAs2viQ2UNsvvDg8F7OfQZx8qQcl6ymygaQ==
+"@types/react-dom@18.2.7", "@types/react-dom@^18.0.0":
+  version "18.2.7"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.7.tgz#67222a08c0a6ae0a0da33c3532348277c70abb63"
+  integrity sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==
   dependencies:
     "@types/react" "*"
 
@@ -4238,10 +4238,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  version "17.0.43"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.43.tgz#4adc142887dd4a2601ce730bc56c3436fdb07a55"
-  integrity sha512-8Q+LNpdxf057brvPu1lMtC5Vn7J119xrP1aq4qiaefNioQUYANF/CYeK4NsKorSZyUGJ66g0IM+4bbjwx45o2A==
+"@types/react@*", "@types/react@18.2.21":
+  version "18.2.21"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.21.tgz#774c37fd01b522d0b91aed04811b58e4e0514ed9"
+  integrity sha512-neFKG/sBAwGxHgXiIxnbm3/AAVQ/cMRS93hvBpg8xYRbeQSPVABp9U2bRnPf0iI4+Ucdv3plSxKK+3CW2ENJxA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"

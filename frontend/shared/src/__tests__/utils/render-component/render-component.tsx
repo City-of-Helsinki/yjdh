@@ -10,6 +10,10 @@ import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/H
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
+const TypedQueryClientProvider = QueryClientProvider as React.ComponentType<
+  React.PropsWithChildren<{ client: QueryClient }>
+>;
+
 export type Result = {
   queryClient: QueryClient;
   renderResult: RenderResult;
@@ -22,12 +26,10 @@ const renderComponent =
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const renderResult = render(
       <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={theme}>
-            {Element}
-          </ThemeProvider>
+        <TypedQueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>{Element}</ThemeProvider>
           <HiddenLoadingIndicator />
-        </QueryClientProvider>
+        </TypedQueryClientProvider>
       </BackendAPIContext.Provider>,
       router
     );

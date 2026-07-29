@@ -32,7 +32,13 @@ const getAvatarSize = ($size?: 'small' | 'large'): string =>
 const getSvgSize = ($size?: 'small' | 'large'): string =>
   $size === 'small' ? '14px' : '18px';
 
-export const $TimelineItemCard = styled.li<{ $size?: 'small' | 'large' }>`
+type TimelineItemCardProps = {
+  $type: TimelineItemThemeType;
+  $isImportant: boolean;
+  $size?: 'small' | 'large';
+};
+
+export const $TimelineItemCard = styled.li<TimelineItemCardProps>`
   --timeline-item-line-color: ${getBorderColor};
   --timeline-item-border-color: ${getBorderColor};
   --timeline-item-background-color: ${getBackgroundColor};

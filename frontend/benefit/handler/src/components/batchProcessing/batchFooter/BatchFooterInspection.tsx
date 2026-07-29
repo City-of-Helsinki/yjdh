@@ -159,7 +159,6 @@ BatchProps) => {
         <h3>{t('common:batches.form.headings.decisionDetails')}</h3>
         <$FormSection>
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               onChange={formik.handleChange}
               label={t('common:batches.form.fields.decisionMakerName')}
@@ -173,7 +172,6 @@ BatchProps) => {
           </$GridCell>
 
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               onChange={formik.handleChange}
               label={t('common:batches.form.fields.decisionMakerTitle')}
@@ -187,7 +185,6 @@ BatchProps) => {
           </$GridCell>
 
           <$GridCell $colSpan={2}>
-            {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
             <TextInput
               onChange={formik.handleChange}
               label={t('common:batches.form.fields.sectionOfTheLaw')}
@@ -201,7 +198,6 @@ BatchProps) => {
           </$GridCell>
 
           <$GridCell $colSpan={3}>
-            {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
             <DateInput
               minDate={yearFromNow}
               onChange={(value) => formik.setFieldValue('decision_date', value)}
@@ -245,7 +241,6 @@ BatchProps) => {
               {inspectorMode === 'ahjo' ? (
                 <$FormSection>
                   <$GridCell $colSpan={3}>
-                    {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                     <TextInput
                       onChange={formik.handleChange}
                       label={t(
@@ -261,7 +256,6 @@ BatchProps) => {
                   </$GridCell>
 
                   <$GridCell $colSpan={3}>
-                    {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                     <TextInput
                       onChange={formik.handleChange}
                       label={t(
@@ -276,7 +270,6 @@ BatchProps) => {
                     />
                   </$GridCell>
                   <$GridCell $colSpan={3}>
-                    {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                     <TextInput
                       onChange={formik.handleChange}
                       label={t('common:batches.form.fields.p2pCheckerName')}
@@ -315,7 +308,6 @@ BatchProps) => {
               {inspectorMode === 'p2p' ? (
                 <$FormSection css="border-top: 1pox solid #000;">
                   <$GridCell $colSpan={3}>
-                    {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                     <TextInput
                       onChange={formik.handleChange}
                       label={t('common:batches.form.fields.p2pInspectorName')}
@@ -329,7 +321,6 @@ BatchProps) => {
                   </$GridCell>
 
                   <$GridCell $colSpan={3}>
-                    {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                     <TextInput
                       onChange={formik.handleChange}
                       label={t('common:batches.form.fields.p2pInspectorEmail')}
@@ -342,7 +333,6 @@ BatchProps) => {
                     />
                   </$GridCell>
                   <$GridCell $colSpan={3}>
-                    {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
                     <TextInput
                       onChange={formik.handleChange}
                       label={t('common:batches.form.fields.p2pCheckerName')}

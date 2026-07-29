@@ -1,4 +1,4 @@
-import { IconPlus, RadioButton } from 'hds-react';
+import { ButtonPresetTheme, IconPlus, RadioButton } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useRef, useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -183,7 +183,7 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
           isLoading={uploadMutation.isLoading}
           loadingText={t('common:upload.isUploading')}
           iconStart={<IconPlus />}
-          theme="coat"
+          theme={ButtonPresetTheme.Coat}
         >
           {isMobile
             ? t('common:handlerApplication.attachmentsInputPlaceholderMobile')

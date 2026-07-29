@@ -6,6 +6,7 @@ export type WizardProps = {
   header?: React.ReactNode;
   footer?: React.ReactNode;
   initialStep?: number;
+  children?: React.ReactNode;
 };
 
 export type WizardValues = {

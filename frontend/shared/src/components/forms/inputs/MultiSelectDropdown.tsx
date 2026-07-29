@@ -111,7 +111,7 @@ const MultiSelectDropdown = <T extends FieldValues, O extends Option>({
     id: inputId,
     required,
     texts: {
-      label,
+      label: label as string,
       placeholder,
     },
     options: hdsOptions,

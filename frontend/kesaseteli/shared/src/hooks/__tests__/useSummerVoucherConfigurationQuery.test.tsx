@@ -56,6 +56,10 @@ const mockUseErrorHandler = useErrorHandler as jest.Mock;
 const mockUseLocale = useLocale as jest.Mock;
 const mockErrorHandler = jest.fn();
 
+const TypedQueryClientProvider = QueryClientProvider as React.ComponentType<
+  React.PropsWithChildren<{ client: QueryClient }>
+>;
+
 describe('useSummerVoucherConfigurationQuery', () => {
   beforeAll(() => {
     nock.disableNetConnect();
@@ -75,7 +79,9 @@ describe('useSummerVoucherConfigurationQuery', () => {
 
   const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <BackendAPIProvider baseURL={API_BASE_TEST_URL}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <TypedQueryClientProvider client={queryClient}>
+        {children}
+      </TypedQueryClientProvider>
     </BackendAPIProvider>
   );
 
