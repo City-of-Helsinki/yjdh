@@ -68,7 +68,6 @@ const EmployerApplicationPanel: React.FC<
  */
 const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
   const [isNotificationOpen, setIsNotificationOpen] = useState(true);
@@ -108,7 +107,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
           onClose={() => setIsNotificationOpen(false)}
         />
       )}
-      <$StickyTabs index={activeTab} onChange={setActiveTab}>
+      <$StickyTabs initiallyActiveTab={0}>
         <TabList>
           {vouchers.map((voucher, index) => (
             <Tab key={voucher.id || index}>

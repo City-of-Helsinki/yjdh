@@ -23,7 +23,7 @@ type Props = {
   backendUrl: string;
   Header: React.FC;
   Footer?: React.FC;
-  AuthProvider?: React.FC;
+  AuthProvider?: React.FC<React.PropsWithChildren>;
   confirmDialog?: boolean;
 };
 

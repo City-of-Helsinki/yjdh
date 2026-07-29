@@ -112,7 +112,7 @@ const Table = <D extends { id: string }>({
 TableProps<D>): React.ReactElement => {
   const selectorCol: Column<D> = React.useMemo(
     () => ({
-      Cell: ({ row }: { row: Row }) => {
+      Cell: ({ row }: { row: Row<D> }) => {
         const { title, style, checked, onChange } =
           row.getToggleRowSelectedProps();
         return (
@@ -152,7 +152,7 @@ TableProps<D>): React.ReactElement => {
         toggleAllRowsSelected,
         toggleRowSelected,
       }: {
-        row: Row;
+        row: Row<D>;
         toggleAllRowsSelected: (selected: boolean) => void;
         toggleRowSelected: (rowId: string) => void;
       }) => {
@@ -179,7 +179,7 @@ TableProps<D>): React.ReactElement => {
 
   const expanderCol: Column<D> = React.useMemo(
     () => ({
-      Cell: ({ row }: { row: Row }) => (
+      Cell: ({ row }: { row: Row<D> }) => (
         <div {...row.getToggleRowExpandedProps()}>
           <IconAngleDown size={IconSize.Medium} />
         </div>

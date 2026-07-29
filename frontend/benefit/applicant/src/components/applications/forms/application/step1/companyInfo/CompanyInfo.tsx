@@ -194,7 +194,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               `}
             >
               <$GridCell $colSpan={4}>
-                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.companyDepartment.name}
                   name={fields.companyDepartment.name}
@@ -211,7 +210,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 />
               </$GridCell>
               <$GridCell $colStart={1} $colSpan={4}>
-                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.alternativeCompanyStreetAddress.name}
                   name={fields.alternativeCompanyStreetAddress.name}
@@ -239,7 +237,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 />
               </$GridCell>
               <$GridCell $colSpan={2}>
-                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.alternativeCompanyPostcode.name}
                   name={fields.alternativeCompanyPostcode.name}
@@ -261,7 +258,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 />
               </$GridCell>
               <$GridCell $colSpan={4}>
-                {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   id={fields.alternativeCompanyCity.name}
                   name={fields.alternativeCompanyCity.name}
@@ -305,7 +301,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           >
             {
               ((props: Record<string, unknown>) => (
-                // @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740.
                 <TextInput
                   {...props}
                   id={fields.companyBankAccountNumber.name}
@@ -387,7 +382,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         )}
       </$GridCell>
       <$GridCell $colSpan={4}>
-        {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
         <TextInput
           id={fields.companyNumberOfEmployees.name}
           name={fields.companyNumberOfEmployees.name}
@@ -407,7 +401,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         />
       </$GridCell>
       <$GridCell $colSpan={12}>
-        {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
         <TextArea
           id={fields.companyBusinessBrief.name}
           name={fields.companyBusinessBrief.name}
@@ -432,43 +425,27 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={fields.purchasedService.label}
           direction="vertical"
           required
-          errorText={getErrorMessage(
-            fields.purchasedService.name
-          )}
+          errorText={getErrorMessage(fields.purchasedService.name)}
         >
           <$RadioButton
             id={`${fields.purchasedService.name}False`}
             name={fields.purchasedService.name}
             value="false"
-            label={t(
-              'common:utility.no'
-            )}
+            label={t('common:utility.no')}
             onChange={() => {
-              formik.setFieldValue(
-                fields.purchasedService.name,
-                false
-              );
+              formik.setFieldValue(fields.purchasedService.name, false);
             }}
-            checked={
-              formik.values.purchasedService === false
-            }
+            checked={formik.values.purchasedService === false}
           />
           <$RadioButton
             id={`${fields.purchasedService.name}True`}
             name={fields.purchasedService.name}
             value="true"
-            label={t(
-              'common:utility.yes'
-            )}
+            label={t('common:utility.yes')}
             onChange={() =>
-              formik.setFieldValue(
-                fields.purchasedService.name,
-                true
-              )
+              formik.setFieldValue(fields.purchasedService.name, true)
             }
-            checked={
-              formik.values.purchasedService === true
-            }
+            checked={formik.values.purchasedService === true}
           />
         </SelectionGroup>
       </$GridCell>

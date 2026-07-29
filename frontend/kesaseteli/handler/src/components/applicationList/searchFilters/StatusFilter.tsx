@@ -84,9 +84,9 @@ const StatusFilter = ({
         options={options}
         value={selectedOptions}
         invalid={isInvalid}
-        onChange={(nextSelectedOptions: OptionType<ApplicationStatus>[]) => {
+        onChange={(nextSelectedOptions) => {
           const nextStatuses = nextSelectedOptions.map(
-            (option) => option.value
+            (option) => option.value as ApplicationStatus
           );
           setSelectedStatuses(nextStatuses);
           // Only update query if selection is valid (not empty) to avoid querying every status

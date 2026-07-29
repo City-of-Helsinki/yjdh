@@ -52,9 +52,9 @@ export const $ChangeSetHeader = styled.div`
   }
   span:last-child {
     font-size: 0.9em;
-    color: ${(props: $ChangeSetProps) => props.theme.colors.black50};
+    color: ${({ theme }) => theme.colors.black50};
   }
-  margin-bottom: ${(props: $ChangeSetProps) => props.theme.spacing.s};
+  margin-bottom: ${({ theme }) => theme.spacing.s};
 `;
 
 export const $ChangeSetFooter = styled.div``;

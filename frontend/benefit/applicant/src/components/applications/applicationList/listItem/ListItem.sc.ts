@@ -3,7 +3,7 @@ import { respondAbove } from 'shared/styles/mediaQueries';
 import styled, { DefaultTheme } from 'styled-components';
 
 interface AvatarProps {
-  $backgroundColor: keyof DefaultTheme['colors'];
+  $backgroundColor?: keyof DefaultTheme['colors'];
   theme: DefaultTheme;
 }
 
@@ -41,7 +41,11 @@ export const $ItemContent = styled.div`
 
 export const $Avatar = styled.div<AvatarProps>`
   ${(props: AvatarProps) => `
-    background-color: ${props.theme.colors[props.$backgroundColor]};
+    background-color: ${
+      props.$backgroundColor
+        ? props.theme.colors[props.$backgroundColor]
+        : 'transparent'
+    };
     color: ${props.theme.colors.white};
     font-size: ${props.theme.fontSize.heading.xs};
   `}

@@ -40,10 +40,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   const theme = useTheme();
 
   const getPurchasedServiceText = (): string => {
-    if (
-      data.purchasedService === null ||
-      data.purchasedService === undefined
-    ) {
+    if (data.purchasedService === null || data.purchasedService === undefined) {
       return '-';
     }
     return data.purchasedService
@@ -148,7 +145,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                   `${translationsBase}.company.fields.companyBusinessBrief.summaryLabel`
                 )}
               </$ApplicationDetailLabel>
-              <$ApplicationDetailValue $column={1}>
+              <$ApplicationDetailValue $column>
                 {data?.companyBusinessBrief &&
                   data?.companyBusinessBrief
                     .split(/\n/)

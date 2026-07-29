@@ -3,37 +3,37 @@ import {
   ButtonVariant,
   LoadingSpinner,
 } from 'hds-react';
-import * as React from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { $Button } from './Button.sc';
 
-export type ButtonProps = HdsButtonProps & {
-  loadingText?: string;
-  isLoading?: boolean;
-};
+const StyledButton = $Button as React.ComponentType<
+  HdsButtonProps & React.RefAttributes<HTMLButtonElement>
+>;
+
+export type ButtonProps = Omit<HdsButtonProps, 'children'> &
+  React.PropsWithChildren<{
+    loadingText?: string;
+    isLoading?: boolean;
+  }>;
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ loadingText, isLoading, ...props }, ref) => {
     const { t } = useTranslation();
-    const buttonText = isLoading
-      ? loadingText || t('common:loading')
-      : props.children;
-    const disabled = isLoading || props.disabled;
-    const iconStart = isLoading ? <LoadingSpinner small /> : props.iconStart;
-    const variant = isLoading ? ButtonVariant.Clear : props.variant;
+    const normalizedProps: HdsButtonProps = {
+      ...props,
+      children: (isLoading
+        ? loadingText || t('common:loading')
+        : props.children) as string,
+      disabled: isLoading || props.disabled,
+      variant: isLoading
+        ? ButtonVariant.Clear
+        : props.variant ?? ButtonVariant.Primary,
+      iconStart: isLoading ? <LoadingSpinner small /> : props.iconStart ?? null,
+    };
 
-    return (
-      <$Button
-        {...props}
-        ref={ref}
-        disabled={disabled}
-        iconStart={iconStart}
-        variant={variant as ButtonVariant}
-      >
-        {buttonText}
-      </$Button>
-    );
+    return <StyledButton {...normalizedProps} ref={ref} />;
   }
 );
 

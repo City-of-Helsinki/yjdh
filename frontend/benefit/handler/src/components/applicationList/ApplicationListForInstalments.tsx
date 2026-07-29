@@ -167,9 +167,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
             String(secondInstalment?.amountAfterRecoveries || 0)
           );
           return amountAfterRecoveries > 0 ? (
-            <>
-              {formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}
-            </>
+            <>{formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}</>
           ) : (
             <$Wrapper>
               <$Column>
@@ -324,7 +322,6 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
               )}
             />
             <Dialog.Content>
-              {/* @ts-expect-error -- HDS DateInput types are overly strict with TS 5.9 */}
               <DateInput
                 id="instalment-change-date-dateinput"
                 label={t(

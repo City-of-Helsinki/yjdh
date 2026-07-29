@@ -114,7 +114,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
         {alterationType !== null && (
           <>
             <$GridCell $colSpan={3}>
-              {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
               <DateInput
                 label={t(`${translationBase}.fields.endDate.label`)}
                 helperText={t(`${translationBase}.fields.date.helpText`)}
@@ -135,7 +134,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             </$GridCell>
             {alterationType === ALTERATION_TYPE.SUSPENSION && (
               <$GridCell $colSpan={3}>
-                {/* @ts-expect-error: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
                 <DateInput
                   label={t(`${translationBase}.fields.resumeDate.label`)}
                   helperText={t(`${translationBase}.fields.date.helpText`)}
@@ -159,7 +157,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             )}
             <$GridCell $colSpan={6} />
             <$GridCell $colSpan={6}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={
                   alterationType === ALTERATION_TYPE.SUSPENSION
@@ -190,7 +187,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
           <$H2>{t(`${translationBase}.billing`)}</$H2>
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             label={t(`${translationBase}.fields.contactPersonName.label`)}
             helperText={t(
@@ -246,7 +242,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
         {useEinvoice && (
           <>
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={t(
                   `${translationBase}.fields.einvoiceProviderName.label`
@@ -267,7 +262,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             </$GridCell>
             <$GridCell $colSpan={8} />
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={t(
                   `${translationBase}.fields.einvoiceProviderIdentifier.label`
@@ -288,7 +282,6 @@ const AlterationForm = ({ application }: Props): JSX.Element | null => {
             </$GridCell>
             <$GridCell $colSpan={8} />
             <$GridCell $colSpan={4}>
-              {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
               <TextInput
                 label={t(`${translationBase}.fields.einvoiceAddress.label`)}
                 placeholder={t(

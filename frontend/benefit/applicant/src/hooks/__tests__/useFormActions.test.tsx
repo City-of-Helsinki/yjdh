@@ -59,19 +59,21 @@ describe('useFormActions - onQuietSave', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseRouter.mockReturnValue(mockRouter as any);
+    mockUseRouter.mockReturnValue(
+      mockRouter as unknown as ReturnType<typeof useRouter>
+    );
     mockUseCreateApplicationQuery.mockReturnValue({
       mutateAsync: mockCreateApplication,
       error: null,
-    } as any);
+    } as unknown as ReturnType<typeof useCreateApplicationQuery>);
     mockUseUpdateApplicationQuery.mockReturnValue({
       mutateAsync: mockUpdateApplication,
       error: null,
-    } as any);
+    } as unknown as ReturnType<typeof useUpdateApplicationQuery>);
     mockUseDeleteApplicationQuery.mockReturnValue({
       mutate: mockDeleteApplication,
       error: null,
-    } as any);
+    } as unknown as ReturnType<typeof useDeleteApplicationQuery>);
   });
 
   const wrapper = ({

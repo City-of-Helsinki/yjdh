@@ -94,7 +94,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
         bgVerticalPadding
       >
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.granter.name}
             name={fields.granter.name}
@@ -110,7 +109,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
-          {/* @ts-expect-error: HDS React TextInput has very strict prop requirements that are not necessary here. */}
           <TextInput
             id={fields.amount.name}
             name={fields.amount.name}
@@ -131,7 +129,6 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
-          {/* @ts-expect-error: HDS React DateInput has very strict prop requirements that are not necessary here. */}
           <DateInput
             id={fields.grantedAt.name}
             name={fields.grantedAt.name}

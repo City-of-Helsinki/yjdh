@@ -266,7 +266,6 @@ const AlterationCalculator = ({
               )}
             >
               <$DateRange>
-                {/* @ts-expect-error TS2740: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
                 <DateInput
                   label={t(`${translationBase}.fields.recoveryStartDate.label`)}
                   value={formik.values.recoveryStartDate}
@@ -285,7 +284,6 @@ const AlterationCalculator = ({
                   hideLabel
                 />
                 <$DateRangeSeparator aria-hidden>—</$DateRangeSeparator>
-                {/* @ts-expect-error TS2740: The HDS React DateInput has stricter type definitions for its props, causing TS2740. */}
                 <DateInput
                   label={t(`${translationBase}.fields.recoveryEndDate.label`)}
                   value={formik.values.recoveryEndDate}
@@ -312,7 +310,6 @@ const AlterationCalculator = ({
           {formik.values.isManual && (
             <>
               <$GridCell $colSpan={3}>
-                {/* @ts-expect-error TS2740: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
                 <TextInput
                   label={t(`${translationBase}.fields.recoveryAmount.label`)}
                   id="manual-recovery-amount"

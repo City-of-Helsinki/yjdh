@@ -66,7 +66,7 @@ const Dashboard: NextPage = () => {
           <$ButtonContainer>
             <Button
               variant={ButtonVariant.Secondary}
-              iconRight={<IconArrowRight />}
+              iconEnd={<IconArrowRight />}
               onClick={handleYouthApplicationsClick}
             >
               {t('common:header.youthApplicationsLabel')}
@@ -82,7 +82,7 @@ const Dashboard: NextPage = () => {
           <$ButtonContainer>
             <Button
               variant={ButtonVariant.Secondary}
-              iconRight={<IconArrowRight />}
+              iconEnd={<IconArrowRight />}
               onClick={handleEmployerApplicationsClick}
             >
               {t('common:header.employerApplicationsLabel')}

@@ -1,6 +1,7 @@
-import { Button, ButtonSize, ButtonVariant, Checkbox, RadioButton } from 'hds-react';
+import { ButtonSize, ButtonVariant, Checkbox, RadioButton } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
+import Button from 'shared/components/button/Button';
 import useLocale from 'shared/hooks/useLocale';
 
 import {
@@ -91,7 +92,6 @@ const NoteForm: React.FC<Props> = ({
 
   return (
     <$FormContainer onSubmit={handleSubmit} noValidate>
-      {/* @ts-expect-error: HDS React TextArea has stricter type definitions for its props, causing TS2740 */}
       <$TextArea
         id={isEditing ? `edit-note-${initialNote?.id}` : 'add-note-content'}
         label={
@@ -114,14 +114,22 @@ const NoteForm: React.FC<Props> = ({
       <$Toolbar>
         <$OptionsGroup>
           <RadioButton
-            id={isEditing ? `note-type-internal-${initialNote?.id}` : 'note-type-internal'}
+            id={
+              isEditing
+                ? `note-type-internal-${initialNote?.id}`
+                : 'note-type-internal'
+            }
             label={t('common:handlerNotes.noteType.internal')}
             value={NoteType.INTERNAL}
             checked={noteType === NoteType.INTERNAL}
             onChange={() => setNoteType(NoteType.INTERNAL)}
           />
           <RadioButton
-            id={isEditing ? `note-type-external-${initialNote?.id}` : 'note-type-external'}
+            id={
+              isEditing
+                ? `note-type-external-${initialNote?.id}`
+                : 'note-type-external'
+            }
             label={t('common:handlerNotes.noteType.external_message')}
             value={NoteType.EXTERNAL_MESSAGE}
             checked={noteType === NoteType.EXTERNAL_MESSAGE}
@@ -129,7 +137,11 @@ const NoteForm: React.FC<Props> = ({
           />
           <$Separator aria-hidden="true" />
           <Checkbox
-            id={isEditing ? `note-is-important-${initialNote?.id}` : 'note-is-important'}
+            id={
+              isEditing
+                ? `note-is-important-${initialNote?.id}`
+                : 'note-is-important'
+            }
             label={t('common:handlerNotes.isImportantLabel')}
             checked={isImportant}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

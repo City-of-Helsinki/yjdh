@@ -1,4 +1,4 @@
-import { Select, ToggleButton, Tooltip } from 'hds-react';
+import { Option, Select, ToggleButton, Tooltip } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { OptionType } from 'shared/types/common';
@@ -78,9 +78,9 @@ const ApplicationTableFilterBar: React.FC = () => {
           texts={{
             label: t('common:dashboard.filterBar.yearFilterLabel'),
           }}
-          options={options}
-          value={selectedOption ? [selectedOption] : []}
-          onChange={(selectedOptions: OptionType[]) => {
+          options={options as Option[]}
+          value={selectedOption ? ([selectedOption] as Option[]) : []}
+          onChange={(selectedOptions: Option[]) => {
             if (selectedOptions[0]) {
               onChangeYear(selectedOptions[0].value?.toString());
             }
@@ -97,7 +97,7 @@ const ApplicationTableFilterBar: React.FC = () => {
         tooltip={
           <Tooltip
             id="application-table-filter-mine-tooltip"
-            label={t('common:dashboard.filterBar.tooltipLabel')}
+            tooltipLabel={t('common:dashboard.filterBar.tooltipLabel')}
             buttonLabel={t('common:dashboard.filterBar.tooltipButtonLabel')}
           >
             {t('common:dashboard.filterBar.tooltipText')}

@@ -1,4 +1,4 @@
-import { NotificationProps } from 'hds-react';
+import { NotificationProps, NotificationSize } from 'hds-react';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -14,7 +14,7 @@ type Props = {
 const VtjErrorNotification: React.FC<Props> = ({
   reason,
   type = 'alert',
-  size = 'small',
+  size = NotificationSize.Small,
   params,
 }) => {
   const { t } = useTranslation();

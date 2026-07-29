@@ -70,9 +70,12 @@ const Dropdown = <T extends FieldValues, O extends Option>({
   };
 
   const texts = useMemo(() => {
-    const baseTexts: Partial<SelectTexts> = {
-      label: label || '',
+    const baseTexts = {
+      label: typeof label === 'string' ? label : '',
       placeholder,
+    } as Partial<SelectTexts> & {
+      filterLabel?: string;
+      filterPlaceholder?: string;
     };
     if (filterLabel) {
       baseTexts.filterLabel = filterLabel;
@@ -80,7 +83,7 @@ const Dropdown = <T extends FieldValues, O extends Option>({
     if (filterPlaceholder) {
       baseTexts.filterPlaceholder = filterPlaceholder;
     }
-    return baseTexts;
+    return baseTexts as Partial<SelectTexts>;
   }, [label, placeholder, filterLabel, filterPlaceholder]);
 
   const sharedSelectProps = {

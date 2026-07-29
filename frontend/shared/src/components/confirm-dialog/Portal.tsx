@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import PORTAL_ID from 'shared/constants/portal-id';
 
-const Portal: React.FC = ({ children }) => {
+const Portal: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

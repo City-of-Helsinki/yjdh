@@ -45,7 +45,7 @@ jest.mock('hds-react', () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-    Button: actual.Button,
+    ...actual,
     CookieBanner: CookieBannerMock,
     CookieConsentContextProvider: CookieConsentContextProviderMock,
     CookieSettingsPage: CookieSettingsPageMock,

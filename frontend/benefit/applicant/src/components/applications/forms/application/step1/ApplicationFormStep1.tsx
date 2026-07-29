@@ -8,6 +8,7 @@ import {
   APPLICATION_STATUSES,
 } from 'benefit-shared/constants';
 import {
+  Option as SelectOption,
   Select,
   SelectionGroup,
   TextArea,
@@ -118,7 +119,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </$SubHeader>
         </$GridCell>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -140,7 +140,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonLastName.name}
             name={fields.companyContactPersonLastName.name}
@@ -162,7 +161,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonPhoneNumber.name}
             name={fields.companyContactPersonPhoneNumber.name}
@@ -186,7 +184,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
-          {/* @ts-expect-error: The HDS React TextInput has stricter type definitions for its props, causing TS2740. */}
           <TextInput
             id={fields.companyContactPersonEmail.name}
             name={fields.companyContactPersonEmail.name}
@@ -212,12 +209,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 language[0]?.value
               )
             }
-            options={languageOptions}
+            options={languageOptions as SelectOption[]}
             id={fields.applicantLanguage.name}
             invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             value={[
-              formik.values.applicantLanguage ?? getDefaultLanguage(),
+              (formik.values.applicantLanguage as string) ??
+                getDefaultLanguage(),
             ].filter(Boolean)}
             required
           />
@@ -331,7 +329,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         {formik.values.coOperationNegotiations && (
           <$SubFieldContainer $colSpan={7}>
             <$GridCell $colSpan={8} $rowSpan={8}>
-              {/* @ts-expect-error: The HDS React TextArea has stricter type definitions for its props, causing TS2740. */}
               <TextArea
                 id={fields.coOperationNegotiationsDescription.name}
                 name={fields.coOperationNegotiationsDescription.name}
