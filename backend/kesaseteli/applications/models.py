@@ -760,10 +760,59 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return VTJService.is_dead(self.vtj_json)
 
     @property
-    def vtj_last_name(self) -> Optional[str]:
+    def vtj_first_name(self) -> str:
+        """Get applicant's first name(s) from VTJ data."""
+        from applications.services import VTJService
+
+        return VTJService.get_first_names(self.vtj_json)
+
+    @property
+    def vtj_last_name(self) -> str:
+        """Get applicant's last name from VTJ data."""
         from applications.services import VTJService
 
         return VTJService.get_last_name(self.vtj_json)
+
+    @staticmethod
+    def resolve_full_name(*, first_name: str, last_name: str) -> str:
+        """
+        Resolve the full name from given first name and last name.
+
+        :param first_name: First name(s)
+        :param last_name: Last name
+        :return: Full name in the format "<first name> <last name>".
+        """
+        return "{} {}".format(first_name.strip(), last_name.strip()).strip()
+
+    @staticmethod
+    def resolve_most_official_name(*, vtj_name: str, non_vtj_name: str) -> str:
+        """
+        Resolve the most official available name from given VTJ name and non-VTJ name.
+
+        :param vtj_name: Name or name part from VTJ (Väestötietojärjestelmä).
+        :param non_vtj_name: Name or name part from a non-VTJ source.
+        :return: Stripped VTJ name if it is truthy, otherwise the stripped non-VTJ name.
+        """
+        return vtj_name.strip() or non_vtj_name.strip()
+
+    @property
+    def most_official_first_name(self) -> str:
+        return YouthApplication.resolve_most_official_name(
+            vtj_name=self.vtj_first_name, non_vtj_name=self.first_name
+        )
+
+    @property
+    def most_official_last_name(self) -> str:
+        return YouthApplication.resolve_most_official_name(
+            vtj_name=self.vtj_last_name, non_vtj_name=self.last_name
+        )
+
+    @property
+    def most_official_name(self) -> str:
+        return YouthApplication.resolve_full_name(
+            first_name=self.most_official_first_name,
+            last_name=self.most_official_last_name,
+        )
 
     @property
     def attends_helsinkian_school(self) -> bool:
@@ -868,7 +917,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     @property
     def name(self):
-        return f"{self.first_name.strip()} {self.last_name.strip()}".strip()
+        return YouthApplication.resolve_full_name(
+            first_name=self.first_name,
+            last_name=self.last_name,
+        )
 
     def __str__(self):
         return f"{self.created_at}: {self.name} ({self.email})"
@@ -1414,7 +1466,7 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
     @property
     def employee_name(self) -> str:
         return (
-            self.youth_summer_voucher.youth_application.name
+            self.youth_summer_voucher.youth_application.most_official_name
             if self.youth_summer_voucher
             else ""
         )
