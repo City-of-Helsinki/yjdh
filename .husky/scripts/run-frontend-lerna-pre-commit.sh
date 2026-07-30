@@ -5,5 +5,5 @@
 set -eu
 
 if git diff --name-only --cached | grep -q -e 'frontend/'; then
-	(cd frontend && yarn husky:pre-commit)
+	(cd frontend && pnpm husky:pre-commit)
 fi

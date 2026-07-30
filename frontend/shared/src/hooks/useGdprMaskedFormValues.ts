@@ -5,7 +5,7 @@ const useGdprMaskedFormValues = <
   FormData extends FieldValues
 >(): Partial<FormData> => {
   const { getValues } = useFormContext<FormData>();
-  return maskGDPRData(getValues() as FormData);
+  return maskGDPRData(getValues());
 };
 
 export default useGdprMaskedFormValues;
