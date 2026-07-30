@@ -6,3 +6,8 @@ report
 coverage
 
 certificates
+
+# yarn – not used anymore
+yarn.lock
+.yarn/
+.yarnrc.yml

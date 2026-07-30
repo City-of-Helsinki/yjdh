@@ -10,14 +10,14 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage",
+    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "pnpm run test --verbose --coverage",
     "browser-test": "testcafe 'chrome --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --sf browser-tests/pages/",
     "browser-test:ci": "testcafe 'chrome:headless --disable-features=LocalNetworkAccessChecks --disable-search-engine-choice-screen --allow-insecure-localhost --disable-web-security --ignore-certificate-errors --ignore-urlfetcher-cert-requests --window-size=\"1249,720\"' --screenshots path=report --video report --reporter spec,html:report/index.html browser-tests/pages/ --sf"
   },
   "dependencies": {
-    "@frontend/benefit-shared": "*",
-    "@frontend/shared": "*",
+    "@frontend/benefit-shared": "workspace:*",
+    "@frontend/shared": "workspace:*",
     "@sentry/browser": "^10.56.0",
     "@sentry/nextjs": "^10.56.0",
     "@tiptap/core": "^2.2.4",

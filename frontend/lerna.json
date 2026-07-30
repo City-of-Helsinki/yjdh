@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "version": "0.0.0",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
