@@ -34,6 +34,8 @@ module.exports = {
     {
       files: [
         '**/__tests__/**',
+        '**/*.test.ts',
+        '**/*.test.tsx',
         '*.testcafe.ts',
         '**/hooks/**/*.ts',
         '**/hooks/**/*.tsx',

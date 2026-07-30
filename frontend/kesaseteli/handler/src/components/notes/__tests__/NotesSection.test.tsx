@@ -50,7 +50,7 @@ describe('NotesSection', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: /käsittelijän huomiot/i })
+      screen.getByRole('button', { name: /^käsittelijän huomiot$/i })
     ).toBeInTheDocument();
     expect(screen.getByText(/ei vielä huomioita/i)).toBeInTheDocument();
   });
