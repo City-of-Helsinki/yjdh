@@ -450,6 +450,12 @@ class VTJService:
         return is_dead_flag or has_death_date
 
     @classmethod
+    def get_first_names(cls, vtj_json_dict: dict | None) -> str:
+        """Extract the current first names from the VTJ response."""
+        values = cls._vtj_values(vtj_json_dict, "$.Henkilo.NykyisetEtunimet.Etunimet")
+        return (values[0] if values else "") or ""
+
+    @classmethod
     def get_last_name(cls, vtj_json_dict: dict) -> str:
         """Extract the current last name from the VTJ response."""
         values = cls._vtj_values(vtj_json_dict, "$.Henkilo.NykyinenSukunimi.Sukunimi")
@@ -492,7 +498,7 @@ class VTJService:
         return hometown_values == [None] and address_values == [None]
 
     @classmethod
-    def _vtj_values(cls, vtj_json_dict: dict, expression: str) -> list:
+    def _vtj_values(cls, vtj_json_dict: dict | None, expression: str) -> list:
         """Internal helper to find values in VTJ JSON using JSONPath."""
         if not vtj_json_dict:
             return []
