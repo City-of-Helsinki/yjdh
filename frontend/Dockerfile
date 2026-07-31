@@ -24,6 +24,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY --chown=default:root package.json pnpm-lock.yaml pnpm-workspace.yaml lerna.json ./
+COPY --chown=default:root patches ./patches
 COPY --chown=default:root $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=default:root $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=default:root shared/package.json shared/package.json
