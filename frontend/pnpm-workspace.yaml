@@ -47,6 +47,9 @@ overrides:
   # GHSA-gcfj-64vw-6mp9 (high) + axios prototype-pollution/DoS advisories.
   # 1.19.0 is blocked by minimumReleaseAge (published <7d ago); 1.18.1 is newest eligible.
   axios: '1.18.1'
+  # GHSA-v422-hmwv-36x6 (low): body-parser DoS when an invalid limit silently
+  # disables size enforcement. express@4.22.2 pins ~1.20.5; 1.20.6 is the patch.
+  body-parser: '1.20.6'
   # GHSA-mh99-v99m-4gvg (high, CVE-2026-14257): brace-expansion ReDoS/OOM. Force the
   # patched 5.0.8 everywhere so Dependency Review and pnpm audit both pass. 5.x's
   # ESM-style CJS build breaks minimatch@3-9 / lerna@8 (`require(...)()` and
