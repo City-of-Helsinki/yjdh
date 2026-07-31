@@ -7,6 +7,7 @@ module.exports = {
     },
   },
   moduleNameMapper: {
+    ...sharedConfig.moduleNameMapper,
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^kesaseteli-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`^kesaseteli/handler\/(.*)$`]: '<rootDir>src/$1',

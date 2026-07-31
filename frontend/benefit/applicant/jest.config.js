@@ -12,6 +12,7 @@ const config = {
     '<rootDir>/src/__tests__/utils/',
   ],
   moduleNameMapper: {
+    ...sharedConfig.moduleNameMapper,
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`benefit/applicant\/(.*)$`]: '<rootDir>/src/$1',
