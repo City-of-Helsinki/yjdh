@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const { withSentryConfig } = require('@sentry/nextjs');
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
@@ -35,6 +34,15 @@ if (appName && appName === 'benefit/applicant') {
 }
 
 const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
+  // Reserved runtime-only variables that must never be inlined into bundles via
+  // Next.js `env` / webpack DefinePlugin. For example `DEBUG` is a runtime toggle
+  // for the `debug` logging library; inlining it rewrites `process.env.DEBUG = ...`
+  // inside bundled packages into invalid assignments like `"1" = ...`.
+  const RESERVED_ENV_KEYS = new Set(['DEBUG']);
+  const safeEnvOverrides = Object.fromEntries(
+    Object.entries(envOverrides ?? {}).filter(([key]) => !RESERVED_ENV_KEYS.has(key)),
+  );
+
   const NEXTJS_IGNORE_ESLINT = trueEnv.includes(process.env?.NEXTJS_IGNORE_ESLINT ?? 'false');
   const NEXTJS_IGNORE_TYPECHECK = trueEnv.includes(process.env?.NEXTJS_IGNORE_TYPECHECK ?? 'false');
   const NEXTJS_DISABLE_SENTRY = trueEnv.includes(process.env?.NEXTJS_DISABLE_SENTRY ?? 'false');
@@ -70,10 +78,52 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
     },
     transpilePackages: ['@frontend', 'uuid'],
-    webpack: (config) => {
+    experimental: {
+      // Allow CJS packages (e.g. hds-react) to require ESM-only packages such as
+      // `uuid`. With pnpm's strict resolution these packages resolve to their ESM
+      // builds, which Next.js otherwise refuses to import from CJS by default.
+      esmExternals: 'loose',
+    },
+    webpack: (config, { webpack, isServer }) => {
       config.resolve.fallback = {
         fs: false,
       };
+
+      // Force a single styled-components instance across the app, shared packages
+      // and hds-react. Under pnpm's symlinked layout, optional peer variations
+      // (e.g. supports-color pulled by debug/@babel/core) split styled-components
+      // into multiple physical copies of the same version. Multiple instances mean
+      // the ThemeProvider from one copy can't supply the theme to styled components
+      // from another, causing SSR failures like `Cannot read properties of
+      // undefined (reading 'm')` when reading `theme.spacing.m`. Aliasing pins every
+      // import to one resolved copy.
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'styled-components': path.dirname(require.resolve('styled-components/package.json')),
+      };
+
+      // Keep next-i18next's serverSideTranslations external in the server build so
+      // it runs as real Node code. It performs a hidden dynamic
+      // `require('./next-i18next.config.js')`; when bundled (which happens under
+      // pnpm's symlinked layout) that require is handled by webpack and fails with
+      // MODULE_NOT_FOUND at prerender time. As an external it uses Node's require,
+      // so each app's own next-i18next.config.js resolves correctly at runtime.
+      // Only the SSR config loader is externalized; the React integration
+      // (appWithTranslation / useTranslation) stays bundled to avoid duplicate
+      // module instances.
+      if (isServer) {
+        const existing = config.externals ?? [];
+        const existingList = Array.isArray(existing) ? existing : [existing];
+        config.externals = [
+          ...existingList.filter(Boolean),
+          ({ request }, callback) => {
+            if (request === 'next-i18next/serverSideTranslations') {
+              return callback(null, `commonjs ${request}`);
+            }
+            return callback();
+          },
+        ];
+      }
 
       config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /\/(__tests__|test)\// }));
 
@@ -113,7 +163,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       NEXT_PUBLIC_APP_NAME: appName,
       APP_VERSION: packageJson.version,
       BUILD_TIME: new Date().toISOString(),
-      ...envOverrides,
+      ...safeEnvOverrides,
     },
     serverRuntimeConfig: {
       // to bypass https://github.com/zeit/next.js/issues/8251
