@@ -70,6 +70,10 @@ overrides:
   postcss: '>=8.5.18'
   # GHSA-f88m-g3jw-g9cj: sharp/libvips CVEs (patched 0.35.0)
   sharp: '>=0.35.0'
+  # GHSA-52v5-jr5w-gjxr (high, CVE-2026-48815): sigstore drops certificateOIDs
+  # verification constraints. Only fixed in 4.1.1; the 2.x line has no patch. Deep
+  # dev-only transitive via lerna (pacote/libnpmpublish), never exercised at build time.
+  sigstore: '4.1.1'
   # GHSA-2p49-hgcm-8545: SVGO removeScripts bypass (dev-only via mjml, patched 4.0.2)
   svgo: '^4.0.2'
   # GHSA-8x88-c5mf-7j5w (critical) / GHSA-23hp-3jrh-7fpw: node-tar DoS (patched 7.5.19)
