@@ -56,6 +56,10 @@ overrides:
   # `.default(...)` interop), so it is paired with a local patch (see
   # patchedDependencies) that re-adds a callable default export.
   'brace-expansion': '5.0.8'
+  # GHSA-pxg6-pf52-xh8x (low): cookie <0.7.0 accepts out-of-bounds characters in
+  # name/path/domain. Transitive via hds-react@5.0.0 (pins 0.4.2); 0.7.2 is the
+  # newest 0.x patch and keeps the same parse/serialize API.
+  cookie: '0.7.2'
   eslint: '8.4.1'
   eslint-config-adjunct: '4.11.1'
   eslint-config-auto: '0.7.1'
