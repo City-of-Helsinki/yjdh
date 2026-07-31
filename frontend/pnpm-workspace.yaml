@@ -35,6 +35,10 @@ shamefullyHoist: false
 
 overrides:
   '@tootallnate/once': '>=2.0.1'
+  # GHSA-8988-4f7v-96qf (moderate, CVE-2026-54285): @opentelemetry/core W3C Baggage
+  # extract() has no size cap (unbounded memory). Patched in 2.8.0; satisfies the
+  # ^2.1.0 peer range from @sentry/nextjs. Transitive via @sentry/* opentelemetry.
+  '@opentelemetry/core': '>=2.8.0'
   '@typescript-eslint/eslint-plugin': '5.28.0'
   '@typescript-eslint/parser': '5.28.0'
   '@typescript-eslint/typescript-estree': '5.28.0'
