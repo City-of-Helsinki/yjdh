@@ -27,6 +27,7 @@ RUN useradd --uid 1000 --gid default --create-home --shell /bin/bash default
 
 # Install dependencies
 COPY --chown=default:default package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY --chown=default:default patches ./patches
 COPY --chown=default:default $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=default:default $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=default:default shared/package.json shared/package.json

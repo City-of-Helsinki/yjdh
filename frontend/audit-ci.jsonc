@@ -1,19 +1,6 @@
 {
   "high": true,
   "allowlist": [
-    "json5", // jest
-    "moment", // testcafe
-    "decode-uri-component", // testcafe
-    "@babel/traverse", // jest
-    "html-minifier", // mjml
-    "pdfjs-dist", // react-pdf
-    "ip", // lerna
-    "ws", // testcafe, jest
-    "semver", // testcafe, jest, eslint
-    "axios", // tet, ks
-    "rollup", // sentry
-    "axios", // tet, ks
-    "cross-spawn", // all dev packages
-    "next" // next
+    "sigstore" // lerna (npm publish signing) — dev only
   ]
 }

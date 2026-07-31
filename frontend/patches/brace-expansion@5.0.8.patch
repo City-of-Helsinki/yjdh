@@ -1,0 +1,25 @@
+diff --git a/dist/commonjs/index.js b/dist/commonjs/index.js
+index be9df86be09c7655787a65c55ae6da01858894c3..778786c90ba76681a86972b9c0d33e17b931eb25 100644
+--- a/dist/commonjs/index.js
++++ b/dist/commonjs/index.js
+@@ -261,3 +261,20 @@ function expand_(str, max, maxLength, isTop) {
+     return acc;
+ }
+ //# sourceMappingURL=index.js.map
++/* --- pnpm patch: CommonJS interop shim for GHSA-mh99-v99m-4gvg -------------
++ * brace-expansion@5's CJS build only sets `exports.expand` (+ __esModule) and
++ * leaves `module.exports` non-callable with no `.default`. Older consumers call
++ * it directly (`require('brace-expansion')(...)`, minimatch@3/5) or via
++ * `__importDefault(...).default(...)` (minimatch@9). Re-expose `expand` as a
++ * callable default that also carries the named exports, so 5.0.8 (the patched
++ * version) is a drop-in for every minimatch major. The ESM build is untouched,
++ * so `import { expand }` (minimatch@10) keeps working. */
++{
++    const _expand = expand;
++    _expand.expand = expand;
++    _expand.default = _expand;
++    _expand.EXPANSION_MAX = exports.EXPANSION_MAX;
++    _expand.EXPANSION_MAX_LENGTH = exports.EXPANSION_MAX_LENGTH;
++    Object.defineProperty(_expand, "__esModule", { value: true });
++    module.exports = _expand;
++}

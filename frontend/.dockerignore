@@ -15,6 +15,7 @@
 !tsconfig.json
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
+!patches
 
 !kesaseteli/employer/next.config.js
 !kesaseteli/employer/sentry.client.config.js
