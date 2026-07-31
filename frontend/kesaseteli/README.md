@@ -39,7 +39,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node 22.x
+- Node >=24.18.1
 - Lerna
 - pnpm 11.18.0
 - Git
@@ -47,7 +47,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ### install node with nvm
 
-    nvm install 22 --lts
+    nvm install 24 --lts
 
 
 ## Available Scripts
