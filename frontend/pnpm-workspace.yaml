@@ -77,6 +77,11 @@ overrides:
   'minimatch@<3.1.4': '^3.1.4'
   'minimatch@>=9.0.0 <9.0.7': '^9.0.7'
   mjml: '>=4.18.1'
+  # GHSA-g2r8-wvmj-jf5w (moderate, CVE-2026-54753): `nx graph` dev server sent a
+  # wildcard CORS header, allowing cross-origin reads of the project graph/help
+  # output. Patched in 22.7.2; the 21.x line is unpatched. lerna@9 pins nx <23, so
+  # this resolves the whole nx stack to 22.7.7 (dev-only tooling; never in prod).
+  nx: '22.7.7'
   # GHSA-r28c-9q8g-f849: PostCSS sourceMappingURL path traversal (patched 8.5.18)
   postcss: '>=8.5.18'
   # GHSA-f88m-g3jw-g9cj: sharp/libvips CVEs (patched 0.35.0)
