@@ -65,6 +65,11 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
   const config = {
     productionBrowserSourceMaps: !disableSourceMaps,
     poweredByHeader: false,
+    // Disable the dev static/build indicator. Its HMR `isrManifest` handler in
+    // next@15.5 throws "Cannot read properties of undefined (reading 'components')"
+    // when it runs before window.next.router is ready, polluting the browser-test
+    // console. The indicator is a cosmetic dev-only badge with no app impact.
+    devIndicators: false,
     compiler: {
       styledComponents: true,
     },
