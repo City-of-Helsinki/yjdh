@@ -355,16 +355,16 @@ export const useApplicationForm = (): ExtendedComponentProps => {
   }
 
   const handleConsentClick = (consentIndex: number): void => {
-    const newValue = !checkedConsentArray[consentIndex];
-    const newArray = [
-      ...checkedConsentArray.slice(0, consentIndex),
-      newValue,
-      ...checkedConsentArray.slice(consentIndex + 1),
-    ];
-    setCheckedConsentArray(newArray);
-    const newErrorsArray = [...consentErrorsArray];
-    newErrorsArray[consentIndex] = !newArray[consentIndex];
-    setConsentErrorsArray(newErrorsArray);
+    setCheckedConsentArray((prev) => {
+      const newArray = [...prev];
+      newArray[consentIndex] = !prev[consentIndex];
+      setConsentErrorsArray((prevErrors) => {
+        const newErrorsArray = [...prevErrors];
+        newErrorsArray[consentIndex] = !newArray[consentIndex];
+        return newErrorsArray;
+      });
+      return newArray;
+    });
   };
 
   const getConsentErrorText = (consentIndex: number): string =>
