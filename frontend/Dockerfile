@@ -122,6 +122,11 @@ COPY --chown=default:root --from=staticbuilder app/shared/src/server/next-server
 # Copy public directory
 COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
 
+# On OpenShift the container runs under an arbitrary UID that only belongs to
+# group 0, so make .next group-writable; otherwise Pages-Router ISR
+# (fallback: 'blocking') fails to write its prerender cache with EACCES (500).
+RUN chmod -R g=u $PROJECT/$FOLDER/.next
+
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # Expose port
