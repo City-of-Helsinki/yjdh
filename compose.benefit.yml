@@ -47,8 +47,15 @@ services:
         FOLDER: applicant
     volumes:
       - ./frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues and to
+      # keep pnpm's non-hoisted node_modules (e.g. express in shared/node_modules,
+      # required by shared/src/server/next-server.js) instead of the host's copy:
       - /app/node_modules
       - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/benefit/applicant/node_modules
+      - /app/benefit/applicant/.next
     env_file:
       - .env.benefit-applicant
     container_name: benefit-applicant
@@ -64,8 +71,15 @@ services:
         FOLDER: handler
     volumes:
       - ./frontend:/app
+      # Don't volume map these dirs to avoid ownership/permission issues and to
+      # keep pnpm's non-hoisted node_modules (e.g. express in shared/node_modules,
+      # required by shared/src/server/next-server.js) instead of the host's copy:
       - /app/node_modules
       - /app/.next
+      - /app/shared/node_modules
+      - /app/shared/.next
+      - /app/benefit/handler/node_modules
+      - /app/benefit/handler/.next
     env_file:
       - .env.benefit-handler
     container_name: benefit-handler
