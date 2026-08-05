@@ -28,9 +28,6 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': i18n.language,
-        'X-CSRFToken': isLocalStorageCsrf
-          ? getLocalStorageItem('csrfToken')
-          : getLastCookieValue('yjdhcsrftoken'),
         ...headers,
       },
       withCredentials: true,
@@ -43,7 +40,23 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
       config.adapter = ['http', 'xhr', 'fetch'];
     }
 
-    return Axios.create(config);
+    const instance = Axios.create(config);
+
+    // The CSRF token must be read per request, not once when the instance is
+    // created: the cookie can be issued, rotated or removed at any point in
+    // the session, and this instance outlives client side navigation.
+    instance.interceptors.request.use((requestConfig) => {
+      if (headers?.['X-CSRFToken']) {
+        return requestConfig;
+      }
+      const csrfToken = isLocalStorageCsrf
+        ? getLocalStorageItem('csrfToken')
+        : getLastCookieValue('yjdhcsrftoken');
+      requestConfig.headers.set('X-CSRFToken', csrfToken);
+      return requestConfig;
+    });
+
+    return instance;
   }, [baseURL, headers, i18n.language, isLocalStorageCsrf]);
 
   return (
