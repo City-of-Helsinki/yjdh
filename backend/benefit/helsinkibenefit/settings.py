@@ -102,20 +102,12 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     OIDC_SAVE_PERSONALLY_IDENTIFIABLE_INFO=(bool, True),
     OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
-    TUNNISTAMO_API_TOKENS_ENDPOINT=(str, ""),
-    HELSINKI_PROFILE_SCOPE=(str, "https://api.hel.fi/auth/helsinkiprofile"),
-    HELSINKI_PROFILE_API_URL=(str, "https://api.hel.fi/profiili/graphql/"),
     LOGIN_REDIRECT_URL=(str, "/"),
-    LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     LOGOUT_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     OIDC_REDIRECT_ALLOWED_HOSTS=(list, []),
     OIDC_REDIRECT_REQUIRE_HTTPS=(bool, True),
-    EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
-    EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
-    EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
-    EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
     ADFS_CLIENT_ID=(str, "client_id"),
     ADFS_CLIENT_SECRET=(str, "client_secret"),
     ADFS_TENANT_ID=(str, "tenant_id"),
@@ -201,7 +193,30 @@ env = environ.Env(
     SOCIAL_AUTH_TUNNISTAMO_SECRET=(str, ""),
     SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT=(str, ""),
     HELUSERS_BACK_CHANNEL_LOGOUT_ENABLED=(bool, True),
-    SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE=(str, "profile-api-test"),
+    # Legacy non-namespaced variables, read only as a fallback by the mapping block
+    # further below. Remove once every environment sets the namespaced variables.
+    EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
+    EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
+    EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
+    EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
+    HELSINKI_PROFILE_API_URL=(str, "https://api.hel.fi/profiili/graphql/"),
+    HELSINKI_PROFILE_SCOPE=(str, "https://api.hel.fi/auth/helsinkiprofile"),
+    LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    # django-helsinki-suomifi-on-behalf. Unset or empty means "use the legacy
+    # variable above", see the mapping block further below.
+    SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_BASE_URL=(str, ""),
+    SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
+    SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
+    SUOMIFI_ON_BEHALF_LOGIN_SUCCESS_URL=(str, ""),
+    SUOMIFI_ON_BEHALF_LOGIN_ERROR_URL=(str, ""),
+    SUOMIFI_ON_BEHALF_OIDC_USERINFO_ENDPOINT=(str, ""),
+    SUOMIFI_ON_BEHALF_REDIRECT_ALLOWED_HOSTS=(list, []),
+    SUOMIFI_ON_BEHALF_REDIRECT_REQUIRE_HTTPS=(bool, None),
+    SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_API_URL=(str, ""),
+    SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_SCOPE=(str, ""),
+    SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE=(str, ""),
+    SUOMIFI_ON_BEHALF_TUNNISTUS_API_TOKENS_ENDPOINT=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -530,11 +545,6 @@ OIDC_API_TOKEN_AUTH = {
     "USER_RESOLVER": "users.api.v1.authentications.resolve_user",
 }
 
-TUNNISTAMO_API_TOKENS_ENDPOINT = env.str("TUNNISTAMO_API_TOKENS_ENDPOINT")
-TUNNISTUS_API_TOKENS_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/token"
-HELSINKI_PROFILE_SCOPE = env.str("HELSINKI_PROFILE_SCOPE")
-HELSINKI_PROFILE_API_URL = env.str("HELSINKI_PROFILE_API_URL")
-
 OIDC_RP_SCOPES = "openid profile email"
 OIDC_AUTH = {"OIDC_LEEWAY": env.int("OIDC_LEEWAY")}
 
@@ -561,13 +571,7 @@ OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
 OIDC_DISABLE_LANGUAGE_COOKIE = False
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
-LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
 LOGOUT_REDIRECT_URL = env.str("LOGOUT_REDIRECT_URL")
-
-EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
-EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
-EAUTHORIZATIONS_CLIENT_SECRET = env.str("EAUTHORIZATIONS_CLIENT_SECRET")
-EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
@@ -597,27 +601,74 @@ OIDC_REDIRECT_ALLOWED_HOSTS = env.list(
 )
 OIDC_REDIRECT_REQUIRE_HTTPS = env.bool("OIDC_REDIRECT_REQUIRE_HTTPS", default=True)
 
+
+def helsinki_profile_audience(api_url: str) -> str:
+    """
+    Derive the Helsinki Profile API token audience from the Profile API URL.
+
+    Can be removed after environments have been fully migrated to
+    set the SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE variable.
+    """
+    if "test" in api_url:
+        return "profile-api-test"
+    if "stage" in api_url:
+        return "profile-api-stage"
+    return "profile-api"
+
+
 # django-helsinki-suomifi-on-behalf (Suomi.fi eAuthorizations / Valtuudet on-behalf).
-# Existing env-driven settings are mapped to the library's namespaced settings so no
-# deployment configuration needs to change.
-SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_BASE_URL = EAUTHORIZATIONS_BASE_URL
-SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_ID = EAUTHORIZATIONS_CLIENT_ID
-SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_SECRET = EAUTHORIZATIONS_CLIENT_SECRET
-SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_API_OAUTH_SECRET = EAUTHORIZATIONS_API_OAUTH_SECRET
+# Every setting can be given directly as a SUOMIFI_ON_BEHALF_* env variable. When one is
+# unset or empty, the legacy non-namespaced variable is used, so no deployment
+# configuration needs to change.
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_BASE_URL = env.str(
+    "SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_BASE_URL"
+) or env.str("EAUTHORIZATIONS_BASE_URL")
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_ID = env.str(
+    "SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_ID"
+) or env.str("EAUTHORIZATIONS_CLIENT_ID")
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_SECRET = env.str(
+    "SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_CLIENT_SECRET"
+) or env.str("EAUTHORIZATIONS_CLIENT_SECRET")
+SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_API_OAUTH_SECRET = env.str(
+    "SUOMIFI_ON_BEHALF_EAUTHORIZATIONS_API_OAUTH_SECRET"
+) or env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 
-SUOMIFI_ON_BEHALF_LOGIN_ERROR_URL = LOGIN_REDIRECT_URL_FAILURE
+SUOMIFI_ON_BEHALF_LOGIN_SUCCESS_URL = (
+    env.str("SUOMIFI_ON_BEHALF_LOGIN_SUCCESS_URL") or LOGIN_REDIRECT_URL
+)
+SUOMIFI_ON_BEHALF_LOGIN_ERROR_URL = env.str(
+    "SUOMIFI_ON_BEHALF_LOGIN_ERROR_URL"
+) or env.str("LOGIN_REDIRECT_URL_FAILURE")
 
-SUOMIFI_ON_BEHALF_OIDC_USERINFO_ENDPOINT = OIDC_OP_USER_ENDPOINT
+SUOMIFI_ON_BEHALF_OIDC_USERINFO_ENDPOINT = (
+    env.str("SUOMIFI_ON_BEHALF_OIDC_USERINFO_ENDPOINT") or OIDC_OP_USER_ENDPOINT
+)
 
-SUOMIFI_ON_BEHALF_REDIRECT_ALLOWED_HOSTS = OIDC_REDIRECT_ALLOWED_HOSTS
-SUOMIFI_ON_BEHALF_REDIRECT_REQUIRE_HTTPS = OIDC_REDIRECT_REQUIRE_HTTPS
+SUOMIFI_ON_BEHALF_REDIRECT_ALLOWED_HOSTS = (
+    env.list("SUOMIFI_ON_BEHALF_REDIRECT_ALLOWED_HOSTS") or OIDC_REDIRECT_ALLOWED_HOSTS
+)
+# Not `or`: False is a meaningful value here, and an empty variable is read as None.
+_redirect_require_https = env.bool("SUOMIFI_ON_BEHALF_REDIRECT_REQUIRE_HTTPS")
+SUOMIFI_ON_BEHALF_REDIRECT_REQUIRE_HTTPS = (
+    OIDC_REDIRECT_REQUIRE_HTTPS
+    if _redirect_require_https is None
+    else _redirect_require_https
+)
 
-SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_API_URL = HELSINKI_PROFILE_API_URL
-SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_SCOPE = HELSINKI_PROFILE_SCOPE
+SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_API_URL = env.str(
+    "SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_API_URL"
+) or env.str("HELSINKI_PROFILE_API_URL")
+SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_SCOPE = env.str(
+    "SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_SCOPE"
+) or env.str("HELSINKI_PROFILE_SCOPE")
+# Unset means "derive from the Profile API URL", which is what the audience was before
+# this library made it a setting. Set the env variable to override.
 SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE = env.str(
     "SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_AUDIENCE"
+) or helsinki_profile_audience(SUOMIFI_ON_BEHALF_HELSINKI_PROFILE_API_URL)
+SUOMIFI_ON_BEHALF_TUNNISTUS_API_TOKENS_ENDPOINT = (
+    env.str("SUOMIFI_ON_BEHALF_TUNNISTUS_API_TOKENS_ENDPOINT") or OIDC_OP_TOKEN_ENDPOINT
 )
-SUOMIFI_ON_BEHALF_TUNNISTUS_API_TOKENS_ENDPOINT = TUNNISTUS_API_TOKENS_ENDPOINT
 
 SUOMIFI_ON_BEHALF_SSN_RESOLVERS = [
     "suomifi_on_behalf.ssn.OidcUserinfoSsnResolver",

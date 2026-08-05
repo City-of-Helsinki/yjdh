@@ -95,7 +95,7 @@ django-extensions==4.1
     #   yjdh-backend-shared
 django-filter==25.2
     # via -r requirements.in
-django-helsinki-suomifi-on-behalf==1.0.0
+django-helsinki-suomifi-on-behalf==2.0.0
     # via -r requirements.in
 django-helusers==1.1.0
     # via
