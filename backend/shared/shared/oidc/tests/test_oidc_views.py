@@ -142,6 +142,51 @@ def test_userinfo_view_without_oidc_info(user_client):
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
     NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_ENABLE_SUOMIFI=True,
+    CSRF_USE_SESSIONS=False,
+)
+def test_userinfo_view_issues_csrf_cookie(user_client, user):
+    """The userinfo endpoint must re-issue the CSRF cookie when it is missing.
+
+    The login callback is otherwise the only place that sets the cookie, so a
+    session that loses it can only recover by logging out and back in. The
+    frontend polls this endpoint, so re-issuing here restores the session
+    without a re-login.
+    """
+    user_client.cookies.pop(settings.CSRF_COOKIE_NAME, None)
+
+    response = user_client.get(reverse("oidc_userinfo"))
+
+    assert response.status_code == 200
+    assert settings.CSRF_COOKIE_NAME in response.cookies
+    assert response.cookies[settings.CSRF_COOKIE_NAME].value
+
+
+@pytest.mark.django_db
+@override_settings(
+    OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    NEXT_PUBLIC_ENABLE_SUOMIFI=True,
+    CSRF_USE_SESSIONS=True,
+)
+def test_userinfo_view_does_not_set_csrf_cookie_with_sessions(user_client, user):
+    """With CSRF_USE_SESSIONS the secret lives in the session, not in a cookie.
+
+    Guards against this endpoint starting to emit a cookie for deployments that
+    deliberately keep the secret out of the browser.
+    """
+    user_client.cookies.pop(settings.CSRF_COOKIE_NAME, None)
+
+    response = user_client.get(reverse("oidc_userinfo"))
+
+    assert response.status_code == 200
+    assert settings.CSRF_COOKIE_NAME not in response.cookies
+
+
+@pytest.mark.django_db
+@override_settings(
+    OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
+    NEXT_PUBLIC_MOCK_FLAG=False,
     NEXT_PUBLIC_ENABLE_SUOMIFI=False,
 )
 def test_userinfo_view_with_userinfo_returning_401(requests_mock, user_client, user):

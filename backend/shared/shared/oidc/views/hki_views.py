@@ -7,6 +7,8 @@ from django.contrib.sessions.models import Session
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 from mozilla_django_oidc.views import (
     OIDCAuthenticationCallbackView,
@@ -151,6 +153,14 @@ class HelsinkiOIDCUserInfoView(View):
         }
         return JsonResponse(userinfo)
 
+    # The login callback is otherwise the only place that issues the CSRF
+    # cookie, so a session that loses the cookie can only recover by logging
+    # out and back in. The frontend already polls this endpoint every five
+    # minutes, which makes it a cheap place to re-issue the cookie.
+    #
+    # This is a no-op when CSRF_USE_SESSIONS is enabled, because the secret
+    # then lives in the session and no cookie is written.
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request):
         suomifi_enabled = getattr(settings, "NEXT_PUBLIC_ENABLE_SUOMIFI", False)
         response = HttpResponse("Unauthorized", status=401)
