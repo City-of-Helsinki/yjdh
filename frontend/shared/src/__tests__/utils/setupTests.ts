@@ -87,6 +87,35 @@ if (typeof Element.prototype.scrollIntoView !== 'function') {
   Element.prototype.scrollIntoView = jest.fn();
 }
 
+// jsdom does not implement TextEncoder/TextDecoder or the WebCrypto API, both of
+// which hds-react's cookie consent uses to compute cookie group checksums.
+if (typeof globalThis.TextEncoder === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { TextDecoder, TextEncoder } = require('util');
+  globalThis.TextEncoder = TextEncoder;
+  globalThis.TextDecoder = TextDecoder;
+}
+
+if (typeof globalThis.crypto?.subtle === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { webcrypto } = require('crypto');
+  Object.defineProperty(globalThis, 'crypto', {
+    value: webcrypto,
+    configurable: true,
+  });
+}
+
+// jsdom does not implement indexedDB. hds-react's cookie consent enumerates it,
+// and a bare reference to an undeclared global throws a ReferenceError, so
+// define it as an existing-but-undefined property instead.
+if (typeof globalThis.indexedDB === 'undefined') {
+  Object.defineProperty(globalThis, 'indexedDB', {
+    value: undefined,
+    configurable: true,
+    writable: true,
+  });
+}
+
 window.scrollTo = jest.fn();
 
 afterAll(() => {

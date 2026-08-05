@@ -278,6 +278,32 @@ export const getDefaultKesaseteliRequiredGroups = (
   hostName = getCurrentPageHostName('kesaseteli')
 ): RequiredGroups => [
   {
+    groupId: 'login',
+    title: {
+      fi: 'Kirjautuminen',
+      sv: 'Inloggning',
+      en: 'Login',
+    },
+    description: {
+      fi: 'Kirjautumisevästeitä käytetään käyttäjän kirjautuessa palveluun.',
+      sv: 'Inloggningskakor används när användaren loggar in på tjänsten.',
+      en: 'Login cookies are used when the user logs in to the service.',
+    },
+    cookies: [
+      {
+        name: 'yjdhcsrftoken',
+        host: hostName,
+        description: {
+          fi: 'Tietoturvakontrolli',
+          sv: 'Datasäkerhetskontroll',
+          en: 'A security control',
+        },
+        expiration: DASH_EXPIRATION,
+        storageType: 1,
+      },
+    ],
+  },
+  {
     groupId: 'shared',
     title: SHARED_CONSENT_TITLE,
     description: SHARED_CONSENT_DESCRIPTION,
