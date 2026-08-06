@@ -20,6 +20,10 @@ minimumReleaseAgeExclude:
   - '@next/swc-linux-x64-musl@15.5.22'
   - '@next/swc-win32-arm64-msvc@15.5.22'
   - '@next/swc-win32-x64-msvc@15.5.22'
+  # Exception: brace-expansion 5.0.9 is the security patch for GHSA-rgw5-rvv9-x895
+  # (CVE-2026-69152, high) which supersedes the incomplete 5.0.8 mitigation. Allow it
+  # past the release-age gate so Dependency Review passes; the fix outweighs the age.
+  - 'brace-expansion@5.0.9'
 
 # Don't run the deps status check before `pnpm <script>`. In the dev Docker
 # container there is no TTY to confirm purging node_modules, which otherwise
@@ -50,12 +54,14 @@ overrides:
   # GHSA-v422-hmwv-36x6 (low): body-parser DoS when an invalid limit silently
   # disables size enforcement. express@4.22.2 pins ~1.20.5; 1.20.6 is the patch.
   body-parser: '1.20.6'
-  # GHSA-mh99-v99m-4gvg (high, CVE-2026-14257): brace-expansion ReDoS/OOM. Force the
-  # patched 5.0.8 everywhere so Dependency Review and pnpm audit both pass. 5.x's
+  # GHSA-mh99-v99m-4gvg (high, CVE-2026-14257) + GHSA-rgw5-rvv9-x895 (high,
+  # CVE-2026-69152): brace-expansion ReDoS/OOM. 5.0.8's maxLength mitigation was
+  # incomplete (unbounded intermediate arrays); 5.0.9 fully bounds them. Force the
+  # patched 5.0.9 everywhere so Dependency Review and pnpm audit both pass. 5.x's
   # ESM-style CJS build breaks minimatch@3-9 / lerna@8 (`require(...)()` and
   # `.default(...)` interop), so it is paired with a local patch (see
   # patchedDependencies) that re-adds a callable default export.
-  'brace-expansion': '5.0.8'
+  'brace-expansion': '5.0.9'
   # GHSA-pxg6-pf52-xh8x (low): cookie <0.7.0 accepts out-of-bounds characters in
   # name/path/domain. Transitive via hds-react@5.0.0 (pins 0.4.2); 0.7.2 is the
   # newest 0.x patch and keeps the same parse/serialize API.
@@ -114,4 +120,4 @@ allowBuilds:
   unrs-resolver: true
 
 patchedDependencies:
-  brace-expansion@5.0.8: patches/brace-expansion@5.0.8.patch
+  brace-expansion@5.0.9: patches/brace-expansion@5.0.9.patch
