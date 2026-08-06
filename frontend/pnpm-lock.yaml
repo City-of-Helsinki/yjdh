@@ -14,7 +14,7 @@ overrides:
   '@types/react-dom': 18.2.7
   axios: 1.18.1
   body-parser: 1.20.6
-  brace-expansion: 5.0.8
+  brace-expansion: 5.0.9
   cookie: 0.7.2
   eslint: 8.4.1
   eslint-config-adjunct: 4.11.1
@@ -42,7 +42,7 @@ overrides:
   uuid: '>=11.1.1'
 
 patchedDependencies:
-  brace-expansion@5.0.8: e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30
+  brace-expansion@5.0.9: 71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24
 
 importers:
 
@@ -4224,8 +4224,8 @@ packages:
   bowser@2.14.1:
     resolution: {integrity: sha512-tzPjzCxygAKWFOJP011oxFHs57HzIhOEracIgAePE4pqB3LikALKnSzUyU4MGs9/iCEUuHlAJTjTc5M+u7YEGg==}
 
-  brace-expansion@5.0.8:
-    resolution: {integrity: sha512-JZyDyq3D4AUifKTPOB7DELf6XsB3WdPuNxCtob1vFXPsSXhdAiHBWJ/tJ8HAc9aH84BK+5JFZLNkJKx3G9kzQg==}
+  brace-expansion@5.0.9:
+    resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
     engines: {node: 20 || >=22}
 
   braces@3.0.3:
@@ -4743,6 +4743,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-md5@1.0.0:
     resolution: {integrity: sha512-65Mtei8+EkSIK+5Ie4gpWXoJ/5bgpqPXFknHHXAyhDqKsEAAzUslGd8mOeawbfcuQ8fADNKcF4xQA3fqlZJ8Ig==}
@@ -14360,7 +14361,7 @@ snapshots:
 
   bowser@2.14.1: {}
 
-  brace-expansion@5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30):
+  brace-expansion@5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24):
     dependencies:
       balanced-match: 4.0.4
 
@@ -18530,23 +18531,23 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30)
+      brace-expansion: 5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24)
 
   minimatch@3.1.4:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30)
+      brace-expansion: 5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24)
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30)
+      brace-expansion: 5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24)
 
   minimatch@5.1.9:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30)
+      brace-expansion: 5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24)
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30)
+      brace-expansion: 5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24)
 
   minimist-options@4.1.0:
     dependencies:
@@ -19394,7 +19395,7 @@ snapshots:
       balanced-match: 4.0.3
       base64-js: 1.5.1
       bl: 4.1.0
-      brace-expansion: 5.0.8(patch_hash=e9a23a5282867f7ba1a8dc232f91b2febfe37df97c6b1a3bcd3554bce4a4fb30)
+      brace-expansion: 5.0.9(patch_hash=71e5271d660d79dc8d7854d0198cef87f7e5d1d934aa6a9ac1da81dd3b549e24)
       buffer: 5.7.1
       call-bind-apply-helpers: 1.0.2
       chalk: 4.1.2
