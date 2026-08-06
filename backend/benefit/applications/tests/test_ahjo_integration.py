@@ -1153,6 +1153,34 @@ def test_get_applications_for_open_case_request(
     assert applications_for_open_case.count() == len(wanted_applications_for_open_case)
 
 
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "error_from_ahjo, should_be_retried",
+    [
+        ({"message": "Case processing failed"}, False),
+        (None, True),
+    ],
+)
+def test_open_case_retry_is_blocked_by_ahjo_callback_error(
+    handling_application, error_from_ahjo, should_be_retried
+):
+    status = AhjoStatus.objects.create(
+        application=handling_application,
+        status=AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT,
+        error_from_ahjo=error_from_ahjo,
+    )
+    status.created_at = timezone.now() - timedelta(hours=1, minutes=1)
+    status.save()
+
+    parameters = AhjoQueryParameters.resolve(AhjoRequestType.OPEN_CASE, 1)
+    applications_for_open_case = Application.objects.get_by_statuses(**parameters)
+
+    assert (
+        applications_for_open_case.filter(pk=handling_application.pk).exists()
+        is should_be_retried
+    )
+
+
 @pytest.mark.parametrize(
     "latest_ahjo_status, retry_failed_older_than_hours",
     [
