@@ -32,7 +32,7 @@ overrides:
   minimatch@>=9.0.0 <9.0.7: ^9.0.7
   mjml: '>=4.18.1'
   nx: 22.7.7
-  postcss: '>=8.5.18'
+  postcss: '>=8.5.23'
   sharp: '>=0.35.0'
   sigstore: 4.1.1
   svgo: ^4.0.2
@@ -51,7 +51,7 @@ importers:
     dependencies:
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       lerna-update-wizard:
         specifier: ^1.1.2
         version: 1.1.2(@types/node@22.19.20)
@@ -352,7 +352,7 @@ importers:
         version: 10.56.0
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       axios:
         specifier: 1.18.1
         version: 1.18.1(debug@4.4.3(supports-color@5.5.0))(supports-color@5.5.0)
@@ -376,7 +376,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3)
       i18next:
         specifier: ^25.3.2
         version: 25.10.10(typescript@5.9.3)
@@ -464,7 +464,7 @@ importers:
         version: 10.56.0
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       '@tiptap/core':
         specifier: ^2.2.4
         version: 2.27.2(@tiptap/pm@2.27.2)
@@ -524,7 +524,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       i18next:
         specifier: ^25.3.2
         version: 25.10.10(typescript@5.9.3)
@@ -594,7 +594,7 @@ importers:
         version: link:../../shared
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       axios:
         specifier: 1.18.1
         version: 1.18.1(debug@4.4.3(supports-color@9.4.0))(supports-color@9.4.0)
@@ -609,7 +609,7 @@ importers:
         version: 2.4.9(@types/react@18.2.21)(react@18.3.1)
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       ibantools:
         specifier: ^4.5.4
         version: 4.5.4
@@ -661,7 +661,7 @@ importers:
         version: 10.56.0
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       axios:
         specifier: 1.18.1
         version: 1.18.1(debug@4.4.3(supports-color@9.4.0))(supports-color@9.4.0)
@@ -673,7 +673,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       i18next:
         specifier: ^25.3.2
         version: 25.10.10(typescript@5.9.3)
@@ -746,7 +746,7 @@ importers:
         version: 10.56.0
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       axios:
         specifier: 1.18.1
         version: 1.18.1(debug@4.4.3(supports-color@9.4.0))(supports-color@9.4.0)
@@ -761,7 +761,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       i18next:
         specifier: ^25.3.2
         version: 25.10.10(typescript@5.9.3)
@@ -829,7 +829,7 @@ importers:
         version: 4.11.1
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -853,7 +853,7 @@ importers:
         version: 10.56.0
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       axios:
         specifier: 1.18.1
         version: 1.18.1(debug@4.4.3(supports-color@9.4.0))(supports-color@9.4.0)
@@ -868,7 +868,7 @@ importers:
         version: 5.2.0
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       i18next:
         specifier: ^25.3.2
         version: 25.10.10(typescript@5.9.3)
@@ -923,7 +923,7 @@ importers:
         version: 10.56.0
       '@sentry/nextjs':
         specifier: ^10.56.0
-        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+        version: 10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       axios:
         specifier: 1.18.1
         version: 1.18.1(debug@4.4.3(supports-color@9.4.0))(supports-color@9.4.0)
@@ -947,7 +947,7 @@ importers:
         version: 2.1.2
       hds-react:
         specifier: 5.0.0
-        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
+        version: 5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3)
       i18next:
         specifier: ^25.0.0
         version: 25.10.10(typescript@5.9.3)
@@ -4758,7 +4758,7 @@ packages:
     resolution: {integrity: sha512-LTuzjPoyA2vMGKKcaOqKSp7Ub2eGrNfKiZH4LpezxpNrsICGCSFvsQOI29psISxNZtaXibkC2CXzrQ5enMeGGw==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   css-in-js-utils@3.1.0:
     resolution: {integrity: sha512-fJAcud6B3rRu+KHYk+Bwf+WFL2MDCJJ1XG9x137tJQ0xYxor7XziQtuGFbWNdqrvF4Tk26O3H73nfVqXt/fW1A==}
@@ -4797,25 +4797,25 @@ packages:
     resolution: {integrity: sha512-11qO63A+czwguQFJCaTdICvbaxn0pJzz/XghLlv+OT7WyToDxAMR0Xb3/26/l0y0hQJywwNbj/SLSQlGBHE1OA==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   cssnano-preset-lite@4.0.6:
     resolution: {integrity: sha512-EI/VDoucl8SmVkXUZtWIux31cWoxgNUbF7njnpPxdz5ZbnKOjAd5DueLuCE1RKKLrOPQsEUaNfUgB1taohIIyQ==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   cssnano-utils@5.0.3:
     resolution: {integrity: sha512-ynIREMICLxkxm7e9bCR9sh75s4Q5drICi0ua1yxo5jH2XPBqSKkl4dOh4EbFqtUmnTMhRffHgYL0EKKkMjtJTg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   cssnano@7.1.9:
     resolution: {integrity: sha512-uPR75+5Dk/WJ/YSPR1/YDHdwMM9c5FsaARljfKWgeCKLKOtJ0we21xy/RcCjn53fZnD/f6yYEIZ8pu18+GnbNQ==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   csso@5.0.5:
     resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
@@ -6138,7 +6138,7 @@ packages:
     resolution: {integrity: sha512-MM9SLA5mlQVvbxrmTmkG+0NoBW7QArX+FttNdauptD8Qj+fAW5gOVpA9Ay2fKbMq643t7DAGWdYtCWy/n/N7tw==}
     engines: {node: ^22.13.1}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
       react: ^16.8.0 || ^17 || ^18 || ^19
       react-dom: ^16.8.0 || ^17 || ^18 || ^19
 
@@ -6184,7 +6184,7 @@ packages:
     hasBin: true
     peerDependencies:
       cssnano: ^7.0.0 || ^8.0.0
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
       purgecss: ^8.0.0
       relateurl: ^0.2.7
       srcset: ^5.0.1
@@ -8336,151 +8336,151 @@ packages:
     resolution: {integrity: sha512-NYEsLHh8DgG/PRH2+G9BTuUdtf9ViS+vdoQ0YA5OQdGsfN4ztiwtDWNtBl9EKeqNMFnIu8IKZ0cLxEQ5r5KVMw==}
     engines: {node: ^18.12 || ^20.9 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-colormin@7.0.10:
     resolution: {integrity: sha512-yFr6JezOolHLta/buLE71VKPh2mXursp4saVe98/ol8ZnEWhL+racShqPKlvd/DKWLre/39B6HhcMXf7RZ3hxg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-convert-values@7.0.12:
     resolution: {integrity: sha512-xurKu5qqk4viR3Cp3p4xBR4KfnZm4w4ys6+UBwBmeuBSNkH7+DtLnYOYnOffgtE4yx8sH9S1VZ6RAAvROXzP2Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-discard-comments@7.0.8:
     resolution: {integrity: sha512-CvvS5S9WrXblFXCEJ9nVo+4z+eA7zSC7Z88V1HEJuwlQhlFnYTIjg1xJY+BCUiG2bvICap2tXii4mP22BD108Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-discard-duplicates@7.0.4:
     resolution: {integrity: sha512-VBNn1+EuMZkeGVVtz0gRfbNGtx9IFgAsAV+E2pHtXPrp4qfGBkhTIiAuE/wrb+Y6Pakg9NewAlfTpYIFAWODtw==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-discard-empty@7.0.3:
     resolution: {integrity: sha512-M2pyjQCU+/7cMHVtL6bKTHjv0lZnPLMpicgr67Dlth7AbuV9gjVTtUqaRwn6Pp6BwSDspUzhz8SaUrRykJU5Dw==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-discard-overridden@7.0.3:
     resolution: {integrity: sha512-aNovXo9UsZuRNLzHJtp13lHIvinDPfiXBPePpXkSjCbgp++iU2FqE+YxvjIsg6EdyPZsASFbfu+JcBFVsErXIQ==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-merge-longhand@7.0.7:
     resolution: {integrity: sha512-b3mfYUxR388u5Pt0HPcVIUtUDn/k15UfTY9M+ORW+meCR6JLNxoZffiYvXyOYQoRYQNZyX/UFkMCM/mNHxe1qA==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-merge-rules@7.0.11:
     resolution: {integrity: sha512-SJUPM18g2BmPhf8BVlbwqWz4aK3pLu6u6xjfwEzra7xL6IBR10sUaiB++EzqcVfadPHrKBSMlNdP+XieykhI+Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-minify-font-values@7.0.3:
     resolution: {integrity: sha512-yilG/VOaNI74IylQvAQQxm3/wZVBkXyYUqNUAdxqwtbWUXPsbK1q8Ms0mL83v+f8YicgcyfYCRZtWACUdYajpA==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-minify-gradients@7.0.5:
     resolution: {integrity: sha512-YraROyQRg3BI1+Hg8E05B/JPdnTm8EDSVu4P2BxdM+CRiOyfmou809+chGIqo6fQqwjPGQ947nbGncSjmTU1WQ==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-minify-params@7.0.9:
     resolution: {integrity: sha512-R8itbB8BhlpoYyBm1ou0dD+vJnQ3F6adQipR4UnkCHUwlo+S9WXJaDRg1RHjC8YVAtIdrQzSWvJl40HnGDTKjA==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-minify-selectors@7.1.2:
     resolution: {integrity: sha512-aQtrEWKwqafNlExcKHQvPGsXR2+vlUqqJtf5XsCQcgsSb5PL4wlujWBYDJuWsP4UnQX1YHDHU8qRlD+1PzTQ+Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-charset@7.0.3:
     resolution: {integrity: sha512-NoBfZu8PR4c2NlmjvrqQTzCzLY79hwcSRgNQ3ZiNK0ABzf9kYKloE/jNj+/8GQY1wsm8pRRgANk6ydLH8cwo0Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-display-values@7.0.3:
     resolution: {integrity: sha512-ldsCX0QIt05pKIOobZtVQ48wXJecr+czw4+e1/YjVhLMqslShgpVxgPtI2CefURR8oyVoYaU/l829MMwExDMLw==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-positions@7.0.4:
     resolution: {integrity: sha512-VEvlpeGd3Ju1Hqa/oN4jaP3+ms4laYwkEL9N9u+B6k54PZjXbW1n6wI+aVprf1BQXlCYpS5+1pl/7/vHiKgARg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-repeat-style@7.0.4:
     resolution: {integrity: sha512-6mPKlY/8cSaDHxX502wERADarJsccwlky6yIrOapHH2ZgfoKAV94SbiTKfKEs4EEpdazuc3J72WsqeYk7hp9+Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-string@7.0.3:
     resolution: {integrity: sha512-HnEQPUchi1eznmDKEYrKUTqrprEq97SrpUYClgUkv7V2zRODD9DFoUsYU+m9ZOetmD5ku7fEMZB/lwy8IT6xVQ==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-timing-functions@7.0.3:
     resolution: {integrity: sha512-zmEzHdvpZBZu0OKlbJSfgASQvaayyAoVuWtvyr34IJ/LyS+DaOKvvR3EvFJ9RWWtNIx+CMvO125OVophaxNYew==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-unicode@7.0.9:
     resolution: {integrity: sha512-DRAdWfeh/TjmhLJsw91vdiWCnUod9iwvM7xyS02/nF/sLsCR3A8l3pztrSUrWG8DSBqfX7yEk9FM0USaVJ2mSg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-url@7.0.3:
     resolution: {integrity: sha512-CL93wmloq5qsffmFv+bw24MIRbmhHrp53qoh1LDAb/5TtjWEXI/np4xcP/Gw9oWCb2XyWnqHYLDUwiKRoJBA1Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-normalize-whitespace@7.0.3:
     resolution: {integrity: sha512-FdHjjn+Ht5Z2ZRjNOmeCbNq6lq09sUYKpmlF/Aq0XjVNSLTL6fmHlA/3swN2wP2caY9GV/tjSDcIIyS7aN7W0A==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-ordered-values@7.0.4:
     resolution: {integrity: sha512-nubSi49hDHQk4E8KIj+IbLY8Bg+8OcSUEhgyolgM+atnOvXjV7EjaR6bac4YGZoFyPa9mWoAF3EaYbWdFkKqVg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-reduce-initial@7.0.9:
     resolution: {integrity: sha512-ztTNPdIxXTxtBcG03E9u8v44M4ElXbMIRT7pf2onlquGula0Y83nKKxqM22FA/hMgkfCjN7ohevkVlaNwI8iOQ==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-reduce-transforms@7.0.3:
     resolution: {integrity: sha512-FXsnN9ZwcZTT8Yf8cAHA8qIGUXcX6WfLd9JoYhrdDfmvsVhhfqkkv7m4AC3rwFOfz+GzkUa87OCKF9dUcicd+g==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-selector-parser@7.1.1:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
@@ -8490,19 +8490,19 @@ packages:
     resolution: {integrity: sha512-2QfoFOYMcj8lwcVEf9WeTlkVIAm7u2QvOEhMzkQU3KUhhGX/l8hVV9EtjMv4iq3E9iI3OeeMN0YoMLbGusuigw==}
     engines: {node: ^18.12.0 || ^20.9.0 || >= 18}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-unique-selectors@7.0.7:
     resolution: {integrity: sha512-d+sCkaRnSefghOUdH8CMJZV9yUQhj2ojpe8Nw/lA+LV1UOfeleGkLTl6XdCFFSai9UJ+DJPb69FFuqthXYsY8w==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.5.22:
-    resolution: {integrity: sha512-KBDEIpLrvpv16pp3K0Fw+UCoZfopFjjgeB+0tA/aaThfEE74kKDLrgg603YvOWJyg3+WYtyq3xYsQWsIyZlPqQ==}
+  postcss@8.5.25:
+    resolution: {integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==}
     engines: {node: ^10 || ^12 || >=14}
 
   posthtml-parser@0.11.0:
@@ -9540,7 +9540,7 @@ packages:
     resolution: {integrity: sha512-iODNfhXVLqc5LADs+Y6Oh5wJuK5ZcHbVng8aiK3y9pjMQdc5hLrBW0eFU6FtnpNrE6PoEg/MmFTU4waotj5WNg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   stylis@4.4.0:
     resolution: {integrity: sha512-5Z9ZpRzfuH6l/UAvCPAPUo3665Nk2wLaZU3x+TLHKVzIz33+sbJqbtrYoC3KD4/uVOr2Zp+L0LySezP9OHV9yA==}
@@ -12943,7 +12943,7 @@ snapshots:
 
   '@sentry/core@10.56.0': {}
 
-  '@sentry/nextjs@10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))':
+  '@sentry/nextjs@10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.41.1
@@ -12955,7 +12955,7 @@ snapshots:
       '@sentry/opentelemetry': 10.56.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)
       '@sentry/react': 10.56.0(react@18.3.1)
       '@sentry/vercel-edge': 10.56.0
-      '@sentry/webpack-plugin': 5.3.0(encoding@0.1.13)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+      '@sentry/webpack-plugin': 5.3.0(encoding@0.1.13)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       next: 15.5.22(@babel/core@7.29.7(supports-color@5.5.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rollup: 4.61.1
       stacktrace-parser: 0.1.11
@@ -12968,7 +12968,7 @@ snapshots:
       - supports-color
       - webpack
 
-  '@sentry/nextjs@10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))':
+  '@sentry/nextjs@10.56.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(encoding@0.1.13)(next@15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.41.1
@@ -12980,7 +12980,7 @@ snapshots:
       '@sentry/opentelemetry': 10.56.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.7.1(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.41.1)
       '@sentry/react': 10.56.0(react@18.3.1)
       '@sentry/vercel-edge': 10.56.0
-      '@sentry/webpack-plugin': 5.3.0(encoding@0.1.13)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+      '@sentry/webpack-plugin': 5.3.0(encoding@0.1.13)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       next: 15.5.22(@babel/core@7.29.7(supports-color@9.4.0))(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rollup: 4.61.1
       stacktrace-parser: 0.1.11
@@ -13057,18 +13057,18 @@ snapshots:
       '@opentelemetry/resources': 2.7.1(@opentelemetry/api@1.9.1)
       '@sentry/core': 10.56.0
 
-  '@sentry/webpack-plugin@5.3.0(encoding@0.1.13)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))':
+  '@sentry/webpack-plugin@5.3.0(encoding@0.1.13)(supports-color@5.5.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))':
     dependencies:
       '@sentry/bundler-plugin-core': 5.3.0(encoding@0.1.13)(supports-color@5.5.0)
-      webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3)
+      webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3)
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@sentry/webpack-plugin@5.3.0(encoding@0.1.13)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))':
+  '@sentry/webpack-plugin@5.3.0(encoding@0.1.13)(supports-color@9.4.0)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))':
     dependencies:
       '@sentry/bundler-plugin-core': 5.3.0(encoding@0.1.13)(supports-color@9.4.0)
-      webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3)
+      webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -14905,9 +14905,9 @@ snapshots:
 
   css-color-keywords@1.0.0: {}
 
-  css-declaration-sorter@7.4.0(postcss@8.5.22):
+  css-declaration-sorter@7.4.0(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
 
   css-in-js-utils@3.1.0:
     dependencies:
@@ -14948,57 +14948,57 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  cssnano-preset-default@7.0.17(postcss@8.5.22):
+  cssnano-preset-default@7.0.17(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
-      css-declaration-sorter: 7.4.0(postcss@8.5.22)
-      cssnano-utils: 5.0.3(postcss@8.5.22)
-      postcss: 8.5.22
-      postcss-calc: 10.1.1(postcss@8.5.22)
-      postcss-colormin: 7.0.10(postcss@8.5.22)
-      postcss-convert-values: 7.0.12(postcss@8.5.22)
-      postcss-discard-comments: 7.0.8(postcss@8.5.22)
-      postcss-discard-duplicates: 7.0.4(postcss@8.5.22)
-      postcss-discard-empty: 7.0.3(postcss@8.5.22)
-      postcss-discard-overridden: 7.0.3(postcss@8.5.22)
-      postcss-merge-longhand: 7.0.7(postcss@8.5.22)
-      postcss-merge-rules: 7.0.11(postcss@8.5.22)
-      postcss-minify-font-values: 7.0.3(postcss@8.5.22)
-      postcss-minify-gradients: 7.0.5(postcss@8.5.22)
-      postcss-minify-params: 7.0.9(postcss@8.5.22)
-      postcss-minify-selectors: 7.1.2(postcss@8.5.22)
-      postcss-normalize-charset: 7.0.3(postcss@8.5.22)
-      postcss-normalize-display-values: 7.0.3(postcss@8.5.22)
-      postcss-normalize-positions: 7.0.4(postcss@8.5.22)
-      postcss-normalize-repeat-style: 7.0.4(postcss@8.5.22)
-      postcss-normalize-string: 7.0.3(postcss@8.5.22)
-      postcss-normalize-timing-functions: 7.0.3(postcss@8.5.22)
-      postcss-normalize-unicode: 7.0.9(postcss@8.5.22)
-      postcss-normalize-url: 7.0.3(postcss@8.5.22)
-      postcss-normalize-whitespace: 7.0.3(postcss@8.5.22)
-      postcss-ordered-values: 7.0.4(postcss@8.5.22)
-      postcss-reduce-initial: 7.0.9(postcss@8.5.22)
-      postcss-reduce-transforms: 7.0.3(postcss@8.5.22)
-      postcss-svgo: 7.1.3(postcss@8.5.22)
-      postcss-unique-selectors: 7.0.7(postcss@8.5.22)
+      css-declaration-sorter: 7.4.0(postcss@8.5.25)
+      cssnano-utils: 5.0.3(postcss@8.5.25)
+      postcss: 8.5.25
+      postcss-calc: 10.1.1(postcss@8.5.25)
+      postcss-colormin: 7.0.10(postcss@8.5.25)
+      postcss-convert-values: 7.0.12(postcss@8.5.25)
+      postcss-discard-comments: 7.0.8(postcss@8.5.25)
+      postcss-discard-duplicates: 7.0.4(postcss@8.5.25)
+      postcss-discard-empty: 7.0.3(postcss@8.5.25)
+      postcss-discard-overridden: 7.0.3(postcss@8.5.25)
+      postcss-merge-longhand: 7.0.7(postcss@8.5.25)
+      postcss-merge-rules: 7.0.11(postcss@8.5.25)
+      postcss-minify-font-values: 7.0.3(postcss@8.5.25)
+      postcss-minify-gradients: 7.0.5(postcss@8.5.25)
+      postcss-minify-params: 7.0.9(postcss@8.5.25)
+      postcss-minify-selectors: 7.1.2(postcss@8.5.25)
+      postcss-normalize-charset: 7.0.3(postcss@8.5.25)
+      postcss-normalize-display-values: 7.0.3(postcss@8.5.25)
+      postcss-normalize-positions: 7.0.4(postcss@8.5.25)
+      postcss-normalize-repeat-style: 7.0.4(postcss@8.5.25)
+      postcss-normalize-string: 7.0.3(postcss@8.5.25)
+      postcss-normalize-timing-functions: 7.0.3(postcss@8.5.25)
+      postcss-normalize-unicode: 7.0.9(postcss@8.5.25)
+      postcss-normalize-url: 7.0.3(postcss@8.5.25)
+      postcss-normalize-whitespace: 7.0.3(postcss@8.5.25)
+      postcss-ordered-values: 7.0.4(postcss@8.5.25)
+      postcss-reduce-initial: 7.0.9(postcss@8.5.25)
+      postcss-reduce-transforms: 7.0.3(postcss@8.5.25)
+      postcss-svgo: 7.1.3(postcss@8.5.25)
+      postcss-unique-selectors: 7.0.7(postcss@8.5.25)
 
-  cssnano-preset-lite@4.0.6(postcss@8.5.22):
+  cssnano-preset-lite@4.0.6(postcss@8.5.25):
     dependencies:
-      cssnano-utils: 5.0.3(postcss@8.5.22)
-      postcss: 8.5.22
-      postcss-discard-comments: 7.0.8(postcss@8.5.22)
-      postcss-discard-empty: 7.0.3(postcss@8.5.22)
-      postcss-normalize-whitespace: 7.0.3(postcss@8.5.22)
+      cssnano-utils: 5.0.3(postcss@8.5.25)
+      postcss: 8.5.25
+      postcss-discard-comments: 7.0.8(postcss@8.5.25)
+      postcss-discard-empty: 7.0.3(postcss@8.5.25)
+      postcss-normalize-whitespace: 7.0.3(postcss@8.5.25)
 
-  cssnano-utils@5.0.3(postcss@8.5.22):
+  cssnano-utils@5.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
 
-  cssnano@7.1.9(postcss@8.5.22):
+  cssnano@7.1.9(postcss@8.5.25):
     dependencies:
-      cssnano-preset-default: 7.0.17(postcss@8.5.22)
+      cssnano-preset-default: 7.0.17(postcss@8.5.25)
       lilconfig: 3.1.3
-      postcss: 8.5.22
+      postcss: 8.5.25
 
   csso@5.0.5:
     dependencies:
@@ -16635,7 +16635,7 @@ snapshots:
 
   hds-design-tokens@5.2.0: {}
 
-  hds-react@5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3):
+  hds-react@5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@5.5.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@5.5.0)(typescript@5.9.3):
     dependencies:
       '@apollo/client': 3.14.1(@types/react@18.2.21)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@babel/runtime': 7.29.7
@@ -16658,7 +16658,7 @@ snapshots:
       lodash: 4.18.1
       memoize-one: 5.2.1
       oidc-client-ts: 2.5.0
-      postcss: 8.5.22
+      postcss: 8.5.25
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-hook-form: 7.78.0(react@18.3.1)
@@ -16675,7 +16675,7 @@ snapshots:
       - supports-color
       - typescript
 
-  hds-react@5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.22)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3):
+  hds-react@5.0.0(@types/react@18.2.21)(eslint@8.4.1(supports-color@9.4.0))(postcss@8.5.25)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.9.3):
     dependencies:
       '@apollo/client': 3.14.1(@types/react@18.2.21)(graphql@16.14.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@babel/runtime': 7.29.7
@@ -16698,7 +16698,7 @@ snapshots:
       lodash: 4.18.1
       memoize-one: 5.2.1
       oidc-client-ts: 2.5.0
-      postcss: 8.5.22
+      postcss: 8.5.25
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-hook-form: 7.78.0(react@18.3.1)
@@ -16755,15 +16755,15 @@ snapshots:
     dependencies:
       void-elements: 3.1.0
 
-  htmlnano@3.3.2(cssnano@7.1.9(postcss@8.5.22))(postcss@8.5.22)(svgo@4.0.2)(terser@5.48.0)(typescript@5.9.3):
+  htmlnano@3.3.2(cssnano@7.1.9(postcss@8.5.25))(postcss@8.5.25)(svgo@4.0.2)(terser@5.48.0)(typescript@5.9.3):
     dependencies:
       '@types/relateurl': 0.2.33
       commander: 14.0.3
       cosmiconfig: 9.0.2(typescript@5.9.3)
       posthtml: 0.16.7
     optionalDependencies:
-      cssnano: 7.1.9(postcss@8.5.22)
-      postcss: 8.5.22
+      cssnano: 7.1.9(postcss@8.5.25)
+      postcss: 8.5.25
       svgo: 4.0.2
       terser: 5.48.0
     transitivePeerDependencies:
@@ -18699,16 +18699,16 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.7
       cheerio: 1.0.0
-      cssnano: 7.1.9(postcss@8.5.22)
-      cssnano-preset-lite: 4.0.6(postcss@8.5.22)
+      cssnano: 7.1.9(postcss@8.5.25)
+      cssnano-preset-lite: 4.0.6(postcss@8.5.25)
       detect-node: 2.1.0
-      htmlnano: 3.3.2(cssnano@7.1.9(postcss@8.5.22))(postcss@8.5.22)(svgo@4.0.2)(terser@5.48.0)(typescript@5.9.3)
+      htmlnano: 3.3.2(cssnano@7.1.9(postcss@8.5.25))(postcss@8.5.25)(svgo@4.0.2)(terser@5.48.0)(typescript@5.9.3)
       js-beautify: 1.15.4
       juice: 11.1.1
       lodash: 4.18.1
       mjml-parser-xml: 5.3.0
       mjml-validator: 5.3.0
-      postcss: 8.5.22
+      postcss: 8.5.25
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -19173,7 +19173,7 @@ snapshots:
       '@next/env': 15.5.22
       '@swc/helpers': 0.5.15
       caniuse-lite: 1.0.30001797
-      postcss: 8.5.22
+      postcss: 8.5.25
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       styled-jsx: 5.1.6(@babel/core@7.29.7(supports-color@5.5.0))(react@18.3.1)
@@ -19198,7 +19198,7 @@ snapshots:
       '@next/env': 15.5.22
       '@swc/helpers': 0.5.15
       caniuse-lite: 1.0.30001797
-      postcss: 8.5.22
+      postcss: 8.5.25
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       styled-jsx: 5.1.6(@babel/core@7.29.7(supports-color@9.4.0))(react@18.3.1)
@@ -19910,144 +19910,144 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  postcss-calc@10.1.1(postcss@8.5.22):
+  postcss-calc@10.1.1(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  postcss-colormin@7.0.10(postcss@8.5.22):
+  postcss-colormin@7.0.10(postcss@8.5.25):
     dependencies:
       '@colordx/core': 5.4.3
       browserslist: 4.28.2
       caniuse-api: 3.0.0
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-convert-values@7.0.12(postcss@8.5.22):
+  postcss-convert-values@7.0.12(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-discard-comments@7.0.8(postcss@8.5.22):
+  postcss-discard-comments@7.0.8(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
 
-  postcss-discard-duplicates@7.0.4(postcss@8.5.22):
+  postcss-discard-duplicates@7.0.4(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
 
-  postcss-discard-empty@7.0.3(postcss@8.5.22):
+  postcss-discard-empty@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
 
-  postcss-discard-overridden@7.0.3(postcss@8.5.22):
+  postcss-discard-overridden@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
 
-  postcss-merge-longhand@7.0.7(postcss@8.5.22):
+  postcss-merge-longhand@7.0.7(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
-      stylehacks: 7.0.11(postcss@8.5.22)
+      stylehacks: 7.0.11(postcss@8.5.25)
 
-  postcss-merge-rules@7.0.11(postcss@8.5.22):
+  postcss-merge-rules@7.0.11(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
       caniuse-api: 3.0.0
-      cssnano-utils: 5.0.3(postcss@8.5.22)
-      postcss: 8.5.22
+      cssnano-utils: 5.0.3(postcss@8.5.25)
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
 
-  postcss-minify-font-values@7.0.3(postcss@8.5.22):
+  postcss-minify-font-values@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-minify-gradients@7.0.5(postcss@8.5.22):
+  postcss-minify-gradients@7.0.5(postcss@8.5.25):
     dependencies:
       '@colordx/core': 5.4.3
-      cssnano-utils: 5.0.3(postcss@8.5.22)
-      postcss: 8.5.22
+      cssnano-utils: 5.0.3(postcss@8.5.25)
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-minify-params@7.0.9(postcss@8.5.22):
+  postcss-minify-params@7.0.9(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
-      cssnano-utils: 5.0.3(postcss@8.5.22)
-      postcss: 8.5.22
+      cssnano-utils: 5.0.3(postcss@8.5.25)
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-minify-selectors@7.1.2(postcss@8.5.22):
+  postcss-minify-selectors@7.1.2(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
       caniuse-api: 3.0.0
       cssesc: 3.0.0
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
 
-  postcss-normalize-charset@7.0.3(postcss@8.5.22):
+  postcss-normalize-charset@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
 
-  postcss-normalize-display-values@7.0.3(postcss@8.5.22):
+  postcss-normalize-display-values@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-positions@7.0.4(postcss@8.5.22):
+  postcss-normalize-positions@7.0.4(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-repeat-style@7.0.4(postcss@8.5.22):
+  postcss-normalize-repeat-style@7.0.4(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-string@7.0.3(postcss@8.5.22):
+  postcss-normalize-string@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-timing-functions@7.0.3(postcss@8.5.22):
+  postcss-normalize-timing-functions@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-unicode@7.0.9(postcss@8.5.22):
+  postcss-normalize-unicode@7.0.9(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-url@7.0.3(postcss@8.5.22):
+  postcss-normalize-url@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-whitespace@7.0.3(postcss@8.5.22):
+  postcss-normalize-whitespace@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-ordered-values@7.0.4(postcss@8.5.22):
+  postcss-ordered-values@7.0.4(postcss@8.5.25):
     dependencies:
-      cssnano-utils: 5.0.3(postcss@8.5.22)
-      postcss: 8.5.22
+      cssnano-utils: 5.0.3(postcss@8.5.25)
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
-  postcss-reduce-initial@7.0.9(postcss@8.5.22):
+  postcss-reduce-initial@7.0.9(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
       caniuse-api: 3.0.0
-      postcss: 8.5.22
+      postcss: 8.5.25
 
-  postcss-reduce-transforms@7.0.3(postcss@8.5.22):
+  postcss-reduce-transforms@7.0.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
   postcss-selector-parser@7.1.1:
@@ -20055,20 +20055,20 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-svgo@7.1.3(postcss@8.5.22):
+  postcss-svgo@7.1.3(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
       svgo: 4.0.2
 
-  postcss-unique-selectors@7.0.7(postcss@8.5.22):
+  postcss-unique-selectors@7.0.7(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.5.22:
+  postcss@8.5.25:
     dependencies:
       nanoid: 3.3.16
       picocolors: 1.1.1
@@ -21315,10 +21315,10 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.29.7(supports-color@9.4.0)
 
-  stylehacks@7.0.11(postcss@8.5.22):
+  stylehacks@7.0.11(postcss@8.5.25):
     dependencies:
       browserslist: 4.28.2
-      postcss: 8.5.22
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
 
   stylis@4.4.0: {}
@@ -21391,18 +21391,18 @@ snapshots:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.3.0
 
-  terser-webpack-plugin@5.6.1(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3)):
+  terser-webpack-plugin@5.6.1(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.48.0
-      webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3)
+      webpack: 5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3)
     optionalDependencies:
       '@swc/core': 1.15.40(@swc/helpers@0.5.23)
-      cssnano: 7.1.9(postcss@8.5.22)
+      cssnano: 7.1.9(postcss@8.5.25)
       csso: 5.0.5
-      postcss: 8.5.22
+      postcss: 8.5.25
       uglify-js: 3.19.3
 
   terser@5.48.0:
@@ -22149,7 +22149,7 @@ snapshots:
 
   webpack-sources@3.5.0: {}
 
-  webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3):
+  webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -22171,7 +22171,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.1(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.22))(csso@5.0.5)(postcss@8.5.22)(uglify-js@3.19.3))
+      terser-webpack-plugin: 5.6.1(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3)(webpack@5.107.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(cssnano@7.1.9(postcss@8.5.25))(csso@5.0.5)(postcss@8.5.25)(uglify-js@3.19.3))
       watchpack: 2.5.1
       webpack-sources: 3.5.0
     transitivePeerDependencies:

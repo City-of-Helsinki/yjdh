@@ -97,8 +97,11 @@ overrides:
   # output. Patched in 22.7.2; the 21.x line is unpatched. lerna@9 pins nx <23, so
   # this resolves the whole nx stack to 22.7.7 (dev-only tooling; never in prod).
   nx: '22.7.7'
-  # GHSA-r28c-9q8g-f849: PostCSS sourceMappingURL path traversal (patched 8.5.18)
-  postcss: '>=8.5.18'
+  # GHSA-r28c-9q8g-f849 + GHSA-fxqj-rqcc-2cmp (moderate, CVE-2026-69153): PostCSS
+  # sourceMappingURL path traversal. 8.5.18's fix was incomplete — the traversal
+  # guard was skipped when `from` is unset, still allowing arbitrary .map reads.
+  # 8.5.23 applies the guard unconditionally.
+  postcss: '>=8.5.23'
   # GHSA-f88m-g3jw-g9cj: sharp/libvips CVEs (patched 0.35.0)
   sharp: '>=0.35.0'
   # GHSA-52v5-jr5w-gjxr (high, CVE-2026-48815): sigstore drops certificateOIDs
