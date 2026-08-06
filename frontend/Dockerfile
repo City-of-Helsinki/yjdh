@@ -1,5 +1,5 @@
 # =======================================
-FROM registry.access.redhat.com/ubi9/nodejs-22 AS distbase
+FROM registry.access.redhat.com/ubi9/nodejs-24 AS distbase
 # =======================================
 
 USER root
@@ -7,9 +7,8 @@ USER root
 # Install ca-certificates so that Sentry can upload source maps
 RUN yum update -y && yum install -y ca-certificates && yum clean all
 
-# Install yarn
-RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
-RUN yum -y install yarn
+# Install pnpm
+RUN npm install -g pnpm@11.18.0
 
 # =============================
 FROM distbase AS appbase
@@ -21,19 +20,15 @@ USER root
 ARG PROJECT
 ARG FOLDER
 
-# Yarn
-ENV YARN_VERSION 1.22.10
-RUN yarn policies set-version "$YARN_VERSION" && \
-    yarn config set ignore-engines true
-
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=default:root package.json yarn.lock lerna.json ./
+COPY --chown=default:root package.json pnpm-lock.yaml pnpm-workspace.yaml lerna.json ./
+COPY --chown=default:root patches ./patches
 COPY --chown=default:root $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
 COPY --chown=default:root $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=default:root shared/package.json shared/package.json
-RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn --frozen-lockfile --check-files --network-timeout 600000
+RUN --mount=type=cache,target=/pnpm/store,sharing=locked pnpm install --store-dir /pnpm/store --frozen-lockfile
 
 # ===================================
 FROM appbase AS staticbuilder
@@ -87,7 +82,7 @@ COPY --chown=default:root . .
 # Build application
 WORKDIR /app/$PROJECT/$FOLDER/
 
-RUN yarn build
+RUN pnpm build
 
 # ==========================================
 FROM appbase AS production
@@ -110,7 +105,7 @@ RUN rm -rf $PROJECT/$FOLDER/node_modules \
     node_modules
 
 # Install production dependencies
-RUN --mount=type=cache,target=/app/.yarn_cache,sharing=locked YARN_CACHE_FOLDER=/app/.yarn_cache yarn install --production --check-files --frozen-lockfile --ignore-scripts --prefer-offline && yarn cache clean --force
+RUN --mount=type=cache,target=/pnpm/store,sharing=locked pnpm install --store-dir /pnpm/store --prod --frozen-lockfile --ignore-scripts --prefer-offline
 
 # Change ownership to default:root to ensure accessibility
 RUN chown -R default:root /app
@@ -127,11 +122,16 @@ COPY --chown=default:root --from=staticbuilder app/shared/src/server/next-server
 # Copy public directory
 COPY --chown=default:root --from=staticbuilder app/$PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
 
+# On OpenShift the container runs under an arbitrary UID that only belongs to
+# group 0, so make .next group-writable; otherwise Pages-Router ISR
+# (fallback: 'blocking') fails to write its prerender cache with EACCES (500).
+RUN chmod -R g=u $PROJECT/$FOLDER/.next
+
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # Expose port
 EXPOSE $PORT
 
 # Start nextjs server
-ENV PROD_START "yarn --cwd $PROJECT/$FOLDER start"
+ENV PROD_START "pnpm --dir $PROJECT/$FOLDER start"
 CMD ["sh", "-c", "${PROD_START}"]

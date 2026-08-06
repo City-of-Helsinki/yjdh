@@ -34,13 +34,34 @@ fixture('Handler form')
     console.log(filterLoggedRequests(requestLogger))
   );
 
+// The mocked userinfo response replaces the real cross-origin backend response,
+// so it must carry CORS headers itself. The app calls the backend with
+// withCredentials, so the origin has to be echoed back (a "*" origin is invalid
+// with credentials) and credentials must be explicitly allowed.
+const respondWithUserinfo =
+  (body: object, statusCode: number) =>
+  (
+    req: { headers: Record<string, string> },
+    res: {
+      headers: Record<string, string>;
+      statusCode: number;
+      setBody: (responseBody: object) => void;
+    }
+  ): void => {
+    res.headers['content-type'] = 'application/json';
+    res.headers['access-control-allow-origin'] = req.headers.origin || '*';
+    res.headers['access-control-allow-credentials'] = 'true';
+    res.statusCode = statusCode;
+    res.setBody(body);
+  };
+
 const userinfoMock = RequestMock()
   .onRequestTo(getBackendUrl(BackendEndpoint.USER))
-  .respond(handlerUser, 200);
+  .respond(respondWithUserinfo(handlerUser, 200));
 
 const userinfo401Mock = RequestMock()
   .onRequestTo(getBackendUrl(BackendEndpoint.USER))
-  .respond({}, 401);
+  .respond(respondWithUserinfo({}, 401));
 
 test.requestHooks(userinfo401Mock)(
   'login page is shown when user is not authenticated',

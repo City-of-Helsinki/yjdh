@@ -185,7 +185,7 @@ describe('useApplicationReports', () => {
   it('should export applications in time range with converted date params', async () => {
     const { result, rerender } = renderHook(() => useApplicationReports());
 
-    result.current.formik.setValues({
+    await result.current.formik.setValues({
       startDate: '01.03.2024',
       endDate: '31.03.2024',
     });

@@ -7,6 +7,7 @@ module.exports = {
     },
   },
   moduleNameMapper: {
+    ...sharedConfig.moduleNameMapper,
     ['^benefit/shared/test/(.*)$']: '<rootDir>/test/$1',
     [`^benefit-shared\/(.*)$`]: '<rootDir>/src/$1',
     [`^benefit/shared\/(.*)$`]: '<rootDir>/src/$1',

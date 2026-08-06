@@ -9,12 +9,12 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage"
+    "test:staged": "pnpm run test --watchAll=false --findRelatedTests",
+    "test:coverage": "pnpm run test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
-    "@frontend/shared": "*",
+    "@frontend/shared": "workspace:*",
     "@sentry/nextjs": "^10.56.0",
     "axios": "^1.17.0",
     "camelcase-keys": "^7.0.1",
@@ -22,8 +22,8 @@
     "formik": "^2.2.9",
     "hds-react": "^5.0.0",
     "ibantools": "^4.5.4",
-    "next": "15.5.19",
-    "next-i18next": "^13.0.3",
+    "next": "15.5.22",
+    "next-i18next": "^15.3.0",
     "next-router-mock": "0.9.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

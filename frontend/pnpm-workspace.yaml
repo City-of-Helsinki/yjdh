@@ -1,0 +1,122 @@
+packages:
+  - 'kesaseteli/*'
+  - 'benefit/*'
+  - 'shared'
+
+# Do not allow dependencies to be used before they have been released for at least 1 week.
+minimumReleaseAge: 10080
+
+# Exception: fast-uri 4.1.2 is the security patch for GHSA-7p8r-x3mc-p8w7
+# (CVE-2026-18446, high) host-confusion fix, published <7d ago. Allow it past
+# the release-age gate so the pnpm audit passes. Dev-only transitive via ajv.
+minimumReleaseAgeExclude:
+  - 'fast-uri@4.1.2'
+
+# Don't run the deps status check before `pnpm <script>`. In the dev Docker
+# container there is no TTY to confirm purging node_modules, which otherwise
+# crashes with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY. Dependencies are
+# installed from the frozen lockfile, so the pre-run check is unnecessary.
+verifyDepsBeforeRun: false
+
+# Keep this empty to avoid warning noise for intentionally ignored build scripts.
+ignoredBuiltDependencies: []
+
+# Keep pnpm's default node_modules layout to avoid dependency shadowing in nx internals.
+shamefullyHoist: false
+
+overrides:
+  '@tootallnate/once': '>=2.0.1'
+  # GHSA-8988-4f7v-96qf (moderate, CVE-2026-54285): @opentelemetry/core W3C Baggage
+  # extract() has no size cap (unbounded memory). Patched in 2.8.0; satisfies the
+  # ^2.1.0 peer range from @sentry/nextjs. Transitive via @sentry/* opentelemetry.
+  '@opentelemetry/core': '>=2.8.0'
+  '@typescript-eslint/eslint-plugin': '5.28.0'
+  '@typescript-eslint/parser': '5.28.0'
+  '@typescript-eslint/typescript-estree': '5.28.0'
+  '@types/react': '18.2.21'
+  '@types/react-dom': '18.2.7'
+  # GHSA-gcfj-64vw-6mp9 (high) + axios prototype-pollution/DoS advisories.
+  # 1.19.0 is blocked by minimumReleaseAge (published <7d ago); 1.18.1 is newest eligible.
+  axios: '1.18.1'
+  # GHSA-v422-hmwv-36x6 (low): body-parser DoS when an invalid limit silently
+  # disables size enforcement. express@4.22.2 pins ~1.20.5; 1.20.6 is the patch.
+  body-parser: '1.20.6'
+  # GHSA-mh99-v99m-4gvg (high, CVE-2026-14257) + GHSA-rgw5-rvv9-x895 (high,
+  # CVE-2026-69152): brace-expansion ReDoS/OOM. 5.0.8's maxLength mitigation was
+  # incomplete (unbounded intermediate arrays); 5.0.9 fully bounds them. Force the
+  # patched 5.0.9 everywhere so Dependency Review and pnpm audit both pass. 5.x's
+  # ESM-style CJS build breaks minimatch@3-9 / lerna@8 (`require(...)()` and
+  # `.default(...)` interop), so it is paired with a local patch (see
+  # patchedDependencies) that re-adds a callable default export.
+  'brace-expansion': '5.0.9'
+  # GHSA-pxg6-pf52-xh8x (low): cookie <0.7.0 accepts out-of-bounds characters in
+  # name/path/domain. Transitive via hds-react@5.0.0 (pins 0.4.2); 0.7.2 is the
+  # newest 0.x patch and keeps the same parse/serialize API.
+  cookie: '0.7.2'
+  eslint: '8.4.1'
+  eslint-config-adjunct: '4.11.1'
+  eslint-config-auto: '0.7.1'
+  eslint-plugin-react: '7.37.5'
+  # GHSA-4c8g-83qw-93j6 + GHSA-7p8r-x3mc-p8w7 (high, CVE-2026-18446): fast-uri host
+  # confusion via backslash authority introducer.
+  fast-uri: '>=4.1.2'
+  'form-data@>=3.0.0 <3.0.5': '^3.0.5'
+  'form-data@>=4.0.0 <4.0.6': '^4.0.6'
+  hds-react: '5.0.0'
+  # GHSA-mwp4-54f8-5fhr (high, CVE-2026-69192): ip-address Address4 decodes
+  # leading-zero octets as decimal while resolvers read them as octal, enabling
+  # SSRF/trust-boundary bypass. Patched in 10.3.1. Dev-only transitive via
+  # lerna>pacote>sigstore>...>socks (which pins ^10.1.1).
+  ip-address: '>=10.3.1'
+  js-cookie: '^3.0.8'
+  # GHSA-52cp-r559-cp3m: YAML merge-key quadratic CPU DoS (patched 4.3.0)
+  js-yaml: '>=4.3.0'
+  # GHSA-v245-v573-v5vm: linkify-it mailto ReDoS (dev-only via mjml/markdown-it)
+  linkify-it: '^5.0.2'
+  'minimatch@<3.1.4': '^3.1.4'
+  'minimatch@>=9.0.0 <9.0.7': '^9.0.7'
+  mjml: '>=4.18.1'
+  # GHSA-g2r8-wvmj-jf5w (moderate, CVE-2026-54753): `nx graph` dev server sent a
+  # wildcard CORS header, allowing cross-origin reads of the project graph/help
+  # output. Patched in 22.7.2; the 21.x line is unpatched. lerna@9 pins nx <23, so
+  # this resolves the whole nx stack to 22.7.7 (dev-only tooling; never in prod).
+  nx: '22.7.7'
+  # GHSA-r28c-9q8g-f849 + GHSA-fxqj-rqcc-2cmp (moderate, CVE-2026-69153): PostCSS
+  # sourceMappingURL path traversal. 8.5.18's fix was incomplete — the traversal
+  # guard was skipped when `from` is unset, still allowing arbitrary .map reads.
+  # 8.5.23 applies the guard unconditionally.
+  postcss: '>=8.5.23'
+  # GHSA-f88m-g3jw-g9cj: sharp/libvips CVEs (patched 0.35.0)
+  sharp: '>=0.35.0'
+  # GHSA-52v5-jr5w-gjxr (high, CVE-2026-48815): sigstore drops certificateOIDs
+  # verification constraints. Only fixed in 4.1.1; the 2.x line has no patch. Deep
+  # dev-only transitive via lerna (pacote/libnpmpublish), never exercised at build time.
+  sigstore: '4.1.1'
+  # GHSA-2p49-hgcm-8545: SVGO removeScripts bypass (dev-only via mjml, patched 4.0.2)
+  svgo: '^4.0.2'
+  # GHSA-8x88-c5mf-7j5w (critical) / GHSA-23hp-3jrh-7fpw: node-tar DoS (patched 7.5.19)
+  tar: '>=7.5.19'
+  tmp: '^0.2.6'
+  underscore: '^1.13.8'
+  # GHSA-8xcm-r25x-g524 / GHSA-v3r7-h72x-cjcm / GHSA-m8rv-5g2x-5cg5 (moderate):
+  # undici response desync, cookie attribute injection, CRLF injection (patched 6.28.0)
+  'undici@<6.28.0': '^6.28.0'
+  uuid: '>=11.1.1'
+
+allowBuilds:
+  '@ffmpeg-installer/darwin-arm64': true
+  '@ffmpeg-installer/darwin-x64': true
+  '@ffmpeg-installer/linux-arm64': true
+  '@ffmpeg-installer/linux-x64': true
+  '@ffmpeg-installer/win32-x64': true
+  '@sentry/cli': true
+  '@swc/core': true
+  canvas: true
+  core-js: true
+  core-js-pure: true
+  nx: true
+  sharp: true
+  unrs-resolver: true
+
+patchedDependencies:
+  brace-expansion@5.0.9: patches/brace-expansion@5.0.9.patch

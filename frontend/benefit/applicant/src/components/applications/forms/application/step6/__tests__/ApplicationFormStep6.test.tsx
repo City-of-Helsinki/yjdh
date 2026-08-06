@@ -123,14 +123,16 @@ describe('ApplicationFormStep6', () => {
       renderForm();
     });
 
+    // Resolve buttons once; a name-filtered getByRole recomputes the
+    // accessible name across the whole HDS DOM and is ~1s per call.
+    const buttons = screen.getAllByRole('button');
+
     for (const [index, url] of allApplicantTermsInEffectUrls.entries()) {
-      await user.click(
-        screen.getByRole('button', {
-          name: `common:applications.sections.applicantTerms.openTerms.${
-            index + 1
-          }`,
-        })
-      );
+      const label = `common:applications.sections.applicantTerms.openTerms.${
+        index + 1
+      }`;
+      const button = buttons.find((b) => b.textContent === label);
+      await user.click(button as HTMLElement);
 
       expect(mockOpenFileInNewTab).toHaveBeenCalledWith(url);
     }

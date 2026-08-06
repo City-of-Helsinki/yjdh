@@ -172,3 +172,8 @@ nohup.out
 
 # Scripts output directories
 **/scripts/data
+
+# yarn – not used anymore
+yarn.lock
+.yarn/
+.yarnrc.yml

@@ -47,7 +47,7 @@ const SaveFormButton = <
   );
   const handleSaving: SubmitHandler<FormData> = React.useCallback(
     (formData) => {
-      saveQuery.mutate(formData as FormData, {
+      saveQuery.mutate(formData, {
         onSuccess: (responseData) => {
           if (onSuccess) {
             void onSuccess(responseData);
