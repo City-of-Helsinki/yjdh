@@ -3,13 +3,52 @@ import renderComponent from 'benefit/handler/__tests__/utils/render-component';
 import { setupUserAndRender } from 'benefit/handler/__tests__/utils/user-render-helper';
 import { ApplicationData } from 'benefit-shared/types/application';
 import * as React from 'react';
-import { focusAndScrollToSelector } from 'shared/utils/dom.utils';
 
 import ApplicationsArchive from '../ApplicationsArchive';
 
+jest.mock('hds-react', () => {
+  const actual = jest.requireActual('hds-react');
+
+  return {
+    ...actual,
+    Pagination: ({
+      pageIndex,
+      pageCount,
+      onChange,
+    }: {
+      pageIndex: number;
+      pageCount: number;
+      onChange: (
+        event: React.MouseEvent<HTMLButtonElement>,
+        index: number
+      ) => void;
+    }) => (
+      <nav data-testid="archive-pagination">
+        {Array.from({ length: pageCount }, (_, index) => (
+          <button
+            key={index}
+            type="button"
+            aria-current={pageIndex === index ? 'page' : undefined}
+            onClick={(event) => onChange(event, index)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </nav>
+    ),
+  };
+});
+
 jest.mock('benefit/handler/hooks/useSearchApplicationQuery', () =>
   jest.fn(() => ({
-    data: { matches: [] },
+    data: {
+      matches: [],
+      count: 0,
+      limit: 30,
+      offset: 0,
+      next: null,
+      previous: null,
+    },
     isLoading: false,
     error: null,
     mutate: jest.fn(),
@@ -23,10 +62,6 @@ jest.mock('shared/utils/dom.utils', () => ({
 const mockUseSearchApplicationQuery = jest.requireMock(
   'benefit/handler/hooks/useSearchApplicationQuery'
 );
-const mockFocusAndScrollToSelector =
-  focusAndScrollToSelector as jest.MockedFunction<
-    typeof focusAndScrollToSelector
-  >;
 
 const makeApplication = ({
   id,
@@ -52,13 +87,30 @@ const setSearchQuery = ({
   isLoading = false,
   matches = [],
   mutate = jest.fn(),
+  count = matches.length,
+  limit = 30,
+  offset = 0,
+  next = null,
+  previous = null,
 }: {
   isLoading?: boolean;
   matches?: ApplicationData[];
   mutate?: jest.Mock;
+  count?: number;
+  limit?: number;
+  offset?: number;
+  next?: string | null;
+  previous?: string | null;
 } = {}): void => {
   mockUseSearchApplicationQuery.mockReturnValue({
-    data: { matches },
+    data: {
+      matches,
+      count,
+      limit,
+      offset,
+      next,
+      previous,
+    },
     isLoading,
     error: null,
     mutate,
@@ -84,6 +136,7 @@ describe('ApplicationsArchive', () => {
         makeApplication({ id: 'a1', companyName: 'Company A' }),
         makeApplication({ id: 'a2', companyName: 'Company B' }),
       ],
+      count: 2,
     });
 
     renderSubject();
@@ -110,7 +163,11 @@ describe('ApplicationsArchive', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Hae' }));
 
-    expect(mutate).toHaveBeenCalledWith('yritys');
+    expect(mutate).toHaveBeenCalledWith({
+      q: 'yritys',
+      limit: 30,
+      offset: 0,
+    });
   });
 
   it('renders application number status label and hides search when appNo is provided', () => {
@@ -146,31 +203,65 @@ describe('ApplicationsArchive', () => {
     renderSubject();
 
     await waitFor(() => {
-      expect(mutate).toHaveBeenCalledWith('');
+      expect(mutate).toHaveBeenCalledWith({
+        q: '',
+        limit: 30,
+        offset: 0,
+      });
     });
   });
 
-  it('shows load more button at default search and loads all when clicked', async () => {
+  it('renders pagination when result count exceeds one page', () => {
+    setSearchQuery({
+      isLoading: false,
+      matches: makeApplications(30),
+      count: 60,
+      next: 'https://localhost:8000/v1/search/?q=&limit=30&offset=30',
+    });
+
+    renderSubject();
+
+    expect(screen.getByTestId('archive-pagination')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '1' })).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    expect(screen.getByRole('button', { name: '2' })).toBeInTheDocument();
+  });
+
+  it('does not render pagination when result count fits on one page', () => {
+    setSearchQuery({
+      isLoading: false,
+      matches: makeApplications(10),
+      count: 10,
+    });
+
+    renderSubject();
+
+    expect(screen.queryByTestId('archive-pagination')).not.toBeInTheDocument();
+  });
+
+  it('submits paginated search when page is changed', async () => {
+    const mutate = jest.fn();
     const user = setupUserAndRender(() => {
       setSearchQuery({
         isLoading: false,
         matches: makeApplications(30),
+        count: 60,
+        next: 'https://localhost:8000/v1/search/?q=&limit=30&offset=30',
+        mutate,
       });
 
       renderSubject();
     });
 
-    const loadMoreButton = screen.getByRole('button', {
-      name: 'Lataa lisää',
+    await user.click(screen.getByRole('button', { name: '2' }));
+
+    expect(mutate).toHaveBeenCalledWith({
+      q: '',
+      limit: 30,
+      offset: 30,
     });
-    expect(loadMoreButton).toBeInTheDocument();
-
-    await user.click(loadMoreButton);
-
-    expect(mockFocusAndScrollToSelector).toHaveBeenCalledWith('header');
-    expect(
-      screen.queryByRole('button', { name: 'Lataa lisää' })
-    ).not.toBeInTheDocument();
   });
 
   it.each([
@@ -224,4 +315,6 @@ describe('ApplicationsArchive', () => {
     expect(noFilterRadio).toBeChecked();
     expect(subsidyNowRadio).not.toBeChecked();
   });
+
+
 });
