@@ -24,6 +24,9 @@ minimumReleaseAgeExclude:
   # (CVE-2026-69152, high) which supersedes the incomplete 5.0.8 mitigation. Allow it
   # past the release-age gate so Dependency Review passes; the fix outweighs the age.
   - 'brace-expansion@5.0.9'
+  # Exception: fast-uri 4.1.2 is the security patch for GHSA-7p8r-x3mc-p8w7
+  # (CVE-2026-18446, high) host-confusion fix. Dev-only transitive via ajv.
+  - 'fast-uri@4.1.2'
 
 # Don't run the deps status check before `pnpm <script>`. In the dev Docker
 # container there is no TTY to confirm purging node_modules, which otherwise
@@ -70,8 +73,9 @@ overrides:
   eslint-config-adjunct: '4.11.1'
   eslint-config-auto: '0.7.1'
   eslint-plugin-react: '7.37.5'
-  # GHSA-4c8g-83qw-93j6 (dev-only: sentry webpack-plugin, commitlint via ajv)
-  fast-uri: '>=3.1.3'
+  # GHSA-4c8g-83qw-93j6 + GHSA-7p8r-x3mc-p8w7 (high, CVE-2026-18446): fast-uri host
+  # confusion via backslash authority introducer.
+  fast-uri: '>=4.1.2'
   'form-data@>=3.0.0 <3.0.5': '^3.0.5'
   'form-data@>=4.0.0 <4.0.6': '^4.0.6'
   hds-react: '5.0.0'
