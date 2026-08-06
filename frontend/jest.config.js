@@ -3,7 +3,7 @@ module.exports = {
     '^.+\\.(t|j)sx?$': '@swc/jest',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!.pnpm/(uuid|hds-react|@babel\\+runtime)@)/',
+    '/node_modules/(?!.pnpm/(uuid|hds-react|@babel\\+runtime)@)(?!(uuid|hds-react|@babel/runtime)/)',
   ],
   setupFilesAfterEnv: [require.resolve('./jest.setup.js')],
   testEnvironment: 'jsdom',
