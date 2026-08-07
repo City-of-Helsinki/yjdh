@@ -62,7 +62,6 @@ overrides:
   fast-uri: '>=4.1.2'
   'form-data@>=3.0.0 <3.0.5': '^3.0.5'
   'form-data@>=4.0.0 <4.0.6': '^4.0.6'
-  hds-react: '5.0.0'
   # GHSA-mwp4-54f8-5fhr (high, CVE-2026-69192): ip-address Address4 decodes
   # leading-zero octets as decimal while resolvers read them as octal, enabling
   # SSRF/trust-boundary bypass. Patched in 10.3.1. Dev-only transitive via
