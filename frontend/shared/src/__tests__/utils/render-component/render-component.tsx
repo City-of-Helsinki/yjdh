@@ -21,7 +21,7 @@ export type Result = {
 
 const renderComponent =
   (backendUrl = 'http://localhost:8000') =>
-  (Element: JSX.Element, router: Partial<NextRouter> = {}): Result => {
+  (Element: React.ReactElement, router: Partial<NextRouter> = {}): Result => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const renderResult = render(

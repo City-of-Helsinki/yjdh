@@ -32,7 +32,7 @@ jest.mock('next/router', () => ({
 jest.mock(
   '../../applicationProcessingView/ApplicationProcessingView',
   () =>
-    function MockApplicationProcessingView(): JSX.Element {
+    function MockApplicationProcessingView(): React.ReactElement {
       return <div data-testid="application-processing-view" />;
     }
 );
@@ -40,7 +40,7 @@ jest.mock(
 jest.mock(
   '../../benefitView/BenefitView',
   () =>
-    function MockBenefitView(): JSX.Element {
+    function MockBenefitView(): React.ReactElement {
       return <div data-testid="benefit-view" />;
     }
 );
@@ -48,7 +48,7 @@ jest.mock(
 jest.mock(
   '../../companyInfoView/CompanyInfoView',
   () =>
-    function MockCompanyInfoView(): JSX.Element {
+    function MockCompanyInfoView(): React.ReactElement {
       return <div data-testid="company-info-view" />;
     }
 );
@@ -56,7 +56,7 @@ jest.mock(
 jest.mock(
   '../../consentView/ConsentView',
   () =>
-    function MockConsentView(): JSX.Element {
+    function MockConsentView(): React.ReactElement {
       return <div data-testid="consent-view" />;
     }
 );
@@ -64,7 +64,7 @@ jest.mock(
 jest.mock(
   '../../contactPersonView/ContactPersonView',
   () =>
-    function MockContactPersonView(): JSX.Element {
+    function MockContactPersonView(): React.ReactElement {
       return <div data-testid="contact-person-view" />;
     }
 );
@@ -72,7 +72,7 @@ jest.mock(
 jest.mock(
   '../../coOperationNegotiationsView/CoOperationNegotiationsView',
   () =>
-    function MockCoOperationNegotiationsView(): JSX.Element {
+    function MockCoOperationNegotiationsView(): React.ReactElement {
       return <div data-testid="cooperation-negotiations-view" />;
     }
 );
@@ -80,7 +80,7 @@ jest.mock(
 jest.mock(
   '../../deminimisView/DeminimisView',
   () =>
-    function MockDeminimisView(): JSX.Element {
+    function MockDeminimisView(): React.ReactElement {
       return <div data-testid="deminimis-view" />;
     }
 );
@@ -88,7 +88,7 @@ jest.mock(
 jest.mock(
   '../../employeeView/EmployeeView',
   () =>
-    function MockEmployeeView(): JSX.Element {
+    function MockEmployeeView(): React.ReactElement {
       return <div data-testid="employee-view" />;
     }
 );
@@ -96,7 +96,7 @@ jest.mock(
 jest.mock(
   '../../employmentView/EmpoymentView',
   () =>
-    function MockEmploymentView(): JSX.Element {
+    function MockEmploymentView(): React.ReactElement {
       return <div data-testid="employment-view" />;
     }
 );
@@ -104,7 +104,7 @@ jest.mock(
 jest.mock(
   '../../handledView/HandledView',
   () =>
-    function MockHandledView(): JSX.Element {
+    function MockHandledView(): React.ReactElement {
       return <div data-testid="handled-view" />;
     }
 );
@@ -112,7 +112,7 @@ jest.mock(
 jest.mock(
   '../../handledView/archivedView/ArchivedView',
   () =>
-    function MockArchivedView(): JSX.Element {
+    function MockArchivedView(): React.ReactElement {
       return <div data-testid="archived-view" />;
     }
 );
@@ -120,7 +120,7 @@ jest.mock(
 jest.mock(
   '../../paperView/PaperView',
   () =>
-    function MockPaperView(): JSX.Element {
+    function MockPaperView(): React.ReactElement {
       return <div data-testid="paper-view" />;
     }
 );
@@ -128,7 +128,7 @@ jest.mock(
 jest.mock(
   '../../salaryBenefitCalculatorView/SalaryBenefitCalculatorView',
   () =>
-    function MockSalaryBenefitCalculatorView(): JSX.Element {
+    function MockSalaryBenefitCalculatorView(): React.ReactElement {
       return <div data-testid="salary-benefit-calculator-view" />;
     }
 );
@@ -136,7 +136,7 @@ jest.mock(
 jest.mock(
   '../DecisionCalculationAccordion',
   () =>
-    function MockDecisionCalculationAccordion(): JSX.Element {
+    function MockDecisionCalculationAccordion(): React.ReactElement {
       return <div data-testid="decision-calculation-accordion" />;
     }
 );

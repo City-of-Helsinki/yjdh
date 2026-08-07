@@ -26,7 +26,7 @@ import { formatFloatToEvenEuros } from 'shared/utils/string.utils';
 const AlterationAccordionItem = ({
   alteration,
   application,
-}: AlterationAccordionItemProps): JSX.Element => {
+}: AlterationAccordionItemProps): React.ReactElement => {
   const locale = useLocale();
   const { t } = useTranslation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -71,7 +71,7 @@ const AlterationAccordionItem = ({
                         value && prettyPrintObject({ data: value })
                       )
                     )
-                    .filter(Boolean)) as (string | JSX.Element)[],
+                    .filter(Boolean)) as (string | React.ReactElement)[],
             });
           },
         }

@@ -75,7 +75,7 @@ const buildApplicationUrl = (
 export const renderInstalmentTagPerStatus = (
   t: TFunction,
   status?: INSTALMENT_STATUSES
-): JSX.Element | string =>
+): React.ReactElement | string =>
   status ? (
     <$TagWrapper $colors={getInstalmentTagStyleForStatus(status)}>
       <Tag>

@@ -59,7 +59,7 @@ const AlterationHandlingForm = ({
   alteration,
   onError,
   onSuccess,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const {
     t,
     formik,
