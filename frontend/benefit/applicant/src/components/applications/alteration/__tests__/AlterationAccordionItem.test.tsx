@@ -1,4 +1,4 @@
-import { RenderResult, screen, waitFor } from '@testing-library/react';
+import { act, RenderResult, screen, waitFor } from '@testing-library/react';
 import {
   createMockAlteration,
   createMockApplication,
@@ -226,7 +226,9 @@ describe('AlterationAccordionItem', () => {
     );
 
     const callbacks = mockMutate.mock.calls[0][1];
-    callbacks.onSuccess();
+    await act(async () => {
+      callbacks.onSuccess();
+    });
 
     await waitFor(() => {
       expect(
