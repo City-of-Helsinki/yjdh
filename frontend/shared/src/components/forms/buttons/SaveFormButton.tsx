@@ -11,9 +11,11 @@ import Button from 'shared/components/button/Button';
 import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
+// 'ref' is dropped because hds-react still types it as React 18's LegacyRef,
+// which allows string refs that React 19's Ref rejects.
 type Props<FormData extends FieldValues, BackendResponseData> = Omit<
   React.ComponentProps<typeof Button | typeof LinkButton>,
-  'onClick' | 'onError'
+  'onClick' | 'onError' | 'ref'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;
   onSuccess?: (response: BackendResponseData) => void | Promise<void>;
