@@ -85,7 +85,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     eslint: {
       ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
     },
-    transpilePackages: ['@frontend', 'uuid'],
+    transpilePackages: ['@frontend', 'styled-components', 'uuid'],
     experimental: {
       // Allow CJS packages (e.g. hds-react) to require ESM-only packages such as
       // `uuid`. With pnpm's strict resolution these packages resolve to their ESM

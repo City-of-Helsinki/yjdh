@@ -20,7 +20,9 @@ const getTextFromChildren = (children: React.ReactNode): string => {
   return '';
 };
 
-const OpenInNewTabLink: React.FC<LinkProps> = ({
+// 'ref' is dropped because hds-react still types it as React 18's LegacyRef,
+// which allows string refs that React 19's Ref rejects.
+const OpenInNewTabLink: React.FC<Omit<LinkProps, 'ref'>> = ({
   children,
   openInNewTab,
   openInNewTabLabel,
