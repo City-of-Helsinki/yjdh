@@ -38,7 +38,7 @@ import {
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-const AlterationPage = (): JSX.Element => {
+const AlterationPage = (): React.ReactElement => {
   const { t, id, application, isError, isLoading } = useAlterationPage();
 
   const router = useRouter();

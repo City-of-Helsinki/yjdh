@@ -4,7 +4,7 @@ import AppContext from './AppContext';
 
 const AppContextProvider = <P,>({
   children,
-}: React.PropsWithChildren<P>): JSX.Element => {
+}: React.PropsWithChildren<P>): React.ReactElement => {
   const [isNavigationVisible, setIsNavigationVisible] =
     React.useState<boolean>(false);
   const [isSidebarVisible, setIsSidebarVisible] =

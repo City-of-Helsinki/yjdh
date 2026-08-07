@@ -5,7 +5,7 @@ import AppContext from './AppContext';
 
 const AppContextProvider = <P,>({
   children,
-}: React.PropsWithChildren<P>): JSX.Element => {
+}: React.PropsWithChildren<P>): React.ReactElement => {
   const [isSidebarVisible, setIsSidebarVisible] =
     React.useState<boolean>(false);
   const [isFooterVisible, setIsFooterVisible] = React.useState<boolean>(false);

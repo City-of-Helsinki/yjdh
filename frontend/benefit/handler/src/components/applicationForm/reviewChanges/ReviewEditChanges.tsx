@@ -88,7 +88,7 @@ const ReviewEditChanges: React.FC<ReviewEditChangesProps> = ({
 
       <dl>
         {changes.map(
-          (change: Difference): JSX.Element => (
+          (change: Difference): React.ReactElement => (
             <Fragment key={`${change.path.join('.')}`}>
               <$ChangeRowLabel>
                 <$ViewFieldBold>

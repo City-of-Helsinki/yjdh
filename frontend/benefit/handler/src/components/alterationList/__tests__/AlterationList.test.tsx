@@ -18,7 +18,7 @@ jest.mock('next/router', () => ({
 jest.mock(
   'react-loading-skeleton',
   () =>
-    function MockSkeleton(): JSX.Element {
+    function MockSkeleton(): React.ReactElement {
       return <div data-testid="loading-skeleton" />;
     }
 );

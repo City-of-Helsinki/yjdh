@@ -28,7 +28,7 @@ const AlterationDeleteModal = ({
   isOpen,
   alteration,
   isDeleting,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const { t } = useTranslation();
 
   return (

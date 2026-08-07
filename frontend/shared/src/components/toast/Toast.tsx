@@ -1,7 +1,7 @@
 import { NotificationProps } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { ReactText, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import React, { useEffect } from 'react';
+import { Id, toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 
 import { HDSToastContainerId } from './ToastContainer';
@@ -11,7 +11,7 @@ interface HDSToastArgs {
   autoDismissTime?: number;
   type: NotificationProps['type'];
   labelText: string;
-  text: string | JSX.Element | Array<string | JSX.Element>;
+  text: React.ReactNode;
   toastId?: string;
 }
 
@@ -27,7 +27,7 @@ const NotificationWrapper = ({
   labelText,
   text,
   toastId,
-}: NotificationWrapperProps): JSX.Element => {
+}: NotificationWrapperProps): React.ReactElement => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const hdsToast = ({
   labelText,
   text,
   toastId,
-}: HDSToastArgs): ReactText => {
+}: HDSToastArgs): Id => {
   const id = toastId ?? uuidv4();
   return toast(
     <NotificationWrapper

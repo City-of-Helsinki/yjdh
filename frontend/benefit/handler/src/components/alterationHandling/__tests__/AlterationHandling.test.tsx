@@ -23,14 +23,14 @@ jest.mock('shared/components/toast/Toast', () => jest.fn());
 jest.mock(
   'react-loading-skeleton',
   () =>
-    function MockSkeleton(): JSX.Element {
+    function MockSkeleton(): React.ReactElement {
       return <div data-testid="loading-skeleton" />;
     }
 );
 jest.mock(
   'benefit/handler/components/applicationHeader/ApplicationHeader',
   () =>
-    function MockApplicationHeader(): JSX.Element {
+    function MockApplicationHeader(): React.ReactElement {
       return <div data-testid="application-header" />;
     }
 );
@@ -43,7 +43,7 @@ jest.mock(
     }: {
       onSuccess: (isRecoverable: boolean) => void;
       onError: (error: unknown) => void;
-    }): JSX.Element {
+    }): React.ReactElement {
       return (
         <div data-testid="alteration-handling-form">
           <button type="button" onClick={() => onSuccess(true)}>
