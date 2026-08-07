@@ -7,7 +7,7 @@ const ApplicationListProvider = ({
   children,
   count,
   list,
-}: React.PropsWithChildren<ApplicationListContextType>): JSX.Element => (
+}: React.PropsWithChildren<ApplicationListContextType>): React.ReactElement => (
   <ApplicationListContext.Provider
     value={{
       count,

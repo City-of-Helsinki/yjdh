@@ -16,7 +16,7 @@ const useUploadAttachment = (
   errorFileTypeText: string,
   onUpload: (data: FormData) => void
 ): ExtendedComponentProps => {
-  const uploadRef = React.createRef<HTMLInputElement>();
+  const uploadRef = React.useRef<HTMLInputElement>(null);
 
   const resetUploadInput = React.useCallback(() => {
     if (uploadRef.current?.value) {

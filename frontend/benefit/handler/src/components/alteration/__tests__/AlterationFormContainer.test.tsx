@@ -17,7 +17,7 @@ jest.mock('benefit/handler/components/alteration/useAlterationForm');
 jest.mock(
   'benefit-shared/components/alterationForm/AlterationForm',
   () =>
-    function MockAlterationForm(): JSX.Element {
+    function MockAlterationForm(): React.ReactElement {
       return <div data-testid="alteration-form" />;
     }
 );

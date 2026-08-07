@@ -4,7 +4,7 @@ import AuthContext from 'shared/auth/AuthContext';
 
 const AuthProvider = <P,>({
   children,
-}: React.PropsWithChildren<P>): JSX.Element => {
+}: React.PropsWithChildren<P>): React.ReactElement => {
   const userQuery = useUserQuery((user) => user);
   return (
     <AuthContext.Provider

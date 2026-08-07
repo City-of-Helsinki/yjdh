@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Button from 'shared/components/button/Button';
 
-const NoApplications = (): JSX.Element => {
+const NoApplications = (): React.ReactElement => {
   const router = useRouter();
   const { t } = useTranslation();
 

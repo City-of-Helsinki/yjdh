@@ -52,7 +52,7 @@ const renderSubject = (batchOverrides: Partial<BatchProposal> = {}): void => {
   );
 };
 
-function DownloadStateWrapper(): JSX.Element {
+function DownloadStateWrapper(): React.ReactElement {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
 

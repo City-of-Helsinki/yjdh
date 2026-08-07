@@ -30,7 +30,7 @@ const AlterationCancelModal = ({
   isOpen,
   isDeleting,
   alteration,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const { t } = useTranslation();
 
   return (

@@ -18,7 +18,7 @@ interface ListContentProps {
   headingText: React.ReactNode;
   orderByOptions?: OptionType[];
   status: string[];
-  items: JSX.Element[];
+  items: React.ReactElement[];
   noItemsText?: React.ReactNode;
   onListLengthChanged?: (isLoading: boolean, length: number) => void;
   beforeList?: React.ReactNode;
@@ -43,7 +43,7 @@ const ListContents = ({
   onListLengthChanged,
   beforeList,
   afterList,
-}: Props): JSX.Element | null => {
+}: Props): React.ReactElement | null => {
   useEffect(() => {
     onListLengthChanged?.(shouldShowSkeleton, list.length);
   }, [shouldShowSkeleton, list.length, onListLengthChanged]);

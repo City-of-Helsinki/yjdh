@@ -4,7 +4,7 @@ import FrontPageContext from './FrontPageContext';
 
 const FrontPageProvider = <P,>({
   children,
-}: React.PropsWithChildren<P>): JSX.Element => {
+}: React.PropsWithChildren<P>): React.ReactElement => {
   const [errors, setErrors] = React.useState<Error[]>([]);
 
   const setError = (error: Error): void => setErrors([...errors, error]);

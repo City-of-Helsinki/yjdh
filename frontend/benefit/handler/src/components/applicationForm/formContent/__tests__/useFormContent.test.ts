@@ -82,7 +82,11 @@ const makeFormik = (
     setFieldValue: mockSetFieldValue,
   } as unknown as FormikProps<Partial<Application>>);
 
-const wrapper = ({ children }: { children: React.ReactNode }): JSX.Element =>
+const wrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement =>
   React.createElement(
     DeMinimisContext.Provider,
     {
