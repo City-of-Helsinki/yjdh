@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.4.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.2...benefit-applicant-v4.4.3) (2026-08-08)
+
+
+### Bug Fixes
+
+* **frontend:** Add React type deps and fix related typings ([d588cf3](https://github.com/City-of-Helsinki/yjdh/commit/d588cf383faa437de811f2e72e41d5532ad0fecb))
+* **frontend:** Resolve lint and type issues ([78f3c0d](https://github.com/City-of-Helsinki/yjdh/commit/78f3c0d8b96c415297a0d656f33712557e639bbe))
+
 ## [4.4.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.1...benefit-applicant-v4.4.2) (2026-06-25)
 
 
