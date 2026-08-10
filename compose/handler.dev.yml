@@ -16,6 +16,7 @@ services:
       - /app/.next
       - /app/shared/node_modules
       - /app/shared/.next
+      - /app/kesaseteli/shared/node_modules
       - /app/kesaseteli/youth/node_modules
       - /app/kesaseteli/youth/.next
     environment:
@@ -30,6 +31,7 @@ services:
       - /app/.next
       - /app/shared/node_modules
       - /app/shared/.next
+      - /app/kesaseteli/shared/node_modules
       - /app/kesaseteli/handler/node_modules
       - /app/kesaseteli/handler/.next
     environment:

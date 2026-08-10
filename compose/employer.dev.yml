@@ -16,6 +16,7 @@ services:
       - /app/.next
       - /app/shared/node_modules
       - /app/shared/.next
+      - /app/kesaseteli/shared/node_modules
       - /app/kesaseteli/employer/node_modules
       - /app/kesaseteli/employer/.next
     environment:
