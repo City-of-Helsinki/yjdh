@@ -59,6 +59,16 @@ export default function sentryConfig(
     0
   );
 
+  // Looked up by name so bundlers can't statically resolve these browser-only
+  // exports, which are absent from the edge/server builds of @sentry/nextjs.
+  const browserIntegration = (name) => {
+    const createIntegration = Sentry[name];
+    return typeof window !== 'undefined' &&
+      typeof createIntegration === 'function'
+      ? [createIntegration()]
+      : [];
+  };
+
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
     environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
@@ -67,14 +77,8 @@ export default function sentryConfig(
     maxBreadcrumbs:
       Number(process.env.NEXT_PUBLIC_SENTRY_MAX_BREADCRUMBS) || 100,
     integrations: [
-      ...(typeof window !== 'undefined' &&
-      typeof Sentry.browserTracingIntegration === 'function'
-        ? [Sentry.browserTracingIntegration()]
-        : []),
-      ...(typeof window !== 'undefined' &&
-      typeof Sentry.replayIntegration === 'function'
-        ? [Sentry.replayIntegration()]
-        : []),
+      ...browserIntegration('browserTracingIntegration'),
+      ...browserIntegration('replayIntegration'),
     ],
     // Adjust this value in production, or use tracesSampler for greater control
     // @see https://develop.sentry.dev/sdk/performance/
