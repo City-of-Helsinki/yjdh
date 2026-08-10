@@ -102,9 +102,14 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       // from another, causing SSR failures like `Cannot read properties of
       // undefined (reading 'm')` when reading `theme.spacing.m`. Aliasing pins every
       // import to one resolved copy.
+      //
+      // react-query is split the same way, and duplicate copies mean the
+      // QueryClientProvider's context isn't the one `useQuery` reads, causing
+      // "No QueryClient set, use QueryClientProvider to set one" during SSR.
       config.resolve.alias = {
         ...config.resolve.alias,
         'styled-components': path.dirname(require.resolve('styled-components/package.json')),
+        'react-query': path.dirname(require.resolve('react-query/package.json')),
       };
 
       // Keep next-i18next's serverSideTranslations external in the server build so
