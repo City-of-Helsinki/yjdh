@@ -76,6 +76,10 @@ overrides:
   'minimatch@<3.1.4': '^3.1.4'
   'minimatch@>=9.0.0 <9.0.7': '^9.0.7'
   mjml: '>=4.18.1'
+  # GHSA-2v37-7h3g-55p8 (high, CVE-2026-67213): nanoid customAlphabet/customRandom
+  # spin forever when called with size 0. Patched in 3.3.17; stay on the 3.x line
+  # because 5.x is ESM-only and postcss/mjml require ^3.3.x.
+  nanoid: '^3.3.17'
   # GHSA-g2r8-wvmj-jf5w (moderate, CVE-2026-54753): `nx graph` dev server sent a
   # wildcard CORS header, allowing cross-origin reads of the project graph/help
   # output. Patched in 22.7.2; the 21.x line is unpatched. lerna@9 pins nx <23, so
