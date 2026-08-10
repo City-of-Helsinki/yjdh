@@ -51,6 +51,9 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
   const NEXTJS_SENTRY_TRACING = trueEnv.includes(process.env?.NEXTJS_SENTRY_TRACING ?? 'false');
   const WATCHPACK_POLLING = trueEnv.includes(process.env?.WATCHPACK_POLLING ?? 'false');
 
+  // Next.js enables Turbopack on any truthy TURBOPACK value, so mirror that check here.
+  const TURBOPACK = Boolean(process.env?.TURBOPACK);
+
   // See https://nextjs.org/docs/advanced-features/source-maps
   const disableSourceMaps = trueEnv.includes(process.env?.NEXT_DISABLE_SOURCEMAPS ?? 'false');
 
@@ -87,7 +90,9 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       // Allow CJS packages (e.g. hds-react) to require ESM-only packages such as
       // `uuid`. With pnpm's strict resolution these packages resolve to their ESM
       // builds, which Next.js otherwise refuses to import from CJS by default.
-      esmExternals: 'loose',
+      // Turbopack handles that interop itself and hard-fails on this option with
+      // `TurbopackInternalError: esmExternals = "loose" is not supported`.
+      ...(TURBOPACK ? {} : { esmExternals: 'loose' }),
     },
     webpack: (config, { webpack, isServer }) => {
       config.resolve.fallback = {
