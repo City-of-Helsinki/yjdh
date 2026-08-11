@@ -19,11 +19,16 @@ const withAuth = <P extends React.JSX.IntrinsicAttributes>(
   function Wrapped(props: P) {
     const { isLoading, isAuthenticated } = useAuth();
     const goToPage = useGoToPage();
-    if (isLoading) {
-      return <PageLoadingSpinner />;
-    }
-    if (!isServerSide() && !isAuthenticated) {
-      void goToPage(redirectLocation);
+
+    // Redirect as an effect, not during render, so re-renders while
+    // unauthenticated don't keep re-triggering navigation (redirect loop).
+    React.useEffect(() => {
+      if (!isLoading && !isServerSide() && !isAuthenticated) {
+        void goToPage(redirectLocation);
+      }
+    }, [isLoading, isAuthenticated, goToPage]);
+
+    if (isLoading || (!isServerSide() && !isAuthenticated)) {
       return <PageLoadingSpinner />;
     }
     return <WrappedComponent {...props} />;
