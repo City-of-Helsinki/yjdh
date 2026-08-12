@@ -99,24 +99,6 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
         fs: false,
       };
 
-      // Force a single styled-components instance across the app, shared packages
-      // and hds-react. Under pnpm's symlinked layout, optional peer variations
-      // (e.g. supports-color pulled by debug/@babel/core) split styled-components
-      // into multiple physical copies of the same version. Multiple instances mean
-      // the ThemeProvider from one copy can't supply the theme to styled components
-      // from another, causing SSR failures like `Cannot read properties of
-      // undefined (reading 'm')` when reading `theme.spacing.m`. Aliasing pins every
-      // import to one resolved copy.
-      //
-      // react-query is split the same way, and duplicate copies mean the
-      // QueryClientProvider's context isn't the one `useQuery` reads, causing
-      // "No QueryClient set, use QueryClientProvider to set one" during SSR.
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'styled-components': path.dirname(require.resolve('styled-components/package.json')),
-        'react-query': path.dirname(require.resolve('react-query/package.json')),
-      };
-
       // Keep next-i18next's serverSideTranslations external in the server build so
       // it runs as real Node code. It performs a hidden dynamic
       // `require('./next-i18next.config.js')`; when bundled (which happens under
