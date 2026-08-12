@@ -9,6 +9,7 @@ import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-con
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import useMatomo from 'kesaseteli-shared/hooks/useMatomo';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
+import getRequiredCookieGroups from 'kesaseteli-shared/utils/getRequiredCookieGroups';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -20,11 +21,19 @@ import BaseApp from 'shared/components/app/BaseApp';
 import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
 import Portal from 'shared/components/confirm-dialog/Portal';
 import { DialogContextProvider } from 'shared/contexts/DialogContext';
+import { type RequiredGroups } from 'shared/utils/cookieConsentSettings';
 
 const CookieConsent = dynamic(
   () => import('kesaseteli-shared/components/cookieConsent/CookieConsent'),
   { ssr: false }
 );
+
+const getRequiredEmployerCookieGroups = (): RequiredGroups =>
+  getRequiredCookieGroups({
+    includeSessionIdCookie: true, // Needed because of Django's session handling
+    includeSamlSessionCookie: true, // Needed because of Suomi.fi login
+    includeCsrfTokenCookie: true, // Needed because of POSTing data to backend
+  });
 
 const App: React.FC<AppProps> = (appProps) => {
   const isMatomoConfigured = useMatomo();
@@ -41,7 +50,10 @@ const App: React.FC<AppProps> = (appProps) => {
         <AuthProvider>
           <DialogContextProvider>
             {showCookieBanner && (
-              <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
+              <CookieConsent
+                requiredGroups={getRequiredEmployerCookieGroups()}
+                siteName={COOKIE_CONSENT_SITE_NAME}
+              />
             )}
             <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
             <Portal>

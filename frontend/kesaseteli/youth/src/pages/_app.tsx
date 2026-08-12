@@ -8,6 +8,7 @@ import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-con
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import useMatomo from 'kesaseteli-shared/hooks/useMatomo';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
+import getRequiredCookieGroups from 'kesaseteli-shared/utils/getRequiredCookieGroups';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -16,6 +17,7 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
+import { type RequiredGroups } from 'shared/utils/cookieConsentSettings';
 
 const CookieConsent = dynamic(
   () => import('kesaseteli-shared/components/cookieConsent/CookieConsent'),
@@ -23,6 +25,9 @@ const CookieConsent = dynamic(
 );
 
 const queryClient = createQueryClient();
+
+const getRequiredYouthCookieGroups = (): RequiredGroups =>
+  getRequiredCookieGroups();
 
 const App: React.FC<AppProps> = (appProps: AppProps) => {
   const isMatomoConfigured = useMatomo();
@@ -37,7 +42,10 @@ const App: React.FC<AppProps> = (appProps: AppProps) => {
     <BackendAPIProvider baseURL={getBackendDomain()}>
       <QueryClientProvider client={queryClient}>
         {showCookieBanner && (
-          <CookieConsent siteName={COOKIE_CONSENT_SITE_NAME} />
+          <CookieConsent
+            requiredGroups={getRequiredYouthCookieGroups()}
+            siteName={COOKIE_CONSENT_SITE_NAME}
+          />
         )}
         <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
       </QueryClientProvider>
