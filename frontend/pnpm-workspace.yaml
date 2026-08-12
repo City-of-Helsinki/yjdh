@@ -107,6 +107,27 @@ overrides:
   'undici@<6.28.0': '^6.28.0'
   uuid: '>=11.1.1'
 
+# `debug`'s `supports-color` is an OPTIONAL PEER dependency, so pnpm resolves it
+# per-consumer based on whichever sibling packages happen to be nearby in that
+# part of the dependency graph. That's why `styled-components` (via
+# babel-plugin-styled-components > @babel/core > debug) ends up bound to
+# supports-color@9.4.0 in most workspace packages but to supports-color@5.5.0
+# specifically in benefit/applicant (which uniquely pulls in the react-pdf/
+# pdfjs-dist stack), producing two physically different `styled-components`
+# installs and "Cannot read properties of undefined" crashes when both a
+# benefit/shared and a benefit/applicant component render in the same tree.
+# `overrides` cannot fix this: plain overrides only rewrite an edge that
+# already exists, and an *optional peer* edge isn't reliably rewritten that
+# way (confirmed: 'debug>supports-color' override was a silent no-op).
+# Converting it into a real `dependencies` edge via packageExtensions removes
+# the ambiguity entirely, forcing every `debug` instance (any major) to
+# depend on the same, CJS-compatible supports-color@5.5.0 (ESLint's internals
+# require CJS, so 9.x/ESM is not an option here).
+packageExtensions:
+  debug:
+    dependencies:
+      supports-color: '5.5.0'
+
 allowBuilds:
   '@ffmpeg-installer/darwin-arm64': true
   '@ffmpeg-installer/darwin-x64': true
