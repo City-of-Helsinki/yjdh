@@ -9,14 +9,11 @@ import {
   HandlerNote,
   NoteTargetType,
 } from 'kesaseteli/handler/types/note';
-import {
-  BackendEndpoint,
-  getEmployerApplicationTimelineKey,
-  getHandlerNotesQueryKey,
-  getYouthApplicationTimelineKey,
-} from 'kesaseteli-shared/backend-api/backend-api';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+
+import invalidateNoteQueries from './invalidateNoteQueries';
 
 const useCreateNoteMutation = (
   targetType: NoteTargetType,
@@ -33,15 +30,7 @@ const useCreateNoteMutation = (
         axios.post<HandlerNote>(BackendEndpoint.HANDLER_NOTES, payload)
       ),
     onSuccess: async (data, variables, onMutateResult, context) => {
-      await queryClient.invalidateQueries({
-        queryKey: [getHandlerNotesQueryKey(targetType, targetId)],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: [getYouthApplicationTimelineKey(targetId)],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: [getEmployerApplicationTimelineKey(targetId)],
-      });
+      await invalidateNoteQueries(queryClient, targetType, targetId);
       if (onSuccess) {
         await onSuccess(data, variables, onMutateResult, context);
       }
