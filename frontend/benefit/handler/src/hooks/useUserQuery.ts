@@ -34,6 +34,9 @@ const useUserQuery = <T extends User>(
       if (logout) {
         void router.push(`${locale}${ROUTES.LOGIN}?logout=true`);
       } else if (/40[13]/.test(error.message)) {
+        if (router.route === ROUTES.LOGIN) {
+          return;
+        }
         void router.push(`${locale}${ROUTES.LOGIN}`);
       } else if (
         !process.env.NEXT_PUBLIC_MOCK_FLAG ||
