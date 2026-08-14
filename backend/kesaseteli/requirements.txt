@@ -46,7 +46,7 @@ defusedxml==0.7.1
     # via
     #   djangosaml2
     #   pysaml2
-django==5.2.15
+django==5.2.16
     # via
     #   -r requirements.in
     #   django-auditlog
