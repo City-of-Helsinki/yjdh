@@ -9,14 +9,11 @@ import {
   NoteTargetType,
   UpdateNotePayload,
 } from 'kesaseteli/handler/types/note';
-import {
-  BackendEndpoint,
-  getEmployerApplicationTimelineKey,
-  getHandlerNotesQueryKey,
-  getYouthApplicationTimelineKey,
-} from 'kesaseteli-shared/backend-api/backend-api';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+
+import invalidateNoteQueries from './invalidateNoteQueries';
 
 const useUpdateNoteMutation = (
   noteId: string,
@@ -36,16 +33,8 @@ const useUpdateNoteMutation = (
           payload
         )
       ),
-    onSuccess: (data, variables, onMutateResult, context) => {
-      void queryClient.invalidateQueries({
-        queryKey: [getHandlerNotesQueryKey(targetType, targetId)],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [getYouthApplicationTimelineKey(targetId)],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [getEmployerApplicationTimelineKey(targetId)],
-      });
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      await invalidateNoteQueries(queryClient, targetType, targetId);
       if (onSuccess) {
         void onSuccess(data, variables, onMutateResult, context);
       }
