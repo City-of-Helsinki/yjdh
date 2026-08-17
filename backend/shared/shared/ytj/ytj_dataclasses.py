@@ -335,8 +335,23 @@ class YTJCompany:
             if not city:
                 city = company_address.postOffices[0].city
 
+        building_number = company_address.buildingNumber or ""
+        entrance = company_address.entrance or ""
+        apartment_number = company_address.apartmentNumber or ""
+        apartment_id_suffix = company_address.apartmentIdSuffix or ""
+
+        street = company_address.street or ""
+        address_parts = [
+            street,
+            building_number,
+            entrance,
+            apartment_number,
+            apartment_id_suffix,
+        ]
+        address = " ".join(part for part in address_parts if part)
+
         return {
-            "street_address": company_address.street,
+            "street_address": address.strip(),
             "postcode": company_address.postCode,
             "city": city,
         }

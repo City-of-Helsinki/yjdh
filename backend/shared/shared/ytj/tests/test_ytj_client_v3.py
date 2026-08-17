@@ -271,6 +271,21 @@ class TestYTJCompany:
         with pytest.raises(ValueError, match="Company address missing"):
             _ = company.address
 
+    def test_address_includes_building_and_apartment_details(self, company_data):
+        company_data["addresses"][0].update(
+            {
+                "street": "Esimerkkikatu",
+                "buildingNumber": "12",
+                "entrance": "B",
+                "apartmentNumber": "34",
+                "apartmentIdSuffix": "a",
+            }
+        )
+
+        company = YTJCompany.from_json(company_data)
+
+        assert company.address["street_address"] == "Esimerkkikatu 12 B 34 a"
+
     def test_city_language_priority(self, company_data):
         # Default (FI)
         company = YTJCompany.from_json(company_data)
@@ -315,3 +330,17 @@ class TestYTJCompany:
         company = YTJCompany.from_json(company_data)
         assert company.status == "Registered"
         assert company.endDate == "2025-01-01"
+
+    def test_address_with_empty_strings(self, company_data):
+        """Test that empty strings are handled correctly (not included in address)."""
+        company_data["addresses"][0].update(
+            {
+                "street": "Katutie",
+                "buildingNumber": "5",
+                "entrance": "",
+                "apartmentNumber": "",
+                "apartmentIdSuffix": "",
+            }
+        )
+        company = YTJCompany.from_json(company_data)
+        assert company.address["street_address"] == "Katutie 5"
