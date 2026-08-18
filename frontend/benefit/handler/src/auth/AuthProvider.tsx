@@ -6,16 +6,21 @@ const AuthProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
   const userQuery = useUserQuery((user) => user);
+  const authValue = React.useMemo(
+    () => ({
+      isAuthenticated: userQuery.isSuccess && Boolean(userQuery.data),
+      isLoading: userQuery.isLoading,
+      isError: userQuery.isError,
+    }),
+    [
+      userQuery.isSuccess,
+      userQuery.data,
+      userQuery.isLoading,
+      userQuery.isError,
+    ]
+  );
   return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated: userQuery.isSuccess && Boolean(userQuery.data),
-        isLoading: userQuery.isLoading,
-        isError: userQuery.isError,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
   );
 };
 

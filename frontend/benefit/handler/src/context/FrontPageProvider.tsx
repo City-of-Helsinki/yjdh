@@ -7,15 +7,18 @@ const FrontPageProvider = <P,>({
 }: React.PropsWithChildren<P>): JSX.Element => {
   const [errors, setErrors] = React.useState<Error[]>([]);
 
-  const setError = (error: Error): void => setErrors([...errors, error]);
+  const setError = React.useCallback(
+    (error: Error): void => setErrors((prev) => [...prev, error]),
+    []
+  );
+
+  const contextValue = React.useMemo(
+    () => ({ errors, setError }),
+    [errors, setError]
+  );
 
   return (
-    <FrontPageContext.Provider
-      value={{
-        errors,
-        setError,
-      }}
-    >
+    <FrontPageContext.Provider value={contextValue}>
       {children}
     </FrontPageContext.Provider>
   );

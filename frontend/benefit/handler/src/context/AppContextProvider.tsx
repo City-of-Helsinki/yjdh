@@ -16,23 +16,34 @@ const AppContextProvider = <P,>({
   const [handledApplication, setHandledApplication] =
     React.useState<HandledAplication | null>(null);
 
+  const contextValue = React.useMemo(
+    () => ({
+      layoutBackgroundColor,
+      isFooterVisible,
+      isNavigationVisible,
+      handledApplication,
+      setHandledApplication,
+      setIsNavigationVisible,
+      setIsFooterVisible,
+      setLayoutBackgroundColor,
+      isSidebarVisible,
+      setIsSidebarVisible,
+    }),
+    [
+      layoutBackgroundColor,
+      isFooterVisible,
+      isNavigationVisible,
+      handledApplication,
+      isSidebarVisible,
+      setHandledApplication,
+      setIsNavigationVisible,
+      setIsFooterVisible,
+      setLayoutBackgroundColor,
+      setIsSidebarVisible,
+    ]
+  );
   return (
-    <AppContext.Provider
-      value={{
-        layoutBackgroundColor,
-        isFooterVisible,
-        isNavigationVisible,
-        handledApplication,
-        setHandledApplication,
-        setIsNavigationVisible,
-        setIsFooterVisible,
-        setLayoutBackgroundColor,
-        isSidebarVisible,
-        setIsSidebarVisible,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
 };
 

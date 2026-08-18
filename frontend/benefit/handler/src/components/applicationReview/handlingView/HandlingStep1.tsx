@@ -145,13 +145,13 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
 
   const canCreate = !hasPendingAlteration && isAccepted;
 
+  const contextValue = useMemo(
+    () => ({ reviewState, handleUpdateReviewState }),
+    [reviewState, handleUpdateReviewState]
+  );
+
   return (
-    <ReviewStateContext.Provider
-      value={{
-        reviewState,
-        handleUpdateReviewState,
-      }}
-    >
+    <ReviewStateContext.Provider value={contextValue}>
       <Container data-testid="application-body">
         <DecisionSummary
           application={application}

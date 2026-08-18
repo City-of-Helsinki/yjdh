@@ -9,15 +9,22 @@ const DeMinimisProvider = <P,>({
   const [deMinimisAids, setDeMinimisAids] = React.useState<DeMinimisAid[]>([]);
   const [unfinishedDeMinimisAidRow, setUnfinishedDeMinimisAidRow] =
     React.useState<boolean>(false);
+  const contextValue = React.useMemo(
+    () => ({
+      deMinimisAids,
+      setDeMinimisAids,
+      unfinishedDeMinimisAidRow,
+      setUnfinishedDeMinimisAidRow,
+    }),
+    [
+      deMinimisAids,
+      setDeMinimisAids,
+      unfinishedDeMinimisAidRow,
+      setUnfinishedDeMinimisAidRow,
+    ]
+  );
   return (
-    <DeMinimisContext.Provider
-      value={{
-        deMinimisAids,
-        setDeMinimisAids,
-        unfinishedDeMinimisAidRow,
-        setUnfinishedDeMinimisAidRow,
-      }}
-    >
+    <DeMinimisContext.Provider value={contextValue}>
       {children}
     </DeMinimisContext.Provider>
   );
