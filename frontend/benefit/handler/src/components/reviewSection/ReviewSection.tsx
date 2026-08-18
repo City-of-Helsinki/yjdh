@@ -37,6 +37,37 @@ export type ReviewSectionProps = {
 } & HeadingProps &
   GridProps;
 
+type CheckIconProps = {
+  checked: boolean;
+  ariaLabel: string;
+  onClick: () => void;
+};
+
+const CheckIcon: React.FC<CheckIconProps> = ({
+  checked,
+  ariaLabel,
+  onClick,
+}): React.JSX.Element => {
+  if (checked) {
+    return (
+      <$CheckIconFill
+        aria-hidden={false}
+        aria-label={ariaLabel}
+        size={IconSize.Medium}
+        onClick={onClick}
+      />
+    );
+  }
+  return (
+    <$CheckIcon
+      aria-hidden={false}
+      aria-label={ariaLabel}
+      size={IconSize.Medium}
+      onClick={onClick}
+    />
+  );
+};
+
 const $ReviewSection = styled($Grid)`
   hr {
     border-color: ${({ theme }: { theme: DefaultTheme }) =>
@@ -76,27 +107,6 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     'common:review.actions.toggleReviewStatusAriaLabel'
   );
 
-  const CheckIcon: React.FC = () => {
-    if (sectionState) {
-      return (
-        <$CheckIconFill
-          aria-hidden={false}
-          aria-label={toggleReviewStatusAriaLabel}
-          size={IconSize.Medium}
-          onClick={handleReviewClick}
-        />
-      );
-    }
-    return (
-      <$CheckIcon
-        aria-hidden={false}
-        aria-label={toggleReviewStatusAriaLabel}
-        size={IconSize.Medium}
-        onClick={handleReviewClick}
-      />
-    );
-  };
-
   return (
     <$ReviewSection
       css={`
@@ -110,7 +120,15 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     >
       {withAction && (
         <$GridCell $colSpan={1}>
-          <$ActionLeft>{action && <CheckIcon />}</$ActionLeft>
+          <$ActionLeft>
+            {action && (
+              <CheckIcon
+                checked={!!sectionState}
+                ariaLabel={toggleReviewStatusAriaLabel}
+                onClick={handleReviewClick}
+              />
+            )}
+          </$ActionLeft>
         </$GridCell>
       )}
       {id && withAction && (
