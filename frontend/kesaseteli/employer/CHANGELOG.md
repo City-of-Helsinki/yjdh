@@ -1,5 +1,38 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.3.1...kesaseteli-employer-v2.4.0) (2026-08-18)
+
+
+### Features
+
+* **frontend:** Migrate package manager from yarn to pnpm ([51d2667](https://github.com/City-of-Helsinki/yjdh/commit/51d2667d40ff3f8f001c91da081ed3ac260ddb94))
+* **ks,employer:** Add dashboard edit button, split cancel from delete ([4a5974a](https://github.com/City-of-Helsinki/yjdh/commit/4a5974a480a24a519b959d67ab3e8a5536f13d78))
+* **ks,employer:** Add pagination and restructure table ([56d4633](https://github.com/City-of-Helsinki/yjdh/commit/56d463344df5c0f4907bd3759bb22f8b62c070c8))
+* **ks,employer:** Add year filtering to employer dashboard ([2df3322](https://github.com/City-of-Helsinki/yjdh/commit/2df3322ea93ab7cb18defe07529e939c949b6dc3))
+* **ks,frontend:** Add csp headers to frontend ([900cbcb](https://github.com/City-of-Helsinki/yjdh/commit/900cbcb00187a41d65cabb24d1d4998b15e3f6a6))
+
+
+### Bug Fixes
+
+* **deps:** Declare i18next directly in each next app ([646de0e](https://github.com/City-of-Helsinki/yjdh/commit/646de0ec0dd50d1ab655a33d03f62852db7d8a74))
+* **frontend:** Add React type deps and fix related typings ([d588cf3](https://github.com/City-of-Helsinki/yjdh/commit/d588cf383faa437de811f2e72e41d5532ad0fecb))
+* **ks,employer:** Resolve floating promises lint errors ([5df4aa7](https://github.com/City-of-Helsinki/yjdh/commit/5df4aa7601901f6b0d38bf25f4030ae234063458))
+* **ks,employer:** Scope keepPreviousData to pagination only ([b31ab5a](https://github.com/City-of-Helsinki/yjdh/commit/b31ab5ae96854864d8c5ab4c8393a695633f1549))
+* **ks,employer:** Send only the current summer voucher in PUT payload ([fb1aef1](https://github.com/City-of-Helsinki/yjdh/commit/fb1aef11ef61be3628610ba19843a599e5110ec3))
+* **ks,frontend:** Configure missing required cookies to cookie consent ([82ed8e6](https://github.com/City-of-Helsinki/yjdh/commit/82ed8e6323ae05ce326082743eb35d820f771d9d))
+* **ks:** Avoid querying backend when status filter is empty ([440b235](https://github.com/City-of-Helsinki/yjdh/commit/440b235ddfaf40442b1b50ae3a2b8d42a1f22d58))
+* **ks:** Redirect to 404 page when application ID is not found ([2fcffbd](https://github.com/City-of-Helsinki/yjdh/commit/2fcffbd43570e0c55018f7c1b275203d0fb00a75))
+
+
+### Dependencies
+
+* Bump next to 15.5.22 to patch security advisories ([940e56b](https://github.com/City-of-Helsinki/yjdh/commit/940e56b456b60b1e3103db04dd6f2470511a6bbf))
+
+
+### Documentation
+
+* **ks,employer:** Create robust readme for employer UI ([dc2aaf7](https://github.com/City-of-Helsinki/yjdh/commit/dc2aaf73244eec854dac720be965c433c8cddd0d))
+
 ## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.3.0...kesaseteli-employer-v2.3.1) (2026-06-22)
 
 
