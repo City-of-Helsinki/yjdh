@@ -22,6 +22,18 @@ import { useApplicationsHandled } from './useApplicationsHandled';
 
 const getStatusString = (s: APPLICATION_STATUSES): string => s.toString();
 
+type CompanyLinkProps = {
+  id: string | number;
+  companyName: string;
+};
+
+const renderCompanyLink = ({
+  id,
+  companyName,
+}: CompanyLinkProps): React.JSX.Element => (
+  <$Link href={`/application?id=${id}`}>{companyName}</$Link>
+);
+
 type Props = {
   status: APPLICATION_STATUSES;
   excludeBatched?: boolean;
@@ -57,15 +69,7 @@ const ApplicationsHandled: React.FC<Props> = ({
   const columns = useMemo(() => {
     const cols = [
       {
-        transform: ({
-          id,
-          companyName,
-        }: {
-          // eslint-disable-next-line react/no-unused-prop-types
-          id: string | number;
-          // eslint-disable-next-line react/no-unused-prop-types
-          companyName: string;
-        }) => <$Link href={`/application?id=${id}`}>{companyName}</$Link>,
+        transform: renderCompanyLink,
         headerName: getHeader('companyName'),
         key: 'companyName',
         isSortable: true,

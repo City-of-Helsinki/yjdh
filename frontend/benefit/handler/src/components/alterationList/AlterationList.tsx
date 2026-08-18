@@ -6,8 +6,8 @@ import {
 import { ROUTES } from 'benefit/handler/constants';
 import { ApplicationAlterationData } from 'benefit-shared/types/application';
 import { ButtonPresetTheme, IconArrowRight, Table } from 'hds-react';
-import { useRouter } from 'next/router';
-import { Trans, useTranslation } from 'next-i18next';
+import { NextRouter, useRouter } from 'next/router';
+import { TFunction, Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import LinkButton from 'shared/components/link-button/LinkButton';
@@ -19,94 +19,99 @@ type Props = {
   list: Array<ApplicationAlterationData>;
 };
 
+type AlterationColumn = React.ComponentProps<typeof Table>['cols'][number];
+
+const getAlterationColumns = (
+  t: TFunction,
+  router: NextRouter
+): AlterationColumn[] => [
+  {
+    headerName: t('common:applications.alterations.list.columns.applicant'),
+    key: 'application_company_name',
+    isSortable: true,
+    transform: ({
+      application_company_name,
+      application,
+    }: ApplicationAlterationData) => (
+      <$Link href={`${ROUTES.APPLICATION}/?id=${application}`} target="_blank">
+        {application_company_name}
+      </$Link>
+    ),
+  },
+  {
+    headerName: t(
+      'common:applications.alterations.list.columns.applicationNumber'
+    ),
+    key: 'application_number',
+    isSortable: true,
+  },
+  {
+    headerName: t('common:applications.alterations.list.columns.receivedDate'),
+    key: 'created_at',
+    isSortable: true,
+    transform: ({ created_at }: ApplicationAlterationData) =>
+      created_at ? formatDate(new Date(created_at)) : '-',
+  },
+  {
+    headerName: t('common:applications.alterations.list.columns.employee'),
+    key: 'application_employee_last_name',
+    isSortable: true,
+    transform: ({
+      application_employee_first_name,
+      application_employee_last_name,
+    }: ApplicationAlterationData) =>
+      `${application_employee_first_name || ''} ${
+        application_employee_last_name || ''
+      }`,
+  },
+  {
+    headerName: t('common:applications.alterations.list.columns.summary'),
+    key: 'summary',
+    isSortable: false,
+    transform: ({
+      alteration_type,
+      end_date,
+      resume_date,
+    }: ApplicationAlterationData) =>
+      t(`common:applications.alterations.list.summary.${alteration_type}`, {
+        endDate: formatDate(new Date(end_date)),
+        resumeDate: resume_date ? formatDate(new Date(resume_date)) : '',
+      }),
+  },
+  {
+    headerName: '',
+    key: 'actions',
+    isSortable: false,
+    transform: ({ id, application }: ApplicationAlterationData) => (
+      <div>
+        <LinkButton
+          style={{ display: 'flex', alignItems: 'center' }}
+          theme={ButtonPresetTheme.Coat}
+          iconEnd={<IconArrowRight />}
+          onClick={() =>
+            router.push(
+              `${ROUTES.HANDLE_ALTERATION}/?applicationId=${String(
+                application
+              )}&alterationId=${String(id)}`
+            )
+          }
+        >
+          {t('common:applications.alterations.list.actions.startHandling')}
+        </LinkButton>
+      </div>
+    ),
+  },
+];
+
 const AlterationList: React.FC<Props> = ({ isLoading, list }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const router = useRouter();
 
-  const columns = [
-    {
-      headerName: t('common:applications.alterations.list.columns.applicant'),
-      key: 'application_company_name',
-      isSortable: true,
-      transform: ({
-        application_company_name,
-        application,
-      }: ApplicationAlterationData) => (
-        <$Link
-          href={`${ROUTES.APPLICATION}/?id=${application}`}
-          target="_blank"
-        >
-          {application_company_name}
-        </$Link>
-      ),
-    },
-    {
-      headerName: t(
-        'common:applications.alterations.list.columns.applicationNumber'
-      ),
-      key: 'application_number',
-      isSortable: true,
-    },
-    {
-      headerName: t(
-        'common:applications.alterations.list.columns.receivedDate'
-      ),
-      key: 'created_at',
-      isSortable: true,
-      transform: ({ created_at }: ApplicationAlterationData) =>
-        created_at ? formatDate(new Date(created_at)) : '-',
-    },
-    {
-      headerName: t('common:applications.alterations.list.columns.employee'),
-      key: 'application_employee_last_name',
-      isSortable: true,
-      transform: ({
-        application_employee_first_name,
-        application_employee_last_name,
-      }: ApplicationAlterationData) =>
-        `${application_employee_first_name || ''} ${
-          application_employee_last_name || ''
-        }`,
-    },
-    {
-      headerName: t('common:applications.alterations.list.columns.summary'),
-      key: 'summary',
-      isSortable: false,
-      transform: ({
-        alteration_type,
-        end_date,
-        resume_date,
-      }: ApplicationAlterationData) =>
-        t(`common:applications.alterations.list.summary.${alteration_type}`, {
-          endDate: formatDate(new Date(end_date)),
-          resumeDate: resume_date ? formatDate(new Date(resume_date)) : '',
-        }),
-    },
-    {
-      headerName: '',
-      key: 'actions',
-      isSortable: false,
-      transform: ({ id, application }: ApplicationAlterationData) => (
-        <div>
-          <LinkButton
-            style={{ display: 'flex', alignItems: 'center' }}
-            theme={ButtonPresetTheme.Coat}
-            iconEnd={<IconArrowRight />}
-            onClick={() =>
-              router.push(
-                `${ROUTES.HANDLE_ALTERATION}/?applicationId=${String(
-                  application
-                )}&alterationId=${String(id)}`
-              )
-            }
-          >
-            {t('common:applications.alterations.list.actions.startHandling')}
-          </LinkButton>
-        </div>
-      ),
-    },
-  ];
+  const columns = React.useMemo(
+    () => getAlterationColumns(t, router),
+    [t, router]
+  );
 
   if (isLoading) {
     return (

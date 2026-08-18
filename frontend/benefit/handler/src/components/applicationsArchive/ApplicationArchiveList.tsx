@@ -46,6 +46,63 @@ const sortByStatus = (
   b: APPLICATION_STATUSES
 ): number => STATUS_SORT_RANK[a] - STATUS_SORT_RANK[b];
 
+interface TableTransforms {
+  id: string;
+  companyName: string;
+  status: APPLICATION_STATUSES;
+  alterations: ApplicationAlterationData[];
+}
+
+const renderCompanyNameCell = ({
+  id,
+  companyName,
+  status,
+}: TableTransforms): JSX.Element =>
+  status === APPLICATION_STATUSES.ARCHIVAL ? (
+    <$CompanyNameDisabled>{String(companyName)}</$CompanyNameDisabled>
+  ) : (
+    <$Link href={`/application?id=${String(id)}`}>{String(companyName)}</$Link>
+  );
+
+const renderAlterationBadge = ({
+  alterations,
+}: TableTransforms): JSX.Element | string =>
+  alterations?.length > 0 ? (
+    <$AlterationBadge
+      $requiresAttention={alterations.some((a) =>
+        [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
+          a.state as ALTERATION_STATE
+        )
+      )}
+    >
+      {alterations.length}
+    </$AlterationBadge>
+  ) : (
+    ''
+  );
+
+const getTransformForArchivedStatus = (
+  t: (key: string) => string,
+  { status }: TableTransforms
+): JSX.Element => (
+  <$TagWrapper $colors={getTagStyleForStatus(status)}>
+    <Tag
+      iconStart={
+        <>
+          {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
+          {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
+          {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
+          {status === APPLICATION_STATUSES.ARCHIVAL && <IconHistory />}
+        </>
+      }
+    >
+      {t(
+        `common:applications.list.columns.applicationStatuses.${String(status)}`
+      )}
+    </Tag>
+  </$TagWrapper>
+);
+
 const ApplicationArchiveList: React.FC<SearchProps> = ({
   data = [],
   isSearchLoading,
@@ -54,109 +111,62 @@ const ApplicationArchiveList: React.FC<SearchProps> = ({
 
   const theme = useTheme();
 
-  interface TableTransforms {
-    id: string;
-    companyName: string;
-    status: APPLICATION_STATUSES;
-    alterations: ApplicationAlterationData[];
-  }
-
   const rows = React.useMemo(() => prepareSearchData(data), [data]);
 
-  const getTransformForArchivedStatus = ({
-    status,
-  }: TableTransforms): JSX.Element => (
-    <$TagWrapper $colors={getTagStyleForStatus(status)}>
-      <Tag
-        iconStart={
-          <>
-            {status === APPLICATION_STATUSES.ACCEPTED && <IconCheck />}
-            {status === APPLICATION_STATUSES.REJECTED && <IconCross />}
-            {status === APPLICATION_STATUSES.CANCELLED && <IconAlertCircle />}
-            {status === APPLICATION_STATUSES.ARCHIVAL && <IconHistory />}
-          </>
-        }
-      >
-        {t(
-          `common:applications.list.columns.applicationStatuses.${String(
-            status
-          )}`
-        )}
-      </Tag>
-    </$TagWrapper>
-  );
-
   const translationsBase = 'common:applications.list';
-  const getHeader = (id: string): string =>
-    t(`${translationsBase}.columns.${id}`);
 
-  const cols = [
-    {
-      transform: ({ id, companyName, status }: TableTransforms) =>
-        status === APPLICATION_STATUSES.ARCHIVAL ? (
-          <$CompanyNameDisabled>{String(companyName)}</$CompanyNameDisabled>
-        ) : (
-          <$Link href={`/application?id=${String(id)}`}>
-            {String(companyName)}
-          </$Link>
-        ),
-      headerName: getHeader('companyName'),
-      key: 'companyName',
-      isSortable: true,
-    },
-    {
-      headerName: getHeader('companyId'),
-      key: 'companyId',
-      isSortable: true,
-    },
-    {
-      headerName: getHeader('applicationNum'),
-      key: 'applicationNum',
-      isSortable: true,
-    },
-    {
-      headerName: getHeader('employeeNameArchive'),
-      key: 'employeeName',
-      isSortable: true,
-    },
-    {
-      headerName: getHeader('handledAt'),
-      key: 'handledAt',
-      isSortable: true,
-      customSortCompareFunction: sortFinnishDate,
-    },
-    {
-      headerName: getHeader('calculationEndDate'),
-      key: 'calculationEndDate',
-      isSortable: true,
-      customSortCompareFunction: sortFinnishDate,
-    },
-    {
-      transform: getTransformForArchivedStatus,
-      headerName: t(`${translationsBase}.columns.statusArchive`)?.toString(),
-      key: 'status',
-      isSortable: true,
-      customSortCompareFunction: sortByStatus,
-    },
-    {
-      transform: ({ alterations }: TableTransforms) =>
-        alterations?.length > 0 ? (
-          <$AlterationBadge
-            $requiresAttention={alterations.some((a) =>
-              [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
-                a.state as ALTERATION_STATE
-              )
-            )}
-          >
-            {alterations.length}
-          </$AlterationBadge>
-        ) : (
-          ''
-        ),
-      headerName: '',
-      key: 'alterations',
-    },
-  ];
+  const cols = React.useMemo(() => {
+    const getHeader = (id: string): string =>
+      t(`${translationsBase}.columns.${id}`);
+    return [
+      {
+        transform: renderCompanyNameCell,
+        headerName: getHeader('companyName'),
+        key: 'companyName',
+        isSortable: true,
+      },
+      {
+        headerName: getHeader('companyId'),
+        key: 'companyId',
+        isSortable: true,
+      },
+      {
+        headerName: getHeader('applicationNum'),
+        key: 'applicationNum',
+        isSortable: true,
+      },
+      {
+        headerName: getHeader('employeeNameArchive'),
+        key: 'employeeName',
+        isSortable: true,
+      },
+      {
+        headerName: getHeader('handledAt'),
+        key: 'handledAt',
+        isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
+      },
+      {
+        headerName: getHeader('calculationEndDate'),
+        key: 'calculationEndDate',
+        isSortable: true,
+        customSortCompareFunction: sortFinnishDate,
+      },
+      {
+        transform: (row: TableTransforms) =>
+          getTransformForArchivedStatus(t, row),
+        headerName: t(`${translationsBase}.columns.statusArchive`)?.toString(),
+        key: 'status',
+        isSortable: true,
+        customSortCompareFunction: sortByStatus,
+      },
+      {
+        transform: renderAlterationBadge,
+        headerName: '',
+        key: 'alterations',
+      },
+    ];
+  }, [t, translationsBase]);
 
   const hasSearchLoadedWithResults = !isSearchLoading && data.length > 0;
   const hasSearchLoadedWithNoResults = !isSearchLoading && data.length === 0;

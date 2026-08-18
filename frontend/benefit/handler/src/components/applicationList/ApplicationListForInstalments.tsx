@@ -86,6 +86,58 @@ export const renderInstalmentTagPerStatus = (
     ''
   );
 
+const renderInstalmentCompanyLink = ({
+  id,
+  companyName,
+  unreadMessagesCount,
+  status: applicationStatus,
+}: ApplicationListTableTransforms): JSX.Element => (
+  <$Link
+    href={buildApplicationUrl(
+      id || '',
+      applicationStatus || ('' as APPLICATION_STATUSES),
+      (unreadMessagesCount || 0) > 0
+    )}
+  >
+    {String(companyName)}
+  </$Link>
+);
+
+const renderInstalmentAmount = ({
+  secondInstalment,
+}: ApplicationListTableTransforms): JSX.Element => {
+  const amountAfterRecoveries = Number.parseFloat(
+    String(secondInstalment?.amountAfterRecoveries || 0)
+  );
+  return amountAfterRecoveries > 0 ? (
+    <>{formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}</>
+  ) : (
+    <$Wrapper>
+      <$Column>
+        <IconErrorFill color="var(--color-alert)" />{' '}
+        {formatFloatToEvenEuros(amountAfterRecoveries)}
+      </$Column>
+    </$Wrapper>
+  );
+};
+
+const renderAlterationBadge = (
+  args: ApplicationListTableTransforms
+): JSX.Element | string =>
+  (args.alterations || []).length > 0 ? (
+    <$AlterationBadge
+      $requiresAttention={(args.alterations || []).some(({ state }) =>
+        [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
+          state as ALTERATION_STATE
+        )
+      )}
+    >
+      {args.alterations?.length}
+    </$AlterationBadge>
+  ) : (
+    ''
+  );
+
 const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   heading,
   list = [],
@@ -112,22 +164,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
   const columns = React.useMemo(() => {
     const cols: ApplicationListTableColumns[] = [
       {
-        transform: ({
-          id,
-          companyName,
-          unreadMessagesCount,
-          status: applicationStatus,
-        }: ApplicationListTableTransforms) => (
-          <$Link
-            href={buildApplicationUrl(
-              id || '',
-              applicationStatus || ('' as APPLICATION_STATUSES),
-              (unreadMessagesCount || 0) > 0
-            )}
-          >
-            {String(companyName)}
-          </$Link>
-        ),
+        transform: renderInstalmentCompanyLink,
         headerName: getHeader('companyName'),
         key: 'companyName',
         isSortable: true,
@@ -162,40 +199,13 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
         isSortable: true,
       },
       {
-        transform: ({ secondInstalment }: ApplicationListTableTransforms) => {
-          const amountAfterRecoveries = parseFloat(
-            String(secondInstalment?.amountAfterRecoveries || 0)
-          );
-          return amountAfterRecoveries > 0 ? (
-            <>{formatFloatToEvenEuros(Math.max(0, amountAfterRecoveries))}</>
-          ) : (
-            <$Wrapper>
-              <$Column>
-                <IconErrorFill color="var(--color-alert)" />{' '}
-                {formatFloatToEvenEuros(amountAfterRecoveries)}
-              </$Column>
-            </$Wrapper>
-          );
-        },
+        transform: renderInstalmentAmount,
         headerName: getHeader('instalmentAmount'),
         key: 'instalmentAmount',
         isSortable: true,
       },
       {
-        transform: (args: ApplicationListTableTransforms) =>
-          (args.alterations || []).length > 0 ? (
-            <$AlterationBadge
-              $requiresAttention={(args.alterations || []).some(({ state }) =>
-                [ALTERATION_STATE.RECEIVED, ALTERATION_STATE.OPENED].includes(
-                  state as ALTERATION_STATE
-                )
-              )}
-            >
-              {args.alterations?.length}
-            </$AlterationBadge>
-          ) : (
-            ''
-          ),
+        transform: renderAlterationBadge,
         headerName: '',
         key: 'alterations',
       },

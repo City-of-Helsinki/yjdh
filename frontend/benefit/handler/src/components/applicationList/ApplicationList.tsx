@@ -145,6 +145,43 @@ const renderAhjoError = (ahjoError: AhjoError): JSX.Element[] => {
   ];
 };
 
+const renderApplicationCompanyLink = ({
+  id,
+  companyName,
+  unreadMessagesCount,
+  status: applicationStatus,
+}: ApplicationListTableTransforms): JSX.Element => (
+  <$Link
+    href={buildApplicationUrl(
+      id || '',
+      applicationStatus || ('' as APPLICATION_STATUSES),
+      (unreadMessagesCount || 0) > 0
+    )}
+  >
+    {String(companyName)}
+  </$Link>
+);
+
+const getApplicationOriginColumn = (
+  t: TFunction,
+  getHeader: (id: string) => string
+): ApplicationListTableColumns => ({
+  transform: ({ applicationOrigin }: ApplicationListTableTransforms) => (
+    <div>
+      <Tag>
+        {t(
+          `common:applications.list.columns.applicationOrigins.${String(
+            applicationOrigin
+          )}`
+        )}
+      </Tag>
+    </div>
+  ),
+  headerName: getHeader('origin'),
+  key: 'applicationOrigin',
+  isSortable: true,
+});
+
 const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
@@ -263,22 +300,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   const getBasicColumns = React.useCallback(
     (): ApplicationListTableColumns[] => [
       {
-        transform: ({
-          id,
-          companyName,
-          unreadMessagesCount,
-          status: applicationStatus,
-        }: ApplicationListTableTransforms) => (
-          <$Link
-            href={buildApplicationUrl(
-              id || '',
-              applicationStatus || ('' as APPLICATION_STATUSES),
-              (unreadMessagesCount || 0) > 0
-            )}
-          >
-            {String(companyName)}
-          </$Link>
-        ),
+        transform: renderApplicationCompanyLink,
         headerName: getHeader('companyName'),
         key: 'companyName',
         isSortable: true,
@@ -408,24 +430,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       }
 
       if (isVisibleOnlyForStatus.received) {
-        cols.push({
-          transform: ({
-            applicationOrigin,
-          }: ApplicationListTableTransforms) => (
-            <div>
-              <Tag>
-                {t(
-                  `common:applications.list.columns.applicationOrigins.${String(
-                    applicationOrigin
-                  )}`
-                )}
-              </Tag>
-            </div>
-          ),
-          headerName: getHeader('origin'),
-          key: 'applicationOrigin',
-          isSortable: true,
-        });
+        cols.push(getApplicationOriginColumn(t, getHeader));
       }
     },
     [

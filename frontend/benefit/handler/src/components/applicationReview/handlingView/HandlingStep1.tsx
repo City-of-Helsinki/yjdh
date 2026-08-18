@@ -17,6 +17,7 @@ import {
 import { ErrorData } from 'benefit-shared/types/common';
 import { ButtonPresetTheme, ButtonVariant, IconPlus } from 'hds-react';
 import { useRouter } from 'next/router';
+import { TFunction } from 'next-i18next';
 import * as React from 'react';
 import { useMemo } from 'react';
 import Button from 'shared/components/button/Button';
@@ -39,6 +40,68 @@ import HandledView from '../handledView/HandledView';
 import PaperView from '../paperView/PaperView';
 import SalaryBenefitCalculatorView from '../salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from '../useApplicationReview';
+
+const getDecisionDetailList = (
+  t: TFunction,
+  showMonetaryFields: boolean,
+  showBasicDecisionFields: boolean
+): DecisionDetailList => [
+  {
+    accessor: (app) => (
+      <>
+        <StatusIcon status={app.status as APPLICATION_STATUSES} />
+        {app.status ? t(`common:applications.statuses.${app.status}`) : null}
+      </>
+    ),
+    key: 'status',
+  },
+  {
+    accessor: (app) =>
+      formatFloatToEvenEuros(app.calculation?.calculatedBenefitAmount || ''),
+    key: 'benefitAmount',
+    showIf: () => showMonetaryFields,
+  },
+  {
+    accessor: (app) =>
+      `${convertToUIDateFormat(
+        app.startDate || ''
+      )} \u2013 ${convertToUIDateFormat(app.endDate || '')}`,
+    key: 'benefitPeriod',
+    showIf: () => showMonetaryFields,
+  },
+  {
+    accessor: (app) => app.batch?.sectionOfTheLaw,
+    key: 'sectionOfLaw',
+    showIf: () => showBasicDecisionFields,
+  },
+  {
+    accessor: (app) =>
+      app.calculation?.grantedAsDeMinimisAid
+        ? t('utility.yes')
+        : t('utility.no'),
+    key: 'grantedAsDeMinimis',
+    showIf: () => showMonetaryFields,
+  },
+  {
+    accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate || ''),
+    key: 'decisionDate',
+    showIf: () => showBasicDecisionFields,
+  },
+  {
+    accessor: (app) =>
+      app.batch?.handler &&
+      getFullName(
+        app.batch.handler.firstName || '',
+        app.batch.handler.lastName || ''
+      ),
+    key: 'handler',
+  },
+  {
+    accessor: (app) => app.batch?.decisionMakerName,
+    key: 'decisionMaker',
+    showIf: () => showBasicDecisionFields,
+  },
+];
 
 type HandlingStepProps = {
   application: Application;
@@ -70,67 +133,7 @@ const HandlingStep1: React.FC<HandlingStepProps> = ({
     application?.status !== APPLICATION_STATUSES.CANCELLED;
 
   const decisionDetailList = useMemo<DecisionDetailList>(
-    () => [
-      {
-        accessor: (app) => (
-          <>
-            <StatusIcon status={app.status as APPLICATION_STATUSES} />
-            {app.status
-              ? t(`common:applications.statuses.${app.status}`)
-              : null}
-          </>
-        ),
-        key: 'status',
-      },
-      {
-        accessor: (app) =>
-          formatFloatToEvenEuros(
-            app.calculation?.calculatedBenefitAmount || ''
-          ),
-        key: 'benefitAmount',
-        showIf: () => showMonetaryFields,
-      },
-      {
-        accessor: (app) =>
-          `${convertToUIDateFormat(
-            app.startDate || ''
-          )} – ${convertToUIDateFormat(app.endDate || '')}`,
-        key: 'benefitPeriod',
-        showIf: () => showMonetaryFields,
-      },
-      {
-        accessor: (app) => app.batch?.sectionOfTheLaw,
-        key: 'sectionOfLaw',
-        showIf: () => showBasicDecisionFields,
-      },
-      {
-        accessor: (app) =>
-          app.calculation?.grantedAsDeMinimisAid
-            ? t('utility.yes')
-            : t('utility.no'),
-        key: 'grantedAsDeMinimis',
-        showIf: () => showMonetaryFields,
-      },
-      {
-        accessor: (app) => convertToUIDateFormat(app.ahjoDecisionDate || ''),
-        key: 'decisionDate',
-        showIf: () => showBasicDecisionFields,
-      },
-      {
-        accessor: (app) =>
-          app.batch?.handler &&
-          getFullName(
-            app.batch.handler.firstName || '',
-            app.batch.handler.lastName || ''
-          ),
-        key: 'handler',
-      },
-      {
-        accessor: (app) => app.batch?.decisionMakerName,
-        key: 'decisionMaker',
-        showIf: () => showBasicDecisionFields,
-      },
-    ],
+    () => getDecisionDetailList(t, showMonetaryFields, showBasicDecisionFields),
     [t, showMonetaryFields, showBasicDecisionFields]
   );
 

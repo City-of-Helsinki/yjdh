@@ -28,7 +28,7 @@ import {
   Table,
 } from 'hds-react';
 import noop from 'lodash/noop';
-import { useTranslation } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
 import Button from 'shared/components/button/Button';
 import Modal from 'shared/components/modal/Modal';
@@ -63,59 +63,68 @@ const $BatchStatusValue = styled.span`
   margin-top: 4px;
 `;
 
+const renderBatchCompanyLink = ({
+  id,
+  company_name: companyName,
+}: BatchTableTransforms): JSX.Element => (
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  <$Link href={`${ROUTES.APPLICATION}?id=${id}`} target="_blank">
+    {companyName}
+  </$Link>
+);
+
+const renderBatchTalpaStatus = ({
+  talpa_status,
+}: BatchTableTransforms): JSX.Element => (
+  <>
+    {talpa_status === TALPA_STATUSES.NOT_SENT_TO_TALPA && (
+      <IconClock color="var(--color-metro)" />
+    )}
+    {talpa_status === TALPA_STATUSES.REJECTED_BY_TALPA && (
+      <IconAlertCircle color="var(--color-alert-dark)" />
+    )}
+    {talpa_status === TALPA_STATUSES.SUCCESFULLY_SENT_TO_TALPA && (
+      <IconCheck color="var(--color-tram)" />
+    )}
+  </>
+);
+
+type BatchRemoveButtonProps = {
+  id: string;
+  batchStatus: BATCH_STATUSES;
+  onRemove: (id: string) => void;
+};
+
+const BatchRemoveButton: React.FC<BatchRemoveButtonProps> = ({
+  id,
+  batchStatus,
+  onRemove,
+}) => (
+  <Button
+    theme={ButtonPresetTheme.Black}
+    variant={ButtonVariant.Supplementary}
+    iconStart={<IconArrowUndo />}
+    onClick={() => onRemove(id)}
+    disabled={batchStatus !== BATCH_STATUSES.DRAFT}
+  >
+    {' '}
+  </Button>
+);
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
-  const { t } = useTranslation();
-  const {
-    id: batchId,
-    status,
-    created_at,
-    applications: apps,
-    proposal_for_decision: proposalForDecision,
-    handler,
-  } = batch;
-
-  const applications = React.useMemo(() => apps, [apps]);
-
-  const IS_WAITING_FOR_INSPECTION = [
-    BATCH_STATUSES.DRAFT,
-    BATCH_STATUSES.AHJO_REPORT_CREATED,
-  ].includes(status);
-
-  const [isCollapsed, setIsCollapsed] = React.useState<boolean>(
-    !IS_WAITING_FOR_INSPECTION
-  );
-  const [isConfirmAppRemoval, setIsConfirmAppRemoval] = React.useState(false);
-  const [appToRemove, setAppToRemove] =
-    React.useState<ApplicationInBatch | null>(null);
-  const [batchCloseAnimation, setBatchCloseAnimation] = React.useState(false);
-
-  const { mutate: removeApp } = useRemoveAppFromBatch(setBatchCloseAnimation);
-  const openAppRemovalDialog = (appId: string): void => {
-    const selectedApp = (apps || []).find((app) => app.id === appId);
-    setAppToRemove(selectedApp || null);
-    setIsConfirmAppRemoval(true);
-  };
-
-  const onAppRemovalSubmit = (): void => {
-    if (appToRemove) {
-      removeApp({ appIds: [appToRemove.id], batchId });
-    }
-    setIsConfirmAppRemoval(false);
-    setAppToRemove(null);
-  };
-
+const getBatchCols = (
+  t: TFunction,
+  status: BATCH_STATUSES,
+  proposalForDecision: PROPOSALS_FOR_DECISION,
+  isWaitingForInspection: boolean,
+  openAppRemovalDialog: (id: string) => void
+): BatchTableColumns[] => {
   const cols: BatchTableColumns[] = [
     {
       headerName: t('common:applications.list.columns.companyName'),
       key: 'company_name',
       isSortable: true,
-      transform: ({ id, company_name: companyName }: BatchTableTransforms) => (
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        <$Link href={`${ROUTES.APPLICATION}?id=${id}`} target="_blank">
-          {companyName}
-        </$Link>
-      ),
+      transform: renderBatchCompanyLink,
     },
     {
       headerName: t('common:applications.list.columns.companyId'),
@@ -152,45 +161,93 @@ const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
     });
   }
 
-  if (IS_WAITING_FOR_INSPECTION) {
+  if (isWaitingForInspection) {
     cols.push({
       headerName: '',
       key: 'remove',
-      transform: ({ id }: { id: string }) =>
-        IS_WAITING_FOR_INSPECTION ? (
-          <Button
-            theme={ButtonPresetTheme.Black}
-            variant={ButtonVariant.Supplementary}
-            iconStart={<IconArrowUndo />}
-            onClick={() => openAppRemovalDialog(id)}
-            disabled={status !== BATCH_STATUSES.DRAFT}
-          >
-            {' '}
-          </Button>
-        ) : (
-          ''
-        ),
+      transform: ({ id }: BatchTableTransforms) => (
+        <BatchRemoveButton
+          id={id ?? ''}
+          batchStatus={status}
+          onRemove={openAppRemovalDialog}
+        />
+      ),
     });
   }
+
   if (status === BATCH_STATUSES.REJECTED_BY_TALPA) {
     cols.push({
       headerName: '',
       key: 'talpa_status',
-      transform: ({ talpa_status }: BatchTableTransforms) => (
-        <>
-          {talpa_status === TALPA_STATUSES.NOT_SENT_TO_TALPA && (
-            <IconClock color="var(--color-metro)" />
-          )}
-          {talpa_status === TALPA_STATUSES.REJECTED_BY_TALPA && (
-            <IconAlertCircle color="var(--color-alert-dark)" />
-          )}
-          {talpa_status === TALPA_STATUSES.SUCCESFULLY_SENT_TO_TALPA && (
-            <IconCheck color="var(--color-tram)" />
-          )}
-        </>
-      ),
+      transform: renderBatchTalpaStatus,
     });
   }
+
+  return cols;
+};
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const BatchApplicationList: React.FC<BatchProps> = ({ batch }: BatchProps) => {
+  const { t } = useTranslation();
+  const {
+    id: batchId,
+    status,
+    created_at,
+    applications: apps,
+    proposal_for_decision: proposalForDecision,
+    handler,
+  } = batch;
+
+  const applications = React.useMemo(() => apps, [apps]);
+
+  const IS_WAITING_FOR_INSPECTION = [
+    BATCH_STATUSES.DRAFT,
+    BATCH_STATUSES.AHJO_REPORT_CREATED,
+  ].includes(status);
+
+  const [isCollapsed, setIsCollapsed] = React.useState<boolean>(
+    !IS_WAITING_FOR_INSPECTION
+  );
+  const [isConfirmAppRemoval, setIsConfirmAppRemoval] = React.useState(false);
+  const [appToRemove, setAppToRemove] =
+    React.useState<ApplicationInBatch | null>(null);
+  const [batchCloseAnimation, setBatchCloseAnimation] = React.useState(false);
+
+  const { mutate: removeApp } = useRemoveAppFromBatch(setBatchCloseAnimation);
+  const openAppRemovalDialog = React.useCallback(
+    (appId: string): void => {
+      const selectedApp = (apps || []).find((app) => app.id === appId);
+      setAppToRemove(selectedApp || null);
+      setIsConfirmAppRemoval(true);
+    },
+    [apps]
+  );
+
+  const onAppRemovalSubmit = (): void => {
+    if (appToRemove) {
+      removeApp({ appIds: [appToRemove.id], batchId });
+    }
+    setIsConfirmAppRemoval(false);
+    setAppToRemove(null);
+  };
+
+  const cols = React.useMemo(
+    () =>
+      getBatchCols(
+        t,
+        status,
+        proposalForDecision,
+        IS_WAITING_FOR_INSPECTION,
+        openAppRemovalDialog
+      ),
+    [
+      t,
+      status,
+      proposalForDecision,
+      IS_WAITING_FOR_INSPECTION,
+      openAppRemovalDialog,
+    ]
+  );
 
   const proposalForDecisionHeader = (): JSX.Element => {
     if (proposalForDecision === PROPOSALS_FOR_DECISION.ACCEPTED) {
