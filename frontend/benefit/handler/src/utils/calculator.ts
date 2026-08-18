@@ -41,7 +41,10 @@ const SUBTOTAL_CALCULATION_ROW_TYPES = [
 
 export const groupCalculatorRows = (rows: Row[]): Row[][] => {
   const sections: Array<Array<Row>> = [];
-  for (let start = 0, end = 0; start < rows.length; end = start) {
+  let start = 0;
+  let end = 0;
+  while (start < rows.length) {
+    end = start;
     const firstRow = rows[start];
     if (SUBTOTAL_CALCULATION_ROW_TYPES.includes(firstRow.rowType)) {
       // Select all subtotal lines into combined groups
