@@ -22,7 +22,9 @@ export const useRouterNavigation = (
     | number => {
     const returnTabRaw = router.query?.returnTab;
     const returnTab =
-      typeof returnTabRaw === 'string' ? parseInt(returnTabRaw, 10) : NaN;
+      typeof returnTabRaw === 'string'
+        ? Number.parseInt(returnTabRaw, 10)
+        : Number.NaN;
 
     if (!Number.isNaN(returnTab)) {
       return returnTab;
@@ -90,7 +92,9 @@ export const useRouterNavigation = (
     // If a returnTab is explicitly set in the URL, always honour it (e.g. returnTab=6 for Maksuerät)
     const returnTabRaw = router.query?.returnTab;
     const returnTab =
-      typeof returnTabRaw === 'string' ? parseInt(returnTabRaw, 10) : NaN;
+      typeof returnTabRaw === 'string'
+        ? Number.parseInt(returnTabRaw, 10)
+        : Number.NaN;
     if (!Number.isNaN(returnTab)) {
       return router.push(`/?tab=${returnTab}`);
     }

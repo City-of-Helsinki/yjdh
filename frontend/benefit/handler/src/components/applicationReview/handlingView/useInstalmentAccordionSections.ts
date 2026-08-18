@@ -23,10 +23,15 @@ const useInstalmentAccordionSections = (data: Application): Props => {
     firstInstalment: data.secondInstalment
       ? Math.max(
           0,
-          parseInt(String(data.calculation?.calculatedBenefitAmount || 0), 10) -
-            data.secondInstalment.amount
+          Number.parseInt(
+            String(data.calculation?.calculatedBenefitAmount || 0),
+            10
+          ) - data.secondInstalment.amount
         )
-      : parseInt(String(data.calculation?.calculatedBenefitAmount || 0), 10),
+      : Number.parseInt(
+          String(data.calculation?.calculatedBenefitAmount || 0),
+          10
+        ),
     secondInstalment: data.secondInstalment?.amountAfterRecoveries || 0,
     secondInstalmentMax: data.secondInstalment?.amount || 0,
     total: 0,
@@ -35,15 +40,18 @@ const useInstalmentAccordionSections = (data: Application): Props => {
       data.alterations
         ?.filter((obj) => obj.state === ALTERATION_STATE.HANDLED)
         .reduce(
-          (prev, cur) => prev + parseInt(String(cur.recoveryAmount || 0), 10),
+          (prev, cur) =>
+            prev + Number.parseInt(String(cur.recoveryAmount || 0), 10),
           0
         ) || 0,
   };
 
   amounts.total = amounts.firstInstalment + amounts.secondInstalment;
   amounts.totalAfterRecoveries =
-    parseInt(String(data.calculation?.calculatedBenefitAmount || 0), 10) -
-    amounts.alterations;
+    Number.parseInt(
+      String(data.calculation?.calculatedBenefitAmount || 0),
+      10
+    ) - amounts.alterations;
 
   const isSecondInstalmentReduced =
     formatFloatToEvenEuros(amounts.secondInstalment) !==

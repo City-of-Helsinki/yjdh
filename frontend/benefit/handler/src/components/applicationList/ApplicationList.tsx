@@ -75,17 +75,17 @@ const getFirstInstalmentTotalAmount = (
   alterations?: ApplicationAlteration[]
 ): string | JSX.Element => {
   const benefitAmount = calculatedBenefitAmount || '0';
-  let firstInstalment = parseInt(benefitAmount, 10);
+  let firstInstalment = Number.parseInt(benefitAmount, 10);
   let recoveryAmount = 0;
   if (secondInstalment) {
-    firstInstalment -= parseInt(
+    firstInstalment -= Number.parseInt(
       String(secondInstalment.amountAfterRecoveries || 0),
       10
     );
     recoveryAmount = alterations
       ? alterations?.reduce(
           (prev: number, cur: ApplicationAlteration) =>
-            prev + parseInt(cur.recoveryAmount || '0', 10),
+            prev + Number.parseInt(cur.recoveryAmount || '0', 10),
           0
         )
       : 0;
@@ -93,7 +93,9 @@ const getFirstInstalmentTotalAmount = (
   return secondInstalment ? (
     <>
       {formatFloatToEvenEuros(firstInstalment)} /{' '}
-      {formatFloatToEvenEuros(parseInt(benefitAmount, 10) - recoveryAmount)}
+      {formatFloatToEvenEuros(
+        Number.parseInt(benefitAmount, 10) - recoveryAmount
+      )}
     </>
   ) : (
     formatFloatToEvenEuros(firstInstalment)

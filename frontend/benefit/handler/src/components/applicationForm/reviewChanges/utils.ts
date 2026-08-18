@@ -92,7 +92,10 @@ export const translateLabelFromPath = (
 
 export const getDeMinimisSum = (aidSet: DeMinimisAid[]): number =>
   aidSet.length > 0
-    ? aidSet.reduce((acc, val) => acc + parseFloat(val.amount as string), 0)
+    ? aidSet.reduce(
+        (acc, val) => acc + Number.parseFloat(val.amount as string),
+        0
+      )
     : 0;
 
 export const getDeMinimisGranters = (aidSet: DeMinimisAid[]): string =>

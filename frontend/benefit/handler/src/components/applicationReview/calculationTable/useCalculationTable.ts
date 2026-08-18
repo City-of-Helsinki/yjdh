@@ -94,8 +94,9 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
           endDate: convertToUIDateFormat(calculation.rows[0].endDate),
           amount: formatFloatToEvenEuros(
             String(
-              parseFloat(calculation.overrideMonthlyBenefitAmount as string) *
-                duration
+              Number.parseFloat(
+                calculation.overrideMonthlyBenefitAmount as string
+              ) * duration
             )
           ),
           amountNumber: calculation.rows[0].amount,
@@ -107,7 +108,7 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
     : reduceTableRows(filteredData);
 
   const totalSum = tableRows.reduce(
-    (acc: number, cur: BenefitRow) => acc + parseFloat(cur.amountNumber),
+    (acc: number, cur: BenefitRow) => acc + Number.parseFloat(cur.amountNumber),
     0
   );
 
@@ -123,7 +124,7 @@ const useCalculationTable = ({ calculation }: Props): CalculationTableProps => {
       // while also removing redundant trailing zeroes.
       // (Example case: the three ranges 1.5.2024 - 21.5.2024, 22.5.2024 - 21.7.2024,
       // 22.7.2024 - 28.12.2024 would otherwise show as 7.930000000000001 months total.)
-      duration: parseFloat(
+      duration: Number.parseFloat(
         tableRows
           .reduce((acc: number, cur: BenefitRow) => acc + cur.duration, 0)
           .toFixed(2)
