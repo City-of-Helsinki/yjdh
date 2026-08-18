@@ -26,7 +26,7 @@ export const translateBackendErrorMessage = (
 
 export const getApplicationStepFromString = (step: string): number => {
   try {
-    return parseInt(step.split('_')[1], 10);
+    return Number.parseInt(step.split('_')[1], 10);
   } catch (error) {
     return 1;
   }
