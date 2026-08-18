@@ -41,9 +41,9 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`${translationsBase}.fields.workingHours`)}
         </$ViewFieldBold>
         <$ViewField large>
-          {parseFloat(String(data.employee?.workingHours || 0)).toLocaleString(
-            'fi-FI'
-          )}{' '}
+          {Number.parseFloat(
+            String(data.employee?.workingHours || 0)
+          ).toLocaleString('fi-FI')}{' '}
           {t(`${translationsBase}.fields.workingHoursText`)}
         </$ViewField>
       </$GridCell>
@@ -121,9 +121,11 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             '-'
           ) : (
             <>
-              {data.roleOfEmployeeInOrganization.split(/\n+/g).map((paragraph: string) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+              {data.roleOfEmployeeInOrganization
+                .split(/\n+/g)
+                .map((paragraph: string) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
             </>
           )}
         </$ViewField>

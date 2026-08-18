@@ -139,7 +139,7 @@ const useCompanySearch = (): ExtendedComponentProps => {
     setNoResults(null);
     setErrorMessage(null);
     const newSearchTerm = searchTerm.trimStart().trimEnd();
-    const match = /.*<([^<>]*)>$/.exec(newSearchTerm);
+    const match = /<([^<>]*)>$/.exec(newSearchTerm);
     if (match) {
       await getCompanyAndCreateDraft(match[1]);
     } else if (bId.isValidBusinessId(newSearchTerm)) {

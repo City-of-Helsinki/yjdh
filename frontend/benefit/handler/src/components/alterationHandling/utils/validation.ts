@@ -84,7 +84,7 @@ export const getValidationSchema = (
             t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN, { min: 0 }),
             (value) => {
               if (value === null || value === undefined) return true;
-              return parseFloat(value) >= 0;
+              return Number.parseFloat(value) >= 0;
             }
           )
           .test(
@@ -95,7 +95,7 @@ export const getValidationSchema = (
             (value) => {
               if (value === null || value === undefined) return true;
               return (
-                parseFloat(value) <=
+                Number.parseFloat(value) <=
                 (application?.calculation?.calculatedBenefitAmount
                   ? Number(application.calculation.calculatedBenefitAmount)
                   : Infinity)

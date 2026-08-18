@@ -41,7 +41,7 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
             {t(`${translationsBase}.fields.workingHours.review`)}
           </$ViewFieldBold>
           <$ViewField>
-            {parseFloat(
+            {Number.parseFloat(
               String(data.employee?.workingHours || 0)
             ).toLocaleString('fi-FI')}{' '}
             {t(`${translationsBase}.fields.workingHours.reviewText`)}
@@ -130,9 +130,11 @@ const EmploymentSection: React.FC<ReviewChildProps> = ({
               '-'
             ) : (
               <>
-                {data.roleOfEmployeeInOrganization.split(/\n+/g).map((paragraph: string) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+                {data.roleOfEmployeeInOrganization
+                  .split(/\n+/g)
+                  .map((paragraph: string) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
               </>
             )}
           </$ViewField>

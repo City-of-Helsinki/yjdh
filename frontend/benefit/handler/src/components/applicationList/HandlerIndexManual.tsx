@@ -38,7 +38,7 @@ const HandlerIndexManual: React.FC<ApplicationListProps> = ({
 
   React.useEffect(() => {
     if (!router.isReady) return;
-    setActiveTab(parseInt(tab as string, 10) || 0);
+    setActiveTab(Number.parseInt(tab as string, 10) || 0);
   }, [router.isReady, tab]);
 
   if (activeTab === null) {

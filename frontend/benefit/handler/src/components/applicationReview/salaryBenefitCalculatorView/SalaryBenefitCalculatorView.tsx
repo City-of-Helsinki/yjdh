@@ -158,7 +158,7 @@ const PaySubsidiesSection: React.FC<PaySubsidiesSectionProps> = ({
                 label={fields.workTimePercent.label}
                 onChange={(e) =>
                   updatePaySubsidies(index, {
-                    workTimePercent: parseFloat(e.target.value),
+                    workTimePercent: Number.parseFloat(e.target.value),
                   })
                 }
                 value={formatStringFloatValue(item.workTimePercent?.toString())}
