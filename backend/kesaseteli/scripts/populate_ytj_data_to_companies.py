@@ -88,6 +88,26 @@ def _get_preferred_description(descriptions: list, preferred_langs=("1", "2")) -
     return ""
 
 
+def _compose_address(addr: dict) -> str:
+    """Compose a full address string from the given address dict."""
+    street = addr.get("street") or ""
+    building_number = addr.get("buildingNumber") or ""
+    entrance = addr.get("entrance") or ""
+    apartment_number = addr.get("apartmentNumber") or ""
+    apartment_id_suffix = addr.get("apartmentIdSuffix") or ""
+
+    address_parts = [
+        street,
+        building_number,
+        entrance,
+        apartment_number,
+        apartment_id_suffix,
+    ]
+    address = " ".join(part for part in address_parts if part)
+
+    return address
+
+
 def parse_record(record: dict) -> dict:
     """
     Parse a raw YTJ company record dict into Company model fields.
@@ -123,11 +143,11 @@ def parse_record(record: dict) -> dict:
     if addr is None:
         addr = next((a for a in addresses if a.get("type") == 2), None)
 
-    street_address = ""
+    full_address = ""
     postcode = ""
     city = ""
     if addr:
-        street_address = addr.get("street") or ""
+        full_address = _compose_address(addr)
         postcode = addr.get("postCode") or ""
         post_offices = addr.get("postOffices", [])
         for lang in ("1", "2"):
@@ -148,7 +168,7 @@ def parse_record(record: dict) -> dict:
         "name": name,
         "company_form": company_form,
         "industry": industry,
-        "street_address": street_address,
+        "street_address": full_address,
         "postcode": postcode,
         "city": city,
     }
