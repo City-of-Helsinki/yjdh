@@ -247,12 +247,12 @@ export const useApplicationForm = (): ExtendedComponentProps => {
 
     if (errorFieldKey) {
       errorFieldKey = handleErrorFieldKeys(errorFieldKey, errors);
-      void focusAndScroll(errorFieldKey);
+      focusAndScroll(errorFieldKey);
       return true;
     }
 
     if (!isRequiredAttachmentsUploaded()) {
-      void errorToast(
+      errorToast(
         t(`${tNotifications}.requiredAttachments.label`),
         t(`${tNotifications}.requiredAttachments.content`)
       );
@@ -260,7 +260,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     }
 
     if (getConsentErrors()) {
-      void errorToast(
+      errorToast(
         t(`${tNotifications}.requiredConsents.label`),
         t(`${tNotifications}.requiredConsents.content`)
       );
@@ -278,7 +278,7 @@ export const useApplicationForm = (): ExtendedComponentProps => {
       values.deMinimisAid &&
       (unfinishedDeMinimisAidRow || deMinimisAids.length === 0)
     ) {
-      void errorToast(
+      errorToast(
         t(
           'common:applications.sections.notifications.deMinimisUnfinished.label'
         ),
