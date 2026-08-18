@@ -58,9 +58,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({
     event: React.FocusEvent<HTMLInputElement, Element>
   ): void => {
     setUnfinishedDeMinimisAid(false);
-    const grantValuesAsString = Object.values(formik.values).reduce(
-      (acc, val) => acc + val
-    );
+    const grantValuesAsString = Object.values(formik.values).join('');
     if (grantValuesAsString !== '') {
       setUnfinishedDeMinimisAid(true);
     }
