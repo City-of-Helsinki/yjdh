@@ -218,4 +218,123 @@ describe('BatchApplicationList', () => {
 
     expect(tableBody).toHaveAttribute('aria-hidden', 'false');
   });
+
+  it('renders rejected proposal status with count', () => {
+    const batch = buildBatch(BATCH_STATUSES.DRAFT);
+    batch.proposal_for_decision = PROPOSALS_FOR_DECISION.REJECTED;
+
+    renderComponent(<BatchApplicationList batch={batch} />);
+
+    expect(screen.getByTestId('batch-table')).toBeInTheDocument();
+  });
+
+  it('renders batch with multiple applications', () => {
+    const batch = buildBatch(BATCH_STATUSES.DRAFT);
+    batch.applications = [
+      ...(batch.applications || []),
+      {
+        id: 'app-2',
+        status: BATCH_STATUSES.DRAFT,
+        company_name: 'Company Two',
+        application_number: 222,
+        employee_name: 'Employee Two',
+        business_id: '2345678-9',
+        handled_at: '2026-08-19',
+        talpa_status: TALPA_STATUSES.SUCCESFULLY_SENT_TO_TALPA,
+        benefitAmount: 1500,
+      },
+    ];
+
+    renderComponent(<BatchApplicationList batch={batch} />);
+
+    expect(screen.getByTestId('batch-table')).toBeInTheDocument();
+  });
+
+  it('renders sent to talpa status footer', () => {
+    renderComponent(
+      <BatchApplicationList batch={buildBatch(BATCH_STATUSES.SENT_TO_TALPA)} />
+    );
+
+    expect(screen.getByTestId('batch-footer-completion')).toBeInTheDocument();
+  });
+
+  it('renders rejected by talpa status footer', () => {
+    renderComponent(
+      <BatchApplicationList
+        batch={buildBatch(BATCH_STATUSES.REJECTED_BY_TALPA)}
+      />
+    );
+
+    expect(screen.getByTestId('batch-footer-completion')).toBeInTheDocument();
+  });
+
+  it('renders ahjo report created status with draft footer', () => {
+    renderComponent(
+      <BatchApplicationList
+        batch={buildBatch(BATCH_STATUSES.AHJO_REPORT_CREATED)}
+      />
+    );
+
+    expect(screen.getByTestId('batch-footer-draft')).toBeInTheDocument();
+  });
+
+  it('expands table by default for DRAFT status', () => {
+    renderComponent(
+      <BatchApplicationList batch={buildBatch(BATCH_STATUSES.DRAFT)} />
+    );
+
+    const tableBody = screen.getByTestId('batch-table-body');
+    expect(tableBody).toHaveAttribute('aria-hidden', 'false');
+  });
+
+  it('expands table by default for AHJO_REPORT_CREATED status', () => {
+    renderComponent(
+      <BatchApplicationList
+        batch={buildBatch(BATCH_STATUSES.AHJO_REPORT_CREATED)}
+      />
+    );
+
+    const tableBody = screen.getByTestId('batch-table-body');
+    expect(tableBody).toHaveAttribute('aria-hidden', 'false');
+  });
+
+  it('displays handler name correctly', () => {
+    const batch = buildBatch(BATCH_STATUSES.DRAFT);
+    batch.handler = { first_name: 'Jane', last_name: 'Smith' };
+
+    renderComponent(<BatchApplicationList batch={batch} />);
+
+    expect(screen.getByText('Jane')).toBeInTheDocument();
+  });
+
+  it('handles toggle button click for collapsed state', async () => {
+    const user = setupUserAndRender(() =>
+      renderComponent(
+        <BatchApplicationList
+          batch={buildBatch(BATCH_STATUSES.AWAITING_FOR_DECISION)}
+        />
+      )
+    );
+
+    const tableBody = screen.getByTestId('batch-table-body');
+    const toggleButton = screen.getByTestId('toggle-batch-applications');
+
+    expect(tableBody).toHaveAttribute('aria-hidden', 'true');
+
+    await user.click(toggleButton);
+    expect(tableBody).toHaveAttribute('aria-hidden', 'false');
+
+    await user.click(toggleButton);
+    expect(tableBody).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('does not render toggle button when no applications', () => {
+    renderComponent(
+      <BatchApplicationList batch={buildBatch(BATCH_STATUSES.DRAFT, 0)} />
+    );
+
+    expect(
+      screen.queryByTestId('toggle-batch-applications')
+    ).not.toBeInTheDocument();
+  });
 });
