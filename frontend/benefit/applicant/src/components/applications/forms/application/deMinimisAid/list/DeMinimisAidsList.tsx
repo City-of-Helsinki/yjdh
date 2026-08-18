@@ -20,7 +20,7 @@ import { useTheme } from 'styled-components';
 import { $DeMinimisGrid } from '../deMinimisAid.sc';
 import { useDeminimisAidsList } from './useDeminimisAidsList';
 
-const unsavedAidRowKey = (): number => Math.floor(Math.random() * 1000);
+const unsavedAidRowKey = (): number => Math.floor(Math.random() * 1000); // NOSONAR — used only as a React list key, not for security
 
 const DeMinimisAidsList: React.FC = () => {
   const {
