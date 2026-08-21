@@ -1,3 +1,4 @@
+import getRequiredHandlerCookieGroups from 'kesaseteli/handler/utils/get-required-handler-cookie-groups';
 import CookieSettings from 'kesaseteli-shared/components/cookieSettings/CookieSettings';
 import { GetStaticProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -11,6 +12,7 @@ const CookieSettingsPage: NextPage = () => {
     <CookieSettings
       title={`${t('common:appName')} - ${t('common:cookieSettings')}`}
       siteName={t('common:appName')}
+      requiredGroups={getRequiredHandlerCookieGroups()}
     />
   );
 };
