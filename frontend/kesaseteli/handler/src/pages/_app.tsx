@@ -4,12 +4,12 @@ import 'hds-design-tokens';
 import Footer from 'kesaseteli/handler/components/footer/Footer';
 import Header from 'kesaseteli/handler/components/header/Header';
 import { UserProvider } from 'kesaseteli/handler/contexts/UserContext';
+import getRequiredHandlerCookieGroups from 'kesaseteli/handler/utils/get-required-handler-cookie-groups';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-consent';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import useMatomo from 'kesaseteli-shared/hooks/useMatomo';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
-import getRequiredCookieGroups from 'kesaseteli-shared/utils/getRequiredCookieGroups';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -24,7 +24,6 @@ import {
   DialogContext,
   DialogContextProvider,
 } from 'shared/contexts/DialogContext';
-import { type RequiredGroups } from 'shared/utils/cookieConsentSettings';
 
 const CookieConsent = dynamic(
   () => import('kesaseteli-shared/components/cookieConsent/CookieConsent'),
@@ -32,12 +31,6 @@ const CookieConsent = dynamic(
 );
 
 const queryClient = createQueryClient();
-
-const getRequiredHandlerCookieGroups = (): RequiredGroups =>
-  getRequiredCookieGroups({
-    includeSessionIdCookie: true, // Needed because of Django's session handling
-    includeCsrfTokenCookie: true, // Needed because of POSTing data to backend
-  });
 
 const App: React.FC<AppProps> = (appProps: AppProps) => {
   const isMatomoConfigured = useMatomo();
