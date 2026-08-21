@@ -362,7 +362,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
   const { data: clonedData, mutate: cloneApplication } =
     useCloneApplicationMutation();
 
-  const { mutate: downloadPdf, isLoading: isDownloadingPdf } =
+  const { mutate: downloadPdf, isPending: isDownloadingPdf } =
     useDownloadApplicationPdf();
 
   React.useEffect(() => {
@@ -376,7 +376,7 @@ const HandlingApplicationActions: React.FC<Props> = ({
     }
   };
 
-  const renderModals = (): JSX.Element => (
+  const renderModals = (): React.ReactElement => (
     <>
       {isConfirmationModalOpen && (
         <Modal

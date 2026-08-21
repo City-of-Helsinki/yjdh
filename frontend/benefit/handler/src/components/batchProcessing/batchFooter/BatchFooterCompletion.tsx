@@ -51,7 +51,7 @@ const BatchFooterCompletion: React.FC<BatchProps> = ({
 
   const {
     isError: isDownloadError,
-    isLoading: isDownloading,
+    isPending: isDownloading,
     mutate: downloadP2PFile,
   } = useDownloadP2PFile();
 

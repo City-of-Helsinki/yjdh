@@ -12,7 +12,7 @@ const AlterationFormProvider = ({
   handleSubmit,
   error,
   children,
-}: React.PropsWithChildren<AlterationFormContextType>): JSX.Element => (
+}: React.PropsWithChildren<AlterationFormContextType>): React.ReactElement => (
   <AlterationFormContext.Provider
     value={{
       t,

@@ -7,9 +7,15 @@ export type Props = {
   small?: boolean;
 };
 
-export const $FieldErrorMessage = styled.div<Props>`
+const fieldErrorMessageShouldForwardProp = (prop: string): boolean =>
+  prop !== 'small';
+
+export const $FieldErrorMessage = styled.div.withConfig({
+  shouldForwardProp: fieldErrorMessageShouldForwardProp,
+})<Props>`
   position: relative;
-  color: ${(props: { theme: DefaultTheme } & Props) => props.theme.colors.error};
+  color: ${(props: { theme: DefaultTheme } & Props) =>
+    props.theme.colors.error};
   font-size: ${(props: { theme: DefaultTheme } & Props) =>
     props.theme.fontSize.body[props.small ? 's' : 'm']};
   margin-top: ${(props: { theme: DefaultTheme } & Props) =>

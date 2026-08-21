@@ -42,6 +42,7 @@ const Field: React.FC<Props> = ({
   label,
   value,
   children,
+  style,
   ...gridCellProps
 }) => {
   const { t } = useTranslation();

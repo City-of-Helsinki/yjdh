@@ -1,4 +1,4 @@
-import { ErrorSummary } from 'hds-react';
+import { Notification } from 'hds-react';
 import { SubmitError } from 'kesaseteli/youth/hooks/useHandleYouthApplicationSubmit';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
@@ -29,21 +29,22 @@ const SubmitErrorSummary: React.FC<Props> = ({ error }) => {
 
       default:
         if (error.type === null) {
-      return null;
-    }
-    assertUnreachable(error.type, 'Unknown submit error type');
-    return null;
+          return null;
+        }
+        assertUnreachable(error.type, 'Unknown submit error type');
+        return null;
     }
   }, [error.errorFields, error.type, t]);
 
   return (
-    <ErrorSummary
+    <Notification
+      type="error"
       css={alignCenterSvg}
-      autofocus={formState.isSubmitted}
+      autoFocus={formState.isSubmitted}
       label={t('common:youthApplication.checkNotification.label')}
     >
       {message}
-    </ErrorSummary>
+    </Notification>
   );
 };
 

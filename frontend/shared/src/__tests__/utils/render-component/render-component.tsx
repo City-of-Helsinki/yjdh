@@ -1,7 +1,7 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RenderResult } from '@testing-library/react';
 import { NextRouter } from 'next/router';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { render } from 'shared/__tests__/utils/test-utils';
@@ -21,7 +21,7 @@ export type Result = {
 
 const renderComponent =
   (backendUrl = 'http://localhost:8000') =>
-  (Element: JSX.Element, router: Partial<NextRouter> = {}): Result => {
+  (Element: React.ReactElement, router: Partial<NextRouter> = {}): Result => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const renderResult = render(

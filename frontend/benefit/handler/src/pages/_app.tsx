@@ -5,6 +5,7 @@ import 'hds-design-tokens';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthProvider from 'benefit/handler/auth/AuthProvider';
 import Footer from 'benefit/handler/components/footer/Footer';
 import Header from 'benefit/handler/components/header/Header';
@@ -18,7 +19,6 @@ import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { appWithTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import useLocale from 'shared/hooks/useLocale';

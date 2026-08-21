@@ -1,6 +1,10 @@
+import {
+  keepPreviousData,
+  useQuery,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useRef } from 'react';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useEffect, useRef } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
@@ -36,22 +40,22 @@ const useApplicationsQuery = <T = Application[], R = Application[]>({
   const queryYear = year === 'all' ? undefined : year;
 
   const prevFiltersRef = useRef({ onlyMine, queryYear });
-  let keepPreviousData = true;
+  let shouldKeepPreviousData = true;
 
   if (
     prevFiltersRef.current.onlyMine !== onlyMine ||
     prevFiltersRef.current.queryYear !== queryYear
   ) {
-    keepPreviousData = false;
+    shouldKeepPreviousData = false;
     prevFiltersRef.current = { onlyMine, queryYear };
   }
 
-  return useQuery(
-    [
+  const query = useQuery({
+    queryKey: [
       BackendEndpoint.EMPLOYER_APPLICATIONS,
       { onlyMine, year: queryYear, limit, offset },
     ],
-    () =>
+    queryFn: () =>
       handleResponse<R>(
         axios.get(BackendEndpoint.EMPLOYER_APPLICATIONS, {
           params: {
@@ -62,14 +66,20 @@ const useApplicationsQuery = <T = Application[], R = Application[]>({
           },
         })
       ),
-    {
-      select: select ? (applications: R) => select(applications) : undefined,
-      staleTime: staleTime !== undefined ? staleTime : Infinity,
-      retryDelay: 3000,
-      onError: onError ?? defaultErrorHandler,
-      keepPreviousData,
+    select: select ? (applications) => select(applications) : undefined,
+    staleTime: staleTime !== undefined ? staleTime : Infinity,
+    retryDelay: 3000,
+    placeholderData: shouldKeepPreviousData ? keepPreviousData : undefined,
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      const errorHandler = onError ?? defaultErrorHandler;
+      errorHandler(query.error);
     }
-  );
+  }, [query, defaultErrorHandler, onError]);
+
+  return query;
 };
 
 export default useApplicationsQuery;

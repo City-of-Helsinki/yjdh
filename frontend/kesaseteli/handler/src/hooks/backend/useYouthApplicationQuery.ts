@@ -1,7 +1,12 @@
+import {
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import axios from 'axios';
 import { getYouthApplicationQueryKey } from 'kesaseteli-shared/backend-api/backend-api';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
+import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 const useYouthApplicationQuery = (
@@ -9,19 +14,25 @@ const useYouthApplicationQuery = (
   options?: UseQueryOptions<ActivatedYouthApplication>
 ): UseQueryResult<ActivatedYouthApplication> => {
   const handleError = useErrorHandler();
-  return useQuery({
-    queryKey: id ? getYouthApplicationQueryKey(id) : undefined,
+  const query = useQuery({
+    queryKey: [id ? getYouthApplicationQueryKey(id) : undefined],
     enabled: Boolean(id),
     staleTime: Infinity,
-    onError: (error: unknown) => {
+    ...options,
+  });
+
+  useEffect(() => {
+    if (query.isError) {
+      const { error } = query;
       const is404Error =
         axios.isAxiosError(error) && error.response?.status === 404;
       if (!is404Error) {
         handleError(error);
       }
-    },
-    ...options,
-  });
+    }
+  }, [query, handleError]);
+
+  return query;
 };
 
 export default useYouthApplicationQuery;

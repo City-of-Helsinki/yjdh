@@ -75,7 +75,7 @@ const buildApplicationUrl = (
 export const renderInstalmentTagPerStatus = (
   t: TFunction,
   status?: INSTALMENT_STATUSES
-): JSX.Element | string =>
+): React.ReactElement | string =>
   status ? (
     <$TagWrapper $colors={getInstalmentTagStyleForStatus(status)}>
       <Tag>
@@ -105,7 +105,7 @@ const ApplicationListForInstalments: React.FC<ApplicationListProps> = ({
     isInstalmentChangeDateDialogShown,
     setIsInstalmentChangeDateDialogShown,
   ] = React.useState(false);
-  const { mutate: changeInstalmentStatus, isLoading: isLoadingStatusChange } =
+  const { mutate: changeInstalmentStatus, isPending: isLoadingStatusChange } =
     useInstalmentStatusTransition();
   const { mutate: changeInstalmentDate } = useInstalmentDateChange();
 

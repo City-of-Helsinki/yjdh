@@ -1,7 +1,7 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import Application from 'shared/types/application';
 
@@ -74,12 +74,12 @@ describe('useCreateApplicationQuery', () => {
     expect(data).toEqual(mockApp);
 
     expect(setQueryDataSpy).toHaveBeenCalledWith(
-      '/v1/employerapplications/new-app-id/',
+      ['/v1/employerapplications/new-app-id/'],
       mockApp
     );
-    expect(invalidateQueriesSpy).toHaveBeenCalledWith(
-      '/v1/employerapplications/'
-    );
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: ['/v1/employerapplications/'],
+    });
   });
 
   it('throws an error if id is missing in the created application response', async () => {

@@ -52,13 +52,13 @@ const renderSubject = (batchOverrides: Partial<BatchProposal> = {}): void => {
   );
 };
 
-function DownloadStateWrapper(): JSX.Element {
+function DownloadStateWrapper(): React.ReactElement {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
 
   mockUseDownloadBatchFiles.mockReturnValue({
     isError: error,
-    isLoading: loading,
+    isPending: loading,
     mutate: downloadBatchFiles,
   } as never);
 
@@ -149,7 +149,7 @@ describe('BatchFooterDraft', () => {
 
     mockUseDownloadBatchFiles.mockReturnValue({
       isError: false,
-      isLoading: false,
+      isPending: false,
       mutate: downloadBatchFiles,
     } as never);
 

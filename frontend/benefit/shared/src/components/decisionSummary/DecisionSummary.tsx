@@ -35,7 +35,7 @@ const DecisionSummary = ({
   itemComponent: ItemComponent,
   detailList,
   extraInformation,
-}: Props): JSX.Element | null => {
+}: Props): React.ReactElement | null => {
   const { t } = useTranslation();
 
   const isNotRejected = ![

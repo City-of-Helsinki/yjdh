@@ -1,6 +1,6 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { DecisionProposalTemplateData } from 'benefit/handler/types/common';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useDecisionProposalTemplateQuery = (
@@ -8,12 +8,11 @@ const useDecisionProposalTemplateQuery = (
   decisionType: string
 ): UseQueryResult<DecisionProposalTemplateData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
-  return useQuery<DecisionProposalTemplateData[], Error>(
-    ['decisionProposalTemplates'],
-    () =>
-      !id
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<DecisionProposalTemplateData[]>(
+  return useQuery<DecisionProposalTemplateData[], Error>({
+    queryKey: ['decisionProposalTemplates'],
+    queryFn: () =>
+      id
+        ? handleResponse<DecisionProposalTemplateData[]>(
             axios.get(`${String(BackendEndpoint.DECISION_PROPOSAL_TEMPLATE)}`, {
               params: {
                 decision_type: decisionType,
@@ -21,7 +20,8 @@ const useDecisionProposalTemplateQuery = (
               },
             })
           )
-  );
+        : Promise.reject(new Error('Missing application id')),
+  });
 };
 
 export default useDecisionProposalTemplateQuery;

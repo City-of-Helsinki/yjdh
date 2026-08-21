@@ -1,11 +1,11 @@
-import { act, renderHook } from '@testing-library/react';
-import React from 'react';
 import {
   InvalidateQueryFilters,
   Query,
   QueryClient,
   QueryClientProvider,
-} from 'react-query';
+} from '@tanstack/react-query';
+import { act, renderHook } from '@testing-library/react';
+import React from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import useDeleteApplicationQuery from '../useDeleteApplicationQuery';

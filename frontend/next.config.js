@@ -8,6 +8,11 @@ const path = require('path');
 
 const trueEnv = ['true', '1', 'yes'];
 
+// This config lives at the workspace root, where app dependencies aren't declared,
+// so resolve from the app's own directory (Next runs with cwd set to it) first.
+const resolvePackageDir = (pkg) =>
+  path.dirname(require.resolve(`${pkg}/package.json`, { paths: [process.cwd(), __dirname] }));
+
 // Get the app context ...
 let appName;
 if (process.cwd().indexOf('/app/') === 0) {
@@ -22,8 +27,7 @@ if (process.cwd().indexOf('/app/') === 0) {
 // This must be at module level — the webpack() callback is never called by Turbopack.
 if (appName && appName === 'benefit/applicant') {
   try {
-    const pdfjsPkg = require.resolve('pdfjs-dist/package.json');
-    const workerSrc = path.join(path.dirname(pdfjsPkg), 'build', 'pdf.worker.min.mjs');
+    const workerSrc = path.join(resolvePackageDir('pdfjs-dist'), 'build', 'pdf.worker.min.mjs');
     const publicDir = path.join(process.cwd(), 'public');
     const workerDest = path.join(publicDir, 'pdf.worker.min.mjs');
     fs.mkdirSync(publicDir, { recursive: true });
@@ -85,7 +89,7 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     eslint: {
       ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
     },
-    transpilePackages: ['@frontend', 'uuid'],
+    transpilePackages: ['@frontend', 'styled-components', 'uuid'],
     experimental: {
       // Allow CJS packages (e.g. hds-react) to require ESM-only packages such as
       // `uuid`. With pnpm's strict resolution these packages resolve to their ESM

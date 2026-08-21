@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
@@ -5,10 +6,9 @@ import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import User from 'shared/types/user';
 
-import { UserProvider,useUser } from '../UserContext';
+import { UserProvider, useUser } from '../UserContext';
 
 jest.mock('kesaseteli/handler/hooks/backend/useUserQuery');
 jest.mock('next/router', () => ({
@@ -72,7 +72,9 @@ describe('UserContext and UserProvider', () => {
   });
 
   it('throws error when useUser is used outside UserProvider', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     expect(() => render(<BuggyComponent />)).toThrow(
       'useUser must be used within a UserProvider'
     );
@@ -100,7 +102,9 @@ describe('UserContext and UserProvider', () => {
     expect(useUserQuery).toHaveBeenCalledWith({ enabled: false });
     expect(screen.getByTestId('user-name')).toHaveTextContent('none');
     expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
-    expect(screen.queryByTestId('page-loading-spinner')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('page-loading-spinner')
+    ).not.toBeInTheDocument();
   });
 
   it('renders loading spinner on protected routes when user query is loading initially', () => {
@@ -166,7 +170,9 @@ describe('UserContext and UserProvider', () => {
       { wrapper }
     );
 
-    expect(screen.queryByTestId('page-loading-spinner')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('page-loading-spinner')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('user-name')).toHaveTextContent('Test User');
     expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
     expect(screen.getByTestId('is-fetching')).toHaveTextContent('false');
@@ -191,7 +197,9 @@ describe('UserContext and UserProvider', () => {
       { wrapper }
     );
 
-    expect(screen.queryByTestId('page-loading-spinner')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('page-loading-spinner')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('user-name')).toHaveTextContent('Test User');
     expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
     expect(screen.getByTestId('is-fetching')).toHaveTextContent('true');
@@ -215,7 +223,9 @@ describe('UserContext and UserProvider', () => {
       { wrapper }
     );
 
-    expect(screen.queryByTestId('page-loading-spinner')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('page-loading-spinner')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('user-name')).toHaveTextContent('Test User');
     expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
     expect(screen.getByTestId('is-fetching')).toHaveTextContent('false');
@@ -242,6 +252,8 @@ describe('UserContext and UserProvider', () => {
     );
 
     await userEvent.click(screen.getByTestId('clear-user-btn'));
-    expect(removeQueriesSpy).toHaveBeenCalledWith(BackendEndpoint.USER);
+    expect(removeQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [BackendEndpoint.USER],
+    });
   });
 });

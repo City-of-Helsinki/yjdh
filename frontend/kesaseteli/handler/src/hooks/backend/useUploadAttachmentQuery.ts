@@ -1,8 +1,12 @@
 import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from '@tanstack/react-query';
+import {
   BackendEndpoint,
   getEmployerApplicationQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 
@@ -20,9 +24,9 @@ const useUploadAttachmentQuery = (): UseMutationResult<
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
 
-  return useMutation(
-    BackendEndpoint.ATTACHMENTS,
-    ({ summer_voucher, data }: UploadAttachmentData) =>
+  return useMutation({
+    mutationKey: [BackendEndpoint.ATTACHMENTS],
+    mutationFn: ({ summer_voucher, data }: UploadAttachmentData) =>
       handleResponse<KesaseteliAttachment>(
         axios.post(
           `${BackendEndpoint.EMPLOYER_SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}`,
@@ -30,14 +34,12 @@ const useUploadAttachmentQuery = (): UseMutationResult<
           { headers: { 'Content-type': 'multipart/form-data' } }
         )
       ),
-    {
-      onSuccess: async (_data, { applicationId }) => {
-        await queryClient.invalidateQueries(
-          getEmployerApplicationQueryKey(applicationId)
-        );
-      },
-    }
-  );
+    onSuccess: async (_data, { applicationId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: [getEmployerApplicationQueryKey(applicationId)],
+      });
+    },
+  });
 };
 
 export default useUploadAttachmentQuery;

@@ -1,22 +1,19 @@
 import {
-  HandlerNote,
-  NoteTargetType,
-  UpdateNotePayload,
-} from 'kesaseteli/handler/types/note';
-import {
-  BackendEndpoint,
-  getEmployerApplicationTimelineKey,
-  getHandlerNotesQueryKey,
-  getYouthApplicationTimelineKey,
-} from 'kesaseteli-shared/backend-api/backend-api';
-import {
   useMutation,
   UseMutationOptions,
   UseMutationResult,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
+import {
+  HandlerNote,
+  NoteTargetType,
+  UpdateNotePayload,
+} from 'kesaseteli/handler/types/note';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+
+import invalidateNoteQueries from './invalidateNoteQueries';
 
 const useUpdateNoteMutation = (
   noteId: string,
@@ -36,18 +33,10 @@ const useUpdateNoteMutation = (
           payload
         )
       ),
-    onSuccess: (data, variables, context) => {
-      void queryClient.invalidateQueries(
-        getHandlerNotesQueryKey(targetType, targetId)
-      );
-      void queryClient.invalidateQueries(
-        getYouthApplicationTimelineKey(targetId)
-      );
-      void queryClient.invalidateQueries(
-        getEmployerApplicationTimelineKey(targetId)
-      );
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      await invalidateNoteQueries(queryClient, targetType, targetId);
       if (onSuccess) {
-        void onSuccess(data, variables, context);
+        void onSuccess(data, variables, onMutateResult, context);
       }
     },
     onError: useErrorHandler(),

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ButtonPresetTheme,
   ButtonVariant,
@@ -14,7 +15,6 @@ import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useQueryClient } from 'react-query';
 import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
@@ -70,9 +70,9 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
         clearLocalStorage(`application-${applicationId}`);
       }
       ApplicationPersistenceService.clearAll();
-      await queryClient.invalidateQueries(
-        BackendEndpoint.EMPLOYER_APPLICATIONS
-      );
+      await queryClient.invalidateQueries({
+        queryKey: [BackendEndpoint.EMPLOYER_APPLICATIONS],
+      });
       setLeaveConfirmBypassed(true);
       goToPage('/');
     }
@@ -127,8 +127,8 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
 
   const isLoading =
     isSubmitting ||
-    updateApplicationQuery.isLoading ||
-    deleteApplicationQuery.isLoading ||
+    updateApplicationQuery.isPending ||
+    deleteApplicationQuery.isPending ||
     isWizardLoading;
 
   return (

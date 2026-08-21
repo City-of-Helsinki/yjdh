@@ -1,18 +1,15 @@
-import { NoteTargetType } from 'kesaseteli/handler/types/note';
-import {
-  BackendEndpoint,
-  getEmployerApplicationTimelineKey,
-  getHandlerNotesQueryKey,
-  getYouthApplicationTimelineKey,
-} from 'kesaseteli-shared/backend-api/backend-api';
 import {
   useMutation,
   UseMutationOptions,
   UseMutationResult,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
+import { NoteTargetType } from 'kesaseteli/handler/types/note';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+
+import invalidateNoteQueries from './invalidateNoteQueries';
 
 const useDeleteNoteMutation = (
   targetType: NoteTargetType,
@@ -28,18 +25,10 @@ const useDeleteNoteMutation = (
       handleResponse<void>(
         axios.delete(`${BackendEndpoint.HANDLER_NOTES}${noteId}/`)
       ),
-    onSuccess: (data, variables, context) => {
-      void queryClient.invalidateQueries(
-        getHandlerNotesQueryKey(targetType, targetId)
-      );
-      void queryClient.invalidateQueries(
-        getYouthApplicationTimelineKey(targetId)
-      );
-      void queryClient.invalidateQueries(
-        getEmployerApplicationTimelineKey(targetId)
-      );
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      await invalidateNoteQueries(queryClient, targetType, targetId);
       if (onSuccess) {
-        void onSuccess(data, variables, context);
+        void onSuccess(data, variables, onMutateResult, context);
       }
     },
     onError: useErrorHandler(),

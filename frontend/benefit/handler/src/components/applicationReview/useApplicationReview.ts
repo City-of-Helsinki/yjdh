@@ -53,7 +53,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
 
   const {
     mutate: uploadAttachment,
-    isLoading: isUploading,
+    isPending: isUploading,
     isError: isUploadingError,
   } = useUploadAttachmentQuery();
 
@@ -108,7 +108,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
   ]);
 
   useEffect(() => {
-    const loadingDataStatuses = new Set(['idle', 'loading']);
+    const loadingDataStatuses = new Set(['pending']);
     if (
       id &&
       !loadingDataStatuses.has(applicationDataStatus) &&

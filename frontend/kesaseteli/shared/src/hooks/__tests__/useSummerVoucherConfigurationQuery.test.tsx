@@ -1,16 +1,16 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
 import nock from 'nock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
 
 import useSummerVoucherConfigurationQuery from '../useSummerVoucherConfigurationQuery';
 
-const API_BASE_TEST_URL = 'http://kesaseteli-api';
+const API_BASE_TEST_URL = 'http://localhost';
 
 type Language = 'fi' | 'sv' | 'en';
 type LanguageSummerVoucherConfigurations = Record<
@@ -21,7 +21,7 @@ type LanguageSummerVoucherConfigurations = Record<
 const languages = ['fi', 'sv', 'en'] as const;
 
 const languageDataMock = languages.reduce<LanguageSummerVoucherConfigurations>(
-  (acc, lang: typeof languages[number]) => ({
+  (acc, lang: (typeof languages)[number]) => ({
     ...acc,
     [lang]: [
       {

@@ -1,7 +1,7 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { PROPOSALS_FOR_DECISION } from 'benefit-shared/constants';
 import { BatchData } from 'benefit-shared/types/application';
-import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 export const getReportsApplicationBatchesQueryKey = (
@@ -13,9 +13,9 @@ const useReportsApplicationBatchesQuery = (
 ): UseQueryResult<BatchData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
 
-  return useQuery<BatchData[], Error>(
-    [getReportsApplicationBatchesQueryKey(proposalForDecision)],
-    () =>
+  return useQuery<BatchData[], Error>({
+    queryKey: [getReportsApplicationBatchesQueryKey(proposalForDecision)],
+    queryFn: () =>
       proposalForDecision
         ? handleResponse<BatchData[]>(
             axios.get(
@@ -23,8 +23,8 @@ const useReportsApplicationBatchesQuery = (
             )
           )
         : Promise.reject(new Error('Missing proposalForDecision')),
-    { staleTime: Infinity }
-  );
+    staleTime: Infinity,
+  });
 };
 
 export default useReportsApplicationBatchesQuery;

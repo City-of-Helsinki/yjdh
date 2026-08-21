@@ -9,21 +9,28 @@ type $StepContainerProps = Props & {
 const getActiveColor = (isActive: boolean, theme: DefaultTheme): string =>
   isActive ? theme.colors.black90 : theme.colors.black20;
 
+const stepperShouldForwardProp = (prop: string): boolean => prop !== 'isActive';
+
 export const $StepsContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-export const $StepContainer = styled.div<$StepContainerProps>`
+export const $StepContainer = styled.div.withConfig({
+  shouldForwardProp: stepperShouldForwardProp,
+})<$StepContainerProps>`
   display: flex;
   align-items: center;
   flex-direction: column;
   position: relative;
   z-index: 1;
-  cursor: ${({ isActive }: $StepContainerProps) => (isActive ? 'pointer' : 'auto')};
+  cursor: ${({ isActive }: $StepContainerProps) =>
+    isActive ? 'pointer' : 'auto'};
 `;
 
-export const $StepCircle = styled.div<Props>`
+export const $StepCircle = styled.div.withConfig({
+  shouldForwardProp: stepperShouldForwardProp,
+})<Props>`
   height: 36px;
   width: 36px;
   border-radius: 50%;
@@ -39,7 +46,9 @@ export const $StepCircle = styled.div<Props>`
   font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.m};
 `;
 
-export const $StepTitle = styled.p<Props>`
+export const $StepTitle = styled.p.withConfig({
+  shouldForwardProp: stepperShouldForwardProp,
+})<Props>`
   text-align: center;
   position: absolute;
   bottom: -40px;
@@ -49,7 +58,9 @@ export const $StepTitle = styled.p<Props>`
   font-weight: ${(props: Props) => (props.isActive ? 600 : 500)};
 `;
 
-export const $Divider = styled.div<Props>`
+export const $Divider = styled.div.withConfig({
+  shouldForwardProp: stepperShouldForwardProp,
+})<Props>`
   width: 100%;
   height: 4px;
   margin: 4px;

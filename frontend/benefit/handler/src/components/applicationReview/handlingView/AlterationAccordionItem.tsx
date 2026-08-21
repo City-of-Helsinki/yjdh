@@ -46,7 +46,7 @@ const AlterationAccordionItem = ({
   alteration,
   application,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
-AlterationAccordionItemProps): JSX.Element => {
+AlterationAccordionItemProps): React.ReactElement => {
   const locale = useLocale();
   const { t } = useTranslation();
   const router = useRouter();
@@ -419,7 +419,7 @@ AlterationAccordionItemProps): JSX.Element => {
             isOpen
             onClose={() => setIsDeleteModalOpen(false)}
             onDelete={deleteItem}
-            isDeleting={deleteStatus === 'loading'}
+            isDeleting={deleteStatus === 'pending'}
           />
         )}
         {isDeleteModalOpen && cancellable && (
@@ -427,7 +427,7 @@ AlterationAccordionItemProps): JSX.Element => {
             isOpen
             onClose={() => setIsDeleteModalOpen(false)}
             onSetCancelled={setItemCancelled}
-            isDeleting={cancelStatus === 'loading'}
+            isDeleting={cancelStatus === 'pending'}
             alteration={alteration}
           />
         )}

@@ -42,7 +42,7 @@ jest.mock('next-i18next', () => ({
   }),
 }));
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   useQueryClient: () => ({
     invalidateQueries: jest.fn(),
   }),

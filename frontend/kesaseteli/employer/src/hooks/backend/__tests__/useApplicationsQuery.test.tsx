@@ -1,10 +1,11 @@
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
-import { useQuery } from 'react-query';
 
 import useApplicationsQuery from '../useApplicationsQuery';
 
-jest.mock('react-query', () => ({
-  useQuery: jest.fn(),
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useQuery: jest.fn(() => ({ isError: false })),
 }));
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -18,12 +19,12 @@ jest.mock('shared/hooks/useBackendAPI', () => () => ({
 // eslint-disable-next-line unicorn/consistent-function-scoping
 jest.mock('shared/hooks/useErrorHandler', () => () => jest.fn());
 
-describe('useApplicationsQuery keepPreviousData behavior', () => {
+describe('useApplicationsQuery placeholderData behavior', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('initially sets keepPreviousData to true', () => {
+  it('initially keeps previous data', () => {
     renderHook(() =>
       useApplicationsQuery({
         onlyMine: false,
@@ -32,15 +33,13 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
     );
 
     expect(useQuery).toHaveBeenCalledWith(
-      expect.any(Array),
-      expect.any(Function),
       expect.objectContaining({
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
       })
     );
   });
 
-  it('sets keepPreviousData to false when filter changes', () => {
+  it('drops previous data when filter changes', () => {
     const onlyMine = false;
     let year = '2023';
 
@@ -52,10 +51,8 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
     );
 
     expect(useQuery).toHaveBeenLastCalledWith(
-      expect.any(Array),
-      expect.any(Function),
       expect.objectContaining({
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
       })
     );
 
@@ -64,10 +61,8 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
     rerender();
 
     expect(useQuery).toHaveBeenLastCalledWith(
-      expect.any(Array),
-      expect.any(Function),
       expect.objectContaining({
-        keepPreviousData: false,
+        placeholderData: undefined,
       })
     );
 
@@ -75,15 +70,13 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
     rerender();
 
     expect(useQuery).toHaveBeenLastCalledWith(
-      expect.any(Array),
-      expect.any(Function),
       expect.objectContaining({
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
       })
     );
   });
 
-  it('keeps keepPreviousData as true when only pagination changes', () => {
+  it('keeps previous data when only pagination changes', () => {
     let offset = 0;
     const { rerender } = renderHook(() =>
       useApplicationsQuery({
@@ -95,10 +88,8 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
     );
 
     expect(useQuery).toHaveBeenLastCalledWith(
-      expect.any(Array),
-      expect.any(Function),
       expect.objectContaining({
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
       })
     );
 
@@ -107,10 +98,8 @@ describe('useApplicationsQuery keepPreviousData behavior', () => {
     rerender();
 
     expect(useQuery).toHaveBeenLastCalledWith(
-      expect.any(Array),
-      expect.any(Function),
       expect.objectContaining({
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
       })
     );
   });

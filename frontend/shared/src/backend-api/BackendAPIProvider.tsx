@@ -19,7 +19,7 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
   headers,
   isLocalStorageCsrf = false,
   children,
-}): JSX.Element => {
+}): React.ReactElement => {
   const { i18n } = useTranslation();
 
   const axios = useMemo(() => {

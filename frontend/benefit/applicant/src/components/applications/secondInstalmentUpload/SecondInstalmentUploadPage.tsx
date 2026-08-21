@@ -114,12 +114,12 @@ const SecondInstalmentUploadPage: React.FC = () => {
 
   const {
     mutate: secondInstalmentRespond,
-    isLoading: isSubmittingSecondInstalmentResponse,
+    isPending: isSubmittingSecondInstalmentResponse,
   } = useSecondInstalmentRespondMutation();
 
   const {
     mutate: changeEmployerAssurance,
-    isLoading: isChangingEmployerAssurance,
+    isPending: isChangingEmployerAssurance,
   } = useChangeEmployerAssuranceMutation();
 
   const handleEmployerAssuranceChange = React.useCallback(

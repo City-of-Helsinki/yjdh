@@ -116,7 +116,7 @@ const Dashboard = ({
           <Button
             iconStart={(<IconPlus aria-hidden />) as React.ReactElement}
             onClick={handleCreateNew}
-            isLoading={createApplicationQuery.isLoading}
+            isLoading={createApplicationQuery.isPending}
             loadingText={t('common:appName')}
           >
             {t('common:thankyouPage.createNewApplication')}

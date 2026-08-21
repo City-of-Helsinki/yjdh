@@ -92,7 +92,9 @@ describe('NoteCard', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /peruuta/i }));
 
-    expect(screen.queryByRole('textbox', { name: /muokkaa/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: /muokkaa/i })
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Original note content')).toBeInTheDocument();
   });
 
@@ -156,7 +158,12 @@ describe('NoteCard', () => {
     );
 
     const card = screen.getByTestId('note-card-note-1');
-    expect(card).toHaveStyle('border-right-color: var(--color-alert)');
+    expect(card).toHaveStyle(
+      '--timeline-item-border-color: var(--color-alert)'
+    );
+    expect(card).toHaveStyle(
+      '--timeline-item-background-color: var(--color-alert-light)'
+    );
   });
 
   it('applies standard visual treatment for normal notes', () => {
@@ -178,6 +185,11 @@ describe('NoteCard', () => {
     );
 
     const card = screen.getByTestId('note-card-note-1');
-    expect(card).toHaveStyle('border-right-color: var(--color-black-20)');
+    expect(card).toHaveStyle(
+      '--timeline-item-border-color: var(--color-coat-of-arms)'
+    );
+    expect(card).toHaveStyle(
+      '--timeline-item-background-color: var(--color-white)'
+    );
   });
 });

@@ -44,7 +44,7 @@ jest.mock('shared/components/toast/Toast', () => jest.fn());
 jest.mock(
   'benefit/handler/components/alterationHandling/AlterationCsvButton',
   () =>
-    function MockAlterationCsvButton(): JSX.Element {
+    function MockAlterationCsvButton(): React.ReactElement {
       return <div data-testid="alteration-csv-button" />;
     }
 );
