@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.2...benefit-applicant-v4.5.0) (2026-08-22)
+
+
+### Features
+
+* **frontend:** Migrate package manager from yarn to pnpm ([51d2667](https://github.com/City-of-Helsinki/yjdh/commit/51d2667d40ff3f8f001c91da081ed3ac260ddb94))
+
+
+### Bug Fixes
+
+* Add react-i18next to app runtimes and clean root workspace config ([b4a8d3c](https://github.com/City-of-Helsinki/yjdh/commit/b4a8d3cb82756cd4f4b270a65d4eed8d40f96b08))
+* **bf-applicant:** Avoid unsafe reduce in de minimis blur handler ([e14938e](https://github.com/City-of-Helsinki/yjdh/commit/e14938ef50f7f3b1cae7aa1a82c7909abdb3da86))
+* **bf-applicant:** Prefer Number.parseInt over parseInt ([41d7e68](https://github.com/City-of-Helsinki/yjdh/commit/41d7e68eadb879a8e6ad64346c88a7fdc8acbbec))
+* **bf:** Fix Sentry edge runtime configuration ([accb89b](https://github.com/City-of-Helsinki/yjdh/commit/accb89b392c0780aa990585d3287878811c0aa40))
+* **deps:** Declare i18next directly in each next app ([646de0e](https://github.com/City-of-Helsinki/yjdh/commit/646de0ec0dd50d1ab655a33d03f62852db7d8a74))
+* **frontend:** Add React type deps and fix related typings ([d588cf3](https://github.com/City-of-Helsinki/yjdh/commit/d588cf383faa437de811f2e72e41d5532ad0fecb))
+* **frontend:** Dedupe styled-components via packageExtensions ([dc79eac](https://github.com/City-of-Helsinki/yjdh/commit/dc79eac04030027ca041ea4c57f5c81cf038d000))
+* **frontend:** Resolve lint and type issues ([78f3c0d](https://github.com/City-of-Helsinki/yjdh/commit/78f3c0d8b96c415297a0d656f33712557e639bbe))
+
+
+### Dependencies
+
+* Bump next to 15.5.22 to patch security advisories ([940e56b](https://github.com/City-of-Helsinki/yjdh/commit/940e56b456b60b1e3103db04dd6f2470511a6bbf))
+
 ## [4.4.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.1...benefit-applicant-v4.4.2) (2026-06-25)
 
 
