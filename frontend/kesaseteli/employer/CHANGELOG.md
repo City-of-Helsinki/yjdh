@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.4.0...kesaseteli-employer-v2.4.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* **ks:** Add required cookie groups to all cookie settings pages ([6c602a0](https://github.com/City-of-Helsinki/yjdh/commit/6c602a0c0fa82f7351a35ecd94c625e0706e1ba1))
+
 ## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.3.1...kesaseteli-employer-v2.4.0) (2026-08-18)
 
 
