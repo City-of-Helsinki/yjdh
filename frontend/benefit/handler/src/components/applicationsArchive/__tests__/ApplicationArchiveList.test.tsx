@@ -19,7 +19,7 @@ jest.mock('shared/components/table/Table.sc', () => ({
   }: {
     href: string;
     children: React.ReactNode;
-  }): JSX.Element => (
+  }): React.JSX.Element => (
     <a href={href} data-testid="archive-link">
       {children}
     </a>
@@ -40,7 +40,7 @@ jest.mock('hds-react', () => {
         key: string;
         transform?: (row: Record<string, unknown>) => React.ReactNode;
       }>;
-    }): JSX.Element => {
+    }): React.JSX.Element => {
       const row = rows[0] || {};
 
       return (

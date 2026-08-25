@@ -154,7 +154,7 @@ const useEmployerApplications = (
   };
 };
 
-export default function EmployerApplicationList(): JSX.Element {
+export default function EmployerApplicationList(): React.JSX.Element {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useSessionStorageState(

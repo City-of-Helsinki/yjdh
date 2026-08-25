@@ -35,7 +35,7 @@ export type HdsHeader<T extends BaseApplication = BaseApplication> = {
   headerName: string;
   isSortable?: boolean;
   orderingField?: OrderingField<T>;
-  transform?: (row: T) => string | JSX.Element;
+  transform?: (row: T) => string | React.JSX.Element;
 };
 
 // Extract only the string keys from the model
@@ -137,7 +137,7 @@ export function useApplicationTableQuery<T extends BaseApplication>(
 interface ApplicationListTableComponent {
   <T extends BaseApplication = BaseApplication>(
     props: ApplicationListTableProps<T>
-  ): JSX.Element;
+  ): React.JSX.Element;
   FilterSection: typeof FilterSection;
 }
 
@@ -151,7 +151,7 @@ const ApplicationListTable: ApplicationListTableComponent =
     setOrdering,
     isLoading,
     defaultSortColumnKey = DEFAULT_ORDERING as OrderDirection<T>,
-  }: ApplicationListTableProps<T>): JSX.Element {
+  }: ApplicationListTableProps<T>): React.JSX.Element {
     const { t } = useTranslation();
     const locale = useLocale();
 

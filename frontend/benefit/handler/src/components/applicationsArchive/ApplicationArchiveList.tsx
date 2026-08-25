@@ -57,7 +57,7 @@ const renderCompanyNameCell = ({
   id,
   companyName,
   status,
-}: TableTransforms): JSX.Element =>
+}: TableTransforms): React.JSX.Element =>
   status === APPLICATION_STATUSES.ARCHIVAL ? (
     <$CompanyNameDisabled>{String(companyName)}</$CompanyNameDisabled>
   ) : (
@@ -66,7 +66,7 @@ const renderCompanyNameCell = ({
 
 const renderAlterationBadge = ({
   alterations,
-}: TableTransforms): JSX.Element | string =>
+}: TableTransforms): React.JSX.Element | string =>
   alterations?.length > 0 ? (
     <$AlterationBadge
       $requiresAttention={alterations.some((a) =>
@@ -84,7 +84,7 @@ const renderAlterationBadge = ({
 const getTransformForArchivedStatus = (
   t: (key: string) => string,
   { status }: TableTransforms
-): JSX.Element => (
+): React.JSX.Element => (
   <$TagWrapper $colors={getTagStyleForStatus(status)}>
     <Tag
       iconStart={

@@ -50,7 +50,7 @@ const StatusFilter = ({
   statuses,
   defaultSelectedStatuses,
   onChange,
-}: StatusFilterProps): JSX.Element => {
+}: StatusFilterProps): React.JSX.Element => {
   const { t } = useTranslation();
   const { selectedStatuses, setSelectedStatuses } = useStatusFilter({
     defaultSelectedStatuses,

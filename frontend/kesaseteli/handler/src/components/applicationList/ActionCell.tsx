@@ -25,13 +25,9 @@ export default function ActionCell<R extends BaseApplication>({
   value,
   row,
   type,
-}: ActionCellProps<R>): JSX.Element {
+}: ActionCellProps<R>): React.JSX.Element {
   const basePath = BASE_PATH_MAP[type];
   const link = `${basePath}/${String(row.id)}`;
 
-  return (
-    <$Link href={link}>
-      {value}
-    </$Link>
-  );
+  return <$Link href={link}>{value}</$Link>;
 }
