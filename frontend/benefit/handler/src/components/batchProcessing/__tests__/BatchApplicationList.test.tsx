@@ -27,7 +27,7 @@ jest.mock('shared/components/table/Table.sc', () => ({
   }: {
     href: string;
     children: React.ReactNode;
-  }): JSX.Element => <a href={href}>{children}</a>,
+  }): React.JSX.Element => <a href={href}>{children}</a>,
 }));
 
 jest.mock(
@@ -39,7 +39,7 @@ jest.mock(
     }: {
       isOpen: boolean;
       customContent: React.ReactNode;
-    }): JSX.Element | null {
+    }): React.JSX.Element | null {
       return isOpen ? <div data-testid="modal">{customContent}</div> : null;
     }
 );
@@ -47,7 +47,7 @@ jest.mock(
 jest.mock(
   '../batchFooter/BatchFooterDraft',
   () =>
-    function MockBatchFooterDraft(): JSX.Element {
+    function MockBatchFooterDraft(): React.JSX.Element {
       return <div data-testid="batch-footer-draft" />;
     }
 );
@@ -55,7 +55,7 @@ jest.mock(
 jest.mock(
   '../batchFooter/BatchFooterInspection',
   () =>
-    function MockBatchFooterInspection(): JSX.Element {
+    function MockBatchFooterInspection(): React.JSX.Element {
       return <div data-testid="batch-footer-inspection" />;
     }
 );
@@ -63,7 +63,7 @@ jest.mock(
 jest.mock(
   '../batchFooter/BatchFooterCompletion',
   () =>
-    function MockBatchFooterCompletion(): JSX.Element {
+    function MockBatchFooterCompletion(): React.JSX.Element {
       return <div data-testid="batch-footer-completion" />;
     }
 );
@@ -77,7 +77,7 @@ jest.mock(
     }: {
       onSubmit: () => void;
       onClose: () => void;
-    }): JSX.Element {
+    }): React.JSX.Element {
       return (
         <div>
           <button type="button" onClick={onSubmit}>
@@ -105,7 +105,7 @@ jest.mock('hds-react', () => {
         key: string;
         transform?: (row: Record<string, unknown>) => React.ReactNode;
       }>;
-    }): JSX.Element => {
+    }): React.JSX.Element => {
       const row = rows[0] || {};
 
       return (

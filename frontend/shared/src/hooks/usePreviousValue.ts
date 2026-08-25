@@ -1,7 +1,8 @@
 import React from 'react';
 
 const usePreviousValue = <T>(value: T): T | undefined => {
-  const ref = React.useRef<T | undefined>();
+  // eslint-disable-next-line unicorn/no-useless-undefined
+  const ref = React.useRef<T | undefined>(undefined);
   React.useEffect(() => {
     ref.current = value;
   });

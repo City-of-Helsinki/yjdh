@@ -163,7 +163,7 @@ const useYouthApplications = (
   };
 };
 
-export default function YouthApplicationList(): JSX.Element {
+export default function YouthApplicationList(): React.JSX.Element {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useSessionStorageState(

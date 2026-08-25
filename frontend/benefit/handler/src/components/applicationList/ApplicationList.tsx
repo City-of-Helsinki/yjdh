@@ -152,7 +152,7 @@ const renderApplicationCompanyLink = ({
   companyName,
   unreadMessagesCount,
   status: applicationStatus,
-}: ApplicationListTableTransforms): JSX.Element => (
+}: ApplicationListTableTransforms): React.JSX.Element => (
   <$Link
     href={buildApplicationUrl(
       id || '',

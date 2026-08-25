@@ -66,7 +66,7 @@ jest.mock('next/router', () => ({
 jest.mock(
   'react-loading-skeleton',
   () =>
-    function MockSkeleton(): JSX.Element {
+    function MockSkeleton(): React.JSX.Element {
       return <div data-testid="loading-skeleton" />;
     }
 );
@@ -80,7 +80,7 @@ jest.mock(
     }: {
       isOpen: boolean;
       customContent: React.ReactNode;
-    }): JSX.Element | null {
+    }): React.JSX.Element | null {
       return isOpen ? <div data-testid="modal">{customContent}</div> : null;
     }
 );
@@ -92,7 +92,7 @@ jest.mock('shared/components/table/Table.sc', () => ({
   }: {
     href: string;
     children: React.ReactNode;
-  }): JSX.Element => <a href={href}>{children}</a>,
+  }): React.JSX.Element => <a href={href}>{children}</a>,
 }));
 
 jest.mock('hds-react', () => {
@@ -113,7 +113,7 @@ jest.mock('hds-react', () => {
         transform?: (row: Record<string, unknown>) => React.ReactNode;
       }>;
       setSelectedRows?: (rows: string[]) => void;
-    }): JSX.Element => (
+    }): React.JSX.Element => (
       <div>
         <h2>{heading}</h2>
         {(cols || []).map((col) => (

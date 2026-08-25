@@ -66,7 +66,7 @@ const $BatchStatusValue = styled.span`
 const renderBatchCompanyLink = ({
   id,
   company_name: companyName,
-}: BatchTableTransforms): JSX.Element => (
+}: BatchTableTransforms): React.JSX.Element => (
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   <$Link href={`${ROUTES.APPLICATION}?id=${id}`} target="_blank">
     {companyName}
@@ -75,7 +75,7 @@ const renderBatchCompanyLink = ({
 
 const renderBatchTalpaStatus = ({
   talpa_status,
-}: BatchTableTransforms): JSX.Element => (
+}: BatchTableTransforms): React.JSX.Element => (
   <>
     {talpa_status === TALPA_STATUSES.NOT_SENT_TO_TALPA && (
       <IconClock color="var(--color-metro)" />

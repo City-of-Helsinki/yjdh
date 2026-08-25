@@ -4,7 +4,7 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 type ExtendedComponentProps = {
   handleUploadClick: () => void;
   handleUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  uploadRef: React.RefObject<HTMLInputElement>;
+  uploadRef: React.RefObject<HTMLInputElement | null>;
 };
 
 const useUploadAttachment = (

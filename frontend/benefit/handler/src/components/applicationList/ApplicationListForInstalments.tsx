@@ -91,7 +91,7 @@ const renderInstalmentCompanyLink = ({
   companyName,
   unreadMessagesCount,
   status: applicationStatus,
-}: ApplicationListTableTransforms): JSX.Element => (
+}: ApplicationListTableTransforms): React.JSX.Element => (
   <$Link
     href={buildApplicationUrl(
       id || '',
@@ -105,7 +105,7 @@ const renderInstalmentCompanyLink = ({
 
 const renderInstalmentAmount = ({
   secondInstalment,
-}: ApplicationListTableTransforms): JSX.Element => {
+}: ApplicationListTableTransforms): React.JSX.Element => {
   const amountAfterRecoveries = Number.parseFloat(
     String(secondInstalment?.amountAfterRecoveries || 0)
   );
@@ -123,7 +123,7 @@ const renderInstalmentAmount = ({
 
 const renderAlterationBadge = (
   args: ApplicationListTableTransforms
-): JSX.Element | string =>
+): React.JSX.Element | string =>
   (args.alterations || []).length > 0 ? (
     <$AlterationBadge
       $requiresAttention={(args.alterations || []).some(({ state }) =>
