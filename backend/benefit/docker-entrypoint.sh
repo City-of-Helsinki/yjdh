@@ -54,7 +54,7 @@ if [[ "$CREATE_SUPERUSER" = "1" ]]; then
 fi
 
 # Start server
-if [ "$#" -gt 0 ]; then
+if [[ "$#" -gt 0 ]]; then
     "$@"
 elif [[ "$DEV_SERVER" = "1" ]]; then
     python -Wd ./manage.py runserver 0.0.0.0:8000
