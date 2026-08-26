@@ -5,8 +5,8 @@ import {
 } from '@tanstack/react-query';
 import axios from 'axios';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useEmployerApplicationQuery = <T = any>(
@@ -22,17 +22,16 @@ const useEmployerApplicationQuery = <T = any>(
     ...options,
   });
 
-  useEffect(() => {
-    if (!query.isError) {
-      return;
-    }
-    const is404Error =
-      axios.isAxiosError(query.error) && query.error.response?.status === 404;
-    if (!is404Error) {
-      handleError(query.error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.isError, query.error]);
+  useQuerySideEffect(query, {
+    onError: handleError,
+    onErrorPredicate: (error) => {
+      // Suppress 404 errors — page handles redirect instead
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return false;
+      }
+      return true;
+    },
+  });
 
   return query;
 };

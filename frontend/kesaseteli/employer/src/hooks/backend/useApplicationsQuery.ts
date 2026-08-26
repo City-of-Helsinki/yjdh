@@ -4,9 +4,10 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 import Application from 'shared/types/application';
 
 export type PaginatedResponse<T> = {
@@ -37,6 +38,17 @@ const useApplicationsQuery = <T = Application[], R = Application[]>({
 }: UseApplicationsQueryOptions<T, R> = {}): UseQueryResult<T> => {
   const { axios, handleResponse } = useBackendAPI();
   const defaultErrorHandler = useErrorHandler();
+
+  const errorHandler = useCallback(
+    (error: Error) => {
+      if (onError) {
+        onError(error);
+      } else {
+        defaultErrorHandler(error);
+      }
+    },
+    [onError, defaultErrorHandler]
+  );
   const queryYear = year === 'all' ? undefined : year;
 
   const prevFiltersRef = useRef({ onlyMine, queryYear });
@@ -72,12 +84,9 @@ const useApplicationsQuery = <T = Application[], R = Application[]>({
     placeholderData: shouldKeepPreviousData ? keepPreviousData : undefined,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      const errorHandler = onError ?? defaultErrorHandler;
-      errorHandler(query.error);
-    }
-  }, [query, defaultErrorHandler, onError]);
+  useQuerySideEffect(query, {
+    onError: errorHandler,
+  });
 
   return query;
 };

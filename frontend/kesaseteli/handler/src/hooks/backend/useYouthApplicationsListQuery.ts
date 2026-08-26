@@ -9,9 +9,9 @@ import {
   YouthApplication,
 } from 'kesaseteli/handler/types/application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 export type YouthApplicationsQueryParams = {
   /** List of statuses to filter by */
@@ -56,12 +56,9 @@ const useYouthApplicationsListQuery = (
     ...options,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      handleError(query.error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.isError, query.error]);
+  useQuerySideEffect(query, {
+    onError: handleError,
+  });
 
   return query;
 };

@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 import Company from 'shared/types/company';
 
 const useCompanyQuery = (): UseQueryResult<Company> => {
@@ -17,11 +17,9 @@ const useCompanyQuery = (): UseQueryResult<Company> => {
     staleTime: Infinity,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      errorHandler(query.error);
-    }
-  }, [query, errorHandler]);
+  useQuerySideEffect(query, {
+    onError: errorHandler,
+  });
 
   return query;
 };
