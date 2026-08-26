@@ -15,7 +15,11 @@ COPY --chown=default:root shared /shared/
 # WORKAROUND: pip 25.3 used until https://github.com/jazzband/pip-tools/issues/2319 really works.
 # Otherwise "AttributeError: 'PackageFinder' object has no attribute 'allow_all_prereleases'"
 # can happen when using pip-tools / pip-compile in development.
-RUN dnf update -y \
+#
+# WORKAROUND: Remove unused sqlite & sqlite-devel packages so they don't cause problems in updates like
+# "cannot install the best update candidate for package sqlite-3.34.1-10.el9_8.x86_64".
+RUN dnf remove -y sqlite \
+    && dnf update -y \
     && dnf install -y \
            git \
            nc \
