@@ -4,9 +4,9 @@ import {
   BackendEndpoint,
   getHandlerNotesQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 const useHandlerNotesQuery = (
   targetType: string,
@@ -26,12 +26,9 @@ const useHandlerNotesQuery = (
     enabled: Boolean(targetId),
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      handleError(query.error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.isError, query.error]);
+  useQuerySideEffect(query, {
+    onError: handleError,
+  });
 
   return query;
 };

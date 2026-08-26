@@ -4,10 +4,11 @@ import { User, UserData } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 import {
   getLocalStorageItem,
   setLocalStorageItem,
@@ -86,13 +87,10 @@ const useUserQuery = (
     select: (data) => camelcaseKeys(data, { deep: true }),
   });
 
-  useEffect(() => {
-    if (query.data) {
-      handleSuccess(query.data);
-    } else if (query.isError) {
-      handleError(query.error);
-    }
-  }, [handleError, handleSuccess, query]);
+  useQuerySideEffect(query, {
+    onSuccess: handleSuccess,
+    onError: handleError,
+  });
 
   return query;
 };

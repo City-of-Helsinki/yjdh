@@ -2,9 +2,10 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 const useApplicationsQuery = (
   status: string[],
@@ -49,16 +50,18 @@ const useApplicationsQuery = (
     },
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      showErrorToast(
-        t('common:applications.list.errors.fetch.label'),
-        t('common:applications.list.errors.fetch.text', {
-          status,
-        })
-      );
-    }
-  }, [query, status, t]);
+  const handleError = useCallback(() => {
+    showErrorToast(
+      t('common:applications.list.errors.fetch.label'),
+      t('common:applications.list.errors.fetch.text', {
+        status,
+      })
+    );
+  }, [status, t]);
+
+  useQuerySideEffect(query, {
+    onError: handleError,
+  });
 
   return query;
 };

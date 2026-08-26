@@ -1,10 +1,10 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import SummerVoucherConfiguration from 'kesaseteli-shared/types/summer-voucher-configuration';
-import { useEffect } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 const useSummerVoucherConfigurationQuery = (): UseQueryResult<
   SummerVoucherConfiguration[]
@@ -26,11 +26,9 @@ const useSummerVoucherConfigurationQuery = (): UseQueryResult<
     staleTime: Infinity,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      errorHandler(query.error);
-    }
-  }, [errorHandler, query]);
+  useQuerySideEffect(query, {
+    onError: errorHandler,
+  });
 
   return query;
 };

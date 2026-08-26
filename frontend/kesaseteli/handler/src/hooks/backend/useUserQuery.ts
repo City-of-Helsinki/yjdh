@@ -6,10 +6,10 @@ import {
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useGoToPage from 'shared/hooks/useGoToPage';
 import useIsRouting from 'shared/hooks/useIsRouting';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 import User from 'shared/types/user';
 
 const useUserQuery = <T = User>({
@@ -39,11 +39,9 @@ const useUserQuery = <T = User>({
     refetchInterval,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      errorHandler(query.error);
-    }
-  }, [query, errorHandler]);
+  useQuerySideEffect(query, {
+    onError: errorHandler,
+  });
 
   return query;
 };

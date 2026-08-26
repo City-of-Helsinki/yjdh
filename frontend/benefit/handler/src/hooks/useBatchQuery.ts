@@ -3,9 +3,10 @@ import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { BATCH_STATUSES } from 'benefit-shared/constants';
 import { BatchProposal } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 const useBatchQuery = (
   status: BATCH_STATUSES[],
@@ -33,14 +34,16 @@ const useBatchQuery = (
     refetchInterval: 60 * 1000,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      showErrorToast(
-        t('common:applications.list.errors.fetch.label'),
-        t('common:applications.list.errors.fetch.text', { status: 'error' })
-      );
-    }
-  }, [query, t]);
+  const handleError = useCallback(() => {
+    showErrorToast(
+      t('common:applications.list.errors.fetch.label'),
+      t('common:applications.list.errors.fetch.text', { status: 'error' })
+    );
+  }, [t]);
+
+  useQuerySideEffect(query, {
+    onError: handleError,
+  });
 
   return query;
 };

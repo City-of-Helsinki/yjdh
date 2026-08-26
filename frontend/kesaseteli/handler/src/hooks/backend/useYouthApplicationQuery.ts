@@ -6,8 +6,8 @@ import {
 import axios from 'axios';
 import { getYouthApplicationQueryKey } from 'kesaseteli-shared/backend-api/backend-api';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 const useYouthApplicationQuery = (
   id?: string,
@@ -21,16 +21,16 @@ const useYouthApplicationQuery = (
     ...options,
   });
 
-  useEffect(() => {
-    if (query.isError) {
-      const { error } = query;
-      const is404Error =
-        axios.isAxiosError(error) && error.response?.status === 404;
-      if (!is404Error) {
-        handleError(error);
+  useQuerySideEffect(query, {
+    onError: handleError,
+    onErrorPredicate: (error) => {
+      // Suppress 404 errors — page handles redirect instead
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return false;
       }
-    }
-  }, [query, handleError]);
+      return true;
+    },
+  });
 
   return query;
 };

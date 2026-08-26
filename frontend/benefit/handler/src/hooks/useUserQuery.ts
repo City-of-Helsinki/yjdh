@@ -2,9 +2,10 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 import User from 'shared/types/user';
 import { setLocalStorageItem } from 'shared/utils/localstorage.utils';
 
@@ -77,13 +78,10 @@ const useUserQuery = <T extends User>(
     select,
   });
 
-  useEffect(() => {
-    if (query.data) {
-      handleSuccess(query.data);
-    } else if (query.isError) {
-      handleError(query.error);
-    }
-  }, [query, handleSuccess, handleError]);
+  useQuerySideEffect(query, {
+    onSuccess: handleSuccess,
+    onError: handleError,
+  });
 
   return query;
 };

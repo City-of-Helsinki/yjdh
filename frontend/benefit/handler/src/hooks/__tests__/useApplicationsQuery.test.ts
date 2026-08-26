@@ -87,7 +87,14 @@ describe('useApplicationsQuery', () => {
   );
 
   it('shows error toast when query has error', () => {
-    (useQuery as jest.Mock).mockReturnValue({ isError: true });
+    (useQuery as jest.Mock).mockReturnValue({
+      data: undefined,
+      error: new Error('query failed'),
+      isError: true,
+      status: 'error',
+      dataUpdatedAt: 0,
+      errorUpdatedAt: 1,
+    });
 
     renderHook(() => useApplicationsQuery(['received']));
 

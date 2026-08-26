@@ -1,8 +1,8 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import Axios from 'axios';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useEffect } from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 import Application from 'shared/types/application';
 import { getFormApplication } from 'shared/utils/application.utils';
 
@@ -24,20 +24,19 @@ const useApplicationQuery = <T = Application>(
     },
   });
 
-  useEffect(() => {
-    /**
-     * Suppress the generic error toast for 404 responses — the application
-     * page handles this case by redirecting to the 404 page instead.
-     */
-    if (
-      Axios.isAxiosError(query.error) &&
-      query.error.response?.status === 404
-    ) {
-      return;
-    }
-
-    errorHandler(query.error);
-  }, [query, errorHandler]);
+  useQuerySideEffect(query, {
+    onError: errorHandler,
+    onErrorPredicate: (error) => {
+      /**
+       * Suppress the generic error toast for 404 responses — the application
+       * page handles this case by redirecting to the 404 page instead.
+       */
+      if (Axios.isAxiosError(error) && error.response?.status === 404) {
+        return false;
+      }
+      return true;
+    },
+  });
 
   return query;
 };
