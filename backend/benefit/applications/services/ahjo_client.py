@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Union
+from typing import ClassVar, List, Optional, Tuple, Union
 from urllib.parse import urlencode
 
 import requests
@@ -29,7 +29,7 @@ API_CASES_BASE = "/cases"
 
 @dataclass
 class AhjoRequest:
-    request_type = AhjoRequestType
+    request_type: ClassVar[type[AhjoRequestType] | AhjoRequestType] = AhjoRequestType
     application: Optional[Application] = None
 
     lang: str = "fi"
@@ -59,9 +59,9 @@ class AhjoRequest:
 class AhjoOpenCaseRequest(AhjoRequest):
     """Request to open a case in Ahjo."""
 
-    request_type = AhjoRequestType.OPEN_CASE
-    result_status = AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
-    request_method = "POST"
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.OPEN_CASE
+    result_status: ClassVar[AhjoStatusEnum] = AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT
+    request_method: ClassVar[str] = "POST"
 
     def api_url(self) -> str:
         if not self.application.calculation.handler.ad_username:
@@ -76,36 +76,36 @@ class AhjoOpenCaseRequest(AhjoRequest):
 class AhjoDecisionProposalRequest(AhjoRequest):
     """Request to send a decision proposal to Ahjo."""
 
-    request_type = AhjoRequestType.SEND_DECISION_PROPOSAL
-    result_status = AhjoStatusEnum.DECISION_PROPOSAL_SENT
-    request_method = "POST"
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.SEND_DECISION_PROPOSAL
+    result_status: ClassVar[AhjoStatusEnum] = AhjoStatusEnum.DECISION_PROPOSAL_SENT
+    request_method: ClassVar[str] = "POST"
 
 
 @dataclass
 class AhjoUpdateRecordsRequest(AhjoRequest):
     """Request to update records in Ahjo."""
 
-    request_type = AhjoRequestType.UPDATE_APPLICATION
-    result_status = AhjoStatusEnum.UPDATE_REQUEST_SENT
-    request_method = "PUT"
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.UPDATE_APPLICATION
+    result_status: ClassVar[AhjoStatusEnum] = AhjoStatusEnum.UPDATE_REQUEST_SENT
+    request_method: ClassVar[str] = "PUT"
 
 
 @dataclass
 class AhjoAddRecordsRequest(AhjoRequest):
     """Request to add new attachment records to Ahjo."""
 
-    request_type = AhjoRequestType.ADD_RECORDS
-    request_method = "POST"
-    result_status = AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.ADD_RECORDS
+    request_method: ClassVar[str] = "POST"
+    result_status: ClassVar[AhjoStatusEnum] = AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT
 
 
 @dataclass
 class AhjoDeleteCaseRequest(AhjoRequest):
     """Request to delete an application in Ahjo."""
 
-    request_type = AhjoRequestType.DELETE_APPLICATION
-    result_status = AhjoStatusEnum.DELETE_REQUEST_SENT
-    request_method: str = "DELETE"
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.DELETE_APPLICATION
+    result_status: ClassVar[AhjoStatusEnum] = AhjoStatusEnum.DELETE_REQUEST_SENT
+    request_method: ClassVar[str] = "DELETE"
     reason: str = "applicationretracted"
 
     def api_url(self) -> str:
@@ -125,9 +125,9 @@ class AhjoDeleteCaseRequest(AhjoRequest):
 class AhjoSubscribeDecisionRequest(AhjoRequest):
     """Request to subscribe to a decision in Ahjo."""
 
-    application = None
-    request_type = AhjoRequestType.SUBSCRIBE_TO_DECISIONS
-    request_method = "POST"
+    application: Optional[Application] = None
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.SUBSCRIBE_TO_DECISIONS
+    request_method: ClassVar[str] = "POST"
 
     def api_url(self) -> str:
         return f"{self.url_base}/decisions/subscribe"
@@ -170,9 +170,9 @@ class AhjoDecisionMakerRequest(AhjoRequest):
 
 @dataclass
 class AhjoSignerRequest(AhjoRequest):
-    application = None
-    request_type = AhjoRequestType.GET_SIGNER
-    request_method = "GET"
+    application: Optional[Application] = None
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.GET_SIGNER
+    request_method: ClassVar[str] = "GET"
 
     @staticmethod
     def org_identifier() -> str:
