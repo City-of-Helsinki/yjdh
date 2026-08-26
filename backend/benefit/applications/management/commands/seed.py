@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
+from datetime import timezone as datetime_timezone
 
 import faker
-import pytz
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -152,7 +152,7 @@ def run_seed(number):
     for factory in factories:
         for _ in range(number):
             for application_origin in ApplicationOrigin.values:
-                random_datetime = f.past_datetime(tzinfo=pytz.UTC)
+                random_datetime = f.past_datetime(tzinfo=datetime_timezone.utc)
                 application = factory(application_origin=application_origin)
                 application.created_at = random_datetime
                 application.benefit_type = BenefitType.SALARY_BENEFIT
