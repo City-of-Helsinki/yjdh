@@ -52,7 +52,7 @@ def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
         with freeze_time(created_at):
             voucher = EmployerSummerVoucherFactory(
                 application=EmployerApplicationFactory(
-                    status=EmployerApplicationStatus.SUBMITTED,
+                    status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
                     submitted_at=submitted_at,
                 )
             )

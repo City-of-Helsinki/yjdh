@@ -85,23 +85,26 @@ def test_application_put_invalid_data(api_client, application):
 
 @pytest.mark.django_db
 def test_application_patch(api_client, application):
-    data = {"status": EmployerApplicationStatus.SUBMITTED.value}
+    data = {"status": EmployerApplicationStatus.IN_HANDLING_QUEUE.value}
     response = api_client.patch(
         get_detail_url(application),
         data,
     )
 
     assert response.status_code == 200
-    assert response.data["status"] == EmployerApplicationStatus.SUBMITTED
+    assert response.data["status"] == EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     application.refresh_from_db()
-    assert application.status == EmployerApplicationStatus.SUBMITTED
+    assert application.status == EmployerApplicationStatus.IN_HANDLING_QUEUE
 
 
 @pytest.mark.django_db
-def test_submitted_at_is_set_on_draft_to_submitted_transition(api_client, application):
+def test_submitted_at_is_set_on_draft_to_in_handling_queue_transition(
+    api_client, application
+):
     """
-    Test that application's submitted_at is set on DRAFT → SUBMITTED status transition.
+    Test that application's submitted_at is set on DRAFT → IN_HANDLING_QUEUE
+    status transition.
     """
     application.refresh_from_db()
     assert application.status == EmployerApplicationStatus.DRAFT
@@ -109,12 +112,12 @@ def test_submitted_at_is_set_on_draft_to_submitted_transition(api_client, applic
 
     submission_time = timezone.now()
     with freeze_time(submission_time):
-        data = {"status": EmployerApplicationStatus.SUBMITTED.value}
+        data = {"status": EmployerApplicationStatus.IN_HANDLING_QUEUE.value}
         response = api_client.patch(get_detail_url(application), data)
 
     assert response.status_code == 200
     application.refresh_from_db()
-    assert application.status == EmployerApplicationStatus.SUBMITTED
+    assert application.status == EmployerApplicationStatus.IN_HANDLING_QUEUE
     assert application.submitted_at is not None
     assert application.submitted_at == submission_time
 
@@ -449,7 +452,7 @@ def test_application_submitting_audit_logs_status_and_submitted_at_changes(
     api_client, application
 ):
     """
-    Test that submitting application with DRAFT → SUBMITTED status change
+    Test that submitting application with DRAFT → IN_HANDLING_QUEUE status change
     audit logs the "status" and "submitted_at" field changes.
     """
     application.refresh_from_db()
@@ -460,7 +463,8 @@ def test_application_submitting_audit_logs_status_and_submitted_at_changes(
     frozen_datetime = utc_datetime(2025, 6, 20, 12, 0, 0)
     with freeze_time(frozen_datetime):
         response = api_client.patch(
-            get_detail_url(application), {"status": EmployerApplicationStatus.SUBMITTED}
+            get_detail_url(application),
+            {"status": EmployerApplicationStatus.IN_HANDLING_QUEUE},
         )
 
     assert response.status_code == 200
@@ -475,7 +479,7 @@ def test_application_submitting_audit_logs_status_and_submitted_at_changes(
     ).first()
 
     assert audit_event.changes == {
-        "status": ["draft", "submitted"],
+        "status": ["draft", "in_handling_queue"],
         "submitted_at": ["None", "2025-06-20 12:00:00"],
     }
 
@@ -704,7 +708,10 @@ def test_pagination_with_small_limit(api_client, company, user):
 def test_pagination_with_large_limit(api_client, company, user):
     """Test pagination with large limit returns all results in single page."""
     EmployerApplicationFactory.create_batch(
-        company=company, user=user, status=EmployerApplicationStatus.SUBMITTED, size=50
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        size=50,
     )
 
     response = api_client.get(get_list_url(), {"limit": 100})
@@ -722,7 +729,9 @@ def test_applications_ordering_by_created_at(api_client, company, user):
     # Create applications in non-chronological order to verify ordering works
     with freeze_time("2024-01-01 11:00:00"):
         app_middle = EmployerApplicationFactory(
-            company=company, user=user, status=EmployerApplicationStatus.SUBMITTED
+            company=company,
+            user=user,
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
         )
 
     with freeze_time("2024-01-01 12:00:00"):
@@ -753,7 +762,7 @@ def test_applications_ordering_by_submitted_at(api_client, company, user):
         app_middle = EmployerApplicationFactory(
             company=company,
             user=user,
-            status=EmployerApplicationStatus.SUBMITTED,
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
             submitted_at="2024-01-01T11:00:00Z",
         )
 
@@ -761,7 +770,7 @@ def test_applications_ordering_by_submitted_at(api_client, company, user):
         app_newest = EmployerApplicationFactory(
             company=company,
             user=user,
-            status=EmployerApplicationStatus.SUBMITTED,
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
             submitted_at="2024-01-01T12:00:00Z",
         )
 
@@ -769,7 +778,7 @@ def test_applications_ordering_by_submitted_at(api_client, company, user):
         app_oldest = EmployerApplicationFactory(
             company=company,
             user=user,
-            status=EmployerApplicationStatus.SUBMITTED,
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
             submitted_at="2024-01-01T10:00:00Z",
         )
 
@@ -828,7 +837,7 @@ def test_required_fields_on_submission_including_new_fields(
     data = EmployerApplicationSerializer(application).data
 
     # Set status to submitted
-    data["status"] = EmployerApplicationStatus.SUBMITTED
+    data["status"] = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     # Missing employee_phone_number in summer voucher
     data["summer_vouchers"][0]["employee_phone_number"] = ""
@@ -845,11 +854,15 @@ def test_applications_list_filtered_by_year(api_client, company, user):
     """Test filtering applications by year using the created_at__year query parameter."""
     with freeze_time("2024-06-01 12:00:00"):
         app_2024 = EmployerApplicationFactory(
-            company=company, user=user, status=EmployerApplicationStatus.SUBMITTED
+            company=company,
+            user=user,
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
         )
     with freeze_time("2025-06-01 12:00:00"):
         app_2025 = EmployerApplicationFactory(
-            company=company, user=user, status=EmployerApplicationStatus.SUBMITTED
+            company=company,
+            user=user,
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
         )
 
     # Filter for 2024

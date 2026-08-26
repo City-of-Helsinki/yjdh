@@ -36,6 +36,15 @@ from shared.common.tests.factories import UserFactory
 
 User = get_user_model()
 
+_NON_VIEWABLE_STATUSES: tuple[EmployerApplicationStatus, ...] = (
+    EmployerApplicationStatus.APPLICATION_HANDLING,
+    EmployerApplicationStatus.PAYMENT_REVIEW,
+    EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+    EmployerApplicationStatus.SENT_FOR_PAYMENT,
+    EmployerApplicationStatus.REJECTED,
+    EmployerApplicationStatus.CANCELLED,
+)
+
 
 def create_attachment(
     user: User, company: Company, status: EmployerApplicationStatus
@@ -72,7 +81,7 @@ def create_attachment(
     "application_status",
     [
         EmployerApplicationStatus.DRAFT,
-        EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.IN_HANDLING_QUEUE,
     ],
 )
 @pytest.mark.django_db
@@ -125,7 +134,7 @@ def test_employer_application_list_viewable_statuses(
     "application_status",
     [
         EmployerApplicationStatus.DRAFT,
-        EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.IN_HANDLING_QUEUE,
     ],
 )
 @pytest.mark.django_db
@@ -182,7 +191,7 @@ def test_employer_application_list_viewable_statuses_not_only_mine(
     "application_status",
     [
         EmployerApplicationStatus.DRAFT,
-        EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.IN_HANDLING_QUEUE,
     ],
 )
 @pytest.mark.django_db
@@ -242,7 +251,7 @@ def test_employer_application_detail_viewable_statuses(
     "application_status",
     [
         EmployerApplicationStatus.DRAFT,
-        EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.IN_HANDLING_QUEUE,
     ],
 )
 @pytest.mark.django_db
@@ -325,15 +334,7 @@ def test_employer_summer_voucher_handle_attachment_viewable_statuses(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
@@ -341,7 +342,7 @@ def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
     """
     Test that the employer summer voucher's handle attachment endpoint doesn't
     return any attachments that are connected to an employer application which
-    is neither a draft nor submitted.
+    is in a non-viewable status.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -504,7 +505,7 @@ def test_employer_summer_voucher_handle_attachment_delete_submitted(
 
     # Setup application and attachment
     attachment = create_attachment(
-        app_owner, app_company, EmployerApplicationStatus.SUBMITTED
+        app_owner, app_company, EmployerApplicationStatus.IN_HANDLING_QUEUE
     )
 
     # Setup client
@@ -526,15 +527,7 @@ def test_employer_summer_voucher_handle_attachment_delete_submitted(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_summer_voucher_handle_attachment_delete_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
@@ -542,7 +535,7 @@ def test_employer_summer_voucher_handle_attachment_delete_non_viewable_statuses(
     """
     Test that the employer summer voucher's handle attachment endpoint can't be
     used to delete any attachments that are connected to an employer
-    application which is neither a draft nor submitted.
+    application which is in a non-viewable status.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -669,22 +662,14 @@ def test_employer_summer_voucher_detail_unallowed_methods(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_application_list_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
     Test that the employer application list endpoint doesn't return any
-    employer applications at all for statuses that are not draft or submitted.
+    employer applications at all for statuses that are non-viewable.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -710,22 +695,14 @@ def test_employer_application_list_non_viewable_statuses(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_application_detail_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
     Test that the employer application detail endpoint doesn't return any
-    employer applications at all for statuses that are not draft or submitted.
+    employer applications at all for statuses that are non-viewable.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -804,7 +781,7 @@ def test_employer_application_detail_partially_unallowed_methods(
     if application_status == EmployerApplicationStatus.DRAFT:
         assert user_client.delete(url).status_code == status.HTTP_204_NO_CONTENT
     elif application_status in (
-        EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.IN_HANDLING_QUEUE,
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
     ):
         assert user_client.delete(url).status_code == status.HTTP_400_BAD_REQUEST

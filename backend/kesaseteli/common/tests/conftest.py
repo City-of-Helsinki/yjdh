@@ -45,7 +45,7 @@ def application(company, user):
 @pytest.fixture
 def submitted_application(company, user):
     return EmployerApplicationFactory(
-        status=EmployerApplicationStatus.SUBMITTED, company=company, user=user
+        status=EmployerApplicationStatus.IN_HANDLING_QUEUE, company=company, user=user
     )
 
 

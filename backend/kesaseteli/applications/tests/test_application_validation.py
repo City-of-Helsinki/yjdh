@@ -1,8 +1,12 @@
+from types import SimpleNamespace
+
 import pytest
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
 
 from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
+    EmployerApplicationStatusValidator,
     EmployerSummerVoucherSerializer,
     YouthApplicationSerializer,
 )
@@ -85,28 +89,304 @@ def test_validate_name_with_invalid_unlisted_school(name):
         validate_name(name)
 
 
+@pytest.mark.parametrize(
+    "from_status,to_status",
+    [
+        # Direct happy path:
+        (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.IN_HANDLING_QUEUE),
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        # Additional information retrieval path:
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        # Allowed application cancellations (meant for employer):
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        # Allowed application rejections (meant for handlers, approvers and possibly automation):
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        (EmployerApplicationStatus.PAYMENT_REVIEW, EmployerApplicationStatus.REJECTED),
+        # Allowed backwards/return paths in process:
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+    ],
+)
+def test_employer_application_status_validator_success(
+    from_status: EmployerApplicationStatus, to_status: EmployerApplicationStatus
+):
+    validator = EmployerApplicationStatusValidator()
+    # Fake a serializer_field which has parent, parent.instance and parent.instance.status
+    serializer_field = SimpleNamespace(
+        parent=SimpleNamespace(instance=SimpleNamespace(status=from_status))
+    )
+
+    assert validator(to_status, serializer_field) == to_status
+
+
+@pytest.mark.parametrize(
+    "from_status,to_status",
+    [
+        # No jumping from IN_HANDLING_QUEUE over parts of the process:
+        (EmployerApplicationStatus.IN_HANDLING_QUEUE, EmployerApplicationStatus.DRAFT),
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        # No going back from CANCELLED:
+        (EmployerApplicationStatus.CANCELLED, EmployerApplicationStatus.DRAFT),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (EmployerApplicationStatus.CANCELLED, EmployerApplicationStatus.REJECTED),
+        (EmployerApplicationStatus.CANCELLED, EmployerApplicationStatus.PAYMENT_REVIEW),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        # No jumping from ADDITIONAL_INFORMATION_REQUESTED over parts of the process:
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.DRAFT,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        # No jumping from PAYMENT_REVIEW over parts of the process:
+        (EmployerApplicationStatus.PAYMENT_REVIEW, EmployerApplicationStatus.DRAFT),
+        (EmployerApplicationStatus.PAYMENT_REVIEW, EmployerApplicationStatus.CANCELLED),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        # No going back from SENT_FOR_PAYMENT:
+        (EmployerApplicationStatus.SENT_FOR_PAYMENT, EmployerApplicationStatus.DRAFT),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        # No jumping from ACCEPTED_FOR_PAYMENT over parts of the process:
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.DRAFT,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        # No jumping from REJECTED over parts of the process:
+        (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.DRAFT),
+        (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.CANCELLED),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.PAYMENT_REVIEW),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        # No jumping from APPLICATION_HANDLING over parts of the process:
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.DRAFT,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+    ],
+)
+def test_employer_application_status_validator_failure(
+    from_status: EmployerApplicationStatus, to_status: EmployerApplicationStatus
+):
+    validator = EmployerApplicationStatusValidator()
+    # Fake a serializer_field which has parent, parent.instance and parent.instance.status
+    serializer_field = SimpleNamespace(
+        parent=SimpleNamespace(instance=SimpleNamespace(status=from_status))
+    )
+
+    with pytest.raises(serializers.ValidationError):
+        validator(to_status, serializer_field)
+
+
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.SUBMITTED, 200),
+        (
+            EmployerApplicationStatus.DRAFT,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            200,
+        ),
         # TODO: To be added after MVP:
         # (
-        #     EmployerApplicationStatus.SUBMITTED,
+        #     EmployerApplicationStatus.IN_HANDLING_QUEUE,
         #     EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         #     200,
         # ),
-        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.ACCEPTED,
+        # (EmployerApplicationStatus.IN_HANDLING_QUEUE, EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         # 200),
-        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.REJECTED,
+        # (EmployerApplicationStatus.IN_HANDLING_QUEUE, EmployerApplicationStatus.REJECTED,
         # 200),
-        # (EmployerApplicationStatus.SUBMITTED,
-        # EmployerApplicationStatus.DELETED_BY_CUSTOMER, 200),
-        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.DRAFT, 400),
-        # (EmployerApplicationStatus.ACCEPTED, EmployerApplicationStatus.SUBMITTED,
+        # (EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        # EmployerApplicationStatus.CANCELLED, 200),
+        # (EmployerApplicationStatus.IN_HANDLING_QUEUE, EmployerApplicationStatus.DRAFT, 400),
+        # (EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, EmployerApplicationStatus.IN_HANDLING_QUEUE,
         # 400),
-        # (EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-        # EmployerApplicationStatus.ACCEPTED, 400),
+        # (EmployerApplicationStatus.CANCELLED,
+        # EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 400),
         # (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.DRAFT, 400),
     ],
 )
@@ -154,7 +434,7 @@ def test_application_status_change_with_missing_data(
     missing_field,
 ):
     from_status = EmployerApplicationStatus.DRAFT
-    to_status = EmployerApplicationStatus.SUBMITTED
+    to_status = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     application.status = from_status
     application.save()
@@ -189,7 +469,7 @@ def test_application_status_change_with_missing_summer_voucher_data(
     missing_field,
 ):
     from_status = EmployerApplicationStatus.DRAFT
-    to_status = EmployerApplicationStatus.SUBMITTED
+    to_status = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     application.status = from_status
     application.save()
@@ -224,7 +504,7 @@ def test_application_status_change_with_missing_attachments(
     missing_attachment,
 ):
     from_status = EmployerApplicationStatus.DRAFT
-    to_status = EmployerApplicationStatus.SUBMITTED
+    to_status = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     application.status = from_status
     application.save()
@@ -266,7 +546,7 @@ def test_separate_invoicer_fields_not_required_if_condition_false(
     payslip_attachment,
 ):
     from_status = EmployerApplicationStatus.DRAFT
-    to_status = EmployerApplicationStatus.SUBMITTED
+    to_status = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     application.status = from_status
     application.is_separate_invoicer = False
@@ -303,7 +583,7 @@ def test_separate_invoicer_fields_required_if_condition_true(
     missing_field,
 ):
     from_status = EmployerApplicationStatus.DRAFT
-    to_status = EmployerApplicationStatus.SUBMITTED
+    to_status = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
     application.status = from_status
     application.is_separate_invoicer = True

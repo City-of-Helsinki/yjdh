@@ -216,14 +216,14 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
 @pytest.mark.parametrize(
     "client_fixture, status, expected_code",
     [
-        ("api_client", EmployerApplicationStatus.SUBMITTED, 400),
+        ("api_client", EmployerApplicationStatus.IN_HANDLING_QUEUE, 400),
         ("api_client", EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED, 201),
-        ("api_client", EmployerApplicationStatus.ACCEPTED, 404),
-        ("api_client", EmployerApplicationStatus.DELETED_BY_CUSTOMER, 404),
+        ("api_client", EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 404),
+        ("api_client", EmployerApplicationStatus.CANCELLED, 404),
         ("api_client", EmployerApplicationStatus.REJECTED, 404),
-        ("staff_client", EmployerApplicationStatus.SUBMITTED, 201),
-        ("staff_client", EmployerApplicationStatus.ACCEPTED, 201),
-        ("staff_client", EmployerApplicationStatus.DELETED_BY_CUSTOMER, 201),
+        ("staff_client", EmployerApplicationStatus.IN_HANDLING_QUEUE, 201),
+        ("staff_client", EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 201),
+        ("staff_client", EmployerApplicationStatus.CANCELLED, 201),
         ("staff_client", EmployerApplicationStatus.REJECTED, 201),
     ],
 )

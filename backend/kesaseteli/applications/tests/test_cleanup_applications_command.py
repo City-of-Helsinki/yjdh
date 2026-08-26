@@ -17,7 +17,7 @@ from common.tests.factories import (
 def test_cleanup_applications_employer_drafts():
     EmployerApplicationFactory(status=EmployerApplicationStatus.DRAFT)
     submitted_app = EmployerApplicationFactory(
-        status=EmployerApplicationStatus.SUBMITTED
+        status=EmployerApplicationStatus.IN_HANDLING_QUEUE
     )
     assert EmployerApplication.objects.count() == 2
     out = StringIO()
@@ -26,7 +26,7 @@ def test_cleanup_applications_employer_drafts():
     assert EmployerApplication.objects.first().pk == submitted_app.pk
     assert (
         EmployerApplication.objects.first().status
-        == EmployerApplicationStatus.SUBMITTED
+        == EmployerApplicationStatus.IN_HANDLING_QUEUE
     )
 
 

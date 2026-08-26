@@ -160,7 +160,9 @@ def test_excel_view_get_with_unauthenticated_user(user_client):
 def test_excel_view_download_unhandled(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
-    submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
+    submitted_summer_voucher.application.status = (
+        EmployerApplicationStatus.IN_HANDLING_QUEUE
+    )
     submitted_summer_voucher.application.save()
 
     response = staff_client.get(
@@ -288,7 +290,9 @@ def test_excel_download_writes_audit_log(staff_client, columns, download_type):
 def test_excel_view_download_annual(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
-    submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
+    submitted_summer_voucher.application.status = (
+        EmployerApplicationStatus.IN_HANDLING_QUEUE
+    )
     submitted_summer_voucher.application.save()
 
     response = staff_client.get(
@@ -450,7 +454,7 @@ def test_excel_view_download_sum_field_value(  # noqa: C901
     with freeze_time(employer_summer_voucher_creation_date):
         EmployerSummerVoucherFactory(
             application=EmployerApplicationFactory(
-                status=EmployerApplicationStatus.SUBMITTED
+                status=EmployerApplicationStatus.IN_HANDLING_QUEUE
             )
         )
 
@@ -932,7 +936,7 @@ def test_talpa_excel_gated_2026_and_status_fields(staff_client, settings, exclud
 
     EmployerSummerVoucherFactory(
         application=EmployerApplicationFactory(
-            status=EmployerApplicationStatus.SUBMITTED
+            status=EmployerApplicationStatus.IN_HANDLING_QUEUE
         )
     )
 

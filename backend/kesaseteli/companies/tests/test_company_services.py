@@ -235,11 +235,11 @@ def test_employer_application_submission_triggers_ytj_update(
         status_code=200,
     )
 
-    # 3. Simulate PUT update transition to SUBMITTED
+    # 3. Simulate PUT update transition to IN_HANDLING_QUEUE
     request = RequestFactory().patch("/")
     serializer = EmployerApplicationSerializer(
         instance=application,
-        data={"status": EmployerApplicationStatus.SUBMITTED},
+        data={"status": EmployerApplicationStatus.IN_HANDLING_QUEUE},
         context={"request": request},
         partial=True,
     )
@@ -297,11 +297,11 @@ def test_employer_application_submission_triggers_ytj_update_with_existing_data(
         status_code=200,
     )
 
-    # 3. Simulate PUT update transition to SUBMITTED
+    # 3. Simulate PUT update transition to IN_HANDLING_QUEUE
     request = RequestFactory().patch("/")
     serializer = EmployerApplicationSerializer(
         instance=application,
-        data={"status": EmployerApplicationStatus.SUBMITTED},
+        data={"status": EmployerApplicationStatus.IN_HANDLING_QUEUE},
         context={"request": request},
         partial=True,
     )

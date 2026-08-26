@@ -1,0 +1,33 @@
+---
+title: Employer application status changes
+######################################
+# Please SYNC WITH:
+# - EmployerApplicationStatus
+# - EmployerApplicationStatusValidator
+######################################
+---
+flowchart TD
+  DRAFT[Draft] -->|Employer Submits Application| IN_HANDLING_QUEUE[In Handling Queue]
+
+
+  IN_HANDLING_QUEUE -->|Handler Starts Handling Application| APPLICATION_HANDLING[Application Handling]
+  IN_HANDLING_QUEUE -.->|Employer Cancels Application| CANCELLED([Cancelled])
+
+  APPLICATION_HANDLING -->|Handler Requests Additional Information| ADDITIONAL_INFO_REQUESTED[Additional Information Requested]
+
+  ADDITIONAL_INFO_REQUESTED -->|Employer Provides Information| IN_HANDLING_QUEUE
+  ADDITIONAL_INFO_REQUESTED -.->|Employer Cancels Application| CANCELLED
+  ADDITIONAL_INFO_REQUESTED -.->|Automation or Handler Expires Application After Deadline| REJECTED([Rejected])
+
+  APPLICATION_HANDLING -->|Handler Accepts Application| PAYMENT_REVIEW[Payment Review]
+  APPLICATION_HANDLING -->|Handler Rejects Application| REJECTED
+  APPLICATION_HANDLING -->|Handler Returns Application to Queue| IN_HANDLING_QUEUE
+
+  REJECTED -.->|Handler Returns Application to Queue| IN_HANDLING_QUEUE
+
+  PAYMENT_REVIEW -->|Approver Accepts Application for Payment| ACCEPTED_FOR_PAYMENT[Accepted for Payment]
+  PAYMENT_REVIEW -.->|Approver Returns Application to Queue| IN_HANDLING_QUEUE
+  PAYMENT_REVIEW -.->|Approver Rejects Application| REJECTED
+  ACCEPTED_FOR_PAYMENT -.->|Approver Returns Application to Payment Review| PAYMENT_REVIEW
+
+  ACCEPTED_FOR_PAYMENT -->|Talpa Robot Fetches Application to Payment System| SENT_FOR_PAYMENT(((Sent for Payment)))

@@ -2,9 +2,9 @@ import logging
 
 from django.db import migrations
 
-from applications.enums import EmployerApplicationStatus
-
 logger = logging.getLogger(__name__)
+
+SUBMITTED = "submitted"  # Previously EmployerApplicationStatus.SUBMITTED
 
 
 def migrate_target_group_forward(apps, schema_editor):
@@ -14,9 +14,7 @@ def migrate_target_group_forward(apps, schema_editor):
     vouchers_to_update = []
     # Fetch relevant vouchers with related youth vouchers
     qs = (
-        EmployerSummerVoucher.objects.filter(
-            application__status=EmployerApplicationStatus.SUBMITTED
-        )
+        EmployerSummerVoucher.objects.filter(application__status=SUBMITTED)
         .exclude(youth_summer_voucher__isnull=True)
         .select_related("youth_summer_voucher")
     )
@@ -40,9 +38,7 @@ def migrate_target_group_backward(apps, schema_editor):
 
     vouchers_to_update = []
     qs = (
-        EmployerSummerVoucher.objects.filter(
-            application__status=EmployerApplicationStatus.SUBMITTED
-        )
+        EmployerSummerVoucher.objects.filter(application__status=SUBMITTED)
         .exclude(youth_summer_voucher__isnull=True)
         .select_related("youth_summer_voucher")
     )

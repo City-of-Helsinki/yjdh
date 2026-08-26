@@ -64,7 +64,7 @@ class TestForeignIbanFields:
 
         # Set a foreign IBAN (German)
         data["bank_account_number"] = "DE89370400440532013000"
-        data["status"] = EmployerApplicationStatus.SUBMITTED
+        data["status"] = EmployerApplicationStatus.IN_HANDLING_QUEUE
 
         # Initialize all required foreign fields to valid values first
         data.update(

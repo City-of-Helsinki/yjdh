@@ -46,19 +46,25 @@ class EmployerExcelExportKind(models.TextChoices):
 
 
 class EmployerApplicationStatus(models.TextChoices):
+    """
+    Employer application's possible statuses.
+
+    NOTE! Please SYNC WITH:
+        /backend/kesaseteli/docs/diagrams/employer-application-status-changes.mmd
+    """
+
     DRAFT = "draft", _("Draft")
-    SUBMITTED = "submitted", _("Submitted")
+    IN_HANDLING_QUEUE = "in_handling_queue", _("In handling queue")
+    APPLICATION_HANDLING = "application_handling", _("Application handling")
     ADDITIONAL_INFORMATION_REQUESTED = (
         "additional_information_requested",
         _("Additional information requested"),
     )
-    ADDITIONAL_INFORMATION_PROVIDED = (
-        "additional_information_provided",
-        _("Additional information provided"),
-    )
-    ACCEPTED = "accepted", _("Accepted")
+    PAYMENT_REVIEW = "payment_review", _("Payment review")
+    ACCEPTED_FOR_PAYMENT = "accepted_for_payment", _("Accepted for payment")
+    SENT_FOR_PAYMENT = "sent_for_payment", _("Sent for payment")
     REJECTED = "rejected", _("Rejected")
-    DELETED_BY_CUSTOMER = "deleted_by_customer", _("Deleted by customer")
+    CANCELLED = "cancelled", _("Cancelled")
 
 
 class YouthApplicationStatus(models.TextChoices):

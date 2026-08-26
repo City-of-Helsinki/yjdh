@@ -252,7 +252,7 @@ class EmployerExcelExportService:
     def _export_unhandled(self, columns: ExcelColumns) -> StreamingHttpResponse:
         queryset_without_pks = self.base_queryset().filter(
             is_exported=False,
-            application__status=EmployerApplicationStatus.SUBMITTED,
+            application__status=EmployerApplicationStatus.IN_HANDLING_QUEUE,
         )
         queryset_pks = set(queryset_without_pks.values_list("pk", flat=True))
 
@@ -260,7 +260,7 @@ class EmployerExcelExportService:
             raise EmployerExcelExportError(EmployerExcelExportErrorCode.NO_UNHANDLED)
 
         queryset_with_pks = self.base_queryset(filter_pks=queryset_pks).filter(
-            application__status=EmployerApplicationStatus.SUBMITTED
+            application__status=EmployerApplicationStatus.IN_HANDLING_QUEUE
         )
 
         response = self.build_xlsx_response(queryset_with_pks, columns)

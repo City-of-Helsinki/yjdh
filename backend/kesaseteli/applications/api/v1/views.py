@@ -1227,7 +1227,8 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
 
     def get_queryset(self):
         """
-        Fetch summer vouchers of DRAFT/SUBMITTED status applications
+        Fetch summer vouchers of DRAFT, IN_HANDLING_QUEUE and
+        ADDITIONAL_INFORMATION_REQUESTED status applications
         of the user's company.
         """
         queryset = (

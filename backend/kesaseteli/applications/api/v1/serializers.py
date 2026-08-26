@@ -71,31 +71,46 @@ def validate_timeline_item_types(requested_types: set) -> set:
 
 
 class EmployerApplicationStatusValidator:
+    """
+    Validator for employer applications status changes.
+
+    NOTE! Please SYNC WITH:
+        /backend/kesaseteli/docs/diagrams/employer-application-status-changes.mmd
+    """
+
     requires_context = True
 
     APPLICATION_STATUS_TRANSITIONS = {
-        EmployerApplicationStatus.DRAFT: (
-            EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-            EmployerApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.DRAFT: (EmployerApplicationStatus.IN_HANDLING_QUEUE,),
+        EmployerApplicationStatus.IN_HANDLING_QUEUE: (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.CANCELLED,
         ),
-        EmployerApplicationStatus.SUBMITTED: (
+        EmployerApplicationStatus.APPLICATION_HANDLING: (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
             EmployerApplicationStatus.REJECTED,
-            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
         ),
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+            EmployerApplicationStatus.CANCELLED,
             EmployerApplicationStatus.REJECTED,
         ),
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
-            EmployerApplicationStatus.ACCEPTED,
+        EmployerApplicationStatus.PAYMENT_REVIEW: (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
         ),
-        EmployerApplicationStatus.ACCEPTED: (),
-        EmployerApplicationStatus.REJECTED: (),
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER: (),
+        EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT: (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        EmployerApplicationStatus.REJECTED: (
+            EmployerApplicationStatus.IN_HANDLING_QUEUE,
+        ),
+        EmployerApplicationStatus.CANCELLED: (),
+        EmployerApplicationStatus.SENT_FOR_PAYMENT: (),
     }
 
     def __call__(self, value, serializer_field):
@@ -577,7 +592,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         """
         Update company data from YTJ on application submission.
 
-        If the application status is changed to SUBMITTED and the
+        If the application status is changed to IN_HANDLING_QUEUE and the
         UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT feature flag is enabled, the company
         data is refreshed from the YTJ API. The refresh happens asynchronously
         after the database transaction commits to avoid holding database locks during
@@ -604,11 +619,11 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
         new_status = validated_data.get("status")
         if (
-            new_status == EmployerApplicationStatus.SUBMITTED
+            new_status == EmployerApplicationStatus.IN_HANDLING_QUEUE
             and instance.status == EmployerApplicationStatus.DRAFT
         ):
             LOGGER.debug(
-                "Changing application status from DRAFT to SUBMITTED. "
+                "Changing application status from DRAFT to IN_HANDLING_QUEUE. "
                 "Setting submitted_at.",
                 extra={
                     "application_id": instance.pk,
