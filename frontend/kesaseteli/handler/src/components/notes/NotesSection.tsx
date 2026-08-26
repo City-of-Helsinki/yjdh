@@ -9,7 +9,7 @@ import Timeline, { TimelineSize } from '../timeline/Timeline';
 import { getTimelineIcon } from '../timeline/TimelineTheme';
 import NoteCard from './NoteCard';
 import NoteForm from './NoteForm';
-import { $NotesContainer } from './NotesSection.sc';
+import { $Instructions, $NotesContainer } from './NotesSection.sc';
 
 type Props = {
   applicationId: string | undefined;
@@ -26,6 +26,10 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
 
   return (
     <$NotesContainer>
+      <$Instructions>
+        <h3>{t('common:handlerNotes.instructions.label')}</h3>
+        <p>{t('common:handlerNotes.instructions.content')}</p>
+      </$Instructions>
       {applicationId && (
         <NoteForm
           targetType={targetType}
@@ -47,6 +51,10 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
           const formattedDate = new Date(note.created_at).toLocaleString(
             locale
           );
+          // const isModified = note.modified_at !== note.created_at;
+          const modified_date = Date.parse(note.modified_at);
+          const created_date = Date.parse(note.created_at);
+          const isModified = Math.abs(modified_date - created_date) > 1000;
 
           return (
             <Timeline.Item
@@ -66,6 +74,7 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
                   author: note.author_name,
                   date: formattedDate,
                 })}
+                {isModified && " - " + t('common:handlerNotes.modified')}
               </Timeline.Item.Header>
               <Timeline.Item.Content>
                 <NoteCard note={note} />

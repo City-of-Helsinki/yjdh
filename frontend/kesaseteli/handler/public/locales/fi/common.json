@@ -339,9 +339,14 @@
     "noteTypeHelperText": "Huomion tyyppi vaikuttaa vain sen ulkoasuun tässä näkymässä. Ulkoinen viesti ei vielä lähetä viestiä hakijalle.",
     "isImportantLabel": "Merkitse tärkeäksi",
     "authorAt": "{{author}} · {{date}}",
+    "modified": "muokattu",
     "showAll": "Näytä kaikki ({{count}})",
     "noNotes": "Ei vielä huomioita.",
-    "jumpToNote": "Siirry huomioon →"
+    "jumpToNote": "Siirry huomioon →",
+    "instructions": {
+      "label": "Ohjeet",
+      "content": "Kenttä on tarkoitettu huomioiden jakamiseen käsittelijöiden välillä. Älä kirjoita sensitiivistä tai muutakaan informaatiota, jota et halua tallentaa järjestelmään pysyvästi."
+    }
   },
   "timeline": {
     "title": "Aikajana",
