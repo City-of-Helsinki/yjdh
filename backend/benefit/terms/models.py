@@ -15,6 +15,10 @@ from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from terms.enums import TermsType
 from users.models import User
 
+MISSING_TERM_FIELDS_ERROR = _(
+    "PDF or MD fields are missing for FI/EN/SV! Fill in either or"
+)
+
 
 class TermsManager(models.Manager):
     def get_terms_in_effect(self, terms_type):
@@ -124,17 +128,11 @@ class Terms(UUIDModel, TimeStampedModel):
         ]
 
         if not all(required_fields_md) and not all(required_fields_pdf):
-            raise ValidationError(
-                _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
-            )
+            raise ValidationError(MISSING_TERM_FIELDS_ERROR)
         if all(required_fields_pdf) and any(required_fields_md):
-            raise ValidationError(
-                _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
-            )
+            raise ValidationError(MISSING_TERM_FIELDS_ERROR)
         if all(required_fields_md) and any(required_fields_pdf):
-            raise ValidationError(
-                _("PDF or MD fields are missing for FI/EN/SV! Fill in either or")
-            )
+            raise ValidationError(MISSING_TERM_FIELDS_ERROR)
 
         # Check that if any PDF is filled in, all are filled in
         for pdfs in required_fields_pdf_new:

@@ -35,6 +35,7 @@ from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 
 LOGGER = logging.getLogger(__name__)
+CALLBACK_RECEIVED_MESSAGE = "Callback received"
 
 
 class AhjoApplicationView(APIView):
@@ -255,7 +256,7 @@ class AhjoCallbackView(APIView):
                 )
 
                 return Response(
-                    {"message": "Callback received"}, status=status.HTTP_200_OK
+                    {"message": CALLBACK_RECEIVED_MESSAGE}, status=status.HTTP_200_OK
                 )
         except AhjoCallbackError as e:
             LOGGER.exception(str(e))
@@ -425,7 +426,9 @@ class AhjoDecisionCallbackView(APIView):
             except Application.DoesNotExist:
                 # Ahjo needs a 200 OK response even if an application is not found
                 return Response(
-                    {"message": "Callback received"}, status=status.HTTP_200_OK
+                    {"message": CALLBACK_RECEIVED_MESSAGE}, status=status.HTTP_200_OK
                 )
 
-        return Response({"message": "Callback received"}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": CALLBACK_RECEIVED_MESSAGE}, status=status.HTTP_200_OK
+        )
