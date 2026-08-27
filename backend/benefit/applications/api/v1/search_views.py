@@ -1,5 +1,4 @@
 import re
-from typing import Union
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.postgres.search import (
@@ -442,11 +441,11 @@ def _query_and_respond_to_numbers(
 
 
 def _create_search_response(
-    queryset: Union[Application, None],
-    serialized_data: Union[list, None],
+    queryset: Application | None,
+    serialized_data: list | None,
     detected_pattern: str,
     search_query_str: str,
-    in_memory_results: Union[dict, None] = None,
+    in_memory_results: dict | None = None,
     in_memory_filter_str="",
     serializer=HandlerApplicationListSerializer,
 ):

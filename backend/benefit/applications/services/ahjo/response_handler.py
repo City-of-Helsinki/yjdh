@@ -1,7 +1,7 @@
 import logging
 import re
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import Dict, List
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -29,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 class AhjoResponseHandler:
     @staticmethod
     def handle_ahjo_query_response(
-        setting_name: AhjoSettingName, data: Union[None, dict]
+        setting_name: AhjoSettingName, data: dict | None
     ) -> None:
         """
         Handle the decision maker response from Ahjo API.

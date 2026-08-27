@@ -464,7 +464,7 @@ def generate_application_attachment(
     return attachment
 
 
-def get_token() -> Union[AhjoToken, None]:
+def get_token() -> AhjoToken | None:
     """Get the access token from Ahjo Service."""
     connector = AhjoConnector()
 
@@ -495,7 +495,7 @@ def create_status_for_application(application: Application, status: AhjoStatusEn
 
 def send_open_case_request_to_ahjo(
     application: Application, ahjo_token: AhjoToken
-) -> Union[Tuple[Application, str], Tuple[None, None]]:
+) -> Tuple[Application, str] | Tuple[None, None]:
     """Open a case in Ahjo."""
 
     ahjo_request = AhjoOpenCaseRequest(application)

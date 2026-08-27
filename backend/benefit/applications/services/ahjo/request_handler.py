@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List
 
 from applications.enums import AhjoRequestType
 from applications.services.ahjo.enums import AhjoSettingName
@@ -31,7 +31,7 @@ class AhjoRequestHandler:
 
     def get_setting_from_ahjo(
         self, request_class: AhjoRequest, setting_name: AhjoSettingName
-    ) -> Union[List, None]:
+    ) -> List | None:
         ahjo_client = AhjoApiClient(self.ahjo_token, request_class())
         _, result = ahjo_client.send_request_to_ahjo()
         AhjoResponseHandler.handle_ahjo_query_response(

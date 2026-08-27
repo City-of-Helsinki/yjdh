@@ -1,7 +1,7 @@
 import logging
 import time
 from datetime import datetime
-from typing import List, Union
+from typing import List
 
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.management.base import BaseCommand
@@ -259,7 +259,7 @@ class Command(BaseCommand):
         self,
         counter: int,
         application: Application,
-        response_content: Union[str, List],
+        response_content: str | List,
         request_type: AhjoRequestType,
     ) -> None:
         if request_type == AhjoRequestType.GET_DECISION_DETAILS:

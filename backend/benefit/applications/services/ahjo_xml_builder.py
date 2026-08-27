@@ -3,7 +3,7 @@ import logging
 import os
 from dataclasses import dataclass
 from datetime import date
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -52,9 +52,7 @@ class AhjoXMLBuilder:
         with open(xsd_path, "r") as file:
             return file.read()
 
-    def validate_against_schema(
-        self, xml_string: str, xsd_string: str
-    ) -> Union[bool, None]:
+    def validate_against_schema(self, xml_string: str, xsd_string: str) -> bool:
         try:
             # Parse the XML string
             xml_doc = etree.fromstring(xml_string.encode("utf-8"))
