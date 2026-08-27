@@ -297,7 +297,7 @@ class TermsOfServiceApproval(AbstractTermsApproval):
     @staticmethod
     def terms_approval_needed(user, company):
         if user is None:
-            raise Exception("valid user needed")
+            raise ValueError("valid user needed")
         if company is None:
             if (
                 hasattr(settings, "DUMMY_COMPANY_FORM_CODE")
@@ -313,7 +313,7 @@ class TermsOfServiceApproval(AbstractTermsApproval):
                     dummy_company.save()
                 company = CompanySerializer(dummy_company).data
             else:
-                raise Exception("valid company needed")
+                raise ValueError("valid company needed")
 
         terms_in_effect = Terms.objects.get_terms_in_effect(TermsType.TERMS_OF_SERVICE)
         if not terms_in_effect:

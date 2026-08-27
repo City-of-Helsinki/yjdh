@@ -1229,4 +1229,4 @@ class PrintDetail(APIView):
         pdf = generate_application_summary_file(application) or None
         if pdf:
             return HttpResponse(pdf, "application/pdf")
-        raise Exception("PDF error")
+        raise RuntimeError("PDF error")
