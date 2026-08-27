@@ -194,7 +194,13 @@ class SafeTextareaWidget(forms.Textarea):
 class DecisionProposalTemplateSectionFormAdmin(forms.ModelForm):
     class Meta:
         model = DecisionProposalTemplateSection
-        fields = "__all__"
+        fields = [
+            "decision_type",
+            "language",
+            "template_decision_text",
+            "template_justification_text",
+            "name",
+        ]
         widgets = {
             "template_text": SafeTextareaWidget(),
         }
@@ -208,7 +214,16 @@ class DecisionProposalTemplateSectionAdmin(admin.ModelAdmin):
 class AhjoDecisionTextFormAdmin(forms.ModelForm):
     class Meta:
         model = AhjoDecisionText
-        fields = "__all__"
+        fields = [
+            "decision_type",
+            "language",
+            "decision_text",
+            "application",
+            "decision_maker_name",
+            "decision_maker_id",
+            "signer_name",
+            "signer_id",
+        ]
         widgets = {
             "decision_text": SafeTextareaWidget(),
         }
