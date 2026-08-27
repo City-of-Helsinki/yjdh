@@ -162,7 +162,7 @@ class ApplicationsCsvService(CsvExportBase):
         else:
             return None
 
-    def get_instalment_2_due_date(self, application: Application) -> date:
+    def get_instalment_2_due_date(self, application: Application) -> date | str:
         """
         Return the due date of the second instalment.
         """
