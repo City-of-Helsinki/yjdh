@@ -25,6 +25,7 @@ from applications.services.ahjo_error_writer import AhjoErrorWriter, AhjoFormatt
 LOGGER = logging.getLogger(__name__)
 
 API_CASES_BASE = "/cases"
+MISSING_AHJO_CASE_ID_MESSAGE = "Application does not have an Ahjo case id"
 
 
 @dataclass
@@ -49,7 +50,7 @@ class AhjoRequest:
                 " ad_username"
             )
         if not self.application.ahjo_case_id:
-            raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
+            raise MissingAhjoCaseIdError(MISSING_AHJO_CASE_ID_MESSAGE)
         return (
             f"{self.url_base}{API_CASES_BASE}/{self.application.ahjo_case_id}/records"
         )
@@ -115,7 +116,7 @@ class AhjoDeleteCaseRequest(AhjoRequest):
                 " ad_username"
             )
         if not self.application.ahjo_case_id:
-            raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
+            raise MissingAhjoCaseIdError(MISSING_AHJO_CASE_ID_MESSAGE)
         url = f"{self.url_base}{API_CASES_BASE}/{self.application.ahjo_case_id}"
         draftsman_id = self.application.calculation.handler.ad_username
         return f"{url}?draftsmanid={draftsman_id}&reason={self.reason}&apireqlang={self.lang}"  # noqa: E501
@@ -142,7 +143,7 @@ class AhjoDecisionDetailsRequest(AhjoRequest):
 
     def api_url(self) -> str:
         if not self.application.ahjo_case_id:
-            raise MissingAhjoCaseIdError("Application does not have an Ahjo case id")
+            raise MissingAhjoCaseIdError(MISSING_AHJO_CASE_ID_MESSAGE)
         return f"{self.url_base}/decisions/{self.application.ahjo_case_id}"
 
 
