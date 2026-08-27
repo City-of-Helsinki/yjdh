@@ -478,7 +478,7 @@ class CalculationRow(UUIDModel, TimeStampedModel, DurationMixin):
         self.description_fi = self.apply_description_template()
 
     def calculate_amount(self):
-        raise Exception("Must be defined in subclass")
+        raise NotImplementedError("Must be defined in subclass")
 
     def apply_description_template(self):
         """

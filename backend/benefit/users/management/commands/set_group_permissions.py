@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
-from django.core.management import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db.transaction import atomic
 
 
@@ -17,7 +17,7 @@ class Command(BaseCommand):
         try:
             handler_group = Group.objects.get(name=settings.HANDLERS_GROUP_NAME)
         except Group.DoesNotExist:
-            raise Exception(
+            raise CommandError(
                 f"Create group {settings.HANDLERS_GROUP_NAME} by loading groups.json"
                 " fixture first"
             )
