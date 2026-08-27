@@ -625,7 +625,7 @@ Tarkista tiedosto sekä päätösteksti ja yritä uudelleen.""",
         )
         return (None, None)
     except DecisionProposalError as e:
-        LOGGER.error(
+        LOGGER.exception(
             "Error in sending decision proposal payload        for application"
             f" {application.application_number}: {e}"
         )
@@ -660,9 +660,9 @@ def send_subscription_request_to_ahjo(
         data = {"callbackUrl": f"{settings.API_BASE_URL}{url}"}
         return ahjo_client.send_request_to_ahjo(data)
     except ObjectDoesNotExist as e:
-        LOGGER.error(f"Object not found: {e}")
+        LOGGER.exception(f"Object not found: {e}")
     except ImproperlyConfigured as e:
-        LOGGER.error(f"Improperly configured: {e}")
+        LOGGER.exception(f"Improperly configured: {e}")
 
 
 def get_decision_details_from_ahjo(

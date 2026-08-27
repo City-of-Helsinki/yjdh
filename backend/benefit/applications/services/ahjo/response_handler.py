@@ -72,10 +72,9 @@ class AhjoResponseHandler:
             LOGGER.info(f"Successfully processed {len(filtered_data)} decision makers")
 
         except Exception as e:
-            LOGGER.error(
+            LOGGER.exception(
                 f"Failed to process Ahjo api response for setting {setting_name}:"
                 f" {str(e)}",
-                exc_info=True,
             )
             raise
 
@@ -126,7 +125,7 @@ class AhjoResponseHandler:
             return result
 
         except Exception as e:
-            LOGGER.error(f"Error filtering decision makers: {str(e)}")
+            LOGGER.exception(f"Error filtering decision makers: {str(e)}")
             raise ValidationError(f"Failed to filter decision makers: {str(e)}")
 
     @staticmethod
@@ -147,7 +146,7 @@ class AhjoResponseHandler:
                 name=setting_name, defaults={"data": filtered_data}
             )
         except Exception as e:
-            LOGGER.error(f"Failed to save setting {setting_name}: {str(e)}")
+            LOGGER.exception(f"Failed to save setting {setting_name}: {str(e)}")
             raise ValidationError(
                 f"Failed to save setting {setting_name} to database: {str(e)}"
             )

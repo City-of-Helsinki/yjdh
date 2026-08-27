@@ -344,7 +344,7 @@ class AhjoApiClient:
             )
             LOGGER.error(error_message)
         except AhjoApiClientError as e:
-            LOGGER.error(
+            LOGGER.exception(
                 f"An error occurred while sending {self._request} to Ahjo: {e}"
             )
         return None, None
