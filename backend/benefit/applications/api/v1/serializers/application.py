@@ -93,6 +93,11 @@ from terms.models import ApplicantTermsApproval, Terms
 from users.api.v1.serializers import UserSerializer
 from users.utils import get_company_from_request, get_request_user_from_context
 
+CALCULATION_CALCULATE = "calculation.calculate"
+HANDLED_BY_AHJO_HELP_TEXT = (
+    "True if the application has been handled by the Ahjo automation system"
+)
+
 log = logging.getLogger(__name__)
 
 
@@ -804,7 +809,6 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
                     )
                 }
             )
-        return
 
     def _validate_de_minimis_aid_set(
         self,
@@ -1246,7 +1250,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
             call_now_or_later(
                 instance.calculation.calculate,
-                duplicate_check=("calculation.calculate", instance.pk),
+                duplicate_check=(CALCULATION_CALCULATE, instance.pk),
             )
         ApplicationLogEntry.objects.create(
             application=instance,
@@ -1623,9 +1627,7 @@ class ApplicantApplicationSerializer(BaseApplicationSerializer):
 
     handled_by_ahjo_automation = serializers.BooleanField(
         read_only=True,
-        help_text=(
-            "True if the application has been handled by the Ahjo automation system"
-        ),
+        help_text=(HANDLED_BY_AHJO_HELP_TEXT),
     )
 
     @do_delayed_calls_at_end()  # application recalculation
@@ -1713,9 +1715,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     handled_by_ahjo_automation = serializers.BooleanField(
         read_only=False,
         required=False,
-        help_text=(
-            "True if the application has been handled by the Ahjo automation system"
-        ),
+        help_text=(HANDLED_BY_AHJO_HELP_TEXT),
     )
 
     ahjo_error = serializers.SerializerMethodField()
@@ -1859,7 +1859,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             if ApplicationStatus.is_handler_editable_status(application.status):
                 call_now_or_later(
                     application.calculation.calculate,
-                    duplicate_check=("calculation.calculate", application.pk),
+                    duplicate_check=(CALCULATION_CALCULATE, application.pk),
                 )
                 update_object(application.calculation, calculation_data)
             elif (
@@ -1919,7 +1919,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if hasattr(application, "calculation"):
             call_now_or_later(
                 application.calculation.calculate,
-                duplicate_check=("calculation.calculate", application.pk),
+                duplicate_check=(CALCULATION_CALCULATE, application.pk),
             )
 
     def handle_status_transition(
@@ -2082,9 +2082,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
     handled_by_ahjo_automation = serializers.BooleanField(
         read_only=True,
         required=False,
-        help_text=(
-            "True if the application has been handled by the Ahjo automation system"
-        ),
+        help_text=(HANDLED_BY_AHJO_HELP_TEXT),
     )
 
     batch = serializers.SerializerMethodField("get_batch_info")
