@@ -1,5 +1,3 @@
-from typing import Union
-
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -337,7 +335,7 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             and not self._is_manual_mode()
         )
 
-    def _is_invalid_state_aid_max(self, state_aid_max_input: Union[None, int]) -> bool:
+    def _is_invalid_state_aid_max(self, state_aid_max_input: int | None) -> bool:
         return state_aid_max_input is None or state_aid_max_input not in [
             choice[0] for choice in STATE_AID_MAX_PERCENTAGE_CHOICES
         ]

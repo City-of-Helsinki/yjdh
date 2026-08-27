@@ -4,7 +4,7 @@ import decimal
 import operator
 from dataclasses import dataclass
 from io import StringIO
-from typing import Any, Callable, Generator, List, Union
+from typing import Any, Callable, Generator, List
 
 from applications.enums import OrganizationType
 
@@ -14,8 +14,8 @@ NO_DEFAULT_VALUE = object()
 @dataclass
 class CsvColumn:
     heading: str
-    cell_data_source: Union[Callable, str]
-    formatter: Union[Callable, None] = None
+    cell_data_source: Callable | str
+    formatter: Callable | None = None
     default_value: Any = NO_DEFAULT_VALUE
 
 
@@ -82,7 +82,7 @@ class CsvExportBase:
 
     def get_csv_cell_list_lines_generator(
         self,
-    ) -> Generator[List[Union[str, int, decimal.Decimal, datetime.date]], None, None]:
+    ) -> Generator[List[str | int | decimal.Decimal | datetime.date], None, None]:
         """
         Iterate through the objects returned by get_row_items. Use the CsvColumn objects in csv_columns to
         construct a CSV row from each item. Notes:

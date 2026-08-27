@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Union
 
 from django.conf import settings
 from django.db.models.query import QuerySet
@@ -31,9 +30,7 @@ class ApplicationAlterationCsvService(CsvExportBase):
         self.account_number = config.account_number
         self.current_user = current_user
 
-    def get_recovery_period(
-        self, alteration: ApplicationAlteration
-    ) -> Union[str, None]:
+    def get_recovery_period(self, alteration: ApplicationAlteration) -> str | None:
         if alteration.recovery_start_date and alteration.recovery_end_date:
             start = alteration.recovery_start_date.strftime("%d.%m.%Y")
             end = alteration.recovery_end_date.strftime("%d.%m.%Y")
@@ -49,7 +46,7 @@ class ApplicationAlterationCsvService(CsvExportBase):
     def get_account_number(self, alteration: ApplicationAlteration) -> str:
         return self.account_number
 
-    def get_handler_name(self, alteration: ApplicationAlteration) -> Union[str, None]:
+    def get_handler_name(self, alteration: ApplicationAlteration) -> str | None:
         email = settings.DEFAULT_SYSTEM_EMAIL
 
         return f"{self.current_user.get_full_name()}, {email}"

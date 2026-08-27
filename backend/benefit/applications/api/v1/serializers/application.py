@@ -1,6 +1,6 @@
 import logging
 from datetime import date, timedelta
-from typing import Dict, List, Union
+from typing import Dict, List
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -1056,7 +1056,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         if status == ApplicationStatus.DRAFT:
             return
 
-    def get_latest_ahjo_status(self, obj) -> Union[str, None]:
+    def get_latest_ahjo_status(self, obj) -> str | None:
         """Get the latest Ahjo status text for the application"""
         try:
             status = obj.ahjo_status.latest()
@@ -1729,7 +1729,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     def get_second_instalment(self, application):
         return _get_instalment(application, 2)
 
-    def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:
+    def get_latest_ahjo_error(self, obj) -> Dict | None:
         """Get the latest Ahjo error for the application"""
         try:
             status = obj.ahjo_status.latest()
@@ -2065,7 +2065,7 @@ class HandlerApplicationListSerializer(serializers.Serializer):
 
     ahjo_error = serializers.SerializerMethodField("get_latest_ahjo_error")
 
-    def get_latest_ahjo_error(self, obj) -> Union[Dict, None]:
+    def get_latest_ahjo_error(self, obj) -> Dict | None:
         """Get the latest Ahjo error for the application"""
         try:
             status = obj.ahjo_status.latest()

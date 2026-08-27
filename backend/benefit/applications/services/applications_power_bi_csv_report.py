@@ -1,6 +1,3 @@
-from datetime import datetime
-from typing import Union
-
 from django.conf import settings
 from django.utils import translation
 
@@ -23,9 +20,7 @@ class ApplicationsPowerBiCsvService(ApplicationsCsvService):
     This subclass customizes the csv_columns for a different export format.
     """
 
-    def get_completed_in_talpa_date(
-        self, application: Application
-    ) -> Union[datetime, None]:
+    def get_completed_in_talpa_date(self, application: Application) -> str | None:
         if (
             application.batch
             and application.batch.status == ApplicationBatchStatus.COMPLETED

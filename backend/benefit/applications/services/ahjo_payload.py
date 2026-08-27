@@ -30,7 +30,7 @@ class AhjoTitle:
         suffix (str): A string to be added after the date in the title.
     """  # noqa: E501
 
-    application: Application = None
+    application: Application | None = None
     prefix: str = ""
     suffix: str = ""
 
@@ -92,7 +92,7 @@ class UpdateRecordsRecordTitle(AhjoTitle):
     """  # noqa: E501
 
     prefix: str = field(default=", täydennys")
-    attachment_created_at: datetime = None
+    attachment_created_at: datetime | None = None
 
     def __str__(self):
         """
@@ -125,7 +125,7 @@ class AddRecordsRecordTitle(AhjoTitle):
     """  # noqa: E501
 
     prefix: str = field(default=", täydennys")
-    attachment_created_at: datetime = None
+    attachment_created_at: datetime | None = None
 
     def __str__(self):
         """

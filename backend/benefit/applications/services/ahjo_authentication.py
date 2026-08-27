@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Dict, Union
+from typing import Dict
 
 import requests
 from django.conf import settings
@@ -22,7 +22,7 @@ class AhjoToken:
     access_token: str = ""
     refresh_token: str = ""
     expires_in: int = REFRESH_TOKEN_EXPIRES_IN  # 15 days
-    created_at: datetime = (None,)
+    created_at: datetime | None = None
 
     def expiry_datetime(self) -> datetime:
         return self.created_at + timedelta(seconds=int(self.expires_in))
@@ -97,7 +97,7 @@ class AhjoConnector:
 
         return self.do_token_request(payload)
 
-    def do_token_request(self, payload: Dict[str, str]) -> Union[AhjoToken, None]:
+    def do_token_request(self, payload: Dict[str, str]) -> AhjoToken | None:
         # Make the POST request
         try:
             response = requests.post(
@@ -127,7 +127,7 @@ class AhjoConnector:
                 f" {response.content.decode()}"
             )
 
-    def get_token_from_db(self) -> Union[AhjoToken, None]:
+    def get_token_from_db(self) -> AhjoToken | None:
         """Get token from AhjoSetting table"""
         try:
             token = AhjoSetting.objects.get(name="ahjo_access_token")

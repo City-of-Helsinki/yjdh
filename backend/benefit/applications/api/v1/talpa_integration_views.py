@@ -1,5 +1,5 @@
 import logging
-from typing import List, Union
+from typing import List
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -56,7 +56,7 @@ class TalpaCallbackView(APIView):
                 f"Received a talpa callback with unknown status: {data['status']}"
             )
 
-    def _get_applications(self, application_numbers) -> Union[List[Application], None]:
+    def _get_applications(self, application_numbers) -> List[Application] | None:
         applications = Application.objects.filter(
             application_number__in=application_numbers
         )
@@ -70,7 +70,7 @@ class TalpaCallbackView(APIView):
 
     def _get_applications_and_instalments(
         self, application_numbers
-    ) -> Union[List[Application], None]:
+    ) -> List[Application] | None:
         applications = Application.objects.with_due_instalments(
             InstalmentStatus.ACCEPTED
         ).filter(application_number__in=application_numbers)

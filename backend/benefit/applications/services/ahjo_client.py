@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import ClassVar, List, Optional, Tuple, Union
+from typing import ClassVar, List, Optional, Tuple
 from urllib.parse import urlencode
 
 import requests
@@ -267,8 +267,8 @@ class AhjoApiClient:
 
     def send_request_to_ahjo(
         self,
-        data: Union[dict, None] = None,
-    ) -> Union[Tuple[Application, str], Tuple[Application, List], None]:
+        data: dict | None = None,
+    ) -> Tuple[Application, str] | Tuple[Application, List] | None:
         """Send a request to Ahjo.
         The request can be either opening a new case (POST),
         updating the records of an existing case (PUT),
@@ -380,8 +380,8 @@ class AhjoApiClient:
 
     def format_error_message(
         self,
-        e: Union[requests.exceptions.HTTPError, requests.exceptions.RequestException],
-        application_number: Union[int, None] = None,
+        e: requests.exceptions.HTTPError | requests.exceptions.RequestException,
+        application_number: int | None = None,
     ) -> str:
         return (
             f"A HTTP or network error occurred while sending {self.request} for"
