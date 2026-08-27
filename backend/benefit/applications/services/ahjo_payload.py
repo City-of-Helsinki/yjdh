@@ -16,6 +16,7 @@ from common.utils import hash_file
 from users.models import User
 
 MANNER_OF_RECEIPT = "sähköinen asiointi"
+SPECIAL_PERSONAL_DATA = "Sisältää erityisiä henkilötietoja"
 
 
 @dataclass
@@ -255,7 +256,7 @@ def _prepare_top_level_dict(
             {"Subject": "työnantajat", "Scheme": "hki-yhpa"},
             {"Subject": "työllisyydenhoito"},
         ],
-        "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "PersonalData": SPECIAL_PERSONAL_DATA,
         "Reference": f"{application.application_number}",
         "Records": case_records,
         "Agents": [
@@ -316,12 +317,12 @@ def _prepare_record(
         "PublicityClass": publicity_class,
         "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
         "Language": language,
-        "PersonalData": "Sisältää erityisiä henkilötietoja",
+        "PersonalData": SPECIAL_PERSONAL_DATA,
     }
     if ahjo_version_series_id is not None:
         record_dict["VersionSeriesId"] = ahjo_version_series_id
 
-    elif ahjo_version_series_id is None and record_type == AhjoRecordType.APPLICATION:
+    elif record_type == AhjoRecordType.APPLICATION:
         record_dict["MannerOfReceipt"] = MANNER_OF_RECEIPT
 
     record_dict["Documents"] = documents
@@ -514,7 +515,7 @@ def prepare_decision_proposal_payload(
                 "PublicityClass": "Salassa pidettävä",
                 "SecurityReasons": ["JulkL (621/1999) 24.1 § 25 k"],
                 "Language": language,
-                "PersonalData": "Sisältää erityisiä henkilötietoja",
+                "PersonalData": SPECIAL_PERSONAL_DATA,
                 "Documents": [_prepare_record_document_dict(secret_xml)],
                 "Agents": [main_creator_dict],
             },
