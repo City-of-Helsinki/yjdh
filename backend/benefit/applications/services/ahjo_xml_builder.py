@@ -67,19 +67,19 @@ class AhjoXMLBuilder:
             )  # This will raise an exception if the document is not valid
             return True  # Return True if no exception was raised
         except XMLSchemaParseError as e:
-            LOGGER.error(
+            LOGGER.exception(
                 "Decision proposal XML Schema Error for application"
                 f" {self.application.application_number}: {e}"
             )
             raise
         except XMLSyntaxError as e:
-            LOGGER.error(
+            LOGGER.exception(
                 "Decision proposal XML Syntax Error for application"
                 f" {self.application.application_number}: {e}"
             )
             raise
         except etree.DocumentInvalid as e:
-            LOGGER.error(
+            LOGGER.exception(
                 "Decision proposal Validation Error for application"
                 f" {self.application.application_number}: {e}"
             )

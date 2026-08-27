@@ -18,7 +18,7 @@ class Command(BaseCommand):
         try:
             ahjo_auth_token = get_token()
         except ImproperlyConfigured as e:
-            LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
+            LOGGER.exception(f"Failed to get auth token from Ahjo: {e}")
             return
         send_subscription_request_to_ahjo(ahjo_auth_token)
         self.stdout.write("Subscribed to decisions API")

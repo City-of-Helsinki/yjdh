@@ -135,10 +135,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
         try:
             clamav_client.scan(file.name, file.file)
         except FileScanError as fse:
-            log.error(f"File '{fse.file_name}' scanning failed")
+            log.exception(f"File '{fse.file_name}' scanning failed")
             raise ClamAvServiceUnavailableException()
         except FileInfectedError as fie:
-            log.error(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
+            log.exception(f"File '{fie.file_name}' infected, viruses: {fie.viruses}")
             translation_text = _("File is infected with")
             raise serializers.ValidationError(
                 {

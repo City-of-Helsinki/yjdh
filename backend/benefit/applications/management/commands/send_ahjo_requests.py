@@ -78,10 +78,10 @@ class Command(BaseCommand):
         try:
             ahjo_auth_token = get_token()
         except AhjoTokenExpiredError as e:
-            LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
+            LOGGER.exception(f"Failed to get auth token from Ahjo: {e}")
             return
         except ImproperlyConfigured as e:
-            LOGGER.error(f"Failed to get auth token from Ahjo: {e}")
+            LOGGER.exception(f"Failed to get auth token from Ahjo: {e}")
             return
 
         number_to_process = options["number"]

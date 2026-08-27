@@ -19,10 +19,10 @@ class AhjoRequestBaseClass(BaseCommand):
         try:
             return get_token()
         except ImproperlyConfigured as e:
-            LOGGER.error(f"Failed to get auth token for Ahjo: {e}")
+            LOGGER.exception(f"Failed to get auth token for Ahjo: {e}")
             return None
         except AhjoTokenExpiredError as e:
-            LOGGER.error(f"Ahjo Token expired: {e}")
+            LOGGER.exception(f"Ahjo Token expired: {e}")
             return None
 
     def handle(self, *args, **options):
