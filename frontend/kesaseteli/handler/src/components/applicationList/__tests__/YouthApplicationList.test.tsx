@@ -6,7 +6,7 @@ import React from 'react';
 
 import fi from '../../../../public/locales/fi/common.json';
 import useYouthApplicationsListQuery from '../../../hooks/backend/useYouthApplicationsListQuery';
-import { ApplicationStatus } from '../../../types/application';
+import { YouthApplicationStatus } from '../../../types/application';
 import YouthApplicationList from '../YouthApplicationList';
 
 jest.mock('../../../hooks/backend/useYouthApplicationsListQuery');
@@ -18,7 +18,7 @@ const mockPendingApps = [
     social_security_number: '111111-1111',
     first_name: 'Matti',
     last_name: 'Meikäläinen',
-    status: 'submitted',
+    status: YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
   },
 ];
 const mockProcessedApps = [
@@ -27,7 +27,7 @@ const mockProcessedApps = [
     social_security_number: '222222-2222',
     first_name: 'Maija',
     last_name: 'Meikäläinen',
-    status: 'accepted',
+    status: YouthApplicationStatus.ACCEPTED,
   },
 ];
 
@@ -36,8 +36,8 @@ describe('YouthApplicationList', () => {
     window.sessionStorage.clear();
     mockUseQuery.mockImplementation((params) => {
       if (
-        params?.status?.includes('accepted') ||
-        params?.status?.includes('rejected')
+        params?.status?.includes(YouthApplicationStatus.ACCEPTED) ||
+        params?.status?.includes(YouthApplicationStatus.REJECTED)
       ) {
         return {
           data: { count: 8, results: mockProcessedApps },
@@ -83,8 +83,7 @@ describe('YouthApplicationList', () => {
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
-          ApplicationStatus.SUBMITTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ],
       })
     );
@@ -106,9 +105,8 @@ describe('YouthApplicationList', () => {
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
-          ApplicationStatus.SUBMITTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ],
       })
     );
@@ -122,10 +120,6 @@ describe('YouthApplicationList', () => {
 
     const listbox = screen.getByRole('listbox');
 
-    // Deselect "Avoin" (submitted) -> should query with only [additional_information_provided]
-    await userEvent.click(
-      within(listbox).getByText(fi.applicationList.status.submitted)
-    );
     // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> empty selection, should not trigger query
     await userEvent.click(
       within(listbox).getByText(
@@ -140,7 +134,7 @@ describe('YouthApplicationList', () => {
     );
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
+        status: [YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
       })
     );
   });
@@ -149,7 +143,7 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+        status: [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED],
       })
     );
   });
@@ -174,7 +168,7 @@ describe('YouthApplicationList', () => {
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.REJECTED],
+        status: [YouthApplicationStatus.REJECTED],
       })
     );
   });

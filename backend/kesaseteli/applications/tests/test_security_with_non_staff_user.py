@@ -470,10 +470,10 @@ def test_employer_summer_voucher_handle_attachment_delete_draft(
     [
         pytest.param(
             "user1", "company1", "user1", "company1", 403, id="own_submitted"
-        ),  # Own app (Blocked by SUBMITTED status)
+        ),  # Own app (Blocked by IN_HANDLING_QUEUE status)
         pytest.param(
             "user2", "company1", "user1", "company1", 403, id="colleague_submitted"
-        ),  # Colleague's app (Blocked by SUBMITTED status)
+        ),  # Colleague's app (Blocked by IN_HANDLING_QUEUE status)
         pytest.param(
             "user1", "company2", "user1", "company1", 404, id="wrong_context_submitted"
         ),  # Wrong company context
@@ -483,7 +483,7 @@ def test_employer_summer_voucher_handle_attachment_delete_draft(
     ],
 )
 @pytest.mark.django_db
-def test_employer_summer_voucher_handle_attachment_delete_submitted(
+def test_employer_summer_voucher_handle_attachment_delete_in_handling_queue(
     client_type, context_type, owner_type, app_company_type, expected_status
 ):
     """

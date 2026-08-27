@@ -5,23 +5,34 @@ export const APPLICATION_LIST_TYPES = {
 
 export type ApplicationListType = typeof APPLICATION_LIST_TYPES[keyof typeof APPLICATION_LIST_TYPES];
 
-export enum ApplicationStatus {
-  SUBMITTED = 'submitted',
-  AWAITING_MANUAL_PROCESSING = 'awaiting_manual_processing',
-  ADDITIONAL_INFORMATION_REQUESTED = 'additional_information_requested',
-  ADDITIONAL_INFORMATION_PROVIDED = 'additional_information_provided',
-  HANDLING = 'handling',
-  ACCEPTED = 'accepted',
-  REJECTED = 'rejected',
+export enum YouthApplicationStatus {
+    SUBMITTED = "submitted",
+    AWAITING_MANUAL_PROCESSING = "awaiting_manual_processing",
+    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested",
+    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided",
+    ACCEPTED = "accepted",
+    REJECTED = "rejected",
+}
+
+export enum EmployerApplicationStatus {
+    DRAFT = "draft",
+    IN_HANDLING_QUEUE = "in_handling_queue",
+    APPLICATION_HANDLING = "application_handling",
+    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested",
+    PAYMENT_REVIEW = "payment_review",
+    ACCEPTED_FOR_PAYMENT = "accepted_for_payment",
+    SENT_FOR_PAYMENT = "sent_for_payment",
+    REJECTED = "rejected",
+    CANCELLED = "cancelled",
 }
 
 export type BaseApplicationFields = {
   id: string;
-  status: ApplicationStatus;
   created_at?: string;
 };
 
 export type YouthApplication = BaseApplicationFields & {
+  status: YouthApplicationStatus;
   first_name?: string;
   last_name?: string;
   social_security_number?: string;
@@ -32,6 +43,7 @@ export type YouthApplication = BaseApplicationFields & {
 };
 
 export type EmployerApplication = BaseApplicationFields & {
+  status: EmployerApplicationStatus;
   submitted_at?: string;
   company?: {
     name: string;

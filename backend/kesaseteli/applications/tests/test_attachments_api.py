@@ -475,7 +475,8 @@ def test_handler_can_delete_submitted_attachment(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
     """
-    Handlers may delete attachments from SUBMITTED applications (no status restriction).
+    Handlers may delete attachments from submitted (i.e. non-draft) applications
+    (no status restriction).
     """
     attachment_delete_url = handle_attachment_url(
         submitted_summer_voucher, submitted_employment_contract_attachment.pk
@@ -493,7 +494,7 @@ def test_employer_cannot_delete_submitted_attachment(
     api_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
     """
-    Employers still cannot delete attachments from SUBMITTED applications.
+    Employers still cannot delete attachments from submitted (i.e. non-draft) applications.
     Regression guard: existing status restriction must not have been removed.
     """
     attachment_delete_url = handle_attachment_url(
@@ -533,7 +534,7 @@ def test_employer_cannot_delete_additional_info_attachment(
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_handler_can_upload_attachment(request, staff_client, submitted_summer_voucher):
     """
-    Handlers may upload attachments to applications in any status (e.g. SUBMITTED).
+    Handlers may upload attachments to e.g. a submitted application
     """
     response = _upload_file(
         request,

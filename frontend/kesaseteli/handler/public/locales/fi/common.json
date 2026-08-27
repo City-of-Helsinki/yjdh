@@ -29,12 +29,17 @@
       "age": "Ikä"
     },
     "status": {
-      "submitted": "Käsiteltävänä",
-      "additional_information_requested": "Lisätietoja pyydetty",
-      "additional_information_provided": "Lisätiedot annettu",
-      "handling": "Käsiteltävänä",
+      "awaiting_manual_processing": "Odottaa manuaalikäsittelyä",
+      "additional_information_requested": "Lisäselvitystä pyydetty",
+      "additional_information_provided": "Lisäselvitys annettu",
       "accepted": "Hyväksytty",
-      "rejected": "Hylätty"
+      "rejected": "Hylätty",
+      "cancelled": "Peruttu",
+      "in_handling_queue": "Käsittelyjonossa",
+      "payment_review": "Maksatuksen tarkistuksessa",
+      "application_handling": "Hakemuksen käsittelyssä",
+      "accepted_for_payment": "Hyväksytty maksuun",
+      "sent_for_payment": "Siirretty maksatukseen"
     },
     "tabs": {
       "pending": "Käsiteltävät",

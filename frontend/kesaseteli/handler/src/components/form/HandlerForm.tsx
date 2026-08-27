@@ -12,7 +12,7 @@ import Field, {
 import LinkedEmployerApplications from 'kesaseteli/handler/components/form/LinkedEmployerApplications';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
-import { ApplicationStatus } from 'kesaseteli/handler/types/application';
+import { YouthApplicationStatus } from 'kesaseteli/handler/types/application';
 import { getVtjException } from 'kesaseteli/handler/utils/map-vtj-data';
 import { YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION } from 'kesaseteli-shared/constants/youth-application-status';
 import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
@@ -74,21 +74,20 @@ const getStatusLabelProps = (
   icon: React.ReactNode;
 } => {
   switch (status) {
-    case ApplicationStatus.ACCEPTED:
+    case YouthApplicationStatus.ACCEPTED:
       return {
         type: 'success' as const,
         icon: <IconCheckCircle aria-hidden />,
       };
 
-    case ApplicationStatus.REJECTED:
+    case YouthApplicationStatus.REJECTED:
       return { type: 'error' as const, icon: <IconAlertCircle aria-hidden /> };
 
-    case ApplicationStatus.AWAITING_MANUAL_PROCESSING:
-    case ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED:
+    case YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED:
       return { type: 'alert' as const, icon: <IconClock aria-hidden /> };
 
-    case ApplicationStatus.SUBMITTED:
-    case ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
+    case YouthApplicationStatus.SUBMITTED:
+    case YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
     default:
       return { type: 'info' as const, icon: <IconAlertCircle aria-hidden /> };
   }
@@ -325,7 +324,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     status
   );
   const additionalInfoProvided =
-    status === ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED;
+    status === YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED;
 
   const showVtj = !isVtjDisabled();
   const showEmployerApps =

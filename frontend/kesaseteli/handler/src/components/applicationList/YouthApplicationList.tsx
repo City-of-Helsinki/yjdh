@@ -9,7 +9,7 @@ import { SESSION_STORAGE_KEYS } from '../../constants/session-storage-keys';
 import useYouthApplicationsListQuery from '../../hooks/backend/useYouthApplicationsListQuery';
 import useSessionStorageState from '../../hooks/useSessionStorageState';
 import {
-  ApplicationStatus,
+  YouthApplicationStatus,
   PaginatedResponse,
   YouthApplication,
 } from '../../types/application';
@@ -30,9 +30,8 @@ const $TabList = styled(TabList)`
  * Used to define the available options in the pending status search filter component.
  */
 const YOUTH_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+  YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
 ];
 
 /**
@@ -40,16 +39,15 @@ const YOUTH_PENDING_STATUSES = [
  * Also used as default/fallback statuses when no specific filters are checked by the user.
  */
 const DEFAULT_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
 ];
 
 /**
  * All statuses considered "processed" for youth applications
  */
 const PROCESSED_STATUSES = [
-  ApplicationStatus.ACCEPTED,
-  ApplicationStatus.REJECTED,
+  YouthApplicationStatus.ACCEPTED,
+  YouthApplicationStatus.REJECTED,
 ];
 
 export const useYouthApplicationListColumns =
@@ -135,15 +133,15 @@ type UseYouthApplicationsResultType = TableState<YouthApplication> & {
   count: number;
   /** Function to update the selected status filters */
   setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<ApplicationStatus[]>
+    React.SetStateAction<YouthApplicationStatus[]>
   >;
 };
 
 const useYouthApplications = (
-  initialStatuses: ApplicationStatus[]
+  initialStatuses: YouthApplicationStatus[]
 ): UseYouthApplicationsResultType => {
   const [selectedStatuses, setSelectedStatuses] =
-    useState<ApplicationStatus[]>(initialStatuses);
+    useState<YouthApplicationStatus[]>(initialStatuses);
 
   const tableQuery = useApplicationTableQuery<YouthApplication>(
     useYouthApplicationsListQuery,

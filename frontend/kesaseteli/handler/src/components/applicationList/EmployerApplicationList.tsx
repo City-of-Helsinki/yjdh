@@ -9,7 +9,7 @@ import { SESSION_STORAGE_KEYS } from '../../constants/session-storage-keys';
 import useEmployerApplicationsListQuery from '../../hooks/backend/useEmployerApplicationsListQuery';
 import useSessionStorageState from '../../hooks/useSessionStorageState';
 import {
-  ApplicationStatus,
+  EmployerApplicationStatus,
   EmployerApplication,
   PaginatedResponse,
 } from '../../types/application';
@@ -26,9 +26,9 @@ const $TabList = styled(TabList)`
 `;
 
 const EMPLOYER_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.IN_HANDLING_QUEUE,
+  EmployerApplicationStatus.APPLICATION_HANDLING,
+  EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
 ];
 
 /**
@@ -36,13 +36,15 @@ const EMPLOYER_PENDING_STATUSES = [
  * Also used as default/fallback statuses when no specific filters are checked by the user.
  */
 const DEFAULT_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.IN_HANDLING_QUEUE,
 ];
 
 const PROCESSED_STATUSES = [
-  ApplicationStatus.ACCEPTED,
-  ApplicationStatus.REJECTED,
+  EmployerApplicationStatus.PAYMENT_REVIEW,
+  EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+  EmployerApplicationStatus.SENT_FOR_PAYMENT,
+  EmployerApplicationStatus.REJECTED,
+  EmployerApplicationStatus.CANCELLED,
 ];
 
 export const useEmployerApplicationListColumns =
@@ -122,7 +124,7 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
   count: number;
   /** Function to update the selected status filters */
   setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<ApplicationStatus[]>
+    React.SetStateAction<EmployerApplicationStatus[]>
   >;
 };
 
@@ -131,10 +133,10 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
  * Handles default and user-selected status filters.
  */
 const useEmployerApplications = (
-  initialStatuses: ApplicationStatus[]
+  initialStatuses: EmployerApplicationStatus[]
 ): UseEmployerApplicationsResultType => {
   const [selectedStatuses, setSelectedStatuses] =
-    useState<ApplicationStatus[]>(initialStatuses);
+    useState<EmployerApplicationStatus[]>(initialStatuses);
 
   const tableQuery = useApplicationTableQuery<EmployerApplication>(
     useEmployerApplicationsListQuery,

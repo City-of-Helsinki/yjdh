@@ -5,34 +5,32 @@ import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/
 import { OptionType } from 'shared/types/common';
 import styled from 'styled-components';
 
-import { ApplicationStatus } from '../../../types/application';
-
 const $Wrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-type StatusFilterProps = {
+type StatusFilterProps<StatusType> = {
   id: string;
-  statuses: ApplicationStatus[];
-  defaultSelectedStatuses?: ApplicationStatus[];
-  onChange: (statuses: ApplicationStatus[]) => void;
+  statuses: StatusType[];
+  defaultSelectedStatuses?: StatusType[];
+  onChange: (statuses: StatusType[]) => void;
 };
 
-type UseStatusFilterProps = {
-  defaultSelectedStatuses?: ApplicationStatus[];
-  statuses: ApplicationStatus[];
+type UseStatusFilterProps<StatusType> = {
+  defaultSelectedStatuses?: StatusType[];
+  statuses: StatusType[];
 };
 
-export const useStatusFilter = ({
+export function useStatusFilter<StatusType>({
   defaultSelectedStatuses,
   statuses,
-}: UseStatusFilterProps): {
-  selectedStatuses: ApplicationStatus[];
+}: UseStatusFilterProps<StatusType>): {
+  selectedStatuses: StatusType[];
   setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<ApplicationStatus[]>
+    React.SetStateAction<StatusType[]>
   >;
-} => {
-  const [selectedStatuses, setSelectedStatuses] = useState<ApplicationStatus[]>(
+} {
+  const [selectedStatuses, setSelectedStatuses] = useState<StatusType[]>(
     defaultSelectedStatuses ?? statuses
   );
 
@@ -45,19 +43,19 @@ export const useStatusFilter = ({
   return { selectedStatuses, setSelectedStatuses };
 };
 
-const StatusFilter = ({
+function StatusFilter<StatusType extends string>({
   id,
   statuses,
   defaultSelectedStatuses,
   onChange,
-}: StatusFilterProps): JSX.Element => {
+}: StatusFilterProps<StatusType>): JSX.Element {
   const { t } = useTranslation();
   const { selectedStatuses, setSelectedStatuses } = useStatusFilter({
     defaultSelectedStatuses,
     statuses,
   });
 
-  const options = useMemo<OptionType<ApplicationStatus>[]>(
+  const options = useMemo<OptionType<StatusType>[]>(
     () =>
       statuses.map((status) => ({
         label: t(`common:applicationList.status.${status}`),
@@ -86,7 +84,7 @@ const StatusFilter = ({
         invalid={isInvalid}
         onChange={(nextSelectedOptions) => {
           const nextStatuses = nextSelectedOptions.map(
-            (option) => option.value as ApplicationStatus
+            (option) => option.value as StatusType
           );
           setSelectedStatuses(nextStatuses);
           // Only update query if selection is valid (not empty) to avoid querying every status

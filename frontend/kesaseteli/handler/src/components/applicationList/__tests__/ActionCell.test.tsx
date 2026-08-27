@@ -4,7 +4,7 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import mockRouter from 'next-router-mock';
 import React from 'react';
 
-import { ApplicationStatus, BaseApplication } from '../../../types/application';
+import {EmployerApplicationStatus, YouthApplicationStatus, BaseApplication} from '../../../types/application';
 import ActionCell from '../ActionCell';
 
 describe('ActionCell', () => {
@@ -19,7 +19,7 @@ describe('ActionCell', () => {
         row={
           {
             id: 'test-id-123',
-            status: ApplicationStatus.SUBMITTED,
+            status: YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
           } as BaseApplication
         }
         type="youth"
@@ -39,7 +39,7 @@ describe('ActionCell', () => {
         row={
           {
             id: 'test-id-123',
-            status: ApplicationStatus.SUBMITTED,
+            status: YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
           } as BaseApplication
         }
         type="youth"
@@ -57,7 +57,7 @@ describe('ActionCell', () => {
         row={
           {
             id: 'test-id-456',
-            status: ApplicationStatus.SUBMITTED,
+            status: EmployerApplicationStatus.IN_HANDLING_QUEUE,
           } as BaseApplication
         }
         type="employer"
@@ -77,7 +77,7 @@ describe('ActionCell', () => {
         row={
           {
             id: 'test-id-456',
-            status: ApplicationStatus.SUBMITTED,
+            status: EmployerApplicationStatus.IN_HANDLING_QUEUE,
           } as BaseApplication
         }
         type="employer"
