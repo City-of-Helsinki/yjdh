@@ -216,18 +216,37 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
 @pytest.mark.parametrize(
     "client_fixture, status, expected_code",
     [
+        # API client:
+        ("api_client", EmployerApplicationStatus.DRAFT, 201),
         ("api_client", EmployerApplicationStatus.SUBMITTED, 400),
         ("api_client", EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED, 201),
-        ("api_client", EmployerApplicationStatus.ACCEPTED, 404),
-        ("api_client", EmployerApplicationStatus.DELETED_BY_CUSTOMER, 404),
+        ("api_client", EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED, 404),
+        ("api_client", EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 404),
+        ("api_client", EmployerApplicationStatus.SENT_FOR_PAYMENT, 404),
+        ("api_client", EmployerApplicationStatus.APPLICATION_HANDLING, 404),
+        ("api_client", EmployerApplicationStatus.CANCELLED, 404),
         ("api_client", EmployerApplicationStatus.REJECTED, 404),
+        # Staff client:
+        ("staff_client", EmployerApplicationStatus.DRAFT, 201),
         ("staff_client", EmployerApplicationStatus.SUBMITTED, 201),
-        ("staff_client", EmployerApplicationStatus.ACCEPTED, 201),
-        ("staff_client", EmployerApplicationStatus.DELETED_BY_CUSTOMER, 201),
+        (
+            "staff_client",
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            201,
+        ),
+        (
+            "staff_client",
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            201,
+        ),
+        ("staff_client", EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 201),
+        ("staff_client", EmployerApplicationStatus.SENT_FOR_PAYMENT, 201),
+        ("staff_client", EmployerApplicationStatus.APPLICATION_HANDLING, 201),
+        ("staff_client", EmployerApplicationStatus.CANCELLED, 201),
         ("staff_client", EmployerApplicationStatus.REJECTED, 201),
     ],
 )
-def test_attachment_upload_invalid_status(
+def test_attachment_upload_status(
     request,
     client_fixture,
     status,

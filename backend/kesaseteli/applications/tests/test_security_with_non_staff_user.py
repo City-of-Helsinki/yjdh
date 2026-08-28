@@ -36,6 +36,16 @@ from shared.common.tests.factories import UserFactory
 
 User = get_user_model()
 
+_NON_VIEWABLE_STATUSES = [
+    EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+    EmployerApplicationStatus.APPLICATION_HANDLING,
+    EmployerApplicationStatus.PAYMENT_REVIEW,
+    EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+    EmployerApplicationStatus.SENT_FOR_PAYMENT,
+    EmployerApplicationStatus.REJECTED,
+    EmployerApplicationStatus.CANCELLED,
+]
+
 
 def create_attachment(
     user: User, company: Company, status: EmployerApplicationStatus
@@ -325,15 +335,7 @@ def test_employer_summer_voucher_handle_attachment_viewable_statuses(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
@@ -341,7 +343,7 @@ def test_employer_summer_voucher_handle_attachment_non_viewable_statuses(
     """
     Test that the employer summer voucher's handle attachment endpoint doesn't
     return any attachments that are connected to an employer application which
-    is neither a draft nor submitted.
+    is not in draft, submitted, oor additional information requested status.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -526,15 +528,7 @@ def test_employer_summer_voucher_handle_attachment_delete_submitted(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_summer_voucher_handle_attachment_delete_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
@@ -542,7 +536,8 @@ def test_employer_summer_voucher_handle_attachment_delete_non_viewable_statuses(
     """
     Test that the employer summer voucher's handle attachment endpoint can't be
     used to delete any attachments that are connected to an employer
-    application which is neither a draft nor submitted.
+    application which is not in draft, submitted or additional information requested
+    status.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -669,22 +664,15 @@ def test_employer_summer_voucher_detail_unallowed_methods(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_application_list_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
     Test that the employer application list endpoint doesn't return any
-    employer applications at all for statuses that are not draft or submitted.
+    employer applications at all for statuses that are not draft,
+    submitted or additional information requested.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)
@@ -710,22 +698,15 @@ def test_employer_application_list_non_viewable_statuses(
 
 
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-@pytest.mark.parametrize(
-    "application_status",
-    [
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        EmployerApplicationStatus.ACCEPTED,
-        EmployerApplicationStatus.REJECTED,
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-    ],
-)
+@pytest.mark.parametrize("application_status", _NON_VIEWABLE_STATUSES)
 @pytest.mark.django_db
 def test_employer_application_detail_non_viewable_statuses(
     application_status: EmployerApplicationStatus,
 ):
     """
     Test that the employer application detail endpoint doesn't return any
-    employer applications at all for statuses that are not draft or submitted.
+    employer applications at all for statuses that are not draft,
+    submitted or additional information requested.
     """
     user1, user2 = UserFactory.create_batch(size=2)
     user1_client = force_login_user(user1)

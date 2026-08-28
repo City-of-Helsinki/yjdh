@@ -1,0 +1,74 @@
+---
+title: Employer application status changes
+######################################
+# Please SYNC WITH:
+# - EmployerApplicationStatus
+# - EmployerApplicationStatusValidator
+######################################
+---
+flowchart LR
+
+  %% 1. Define subgraphs:
+  subgraph Step1 ["✨ 1. Start"]
+    DRAFT[Draft]
+  end
+
+  subgraph Step2 ["👀 2. Work Queues"]
+    SUBMITTED[Submitted]
+    ADDITIONAL_INFO_PROVIDED[Additional Information Provided]
+  end
+
+  subgraph Step3 ["📝 3. Handling & Updates"]
+    APPLICATION_HANDLING[Application Handling]
+    ADDITIONAL_INFO_REQUESTED[Additional Information Requested]
+  end
+
+  subgraph Step4 ["⏳ 4. Approval Review"]
+    PAYMENT_REVIEW[Payment Review]
+  end
+
+  subgraph Step5 ["🤖 5. Payment Automation"]
+    ACCEPTED_FOR_PAYMENT[Accepted for Payment]
+  end
+
+  subgraph Step6 ["🏁 6. Final Outcomes"]
+    SENT_FOR_PAYMENT((("✅ Sent for Payment")))
+    REJECTED(["❌ Rejected"])
+    CANCELLED(["❌ Cancelled"])
+  end
+
+  %% 2. Try to force the whole flow (subgraphs included) left-to-right using invisible links:
+  DRAFT ~~~ SUBMITTED ~~~ ADDITIONAL_INFO_PROVIDED ~~~ APPLICATION_HANDLING ~~~ ADDITIONAL_INFO_REQUESTED ~~~ PAYMENT_REVIEW ~~~ ACCEPTED_FOR_PAYMENT ~~~ SENT_FOR_PAYMENT
+
+  %% 3. Forward transitions:
+  DRAFT ==>|Employer Submits Application| SUBMITTED
+
+  SUBMITTED ==>|Handler Starts Handling Application| APPLICATION_HANDLING
+  SUBMITTED -.->|Employer Cancels Application| CANCELLED
+
+  ADDITIONAL_INFO_PROVIDED -->|Handler Starts Handling Application| APPLICATION_HANDLING
+  ADDITIONAL_INFO_PROVIDED -.->|Employer Cancels Application| CANCELLED
+
+  APPLICATION_HANDLING -->|Handler Requests Additional Information| ADDITIONAL_INFO_REQUESTED
+  APPLICATION_HANDLING ==>|Handler Accepts Application| PAYMENT_REVIEW
+  APPLICATION_HANDLING ==>|Handler Rejects Application| REJECTED
+
+  ADDITIONAL_INFO_REQUESTED -->|Employer Provides Information| ADDITIONAL_INFO_PROVIDED
+  ADDITIONAL_INFO_REQUESTED -.->|Employer Cancels Application| CANCELLED
+  ADDITIONAL_INFO_REQUESTED -.->|Automation or Handler Expires Application After Deadline| REJECTED
+
+  PAYMENT_REVIEW ==>|Approver Accepts Application for Payment| ACCEPTED_FOR_PAYMENT
+  PAYMENT_REVIEW -.->|Approver Rejects Application| REJECTED
+
+  ACCEPTED_FOR_PAYMENT ==>|Talpa Robot Fetches Application to Payment System| SENT_FOR_PAYMENT
+
+  %% 4. Backward transitions:
+  APPLICATION_HANDLING -.->|Handler Returns Submitted Application to Queue| SUBMITTED
+  APPLICATION_HANDLING -.->|Handler Returns Application with Additional Information Provided to Queue| ADDITIONAL_INFO_PROVIDED
+
+  REJECTED -.->|Handler Returns Submitted Application to Queue| SUBMITTED
+  REJECTED -.->|Handler Returns Application with Additional Information Provided to Queue| ADDITIONAL_INFO_PROVIDED
+  PAYMENT_REVIEW -.->|Approver Returns Submitted Application to Queue| SUBMITTED
+  PAYMENT_REVIEW -.->|Approver Returns Application with Additional Information Provided to Queue| ADDITIONAL_INFO_PROVIDED
+  ACCEPTED_FOR_PAYMENT -.->|Approver Returns Application to Payment Review| PAYMENT_REVIEW
+  SENT_FOR_PAYMENT -->|Talpa Robot Marks Application as Received or Sets Error Code Through Webhook| SENT_FOR_PAYMENT

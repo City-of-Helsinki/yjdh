@@ -56,9 +56,12 @@ class EmployerApplicationStatus(models.TextChoices):
         "additional_information_provided",
         _("Additional information provided"),
     )
-    ACCEPTED = "accepted", _("Accepted")
+    APPLICATION_HANDLING = "application_handling", _("Application handling")
+    PAYMENT_REVIEW = "payment_review", _("Payment review")
+    ACCEPTED_FOR_PAYMENT = "accepted_for_payment", _("Accepted for payment")
+    SENT_FOR_PAYMENT = "sent_for_payment", _("Sent for payment")
     REJECTED = "rejected", _("Rejected")
-    DELETED_BY_CUSTOMER = "deleted_by_customer", _("Deleted by customer")
+    CANCELLED = "cancelled", _("Cancelled")
 
 
 class YouthApplicationStatus(models.TextChoices):
