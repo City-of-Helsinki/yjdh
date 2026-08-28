@@ -5,7 +5,7 @@ import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
 from io import BytesIO
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 import jinja2
 import pdfkit
@@ -512,7 +512,7 @@ def send_open_case_request_to_ahjo(
 
 def delete_application_in_ahjo(
     application: Application, ahjo_token: AhjoToken
-) -> Union[Tuple[Application, str], None]:
+) -> Tuple[Application, str] | Tuple[None, None]:
     """Delete/cancel an application in Ahjo."""
 
     ahjo_request = AhjoDeleteCaseRequest(application)
@@ -525,7 +525,7 @@ def delete_application_in_ahjo(
 
 def update_application_summary_record_in_ahjo(
     application: Application, ahjo_token: AhjoToken
-) -> Union[Tuple[Application, str], None]:
+) -> Tuple[Application, str] | Tuple[None, None]:
     """Update the application summary pdf in Ahjo.
     Should be done about the same time proposal is sent.
     """
@@ -552,7 +552,7 @@ def update_application_summary_record_in_ahjo(
 def send_new_attachment_records_to_ahjo(
     application: Application,
     ahjo_token: AhjoToken,
-) -> Union[Tuple[Application, str], None]:
+) -> Tuple[Application, str] | Tuple[None, None]:
     """Send any new attachments, that have been added after opening a case, to Ahjo."""
 
     # TODO add a check for application status,
@@ -571,7 +571,7 @@ def send_new_attachment_records_to_ahjo(
 
 def send_decision_proposal_to_ahjo(
     application: Application, ahjo_token: AhjoToken
-) -> Union[Tuple[Application, str], None]:
+) -> Tuple[Application, str] | Tuple[None, None]:
     """Send a decision proposal and it's XML attachments to Ahjo."""
 
     # https://helsinkisolutionoffice.atlassian.net/browse/HL-1558
@@ -651,7 +651,7 @@ def delete_existing_xml_attachments(application: Application):
 
 def send_subscription_request_to_ahjo(
     ahjo_auth_token: AhjoToken,
-) -> Union[Tuple[None, str], None]:
+) -> Tuple[None, str] | Tuple[None, None] | None:
     """Send a subscription request to Ahjo."""
     try:
         ahjo_request = AhjoSubscribeDecisionRequest()
@@ -667,7 +667,7 @@ def send_subscription_request_to_ahjo(
 
 def get_decision_details_from_ahjo(
     application: Application, ahjo_token: AhjoToken
-) -> Union[List, None]:
+) -> Tuple[Application, List] | Tuple[None, None]:
     ahjo_request = AhjoDecisionDetailsRequest(application)
     ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
     return ahjo_client.send_request_to_ahjo()
