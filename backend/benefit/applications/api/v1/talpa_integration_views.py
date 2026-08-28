@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import QuerySet
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -56,7 +57,7 @@ class TalpaCallbackView(APIView):
                 f"Received a talpa callback with unknown status: {data['status']}"
             )
 
-    def _get_applications(self, application_numbers) -> List[Application] | None:
+    def _get_applications(self, application_numbers) -> QuerySet[Application] | None:
         applications = Application.objects.filter(
             application_number__in=application_numbers
         )
@@ -70,7 +71,7 @@ class TalpaCallbackView(APIView):
 
     def _get_applications_and_instalments(
         self, application_numbers
-    ) -> List[Application] | None:
+    ) -> QuerySet[Application] | list[Application]:
         applications = Application.objects.with_due_instalments(
             InstalmentStatus.ACCEPTED
         ).filter(application_number__in=application_numbers)

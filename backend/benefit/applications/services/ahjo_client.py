@@ -269,7 +269,13 @@ class AhjoApiClient:
     def send_request_to_ahjo(
         self,
         data: dict | None = None,
-    ) -> Tuple[Application, str] | Tuple[Application, List] | None:
+    ) -> (
+        Tuple[Application, str]
+        | Tuple[Application, List]
+        | Tuple[None, str]
+        | Tuple[None, List]
+        | Tuple[None, None]
+    ):
         """Send a request to Ahjo.
         The request can be either opening a new case (POST),
         updating the records of an existing case (PUT),
