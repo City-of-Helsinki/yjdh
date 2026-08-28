@@ -74,8 +74,8 @@ export const getValidationSchema = (
             (value) => {
               if (value === null || value === undefined) return true;
               return (
-                !Number.isNaN(parseFloat(value)) &&
-                Number.isFinite(parseFloat(value))
+                !Number.isNaN(Number.parseFloat(value)) &&
+                Number.isFinite(Number.parseFloat(value))
               );
             }
           )
