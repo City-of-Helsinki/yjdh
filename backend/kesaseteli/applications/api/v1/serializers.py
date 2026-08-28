@@ -74,28 +74,43 @@ class EmployerApplicationStatusValidator:
     requires_context = True
 
     APPLICATION_STATUS_TRANSITIONS = {
-        EmployerApplicationStatus.DRAFT: (
-            EmployerApplicationStatus.DELETED_BY_CUSTOMER,
-            EmployerApplicationStatus.SUBMITTED,
-        ),
+        EmployerApplicationStatus.DRAFT: (EmployerApplicationStatus.SUBMITTED,),
         EmployerApplicationStatus.SUBMITTED: (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        EmployerApplicationStatus.APPLICATION_HANDLING: (
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
             EmployerApplicationStatus.REJECTED,
-            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ),
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.CANCELLED,
             EmployerApplicationStatus.REJECTED,
         ),
-        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
-            EmployerApplicationStatus.ACCEPTED,
+        EmployerApplicationStatus.PAYMENT_REVIEW: (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ),
-        EmployerApplicationStatus.ACCEPTED: (),
-        EmployerApplicationStatus.REJECTED: (),
-        EmployerApplicationStatus.DELETED_BY_CUSTOMER: (),
+        EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT: (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        EmployerApplicationStatus.SENT_FOR_PAYMENT: (),
+        EmployerApplicationStatus.REJECTED: (
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ),
+        EmployerApplicationStatus.CANCELLED: (),
     }
 
     def __call__(self, value, serializer_field):
