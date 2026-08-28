@@ -1,4 +1,5 @@
 import { ButtonVariant, Card, IconArrowRight } from 'hds-react';
+import useDashboardStatsQuery from 'kesaseteli/handler/hooks/backend/useDashboardStatsQuery';
 import useUser from 'kesaseteli/handler/hooks/useUser';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { GetStaticProps, NextPage } from 'next';
@@ -32,6 +33,7 @@ const Dashboard: NextPage = () => {
   const router = useRouter();
 
   const { user } = useUser();
+  const { data: statsData } = useDashboardStatsQuery();
 
   const handleYouthApplicationsClick = React.useCallback(
     () => void router.push(ROUTES.YOUTH_APPLICATIONS),
@@ -44,6 +46,12 @@ const Dashboard: NextPage = () => {
   );
 
   const name = user?.name ?? '';
+
+  const youthPending = statsData?.youth_applications.pending ?? '—';
+  const youthProcessed = statsData?.youth_applications.processed ?? '—';
+
+  const employerPending = statsData?.employer_applications.pending ?? '—';
+  const employerProcessed = statsData?.employer_applications.processed ?? '—';
 
   return (
     <Container>
@@ -61,7 +69,10 @@ const Dashboard: NextPage = () => {
         <$StyledCard
           border
           heading={t('common:header.youthApplicationsLabel')}
-          text={t('common:dashboard.pendingProcessed')}
+          text={t('common:dashboard.pendingProcessed', {
+            pending: youthPending,
+            processed: youthProcessed,
+          })}
         >
           <$ButtonContainer>
             <Button
@@ -77,7 +88,10 @@ const Dashboard: NextPage = () => {
         <$StyledCard
           border
           heading={t('common:header.employerApplicationsLabel')}
-          text={t('common:dashboard.pendingProcessed')}
+          text={t('common:dashboard.pendingProcessed', {
+            pending: employerPending,
+            processed: employerProcessed,
+          })}
         >
           <$ButtonContainer>
             <Button
