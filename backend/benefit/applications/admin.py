@@ -202,11 +202,13 @@ class DecisionProposalTemplateSectionFormAdmin(forms.ModelForm):
             "name",
         ]
         widgets = {
-            "template_text": SafeTextareaWidget(),
+            "template_decision_text": SafeTextareaWidget(),
+            "template_justification_text": SafeTextareaWidget(),
         }
 
 
 class DecisionProposalTemplateSectionAdmin(admin.ModelAdmin):
+    form = DecisionProposalTemplateSectionFormAdmin
     list_display = ["name"]
     search_fields = ["name"]
 
