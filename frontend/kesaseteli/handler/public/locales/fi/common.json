@@ -9,7 +9,7 @@
   "appName": "Kesäsetelin käsittelijäliittymä",
   "cookieSettings": "Evästeasetukset",
   "dashboard": {
-    "pendingProcessed": "Käsiteltävät: —\nKäsitellyt: —"
+    "pendingProcessed": "Käsiteltävät: {{pending}}\nKäsitellyt: {{processed}}"
   },
   "utility": {
     "pagination": "Sivutus"

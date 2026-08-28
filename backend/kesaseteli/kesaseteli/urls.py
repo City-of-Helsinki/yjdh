@@ -10,6 +10,7 @@ from applications.api.handler_excel_views import (
     YouthApplicationExcelExportViewSet,
 )
 from applications.api.v1 import views as application_views
+from applications.api.v1.dashboard_views import DashboardStatsView
 from applications.views import EmployerExcelDownloadPageView
 from common.openapi_views import KesaseteliRedocView, KesaseteliSwaggerView
 from common.views import healthz, readiness
@@ -44,6 +45,7 @@ urlpatterns = [
         application_views.SummerVoucherConfigurationViewSet.as_view(),
         name="summer-voucher-configuration",
     ),
+    path("v1/dashboard/stats/", DashboardStatsView.as_view(), name="dashboard-stats"),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(

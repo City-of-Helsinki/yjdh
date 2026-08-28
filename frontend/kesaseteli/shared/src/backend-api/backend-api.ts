@@ -20,6 +20,7 @@ export const BackendEndpoint = {
   ADFS_LOGOUT: '/oauth2/logout/',
   ADDITIONAL_INFO: '/v1/additional_info/',
   COMPANY: '/v1/company/',
+  DASHBOARD_STATS: '/v1/dashboard/stats/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   HANDLER_NOTES: '/v1/handlernotes/',
