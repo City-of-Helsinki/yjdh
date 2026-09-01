@@ -28,13 +28,33 @@
       "targetGroup": "Kohderyhmä",
       "age": "Ikä"
     },
-    "status": {
-      "submitted": "Käsiteltävänä",
-      "additional_information_requested": "Lisätietoja pyydetty",
-      "additional_information_provided": "Lisätiedot annettu",
-      "handling": "Käsiteltävänä",
-      "accepted": "Hyväksytty",
-      "rejected": "Hylätty"
+    "youth": {
+      "status": {
+        "submitted": "Vahvistamaton",
+        "awaiting_manual_processing": "Odottaa käsittelyä",
+        "additional_information_requested": "Lisätietoja pyydetty",
+        "additional_information_provided": "Lisätiedot annettu",
+        "accepted": "Hyväksytty",
+        "rejected": "Hylätty",
+        "None": "Ei asetettu"
+      }
+    },
+    "employer": {
+      "status": {
+        "draft": "Luonnos",
+        "submitted": "Uusi hakemus",
+        "additional_information_requested": "Lisätietoja pyydetty",
+        "additional_information_provided": "Lisätiedot annettu",
+        "application_handling": "Käsittelyssä",
+        "payment_review": "Maksatuksen tarkistuksessa",
+        "accepted_for_payment": "Hyväksytty maksuun",
+        "sent_for_payment": "Siirretty maksatukseen",
+        "received_by_payment_system": "Vastaanotettu maksujärjestelmässä",
+        "error_in_payment": "Virhe maksussa",
+        "rejected": "Hylätty",
+        "cancelled": "Peruttu",
+        "None": "Ei asetettu"
+      }
     },
     "tabs": {
       "pending": "Käsiteltävät",
@@ -189,17 +209,6 @@
       "additional_information_requested": "Nuori ei ole vielä täyttänyt lisätietohakemusta",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty"
-    },
-    "applicationStatus": {
-      "submitted": "Lähetetty",
-      "additional_information_requested": "Lisätietoja pyydetty",
-      "additional_information_provided": "Lisätietoja toimitettu",
-      "awaiting_manual_processing": "Odottaa käsittelyä",
-      "accepted": "Hyväksytty",
-      "rejected": "Hylätty",
-      "draft": "Luonnos",
-      "deleted_by_customer": "Poistettu",
-      "None": "Ei asetettu"
     },
     "statusTooltip": {
       "submitted": "Nuori on täyttänyt hakemuksen, mutta ei ole vielä aktivoinut sitä sähköpostiinsa tulleesta vahvistuslinkistä.",

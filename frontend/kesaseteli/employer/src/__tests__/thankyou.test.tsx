@@ -10,6 +10,7 @@ import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import nock from 'nock';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
@@ -29,12 +30,12 @@ describe('frontend/kesaseteli/employer/src/pages/thankyou.tsx', () => {
   it('Should redirect to existing draft when "Add another" is clicked', async () => {
     const myDraft = {
       ...fakeObjectFactory.fakeApplication(),
-      status: 'draft',
+      status: EmployerApplicationStatus.DRAFT,
       is_mine: true,
     } as Application;
     const currentApplication = {
       ...fakeObjectFactory.fakeApplication(),
-      status: 'submitted',
+      status: EmployerApplicationStatus.SUBMITTED,
     } as Application;
 
     expectAuthorizedReply();
@@ -69,11 +70,11 @@ describe('frontend/kesaseteli/employer/src/pages/thankyou.tsx', () => {
   it('Should create new application when no draft exists', async () => {
     const newApplication = {
       ...fakeObjectFactory.fakeApplication(),
-      status: 'draft',
+      status: EmployerApplicationStatus.DRAFT,
     } as Application;
     const currentApplication = {
       ...fakeObjectFactory.fakeApplication(),
-      status: 'submitted',
+      status: EmployerApplicationStatus.SUBMITTED,
     } as Application;
 
     expectAuthorizedReply();

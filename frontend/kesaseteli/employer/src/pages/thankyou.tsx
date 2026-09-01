@@ -9,6 +9,7 @@ import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicati
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
@@ -61,7 +62,7 @@ const ThankYouPage: NextPage = () => {
     isFetching: isApplicationsFetching,
   } = useApplicationsQuery({ onlyMine: false });
   const draftApplication = applications?.find(
-    (app) => app.status === 'draft' && app.is_mine
+    (app) => app.status === EmployerApplicationStatus.DRAFT && app.is_mine
   );
 
   const createNewApplicationClick = React.useCallback((): void => {
@@ -110,7 +111,10 @@ const ThankYouPage: NextPage = () => {
     const vouchers = applicationQuery.data?.summer_vouchers || [];
     const lastVoucher = vouchers[vouchers.length - 1];
     const employeeName = lastVoucher?.employee_name || '';
-    if (applicationId && application.status === 'draft') {
+    if (
+      applicationId &&
+      application.status === EmployerApplicationStatus.DRAFT
+    ) {
       goToPage(`/application?id=${applicationId}`, 'replace');
     }
     return (

@@ -60,7 +60,7 @@ export default class HandlerForm<
 
   private notYetActivated = this.component
     .findByTestId('handlerApplication-status')
-    .withText(/lähetetty/i);
+    .withText(/vahvistamaton/i);
 
   private additionalInfoRequested = this.component
     .findByTestId('handlerApplication-status')

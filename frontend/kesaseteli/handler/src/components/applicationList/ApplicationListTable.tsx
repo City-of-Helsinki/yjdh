@@ -6,11 +6,7 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import styled from 'styled-components';
 
-import {
-  ApplicationStatus,
-  BaseApplication,
-  PaginatedResponse,
-} from '../../types/application';
+import { BaseApplication, PaginatedResponse } from '../../types/application';
 import FilterSection from './searchFilters/FilterSection';
 
 export const PAGE_SIZE = 20;
@@ -98,12 +94,12 @@ export function useTableState<T extends BaseApplication = BaseApplication>(
  */
 export function useApplicationTableQuery<T extends BaseApplication>(
   useQueryHook: (params: {
-    status: ApplicationStatus[];
+    status: T['status'][];
     limit: number;
     offset: number;
     ordering: OrderingField<T>;
   }) => UseQueryResult<PaginatedResponse<T>>,
-  status: ApplicationStatus[],
+  status: T['status'][],
   defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>
 ): TableState<T> & {
   query: UseQueryResult<PaginatedResponse<T>>;

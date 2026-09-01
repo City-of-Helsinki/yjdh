@@ -12,13 +12,12 @@ import Field, {
 import LinkedEmployerApplications from 'kesaseteli/handler/components/form/LinkedEmployerApplications';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
-import { ApplicationStatus } from 'kesaseteli/handler/types/application';
 import { getVtjException } from 'kesaseteli/handler/utils/map-vtj-data';
-import { YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION } from 'kesaseteli-shared/constants/youth-application-status';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
+import { YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION } from 'kesaseteli-shared/constants/youth-application-status-arrays';
 import isVtjDisabled from 'kesaseteli-shared/flags/is-vtj-disabled';
 import useSummerVoucherConfigurationQuery from 'kesaseteli-shared/hooks/useSummerVoucherConfigurationQuery';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import type YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -36,8 +35,8 @@ type Props = {
 };
 
 const includesStatus = (
-  arr: ReadonlyArray<YouthApplicationStatusType>,
-  val: YouthApplicationStatusType
+  arr: ReadonlyArray<YouthApplicationStatus>,
+  val: YouthApplicationStatus
 ): boolean => arr.includes(val);
 
 type TargetGroupParams = {
@@ -68,27 +67,27 @@ const getTargetGroupName = ({
 };
 
 const getStatusLabelProps = (
-  status: YouthApplicationStatusType
+  status: YouthApplicationStatus
 ): {
   type: 'success' | 'error' | 'alert' | 'info';
   icon: React.ReactNode;
 } => {
   switch (status) {
-    case ApplicationStatus.ACCEPTED:
+    case YouthApplicationStatus.ACCEPTED:
       return {
         type: 'success' as const,
         icon: <IconCheckCircle aria-hidden />,
       };
 
-    case ApplicationStatus.REJECTED:
+    case YouthApplicationStatus.REJECTED:
       return { type: 'error' as const, icon: <IconAlertCircle aria-hidden /> };
 
-    case ApplicationStatus.AWAITING_MANUAL_PROCESSING:
-    case ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED:
+    case YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
+    case YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED:
       return { type: 'alert' as const, icon: <IconClock aria-hidden /> };
 
-    case ApplicationStatus.SUBMITTED:
-    case ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
+    case YouthApplicationStatus.SUBMITTED:
+    case YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
     default:
       return { type: 'info' as const, icon: <IconAlertCircle aria-hidden /> };
   }
@@ -224,9 +223,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
                       type={statusProps.type}
                       iconStart={statusProps.icon}
                     >
-                      {t(
-                        `common:handlerApplication.applicationStatus.${status}`
-                      )}
+                      {t(`common:applicationList.youth.status.${status}`)}
                     </StatusLabel>
                     <Tooltip>
                       {t(`common:handlerApplication.statusTooltip.${status}`)}
@@ -325,7 +322,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     status
   );
   const additionalInfoProvided =
-    status === ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED;
+    status === YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED;
 
   const showVtj = !isVtjDisabled();
   const showEmployerApps =

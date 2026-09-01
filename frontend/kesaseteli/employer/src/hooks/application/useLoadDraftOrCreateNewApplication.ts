@@ -2,6 +2,7 @@ import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicati
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { UseMutationResult, useQueryClient } from 'react-query';
@@ -41,7 +42,11 @@ export const useCreateApplication = (): {
             void handleResponse<Application>(
               axios.put(
                 `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication.id}/`,
-                { ...newApplication, ...prefilledData, status: 'draft' }
+                {
+                  ...newApplication,
+                  ...prefilledData,
+                  status: EmployerApplicationStatus.DRAFT,
+                }
               )
             )
               .then((updatedApplication) => {
@@ -77,7 +82,9 @@ const useLoadDraftOrCreateNewApplication = (): void => {
 
   const draftApplicationQuery = useApplicationsQuery<Application | undefined>({
     select: (applications) =>
-      applications.find((app) => app.status === 'draft'),
+      applications.find(
+        (app) => app.status === EmployerApplicationStatus.DRAFT
+      ),
   });
 
   React.useEffect(() => {

@@ -1,4 +1,5 @@
 import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query/types/react/types';
@@ -9,7 +10,7 @@ import { SESSION_STORAGE_KEYS } from '../../constants/session-storage-keys';
 import useEmployerApplicationsListQuery from '../../hooks/backend/useEmployerApplicationsListQuery';
 import useSessionStorageState from '../../hooks/useSessionStorageState';
 import {
-  ApplicationStatus,
+  APPLICATION_LIST_TYPES,
   EmployerApplication,
   PaginatedResponse,
 } from '../../types/application';
@@ -26,9 +27,11 @@ const $TabList = styled(TabList)`
 `;
 
 const EMPLOYER_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.SUBMITTED,
+  EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+  EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.APPLICATION_HANDLING,
+  EmployerApplicationStatus.ERROR_IN_PAYMENT,
 ];
 
 /**
@@ -36,13 +39,18 @@ const EMPLOYER_PENDING_STATUSES = [
  * Also used as default/fallback statuses when no specific filters are checked by the user.
  */
 const DEFAULT_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.SUBMITTED,
+  EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.ERROR_IN_PAYMENT,
 ];
 
 const PROCESSED_STATUSES = [
-  ApplicationStatus.ACCEPTED,
-  ApplicationStatus.REJECTED,
+  EmployerApplicationStatus.PAYMENT_REVIEW,
+  EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+  EmployerApplicationStatus.SENT_FOR_PAYMENT,
+  EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+  EmployerApplicationStatus.REJECTED,
+  EmployerApplicationStatus.CANCELLED,
 ];
 
 export const useEmployerApplicationListColumns =
@@ -99,7 +107,7 @@ export const useEmployerApplicationListColumns =
         isSortable: true,
         orderingField: 'status',
         transform: (row) =>
-          t(`common:applicationList.status.${String(row.status)}`),
+          t(`common:applicationList.employer.status.${String(row.status)}`),
       },
       {
         key: 'submitted_at',
@@ -122,7 +130,7 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
   count: number;
   /** Function to update the selected status filters */
   setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<ApplicationStatus[]>
+    React.SetStateAction<EmployerApplicationStatus[]>
   >;
 };
 
@@ -131,10 +139,10 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
  * Handles default and user-selected status filters.
  */
 const useEmployerApplications = (
-  initialStatuses: ApplicationStatus[]
+  initialStatuses: EmployerApplicationStatus[]
 ): UseEmployerApplicationsResultType => {
   const [selectedStatuses, setSelectedStatuses] =
-    useState<ApplicationStatus[]>(initialStatuses);
+    useState<EmployerApplicationStatus[]>(initialStatuses);
 
   const tableQuery = useApplicationTableQuery<EmployerApplication>(
     useEmployerApplicationsListQuery,
@@ -199,11 +207,12 @@ export default function EmployerApplicationList(): JSX.Element {
           ariaLabelledBy="employer-pending-filters-heading"
           title={t('common:applicationList.filterTitle')}
         >
-          <StatusFilter
+          <StatusFilter<EmployerApplication>
             id="employer-application-pending-status-filter"
             statuses={EMPLOYER_PENDING_STATUSES}
             defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
             onChange={setSelectedPendingStatuses}
+            listType={APPLICATION_LIST_TYPES.EMPLOYER}
           />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
@@ -222,11 +231,12 @@ export default function EmployerApplicationList(): JSX.Element {
           ariaLabelledBy="employer-processed-filters-heading"
           title={t('common:applicationList.filterTitle')}
         >
-          <StatusFilter
+          <StatusFilter<EmployerApplication>
             id="employer-application-processed-status-filter"
             statuses={PROCESSED_STATUSES}
             defaultSelectedStatuses={PROCESSED_STATUSES}
             onChange={setSelectedProcessedStatuses}
+            listType={APPLICATION_LIST_TYPES.EMPLOYER}
           />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>

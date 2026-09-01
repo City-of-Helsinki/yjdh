@@ -6,6 +6,7 @@ import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpda
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import { ErrorOption } from 'react-hook-form';
@@ -143,7 +144,7 @@ const useApplicationApi = <T = Application>(
     try {
       const result = await updateApplicationQuery.mutateAsync({
         ...draftApplication,
-        status: 'draft',
+        status: EmployerApplicationStatus.DRAFT,
         summer_vouchers,
       });
       onSuccess(getFormApplication(result));
@@ -167,7 +168,11 @@ const useApplicationApi = <T = Application>(
     }
 
     return updateApplicationQuery.mutate(
-      { ...draftApplication, status: 'draft', summer_vouchers },
+      {
+        ...draftApplication,
+        status: EmployerApplicationStatus.DRAFT,
+        summer_vouchers,
+      },
       {
         onSuccess: (data) => onSuccess(getFormApplication(data)),
         onError: handleUpdateError,
@@ -191,7 +196,7 @@ const useApplicationApi = <T = Application>(
       try {
         const savedApplication = await updateApplicationQuery.mutateAsync({
           ...currentApplication,
-          status: 'draft',
+          status: EmployerApplicationStatus.DRAFT,
         });
         currentApplication = getFormApplication(savedApplication);
         formDataVoucher = currentApplication.summer_vouchers?.[employmentIndex];
@@ -277,7 +282,11 @@ const useApplicationApi = <T = Application>(
       (elem, i) => i !== index
     );
     return updateApplicationQuery.mutate(
-      { ...draftApplication, status: 'draft', summer_vouchers },
+      {
+        ...draftApplication,
+        status: EmployerApplicationStatus.DRAFT,
+        summer_vouchers,
+      },
       {
         onSuccess: () => onSuccess(draftApplication),
         onError,
@@ -319,9 +328,13 @@ const useApplicationApi = <T = Application>(
     draftApplication,
     onSuccess = noop
   ) =>
-    mutateApplication(draftApplication, 'draft', (updatedApplication) => {
-      void onSuccess(getFormApplication(updatedApplication));
-    });
+    mutateApplication(
+      draftApplication,
+      EmployerApplicationStatus.DRAFT,
+      (updatedApplication) => {
+        void onSuccess(getFormApplication(updatedApplication));
+      }
+    );
 
   const sendApplication: ApplicationApi<T>['sendApplication'] = (
     completeApplication,
@@ -329,7 +342,7 @@ const useApplicationApi = <T = Application>(
   ) =>
     mutateApplication(
       completeApplication,
-      'submitted',
+      EmployerApplicationStatus.SUBMITTED,
       handleMutationSuccess(onSuccess)
     );
 

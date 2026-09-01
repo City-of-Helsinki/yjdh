@@ -1,10 +1,8 @@
+import { IconAngleLeft, IconAngleRight, Tab, TabList } from 'hds-react';
 import {
-  IconAngleLeft,
-  IconAngleRight,
-  Tab,
-  TabList,
-} from 'hds-react';
-import { ApplicationListType } from 'kesaseteli/handler/types/application';
+  BaseApplication,
+  ListTypeForApplication,
+} from 'kesaseteli/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useMediaQuery from 'shared/hooks/useMediaQuery';
@@ -19,25 +17,25 @@ import {
   $SidebarOverlay,
   $SidebarPanel,
   $StickyTabs,
-  $TabPanel
+  $TabPanel,
 } from './ApplicationSidebar.sc';
 import ApplicationTimeline from './ApplicationTimeline';
 
 const TIMELINE_TITLE_KEY = 'common:timeline.title';
 
-type ApplicationSidebarProps = {
+type ApplicationSidebarProps<T extends BaseApplication> = {
   applicationId: string | undefined;
-  applicationType: ApplicationListType;
+  applicationType: ListTypeForApplication<T>;
   isOpen: boolean;
   onToggle: () => void;
 };
 
-const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({
+function ApplicationSidebar<T extends BaseApplication>({
   applicationId,
   applicationType,
   isOpen,
   onToggle,
-}) => {
+}: Readonly<ApplicationSidebarProps<T>>): JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
@@ -101,7 +99,7 @@ const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({
               )}
 
               {applicationId && (
-                <ApplicationTimeline
+                <ApplicationTimeline<T>
                   applicationId={applicationId}
                   applicationType={applicationType}
                   onToggle={onToggle}
@@ -113,6 +111,6 @@ const ApplicationSidebar: React.FC<ApplicationSidebarProps> = ({
       </$SidebarPanel>
     </>
   );
-};
+}
 
 export default ApplicationSidebar;

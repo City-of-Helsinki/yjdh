@@ -2,11 +2,11 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
 
 import fi from '../../../../public/locales/fi/common.json';
 import useYouthApplicationsListQuery from '../../../hooks/backend/useYouthApplicationsListQuery';
-import { ApplicationStatus } from '../../../types/application';
 import YouthApplicationList from '../YouthApplicationList';
 
 jest.mock('../../../hooks/backend/useYouthApplicationsListQuery');
@@ -18,7 +18,7 @@ const mockPendingApps = [
     social_security_number: '111111-1111',
     first_name: 'Matti',
     last_name: 'Meikäläinen',
-    status: 'submitted',
+    status: YouthApplicationStatus.SUBMITTED,
   },
 ];
 const mockProcessedApps = [
@@ -27,7 +27,7 @@ const mockProcessedApps = [
     social_security_number: '222222-2222',
     first_name: 'Maija',
     last_name: 'Meikäläinen',
-    status: 'accepted',
+    status: YouthApplicationStatus.ACCEPTED,
   },
 ];
 
@@ -36,8 +36,8 @@ describe('YouthApplicationList', () => {
     window.sessionStorage.clear();
     mockUseQuery.mockImplementation((params) => {
       if (
-        params?.status?.includes('accepted') ||
-        params?.status?.includes('rejected')
+        params?.status?.includes(YouthApplicationStatus.ACCEPTED) ||
+        params?.status?.includes(YouthApplicationStatus.REJECTED)
       ) {
         return {
           data: { count: 8, results: mockProcessedApps },
@@ -82,10 +82,7 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [
-          ApplicationStatus.SUBMITTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        ],
+        status: [YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
       })
     );
   });
@@ -99,16 +96,15 @@ describe('YouthApplicationList', () => {
     // Select "Lisätietoja pyydetty" to check it
     await userEvent.click(
       screen.getByText(
-        fi.applicationList.status.additional_information_requested
+        fi.applicationList.youth.status.additional_information_requested
       )
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
-          ApplicationStatus.SUBMITTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ],
       })
     );
@@ -124,12 +120,12 @@ describe('YouthApplicationList', () => {
 
     // Deselect "Avoin" (submitted) -> should query with only [additional_information_provided]
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.status.submitted)
+      within(listbox).getByText(fi.applicationList.youth.status.submitted)
     );
     // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> empty selection, should not trigger query
     await userEvent.click(
       within(listbox).getByText(
-        fi.applicationList.status.additional_information_provided
+        fi.applicationList.youth.status.additional_information_provided
       )
     );
 
@@ -140,7 +136,7 @@ describe('YouthApplicationList', () => {
     );
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
+        status: [YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
       })
     );
   });
@@ -149,7 +145,10 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+        status: [
+          YouthApplicationStatus.ACCEPTED,
+          YouthApplicationStatus.REJECTED,
+        ],
       })
     );
   });
@@ -169,12 +168,12 @@ describe('YouthApplicationList', () => {
 
     // Deselect "Hyväksytty" (Accepted)
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.status.accepted)
+      within(listbox).getByText(fi.applicationList.youth.status.accepted)
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.REJECTED],
+        status: [YouthApplicationStatus.REJECTED],
       })
     );
   });

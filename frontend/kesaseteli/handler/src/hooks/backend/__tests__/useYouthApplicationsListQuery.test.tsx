@@ -1,5 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import nock from 'nock';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -45,13 +46,17 @@ describe('useYouthApplicationsListQuery', () => {
   it('fetches paginated youth applications successfully', async () => {
     nock(API_BASE_TEST_URL)
       .get(BackendEndpoint.YOUTH_APPLICATIONS)
-      .query({ status: 'submitted', limit: '20', offset: '0' })
+      .query({
+        status: YouthApplicationStatus.SUBMITTED,
+        limit: '20',
+        offset: '0',
+      })
       .reply(200, mockListResponse);
 
     const { result } = renderHook(
       () =>
         useYouthApplicationsListQuery({
-          status: ['submitted'],
+          status: [YouthApplicationStatus.SUBMITTED],
           limit: 20,
           offset: 0,
         }),
@@ -70,8 +75,10 @@ describe('useYouthApplicationsListQuery', () => {
           ? queryObj.status
           : [queryObj.status];
         return (
-          statuses.includes('submitted') &&
-          statuses.includes('additional_information_provided') &&
+          statuses.includes(YouthApplicationStatus.SUBMITTED) &&
+          statuses.includes(
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+          ) &&
           queryObj.limit === '20' &&
           queryObj.offset === '0' &&
           queryObj.ordering === '-created_at'
@@ -82,7 +89,10 @@ describe('useYouthApplicationsListQuery', () => {
     const { result } = renderHook(
       () =>
         useYouthApplicationsListQuery({
-          status: ['submitted', 'additional_information_provided'],
+          status: [
+            YouthApplicationStatus.SUBMITTED,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          ],
           limit: 20,
           offset: 0,
           ordering: '-created_at',

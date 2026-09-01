@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -63,7 +64,7 @@ describe('EmploymentForm', () => {
     (useApplicationApi as jest.Mock).mockReturnValue({
       fetchEmployment: mockFetchEmployment,
       updateApplication: mockUpdateApplication,
-      applicationQuery: { data: { status: 'draft' } },
+      applicationQuery: { data: { status: EmployerApplicationStatus.DRAFT } },
       applicationId: 'test-id',
     });
   });
