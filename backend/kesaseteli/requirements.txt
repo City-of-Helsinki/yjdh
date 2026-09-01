@@ -95,7 +95,7 @@ django-searchable-encrypted-fields==0.2.1
     # via -r requirements.in
 django-storages[azure]==1.14.6
     # via -r requirements.in
-djangorestframework==3.17.1
+djangorestframework==3.17.2
     # via
     #   -r requirements.in
     #   drf-spectacular
