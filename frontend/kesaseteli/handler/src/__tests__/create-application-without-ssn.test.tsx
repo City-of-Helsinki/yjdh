@@ -5,6 +5,7 @@ import expectToGetSummerVoucherConfiguration from 'kesaseteli/handler/__tests__/
 import CreateApplicationWithoutSsnPage from 'kesaseteli/handler/pages/create-application-without-ssn';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import mockRouter from 'next-router-mock';
 import nock from 'nock';
 import React from 'react';
@@ -48,7 +49,7 @@ describe('CreateApplicationWithoutSsnPage (Integration)', () => {
     const user = userEvent.setup();
     const mockCreatedResponse = {
       id: 'mock-uuid-999',
-      status: 'submitted',
+      status: YouthApplicationStatus.SUBMITTED,
     };
 
     renderComponent(<CreateApplicationWithoutSsnPage />);

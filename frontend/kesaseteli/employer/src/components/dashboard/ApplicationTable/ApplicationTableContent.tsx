@@ -5,6 +5,7 @@ import {
   IconPen,
   Pagination,
 } from 'hds-react';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -89,7 +90,7 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
         <StatusTag status={application.status} />
       </td>
       <td>
-        {application.status === 'draft' && (
+        {application.status === EmployerApplicationStatus.DRAFT && (
           <Button
             variant={ButtonVariant.Supplementary}
             theme={ButtonPresetTheme.Black}

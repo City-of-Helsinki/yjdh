@@ -13,7 +13,7 @@ import AdditionalInfoApplication from 'kesaseteli-shared/types/additional-info-a
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import { ErrorType } from 'kesaseteli-shared/types/youth-application-creation-error';
-import YouthApplicationStatus from 'kesaseteli-shared/types/youth-application-status';
+import YouthApplicationStatusProps from 'kesaseteli-shared/types/youth-application-status-props';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
@@ -137,7 +137,7 @@ export const expectToReplyValidationErrorWhenCreatingYouthApplication =
 
 export const expectToGetYouthApplicationStatus = (
   id: CreatedYouthApplication['id'],
-  expectedStatus: YouthApplicationStatus
+  expectedStatus: YouthApplicationStatusProps
 ): nock.Scope =>
   nock(getBackendDomain())
     .get(getYouthApplicationStatusQueryKey(id))

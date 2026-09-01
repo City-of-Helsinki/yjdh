@@ -1,40 +1,43 @@
 import { Select } from 'hds-react';
+import {
+  ApplicationListType,
+  StatusTypeForListType,
+} from 'kesaseteli/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useMemo, useState } from 'react';
 import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import { OptionType } from 'shared/types/common';
 import styled from 'styled-components';
 
-import { ApplicationStatus } from '../../../types/application';
-
 const $Wrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-type StatusFilterProps = {
+type StatusFilterProps<T extends ApplicationListType> = {
   id: string;
-  statuses: ApplicationStatus[];
-  defaultSelectedStatuses?: ApplicationStatus[];
-  onChange: (statuses: ApplicationStatus[]) => void;
+  statuses: StatusTypeForListType<T>[];
+  defaultSelectedStatuses?: StatusTypeForListType<T>[];
+  onChange: (statuses: StatusTypeForListType<T>[]) => void;
+  listType: T;
 };
 
-type UseStatusFilterProps = {
-  defaultSelectedStatuses?: ApplicationStatus[];
-  statuses: ApplicationStatus[];
+type UseStatusFilterProps<T extends ApplicationListType> = {
+  defaultSelectedStatuses?: StatusTypeForListType<T>[];
+  statuses: StatusTypeForListType<T>[];
 };
 
-export const useStatusFilter = ({
+export function useStatusFilter<T extends ApplicationListType>({
   defaultSelectedStatuses,
   statuses,
-}: UseStatusFilterProps): {
-  selectedStatuses: ApplicationStatus[];
+}: Readonly<UseStatusFilterProps<T>>): {
+  selectedStatuses: StatusTypeForListType<T>[];
   setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<ApplicationStatus[]>
+    React.SetStateAction<StatusTypeForListType<T>[]>
   >;
-} => {
-  const [selectedStatuses, setSelectedStatuses] = useState<ApplicationStatus[]>(
-    defaultSelectedStatuses ?? statuses
-  );
+} {
+  const [selectedStatuses, setSelectedStatuses] = useState<
+    StatusTypeForListType<T>[]
+  >(defaultSelectedStatuses ?? statuses);
 
   useEffect(() => {
     if (defaultSelectedStatuses) {
@@ -43,27 +46,28 @@ export const useStatusFilter = ({
   }, [defaultSelectedStatuses]);
 
   return { selectedStatuses, setSelectedStatuses };
-};
+}
 
-const StatusFilter = ({
+function StatusFilter<T extends ApplicationListType>({
   id,
   statuses,
   defaultSelectedStatuses,
   onChange,
-}: StatusFilterProps): React.JSX.Element => {
+  listType,
+}: Readonly<StatusFilterProps<T>>): React.JSX.Element {
   const { t } = useTranslation();
-  const { selectedStatuses, setSelectedStatuses } = useStatusFilter({
+  const { selectedStatuses, setSelectedStatuses } = useStatusFilter<T>({
     defaultSelectedStatuses,
     statuses,
   });
 
-  const options = useMemo<OptionType<ApplicationStatus>[]>(
+  const options = useMemo<OptionType<StatusTypeForListType<T>>[]>(
     () =>
       statuses.map((status) => ({
-        label: t(`common:applicationList.status.${status}`),
+        label: t(`common:applicationList.${listType}.status.${status}`),
         value: status,
       })),
-    [statuses, t]
+    [listType, statuses, t]
   );
 
   const selectedOptions = useMemo(
@@ -86,7 +90,7 @@ const StatusFilter = ({
         invalid={isInvalid}
         onChange={(nextSelectedOptions) => {
           const nextStatuses = nextSelectedOptions.map(
-            (option) => option.value as ApplicationStatus
+            (option) => option.value as StatusTypeForListType<T>
           );
           setSelectedStatuses(nextStatuses);
           // Only update query if selection is valid (not empty) to avoid querying every status
@@ -102,6 +106,6 @@ const StatusFilter = ({
       )}
     </$Wrapper>
   );
-};
+}
 
 export default StatusFilter;

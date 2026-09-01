@@ -51,6 +51,7 @@ const getTimelineItemContent = (
   item: TimelineItem,
   t: TFunction,
   applicationId: string,
+  applicationType: ApplicationListType,
   attachments?: KesaseteliAttachment[]
 ): React.ReactNode => {
   if (item.item_type === TimelineItemType.ACTIVITY) {
@@ -63,10 +64,10 @@ const getTimelineItemContent = (
               i18nKey="common:timeline.statusChange"
               values={{
                 oldStatus: t(
-                  `common:handlerApplication.applicationStatus.${log.old_value}`
+                  `common:applicationList.${applicationType}.status.${log.old_value}`
                 ),
                 newStatus: t(
-                  `common:handlerApplication.applicationStatus.${log.new_value}`
+                  `common:applicationList.${applicationType}.status.${log.new_value}`
                 ),
               }}
               components={{ statusValue: <$StatusValue /> }}
@@ -218,7 +219,13 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
                 </Timeline.Item.Author>
               </Timeline.Item.Header>
               <Timeline.Item.Content>
-                {getTimelineItemContent(item, t, applicationId, attachments)}
+                {getTimelineItemContent(
+                  item,
+                  t,
+                  applicationId,
+                  applicationType,
+                  attachments
+                )}
               </Timeline.Item.Content>
             </Timeline.Item>
           );

@@ -5,14 +5,14 @@ import {
 } from '@tanstack/react-query';
 import axios from 'axios';
 import { getYouthApplicationStatusQueryKey } from 'kesaseteli-shared/backend-api/backend-api';
-import YouthApplicationStatus from 'kesaseteli-shared/types/youth-application-status';
+import YouthApplicationStatusProps from 'kesaseteli-shared/types/youth-application-status-props';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
 const useYouthApplicationStatusQuery = (
   id?: string,
-  options?: UseQueryOptions<YouthApplicationStatus>
-): UseQueryResult<YouthApplicationStatus> => {
+  options?: UseQueryOptions<YouthApplicationStatusProps>
+): UseQueryResult<YouthApplicationStatusProps> => {
   const handleError = useErrorHandler();
   const query = useQuery({
     queryKey: [id ? getYouthApplicationStatusQueryKey(id) : undefined],

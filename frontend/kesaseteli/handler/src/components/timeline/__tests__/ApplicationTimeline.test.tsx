@@ -35,7 +35,10 @@ describe('ApplicationTimeline', () => {
       data: fakeNotes(4),
     });
     renderComponent(
-      <ApplicationTimeline applicationId="test-id" applicationType={APPLICATION_LIST_TYPES.EMPLOYER} />
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
     );
 
     expect(screen.getByText('note 1')).toBeInTheDocument();
@@ -57,19 +60,25 @@ describe('ApplicationTimeline', () => {
       ],
     });
     renderComponent(
-      <ApplicationTimeline applicationId="test-id" applicationType={APPLICATION_LIST_TYPES.EMPLOYER} />
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
     );
 
     expect(screen.getByText('Tilamuutos')).toBeInTheDocument();
     expect(screen.getByText(/tila muuttunut:/i)).toBeInTheDocument();
-    expect(screen.getByText('Lähetetty')).toBeInTheDocument();
+    expect(screen.getByText('Uusi hakemus')).toBeInTheDocument();
     expect(screen.getByText('Lisätietoja pyydetty')).toBeInTheDocument();
   });
 
   it('displays the empty timeline state when there are no entries', () => {
     (useApplicationTimelineQuery as jest.Mock).mockReturnValue({ data: [] });
     renderComponent(
-      <ApplicationTimeline applicationId="test-id" applicationType={APPLICATION_LIST_TYPES.EMPLOYER} />
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
     );
 
     expect(
@@ -80,7 +89,10 @@ describe('ApplicationTimeline', () => {
   it('renders heading and description note', () => {
     (useApplicationTimelineQuery as jest.Mock).mockReturnValue({ data: [] });
     renderComponent(
-      <ApplicationTimeline applicationId="test-id" applicationType={APPLICATION_LIST_TYPES.EMPLOYER} />
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
     );
 
     expect(

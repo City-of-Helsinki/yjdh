@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 
@@ -302,7 +303,7 @@ describe('EmployerApplicationAttachments', () => {
       <EmployerApplicationAttachments
         application={{
           ...mockApplicationSingleVoucher,
-          status: 'submitted',
+          status: EmployerApplicationStatus.SUBMITTED,
           summer_vouchers: [
             {
               ...mockVoucher1,
