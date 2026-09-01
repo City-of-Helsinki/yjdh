@@ -24,7 +24,7 @@ import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
-} from 'kesaseteli-shared/constants/youth-application-status';
+} from 'kesaseteli-shared/constants/youth-application-status-arrays';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';

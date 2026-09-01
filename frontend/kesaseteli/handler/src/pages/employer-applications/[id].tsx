@@ -7,6 +7,7 @@ import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/Application
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
 import useEmployerApplicationQuery from 'kesaseteli/handler/hooks/backend/useEmployerApplicationQuery';
 import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
+import { EmployerApplication } from 'kesaseteli/handler/types/application';
 import type HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -109,7 +110,7 @@ function EmployerApplicationDetail(): React.ReactElement {
         )}
       </Container>
       {isSuccess && applicationId && (
-        <ApplicationSidebar
+        <ApplicationSidebar<EmployerApplication>
           applicationId={applicationId}
           applicationType="employer"
           isOpen={isSidebarOpen}

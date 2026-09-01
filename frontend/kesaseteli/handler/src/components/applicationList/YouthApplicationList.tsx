@@ -1,4 +1,6 @@
 import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
+import YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query/types/react/types';
@@ -9,7 +11,7 @@ import { SESSION_STORAGE_KEYS } from '../../constants/session-storage-keys';
 import useYouthApplicationsListQuery from '../../hooks/backend/useYouthApplicationsListQuery';
 import useSessionStorageState from '../../hooks/useSessionStorageState';
 import {
-  ApplicationStatus,
+  APPLICATION_LIST_TYPES,
   PaginatedResponse,
   YouthApplication,
 } from '../../types/application';
@@ -30,9 +32,9 @@ const $TabList = styled(TabList)`
  * Used to define the available options in the pending status search filter component.
  */
 const YOUTH_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.SUBMITTED,
+  YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+  YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
 ];
 
 /**
@@ -40,16 +42,15 @@ const YOUTH_PENDING_STATUSES = [
  * Also used as default/fallback statuses when no specific filters are checked by the user.
  */
 const DEFAULT_PENDING_STATUSES = [
-  ApplicationStatus.SUBMITTED,
-  ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
 ];
 
 /**
  * All statuses considered "processed" for youth applications
  */
 const PROCESSED_STATUSES = [
-  ApplicationStatus.ACCEPTED,
-  ApplicationStatus.REJECTED,
+  YouthApplicationStatus.ACCEPTED,
+  YouthApplicationStatus.REJECTED,
 ];
 
 export const useYouthApplicationListColumns =
@@ -112,7 +113,7 @@ export const useYouthApplicationListColumns =
         isSortable: true,
         orderingField: 'status',
         transform: (row) =>
-          t(`common:applicationList.status.${String(row.status)}`),
+          t(`common:applicationList.youth.status.${String(row.status)}`),
       },
       {
         key: 'created_at',
@@ -135,15 +136,15 @@ type UseYouthApplicationsResultType = TableState<YouthApplication> & {
   count: number;
   /** Function to update the selected status filters */
   setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<ApplicationStatus[]>
+    React.SetStateAction<YouthApplicationStatusType[]>
   >;
 };
 
 const useYouthApplications = (
-  initialStatuses: ApplicationStatus[]
+  initialStatuses: YouthApplicationStatusType[]
 ): UseYouthApplicationsResultType => {
   const [selectedStatuses, setSelectedStatuses] =
-    useState<ApplicationStatus[]>(initialStatuses);
+    useState<YouthApplicationStatusType[]>(initialStatuses);
 
   const tableQuery = useApplicationTableQuery<YouthApplication>(
     useYouthApplicationsListQuery,
@@ -206,11 +207,12 @@ export default function YouthApplicationList(): JSX.Element {
           ariaLabelledBy="youth-pending-filters-heading"
           title={t('common:applicationList.filterTitle')}
         >
-          <StatusFilter
+          <StatusFilter<YouthApplication>
             id="youth-application-pending-status-filter"
             statuses={YOUTH_PENDING_STATUSES}
             defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
             onChange={setSelectedPendingStatuses}
+            listType={APPLICATION_LIST_TYPES.YOUTH}
           />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable
@@ -228,11 +230,12 @@ export default function YouthApplicationList(): JSX.Element {
           ariaLabelledBy="youth-processed-filters-heading"
           title={t('common:applicationList.filterTitle')}
         >
-          <StatusFilter
+          <StatusFilter<YouthApplication>
             id="youth-application-processed-status-filter"
             statuses={PROCESSED_STATUSES}
             defaultSelectedStatuses={PROCESSED_STATUSES}
             onChange={setSelectedProcessedStatuses}
+            listType={APPLICATION_LIST_TYPES.YOUTH}
           />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable

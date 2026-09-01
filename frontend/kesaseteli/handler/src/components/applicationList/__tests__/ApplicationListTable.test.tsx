@@ -1,9 +1,10 @@
 import { screen } from '@testing-library/react';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
 
 import fi from '../../../../public/locales/fi/common.json';
-import { ApplicationStatus, BaseApplication } from '../../../types/application';
+import { BaseApplication } from '../../../types/application';
 import ApplicationListTable, { HdsHeader } from '../ApplicationListTable';
 
 const mockColumns: HdsHeader[] = [
@@ -11,8 +12,8 @@ const mockColumns: HdsHeader[] = [
   { key: 'status', headerName: 'Tila', isSortable: true },
 ];
 const mockData = [
-  { id: 'row-1', status: ApplicationStatus.SUBMITTED },
-  { id: 'row-2', status: ApplicationStatus.ACCEPTED },
+  { id: 'row-1', status: YouthApplicationStatus.SUBMITTED },
+  { id: 'row-2', status: YouthApplicationStatus.ACCEPTED },
 ] as unknown as BaseApplication[];
 
 describe('ApplicationListTable', () => {

@@ -183,8 +183,8 @@ const getIndexPageApi = async (
       status: YouthApplicationStatusType
     ): Promise<HTMLElement> => {
       const statusText =
-        translations.handlerApplication.applicationStatus[
-          status as keyof typeof translations.handlerApplication.applicationStatus
+        translations.applicationList.youth.status[
+          status as keyof typeof translations.applicationList.youth.status
         ] ??
         translations.handlerApplication.notification[
           status as keyof typeof translations.handlerApplication.notification

@@ -1,6 +1,8 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { YouthApplication } from 'kesaseteli/handler/types/application';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 import useMediaQuery from 'shared/hooks/useMediaQuery';
@@ -23,8 +25,8 @@ const mockTimelineNotes = [
     },
   ]),
   fakeActivityLogItem({
-    old_value: 'submitted',
-    new_value: 'additional_information_requested',
+    old_value: YouthApplicationStatus.SUBMITTED,
+    new_value: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
   }),
 ];
 
@@ -43,7 +45,7 @@ describe('ApplicationSidebar', () => {
 
   it('renders ear toggle button and timeline content', () => {
     renderComponent(
-      <ApplicationSidebar
+      <ApplicationSidebar<YouthApplication>
         applicationId="app-1"
         applicationType="youth"
         isOpen
@@ -59,7 +61,7 @@ describe('ApplicationSidebar', () => {
 
   it('calls onToggle when ear button is clicked', async () => {
     renderComponent(
-      <ApplicationSidebar
+      <ApplicationSidebar<YouthApplication>
         applicationId="app-1"
         applicationType="youth"
         isOpen
@@ -75,7 +77,7 @@ describe('ApplicationSidebar', () => {
 
   it('calls onToggle when timeline note link is clicked to close sidebar', async () => {
     renderComponent(
-      <ApplicationSidebar
+      <ApplicationSidebar<YouthApplication>
         applicationId="app-1"
         applicationType="youth"
         isOpen
@@ -91,7 +93,7 @@ describe('ApplicationSidebar', () => {
 
   it('renders activity log items correctly', () => {
     renderComponent(
-      <ApplicationSidebar
+      <ApplicationSidebar<YouthApplication>
         applicationId="app-1"
         applicationType="youth"
         isOpen
@@ -105,7 +107,7 @@ describe('ApplicationSidebar', () => {
     expect(screen.getByText(/tila muuttunut:/i)).toBeInTheDocument();
 
     // The inner content within Trans components should be accessible via regular getByText
-    expect(screen.getByText('Lähetetty')).toBeInTheDocument();
+    expect(screen.getByText('Vahvistamaton')).toBeInTheDocument();
     expect(screen.getByText('Lisätietoja pyydetty')).toBeInTheDocument();
 
     // Verify 'Siirry huomioon' is NOT present for the activity item.

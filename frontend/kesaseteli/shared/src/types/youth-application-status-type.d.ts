@@ -1,5 +1,6 @@
-import { YOUTH_APPLICATION_STATUS } from '../constants/youth-application-status';
+import { YouthApplicationStatus } from '../constants/youth-application-status';
 
-type YouthApplicationStatusType = typeof YOUTH_APPLICATION_STATUS[number];
+type YouthApplicationStatusType =
+  (typeof YouthApplicationStatus)[keyof typeof YouthApplicationStatus];
 
 export default YouthApplicationStatusType;

@@ -6,6 +6,7 @@ import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/Application
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
 import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
+import { YouthApplication } from 'kesaseteli/handler/types/application';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
@@ -92,7 +93,7 @@ function YouthApplicationDetail(): React.ReactElement {
         )}
       </Container>
       {isSuccess && applicationId && (
-        <ApplicationSidebar
+        <ApplicationSidebar<YouthApplication>
           applicationId={applicationId}
           applicationType="youth"
           isOpen={isSidebarOpen}
