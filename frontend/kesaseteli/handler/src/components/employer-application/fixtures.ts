@@ -1,3 +1,5 @@
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import type { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
 
@@ -46,7 +48,7 @@ export const mockVoucher2: HandlerSummerVoucher = {
 
 export const mockApplicationSingleVoucher: HandlerEmployerApplication = {
   id: 'app-1',
-  status: 'submitted',
+  status: EmployerApplicationStatus.SUBMITTED,
   submitted_at: '2024-05-15',
   created_at: '2024-05-10',
   company: {

@@ -11,7 +11,7 @@ import AdditionalInfoPage from 'kesaseteli/youth/pages/additional_info';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeAdditionalInfoApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
-import YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
 import SLOW_JEST_TIMEOUT from 'shared/__tests__/utils/slow-jest-timeout';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
@@ -70,7 +70,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     it('shows additional info form', async () => {
       expectToGetSummerVoucherConfigurationFromBackend();
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
-        status: 'additional_information_requested',
+        status: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
       });
       renderPage(AdditionalInfoPage, {
         query: { id: APPLICATION_ID },
@@ -81,10 +81,10 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   });
 
   for (const status of [
-    'additional_information_provided',
-    'accepted',
-    'rejected',
-  ] as YouthApplicationStatusType[]) {
+    YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+    YouthApplicationStatus.ACCEPTED,
+    YouthApplicationStatus.REJECTED,
+  ] as YouthApplicationStatus[]) {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that additional info is sent', async () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
@@ -98,9 +98,9 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   }
 
   for (const status of [
-    'submitted',
-    'awaiting_manual_processing',
-  ] as YouthApplicationStatusType[]) {
+    YouthApplicationStatus.SUBMITTED,
+    YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+  ] as YouthApplicationStatus[]) {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {
         expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
@@ -118,7 +118,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     it(`shows errors if empty values`, async () => {
       expectToGetSummerVoucherConfigurationFromBackend();
       expectToGetYouthApplicationStatus(APPLICATION_ID, {
-        status: 'additional_information_requested',
+        status: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
       });
       renderPage(AdditionalInfoPage, {
         query: { id: APPLICATION_ID },
@@ -141,7 +141,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         async () => {
           expectToGetSummerVoucherConfigurationFromBackend();
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
-            status: 'additional_information_requested',
+            status: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
           });
           renderPage(AdditionalInfoPage, {
             query: { id: APPLICATION_ID },
@@ -170,7 +170,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         async () => {
           expectToGetSummerVoucherConfigurationFromBackend();
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
-            status: 'additional_information_requested',
+            status: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
           });
           renderPage(AdditionalInfoPage, {
             query: { id: APPLICATION_ID },
@@ -204,7 +204,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         async () => {
           expectToGetSummerVoucherConfigurationFromBackend();
           expectToGetYouthApplicationStatus(APPLICATION_ID, {
-            status: 'additional_information_requested',
+            status: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
           });
           const spyPush = jest.fn();
           renderPage(AdditionalInfoPage, {

@@ -1,8 +1,8 @@
 import YouthApplication from './youth-application';
-import YouthApplicationStatus from './youth-application-status';
+import YouthApplicationStatusProps from './youth-application-status-props';
 
 type CreatedYouthApplication = YouthApplication &
-  YouthApplicationStatus & {
+  YouthApplicationStatusProps & {
     id: string;
   };
 

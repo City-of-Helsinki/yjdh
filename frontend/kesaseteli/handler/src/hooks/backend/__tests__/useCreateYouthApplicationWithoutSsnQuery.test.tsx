@@ -2,6 +2,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import nock from 'nock';
 import React from 'react';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
@@ -39,7 +40,7 @@ describe('useCreateYouthApplicationWithoutSsnQuery (Integration)', () => {
   it('correctly maps and posts application without ssn data', async () => {
     const mockCreatedResponse = {
       id: 'test-uuid-123',
-      status: 'submitted',
+      status: YouthApplicationStatus.SUBMITTED,
     };
 
     const formData = {

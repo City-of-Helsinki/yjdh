@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import nock from 'nock';
 import React from 'react';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
@@ -49,7 +50,10 @@ describe('useEmployerApplicationQuery', () => {
   });
 
   it('fetches application data successfully by id', async () => {
-    const mockData = { id: TEST_ID, status: 'submitted' };
+    const mockData = {
+      id: TEST_ID,
+      status: EmployerApplicationStatus.SUBMITTED,
+    };
     nock(API_BASE_TEST_URL).get(ENDPOINT).reply(200, mockData);
     const { result } = renderHook(() => useEmployerApplicationQuery(TEST_ID), {
       wrapper,

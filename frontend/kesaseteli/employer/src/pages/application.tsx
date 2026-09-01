@@ -4,6 +4,7 @@ import Step2Summary from 'kesaseteli/employer/components/application/steps/step2
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { GetStaticProps, NextPage } from 'next';
 import * as React from 'react';
 import ApplicationWizard from 'shared/components/application-wizard/ApplicationWizard';
@@ -22,19 +23,23 @@ const ApplicationPage: NextPage = () => {
     return null;
   }
 
-  if (applicationQuery.isError && 
-      Axios.isAxiosError(applicationQuery.error) &&
-      applicationQuery.error.response?.status === 404
-    ) {
-      goToPage('/404', 'replace');
-      return null;
-    }
-    // Non-404 errors (5xx, network failures, etc.) are handled by
-    // useApplicationQuery's onError, which redirects to /500 or /login.
-    // Show the spinner while that redirect is in progress.
+  if (
+    applicationQuery.isError &&
+    Axios.isAxiosError(applicationQuery.error) &&
+    applicationQuery.error.response?.status === 404
+  ) {
+    goToPage('/404', 'replace');
+    return null;
+  }
+  // Non-404 errors (5xx, network failures, etc.) are handled by
+  // useApplicationQuery's onError, which redirects to /500 or /login.
+  // Show the spinner while that redirect is in progress.
 
   if (applicationQuery.isSuccess) {
-    if (applicationQuery.data.status !== 'draft' && applicationId) {
+    if (
+      applicationQuery.data.status !== EmployerApplicationStatus.DRAFT &&
+      applicationId
+    ) {
       goToPage(`/thankyou?id=${applicationId}`, 'replace');
     }
 
