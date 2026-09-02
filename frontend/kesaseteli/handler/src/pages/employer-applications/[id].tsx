@@ -6,6 +6,7 @@ import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
 import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
 import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
+import useApplicationTimelineQuery from 'kesaseteli/handler/hooks/backend/useApplicationTimelineQuery';
 import useEmployerApplicationQuery from 'kesaseteli/handler/hooks/backend/useEmployerApplicationQuery';
 import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
 import type HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
@@ -48,6 +49,10 @@ function EmployerApplicationDetail(): React.ReactElement {
   const { data: notes } = useHandlerNotesQuery(
     NoteTargetType.EMPLOYER_APPLICATION,
     applicationId
+  );
+  const { data: timeline } = useApplicationTimelineQuery(
+    applicationId,
+    'employer'
   );
 
   const attachmentsCount =
@@ -106,7 +111,7 @@ function EmployerApplicationDetail(): React.ReactElement {
                 targetType={NoteTargetType.EMPLOYER_APPLICATION}
               />
             </$AccordionSection>
-            <NotesTimeline notes={notes ?? []} />
+            <NotesTimeline timeline={timeline ?? []} />
           </>
         )}
       </Container>

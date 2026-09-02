@@ -5,6 +5,7 @@ import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
 import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
 import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
+import useApplicationTimelineQuery from 'kesaseteli/handler/hooks/backend/useApplicationTimelineQuery';
 import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
@@ -43,6 +44,10 @@ function YouthApplicationDetail(): React.ReactElement {
   const { data: notes } = useHandlerNotesQuery(
     NoteTargetType.YOUTH_APPLICATION,
     applicationId
+  );
+  const { data: timeline } = useApplicationTimelineQuery(
+    applicationId,
+    'youth'
   );
   const notesCount = notes?.length ?? 0;
 
@@ -91,7 +96,7 @@ function YouthApplicationDetail(): React.ReactElement {
                 targetType={NoteTargetType.YOUTH_APPLICATION}
               />
             </$AccordionSection>
-            <NotesTimeline notes={notes ?? []} />
+            <NotesTimeline timeline={timeline ?? []} />
           </>
         )}
       </Container>
