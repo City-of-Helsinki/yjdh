@@ -2,9 +2,6 @@ import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSecti
 import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
 import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
-import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
-import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
-import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
 import useApplicationTimelineQuery from 'kesaseteli/handler/hooks/backend/useApplicationTimelineQuery';
 import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
@@ -21,21 +18,9 @@ import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import styled from 'styled-components';
-
-const $DetailPageWrapper = styled.div<{ $sidebarOpen: boolean }>`
-  padding-right: ${({ $sidebarOpen }) => ($sidebarOpen ? SIDEBAR_WIDTH : '0')};
-  transition: padding-right 0.25s ease-in-out;
-
-  @media (max-width: 768px) {
-    padding-right: 0;
-  }
-`;
-
 function YouthApplicationDetail(): React.ReactElement {
   const { t } = useTranslation();
   const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
-  const [isSidebarOpen, toggleSidebar] = useSidebarState();
 
   const { isError, isLoading, isSuccess, data } =
     useYouthApplicationQuery(applicationId);
@@ -55,7 +40,7 @@ function YouthApplicationDetail(): React.ReactElement {
     return <PageLoadingSpinner />;
   }
   return (
-    <$DetailPageWrapper $sidebarOpen={isSidebarOpen}>
+    <>
       <Container>
         <Head>
           <title>{t(`common:appName`)}</title>
@@ -100,15 +85,7 @@ function YouthApplicationDetail(): React.ReactElement {
           </>
         )}
       </Container>
-      {isSuccess && applicationId && (
-        <ApplicationSidebar
-          applicationId={applicationId}
-          applicationType="youth"
-          isOpen={isSidebarOpen}
-          onToggle={toggleSidebar}
-        />
-      )}
-    </$DetailPageWrapper>
+    </>
   );
 }
 
