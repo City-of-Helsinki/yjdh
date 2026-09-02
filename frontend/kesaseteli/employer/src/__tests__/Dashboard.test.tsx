@@ -4,6 +4,7 @@ import Dashboard from 'kesaseteli/employer/components/dashboard/Dashboard';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
@@ -39,7 +40,7 @@ jest.mock('shared/hooks/useLocale', () => () => 'fi');
 const mockApplications: Application[] = [
   {
     id: 'app1',
-    status: 'submitted',
+    status: EmployerApplicationStatus.SUBMITTED,
     modified_at: '2026-02-26T10:00:00Z',
     summer_vouchers: [
       {

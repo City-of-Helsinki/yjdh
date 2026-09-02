@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useRouter } from 'next/router';
 import { useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -142,11 +143,11 @@ describe('useCreateApplication', () => {
       await options.onSuccess(mockNewApp);
     });
 
-    // Verify PUT carries the prefilled company info and status is preserved/set as 'draft'
+    // Verify PUT carries the prefilled company info and status is preserved/set as draft
     expect(mockPut).toHaveBeenCalledWith('/v1/employerapplications/app-456/', {
       id: 'app-456',
       company_name: 'Test Co',
-      status: 'draft',
+      status: EmployerApplicationStatus.DRAFT,
     });
     // Verify local storage is cleared to prevent reuse on subsequent new applications
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -158,7 +159,7 @@ describe('useCreateApplication', () => {
 /**
  * Tests for the `useLoadDraftOrCreateNewApplication` hook.
  * This hook acts as a router/orchestrator when the user accesses the landing/dashboard page:
- * - If the user already has a pending "draft" application, redirect them to it immediately (avoids creating empty duplicate drafts).
+ * - If the user already has a pending draft application, redirect them to it immediately (avoids creating empty duplicate drafts).
  * - If no draft application exists, trigger creation of a new application and redirect there.
  */
 describe('useLoadDraftOrCreateNewApplication', () => {
@@ -196,7 +197,7 @@ describe('useLoadDraftOrCreateNewApplication', () => {
   it('routes to draft application if draft is found', () => {
     (useApplicationsQuery as jest.Mock).mockReturnValue({
       isSuccess: true,
-      data: { id: 'app-draft', status: 'draft' },
+      data: { id: 'app-draft', status: EmployerApplicationStatus.DRAFT },
     });
 
     renderHook(() => useLoadDraftOrCreateNewApplication());

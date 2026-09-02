@@ -18,7 +18,7 @@ const mockPendingApps = [
     social_security_number: '111111-1111',
     first_name: 'Matti',
     last_name: 'Meikäläinen',
-    status: 'submitted',
+    status: YouthApplicationStatus.SUBMITTED,
   },
 ];
 const mockProcessedApps = [
@@ -27,7 +27,7 @@ const mockProcessedApps = [
     social_security_number: '222222-2222',
     first_name: 'Maija',
     last_name: 'Meikäläinen',
-    status: 'accepted',
+    status: YouthApplicationStatus.ACCEPTED,
   },
 ];
 
@@ -36,8 +36,8 @@ describe('YouthApplicationList', () => {
     window.sessionStorage.clear();
     mockUseQuery.mockImplementation((params) => {
       if (
-        params?.status?.includes('accepted') ||
-        params?.status?.includes('rejected')
+        params?.status?.includes(YouthApplicationStatus.ACCEPTED) ||
+        params?.status?.includes(YouthApplicationStatus.REJECTED)
       ) {
         return {
           data: { count: 8, results: mockProcessedApps },

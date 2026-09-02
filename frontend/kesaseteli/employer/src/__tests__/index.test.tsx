@@ -10,6 +10,7 @@ import {
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import nock from 'nock';
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
@@ -160,12 +161,12 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       const myUser = { ...fakeObjectFactory.fakeUser(), id: myId };
       const myDraft = {
         ...fakeObjectFactory.fakeApplication(),
-        status: 'draft',
+        status: EmployerApplicationStatus.DRAFT,
         is_mine: true,
       } as Application;
       const otherDraft = {
         ...fakeObjectFactory.fakeApplication(),
-        status: 'draft',
+        status: EmployerApplicationStatus.DRAFT,
         is_mine: false,
       } as Application;
       const applications = [otherDraft, myDraft]; // otherDraft is first
@@ -207,7 +208,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       const myAppCurrentYear = {
         ...fakeObjectFactory.fakeApplication(),
         submitted_at: `${currentYear}-06-01`,
-        status: 'submitted',
+        status: EmployerApplicationStatus.SUBMITTED,
         is_mine: true,
       } as Application;
       myAppCurrentYear.summer_vouchers[0].employee_name =
@@ -216,7 +217,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       const myAppPastYear = {
         ...fakeObjectFactory.fakeApplication(),
         submitted_at: `${pastYear}-06-01`,
-        status: 'submitted',
+        status: EmployerApplicationStatus.SUBMITTED,
         is_mine: true,
       } as Application;
       myAppPastYear.summer_vouchers[0].employee_name = 'Past Year Employee';

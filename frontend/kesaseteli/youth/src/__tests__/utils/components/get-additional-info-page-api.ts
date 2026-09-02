@@ -6,6 +6,7 @@ import {
 import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import YouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/youth-translations';
 import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import AdditionalInfoApplication from 'kesaseteli-shared/types/additional-info-application';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
@@ -143,7 +144,7 @@ const getAdditionalInfoPageApi = (
             application as AdditionalInfoApplication
           );
           expectToGetYouthApplicationStatus(id, {
-            status: 'additional_information_provided',
+            status: YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
           });
         }
         await userEvent.click(

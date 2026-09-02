@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import ApplicationTable from 'kesaseteli/employer/components/dashboard/ApplicationTable';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 import Application from 'shared/types/application';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
@@ -19,7 +20,7 @@ jest.mock('next/router', () => ({
 const mockApplications: Application[] = [
   {
     id: 'app1',
-    status: 'submitted',
+    status: EmployerApplicationStatus.SUBMITTED,
     modified_at: '2026-02-26T10:00:00Z',
     summer_vouchers: [
       {
@@ -31,7 +32,7 @@ const mockApplications: Application[] = [
   } as unknown as Application,
   {
     id: 'app2',
-    status: 'draft',
+    status: EmployerApplicationStatus.DRAFT,
     modified_at: '2026-02-25T12:00:00Z',
     summer_vouchers: [
       {
@@ -118,7 +119,7 @@ describe('ApplicationTable', () => {
       (_, index) =>
         ({
           id: `app_${index}`,
-          status: 'submitted',
+          status: EmployerApplicationStatus.SUBMITTED,
           modified_at: '2026-02-26T10:00:00Z',
           summer_vouchers: [
             {

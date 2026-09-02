@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { fakeCreatedYouthApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import mockRouter from 'next-router-mock';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -40,7 +41,7 @@ describe('useHandleApplicationWithoutSsnSubmit', () => {
 
       const application = fakeCreatedYouthApplication({
         id: 'uuid-123',
-        status: 'submitted',
+        status: YouthApplicationStatus.SUBMITTED,
       });
 
       act(() => {
@@ -67,7 +68,7 @@ describe('useHandleApplicationWithoutSsnSubmit', () => {
 
       const application = fakeCreatedYouthApplication({
         id: 'uuid-123',
-        status: 'submitted',
+        status: YouthApplicationStatus.SUBMITTED,
       });
 
       act(() => {

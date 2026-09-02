@@ -3,6 +3,7 @@ import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
 import useLogout from 'kesaseteli/employer/hooks/backend/useLogout';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { GetStaticProps, NextPage } from 'next';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
@@ -31,7 +32,7 @@ const EmployerIndex: NextPage = () => {
 
   // TODO: For user's own draft, we could fetch only that 1 draft application that he can have? Think whether it's more optimized than fetching all, since there aren't plenty anyway.
   const draftApplication = allApplications.find(
-    (app) => app.status === 'draft' && app.is_mine
+    (app) => app.status === EmployerApplicationStatus.DRAFT && app.is_mine
   );
 
   const organisationName: string | undefined = company?.name;

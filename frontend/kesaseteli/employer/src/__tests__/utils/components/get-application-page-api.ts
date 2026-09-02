@@ -3,6 +3,7 @@ import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import nock from 'nock';
 import {
   waitForBackendRequestsToComplete,
@@ -69,7 +70,8 @@ const expectToSaveApplication = (applicationToSave: Application): nock.Scope =>
       `${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`,
       (body: Application) =>
         body.id === applicationToSave.id &&
-        body.status === (applicationToSave.status ?? 'draft')
+        body.status ===
+          (applicationToSave.status ?? EmployerApplicationStatus.DRAFT)
     )
     .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' });
 
@@ -365,7 +367,7 @@ const getApplicationPageApi = (
           });
           const put = expectToSaveApplication({
             ...application,
-            status: 'submitted',
+            status: EmployerApplicationStatus.SUBMITTED,
           });
           const get = expectToGetApplicationFromBackend(application);
           await userEvent.click(
@@ -386,7 +388,7 @@ const getApplicationPageApi = (
           });
           const put = expectToSaveApplication({
             ...application,
-            status: 'submitted',
+            status: EmployerApplicationStatus.SUBMITTED,
           });
           await userEvent.click(
             screen.getByRole('button', {

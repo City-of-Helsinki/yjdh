@@ -1,5 +1,6 @@
 import AdditionalInfoForm from 'kesaseteli/youth/components/additional-info-form/AdditionalInfoForm';
 import useYouthApplicationStatusQuery from 'kesaseteli/youth/hooks/backend/useYouthApplicationStatusQuery';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -42,12 +43,12 @@ const AdditionalInfo: NextPage = () => {
         {isSuccess &&
           (() => {
             switch (applicationStatusQuery.data.status) {
-              case 'additional_information_requested':
+              case YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
                 return <AdditionalInfoForm applicationId={applicationId} />;
 
-              case 'additional_information_provided':
-              case 'accepted':
-              case 'rejected':
+              case YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED:
+              case YouthApplicationStatus.ACCEPTED:
+              case YouthApplicationStatus.REJECTED:
                 return (
                   <$Notification
                     label={t('common:additionalInfo.notification.sent')}
@@ -55,8 +56,8 @@ const AdditionalInfo: NextPage = () => {
                   />
                 );
 
-              case 'submitted':
-              case 'awaiting_manual_processing':
+              case YouthApplicationStatus.SUBMITTED:
+              case YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
               default:
                 return (
                   <$Notification

@@ -16,7 +16,7 @@ const mockPendingApps = [
   {
     id: 'pending-1',
     company: { name: 'Company Pending Oy', business_id: '1234567-8' },
-    status: 'submitted',
+    status: EmployerApplicationStatus.SUBMITTED,
     summer_vouchers: [],
   },
 ];
@@ -24,7 +24,7 @@ const mockProcessedApps = [
   {
     id: 'processed-1',
     company: { name: 'Company Processed Oy', business_id: '8765432-1' },
-    status: 'accepted',
+    status: EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
     summer_vouchers: [],
   },
 ];
@@ -34,8 +34,13 @@ describe('EmployerApplicationList', () => {
     window.sessionStorage.clear();
     mockUseQuery.mockImplementation((params) => {
       if (
-        params?.status?.includes('accepted') ||
-        params?.status?.includes('rejected')
+        params?.status?.includes(EmployerApplicationStatus.PAYMENT_REVIEW) ||
+        params?.status?.includes(
+          EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+        ) ||
+        params?.status?.includes(EmployerApplicationStatus.SENT_FOR_PAYMENT) ||
+        params?.status?.includes(EmployerApplicationStatus.REJECTED) ||
+        params?.status?.includes(EmployerApplicationStatus.CANCELLED)
       ) {
         return {
           data: { count: 10, results: mockProcessedApps },
