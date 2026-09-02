@@ -6,6 +6,7 @@ import {
 } from 'kesaseteli-shared/backend-api/backend-api';
 import Router from 'next/router';
 import { getLastCookieValue } from 'shared/cookies/get-last-cookie-value';
+import createQueryCaches from 'shared/query-client/create-query-caches';
 import { isString } from 'shared/utils/type-guards';
 
 const getLanguage = (): string =>
@@ -33,6 +34,7 @@ const createAxios = (): AxiosInstance => {
 
 const createQueryClient = (): QueryClient =>
   new QueryClient({
+    ...createQueryCaches(),
     defaultOptions: {
       queries: {
         retry: (failureCount, error) =>
