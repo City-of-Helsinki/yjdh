@@ -29,7 +29,7 @@ const EmployerErrorSummary: React.FC = () => {
     <$ErrorSummary
       type="error"
       label={t(`common:application.form.notification.title`)}
-      autoFocus={isJustSubmitted}
+      autofocus={isJustSubmitted}
     >
       <ul>
         {Object.keys(formState.errors).map((fieldPath) => (
