@@ -33,11 +33,20 @@ const useErrorHandler = (props: Props = {}): ErrorHandlerFunction => {
   const { t } = useTranslation();
   const { pathname } = useRouter();
   const goToPage = useGoToPage();
+  const { onAuthError, onServerError, onCommonError } = props;
 
   return useCallback(
     (error: Error | unknown) =>
-      handleError({ error, t, pathname, goToPage, ...props }),
-    [t, pathname, goToPage, props]
+      handleError({
+        error,
+        t,
+        pathname,
+        goToPage,
+        onAuthError,
+        onServerError,
+        onCommonError,
+      }),
+    [t, pathname, goToPage, onAuthError, onServerError, onCommonError]
   );
 };
 
