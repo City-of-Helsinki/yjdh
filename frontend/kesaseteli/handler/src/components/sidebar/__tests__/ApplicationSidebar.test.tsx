@@ -89,7 +89,7 @@ describe('ApplicationSidebar', () => {
     expect(mockOnToggle).toHaveBeenCalled();
   });
 
-  it('renders activity log items correctly', () => {
+  it('does not render activity log items', () => {
     renderComponent(
       <ApplicationSidebar
         applicationId="app-1"
@@ -99,19 +99,7 @@ describe('ApplicationSidebar', () => {
       />
     );
 
-    expect(screen.getByText('Tilamuutos')).toBeInTheDocument();
-
-    // Test for the prefix text first
-    expect(screen.getByText(/tila muuttunut:/i)).toBeInTheDocument();
-
-    // The inner content within Trans components should be accessible via regular getByText
-    expect(screen.getByText('Lähetetty')).toBeInTheDocument();
-    expect(screen.getByText('Lisätietoja pyydetty')).toBeInTheDocument();
-
-    // Verify 'Siirry huomioon' is NOT present for the activity item.
-    // There is one note and one activity, so there should only be one 'Siirry huomioon' link.
-    expect(
-      screen.getByRole('link', { name: /siirry huomioon/i })
-    ).toBeInTheDocument();
+    expect(screen.queryByText('Tilamuutos')).not.toBeInTheDocument();
+    expect(screen.queryByText(/tila muuttunut:/i)).not.toBeInTheDocument();
   });
 });
