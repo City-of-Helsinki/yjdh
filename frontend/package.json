@@ -62,7 +62,7 @@
     "@axe-core/react": "^4.3.2",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@faker-js/faker": "^6.0.0-alpha.6",
+    "@faker-js/faker": "^10.5.0",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@next/eslint-plugin-next": "^12.2.6",
     "@swc/core": "^1.4.6",
