@@ -270,6 +270,13 @@ class TargetGroupSerializer(serializers.Serializer):
     description = serializers.CharField()
 
 
+class JobTypeSerializer(serializers.Serializer):
+    """Serializer for JobType choices. Decoupled from any model."""
+
+    id = serializers.CharField()
+    name = serializers.CharField()
+
+
 class EmployerSummerVoucherListSerializer(serializers.ListSerializer):
     """
     https://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
@@ -337,6 +344,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             "employment_salary_paid",
             "employment_description",
             "hired_without_voucher_assessment",
+            "job_type",
             "attachments",
             "ordering",
             "youth_application_id",
@@ -544,6 +552,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
         "employment_work_hours",
         "employment_salary_paid",
         "hired_without_voucher_assessment",
+        "job_type",
     ]
 
 

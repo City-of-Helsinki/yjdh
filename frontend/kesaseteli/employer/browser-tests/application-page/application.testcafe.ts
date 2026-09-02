@@ -23,6 +23,7 @@ import {
   attachmentsMock,
   FULLY_MOCKED_FORM_DATA,
   getFetchEmployeeDataMock,
+  jobTypesMock,
   MOCKED_EMPLOYEE_DATA,
 } from './application.mocks';
 import { getStep1Components } from './step1.components';
@@ -39,7 +40,8 @@ fixture('Application')
   .requestHooks(
     requestLogger,
     new HttpRequestHook(url, getBackendDomain()),
-    attachmentsMock
+    attachmentsMock,
+    jobTypesMock
   )
   .skipJsErrors({
     message: /abort route change/i,

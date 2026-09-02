@@ -60,12 +60,25 @@ export const expectToLogout = (
     .post(BackendEndpoint.LOGOUT)
     .reply(200, expectedUser, { 'Access-Control-Allow-Origin': '*' });
 
-export const expectToGetApplicationFromBackend = (
-  application: Application
+export const expectToGetJobTypesFromBackend = (
+  jobTypes = [
+    { id: 'sports_and_leisure', name: 'Liikunta ja vapaa-aika' },
+    { id: 'retail', name: 'Kaupan ala' },
+  ]
 ): nock.Scope =>
   nock(getBackendDomain())
+    .get(BackendEndpoint.JOB_TYPES)
+    .optionally()
+    .reply(200, jobTypes, { 'Access-Control-Allow-Origin': '*' });
+
+export const expectToGetApplicationFromBackend = (
+  application: Application
+): nock.Scope => {
+  expectToGetJobTypesFromBackend();
+  return nock(getBackendDomain())
     .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${application.id}/`)
     .reply(200, application, { 'Access-Control-Allow-Origin': '*' });
+};
 
 export const expectToGetApplicationErrorFromBackend = (
   id: string
@@ -100,6 +113,7 @@ export const expectToGetApplicationsErrorFromBackend = (
 export const expectToCreateApplicationToBackend = (
   applicationToCreate: Application
 ): nock.Scope => {
+  expectToGetJobTypesFromBackend();
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
     .post(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`, {

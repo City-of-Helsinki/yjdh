@@ -768,7 +768,7 @@ msgid "employment description"
 msgstr ""
 
 msgid "job type"
-msgstr ""
+msgstr "Main category of work tasks"
 
 msgid "hired without voucher assessment"
 msgstr ""

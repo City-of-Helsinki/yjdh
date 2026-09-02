@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from xlsxwriter import Workbook
 from xlsxwriter.worksheet import Worksheet
 
-from applications.enums import AdditionalInfoUserReason, ExcelColumns
+from applications.enums import AdditionalInfoUserReason, ExcelColumns, JobType
 from applications.models import EmployerSummerVoucher
 from applications.target_groups import get_target_group_class_by_age
 from common.utils import get_age, getattr_nested
@@ -42,6 +42,7 @@ INVOICER_EMAIL_FIELD_TITLE = _("Laskuttajan sähköposti")
 INVOICER_NAME_FIELD_TITLE = _("Laskuttajan nimi")
 INVOICER_PHONE_NUMBER_FIELD_TITLE = _("Laskuttajan Puhelin")
 VOUCHER_NUMBER_FIELD_TITLE = _("Setelin numero")
+JOB_TYPE_FIELD_TITLE = _("Työtehtävien pääluokka")
 
 
 def resolve_target_group_and_status(youth_application) -> tuple[str, str]:
@@ -135,6 +136,7 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
     _("Työnantajan kokemus"),
     _("Muuta"),
+    JOB_TYPE_FIELD_TITLE,
 ]
 
 # The fields introduced in 2026 (including the calculation status field)
@@ -294,6 +296,7 @@ FIELDS = [
         15,
         "#F7DAE3",
     ),
+    ExcelField(JOB_TYPE_FIELD_TITLE, "%s", ["job_type"], 30, "#F7DAE3"),
     ExcelField(_("Työnantajan kokemus"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Muuta"), "", [], 30, "#F7DAE3"),
     ExcelField(_("Liite: Työsopimus 1"), "%s", ["attachments"], 120, "#F7DAE3"),
@@ -479,6 +482,12 @@ def handle_special_cases(
             else None
         )
         value = resolve_target_group_and_status(youth_app)[1]
+    elif attr_str == "job_type":
+        if value:
+            try:
+                value = str(JobType(value).label)
+            except ValueError:
+                pass  # keep raw value if unknown
     return value
 
 

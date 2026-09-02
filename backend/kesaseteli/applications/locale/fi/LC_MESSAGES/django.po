@@ -298,7 +298,7 @@ msgid "Unlisted school"
 msgstr ""
 
 msgid "Other"
-msgstr ""
+msgstr "Muu"
 
 msgid "employment contract"
 msgstr ""
@@ -316,25 +316,25 @@ msgid "Parish"
 msgstr ""
 
 msgid "Sports and leisure"
-msgstr ""
+msgstr "Liikunta ja vapaa-aika"
 
 msgid "Maintenance and construction"
-msgstr ""
+msgstr "Huolto- ja rakennustehtävät"
 
 msgid "Restaurant and cafe sector"
-msgstr ""
+msgstr "Ravintola- ja kahvila-ala"
 
 msgid "Retail sector"
-msgstr ""
+msgstr "Kaupan ala"
 
 msgid "Office and media"
-msgstr ""
+msgstr "Toimisto- ja mediatyöt"
 
 msgid "Gardening and agricultural work"
-msgstr ""
+msgstr "Puutarha-, metsä- ja maataloustyöt"
 
 msgid "Service sector"
-msgstr ""
+msgstr "Palveluala"
 
 msgid "yes"
 msgstr "kyllä"
@@ -777,7 +777,7 @@ msgid "employment description"
 msgstr ""
 
 msgid "job type"
-msgstr ""
+msgstr "Työtehtävien pääluokka"
 
 msgid "hired without voucher assessment"
 msgstr ""

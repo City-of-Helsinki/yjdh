@@ -50,6 +50,7 @@ from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherAttachmentUploadInputSerializer,
     EmployerSummerVoucherSerializer,
+    JobTypeSerializer,
     NonVtjYouthApplicationSerializer,
     SchoolSerializer,
     SummerVoucherConfigurationSerializer,
@@ -66,6 +67,7 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import (
     EmployerApplicationStatus,
+    JobType,
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
 )
@@ -168,6 +170,41 @@ class TargetGroupListView(ListAPIView):
         return get_target_group_data(identifiers)
 
     def list(self, request: Request, *args, **kwargs) -> Response:
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+@extend_schema(
+    responses=JobTypeSerializer(many=True),
+    summary="List all available job types",
+    description="""
+    Returns a list of all available job types. The translated names depend on the
+    `Accept-Language` header.
+    """,
+)
+class JobTypeListView(ListAPIView):
+    """
+    Returns all available job types, translated per Accept-Language header.
+
+    Note on caching:
+    We intentionally do not use backend caching (e.g., cache_page) here because
+    the frontend caches this aggressively (staleTime: Infinity), evaluating the
+    list in memory is extremely fast, and caching varying Accept-Language
+    responses introduces unnecessary complexity and risks of serving wrong languages.
+    """
+
+    permission_classes = [AllowAny]
+    serializer_class = JobTypeSerializer
+
+    def get_queryset(self) -> list[dict]:
+        return [{"id": value, "name": str(label)} for value, label in JobType.choices]
+
+    def list(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Overridden to bypass DRF's default pagination and filtering logic,
+        since get_queryset() returns a simple Python list instead of a QuerySet.
+        """
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

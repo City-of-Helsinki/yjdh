@@ -1187,6 +1187,7 @@ class EmployerSummerVoucherAdmin(
         "id",
         "youth_summer_voucher_id",
         "summer_voucher_serial_number",
+        "job_type",
         "_obsolete_unclean_serial_number",
         "has_migrated_obsolete_serial_number",
         "target_group_display",
@@ -1195,6 +1196,7 @@ class EmployerSummerVoucherAdmin(
         "modified_at",
     ]
     list_filter = [
+        "job_type",
         "youth_summer_voucher__youth_application__target_group",
         ("youth_summer_voucher_id", admin.EmptyFieldListFilter),
         ("_obsolete_unclean_serial_number", admin.EmptyFieldListFilter),
