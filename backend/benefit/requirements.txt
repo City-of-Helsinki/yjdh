@@ -114,7 +114,7 @@ django-sql-utils==0.7.0
     # via -r requirements.in
 django-storages==1.14.6
     # via -r requirements.in
-djangorestframework==3.16.1
+djangorestframework==3.17.2
     # via
     #   -r requirements.in
     #   drf-nested-routers
