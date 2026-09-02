@@ -5,17 +5,18 @@ import { MESSAGE_URLS } from 'benefit-shared/constants';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-import i18n from '../../../test/i18n/i18n-test';
 import useMessagesQuery from '../useMessagesQuery';
+
+function mockT(key: string): string {
+  return String(key);
+}
 
 jest.mock('@tanstack/react-query', () => ({
   useQuery: jest.fn(),
 }));
 
 jest.mock('next-i18next', () => ({
-  useTranslation: () => ({
-    t: i18n.t.bind(i18n),
-  }),
+  useTranslation: () => ({ t: mockT }),
 }));
 
 jest.mock('benefit-shared/utils/common', () => ({
@@ -70,15 +71,18 @@ describe('useMessagesQuery', () => {
   });
 
   it('shows translated fetch error toast when query has an error', () => {
-    (useQuery as jest.Mock).mockReturnValue({
-      isError: true,
-    });
+    (useQuery as jest.Mock).mockImplementation(() => ({ isError: true }));
 
-    renderHook(() => useMessagesQuery('app-1', MESSAGE_URLS.MESSAGES, true));
+    const { rerender } = renderHook(() =>
+      useMessagesQuery('app-1', MESSAGE_URLS.MESSAGES, true)
+    );
+
+    rerender();
 
     expect(showErrorToast).toHaveBeenCalledWith(
-      i18n.t('common:messenger.list.errors.fetch.label'),
-      i18n.t('common:messenger.list.errors.fetch.text')
+      'common:messenger.list.errors.fetch.label',
+      'common:messenger.list.errors.fetch.text'
     );
+    expect(showErrorToast).toHaveBeenCalledTimes(1);
   });
 });
