@@ -3,9 +3,6 @@ import EmployerApplicationHandlerView from 'kesaseteli/handler/components/employ
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
 import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
-import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
-import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
-import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
 import useApplicationTimelineQuery from 'kesaseteli/handler/hooks/backend/useApplicationTimelineQuery';
 import useEmployerApplicationQuery from 'kesaseteli/handler/hooks/backend/useEmployerApplicationQuery';
 import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
@@ -23,14 +20,7 @@ import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
-const $DetailPageWrapper = styled.div<{ $sidebarOpen: boolean }>`
-  padding-right: ${({ $sidebarOpen }) => ($sidebarOpen ? SIDEBAR_WIDTH : '0')};
-  transition: padding-right 0.25s ease-in-out;
-
-  @media (max-width: 768px) {
-    padding-right: 0;
-  }
-
+const $DetailPageWrapper = styled.div`
   // Prevent wide tables or overflow contents from blowing out the grid width
   & > div > div {
     min-width: 0;
@@ -40,7 +30,6 @@ const $DetailPageWrapper = styled.div<{ $sidebarOpen: boolean }>`
 function EmployerApplicationDetail(): React.ReactElement {
   const { t } = useTranslation();
   const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
-  const [isSidebarOpen, toggleSidebar] = useSidebarState();
 
   const { isError, isLoading, isSuccess, data } =
     useEmployerApplicationQuery<HandlerEmployerApplication>(applicationId);
@@ -65,7 +54,7 @@ function EmployerApplicationDetail(): React.ReactElement {
   }
 
   return (
-    <$DetailPageWrapper $sidebarOpen={isSidebarOpen}>
+    <$DetailPageWrapper>
       <Container>
         <Head>
           <title>{t(`common:appName`)}</title>
@@ -115,14 +104,6 @@ function EmployerApplicationDetail(): React.ReactElement {
           </>
         )}
       </Container>
-      {isSuccess && applicationId && (
-        <ApplicationSidebar
-          applicationId={applicationId}
-          applicationType="employer"
-          isOpen={isSidebarOpen}
-          onToggle={toggleSidebar}
-        />
-      )}
     </$DetailPageWrapper>
   );
 }
