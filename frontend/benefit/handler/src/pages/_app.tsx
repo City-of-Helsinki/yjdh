@@ -22,6 +22,7 @@ import React, { useEffect } from 'react';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import useLocale from 'shared/hooks/useLocale';
+import createQueryCaches from 'shared/query-client/create-query-caches';
 import {
   getSessionStorageItem,
   setSessionStorageItem,
@@ -29,7 +30,7 @@ import {
 
 import Layout from '../layout/Layout';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient(createQueryCaches());
 
 const App: React.FC<AppProps> = (appProps) => {
   const locale = useLocale();

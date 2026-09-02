@@ -22,6 +22,7 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
+import createQueryCaches from 'shared/query-client/create-query-caches';
 import isServerSide from 'shared/server/is-server-side';
 import { initMatomo, trackPageView } from 'shared/utils/matomo';
 
@@ -32,7 +33,7 @@ const CookieConsent = dynamic(
   { ssr: false }
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient(createQueryCaches());
 
 const MATOMO_ENABLED = process.env.NEXT_PUBLIC_MATOMO_ENABLED;
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
