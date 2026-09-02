@@ -72,8 +72,8 @@ importers:
         specifier: ^19.8.1
         version: 19.8.1
       '@faker-js/faker':
-        specifier: ^6.0.0-alpha.6
-        version: 6.3.1
+        specifier: ^10.5.0
+        version: 10.5.0
       '@ffmpeg-installer/ffmpeg':
         specifier: ^1.1.0
         version: 1.1.0
@@ -1833,9 +1833,9 @@ packages:
     resolution: {integrity: sha512-XXrH9Uarn0stsyldqDYq8r++mROmWRI1xKMXa640Bb//SY1+ECYX6VzT6Lcx5frD0V30XieqJ0oX9I2Xj5aoMA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@faker-js/faker@6.3.1':
-    resolution: {integrity: sha512-8YXBE2ZcU/pImVOHX7MWrSR/X5up7t6rPWZlk34RwZEcdr3ua6X+32pSd6XuOQRN+vbuvYNfA6iey8NbrjuMFQ==}
-    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+  '@faker-js/faker@10.5.0':
+    resolution: {integrity: sha512-bsxD8WLS5lIj7aaoCx1YJkktqYj5vlBUE6HWzu2Q51ksrGJ0H737ECCKlFU7Yf8Br45z9t99frBp/J7kzbMPAg==}
+    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@ffmpeg-installer/darwin-arm64@4.1.5':
     resolution: {integrity: sha512-hYqTiP63mXz7wSQfuqfFwfLOfwwFChUedeCVKkBtl/cliaTM7/ePI9bVzfZ2c+dWu3TqCwLDRWNSJ5pqZl8otA==}
@@ -11411,7 +11411,7 @@ snapshots:
       minimatch: 3.1.5
       strip-json-comments: 3.1.1
 
-  '@faker-js/faker@6.3.1': {}
+  '@faker-js/faker@10.5.0': {}
 
   '@ffmpeg-installer/darwin-arm64@4.1.5':
     optional: true
