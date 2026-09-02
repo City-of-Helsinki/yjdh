@@ -172,6 +172,9 @@ export const getStep1Components = (t: TestController) => {
         name: /^maksettu palkka/i,
       });
     },
+    jobTypeSelect() {
+      return Selector('button[id*="job_type"]');
+    },
     hiredWithoutVoucherAssessmentRadioInput(value: string) {
       // Target the label instead of the input to avoid overlap issues
       return Selector(
@@ -454,6 +457,14 @@ export const getStep1Components = (t: TestController) => {
         selectors.salaryInput(),
         salary
       );
+    },
+    async selectJobType() {
+      const select = selectors.jobTypeSelect();
+      await t.expect(select.exists).ok(await getErrorMessage(t), { timeout: 10_000 });
+      await t.click(select);
+      const option = Selector('ul[role="listbox"]').find('li');
+      await t.expect(option.exists).ok(await getErrorMessage(t), { timeout: 10_000 });
+      await t.click(option.nth(0));
     },
     async selectHiredWithoutVoucherAssessment(name: string) {
       const selector = selectors.hiredWithoutVoucherAssessmentRadioInput(name);

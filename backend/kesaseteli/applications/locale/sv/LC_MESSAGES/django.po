@@ -291,7 +291,7 @@ msgid "Unlisted school"
 msgstr ""
 
 msgid "Other"
-msgstr ""
+msgstr "Annat"
 
 msgid "employment contract"
 msgstr ""
@@ -309,25 +309,25 @@ msgid "Parish"
 msgstr ""
 
 msgid "Sports and leisure"
-msgstr ""
+msgstr "Sport och fritid"
 
 msgid "Maintenance and construction"
-msgstr ""
+msgstr "Underhåll och byggande"
 
 msgid "Restaurant and cafe sector"
-msgstr ""
+msgstr "Restaurang och café"
 
 msgid "Retail sector"
-msgstr ""
+msgstr "Detaljhandel"
 
 msgid "Office and media"
-msgstr ""
+msgstr "Kontor och media"
 
 msgid "Gardening and agricultural work"
-msgstr ""
+msgstr "Trädgårdsarbete och jordbruk"
 
 msgid "Service sector"
-msgstr ""
+msgstr "Tjänster"
 
 msgid "yes"
 msgstr ""
@@ -768,7 +768,7 @@ msgid "employment description"
 msgstr ""
 
 msgid "job type"
-msgstr ""
+msgstr "Huvudkategori av arbetsuppgifter"
 
 msgid "hired without voucher assessment"
 msgstr ""

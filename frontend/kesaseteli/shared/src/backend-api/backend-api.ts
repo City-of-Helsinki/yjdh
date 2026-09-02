@@ -31,6 +31,7 @@ export const BackendEndpoint = {
   EMPLOYMENT: '/v1/youthapplications/fetch_employee_data/',
   SCHOOLS: '/v1/schools/',
   SUMMER_VOUCHER_CONFIGURATION: '/v1/summer_voucher_configuration/',
+  JOB_TYPES: '/v1/job_types/',
   ...(isRealIntegrationsEnabled() && isSuomiFiEnabled()
     ? suomiFiEndpoint
     : helsinkiProfileEndpoint),
@@ -38,7 +39,8 @@ export const BackendEndpoint = {
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
 
-export type BackendPath = typeof BackendEndpoint[keyof typeof BackendEndpoint];
+export type BackendPath =
+  (typeof BackendEndpoint)[keyof typeof BackendEndpoint];
 
 export const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';

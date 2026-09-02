@@ -6,9 +6,9 @@ import {
 } from '../constants/employee-constants';
 
 export type EmploymentExceptionReason =
-  typeof EMPLOYEE_EXCEPTION_REASON[number];
+  (typeof EMPLOYEE_EXCEPTION_REASON)[number];
 export type EmployeeHiredWithoutVoucherAssessment =
-  typeof EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT[number];
+  (typeof EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT)[number];
 
 export type EmploymentBase = {
   employee_name?: string;
@@ -30,6 +30,7 @@ type Employment = {
   employment_salary_paid?: number;
   employment_description?: string;
   hired_without_voucher_assessment?: EmployeeHiredWithoutVoucherAssessment;
+  job_type?: string;
   attachments: KesaseteliAttachment[];
   employment_contract: KesaseteliAttachment[];
   payslip: KesaseteliAttachment[];
