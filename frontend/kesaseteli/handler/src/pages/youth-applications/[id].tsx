@@ -18,6 +18,7 @@ import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+
 function YouthApplicationDetail(): React.ReactElement {
   const { t } = useTranslation();
   const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
@@ -40,52 +41,50 @@ function YouthApplicationDetail(): React.ReactElement {
     return <PageLoadingSpinner />;
   }
   return (
-    <>
-      <Container>
-        <Head>
-          <title>{t(`common:appName`)}</title>
-        </Head>
-        <FormSection
-          columns={2}
-          withoutDivider
-          aria-label={t('common:handlerApplication.title')}
-        >
-          <FormSectionHeading
-            $colSpan={2}
-            size="s"
-            header={t('common:handlerApplication.title')}
-            as="h3"
-          />
-          {isSuccess && <HandlerForm application={data} />}
-          {notFound && (
-            <$GridCell>
-              <$Notification
-                label={t('common:handlerApplication.notFound')}
-                type="alert"
-              />
-            </$GridCell>
-          )}
-        </FormSection>
-        {isSuccess && applicationId && (
-          <>
-            <$AccordionSection
-              heading={t('common:handlerNotes.sectionTitle', {
-                count: notesCount,
-              })}
-              initiallyOpen
-              card
-              border
-            >
-              <NotesSection
-                applicationId={applicationId}
-                targetType={NoteTargetType.YOUTH_APPLICATION}
-              />
-            </$AccordionSection>
-            <NotesTimeline timeline={timeline ?? []} />
-          </>
+    <Container>
+      <Head>
+        <title>{t(`common:appName`)}</title>
+      </Head>
+      <FormSection
+        columns={2}
+        withoutDivider
+        aria-label={t('common:handlerApplication.title')}
+      >
+        <FormSectionHeading
+          $colSpan={2}
+          size="s"
+          header={t('common:handlerApplication.title')}
+          as="h3"
+        />
+        {isSuccess && <HandlerForm application={data} />}
+        {notFound && (
+          <$GridCell>
+            <$Notification
+              label={t('common:handlerApplication.notFound')}
+              type="alert"
+            />
+          </$GridCell>
         )}
-      </Container>
-    </>
+      </FormSection>
+      {isSuccess && applicationId && (
+        <>
+          <$AccordionSection
+            heading={t('common:handlerNotes.sectionTitle', {
+              count: notesCount,
+            })}
+            initiallyOpen
+            card
+            border
+          >
+            <NotesSection
+              applicationId={applicationId}
+              targetType={NoteTargetType.YOUTH_APPLICATION}
+            />
+          </$AccordionSection>
+          <NotesTimeline timeline={timeline ?? []} />
+        </>
+      )}
+    </Container>
   );
 }
 
