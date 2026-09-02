@@ -46,7 +46,7 @@ const SubmitErrorSummary: React.FC<Props> = ({ error }) => {
     <Notification
       type="error"
       css={alignCenterSvg}
-      autoFocus={formState.isSubmitted}
+      autofocus={formState.isSubmitted}
       label={t('common:applicationWithoutSsn.form.checkNotification.label')}
     >
       {message}
