@@ -2,6 +2,7 @@ import EmployerApplicationAttachments from 'kesaseteli/handler/components/employ
 import EmployerApplicationHandlerView from 'kesaseteli/handler/components/employer-application/EmployerApplicationHandlerView';
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
+import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
 import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
 import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
@@ -105,6 +106,7 @@ function EmployerApplicationDetail(): React.ReactElement {
                 targetType={NoteTargetType.EMPLOYER_APPLICATION}
               />
             </$AccordionSection>
+            <NotesTimeline notes={notes ?? []} />
           </>
         )}
       </Container>

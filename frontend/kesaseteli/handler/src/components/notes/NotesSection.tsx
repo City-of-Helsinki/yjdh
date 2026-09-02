@@ -1,13 +1,8 @@
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import useLocale from 'shared/hooks/useLocale';
 
 import useCreateNoteMutation from '../../hooks/backend/useCreateNoteMutation';
-import useHandlerNotesQuery from '../../hooks/backend/useHandlerNotesQuery';
 import { CreateNotePayload, NoteTargetType } from '../../types/note';
-import Timeline, { TimelineSize } from '../timeline/Timeline';
-import { getTimelineIcon } from '../timeline/TimelineTheme';
-import NoteCard from './NoteCard';
 import NoteForm from './NoteForm';
 import { $Instructions, $NotesContainer } from './NotesSection.sc';
 
@@ -18,10 +13,6 @@ type Props = {
 
 const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
   const { t } = useTranslation();
-  const locale = useLocale();
-
-  const { data: notes = [] } = useHandlerNotesQuery(targetType, applicationId);
-
   const createMutation = useCreateNoteMutation(targetType, applicationId || '');
 
   return (
@@ -40,49 +31,6 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
           }
         />
       )}
-
-      <Timeline
-        reversed
-        aria-label={t('common:handlerNotes.sectionTitle')}
-        emptyState={t('common:handlerNotes.noNotes')}
-      >
-        {notes.map((note) => {
-          const TypeIcon = getTimelineIcon(note.note_type);
-          const formattedDate = new Date(note.created_at).toLocaleString(
-            locale
-          );
-          // const isModified = note.modified_at !== note.created_at;
-          const modified_date = Date.parse(note.modified_at);
-          const created_date = Date.parse(note.created_at);
-          const isModified = Math.abs(modified_date - created_date) > 1000;
-
-          return (
-            <Timeline.Item
-              key={note.id}
-              id={`note-${note.id}`}
-              data-testid={`note-card-${note.id}`}
-              type={note.note_type}
-              isImportant={note.is_important}
-              icon={TypeIcon}
-              size={TimelineSize.large}
-            >
-              <Timeline.Item.Header>
-                <Timeline.Item.Badge $type={note.note_type}>
-                  {t(`common:handlerNotes.noteType.${note.note_type}`)}
-                </Timeline.Item.Badge>
-                {t('common:handlerNotes.authorAt', {
-                  author: note.author_name,
-                  date: formattedDate,
-                })}
-                {isModified && " - " + t('common:handlerNotes.modified')}
-              </Timeline.Item.Header>
-              <Timeline.Item.Content>
-                <NoteCard note={note} />
-              </Timeline.Item.Content>
-            </Timeline.Item>
-          );
-        })}
-      </Timeline>
     </$NotesContainer>
   );
 };
