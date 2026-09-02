@@ -36,7 +36,7 @@ const useMessagesQuery = (
         t('common:messenger.list.errors.fetch.text')
       );
     }
-  }, [query, t]);
+  }, [query.isError, t]);
 
   return query;
 };

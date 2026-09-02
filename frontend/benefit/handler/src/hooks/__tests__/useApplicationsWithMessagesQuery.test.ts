@@ -64,10 +64,12 @@ describe('useApplicationsWithMessagesQuery', () => {
   });
 
   it('shows error toast when query has error', () => {
-    (useQuery as jest.Mock).mockReturnValue({ isError: true });
+    (useQuery as jest.Mock).mockImplementation(() => ({ isError: true }));
 
-    renderHook(() => useApplicationsWithMessagesQuery());
+    const { rerender } = renderHook(() => useApplicationsWithMessagesQuery());
 
-    expect(showErrorToast).toHaveBeenCalled();
+    rerender();
+
+    expect(showErrorToast).toHaveBeenCalledTimes(1);
   });
 });

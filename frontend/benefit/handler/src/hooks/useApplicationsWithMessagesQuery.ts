@@ -39,7 +39,7 @@ const useApplicationMessagesQuery = (): UseQueryResult<
         t('common:applications.list.errors.fetch.text', { status: 'error' })
       );
     }
-  }, [query, t]);
+  }, [query.isError, t]);
 
   return query;
 };
