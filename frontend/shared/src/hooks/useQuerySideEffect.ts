@@ -26,10 +26,10 @@ function useQuerySideEffect<T, E = Error>(
 
   // Run side effects only when query state genuinely changes
   useEffect(() => {
-    if (query.data) {
-      handleSuccess(query.data);
-    } else if (query.isError && query.error && shouldHandleError(query.error)) {
+    if (query.isError && query.error && shouldHandleError(query.error)) {
       handleError(query.error);
+    } else if (query.isSuccess) {
+      handleSuccess(query.data);
     }
   }, [
     query.data,
@@ -37,6 +37,7 @@ function useQuerySideEffect<T, E = Error>(
     query.dataUpdatedAt,
     query.errorUpdatedAt,
     query.isError,
+    query.isSuccess,
     query.status,
     handleSuccess,
     handleError,
