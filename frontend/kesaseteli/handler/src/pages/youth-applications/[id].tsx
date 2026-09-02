@@ -1,6 +1,7 @@
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
+import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
 import ApplicationSidebar from 'kesaseteli/handler/components/sidebar/ApplicationSidebar';
 import { SIDEBAR_WIDTH } from 'kesaseteli/handler/components/sidebar/ApplicationSidebar.sc';
 import useSidebarState from 'kesaseteli/handler/components/sidebar/useSidebarState';
@@ -76,19 +77,22 @@ function YouthApplicationDetail(): React.ReactElement {
           )}
         </FormSection>
         {isSuccess && applicationId && (
-          <$AccordionSection
-            heading={t('common:handlerNotes.sectionTitle', {
-              count: notesCount,
-            })}
-            initiallyOpen
-            card
-            border
-          >
-            <NotesSection
-              applicationId={applicationId}
-              targetType={NoteTargetType.YOUTH_APPLICATION}
-            />
-          </$AccordionSection>
+          <>
+            <$AccordionSection
+              heading={t('common:handlerNotes.sectionTitle', {
+                count: notesCount,
+              })}
+              initiallyOpen
+              card
+              border
+            >
+              <NotesSection
+                applicationId={applicationId}
+                targetType={NoteTargetType.YOUTH_APPLICATION}
+              />
+            </$AccordionSection>
+            <NotesTimeline notes={notes ?? []} />
+          </>
         )}
       </Container>
       {isSuccess && applicationId && (
