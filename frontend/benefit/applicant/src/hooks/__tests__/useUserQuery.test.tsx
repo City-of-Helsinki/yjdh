@@ -58,12 +58,14 @@ describe('useUserQuery', () => {
     overrides: Partial<{
       data: User | undefined;
       isError: boolean;
+      isSuccess: boolean;
       error: Error | null;
     }> = {}
   ): void => {
     (useQuery as jest.Mock).mockReturnValue({
       data: undefined,
       isError: false,
+      isSuccess: false,
       error: null,
       ...overrides,
     });
@@ -95,6 +97,7 @@ describe('useUserQuery', () => {
 
     setUserQueryResult({
       data: queryData,
+      isSuccess: true,
     });
 
     renderUseUserQuery();
