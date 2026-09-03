@@ -110,6 +110,23 @@ def test_validate_name_with_invalid_unlisted_school(name):
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             EmployerApplicationStatus.SENT_FOR_PAYMENT,
         ),
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        # Payment error paths:
+        (
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
         # Additional information retrieval paths:
         (
             EmployerApplicationStatus.APPLICATION_HANDLING,
@@ -156,6 +173,11 @@ def test_validate_name_with_invalid_unlisted_school(name):
             # Only if additional information has been provided:
             EmployerApplicationStatus.APPLICATION_HANDLING,
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ),
+        (
+            # Only if application has a payment error:
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ),
         (
             # Only if no additional information has been provided:
@@ -207,6 +229,14 @@ def test_validate_name_with_invalid_unlisted_school(name):
         (
             EmployerApplicationStatus.SENT_FOR_PAYMENT,
             EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ),
         (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.REJECTED),
         (EmployerApplicationStatus.CANCELLED, EmployerApplicationStatus.CANCELLED),
@@ -470,6 +500,154 @@ def test_employer_application_status_validator_success(
         (
             EmployerApplicationStatus.APPLICATION_HANDLING,
             EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        # No transition to payment statuses before payment processing:
+        (
+            EmployerApplicationStatus.DRAFT,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.ERROR_IN_PAYMENT),
+        (
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.CANCELLED,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        # RECEIVED_BY_PAYMENT_SYSTEM can only transition to ERROR_IN_PAYMENT:
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.DRAFT,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.SUBMITTED,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.CANCELLED,
+        ),
+        # ERROR_IN_PAYMENT can only transition to APPLICATION_HANDLING:
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.DRAFT,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.SUBMITTED,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.REJECTED,
+        ),
+        (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+            EmployerApplicationStatus.CANCELLED,
         ),
     ],
 )

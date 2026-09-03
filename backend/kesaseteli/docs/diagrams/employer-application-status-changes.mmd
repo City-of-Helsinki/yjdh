@@ -16,6 +16,7 @@ flowchart LR
   subgraph Step2 ["👀 2. Work Queues"]
     SUBMITTED[Submitted]
     ADDITIONAL_INFO_PROVIDED[Additional Information Provided]
+    ERROR_IN_PAYMENT["⚠️ Error in Payment"]
   end
 
   subgraph Step3 ["📝 3. Handling & Updates"]
@@ -29,16 +30,17 @@ flowchart LR
 
   subgraph Step5 ["🤖 5. Payment Automation"]
     ACCEPTED_FOR_PAYMENT[Accepted for Payment]
+    SENT_FOR_PAYMENT["Sent for Payment"]
   end
 
   subgraph Step6 ["🏁 6. Final Outcomes"]
-    SENT_FOR_PAYMENT((("✅ Sent for Payment")))
+    RECEIVED_BY_PAYMENT_SYSTEM((("✅ Received by Payment System")))
     REJECTED(["❌ Rejected"])
     CANCELLED(["❌ Cancelled"])
   end
 
   %% 2. Try to force the whole flow (subgraphs included) left-to-right using invisible links:
-  DRAFT ~~~ SUBMITTED ~~~ ADDITIONAL_INFO_PROVIDED ~~~ APPLICATION_HANDLING ~~~ ADDITIONAL_INFO_REQUESTED ~~~ PAYMENT_REVIEW ~~~ ACCEPTED_FOR_PAYMENT ~~~ SENT_FOR_PAYMENT
+  DRAFT ~~~ SUBMITTED ~~~ ADDITIONAL_INFO_PROVIDED ~~~ ERROR_IN_PAYMENT ~~~ APPLICATION_HANDLING ~~~ ADDITIONAL_INFO_REQUESTED ~~~ PAYMENT_REVIEW ~~~ ACCEPTED_FOR_PAYMENT ~~~ SENT_FOR_PAYMENT ~~~ RECEIVED_BY_PAYMENT_SYSTEM
 
   %% 3. Forward transitions:
   DRAFT ==>|Employer Submits Application| SUBMITTED
@@ -48,6 +50,8 @@ flowchart LR
 
   ADDITIONAL_INFO_PROVIDED -->|Handler Starts Handling Application| APPLICATION_HANDLING
   ADDITIONAL_INFO_PROVIDED -.->|Employer Cancels Application| CANCELLED
+
+  ERROR_IN_PAYMENT --->|Handler Starts Handling Application| APPLICATION_HANDLING
 
   APPLICATION_HANDLING -->|Handler Requests Additional Information| ADDITIONAL_INFO_REQUESTED
   APPLICATION_HANDLING ==>|Handler Accepts Application| PAYMENT_REVIEW
@@ -61,14 +65,17 @@ flowchart LR
   PAYMENT_REVIEW -.->|Approver Rejects Application| REJECTED
 
   ACCEPTED_FOR_PAYMENT ==>|Talpa Robot Fetches Application to Payment System| SENT_FOR_PAYMENT
+  SENT_FOR_PAYMENT ==>|Talpa Robot Marks Application as Received Through Webhook| RECEIVED_BY_PAYMENT_SYSTEM
 
   %% 4. Backward transitions:
   APPLICATION_HANDLING -.->|Handler Returns Submitted Application to Queue| SUBMITTED
   APPLICATION_HANDLING -.->|Handler Returns Application with Additional Information Provided to Queue| ADDITIONAL_INFO_PROVIDED
+  APPLICATION_HANDLING -.->|Handler Returns Application with Error in Payment to Queue| ERROR_IN_PAYMENT
 
   REJECTED -.->|Handler Returns Submitted Application to Queue| SUBMITTED
   REJECTED -.->|Handler Returns Application with Additional Information Provided to Queue| ADDITIONAL_INFO_PROVIDED
   PAYMENT_REVIEW -.->|Approver Returns Submitted Application to Queue| SUBMITTED
   PAYMENT_REVIEW -.->|Approver Returns Application with Additional Information Provided to Queue| ADDITIONAL_INFO_PROVIDED
   ACCEPTED_FOR_PAYMENT -.->|Approver Returns Application to Payment Review| PAYMENT_REVIEW
-  SENT_FOR_PAYMENT -->|Talpa Robot Marks Application as Received or Sets Error Code Through Webhook| SENT_FOR_PAYMENT
+  SENT_FOR_PAYMENT -->|Talpa Robot Sets Error Code to Application Through Webhook| ERROR_IN_PAYMENT
+  RECEIVED_BY_PAYMENT_SYSTEM -.->|Handler Manually Sets Error Code to Application| ERROR_IN_PAYMENT

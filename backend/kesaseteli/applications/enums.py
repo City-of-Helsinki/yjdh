@@ -46,6 +46,13 @@ class EmployerExcelExportKind(models.TextChoices):
 
 
 class EmployerApplicationStatus(models.TextChoices):
+    """
+    Employer application's possible statuses.
+
+    Please SYNC with:
+        /backend/kesaseteli/docs/diagrams/employer-application-status-changes.mmd
+    """
+
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
     ADDITIONAL_INFORMATION_REQUESTED = (
@@ -60,6 +67,11 @@ class EmployerApplicationStatus(models.TextChoices):
     PAYMENT_REVIEW = "payment_review", _("Payment review")
     ACCEPTED_FOR_PAYMENT = "accepted_for_payment", _("Accepted for payment")
     SENT_FOR_PAYMENT = "sent_for_payment", _("Sent for payment")
+    RECEIVED_BY_PAYMENT_SYSTEM = (
+        "received_by_payment_system",
+        _("Received by payment system"),
+    )
+    ERROR_IN_PAYMENT = "error_in_payment", _("Error in payment")
     REJECTED = "rejected", _("Rejected")
     CANCELLED = "cancelled", _("Cancelled")
 
