@@ -1,5 +1,5 @@
 import { ButtonSize, ButtonVariant, Checkbox, RadioButton } from 'hds-react';
-import isHandlerExternalMessagesEnabled from "kesaseteli/handler/flags/is-handler-external-messages-enabled";
+import isHandlerExternalMessagesEnabled from 'kesaseteli/handler/flags/is-handler-external-messages-enabled';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
