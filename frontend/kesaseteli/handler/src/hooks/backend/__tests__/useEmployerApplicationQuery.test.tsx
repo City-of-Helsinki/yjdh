@@ -1,5 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import nock from 'nock';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -49,7 +50,10 @@ describe('useEmployerApplicationQuery', () => {
   });
 
   it('fetches application data successfully by id', async () => {
-    const mockData = { id: TEST_ID, status: 'submitted' };
+    const mockData = {
+      id: TEST_ID,
+      status: EmployerApplicationStatus.SUBMITTED,
+    };
     nock(API_BASE_TEST_URL).get(ENDPOINT).reply(200, mockData);
     const { result } = renderHook(() => useEmployerApplicationQuery(TEST_ID), {
       wrapper,

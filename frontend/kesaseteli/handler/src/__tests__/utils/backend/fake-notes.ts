@@ -1,3 +1,5 @@
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
+
 import { NoteTargetType, NoteType } from '../../../types/note';
 import {
   ActionType,
@@ -54,8 +56,8 @@ export const fakeActivityLogItem = (
   return {
     item_type: TimelineItemType.ACTIVITY,
     action_type: ActionType.APPLICATION_STATUS_CHANGE,
-    old_value: 'submitted',
-    new_value: 'additional_information_requested',
+    old_value: YouthApplicationStatus.SUBMITTED,
+    new_value: YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
     author_name: 'Author 1',
     created_at: defaultCreated,
     ...overrides,

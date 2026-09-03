@@ -2,11 +2,11 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 
 import fi from '../../../../public/locales/fi/common.json';
 import useEmployerApplicationsListQuery from '../../../hooks/backend/useEmployerApplicationsListQuery';
-import { ApplicationStatus } from '../../../types/application';
 import EmployerApplicationList from '../EmployerApplicationList';
 
 jest.mock('../../../hooks/backend/useEmployerApplicationsListQuery');
@@ -16,7 +16,7 @@ const mockPendingApps = [
   {
     id: 'pending-1',
     company: { name: 'Company Pending Oy', business_id: '1234567-8' },
-    status: 'submitted',
+    status: EmployerApplicationStatus.SUBMITTED,
     summer_vouchers: [],
   },
 ];
@@ -24,7 +24,7 @@ const mockProcessedApps = [
   {
     id: 'processed-1',
     company: { name: 'Company Processed Oy', business_id: '8765432-1' },
-    status: 'accepted',
+    status: EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
     summer_vouchers: [],
   },
 ];
@@ -34,8 +34,13 @@ describe('EmployerApplicationList', () => {
     window.sessionStorage.clear();
     mockUseQuery.mockImplementation((params) => {
       if (
-        params?.status?.includes('accepted') ||
-        params?.status?.includes('rejected')
+        params?.status?.includes(EmployerApplicationStatus.PAYMENT_REVIEW) ||
+        params?.status?.includes(
+          EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+        ) ||
+        params?.status?.includes(EmployerApplicationStatus.SENT_FOR_PAYMENT) ||
+        params?.status?.includes(EmployerApplicationStatus.REJECTED) ||
+        params?.status?.includes(EmployerApplicationStatus.CANCELLED)
       ) {
         return {
           data: { count: 10, results: mockProcessedApps },
@@ -80,8 +85,8 @@ describe('EmployerApplicationList', () => {
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
-          ApplicationStatus.SUBMITTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          EmployerApplicationStatus.SUBMITTED,
+          EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ],
       })
     );
@@ -96,16 +101,16 @@ describe('EmployerApplicationList', () => {
     // Select "Lisätietoja pyydetty" to check it
     await userEvent.click(
       screen.getByText(
-        fi.applicationList.status.additional_information_requested
+        fi.applicationList.employer.status.additional_information_requested
       )
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
-          ApplicationStatus.SUBMITTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-          ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          EmployerApplicationStatus.SUBMITTED,
+          EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+          EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ],
       })
     );
@@ -119,14 +124,14 @@ describe('EmployerApplicationList', () => {
 
     const listbox = screen.getByRole('listbox');
 
-    // Deselect "Avoin" (submitted) -> should query with only [additional_information_provided]
+    // Deselect "Uusi hakemus" (submitted) -> should query with only [additional_information_provided]
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.status.submitted)
+      within(listbox).getByText(fi.applicationList.employer.status.submitted)
     );
     // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> empty selection, should not trigger query
     await userEvent.click(
       within(listbox).getByText(
-        fi.applicationList.status.additional_information_provided
+        fi.applicationList.employer.status.additional_information_provided
       )
     );
 
@@ -137,7 +142,7 @@ describe('EmployerApplicationList', () => {
     );
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
+        status: [EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
       })
     );
   });
@@ -146,7 +151,13 @@ describe('EmployerApplicationList', () => {
     renderComponent(<EmployerApplicationList />);
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+        status: [
+          EmployerApplicationStatus.PAYMENT_REVIEW,
+          EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+          EmployerApplicationStatus.SENT_FOR_PAYMENT,
+          EmployerApplicationStatus.REJECTED,
+          EmployerApplicationStatus.CANCELLED,
+        ],
       })
     );
   });
@@ -164,18 +175,24 @@ describe('EmployerApplicationList', () => {
 
     const listbox = screen.getByRole('listbox');
 
-    // Deselect "Hyväksytty" (Accepted)
+    // Deselect "Hyväksytty maksuun" (Accepted for payment)
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.status.accepted)
+      within(listbox).getByText(
+        fi.applicationList.employer.status.accepted_for_payment
+      )
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [ApplicationStatus.REJECTED],
+        status: [
+          EmployerApplicationStatus.PAYMENT_REVIEW,
+          EmployerApplicationStatus.SENT_FOR_PAYMENT,
+          EmployerApplicationStatus.REJECTED,
+          EmployerApplicationStatus.CANCELLED,
+        ],
       })
     );
   });
 });
 
 /* eslint-enable scanjs-rules/property_sessionStorage, scanjs-rules/identifier_sessionStorage */
-

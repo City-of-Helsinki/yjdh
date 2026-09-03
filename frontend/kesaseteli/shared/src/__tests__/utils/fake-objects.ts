@@ -17,6 +17,7 @@ import merge from 'lodash/merge';
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
 import { TARGET_GROUP_AGES } from '../../constants/target-group-ages';
 import YOUTH_APPLICATION_FIELDS from '../../constants/youth-application-fields';
+import { YouthApplicationStatus } from '../../constants/youth-application-status';
 import ActivatedYouthApplication, {
   LinkedEmployerApplication,
 } from '../../types/activated-youth-application';
@@ -180,7 +181,7 @@ export const fakeCreatedYouthApplication = (
   merge(
     {
       id: faker.datatype.uuid(),
-      status: 'submitted',
+      status: YouthApplicationStatus.SUBMITTED,
       ...fakeYouthApplication(override),
     },
     override
@@ -309,13 +310,15 @@ export const fakeActivatedYouthApplication = (
   return merge(
     application,
     {
-      ...(override?.status === 'additional_information_provided' &&
+      ...(override?.status ===
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED &&
         fakeAdditionalInfoApplication(override)),
       receipt_confirmed_at: convertToBackendDateFormat(
         override?.receipt_confirmed_at ?? faker.date.recent()
       ),
       additional_info_provided_at:
-        override?.status === 'additional_information_provided'
+        override?.status ===
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
           ? convertToBackendDateFormat(
               override?.additional_info_provided_at ?? faker.date.past()
             )

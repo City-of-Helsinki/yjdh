@@ -1,3 +1,4 @@
+import EmployerApplicationStatusType from 'kesaseteli-shared/types/employer-application-status-type';
 import Application from 'shared/types/application';
 import Employment from 'shared/types/employment';
 
@@ -8,7 +9,11 @@ export type HandlerSummerVoucher = Employment & {
 // Note: HandlerEmployerApplication is the detail/serializer-shaped type extending Application
 // with invoicer fields and created_at. Contrast with EmployerApplication (in application.ts),
 // which is the list-shaped type containing submitted_at.
-type HandlerEmployerApplication = Omit<Application, 'summer_vouchers'> & {
+type HandlerEmployerApplication = Omit<
+  Application,
+  'summer_vouchers' | 'status'
+> & {
+  status: EmployerApplicationStatusType;
   is_separate_invoicer: boolean;
   invoicer_name: string;
   invoicer_email: string;

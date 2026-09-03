@@ -2,6 +2,7 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import usePersistFormValuesEffect from 'kesaseteli/employer/hooks/application/usePersistFormValuesEffect';
 import useResetApplicationFormValuesEffect from 'kesaseteli/employer/hooks/application/useResetApplicationFormValuesEffect';
 import useSaveCurrentStepEffect from 'kesaseteli/employer/hooks/wizard/useSaveCurrentStepEffect';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -28,7 +29,7 @@ const ApplicationForm: React.FC<Props> = ({ title, step, children }: Props) => {
   const hasDirtyDraftApplication =
     methods.formState.isDirty &&
     Boolean(applicationId) &&
-    applicationQuery.data?.status === 'draft';
+    applicationQuery.data?.status === EmployerApplicationStatus.DRAFT;
 
   useLeaveConfirm(
     hasDirtyDraftApplication,

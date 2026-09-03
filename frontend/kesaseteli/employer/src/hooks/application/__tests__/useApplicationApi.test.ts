@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import type Application from 'shared/types/application';
 
@@ -231,7 +232,7 @@ describe('useApplicationApi - fetchEmployment', () => {
     expect(mockUpdateMutateAsync).toHaveBeenCalledTimes(1);
     expect(mockUpdateMutateAsync).toHaveBeenCalledWith({
       ...draftApplication,
-      status: 'draft',
+      status: EmployerApplicationStatus.DRAFT,
     });
 
     expect(mockMutate).toHaveBeenCalledTimes(1);

@@ -6,6 +6,7 @@ import {
 import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/get-handler-translations-api';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import type YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import {
@@ -183,8 +184,8 @@ const getIndexPageApi = async (
       status: YouthApplicationStatusType
     ): Promise<HTMLElement> => {
       const statusText =
-        translations.handlerApplication.applicationStatus[
-          status as keyof typeof translations.handlerApplication.applicationStatus
+        translations.applicationList.youth.status[
+          status as keyof typeof translations.applicationList.youth.status
         ] ??
         translations.handlerApplication.notification[
           status as keyof typeof translations.handlerApplication.notification
@@ -218,7 +219,10 @@ const getIndexPageApi = async (
         expectToPatchYouthApplication(type, expectedApplication);
         expectToGetYouthApplication({
           ...expectedApplication,
-          status: type === 'accept' ? 'accepted' : 'rejected',
+          status:
+            type === 'accept'
+              ? YouthApplicationStatus.ACCEPTED
+              : YouthApplicationStatus.REJECTED,
         });
       }
       const dialog = await screen.findByRole('dialog');

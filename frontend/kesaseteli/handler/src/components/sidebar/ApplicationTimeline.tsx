@@ -1,4 +1,7 @@
-import { ApplicationListType } from 'kesaseteli/handler/types/application';
+import {
+  BaseApplication,
+  ListTypeForApplication,
+} from 'kesaseteli/handler/types/application';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
@@ -9,17 +12,17 @@ import Timeline, { TimelineSize } from '../timeline/Timeline';
 import { getTimelineIcon } from '../timeline/TimelineTheme';
 import { $PreWrapParagraph, $StatusValue } from './ApplicationTimeline.sc';
 
-export type ApplicationTimelineProps = {
+export type ApplicationTimelineProps<T extends BaseApplication> = {
   applicationId: string;
-  applicationType: ApplicationListType;
+  applicationType: ListTypeForApplication<T>;
   onToggle: () => void;
 };
 
-const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
+function ApplicationTimeline<T extends BaseApplication>({
   applicationId,
   applicationType,
   onToggle,
-}) => {
+}: Readonly<ApplicationTimelineProps<T>>): JSX.Element {
   const locale = useLocale();
   const { t } = useTranslation();
 
@@ -78,10 +81,10 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
                     i18nKey="common:timeline.statusChange"
                     values={{
                       oldStatus: t(
-                        `common:handlerApplication.applicationStatus.${item.old_value}`
+                        `common:applicationList.${applicationType}.status.${item.old_value}`
                       ),
                       newStatus: t(
-                        `common:handlerApplication.applicationStatus.${item.new_value}`
+                        `common:applicationList.${applicationType}.status.${item.new_value}`
                       ),
                     }}
                     components={{ statusValue: <$StatusValue /> }}
@@ -106,6 +109,6 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
       })}
     </Timeline>
   );
-};
+}
 
 export default ApplicationTimeline;

@@ -20,11 +20,12 @@ import {
   fakeYouthTargetGroupAgeSSN,
 } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import { TARGET_GROUP_AGES } from 'kesaseteli-shared/constants/target-group-ages';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
-} from 'kesaseteli-shared/constants/youth-application-status';
+} from 'kesaseteli-shared/constants/youth-application-status-arrays';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
@@ -114,7 +115,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
   it(`shows additional info fields`, async () => {
     const application = fakeActivatedYouthApplication({
-      status: 'additional_information_provided',
+      status: YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
     });
     expectToGetYouthApplication(application);
     renderPage(HandlerIndex, {
@@ -146,7 +147,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           NEXT_PUBLIC_DISABLE_VTJ: '1',
         };
         const application = fakeActivatedYouthApplication({
-          status: 'awaiting_manual_processing',
+          status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
         });
         expectToGetYouthApplication(application);
         renderPage(HandlerIndex, {
@@ -210,7 +211,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         encrypted_handler_vtj_json: {
           Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } },
         },
-        status: 'awaiting_manual_processing',
+        status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
       });
       expectToGetYouthApplication(application);
       renderPage(HandlerIndex, {
@@ -230,7 +231,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const application = fakeActivatedYouthApplication({
         social_security_number: undefined,
         non_vtj_birthdate: undefined,
-        status: 'awaiting_manual_processing',
+        status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
       });
       expectToGetYouthApplication(application);
       renderPage(HandlerIndex, {
@@ -477,7 +478,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     describe(`when clicking cancel-button on ${operationType}-confirmation dialog`, () => {
       it(`cancels the operation ${operationType}`, async () => {
         const application = fakeActivatedYouthApplication({
-          status: 'awaiting_manual_processing',
+          status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
         });
         expectToGetYouthApplication(application);
         renderPage(HandlerIndex, {
@@ -494,7 +495,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     describe(`when clicking confirm button on ${operationType}-confirmation dialog`, () => {
       it(`shows a message that application is ${status}`, async () => {
         const application = fakeActivatedYouthApplication({
-          status: 'awaiting_manual_processing',
+          status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
         });
         expectToGetYouthApplication(application);
         renderPage(HandlerIndex, {
@@ -510,7 +511,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
       it(`shows error toast when backend returns bad request`, async () => {
         const application = fakeActivatedYouthApplication({
-          status: 'awaiting_manual_processing',
+          status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
         });
         expectToGetYouthApplication(application);
         renderPage(HandlerIndex, {
@@ -526,7 +527,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
       it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
         const application = fakeActivatedYouthApplication({
-          status: 'awaiting_manual_processing',
+          status: YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
         });
         expectToGetYouthApplication(application);
         const spyPush = jest.fn();

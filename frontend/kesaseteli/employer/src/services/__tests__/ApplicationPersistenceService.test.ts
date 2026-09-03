@@ -1,4 +1,5 @@
 /* eslint-disable scanjs-rules/identifier_sessionStorage */
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import Application from 'shared/types/application';
 
 import ApplicationPersistenceService from '../ApplicationPersistenceService';
@@ -44,7 +45,7 @@ describe('ApplicationPersistenceService', () => {
       const sensitiveData: Partial<Application> = {
         ...mockEmployerData,
         id: 'sensitive-id',
-        status: 'submitted',
+        status: EmployerApplicationStatus.SUBMITTED,
       } as unknown as Partial<Application>;
 
       ApplicationPersistenceService.storeEmployerData(sensitiveData);

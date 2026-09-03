@@ -1,5 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import nock from 'nock';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
@@ -47,7 +48,10 @@ describe('useEmployerApplicationsListQuery', () => {
       .get(BackendEndpoint.EMPLOYER_APPLICATIONS)
       // nock matches URLSearchParams via query object
       .query({
-        status: ['submitted', 'handling'],
+        status: [
+          EmployerApplicationStatus.SUBMITTED,
+          EmployerApplicationStatus.APPLICATION_HANDLING,
+        ],
         limit: '20',
         offset: '0',
         ordering: '-created_at',
@@ -57,7 +61,10 @@ describe('useEmployerApplicationsListQuery', () => {
     const { result } = renderHook(
       () =>
         useEmployerApplicationsListQuery({
-          status: ['submitted', 'handling'],
+          status: [
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+          ],
           limit: 20,
           offset: 0,
           ordering: '-created_at',
