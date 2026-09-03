@@ -71,6 +71,13 @@ def validate_timeline_item_types(requested_types: set) -> set:
 
 
 class EmployerApplicationStatusValidator:
+    """
+    Employer application's status change validator.
+
+    Please SYNC with:
+        /backend/kesaseteli/docs/diagrams/employer-application-status-changes.mmd
+    """
+
     requires_context = True
 
     APPLICATION_STATUS_TRANSITIONS = {
@@ -89,6 +96,7 @@ class EmployerApplicationStatusValidator:
             EmployerApplicationStatus.REJECTED,
             EmployerApplicationStatus.SUBMITTED,
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ),
         EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
@@ -105,7 +113,16 @@ class EmployerApplicationStatusValidator:
             EmployerApplicationStatus.SENT_FOR_PAYMENT,
             EmployerApplicationStatus.PAYMENT_REVIEW,
         ),
-        EmployerApplicationStatus.SENT_FOR_PAYMENT: (),
+        EmployerApplicationStatus.SENT_FOR_PAYMENT: (
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM: (
+            EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ),
+        EmployerApplicationStatus.ERROR_IN_PAYMENT: (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+        ),
         EmployerApplicationStatus.REJECTED: (
             EmployerApplicationStatus.SUBMITTED,
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
