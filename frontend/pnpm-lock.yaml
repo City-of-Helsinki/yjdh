@@ -166,9 +166,6 @@ importers:
       eslint-config-auto:
         specifier: 0.7.1
         version: 0.7.1(eslint-plugin-import@2.32.0)(eslint@8.4.1)
-      eslint-config-next:
-        specifier: ^15.1.0
-        version: 15.5.19(eslint@8.4.1)(typescript@5.9.3)
       eslint-config-prettier:
         specifier: ^8.3.0
         version: 8.10.2(eslint@8.4.1)
@@ -2409,9 +2406,6 @@ packages:
   '@next/eslint-plugin-next@12.3.7':
     resolution: {integrity: sha512-L3WEJJBd1CUUsuxSEThheAV5Nh6/mzCagwj4LHaYlANBkW8Hmg8Ne8l/Vx/sPyfyE7FjuKyiNYWbSVpXRvrmaw==}
 
-  '@next/eslint-plugin-next@15.5.19':
-    resolution: {integrity: sha512-Ctwb4qYuMbHN/1oXLlTdMchwG8h8Xzwq+wGZZMgF3o6+uwyBKAI2c96bdOsl+C62PaUD0Jkh+QpNkhUeDlam0Q==}
-
   '@next/swc-darwin-arm64@16.3.3':
     resolution: {integrity: sha512-8Hiv32QJPwdV6KYJ8meR9SBA061tQqnIKTJDocvOXlEQqib0xMFpzArosuffFUUc0sslbh7QQ8a3Yey1QV8EIw==}
     engines: {node: '>= 10'}
@@ -2934,9 +2928,6 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
-
-  '@rushstack/eslint-patch@1.16.1':
-    resolution: {integrity: sha512-TvZbIpeKqGQQ7X0zSCvPH9riMSFQFSggnfBjFZ1mEoILW+UuXCKwOoPcgjMwiUtRqFZ8jWhPJc4um14vC6I4ag==}
 
   '@sentry-internal/browser-utils@10.56.0':
     resolution: {integrity: sha512-I8tZWAFg8SZpD8BFUpglEtSTzhZjacmcThB5/Mlq/iFiiT8mBPG4ZWDWssSfmIBKvZywJZJ83uDA0+uiJU73Tw==}
@@ -5226,15 +5217,6 @@ packages:
     resolution: {integrity: sha512-VLYP17NT4SJi56zF5KL6hR8IHFUvvXV158U0syXE4RvNv6DWBPfit9NBSCRG34wyMZ4xdPYIg6dLgaUrYPleEw==}
     engines: {node: '>= 8.3'}
 
-  eslint-config-next@15.5.19:
-    resolution: {integrity: sha512-UZwkuhBCNxVZfo93MSHRDOVNWXooJJGcAUyTAVIp0+9QFhH4SqJxWY0s6Mk9C2kMi777HPMn3dseOrZshWpG9Q==}
-    peerDependencies:
-      eslint: 8.4.1
-      typescript: '>=3.3.1'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   eslint-config-prettier@8.10.2:
     resolution: {integrity: sha512-/IGJ6+Dka158JnP5n5YFMOszjDWrXggGz1LaK/guZq9vZTmniaKlHcsscvkAhn9y4U+BU3JuUdYvtAMcv30y4A==}
     hasBin: true
@@ -5409,12 +5391,6 @@ packages:
 
   eslint-plugin-react-hooks@4.6.2:
     resolution: {integrity: sha512-QzliNJq4GinDBcD8gPB5v0wh6g8q3SUi6EFF0x8N/BL9PoVs0atuGc47ozMRyOWAKdwaZ5OnbOEa3WR+dSGKuQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      eslint: 8.4.1
-
-  eslint-plugin-react-hooks@5.2.0:
-    resolution: {integrity: sha512-+f15FfK64YQwZdJNELETdn5ibXEUQmW1DZL6KXhNnc2heoy/sg9VJJeT7n8TlMWouzWqSWavFkIhHyIbIAEapg==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: 8.4.1
@@ -5595,10 +5571,6 @@ packages:
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
-
-  fast-glob@3.3.1:
-    resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
-    engines: {node: '>=8.6.0'}
 
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
@@ -11795,10 +11767,6 @@ snapshots:
     dependencies:
       glob: 7.1.7
 
-  '@next/eslint-plugin-next@15.5.19':
-    dependencies:
-      fast-glob: 3.3.1
-
   '@next/swc-darwin-arm64@16.3.3':
     optional: true
 
@@ -11841,7 +11809,8 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@nolyfill/is-core-module@1.0.39': {}
+  '@nolyfill/is-core-module@1.0.39':
+    optional: true
 
   '@npmcli/agent@4.0.2':
     dependencies:
@@ -12274,8 +12243,6 @@ snapshots:
     optional: true
 
   '@rtsao/scc@1.1.0': {}
-
-  '@rushstack/eslint-patch@1.16.1': {}
 
   '@sentry-internal/browser-utils@10.56.0':
     dependencies:
@@ -14726,25 +14693,6 @@ snapshots:
       - eslint
       - eslint-plugin-import
 
-  eslint-config-next@15.5.19(eslint@8.4.1)(typescript@5.9.3):
-    dependencies:
-      '@next/eslint-plugin-next': 15.5.19
-      '@rushstack/eslint-patch': 1.16.1
-      '@typescript-eslint/eslint-plugin': 5.28.0(@typescript-eslint/parser@5.28.0(eslint@8.4.1)(typescript@5.9.3))(eslint@8.4.1)(typescript@5.9.3)
-      '@typescript-eslint/parser': 5.28.0(eslint@8.4.1)(typescript@5.9.3)
-      eslint: 8.4.1
-      eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.4.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.28.0(eslint@8.4.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.4.1)
-      eslint-plugin-jsx-a11y: 6.10.2(eslint@8.4.1)
-      eslint-plugin-react: 7.37.5(eslint@8.4.1)
-      eslint-plugin-react-hooks: 5.2.0(eslint@8.4.1)
-    optionalDependencies:
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - eslint-import-resolver-webpack
-      - eslint-plugin-import-x
-
   eslint-config-prettier@8.10.2(eslint@8.4.1):
     dependencies:
       eslint: 8.4.1
@@ -14767,6 +14715,7 @@ snapshots:
       unrs-resolver: 1.12.2
     optionalDependencies:
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@5.28.0(eslint@8.4.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.4.1)
+    optional: true
 
   eslint-module-utils@2.13.0(@typescript-eslint/parser@5.28.0(eslint@8.4.1)(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@8.4.1):
     dependencies:
@@ -14930,10 +14879,6 @@ snapshots:
       eslint: 8.4.1
 
   eslint-plugin-react-hooks@4.6.2(eslint@8.4.1):
-    dependencies:
-      eslint: 8.4.1
-
-  eslint-plugin-react-hooks@5.2.0(eslint@8.4.1):
     dependencies:
       eslint: 8.4.1
 
@@ -15233,14 +15178,6 @@ snapshots:
 
   fast-deep-equal@3.1.3: {}
 
-  fast-glob@3.3.1:
-    dependencies:
-      '@nodelib/fs.stat': 2.0.5
-      '@nodelib/fs.walk': 1.2.8
-      glob-parent: 5.1.2
-      merge2: 1.4.1
-      micromatch: 4.0.8
-
   fast-glob@3.3.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -15481,6 +15418,7 @@ snapshots:
   get-tsconfig@4.14.0:
     dependencies:
       resolve-pkg-maps: 1.0.0
+    optional: true
 
   getos@3.2.1:
     dependencies:
@@ -16058,6 +15996,7 @@ snapshots:
   is-bun-module@2.0.0:
     dependencies:
       semver: 7.8.5
+    optional: true
 
   is-callable@1.2.7: {}
 
@@ -19541,7 +19480,8 @@ snapshots:
 
   resolve-from@5.0.0: {}
 
-  resolve-pkg-maps@1.0.0: {}
+  resolve-pkg-maps@1.0.0:
+    optional: true
 
   resolve.exports@2.0.3: {}
 
@@ -19946,7 +19886,8 @@ snapshots:
     dependencies:
       minipass: 7.1.3
 
-  stable-hash@0.0.5: {}
+  stable-hash@0.0.5:
+    optional: true
 
   stack-generator@2.0.10:
     dependencies:
