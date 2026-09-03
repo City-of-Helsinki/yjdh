@@ -1,4 +1,5 @@
 import { ButtonSize, ButtonVariant, Checkbox, RadioButton } from 'hds-react';
+import isHandlerExternalMessagesEnabled from "kesaseteli/handler/flags/is-handler-external-messages-enabled";
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -134,6 +135,7 @@ const NoteForm: React.FC<Props> = ({
             value={NoteType.EXTERNAL_MESSAGE}
             checked={noteType === NoteType.EXTERNAL_MESSAGE}
             onChange={() => setNoteType(NoteType.EXTERNAL_MESSAGE)}
+            disabled={!isHandlerExternalMessagesEnabled()}
           />
           <$Separator aria-hidden="true" />
           <Checkbox
