@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
+    "i18next": "^25.10.10",
     "typescript": "^5.9.3"
   }
 }
