@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import F, Func, Prefetch
+from django.db.models import Count, F, Func, Prefetch
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -70,6 +70,7 @@ from applications.enums import (
     YouthApplicationStatus,
 )
 from applications.models import (
+    Attachment,
     EmployerApplication,
     EmployerSummerVoucher,
     School,
@@ -1111,7 +1112,14 @@ class EmployerApplicationViewSet(ModelViewSet):
                     "summer_vouchers",
                     queryset=EmployerSummerVoucher.objects.select_related(
                         "youth_summer_voucher__youth_application"
-                    ).prefetch_related("attachments"),
+                    ).prefetch_related(
+                        Prefetch(
+                            "attachments",
+                            queryset=Attachment.objects.annotate(
+                                notes_count=Count("notes")
+                            ),
+                        )
+                    ),
                 )
             )
         )
@@ -1364,8 +1372,11 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
     ) -> Response:
         """Delete a single attachment.
 
-        Handlers (staff/superuser) may delete from any application status.
-        Employers retain the existing company-ownership + status restriction.
+        Handlers (staff/superuser) may delete from any application status
+        except ACCEPTED_FOR_PAYMENT, SENT_FOR_PAYMENT,
+        RECEIVED_BY_PAYMENT_SYSTEM, REJECTED, and CANCELLED
+        (which are handled states; attachments serve as proof of handling).
+        Employers retain the existing company-ownership + DRAFT-only restriction.
         """
         is_handler = HandlerPermission.has_user_permission(request.user)
 
@@ -1390,6 +1401,12 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             if obj.application.status not in ALLOWED_APPLICATION_DELETE_STATUSES:
                 raise PermissionDenied(
                     "Operation not allowed for this application status."
+                )
+        else:
+            # Handlers cannot delete attachments once an application is fully handled.
+            if obj.application.status in EmployerApplicationStatus.handled_values():
+                raise PermissionDenied(
+                    "Attachments cannot be deleted from a fully handled application."
                 )
 
         try:

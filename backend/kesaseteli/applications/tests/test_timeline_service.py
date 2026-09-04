@@ -1,10 +1,7 @@
-from unittest.mock import MagicMock
-
 import pytest
 
 from applications.enums import TimelineItemType
 from applications.models import (
-    Attachment,
     TimelineActivityLog,
 )
 from applications.services import TimelineService
@@ -32,8 +29,8 @@ def test_youth_application_status_change_creates_timeline_log():
     ).last()
 
     assert log is not None
-    assert log.from_status == "submitted"
-    assert log.to_status == "accepted"
+    assert log.old_value == "submitted"
+    assert log.new_value == "accepted"
 
 
 @pytest.mark.django_db
@@ -49,20 +46,8 @@ def test_employer_application_status_change_creates_timeline_log():
     ).last()
 
     assert log is not None
-    assert log.from_status == "draft"
-    assert log.to_status == "submitted"
-
-
-@pytest.mark.django_db
-def test_service_returns_empty_for_unregistered_model():
-    """Passing an Attachment instance (not in ALLOWED_TIMELINE_FIELDS)
-    to get_activity_logs_for_application must return an empty list."""
-    attachment = MagicMock(spec=Attachment)
-    attachment._meta.model_name = Attachment._meta.model_name
-    assert Attachment._meta.model_name not in ALLOWED_TIMELINE_FIELDS
-
-    items = get_activity_logs_for_application(attachment)
-    assert items == []
+    assert log.old_value == "draft"
+    assert log.new_value == "submitted"
 
 
 @pytest.mark.django_db
@@ -85,8 +70,8 @@ def test_service_handles_null_actor():
     TimelineActivityLog.objects.create(
         application_type="youthapplication",
         application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
+        old_value="submitted",
+        new_value="accepted",
         actor=None,
         actor_name="",
     )
@@ -106,8 +91,8 @@ def test_signal_creates_log_on_status_change():
     assert TimelineActivityLog.objects.filter(
         application_type="youthapplication",
         application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
+        old_value="submitted",
+        new_value="accepted",
     ).exists()
 
 
@@ -136,8 +121,8 @@ def test_get_application_timeline_data_combines_filters_and_sorts():
     TimelineActivityLog.objects.create(
         application_type="youthapplication",
         application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
+        old_value="submitted",
+        new_value="accepted",
         actor_name="Test User",
     )
 

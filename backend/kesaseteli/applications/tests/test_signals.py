@@ -1,7 +1,9 @@
+import os
 from unittest.mock import patch
 
 import pytest
 
+from applications.enums import ActionType
 from applications.models import TimelineActivityLog
 from applications.signals import (
     _PRE_SAVE_STATUS_ATTR,
@@ -10,7 +12,9 @@ from applications.signals import (
     _track_status_change,
 )
 from common.tests.factories import (
+    AttachmentFactory,
     EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
     YouthApplicationFactory,
 )
 from shared.common.tests.factories import HandlerUserFactory
@@ -127,8 +131,8 @@ def test_track_status_change_creates_log_when_status_differs():
         _track_status_change("youthapplication", app)
 
     log = TimelineActivityLog.objects.get(application_id=app.pk)
-    assert log.from_status == "submitted"
-    assert log.to_status == "accepted"
+    assert log.old_value == "submitted"
+    assert log.new_value == "accepted"
 
 
 @pytest.mark.django_db
@@ -188,8 +192,8 @@ def test_youth_application_status_change_creates_log_via_save():
 
     log = TimelineActivityLog.objects.filter(application_id=app.pk).last()
     assert log is not None
-    assert log.from_status == "submitted"
-    assert log.to_status == "accepted"
+    assert log.old_value == "submitted"
+    assert log.new_value == "accepted"
 
 
 @pytest.mark.django_db
@@ -201,8 +205,8 @@ def test_employer_application_status_change_creates_log_via_save():
 
     log = TimelineActivityLog.objects.filter(application_id=app.pk).last()
     assert log is not None
-    assert log.from_status == "draft"
-    assert log.to_status == "submitted"
+    assert log.old_value == "draft"
+    assert log.new_value == "submitted"
 
 
 @pytest.mark.django_db
@@ -235,8 +239,8 @@ def test_user_deletion_does_not_anonymize_actor_name():
     TimelineActivityLog.objects.create(
         application_type="youthapplication",
         application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
+        old_value="submitted",
+        new_value="accepted",
         actor=actor,
         actor_name=actor.get_full_name(),
     )
@@ -257,8 +261,8 @@ def test_user_deletion_only_affects_related_logs():
     TimelineActivityLog.objects.create(
         application_type="youthapplication",
         application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
+        old_value="submitted",
+        new_value="accepted",
         actor=actor_b,
         actor_name="Keep This Name",
     )
@@ -277,8 +281,8 @@ def test_user_inactivation_does_not_affect_timeline():
     TimelineActivityLog.objects.create(
         application_type="youthapplication",
         application_id=app.pk,
-        from_status="submitted",
-        to_status="accepted",
+        old_value="submitted",
+        new_value="accepted",
         actor=actor,
         actor_name=actor.get_full_name(),
     )
@@ -289,3 +293,40 @@ def test_user_inactivation_does_not_affect_timeline():
     log = TimelineActivityLog.objects.get(application_id=app.pk)
     assert log.actor == actor  # FK is not nullified on inactivation
     assert log.actor_name == "Matti Meikäläinen"  # actor_name is unchanged
+
+
+@pytest.mark.django_db
+def test_attachment_post_save_creates_timeline_log():
+    """Saving a new Attachment creates a TimelineActivityLog entry."""
+    attachment = AttachmentFactory(summer_voucher=EmployerSummerVoucherFactory())
+
+    log = TimelineActivityLog.objects.filter(
+        application_id=attachment.summer_voucher.application_id,
+        action_type=ActionType.ATTACHMENT_ADDED,
+    ).last()
+
+    assert log is not None
+    assert log.old_value == ""
+    assert log.new_value == os.path.basename(attachment.attachment_file.name)
+    assert log.target_object_id == attachment.pk
+
+
+@pytest.mark.django_db
+def test_attachment_post_delete_creates_timeline_log():
+    """Deleting an Attachment creates a TimelineActivityLog entry."""
+    attachment = AttachmentFactory(summer_voucher=EmployerSummerVoucherFactory())
+    app_id = attachment.summer_voucher.application_id
+    filename = os.path.basename(getattr(attachment.attachment_file, "name", None) or "")
+    attachment_pk = attachment.pk
+
+    attachment.delete()
+
+    log = TimelineActivityLog.objects.filter(
+        application_id=app_id,
+        action_type=ActionType.ATTACHMENT_DELETED,
+    ).last()
+
+    assert log is not None
+    assert log.old_value == filename
+    assert log.new_value == ""
+    assert log.target_object_id == attachment_pk
