@@ -15,7 +15,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import IntegrityError, models, transaction
-from django.db.models import Q
+from django.db.models import F, Q, Window
+from django.db.models.functions import RowNumber
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
@@ -224,6 +225,42 @@ def get_social_security_number_hash_key():
       https://gitlab.com/guywillett/django-searchable-encrypted-fields/-/merge_requests/16
     """
     return settings.SOCIAL_SECURITY_NUMBER_HASH_KEY
+
+
+class TalpaIntegrationMixin(models.Model):
+    """
+    Tracks export and invoicing lifecycle for models consumed by external
+    integrations (Talpa, reporting tools, etc.).
+
+    Audit logging note
+    ------------------
+    Bulk updates via QuerySet.update() bypass Django's post_save signal, so
+    django-auditlog will NOT generate per-row UPDATE entries when these fields
+    are updated in bulk. Views that use QuerySet.update() on these fields must
+    write an explicit ACCESS log entry via AuditAccessLogService before the
+    update to preserve a complete audit trail. See TalpaWebhookView for the
+    established pattern.
+    """
+
+    is_exported = models.BooleanField(
+        default=False,
+        verbose_name=_("is exported"),
+        help_text=_("Has been exported to Excel or JSON"),
+    )
+    invoiced_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when sent to invoicing"),
+    )
+    talpa_request_id = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name=_("external request ID"),
+    )
+
+    class Meta:
+        abstract = True
 
 
 class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
@@ -1416,6 +1453,70 @@ class EmployerSummerVoucherQuerySet(models.QuerySet):
             "youth_summer_voucher", "youth_summer_voucher__youth_application"
         )
 
+    def for_export(self):
+        """Load all relations and add a stable row number annotation.
+
+        This is the base queryset for all Excel and JSON exports.
+        It applies the required select_related, prefetch_related, ordering
+        and a row_number window annotation used by the Excel template generator.
+
+        Returns:
+            QuerySet with all export-related relations eager-loaded.
+        """
+        return (
+            self.select_related(
+                "application",
+                "application__company",
+                "application__user",
+                "youth_summer_voucher",
+                "youth_summer_voucher__youth_application",
+            )
+            .prefetch_related("attachments")
+            .order_by("application__submitted_at", "created_at", "pk")
+            .annotate(
+                row_number=Window(
+                    expression=RowNumber(),
+                    order_by=[
+                        F("application__submitted_at"),
+                        F("created_at"),
+                        F("pk"),
+                    ],
+                )
+            )
+        )
+
+    def unhandled(self):
+        """Return vouchers that have not yet been exported.
+
+        Includes only vouchers on SUBMITTED applications that have not been
+        marked as exported (``is_exported=False``). Used by both the Excel
+        "unhandled" export and the Talpa JSON export endpoint.
+
+        Returns:
+            QuerySet filtered to unexported SUBMITTED vouchers.
+        """
+        return self.filter(
+            is_exported=False,
+            application__status=EmployerApplicationStatus.SUBMITTED,
+        )
+
+    def annual(self, year: int):
+        """Return all non-DRAFT vouchers whose application was created in ``year``.
+
+        Used by the Excel annual export and the Reporting JSON export endpoint,
+        which need a broad view of activity for a given calendar year without
+        the is_exported restriction applied by ``unhandled()``.
+
+        Args:
+            year: The calendar year to filter by (e.g. 2026).
+
+        Returns:
+            QuerySet filtered to non-DRAFT vouchers for the given year.
+        """
+        return self.filter(application__created_at__year=year).exclude(
+            application__status=EmployerApplicationStatus.DRAFT
+        )
+
 
 class EmployerSummerVoucherManager(models.Manager):
     def get_queryset(self):
@@ -1423,8 +1524,17 @@ class EmployerSummerVoucherManager(models.Manager):
             self.model, using=self._db
         ).select_youth_voucher()
 
+    def for_export(self):
+        return self.get_queryset().for_export()
 
-class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
+    def unhandled(self):
+        return self.get_queryset().unhandled()
+
+    def annual(self, year: int):
+        return self.get_queryset().annual(year)
+
+
+class EmployerSummerVoucher(TalpaIntegrationMixin, TimeStampedModel, UUIDModel):
     objects = EmployerSummerVoucherManager()
 
     application = models.ForeignKey(
@@ -1565,12 +1675,6 @@ class EmployerSummerVoucher(TimeStampedModel, UUIDModel):
             "Whether the employee would have been hired without a summer voucher."
         ),
         choices=HiredWithoutVoucherAssessment.choices,
-    )
-
-    is_exported = models.BooleanField(
-        default=False,
-        verbose_name=_("is exported"),
-        help_text=_("Has been exported to Excel"),
     )
 
     ordering = models.IntegerField(default=0)
