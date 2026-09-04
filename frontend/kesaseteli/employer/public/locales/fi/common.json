@@ -281,7 +281,8 @@
       "additional_information_provided": "Lisätietoja toimitettu",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty",
-      "deleted_by_customer": "Poistettu"
+      "deleted_by_customer": "Poistettu",
+      "received_by_payment_system": "Vastaanotettu maksatusjärjestelmässä"
     }
   },
   "noOrganisationPage": {

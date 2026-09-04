@@ -2,6 +2,7 @@
   "common": {
     "close": "Sulje",
     "cancel": "Peruuta",
+    "delete": "Poista",
     "saving": "Tallennetaan...",
     "deleting": "Poistetaan..."
   },
@@ -34,7 +35,8 @@
       "additional_information_provided": "Lisätiedot annettu",
       "handling": "Käsiteltävänä",
       "accepted": "Hyväksytty",
-      "rejected": "Hylätty"
+      "rejected": "Hylätty",
+      "received_by_payment_system": "Vastaanotettu maksatusjärjestelmässä"
     },
     "tabs": {
       "pending": "Käsiteltävät",
@@ -89,6 +91,8 @@
     }
   },
   "handlerApplication": {
+    "attachmentComments": "Kommentit",
+    "viewAttachmentComments": "Näytä liitteen kommentit",
     "title": "Hakemuksen tiedot",
     "name": "Nimi",
     "social_security_number": "Henkilötunnus",
@@ -197,6 +201,8 @@
       "awaiting_manual_processing": "Odottaa käsittelyä",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty",
+      "received_by_payment_system": "Vastaanotettu maksatusjärjestelmässä",
+      "error_in_payment": "Maksatusvirhe",
       "draft": "Luonnos",
       "deleted_by_customer": "Poistettu",
       "None": "Ei asetettu"
@@ -255,7 +261,13 @@
       "title": "Oletko varma?",
       "content": "Toimintoa ei voi peruuttaa.",
       "submit": "Hylkää"
-    }
+    },
+    "deleteAttachment": "Poista liite",
+    "deleteAttachmentHeader": "Haluatko varmasti poistaa liitteen?",
+    "deleteAttachmentContent": "Olet poistamassa liitteen \"{{name}}\".",
+    "deleteAttachmentSubmit": "Poista liite",
+    "deleteAttachmentSuccess": "Liitteen poistaminen onnistui",
+    "deleteAttachmentError": "Liitteen poistaminen epäonnistui"
   },
   "applications": {
     "actions": {
@@ -318,8 +330,6 @@
   },
   "handlerNotes": {
     "sectionTitle": "Käsittelijän huomiot",
-    "sectionTitle_one": "Käsittelijän huomiot ({{count}} kpl)",
-    "sectionTitle_other": "Käsittelijän huomiot ({{count}} kpl)",
     "addNote": "Lisää huomio",
     "saveNote": "Tallenna huomio",
     "editNote": "Muokkaa",
@@ -327,14 +337,16 @@
     "deleteError": "Huomion poistaminen epäonnistui.",
     "deleteNote": "Poista",
     "deleteConfirmTitle": "Poistetaanko huomio?",
-    "deleteConfirmText": "Toimintoa ei voi peruuttaa.",
+    "deleteConfirmText": "Poistettua huomiota ei voi enää palauttaa.",
     "deleteConfirmButton": "Poista",
     "notePlaceholder": "Kirjoita huomio...",
     "noteTypeLabel": "Huomion tyyppi",
     "noteType": {
       "internal": "Sisäinen huomio",
       "external_message": "Ulkoinen viesti",
-      "activity": "Tilamuutos"
+      "activity": "Tilamuutos",
+      "attachment_added": "Liite lisätty",
+      "attachment_deleted": "Liite poistettu"
     },
     "noteTypeHelperText": "Huomion tyyppi vaikuttaa vain sen ulkoasuun tässä näkymässä. Ulkoinen viesti ei vielä lähetä viestiä hakijalle.",
     "isImportantLabel": "Merkitse tärkeäksi",
@@ -350,11 +362,15 @@
   },
   "timeline": {
     "title": "Aikajana",
+    "description": "Hakemuksen koko historia yhtenä listana: tilamuutokset, käsittelijän huomiot, hakijalle lähetetyt viestit ja liitteet uusin ensin.",
     "sidebarToggleOpen": "Avaa aikajana",
     "sidebarToggleClose": "Sulje aikajana",
     "emptyState": "Ei vielä tapahtumia aikajanalla.",
     "jumpToNote": "Siirry huomioon →",
     "statusChange": "Tila muuttunut: <statusValue>{{oldStatus}}</statusValue> → <statusValue>{{newStatus}}</statusValue>",
+    "attachmentAdded": "Liite lisätty: <attachment>{{fileName}}</attachment>",
+    "attachmentDeleted": "Liite poistettu: <attachment>{{fileName}}</attachment>",
+    "relatedToAttachment": "Liittyy liitteeseen: <attachmentLink>{{fileName}}</attachmentLink>",
     "developerNote": {
       "label": "Kehittäjän huomiot",
       "content": "Sivupalkki on testikäytössä. Sivupalkin aikajanan tarkoituksena on näyttää tulevaisuudessa kommenttien lisäksi myös mm. hakemuksen tilamuutokset. Näin ollen se eroaa päänäkymän \"käsittelijän huomiot\" -osiosta, jossa listataan toistaiseksi vain huomioita. Sivupalkista voitaisiin luopua kokonaan ja listata kaikki yllämainitut asiat samassa päänäkymän huomio-osiossa, eli huomio-osio vaihdettaisiin aikajanaksi. Tällöin sivupalkkia ei tarvita ollenkaan."
