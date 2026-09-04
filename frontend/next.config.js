@@ -87,6 +87,9 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     },
     transpilePackages: ['@frontend', 'styled-components', 'uuid'],
     experimental: {
+      // Page-data collection otherwise uses all detected CPUs. Limit its worker
+      // pool so constrained CI build containers do not run out of memory.
+      cpus: 4,
       // Allow CJS packages (e.g. hds-react) to require ESM-only packages such as
       // `uuid`. With pnpm's strict resolution these packages resolve to their ESM
       // builds, which Next.js otherwise refuses to import from CJS by default.
