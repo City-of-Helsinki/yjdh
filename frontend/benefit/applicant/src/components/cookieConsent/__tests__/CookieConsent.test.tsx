@@ -12,7 +12,7 @@ import { MAIN_CONTENT_ID } from 'shared/constants';
 import useCookieConsentParams from 'shared/hooks/useCookieConsentParams';
 import { getCookieConsentSiteSettings } from 'shared/utils/cookieConsentSettings';
 
-import i18n from '../../../test/i18n/i18n-test';
+import i18n from '../../../../test/i18n/i18n-test';
 
 jest.mock('benefit/applicant/hooks/useLocale', () => jest.fn());
 jest.mock('benefit/applicant/i18n', () => ({ useTranslation: jest.fn() }));
