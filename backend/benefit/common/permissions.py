@@ -2,8 +2,8 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
+from suomifi_on_behalf import get_organization_roles
 
-from shared.oidc.utils import get_organization_roles
 from users.utils import get_company_from_request
 
 
@@ -57,6 +57,9 @@ class TermsOfServiceAccepted(permissions.BasePermission):
         else:
             from terms.models import TermsOfServiceApproval
 
+            # If the upstream YTJ/YRTTI APIs are unavailable and the company is not
+            # stored locally, get_company_from_request raises CompanyResolutionError,
+            # which the global exception handler maps to a controlled 404.
             company = get_company_from_request(request)
             if not company:
                 # company deleted from the db? Whatever has happened, applicant can't
