@@ -63,16 +63,14 @@ def test_youth_application_timeline_api(staff_client):
 def test_employer_application_timeline_api(staff_client):
     """Test fetching the timeline of an employer application returns notes."""
     # Mute signals during factory creation to avoid recording the initial status creation
-    # in the audit log (which is factory setup and not part of the timeline notes we are testing).
+    # and attachment upload in the audit log (which is factory setup and not part of the timeline notes we are testing).
     with factory_boy.django.mute_signals(post_save):
         app = EmployerApplicationFactory()
+        voucher = EmployerSummerVoucherFactory(application=app)
+        attachment = AttachmentFactory(summer_voucher=voucher)
 
     NoteFactory(content_object=app, content="Emp Note 1")
     NoteFactory(content_object=app, content="Emp Note 2")
-
-    # Add child attachment note coverage
-    voucher = EmployerSummerVoucherFactory(application=app)
-    attachment = AttachmentFactory(summer_voucher=voucher)
     NoteFactory(content_object=attachment, content="Attachment Note")
 
     url = reverse("v1:employerapplication-timeline", kwargs={"pk": app.id})

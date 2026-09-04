@@ -14,6 +14,7 @@ from django.test import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 from PIL import Image
+from rest_framework import status
 from rest_framework.exceptions import ErrorDetail, ValidationError
 from rest_framework.reverse import reverse
 
@@ -82,7 +83,7 @@ def test_attachment_upload(
             extension,
             AttachmentType.EMPLOYMENT_CONTRACT,
         )
-    assert response.status_code == 201
+    assert response.status_code == status.HTTP_201_CREATED
     assert summer_voucher.attachments.count() == 1
     attachment = summer_voucher.attachments.first()
 
@@ -94,6 +95,7 @@ def test_attachment_upload(
         "attachment_file_name",
         "content_type",
         "created_at",
+        "notes_count",
     }
     assert response.data["id"] == str(attachment.pk)
     assert response.data["summer_voucher"] == summer_voucher.pk
@@ -178,7 +180,7 @@ def test_invalid_attachment_upload(
             ErrorDetail(string=expected_error_string, code=ValidationError.default_code)
         ]
     }
-    assert response.status_code == 400
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert not summer_voucher.attachments.exists()
 
 
@@ -199,7 +201,7 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
         format="multipart",
     )
 
-    assert response.status_code == 400
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data == {
         "non_field_errors": [
             ErrorDetail(
@@ -214,42 +216,108 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
-    "client_fixture, status, expected_code",
+    "client_fixture, application_status, expected_code",
     [
         # API client:
-        ("api_client", EmployerApplicationStatus.DRAFT, 201),
-        ("api_client", EmployerApplicationStatus.SUBMITTED, 400),
-        ("api_client", EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED, 201),
-        ("api_client", EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED, 404),
-        ("api_client", EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 404),
-        ("api_client", EmployerApplicationStatus.SENT_FOR_PAYMENT, 404),
-        ("api_client", EmployerApplicationStatus.APPLICATION_HANDLING, 404),
-        ("api_client", EmployerApplicationStatus.CANCELLED, 404),
-        ("api_client", EmployerApplicationStatus.REJECTED, 404),
+        ("api_client", EmployerApplicationStatus.DRAFT, status.HTTP_201_CREATED),
+        (
+            "api_client",
+            EmployerApplicationStatus.SUBMITTED,
+            status.HTTP_400_BAD_REQUEST,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            status.HTTP_201_CREATED,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            status.HTTP_404_NOT_FOUND,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            status.HTTP_404_NOT_FOUND,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            status.HTTP_404_NOT_FOUND,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            status.HTTP_404_NOT_FOUND,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            status.HTTP_404_NOT_FOUND,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.CANCELLED,
+            status.HTTP_404_NOT_FOUND,
+        ),
+        (
+            "api_client",
+            EmployerApplicationStatus.REJECTED,
+            status.HTTP_404_NOT_FOUND,
+        ),
         # Staff client:
-        ("staff_client", EmployerApplicationStatus.DRAFT, 201),
-        ("staff_client", EmployerApplicationStatus.SUBMITTED, 201),
+        ("staff_client", EmployerApplicationStatus.DRAFT, status.HTTP_201_CREATED),
+        (
+            "staff_client",
+            EmployerApplicationStatus.SUBMITTED,
+            status.HTTP_201_CREATED,
+        ),
         (
             "staff_client",
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-            201,
+            status.HTTP_201_CREATED,
         ),
         (
             "staff_client",
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            201,
+            status.HTTP_201_CREATED,
         ),
-        ("staff_client", EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT, 201),
-        ("staff_client", EmployerApplicationStatus.SENT_FOR_PAYMENT, 201),
-        ("staff_client", EmployerApplicationStatus.APPLICATION_HANDLING, 201),
-        ("staff_client", EmployerApplicationStatus.CANCELLED, 201),
-        ("staff_client", EmployerApplicationStatus.REJECTED, 201),
+        (
+            "staff_client",
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            status.HTTP_201_CREATED,
+        ),
+        (
+            "staff_client",
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            status.HTTP_201_CREATED,
+        ),
+        (
+            "staff_client",
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            status.HTTP_201_CREATED,
+        ),
+        (
+            "staff_client",
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            status.HTTP_201_CREATED,
+        ),
+        (
+            "staff_client",
+            EmployerApplicationStatus.CANCELLED,
+            status.HTTP_201_CREATED,
+        ),
+        (
+            "staff_client",
+            EmployerApplicationStatus.REJECTED,
+            status.HTTP_201_CREATED,
+        ),
     ],
 )
 def test_attachment_upload_status(
     request,
     client_fixture,
-    status,
+    application_status,
     expected_code,
     api_client,
     staff_client,
@@ -257,7 +325,7 @@ def test_attachment_upload_status(
     summer_voucher,
 ):
     client = api_client if client_fixture == "api_client" else staff_client
-    application.status = status
+    application.status = application_status
     application.save()
     response = _upload_file(
         request, client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
@@ -275,12 +343,12 @@ def test_too_many_attachments(request, api_client, summer_voucher):
             "pdf",
             AttachmentType.EMPLOYMENT_CONTRACT,
         )
-        assert response.status_code == 201
+        assert response.status_code == status.HTTP_201_CREATED
 
     response = _upload_file(
         request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
     )
-    assert response.status_code == 400
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert (
         summer_voucher.attachments.count()
         == AttachmentSerializer.MAX_ATTACHMENTS_PER_TYPE
@@ -298,7 +366,7 @@ def test_get_attachment(request, api_client, summer_voucher, attachment_type):
 
     response = api_client.get(attachment_url)
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, FileResponse)
 
     # No filename in response.filename
@@ -323,7 +391,7 @@ def test_get_attachment_with_invalid_uuid(
     attachment_url = handle_attachment_url(summer_voucher, attachment_pk=uuid.uuid4())
     response = api_client.get(attachment_url)
 
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.data == {"detail": "File not found."}
 
 
@@ -342,7 +410,7 @@ def test_delete_draft_attachment(request, api_client, summer_voucher, attachment
 
     response = api_client.delete(attachment_delete_url)
 
-    assert response.status_code == 204
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     assert response.data is None
 
     with pytest.raises(Attachment.DoesNotExist):
@@ -385,7 +453,7 @@ def test_delete_attachment_that_does_not_exist(
     )
     response = api_client.delete(employment_contract_url)
 
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.data == {"detail": "File not found."}
 
 
@@ -400,7 +468,7 @@ def test_delete_attachment_for_submitted_application(
 
     response = api_client.delete(attachment_delete_url)
 
-    assert response.status_code == 403
+    assert response.status_code == status.HTTP_403_FORBIDDEN
     assert "Operation not allowed for this application status." in str(response.data)
     submitted_summer_voucher.refresh_from_db()
     assert submitted_summer_voucher.attachments.count() == 1
@@ -416,7 +484,7 @@ def test_get_attachment_for_submitted_application(
 
     response = api_client.get(attachment_url)
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
@@ -429,7 +497,7 @@ def test_get_attachment_for_staff_user(
 
     response = staff_client.get(attachment_url)
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
@@ -442,7 +510,7 @@ def test_get_attachment_for_other_user(
 
     response = api_client2.get(attachment_url)
 
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.django_db
@@ -457,7 +525,7 @@ def test_upload_attachment_for_submitted_application(
         "pdf",
         AttachmentType.EMPLOYMENT_CONTRACT,
     )
-    assert response.status_code == 400
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert (
         "Attachments can be uploaded only for DRAFT or ADDITIONAL_INFORMATION_REQUESTED applications"
         in response.data
@@ -484,7 +552,7 @@ def test_handler_can_delete_draft_attachment(
 
     response = staff_client.delete(attachment_delete_url)
 
-    assert response.status_code == 204
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Attachment.objects.filter(pk=attachment.pk).exists()
 
 
@@ -500,7 +568,7 @@ def test_handler_can_delete_submitted_attachment(
         submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
     response = staff_client.delete(attachment_delete_url)
-    assert response.status_code == 204
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Attachment.objects.filter(
         pk=submitted_employment_contract_attachment.pk
     ).exists()
@@ -519,7 +587,7 @@ def test_employer_cannot_delete_submitted_attachment(
         submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
     response = api_client.delete(attachment_delete_url)
-    assert response.status_code == 403
+    assert response.status_code == status.HTTP_403_FORBIDDEN
     assert Attachment.objects.filter(
         pk=submitted_employment_contract_attachment.pk
     ).exists()
@@ -542,7 +610,7 @@ def test_employer_cannot_delete_additional_info_attachment(
         submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
     response = api_client.delete(attachment_delete_url)
-    assert response.status_code == 403
+    assert response.status_code == status.HTTP_403_FORBIDDEN
     assert Attachment.objects.filter(
         pk=submitted_employment_contract_attachment.pk
     ).exists()
@@ -561,7 +629,7 @@ def test_handler_can_upload_attachment(request, staff_client, submitted_summer_v
         "pdf",
         AttachmentType.EMPLOYMENT_CONTRACT,
     )
-    assert response.status_code == 201
+    assert response.status_code == status.HTTP_201_CREATED
     assert submitted_summer_voucher.attachments.count() == 1
 
 
@@ -577,7 +645,7 @@ def test_handler_can_read_attachment(
         submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
     response = staff_client.get(attachment_get_url)
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
@@ -592,21 +660,21 @@ def test_unauthorized_employer_cannot_read_attachment(
         submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
     response = api_client2.get(attachment_get_url)
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 @pytest.mark.parametrize(
-    "status", [status for status in EmployerApplicationStatus.values]
+    "app_status", [status for status in EmployerApplicationStatus.values]
 )
 def test_handler_can_upload_to_any_application_status(
-    request, staff_client, summer_voucher, status
+    request, staff_client, summer_voucher, app_status
 ):
     """
     Handlers may upload attachments to applications in any status.
     """
-    summer_voucher.application.status = status
+    summer_voucher.application.status = app_status
     summer_voucher.application.save()
 
     response = _upload_file(
@@ -616,5 +684,37 @@ def test_handler_can_upload_to_any_application_status(
         "pdf",
         AttachmentType.EMPLOYMENT_CONTRACT,
     )
-    assert response.status_code == 201
+    assert response.status_code == status.HTTP_201_CREATED
     assert summer_voucher.attachments.count() == 1
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize(
+    "terminal_status",
+    [
+        EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        EmployerApplicationStatus.SENT_FOR_PAYMENT,
+        EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+        EmployerApplicationStatus.CANCELLED,
+        EmployerApplicationStatus.REJECTED,
+    ],
+)
+def test_handler_cannot_delete_attachment_from_terminal_application(
+    request, staff_client, summer_voucher, api_client, terminal_status
+):
+    """
+    Handlers may NOT delete attachments from terminal applications
+    (ACCEPTED_FOR_PAYMENT, SENT_FOR_PAYMENT, RECEIVED_BY_PAYMENT_SYSTEM,
+    CANCELLED, REJECTED)
+    — all are fully handled terminal states where attachments serve as proof.
+    """
+    _upload_file(
+        request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
+    )
+    summer_voucher.application.status = terminal_status
+    summer_voucher.application.save()
+    attachment = Attachment.objects.first()
+    response = staff_client.delete(handle_attachment_url(summer_voucher, attachment.pk))
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert Attachment.objects.filter(pk=attachment.pk).exists()

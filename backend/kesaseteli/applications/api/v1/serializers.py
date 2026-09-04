@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import date, datetime
 from typing import Optional, Union
 
@@ -158,6 +159,8 @@ class EmployerApplicationStatusValidator:
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
+    notes_count = serializers.IntegerField(read_only=True, default=0)
+
     class Meta:
         model = Attachment
         fields = [
@@ -168,6 +171,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "attachment_file_name",
             "content_type",
             "created_at",
+            "notes_count",
         ]
         read_only_fields = ["created_at"]
 
@@ -191,7 +195,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
     )
 
     def get_attachment_file_name(self, obj) -> str:
-        return getattr(obj.attachment_file, "name", "")
+        return os.path.basename(getattr(obj.attachment_file, "name", "") or "")
 
     def get_is_handler(self) -> bool:
         return self.context.get("is_handler", False)
@@ -1518,6 +1522,8 @@ class ActivityLogItemSerializer(serializers.Serializer):
     new_value = serializers.CharField(allow_blank=True)
     author_name = serializers.CharField(allow_blank=True)
     created_at = serializers.DateTimeField()
+    target_id = serializers.CharField(allow_null=True, required=False)
+    target_type = serializers.CharField(allow_null=True, required=False)
 
     def get_item_type(self, obj) -> str:
         return TimelineItemType.ACTIVITY

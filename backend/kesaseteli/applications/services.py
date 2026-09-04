@@ -530,6 +530,8 @@ class ActivityLogItem:
     new_value: str
     author_name: str
     created_at: datetime
+    target_id: str | None = None
+    target_type: str | None = None
 
 
 class TimelineService:
@@ -551,26 +553,32 @@ class TimelineService:
     def get_activity_logs_for_application(cls, application) -> list[ActivityLogItem]:
         """
         Fetch permanent timeline activity log entries for an application.
-        Only models declared in ALLOWED_TIMELINE_FIELDS are surfaced.
         """
         model_name = application._meta.model_name
-        allowed_fields = cls.ALLOWED_TIMELINE_FIELDS.get(model_name, {})
-        action_type = allowed_fields.get("status")
-        if not action_type:
-            return []
-
-        log_entries = TimelineActivityLog.objects.filter(
-            application_type=model_name,
-            application_id=application.pk,
-        ).order_by("created_at")
+        log_entries = (
+            TimelineActivityLog.objects.filter(
+                application_type=model_name,
+                application_id=application.pk,
+            )
+            .select_related("target_content_type")
+            .order_by("created_at")
+        )
 
         return [
             ActivityLogItem(
-                action_type=action_type.value,
-                old_value=entry.from_status,
-                new_value=entry.to_status,
+                action_type=entry.action_type,
+                old_value=entry.old_value,
+                new_value=entry.new_value,
                 author_name=entry.actor_name,
                 created_at=entry.created_at,
+                target_id=(
+                    str(entry.target_object_id) if entry.target_object_id else None
+                ),
+                target_type=(
+                    entry.target_content_type.model
+                    if entry.target_content_type
+                    else None
+                ),
             )
             for entry in log_entries
         ]

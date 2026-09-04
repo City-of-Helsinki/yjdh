@@ -177,3 +177,7 @@ nohup.out
 yarn.lock
 .yarn/
 .yarnrc.yml
+
+# pnpm - replaced yarn
+.pnpm-store/
+.pnpm/

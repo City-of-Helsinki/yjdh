@@ -9,7 +9,8 @@ from urllib.parse import quote, urljoin
 
 import base32_lib
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
@@ -24,6 +25,7 @@ from localflavor.generic.models import IBANField
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
+    ActionType,
     APPLICATION_LANGUAGE_CHOICES,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
@@ -1689,6 +1691,9 @@ class Attachment(UUIDModel, TimeStampedModel):
     attachment_file = models.FileField(verbose_name=_("application attachment content"))
 
     def delete(self, using=None, keep_parents=False):
+        self._deleted_attachment_name = (
+            getattr(self.attachment_file, "name", None) or ""
+        )
         self.attachment_file.delete()
         super().delete(using=using, keep_parents=keep_parents)
 
@@ -1742,9 +1747,17 @@ class EmailTemplate(TimeStampedModel, UUIDModel):
 
 class TimelineActivityLog(TimeStampedModel, UUIDModel):
     """
-    Record of application status changes.
+    Record of application timeline events.
+
+    This model serves as a unified audit log for an application's lifecycle,
+    capturing both top-level events (like status changes) and sub-entity events
+    (like adding/deleting attachments). It is used to render the application's
+    activity timeline in the handler UI.
     """
 
+    # These fields act as the parent grouping keys. They link every activity
+    # log back to the root application (e.g., YouthApplication or EmployerApplication),
+    # allowing us to fetch the entire timeline for an application page efficiently.
     application_type = models.CharField(
         max_length=64,
         verbose_name=_("application type"),
@@ -1752,15 +1765,45 @@ class TimelineActivityLog(TimeStampedModel, UUIDModel):
     application_id = models.UUIDField(
         verbose_name=_("application id"),
     )
-    from_status = models.CharField(
+
+    action_type = models.CharField(
         max_length=64,
+        choices=ActionType.choices,
+        default=ActionType.APPLICATION_STATUS_CHANGE,
+        verbose_name=_("action type"),
+    )
+
+    # These fields store the state transition data.
+    # - For status changes: old_value is the previous status, new_value is the
+    #   new status.
+    # - For attachment additions: old_value is empty, new_value is the filename.
+    # - For attachment deletions: old_value is the filename, new_value is empty.
+    old_value = models.CharField(
+        max_length=256,
         blank=True,
-        verbose_name=_("from status"),
+        verbose_name=_("old value"),
     )
-    to_status = models.CharField(
-        max_length=64,
-        verbose_name=_("to status"),
+    new_value = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("new value"),
     )
+
+    # Optional link to the specific sub-entity (e.g., Attachment) this event is about.
+    # Null for application-level events like status changes.
+    target_content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("target content type"),
+    )
+    target_object_id = models.UUIDField(
+        null=True,
+        blank=True,
+        verbose_name=_("target object id"),
+    )
+    target = GenericForeignKey("target_content_type", "target_object_id")
     actor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -1790,5 +1833,6 @@ class TimelineActivityLog(TimeStampedModel, UUIDModel):
     def __str__(self):
         return (
             f"{self.application_type}:{self.application_id} | "
-            f"{self.from_status or 'N/A'} -> {self.to_status}"
+            f"{self.action_type} | "
+            f"{self.old_value or '-'} -> {self.new_value or '-'}"
         )

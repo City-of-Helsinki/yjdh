@@ -1,9 +1,14 @@
+import os
+
 from auditlog_extra.context import get_actor
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save, pre_save
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
+from applications.enums import ActionType
 from applications.models import (
+    Attachment,
     EmployerApplication,
     TimelineActivityLog,
     YouthApplication,
@@ -86,8 +91,8 @@ def _track_status_change(application_type, instance):
     TimelineActivityLog.objects.create(
         application_type=application_type,
         application_id=instance.pk,
-        from_status=old_status,
-        to_status=instance.status,
+        old_value=old_status,
+        new_value=instance.status,
         actor=actor_user,
         actor_name=actor_name,
     )
@@ -114,3 +119,49 @@ def track_application_status_change(
     if update_fields is not None and "status" not in update_fields:
         return
     _track_status_change(sender._meta.model_name, instance)
+
+
+@receiver(post_save, sender=Attachment, dispatch_uid="attachment_added_timeline")
+def on_attachment_added(sender, instance, created, raw=False, **kwargs):
+    if not created or raw:
+        return
+    actor_user, actor_name = _resolve_actor()
+    attachment_ct = ContentType.objects.get_for_model(Attachment)
+    TimelineActivityLog.objects.create(
+        application_type=EmployerApplication._meta.model_name,
+        application_id=instance.summer_voucher.application_id,
+        action_type=ActionType.ATTACHMENT_ADDED,
+        old_value="",
+        new_value=os.path.basename(
+            getattr(instance.attachment_file, "name", None) or ""
+        ),
+        actor=actor_user,
+        actor_name=actor_name,
+        target_content_type=attachment_ct,
+        target_object_id=instance.pk,
+    )
+
+
+@receiver(pre_delete, sender=Attachment, dispatch_uid="attachment_deleted_timeline")
+def on_attachment_deleted(sender, instance, **kwargs):
+    """
+    pre_delete fires before the DB row is deleted, allowing us to read the
+    attachment_file name before it might be cleared.
+    """
+    actor_user, actor_name = _resolve_actor()
+    attachment_ct = ContentType.objects.get_for_model(Attachment)
+    TimelineActivityLog.objects.create(
+        application_type=EmployerApplication._meta.model_name,
+        application_id=instance.summer_voucher.application_id,
+        action_type=ActionType.ATTACHMENT_DELETED,
+        old_value=os.path.basename(
+            getattr(instance, "_deleted_attachment_name", "")
+            or getattr(instance.attachment_file, "name", None)
+            or ""
+        ),
+        new_value="",
+        actor=actor_user,
+        actor_name=actor_name,
+        target_content_type=attachment_ct,
+        target_object_id=instance.pk,
+    )
