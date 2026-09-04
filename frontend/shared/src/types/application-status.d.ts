@@ -5,6 +5,7 @@ type Status =
   | 'additional_information_provided'
   | 'accepted'
   | 'rejected'
-  | 'deleted_by_customer';
+  | 'deleted_by_customer'
+  | 'received_by_payment_system';
 
 export default Status;

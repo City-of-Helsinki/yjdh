@@ -1,9 +1,18 @@
-import { IconEnvelope, IconHistory, IconPaperclip, IconSpeechbubbleText } from 'hds-react';
+import {
+  IconEnvelope,
+  IconHistory,
+  IconPaperclip,
+  IconSpeechbubbleText,
+} from 'hds-react';
 import React from 'react';
 
 import { NoteType } from '../../types/note';
 
-export type TimelineItemThemeType = NoteType | 'attachment' | 'activity';
+export type TimelineItemThemeType =
+  | NoteType
+  | 'attachment_added'
+  | 'attachment_deleted'
+  | 'activity';
 
 export interface TimelineItemThemeConfig {
   icon: React.ComponentType;
@@ -14,8 +23,14 @@ export interface TimelineItemThemeConfig {
 }
 
 const COLOR_WHITE = 'var(--color-white)';
+const COLOR_METRO = 'var(--color-metro)';
+const COLOR_METRO_DARK = 'var(--color-metro-dark)';
+const COLOR_METRO_LIGHT = 'var(--color-metro-light)';
 
-export const TIMELINE_ITEM_THEME_CONFIGS: Record<TimelineItemThemeType, TimelineItemThemeConfig> = {
+export const TIMELINE_ITEM_THEME_CONFIGS: Record<
+  TimelineItemThemeType,
+  TimelineItemThemeConfig
+> = {
   [NoteType.INTERNAL]: {
     icon: IconSpeechbubbleText,
     background: COLOR_WHITE,
@@ -30,12 +45,19 @@ export const TIMELINE_ITEM_THEME_CONFIGS: Record<TimelineItemThemeType, Timeline
     avatarColor: 'var(--color-bus)',
     borderColor: 'var(--color-bus)',
   },
-  attachment: {
+  attachment_added: {
     icon: IconPaperclip,
     background: COLOR_WHITE,
-    avatarBackground: 'var(--color-black-10)',
-    avatarColor: 'var(--color-black-70)',
-    borderColor: 'var(--color-black-20)',
+    avatarBackground: COLOR_METRO_LIGHT,
+    avatarColor: COLOR_METRO_DARK,
+    borderColor: COLOR_METRO,
+  },
+  attachment_deleted: {
+    icon: IconPaperclip,
+    background: COLOR_WHITE,
+    avatarBackground: COLOR_METRO_LIGHT,
+    avatarColor: COLOR_METRO_DARK,
+    borderColor: COLOR_METRO,
   },
   activity: {
     icon: IconHistory,
@@ -53,7 +75,9 @@ export const getItemBorderColor = (
   if (isImportant) {
     return 'var(--color-alert)';
   }
-  return TIMELINE_ITEM_THEME_CONFIGS[type]?.borderColor || 'var(--color-black-20)';
+  return (
+    TIMELINE_ITEM_THEME_CONFIGS[type]?.borderColor || 'var(--color-black-20)'
+  );
 };
 
 export const getItemBackgroundColor = (
@@ -66,5 +90,7 @@ export const getItemBackgroundColor = (
   return TIMELINE_ITEM_THEME_CONFIGS[type]?.background || COLOR_WHITE;
 };
 
-export const getTimelineIcon = (type: TimelineItemThemeType): React.ComponentType =>
+export const getTimelineIcon = (
+  type: TimelineItemThemeType
+): React.ComponentType =>
   TIMELINE_ITEM_THEME_CONFIGS[type]?.icon || IconSpeechbubbleText;

@@ -2,18 +2,37 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import useCreateNoteMutation from '../../hooks/backend/useCreateNoteMutation';
+import useHandlerNotesQuery from '../../hooks/backend/useHandlerNotesQuery';
 import { CreateNotePayload, NoteTargetType } from '../../types/note';
 import NoteForm from './NoteForm';
 import { $Instructions, $NotesContainer } from './NotesSection.sc';
+import NotesSectionTimeline from './NotesSectionTimeline';
 
 type Props = {
-  applicationId: string | undefined;
+  targetId: string | undefined;
   targetType: NoteTargetType;
+  parentApplicationId?: string;
+  showTimeline?: boolean;
 };
 
-const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
+const NotesSection: React.FC<Props> = ({
+  targetId,
+  targetType,
+  parentApplicationId,
+  showTimeline,
+}) => {
   const { t } = useTranslation();
-  const createMutation = useCreateNoteMutation(targetType, applicationId || '');
+
+  const createMutation = useCreateNoteMutation(
+    targetType,
+    targetId || '',
+    parentApplicationId
+  );
+
+  const { data: notes = [] } = useHandlerNotesQuery(
+    targetType,
+    showTimeline ? targetId : undefined
+  );
 
   return (
     <$NotesContainer>
@@ -21,14 +40,20 @@ const NotesSection: React.FC<Props> = ({ applicationId, targetType }) => {
         <h3>{t('common:handlerNotes.instructions.label')}</h3>
         <p>{t('common:handlerNotes.instructions.content')}</p>
       </$Instructions>
-      {applicationId && (
+      {targetId && (
         <NoteForm
           targetType={targetType}
-          targetId={applicationId}
+          targetId={targetId}
           isLoading={createMutation.isPending}
           onSubmit={(payload, onSuccess) =>
             createMutation.mutate(payload as CreateNotePayload, { onSuccess })
           }
+        />
+      )}
+      {showTimeline && (
+        <NotesSectionTimeline
+          notes={notes}
+          parentApplicationId={parentApplicationId}
         />
       )}
     </$NotesContainer>

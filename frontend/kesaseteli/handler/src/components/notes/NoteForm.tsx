@@ -124,17 +124,19 @@ const NoteForm: React.FC<Props> = ({
             checked={noteType === NoteType.INTERNAL}
             onChange={() => setNoteType(NoteType.INTERNAL)}
           />
-          <RadioButton
-            id={
-              isEditing
-                ? `note-type-external-${initialNote?.id}`
-                : 'note-type-external'
-            }
-            label={t('common:handlerNotes.noteType.external_message')}
-            value={NoteType.EXTERNAL_MESSAGE}
-            checked={noteType === NoteType.EXTERNAL_MESSAGE}
-            onChange={() => setNoteType(NoteType.EXTERNAL_MESSAGE)}
-          />
+          {targetType !== NoteTargetType.ATTACHMENT && (
+            <RadioButton
+              id={
+                isEditing
+                  ? `note-type-external-${initialNote?.id}`
+                  : 'note-type-external'
+              }
+              label={t('common:handlerNotes.noteType.external_message')}
+              value={NoteType.EXTERNAL_MESSAGE}
+              checked={noteType === NoteType.EXTERNAL_MESSAGE}
+              onChange={() => setNoteType(NoteType.EXTERNAL_MESSAGE)}
+            />
+          )}
           <$Separator aria-hidden="true" />
           <Checkbox
             id={

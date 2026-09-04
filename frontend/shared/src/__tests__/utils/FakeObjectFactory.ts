@@ -99,6 +99,7 @@ class FakeObjectFactory {
       attachment_file_name: faker.random.arrayElement(attachmentFilePaths),
       content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
       summer_voucher: this.generateId(),
+      notes_count: 0,
     };
   }
 

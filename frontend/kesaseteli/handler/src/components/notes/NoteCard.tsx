@@ -18,9 +18,10 @@ import NoteForm from './NoteForm';
 
 type Props = {
   note: HandlerNote;
+  parentApplicationId?: string;
 };
 
-const NoteCard: React.FC<Props> = ({ note }) => {
+const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
   const { t } = useTranslation();
   const { user } = useUser();
   const currentUserId = user?.id;
@@ -32,12 +33,14 @@ const NoteCard: React.FC<Props> = ({ note }) => {
   const updateMutation = useUpdateNoteMutation(
     note.id,
     note.target_type,
-    note.target_id
+    note.target_id,
+    parentApplicationId
   );
 
   const deleteMutation = useDeleteNoteMutation(
     note.target_type,
-    note.target_id
+    note.target_id,
+    parentApplicationId
   );
 
   const handleDeleteConfirm = (): void => {
@@ -81,7 +84,7 @@ const NoteCard: React.FC<Props> = ({ note }) => {
               <Button
                 variant={ButtonVariant.Supplementary}
                 size={ButtonSize.Small}
-                iconStart={<IconTrash aria-hidden />}
+                iconStart={<IconTrash color="var(--color-brick)" aria-hidden />}
                 onClick={() => setIsDeleteDialogOpen(true)}
                 data-testid={`note-delete-button-${note.id}`}
                 aria-label={t('common:handlerNotes.deleteNote')}
