@@ -25,7 +25,9 @@ describe('DeleteNoteDialog', () => {
     );
 
     expect(screen.getByText(/poistetaanko huomio\?/i)).toBeInTheDocument();
-    expect(screen.getByText(/toimintoa ei voi peruuttaa/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/poistettua huomiota ei voi enää palauttaa/i)
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /peruuta/i })
     ).toBeInTheDocument();

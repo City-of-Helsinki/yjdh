@@ -3,9 +3,9 @@ import {
   ATTACHMENT_TYPES,
 } from 'shared/constants/attachment-constants';
 
-export type AttachmentType = typeof ATTACHMENT_TYPES[number];
+export type AttachmentType = (typeof ATTACHMENT_TYPES)[number];
 
-export type AttachmentContentType = typeof ATTACHMENT_CONTENT_TYPES[number];
+export type AttachmentContentType = (typeof ATTACHMENT_CONTENT_TYPES)[number];
 
 export type UploadAttachmentData = {
   applicationId: string;
@@ -35,6 +35,7 @@ export type KesaseteliAttachment = {
   content_type: AttachmentContentType;
   created_at?: string;
   summer_voucher: string;
+  notes_count?: number;
 };
 
 type Attachment = BenefitAttachment | KesaseteliAttachment;

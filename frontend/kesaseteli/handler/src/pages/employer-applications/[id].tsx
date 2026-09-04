@@ -2,10 +2,9 @@ import EmployerApplicationAttachments from 'kesaseteli/handler/components/employ
 import EmployerApplicationHandlerView from 'kesaseteli/handler/components/employer-application/EmployerApplicationHandlerView';
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
-import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
-import useApplicationTimelineQuery from 'kesaseteli/handler/hooks/backend/useApplicationTimelineQuery';
+import ApplicationTimeline from 'kesaseteli/handler/components/timeline/ApplicationTimeline';
 import useEmployerApplicationQuery from 'kesaseteli/handler/hooks/backend/useEmployerApplicationQuery';
-import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
+import { APPLICATION_LIST_TYPES } from 'kesaseteli/handler/types/application';
 import type HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -35,19 +34,13 @@ function EmployerApplicationDetail(): React.ReactElement {
     useEmployerApplicationQuery<HandlerEmployerApplication>(applicationId);
   const notFound = isError || (!applicationId && !isRouterLoading);
 
-  const { data: notes } = useHandlerNotesQuery(
-    NoteTargetType.EMPLOYER_APPLICATION,
-    applicationId
-  );
-  const { data: timeline } = useApplicationTimelineQuery(
-    applicationId,
-    'employer'
-  );
 
-  const attachmentsCount =
-    data?.summer_vouchers?.flatMap((voucher) => voucher.attachments || [])
-      .length ?? 0;
-  const notesCount = notes?.length ?? 0;
+
+  const attachments =
+    data?.summer_vouchers?.flatMap((voucher) => voucher.attachments || []) ??
+    [];
+
+  const attachmentsCount = attachments.length;
 
   if (isRouterLoading || isLoading) {
     return <PageLoadingSpinner />;
@@ -88,19 +81,21 @@ function EmployerApplicationDetail(): React.ReactElement {
             </$AccordionSection>
 
             <$AccordionSection
-              heading={t('common:handlerNotes.sectionTitle', {
-                count: notesCount,
-              })}
+              heading={t('common:handlerNotes.sectionTitle')}
               initiallyOpen
               card
               border
             >
               <NotesSection
-                applicationId={applicationId}
+                targetId={applicationId}
                 targetType={NoteTargetType.EMPLOYER_APPLICATION}
               />
             </$AccordionSection>
-            <NotesTimeline timeline={timeline ?? []} />
+            <ApplicationTimeline
+              applicationId={applicationId}
+              applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+              attachments={attachments}
+            />
           </>
         )}
       </Container>

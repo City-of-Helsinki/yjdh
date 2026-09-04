@@ -1,10 +1,9 @@
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
-import NotesTimeline from 'kesaseteli/handler/components/notes/NotesTimeline';
-import useApplicationTimelineQuery from 'kesaseteli/handler/hooks/backend/useApplicationTimelineQuery';
-import useHandlerNotesQuery from 'kesaseteli/handler/hooks/backend/useHandlerNotesQuery';
+import ApplicationTimeline from 'kesaseteli/handler/components/timeline/ApplicationTimeline';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
+import { APPLICATION_LIST_TYPES } from 'kesaseteli/handler/types/application';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
@@ -27,15 +26,7 @@ function YouthApplicationDetail(): React.ReactElement {
     useYouthApplicationQuery(applicationId);
   const notFound = isError || (!applicationId && !isRouterLoading);
 
-  const { data: notes } = useHandlerNotesQuery(
-    NoteTargetType.YOUTH_APPLICATION,
-    applicationId
-  );
-  const { data: timeline } = useApplicationTimelineQuery(
-    applicationId,
-    'youth'
-  );
-  const notesCount = notes?.length ?? 0;
+
 
   if (isRouterLoading || isLoading) {
     return <PageLoadingSpinner />;
@@ -69,19 +60,20 @@ function YouthApplicationDetail(): React.ReactElement {
       {isSuccess && applicationId && (
         <>
           <$AccordionSection
-            heading={t('common:handlerNotes.sectionTitle', {
-              count: notesCount,
-            })}
+            heading={t('common:handlerNotes.sectionTitle')}
             initiallyOpen
             card
             border
           >
             <NotesSection
-              applicationId={applicationId}
+              targetId={applicationId}
               targetType={NoteTargetType.YOUTH_APPLICATION}
             />
           </$AccordionSection>
-          <NotesTimeline timeline={timeline ?? []} />
+          <ApplicationTimeline
+            applicationId={applicationId}
+            applicationType={APPLICATION_LIST_TYPES.YOUTH}
+          />
         </>
       )}
     </Container>
