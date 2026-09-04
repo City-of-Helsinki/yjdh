@@ -281,7 +281,8 @@
       "additional_information_provided": "Ytterligare information lämnad",
       "accepted": "Accepterad",
       "rejected": "Avvisad",
-      "deleted_by_customer": "Raderad"
+      "deleted_by_customer": "Raderad",
+      "received_by_payment_system": "Mottagen av betalningssystemet"
     }
   },
   "noOrganisationPage": {

@@ -3,7 +3,8 @@ export const APPLICATION_LIST_TYPES = {
   EMPLOYER: 'employer',
 } as const;
 
-export type ApplicationListType = typeof APPLICATION_LIST_TYPES[keyof typeof APPLICATION_LIST_TYPES];
+export type ApplicationListType =
+  (typeof APPLICATION_LIST_TYPES)[keyof typeof APPLICATION_LIST_TYPES];
 
 export enum ApplicationStatus {
   SUBMITTED = 'submitted',
@@ -13,7 +14,42 @@ export enum ApplicationStatus {
   HANDLING = 'handling',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  PAYMENT_REVIEW = 'payment_review',
+  ACCEPTED_FOR_PAYMENT = 'accepted_for_payment',
+  SENT_FOR_PAYMENT = 'sent_for_payment',
+  RECEIVED_BY_PAYMENT_SYSTEM = 'received_by_payment_system',
+  ERROR_IN_PAYMENT = 'error_in_payment',
+  CANCELLED = 'cancelled',
 }
+
+/**
+ * Employer application statuses that have been fully handled.
+ * Attachments cannot be deleted from applications in these statuses.
+ * Mirrors backend EmployerApplicationStatus.handled_values().
+ */
+export const HANDLED_EMPLOYER_APPLICATION_STATUSES = [
+  ApplicationStatus.ACCEPTED_FOR_PAYMENT,
+  ApplicationStatus.SENT_FOR_PAYMENT,
+  ApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+  ApplicationStatus.REJECTED,
+  ApplicationStatus.CANCELLED,
+] as const satisfies readonly ApplicationStatus[];
+
+export const HANDLED_APPLICATION_STATUSES =
+  HANDLED_EMPLOYER_APPLICATION_STATUSES;
+
+export type HandledEmployerApplicationStatus =
+  (typeof HANDLED_EMPLOYER_APPLICATION_STATUSES)[number];
+
+export const isHandledEmployerApplicationStatus = (
+  status?: string | ApplicationStatus | null
+): status is HandledEmployerApplicationStatus =>
+  Boolean(
+    status &&
+      (
+        HANDLED_EMPLOYER_APPLICATION_STATUSES as readonly ApplicationStatus[]
+      ).includes(status as ApplicationStatus)
+  );
 
 export type BaseApplicationFields = {
   id: string;

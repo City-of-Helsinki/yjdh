@@ -281,7 +281,8 @@
       "additional_information_provided": "Additional information provided",
       "accepted": "Accepted",
       "rejected": "Rejected",
-      "deleted_by_customer": "Deleted"
+      "deleted_by_customer": "Deleted",
+      "received_by_payment_system": "Received by payment system"
     }
   },
   "noOrganisationPage": {

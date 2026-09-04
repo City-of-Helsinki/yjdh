@@ -75,6 +75,19 @@ class EmployerApplicationStatus(models.TextChoices):
     REJECTED = "rejected", _("Rejected")
     CANCELLED = "cancelled", _("Cancelled")
 
+    @staticmethod
+    def handled_values():
+        """
+        Employer application statuses which have been handled.
+        """
+        return [
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.CANCELLED,
+        ]
+
 
 class YouthApplicationStatus(models.TextChoices):
     SUBMITTED = "submitted", _("Submitted")
@@ -287,3 +300,5 @@ class ActionType(models.TextChoices):
         "application_status_change",
         _("Application status change"),
     )
+    ATTACHMENT_ADDED = ("attachment_added", _("Attachment added"))
+    ATTACHMENT_DELETED = ("attachment_deleted", _("Attachment deleted"))
