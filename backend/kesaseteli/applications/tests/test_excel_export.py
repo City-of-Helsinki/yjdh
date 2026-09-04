@@ -174,6 +174,14 @@ def test_excel_view_download_unhandled(
     with pytest.raises(UnicodeDecodeError):
         response.getvalue().decode()
 
+    # Assert new audit log is written for unhandled export
+    audit_event = LogEntry.objects.filter(
+        action=LogEntry.Action.ACCESS,
+        additional_data__method="EmployerExcelExportService._export_unhandled",
+    ).first()
+    assert audit_event is not None
+    assert str(submitted_summer_voucher.id) in audit_event.additional_data["ids"]
+
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
@@ -259,10 +267,14 @@ def test_excel_download_writes_audit_log(staff_client, columns, download_type):
     with freeze_time(frozen_datetime):
         response = staff_client.get(download_url)
 
-    assert LogEntry.objects.count() == old_audit_log_entry_count + 1
+    expected_new_logs = 2 if download_type == "unhandled" else 1
+    assert LogEntry.objects.count() == old_audit_log_entry_count + expected_new_logs
+
+    # Get the view-level audit event
     audit_event = LogEntry.objects.filter(
         action=LogEntry.Action.ACCESS,
         timestamp=frozen_datetime,
+        additional_data__method="EmployerApplicationExcelExportView.get",
     ).first()
     assert audit_event.action == LogEntry.Action.ACCESS
     assert audit_event.object_pk == ""  # Not a single object, but a list
@@ -323,7 +335,7 @@ def test_excel_view_download_content(  # noqa: C901
 ):
     def employer_summer_voucher_sorting_key(voucher: EmployerSummerVoucher):
         # Sorting key should be the same as what is used to order by queryset results
-        # in Excel download, see EmployerExcelExportService.base_queryset
+        # in Excel download, see EmployerSummerVoucher.objects.for_export()
         return voucher.submitted_at, voucher.created_at, voucher.pk
 
     vouchers: List[EmployerSummerVoucher] = sorted(
@@ -958,3 +970,48 @@ def test_talpa_excel_gated_2026_and_status_fields(staff_client, settings, exclud
     else:
         for title in expected_end:
             assert title not in header
+
+
+@pytest.mark.django_db(transaction=True)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_export_unhandled_concurrent_requests_no_duplicate_batch(staff_user):
+    """Two concurrent unhandled export requests cannot both receive the same vouchers.
+
+    Uses transaction=True so select_for_update(skip_locked=True) is effective
+    across threads.  Clients are created inside each thread to avoid Django's
+    test Client not being thread-safe.
+    """
+    import threading
+
+    from django.test import Client
+
+    # Ensure we have a staff user and a single unhandled voucher
+    EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.SUBMITTED,
+        is_exported=False,
+    )
+
+    results = []
+    lock = threading.Lock()
+
+    def do_request():
+        # Each thread gets its own Django test Client to avoid shared-state issues.
+        client = Client()
+        client.force_login(staff_user)
+        response = client.get(
+            employer_excel_export_url("unhandled", ExcelColumns.REPORTING.value)
+        )
+        with lock:
+            results.append(response.status_code)
+
+    t1 = threading.Thread(target=do_request)
+    t2 = threading.Thread(target=do_request)
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+
+    # Exactly one request succeeds (200); the other sees no rows and redirects (302).
+    assert sorted(results) == [200, 302]
+    # The voucher is marked exported exactly once — no double-claiming.
+    assert EmployerSummerVoucher.objects.filter(is_exported=True).count() == 1

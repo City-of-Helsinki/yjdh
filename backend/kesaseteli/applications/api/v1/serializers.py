@@ -1404,16 +1404,14 @@ class EmployerSummerVoucherAttachmentUploadInputSerializer(serializers.Serialize
     attachment_type = serializers.ChoiceField(choices=AttachmentType.choices)
 
 
-class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
+class AnonymousYouthApplicationExportSerializer(serializers.ModelSerializer):
     application_year = serializers.SerializerMethodField()
     application_date = serializers.SerializerMethodField()
     birth_year = serializers.SerializerMethodField()
-    birthdate = serializers.SerializerMethodField()
     confirmation_date = serializers.SerializerMethodField()
     handling_date = serializers.SerializerMethodField()
     additional_info_providing_date = serializers.SerializerMethodField()
     additional_info_user_reasons = serializers.SerializerMethodField()
-    summer_voucher_serial_number = serializers.SerializerMethodField()
     is_unlisted_school = serializers.SerializerMethodField()
     target_group = serializers.SerializerMethodField()
     target_group_calculation_status = serializers.SerializerMethodField()
@@ -1426,22 +1424,11 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
     def to_local_year(value: datetime) -> int:
         return timezone.localdate(value).year
 
-    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> str | None:
-        if not obj.has_youth_summer_voucher:
-            return None
-        return obj.youth_summer_voucher.user_showable_serial_number
-
     def get_birth_year(self, obj: YouthApplication) -> int:
         try:
             return obj.birthdate.year
         except AttributeError:  # Handle invalid data gracefully
             return -1  # Show a clearly invalid value
-
-    def get_birthdate(self, obj: YouthApplication) -> str:
-        try:
-            return obj.birthdate.isoformat()
-        except AttributeError:  # Handle invalid data gracefully
-            return "N/A"
 
     def get_application_year(self, obj: YouthApplication) -> int:
         return self.to_local_year(obj.created_at)
@@ -1483,31 +1470,55 @@ class YouthApplicationExcelExportSerializer(serializers.ModelSerializer):
     class Meta:
         model = YouthApplication
         fields = read_only_fields = [
-            "additional_info_description",
-            "additional_info_providing_date",
-            "additional_info_user_reasons",
-            "application_date",
-            "application_year",
-            "birth_year",
-            "birthdate",
-            "confirmation_date",
-            "email",
-            "most_official_first_name",
-            "handling_date",
             "id",
-            "is_unlisted_school",
+            "status",
             "language",
-            "most_official_last_name",
-            "phone_number",
             "postcode",
             "school",
-            "status",
-            "summer_voucher_serial_number",
+            "is_unlisted_school",
+            "birth_year",
             "target_group",
             "target_group_calculation_status",
-            "vtj_home_municipality",
-            "vtj_last_name",
+            "application_year",
+            "application_date",
+            "handling_date",
+            "confirmation_date",
+            "additional_info_providing_date",
+            "additional_info_user_reasons",
+            "additional_info_description",
         ]
+
+
+class YouthApplicationExportSerializer(AnonymousYouthApplicationExportSerializer):
+    birthdate = serializers.SerializerMethodField()
+    summer_voucher_serial_number = serializers.SerializerMethodField()
+
+    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> str | None:
+        if not obj.has_youth_summer_voucher:
+            return None
+        return obj.youth_summer_voucher.user_showable_serial_number
+
+    def get_birthdate(self, obj: YouthApplication) -> str:
+        try:
+            return obj.birthdate.isoformat()
+        except AttributeError:  # Handle invalid data gracefully
+            return "N/A"
+
+    class Meta:
+        model = YouthApplication
+        fields = read_only_fields = (
+            AnonymousYouthApplicationExportSerializer.Meta.fields
+            + [
+                "email",
+                "phone_number",
+                "most_official_first_name",
+                "most_official_last_name",
+                "vtj_last_name",
+                "vtj_home_municipality",
+                "birthdate",
+                "summer_voucher_serial_number",
+            ]
+        )
 
 
 class ActivityLogItemSerializer(serializers.Serializer):

@@ -23,6 +23,8 @@
 - [Documentation](#documentation)
   - [Handler Timeline](#handler-timeline)
   - [API Documentation](#api-documentation)
+  - [Talpa Integration](#talpa-integration)
+  - [Reporting Integration](#reporting-integration)
   - [Summer Voucher Configuration](#summer-voucher-configuration)
   - [Management Commands](#management-commands)
     - [Create Summer Voucher Configuration](#create-summer-voucher-configuration)
@@ -197,6 +199,12 @@ When `NEXT_PUBLIC_MOCK_FLAG=true` (typically in local development):
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
 | `AD_ADMIN_GROUP_NAME` | The name of the AD group that maps to Django admin permissions. Default is None (feature disabled). |
 | `ENABLE_AUTH_LOGGING` | A boolean value. If set to True, enables DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events. Default is False. |
+| `TALPA_WEBHOOK_API_KEY` | API key for the Talpa integration endpoints (`/v1/talpa/export/` and `/v1/talpa/webhook/`). When set, both endpoints accept an `X-Api-Key: <key>` header. Must be at least 32 characters. Required when Talpa integration is active. |
+| `TALPA_ROBOT_AUTH_CREDENTIAL` | HTTP Basic Auth fallback for the Talpa integration endpoints. Store as `username:password` (plain text). Both endpoints accept `Authorization: Basic <base64(username:password)>` when this is configured. Used when Talpa cannot send a custom header. |
+| `REPORTING_EXPORT_API_KEY` | API key for the employer summer voucher reporting export endpoint (`/v1/reporting/employer-summer-vouchers/`). Must be at least 32 characters. Required when reporting integration is active. |
+| `YOUTH_EXPORT_API_KEY` | API key for the youth application export endpoint (`/v1/reporting/youth-applications/`). Must be at least 32 characters. Required when youth application export integration is active. |
+| `ANONYMOUS_REPORTING_EXPORT_API_KEY` | API key for the anonymous employer summer voucher reporting export endpoint (`/v1/reporting/employer-summer-vouchers/anonymous/`). Must be at least 32 characters. Required when anonymous reporting integration is active. |
+| `ANONYMOUS_YOUTH_EXPORT_API_KEY` | API key for the anonymous youth application export endpoint (`/v1/reporting/youth-applications/anonymous/`). Must be at least 32 characters. Required when anonymous youth application export integration is active. |
 
 ## Audit Logging
 
@@ -254,6 +262,50 @@ ReDoc is served from `/api_docs/redoc/`.
 
 The schema is generated from the Kesäseteli backend code at runtime. There is no committed OpenAPI schema
 artifact in this repository.
+
+### Talpa Integration
+
+The integration with the external Talpa financial system relies on a pull-and-acknowledge workflow. Talpa fetches the invoices via a GET request and must acknowledge successful ingestion via a webhook.
+
+```mermaid
+sequenceDiagram
+    participant Talpa as Talpa System
+    participant KS as Kesäseteli API
+    participant DB as Kesäseteli DB
+
+    Talpa->>KS: GET /v1/talpa/export/?exclude_invoiced=true (X-Api-Key or Basic Auth)
+    KS->>DB: Fetch un-exported vouchers
+    DB-->>KS: Return vouchers
+    KS-->>Talpa: JSON list of vouchers
+    Talpa->>Talpa: Import & process invoices
+    alt Import Successful
+        Talpa->>KS: POST /v1/talpa/webhook/ (ids: [...], X-Api-Key or Basic Auth)
+        KS->>DB: UPDATE vouchers SET invoiced_at=now, is_exported=true
+        DB-->>KS: Success
+        KS-->>Talpa: 200 OK (updated: N)
+    else Import Failed
+        Talpa->>Talpa: Abort / Log error
+        Note over Talpa, KS: Webhook is NOT called. Vouchers will be re-sent in next export.
+    end
+```
+
+### Reporting Integration
+
+The Reporting export endpoints provide a machine-readable JSON view of all
+non-draft employer summer vouchers (and youth applications) for a given calendar year.
+They are intended for external reporting or analytics systems that previously consumed
+the annual Excel exports.
+
+The **Anonymous** versions of these endpoints omit all personally identifiable information (e.g. banking details, names, phone numbers) and use separate API keys. They are the recommended integration point for analytics tools like Power BI.
+
+| Detail | Standard Reporting Export | Anonymous Reporting Export |
+|---|---|---|
+| Employer Endpoint | `GET /v1/reporting/employer-summer-vouchers/` | `GET /v1/reporting/employer-summer-vouchers/anonymous/` |
+| Youth Endpoint | `GET /v1/reporting/youth-applications/` | `GET /v1/reporting/youth-applications/anonymous/` |
+| Authentication | `X-Api-Key` header (see `REPORTING_EXPORT_API_KEY` / `YOUTH_EXPORT_API_KEY`) | `X-Api-Key` header (see `ANONYMOUS_REPORTING_EXPORT_API_KEY` / `ANONYMOUS_YOUTH_EXPORT_API_KEY`) |
+| Contains PII | Yes (e.g. names, banking details, contacts) | No (Safe for BI tools) |
+| Pagination | Limit/Offset (`?limit=N&offset=M`) | Limit/Offset (`?limit=N&offset=M`) |
+| Key filters | `year`, date ranges, `exclude_invoiced`, `status`, etc. | `year`, date ranges, `exclude_invoiced`, `status`, etc. |
 
 ### Summer Voucher Configuration
 

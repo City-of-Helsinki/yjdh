@@ -5,11 +5,20 @@ from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView
 from rest_framework import routers
 
+from applications.api.employer_summer_voucher_reporting_views import (
+    AnonymousEmployerSummerVoucherReportingExportView,
+    EmployerSummerVoucherReportingExportView,
+)
 from applications.api.handler_excel_views import (
     EmployerApplicationExcelExportView,
     YouthApplicationExcelExportViewSet,
 )
+from applications.api.talpa_views import TalpaExportView, TalpaWebhookView
 from applications.api.v1 import views as application_views
+from applications.api.youth_application_views import (
+    AnonymousYouthApplicationExportView,
+    YouthApplicationExportView,
+)
 from applications.views import EmployerExcelDownloadPageView
 from common.openapi_views import KesaseteliRedocView, KesaseteliSwaggerView
 from common.views import healthz, readiness
@@ -78,6 +87,28 @@ urlpatterns = [
         "api_docs/redoc/",
         KesaseteliRedocView.as_view(url_name="schema"),
         name="redoc",
+    ),
+    path("v1/talpa/export/", TalpaExportView.as_view(), name="talpa-export"),
+    path("v1/talpa/webhook/", TalpaWebhookView.as_view(), name="talpa-webhook"),
+    path(
+        "v1/reporting/employer-summer-vouchers/",
+        EmployerSummerVoucherReportingExportView.as_view(),
+        name="reporting-employer-summer-vouchers",
+    ),
+    path(
+        "v1/reporting/employer-summer-vouchers/anonymous/",
+        AnonymousEmployerSummerVoucherReportingExportView.as_view(),
+        name="anonymous-reporting-employer-summer-vouchers",
+    ),
+    path(
+        "v1/reporting/youth-applications/",
+        YouthApplicationExportView.as_view(),
+        name="reporting-youth-applications",
+    ),
+    path(
+        "v1/reporting/youth-applications/anonymous/",
+        AnonymousYouthApplicationExportView.as_view(),
+        name="anonymous-reporting-youth-applications",
     ),
 ]
 
