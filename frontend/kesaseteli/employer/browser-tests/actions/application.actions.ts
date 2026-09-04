@@ -120,6 +120,7 @@ export const fillEmploymentDetails = async (
     await step1Form.actions.fillWorkHours(String(employment_work_hours ?? ''));
     await step1Form.actions.fillDescription(employment_description ?? '');
     await step1Form.actions.fillSalary(String(employment_salary_paid ?? ''));
+    await step1Form.actions.selectJobType();
     await step1Form.actions.selectHiredWithoutVoucherAssessment(
       hired_without_voucher_assessment ?? 'maybe'
     );

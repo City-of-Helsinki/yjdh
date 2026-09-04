@@ -40,6 +40,11 @@ urlpatterns = [
         name="target-group-list",
     ),
     path(
+        "v1/job_types/",
+        application_views.JobTypeListView.as_view(),
+        name="job-type-list",
+    ),
+    path(
         "v1/summer_voucher_configuration/",
         application_views.SummerVoucherConfigurationViewSet.as_view(),
         name="summer-voucher-configuration",

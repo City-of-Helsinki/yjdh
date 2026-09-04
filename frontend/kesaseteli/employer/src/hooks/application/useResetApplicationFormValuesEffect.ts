@@ -43,6 +43,7 @@ const EMPLOYMENT_KEYS: (keyof Employment)[] = [
   'employment_salary_paid',
   'employment_description',
   'hired_without_voucher_assessment',
+  'job_type',
 ];
 
 const APPLICATION_KEYS: (keyof Application)[] = [

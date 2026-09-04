@@ -1,6 +1,7 @@
 import {
   ButtonPresetTheme,
   ButtonVariant,
+  Select,
   TextInput as HdsTextInput,
 } from 'hds-react';
 import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
@@ -10,9 +11,10 @@ import type { TextInputProps } from 'kesaseteli/employer/components/application/
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
+import useJobTypesQuery from 'kesaseteli-shared/hooks/useJobTypesQuery';
 import { Trans, useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import Button from 'shared/components/button/Button';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -106,7 +108,7 @@ const useFetchEmployeeData = (
         setValue(`summer_vouchers.${index}`, updatedVoucher, {
           shouldDirty: true,
           // Do not validate yet, since user has not had a chance to type anything.
-          shouldValidate: false, 
+          shouldValidate: false,
         });
       }
       setIsEmployeeDataFetched(true);
@@ -130,6 +132,8 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
     useFetchEmployeeDataButtonState(index);
   const { isEmployeeDataFetched, handleGetEmployeeData } =
     useFetchEmployeeData(index);
+
+  const { data: jobTypes = [] } = useJobTypesQuery();
 
   const isForeignIban = useIsForeignIban();
 
@@ -278,6 +282,40 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
           )}
           autoComplete="off"
           disabled={disableEmploymentFields}
+        />
+        <Controller
+          name={getId('job_type') as any}
+          control={useFormContext<Application>().control}
+          rules={{ required: true }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            const options = jobTypes.map((jt) => ({
+              label: jt.name,
+              value: jt.id,
+            }));
+            const selectedOption = options.find((opt) => opt.value === value);
+            return (
+              <Select
+                id={getId('job_type')}
+                options={options}
+                value={selectedOption ? [selectedOption] : []}
+                onChange={(selected: any) =>
+                  onChange(selected?.value ?? selected?.[0]?.value)
+                }
+                texts={{
+                  label: t('common:application.form.inputs.job_type'),
+                  placeholder: t(
+                    'common:application.form.inputs.job_type_placeholder'
+                  ),
+                  error: error
+                    ? t('common:application.form.errors.selectionGroups')
+                    : undefined,
+                }}
+                required
+                disabled={disableEmploymentFields}
+                invalid={!!error}
+              />
+            );
+          }}
         />
         <TextInput
           id={getId('employment_salary_paid')}

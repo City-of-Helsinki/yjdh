@@ -135,6 +135,11 @@ class FakeObjectFactory {
         precision: 0.01,
       }),
       employment_description: faker.lorem.paragraph(1),
+      job_type: faker.random.arrayElement([
+        'administration',
+        'cleaning',
+        'sales',
+      ]),
       hired_without_voucher_assessment: faker.random.arrayElement([
         'yes',
         'no',
