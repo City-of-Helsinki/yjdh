@@ -91,7 +91,7 @@ describe('useDeleteNoteMutation', () => {
 
     const { result } = renderHook(
       () =>
-        useDeleteNoteMutation(TEST_TARGET_TYPE, TEST_TARGET_ID, {
+        useDeleteNoteMutation(TEST_TARGET_TYPE, TEST_TARGET_ID, undefined, {
           onSuccess: mockOnSuccess,
         }),
       { wrapper }
@@ -115,6 +115,49 @@ describe('useDeleteNoteMutation', () => {
       ],
     });
     expect(mockOnSuccess).toHaveBeenCalled();
+    expect(nock.isDone()).toBe(true);
+  });
+
+  it('invalidates parent application query when parentApplicationId is provided', async () => {
+    const noteId = 'note-to-delete';
+
+    nock(API_BASE_TEST_URL)
+      .delete(`${BackendEndpoint.HANDLER_NOTES}${noteId}/`)
+      .reply(204);
+
+    const invalidateQueriesSpy = jest.spyOn(queryClient, 'invalidateQueries');
+    const parentAppId = 'parent-app-id';
+
+    const { result } = renderHook(
+      () =>
+        useDeleteNoteMutation(
+          NoteTargetType.ATTACHMENT,
+          TEST_TARGET_ID,
+          parentAppId
+        ),
+      { wrapper }
+    );
+
+    await result.current.mutateAsync(noteId);
+
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.HANDLER_NOTES}?target_type=${NoteTargetType.ATTACHMENT}&target_id=${TEST_TARGET_ID}`,
+      ],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [`${BackendEndpoint.EMPLOYER_APPLICATIONS}${parentAppId}/`],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.EMPLOYER_APPLICATIONS}${parentAppId}/timeline/`,
+      ],
+    });
+    expect(invalidateQueriesSpy).not.toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.YOUTH_APPLICATIONS}${parentAppId}/timeline/`,
+      ],
+    });
     expect(nock.isDone()).toBe(true);
   });
 

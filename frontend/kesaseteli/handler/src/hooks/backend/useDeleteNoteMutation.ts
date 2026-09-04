@@ -14,21 +14,22 @@ import invalidateNoteQueries from './invalidateNoteQueries';
 const useDeleteNoteMutation = (
   targetType: NoteTargetType,
   targetId: string,
-  options?: UseMutationOptions<void, unknown, string>
-): UseMutationResult<void, unknown, string> => {
+  parentApplicationId?: string,
+  options?: UseMutationOptions<unknown, unknown, string>
+): UseMutationResult<unknown, unknown, string> => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const { onSuccess, ...restOptions } = options ?? {};
 
   return useMutation({
-    mutationFn: (noteId: string) =>
-      handleResponse<void>(
-        axios.delete(`${BackendEndpoint.HANDLER_NOTES}${noteId}/`)
+    mutationFn: (id: string) =>
+      handleResponse<unknown>(
+        axios.delete(`${BackendEndpoint.HANDLER_NOTES}${id}/`)
       ),
-    onSuccess: async (data, variables, onMutateResult, context) => {
-      await invalidateNoteQueries(queryClient, targetType, targetId);
+    onSuccess: async (...onSuccessArgs) => {
+      await invalidateNoteQueries(queryClient, targetType, targetId, parentApplicationId);
       if (onSuccess) {
-        void onSuccess(data, variables, onMutateResult, context);
+        await onSuccess(...onSuccessArgs);
       }
     },
     onError: useErrorHandler(),

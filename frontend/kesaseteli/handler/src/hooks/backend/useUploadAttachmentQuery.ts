@@ -3,12 +3,11 @@ import {
   UseMutationResult,
   useQueryClient,
 } from '@tanstack/react-query';
-import {
-  BackendEndpoint,
-  getEmployerApplicationQueryKey,
-} from 'kesaseteli-shared/backend-api/backend-api';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { KesaseteliAttachment } from 'shared/types/attachment';
+
+import invalidateAttachmentQueries from './invalidateAttachmentQueries';
 
 type UploadAttachmentData = {
   summer_voucher: string;
@@ -35,9 +34,7 @@ const useUploadAttachmentQuery = (): UseMutationResult<
         )
       ),
     onSuccess: async (_data, { applicationId }) => {
-      await queryClient.invalidateQueries({
-        queryKey: [getEmployerApplicationQueryKey(applicationId)],
-      });
+      await invalidateAttachmentQueries(queryClient, applicationId);
     },
   });
 };

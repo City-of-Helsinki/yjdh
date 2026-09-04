@@ -18,6 +18,7 @@ import invalidateNoteQueries from './invalidateNoteQueries';
 const useCreateNoteMutation = (
   targetType: NoteTargetType,
   targetId: string,
+  parentApplicationId?: string,
   options?: UseMutationOptions<HandlerNote, unknown, CreateNotePayload>
 ): UseMutationResult<HandlerNote, unknown, CreateNotePayload> => {
   const { axios, handleResponse } = useBackendAPI();
@@ -29,10 +30,10 @@ const useCreateNoteMutation = (
       handleResponse<HandlerNote>(
         axios.post<HandlerNote>(BackendEndpoint.HANDLER_NOTES, payload)
       ),
-    onSuccess: async (data, variables, onMutateResult, context) => {
-      await invalidateNoteQueries(queryClient, targetType, targetId);
+    onSuccess: async (...onSuccessArgs) => {
+      await invalidateNoteQueries(queryClient, targetType, targetId, parentApplicationId);
       if (onSuccess) {
-        await onSuccess(data, variables, onMutateResult, context);
+        await onSuccess(...onSuccessArgs);
       }
     },
     onError: useErrorHandler(),

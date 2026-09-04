@@ -19,6 +19,7 @@ const useUpdateNoteMutation = (
   noteId: string,
   targetType: NoteTargetType,
   targetId: string,
+  parentApplicationId?: string,
   options?: UseMutationOptions<HandlerNote, unknown, UpdateNotePayload>
 ): UseMutationResult<HandlerNote, unknown, UpdateNotePayload> => {
   const { axios, handleResponse } = useBackendAPI();
@@ -33,10 +34,10 @@ const useUpdateNoteMutation = (
           payload
         )
       ),
-    onSuccess: async (data, variables, onMutateResult, context) => {
-      await invalidateNoteQueries(queryClient, targetType, targetId);
+    onSuccess: async (...onSuccessArgs) => {
+      await invalidateNoteQueries(queryClient, targetType, targetId, parentApplicationId);
       if (onSuccess) {
-        void onSuccess(data, variables, onMutateResult, context);
+        await onSuccess(...onSuccessArgs);
       }
     },
     onError: useErrorHandler(),
