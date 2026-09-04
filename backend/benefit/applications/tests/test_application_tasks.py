@@ -286,6 +286,32 @@ def test_send_ahjo_requests(
             )
 
 
+@pytest.mark.django_db
+@patch("applications.management.commands.send_ahjo_requests.get_token")
+@patch(
+    "applications.management.commands.send_ahjo_requests.AhjoApplicationsService"
+    ".get_applications_for_request"
+)
+@patch("applications.management.commands.send_ahjo_requests.Command.run_requests")
+def test_send_ahjo_requests_limits_retries_per_run(
+    mock_run_requests, mock_get_applications, mock_get_token, settings
+):
+    settings.AHJO_MAX_RETRIES_PER_RUN = 3
+    applications = [MagicMock(spec=Application) for _ in range(10)]
+    mock_get_token.return_value = MagicMock(spec=AhjoToken)
+    mock_get_applications.return_value = applications
+
+    call_command(
+        "send_ahjo_requests",
+        request_type=AhjoRequestType.OPEN_CASE,
+        retry_failed_older_than=1,
+        stdout=StringIO(),
+    )
+
+    processed_applications = mock_run_requests.call_args.args[0]
+    assert len(processed_applications) == settings.AHJO_MAX_RETRIES_PER_RUN
+
+
 @pytest.mark.django_db(transaction=True)
 class TestHandleSuccessfulRequest:
     @pytest.fixture(autouse=True)

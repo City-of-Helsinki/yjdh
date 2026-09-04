@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from typing import List
 
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import QuerySet
@@ -91,6 +92,9 @@ class Command(BaseCommand):
 
         if retry_failed_older_than_hours > 0:
             self.is_retry = True
+            number_to_process = min(
+                number_to_process, settings.AHJO_MAX_RETRIES_PER_RUN
+            )
 
         applications = AhjoApplicationsService.get_applications_for_request(
             request_type, retry_failed_older_than_hours

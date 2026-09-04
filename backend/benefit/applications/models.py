@@ -256,6 +256,10 @@ class ApplicationManager(models.Manager):
             applications = applications.filter(
                 latest_ahjo_status_created_at__lt=time_in_past
             )
+            if retry_status == AhjoStatusEnum.REQUEST_TO_OPEN_CASE_SENT:
+                applications = applications.filter(
+                    ahjo_status__error_from_ahjo__isnull=True
+                )
 
         return applications.prefetch_related(
             attachments_prefetch, "calculation", "company"
