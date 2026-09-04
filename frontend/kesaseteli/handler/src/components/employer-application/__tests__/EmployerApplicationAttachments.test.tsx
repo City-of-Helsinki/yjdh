@@ -4,6 +4,8 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 
+import { HANDLED_EMPLOYER_APPLICATION_STATUSES } from '../../../types/application';
+import type HandlerEmployerApplication from '../../../types/HandlerEmployerApplication';
 import EmployerApplicationAttachments from '../EmployerApplicationAttachments';
 import { mockApplicationSingleVoucher, mockVoucher1 } from '../fixtures';
 
@@ -281,4 +283,76 @@ describe('EmployerApplicationAttachments', () => {
       screen.getByRole('button', { name: /valitse tiedosto/i })
     ).toBeInTheDocument();
   });
+  it('shows remove button when application status allows it', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
+
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={{
+          ...mockApplicationSingleVoucher,
+          status: 'submitted',
+          summer_vouchers: [
+            {
+              ...mockVoucher1,
+              attachments: [
+                {
+                  ...fakeObjectFactory.fakeAttachment('employment_contract'),
+                  id: 'attachment-1',
+                  attachment_file_name: 'sopimus.pdf',
+                },
+              ],
+            },
+          ],
+        }}
+      />
+    );
+
+    const deleteButton = screen.getByTestId(
+      'delete-attachment-button-attachment-1'
+    );
+    expect(deleteButton).toBeInTheDocument();
+  });
+
+  it.each(HANDLED_EMPLOYER_APPLICATION_STATUSES)(
+    'hides remove button when application status is %s',
+    (status) => {
+      renderComponent(
+        <EmployerApplicationAttachments
+          application={{
+            ...mockApplicationSingleVoucher,
+            status: status as unknown as HandlerEmployerApplication['status'],
+            summer_vouchers: [
+              {
+                ...mockVoucher1,
+                attachments: [
+                  {
+                    ...fakeObjectFactory.fakeAttachment('employment_contract'),
+                    id: 'attachment-1',
+                    attachment_file_name: 'sopimus.pdf',
+                  },
+                ],
+              },
+            ],
+          }}
+        />
+      );
+
+      const deleteButton = screen.queryByTestId(
+        'delete-attachment-button-attachment-1'
+      );
+      expect(deleteButton).not.toBeInTheDocument();
+    }
+  );
 });

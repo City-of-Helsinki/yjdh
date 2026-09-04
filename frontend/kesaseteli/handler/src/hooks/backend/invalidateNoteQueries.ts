@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { NoteTargetType } from 'kesaseteli/handler/types/note';
 import {
+  getEmployerApplicationQueryKey,
   getEmployerApplicationTimelineKey,
   getHandlerNotesQueryKey,
   getYouthApplicationTimelineKey,
@@ -9,9 +10,10 @@ import {
 const invalidateNoteQueries = (
   queryClient: QueryClient,
   targetType: NoteTargetType,
-  targetId: string
-): Promise<void[]> =>
-  Promise.all([
+  targetId: string,
+  parentApplicationId?: string
+): Promise<void[]> => {
+  const actions = [
     queryClient.invalidateQueries({
       queryKey: [getHandlerNotesQueryKey(targetType, targetId)],
     }),
@@ -21,6 +23,19 @@ const invalidateNoteQueries = (
     queryClient.invalidateQueries({
       queryKey: [getEmployerApplicationTimelineKey(targetId)],
     }),
-  ]);
+  ];
 
+  if (parentApplicationId) {
+    actions.push(
+      queryClient.invalidateQueries({
+        queryKey: [getEmployerApplicationQueryKey(parentApplicationId)],
+      }),
+      queryClient.invalidateQueries({
+        queryKey: [getEmployerApplicationTimelineKey(parentApplicationId)],
+      })
+    );
+  }
+
+  return Promise.all(actions);
+};
 export default invalidateNoteQueries;

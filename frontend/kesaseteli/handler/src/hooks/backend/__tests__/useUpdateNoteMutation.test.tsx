@@ -91,6 +91,54 @@ describe('useUpdateNoteMutation', () => {
     expect(nock.isDone()).toBe(true);
   });
 
+  it('invalidates parent application query when parentApplicationId is provided', async () => {
+    const payload = {
+      content: 'updated note content',
+      note_type: NoteType.INTERNAL,
+      is_important: true,
+    };
+
+    nock(API_BASE_TEST_URL)
+      .put(`${BackendEndpoint.HANDLER_NOTES}${TEST_NOTE_ID}/`, payload)
+      .reply(200, { id: TEST_NOTE_ID, ...payload });
+
+    const invalidateQueriesSpy = jest.spyOn(queryClient, 'invalidateQueries');
+    const parentAppId = 'parent-app-id';
+
+    const { result } = renderHook(
+      () =>
+        useUpdateNoteMutation(
+          TEST_NOTE_ID,
+          NoteTargetType.ATTACHMENT,
+          TEST_TARGET_ID,
+          parentAppId
+        ),
+      { wrapper }
+    );
+
+    await result.current.mutateAsync(payload);
+
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.HANDLER_NOTES}?target_type=${NoteTargetType.ATTACHMENT}&target_id=${TEST_TARGET_ID}`,
+      ],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [`${BackendEndpoint.EMPLOYER_APPLICATIONS}${parentAppId}/`],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.EMPLOYER_APPLICATIONS}${parentAppId}/timeline/`,
+      ],
+    });
+    expect(invalidateQueriesSpy).not.toHaveBeenCalledWith({
+      queryKey: [
+        `${BackendEndpoint.YOUTH_APPLICATIONS}${parentAppId}/timeline/`,
+      ],
+    });
+    expect(nock.isDone()).toBe(true);
+  });
+
   it('calls useErrorHandler on failure', async () => {
     const payload = {
       content: 'updated note content',
