@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.19.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.18.0...kesaseteli-backend-v1.19.0) (2026-09-05)
+
+
+### Features
+
+* **ks,backend:** Add new employer application statuses & status changes ([35a4c8c](https://github.com/City-of-Helsinki/yjdh/commit/35a4c8c65ba8bd4f536270e42e996696c0f34b1f))
+* **ks,backend:** Add RECEIVED_BY_PAYMENT_SYSTEM,ERROR_IN_PAYMENT status ([e660ed9](https://github.com/City-of-Helsinki/yjdh/commit/e660ed9dd10d2fde701ca0e4ff2d0d10ce984fc3))
+* **ks,handler:** Add dashboard application statistics endpoint ([df74218](https://github.com/City-of-Helsinki/yjdh/commit/df742185fe6a8b1c8bd1dba4535ba0b1e0545ac2))
+* **ks,shared:** Synchronize payment statuses ([60d10f1](https://github.com/City-of-Helsinki/yjdh/commit/60d10f14d175b8bd7b3f6abb600082a8eeac6cdd))
+* **ks:** Add handler attachment admin API and timeline support ([055f869](https://github.com/City-of-Helsinki/yjdh/commit/055f86900ff382def14148010d528e7ee1e318c5))
+
+
+### Dependencies
+
+* Bump djangorestframework in /backend/kesaseteli ([e6fa901](https://github.com/City-of-Helsinki/yjdh/commit/e6fa9016cbbc298cf183c1c46489e1ffe223cb7e))
+
 ## [1.18.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.17.0...kesaseteli-backend-v1.18.0) (2026-08-18)
 
 
