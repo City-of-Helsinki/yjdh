@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.3.1...kesaseteli-handler-v2.4.0) (2026-09-05)
+
+
+### Features
+
+* **frontend:** Upgrade React 19 and migrate JSX typings ([70d5fa4](https://github.com/City-of-Helsinki/yjdh/commit/70d5fa453fa446688700e22fef86f87935fe4f83))
+* **ks, handler:** Add application status changes to timelinee ([6bf5cbf](https://github.com/City-of-Helsinki/yjdh/commit/6bf5cbffe322ced5651e84cb011d9aa30b125f91))
+* **ks, handler:** Create notes timeline ([27398aa](https://github.com/City-of-Helsinki/yjdh/commit/27398aac5a39055f1b7ca4279bf4b3a334b042ee))
+* **ks, handler:** Fixed linting errors ([797d218](https://github.com/City-of-Helsinki/yjdh/commit/797d21869f5f58e2f873abdd214aa5bb8cdb9166))
+* **ks, handler:** Instructions for notes section and modified tag ([f395ada](https://github.com/City-of-Helsinki/yjdh/commit/f395ada9798cb332a41dda09443db3fb4920b29f))
+* **ks, handler:** Move sidebar timeline to bottom ([ec9a93c](https://github.com/City-of-Helsinki/yjdh/commit/ec9a93c583028dc2c28872b037b529ed5c661bc6))
+* **ks, handler:** Remove sidebar timeline ([aaa5096](https://github.com/City-of-Helsinki/yjdh/commit/aaa5096c239774b2630a6ca1aa92869eaac35ba7))
+* **ks,handler:** Add dashboard application statistics endpoint ([df74218](https://github.com/City-of-Helsinki/yjdh/commit/df742185fe6a8b1c8bd1dba4535ba0b1e0545ac2))
+* **ks,handler:** Implement attachment admin UI ([7fa704f](https://github.com/City-of-Helsinki/yjdh/commit/7fa704f33c7226b179bfae8081059d130719f3da))
+* **ks,shared:** Synchronize payment statuses ([60d10f1](https://github.com/City-of-Helsinki/yjdh/commit/60d10f14d175b8bd7b3f6abb600082a8eeac6cdd))
+* Migrate from react-query v3 to @tanstack/react-query v5 ([e374042](https://github.com/City-of-Helsinki/yjdh/commit/e374042c9f1dfe0ff63fee9d2ac1d50b185b3a19))
+* Upgrade HDS to v6 and migrate ErrorSummary usage ([bc96633](https://github.com/City-of-Helsinki/yjdh/commit/bc96633c4d0f13cc59d813dbdfed6cc235cff580))
+
+
+### Bug Fixes
+
+* **frontend:** Restore error summary focus ([b0349ff](https://github.com/City-of-Helsinki/yjdh/commit/b0349ff48459ab42bf37ded148c797a190f1d3c0))
+* **frontend:** Stabilize query side effects across frontend hooks ([ee8a9a7](https://github.com/City-of-Helsinki/yjdh/commit/ee8a9a71f79f52c9c150de80c64b7f0229ea2afb))
+
+
+### Dependencies
+
+* Upgrade @types/react to 19.2.18 and fix type compatibility ([fe768b0](https://github.com/City-of-Helsinki/yjdh/commit/fe768b0baa591a3151898c9b41a47a1958837f35))
+* Upgrade styled-components to v6.1.19 ([2503799](https://github.com/City-of-Helsinki/yjdh/commit/25037994d6c5a4f118f107759b5b1ad60e410a0a))
+
 ## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.3.0...kesaseteli-handler-v2.3.1) (2026-08-24)
 
 
