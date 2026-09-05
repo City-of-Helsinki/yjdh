@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.4.1...kesaseteli-employer-v2.5.0) (2026-09-05)
+
+
+### Features
+
+* **frontend:** Replace react-input-mask with Maskito across apps ([566bb92](https://github.com/City-of-Helsinki/yjdh/commit/566bb9230ae03f65bdb7a259e47984a96e1f39f4))
+* **frontend:** Upgrade React 19 and migrate JSX typings ([70d5fa4](https://github.com/City-of-Helsinki/yjdh/commit/70d5fa453fa446688700e22fef86f87935fe4f83))
+* **ks,shared:** Synchronize payment statuses ([60d10f1](https://github.com/City-of-Helsinki/yjdh/commit/60d10f14d175b8bd7b3f6abb600082a8eeac6cdd))
+* Migrate from react-query v3 to @tanstack/react-query v5 ([e374042](https://github.com/City-of-Helsinki/yjdh/commit/e374042c9f1dfe0ff63fee9d2ac1d50b185b3a19))
+* Upgrade HDS to v6 and migrate ErrorSummary usage ([bc96633](https://github.com/City-of-Helsinki/yjdh/commit/bc96633c4d0f13cc59d813dbdfed6cc235cff580))
+
+
+### Bug Fixes
+
+* **frontend:** Restore error summary focus ([b0349ff](https://github.com/City-of-Helsinki/yjdh/commit/b0349ff48459ab42bf37ded148c797a190f1d3c0))
+* **frontend:** Stabilize query side effects across frontend hooks ([ee8a9a7](https://github.com/City-of-Helsinki/yjdh/commit/ee8a9a71f79f52c9c150de80c64b7f0229ea2afb))
+
+
+### Dependencies
+
+* Upgrade styled-components to v6.1.19 ([2503799](https://github.com/City-of-Helsinki/yjdh/commit/25037994d6c5a4f118f107759b5b1ad60e410a0a))
+
 ## [2.4.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.4.0...kesaseteli-employer-v2.4.1) (2026-08-24)
 
 
