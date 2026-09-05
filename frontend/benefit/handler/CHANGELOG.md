@@ -1,5 +1,46 @@
 # Changelog
 
+## [5.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.4.2...benefit-handler-v5.5.0) (2026-09-05)
+
+
+### Features
+
+* **frontend:** Migrate package manager from yarn to pnpm ([51d2667](https://github.com/City-of-Helsinki/yjdh/commit/51d2667d40ff3f8f001c91da081ed3ac260ddb94))
+* **frontend:** Replace react-input-mask with Maskito across apps ([566bb92](https://github.com/City-of-Helsinki/yjdh/commit/566bb9230ae03f65bdb7a259e47984a96e1f39f4))
+* **frontend:** Upgrade React 19 and migrate JSX typings ([70d5fa4](https://github.com/City-of-Helsinki/yjdh/commit/70d5fa453fa446688700e22fef86f87935fe4f83))
+* Migrate from react-query v3 to @tanstack/react-query v5 ([e374042](https://github.com/City-of-Helsinki/yjdh/commit/e374042c9f1dfe0ff63fee9d2ac1d50b185b3a19))
+* Upgrade HDS to v6 and migrate ErrorSummary usage ([bc96633](https://github.com/City-of-Helsinki/yjdh/commit/bc96633c4d0f13cc59d813dbdfed6cc235cff580))
+
+
+### Bug Fixes
+
+* Add react-i18next to app runtimes and clean root workspace config ([b4a8d3c](https://github.com/City-of-Helsinki/yjdh/commit/b4a8d3cb82756cd4f4b270a65d4eed8d40f96b08))
+* **benefit:** Prevent consent checkbox race in handler form ([fcf39ae](https://github.com/City-of-Helsinki/yjdh/commit/fcf39ae80c096cef0305e2fa0942ceca669ebb40))
+* **benefit:** Prevent duplicate message error toasts ([159f62f](https://github.com/City-of-Helsinki/yjdh/commit/159f62f691238df4dcee6b60c7b34921c7047aaa))
+* **bf-handler:** Fix S6478 inline component definitions in table columns ([508303e](https://github.com/City-of-Helsinki/yjdh/commit/508303e70fc53c3492f9b85b54d2183977440aed))
+* **bf-handler:** Memoize context provider values ([3281ed8](https://github.com/City-of-Helsinki/yjdh/commit/3281ed8946a62f4c63191fadc728f640ee83a37a))
+* **bf-handler:** Remove useless void operator from useApplicationForm ([ca4f3f9](https://github.com/City-of-Helsinki/yjdh/commit/ca4f3f97d045391d0a4c4e9db7c82b8280e71788))
+* **bf-handler:** Replace bare globals with Number.* equivalents ([1469c45](https://github.com/City-of-Helsinki/yjdh/commit/1469c45f2e308185c36ba3acb239b51e5c1a75c7))
+* **bf-handler:** Rewrite groupCalculatorRows loop to fix S1994 ([8c902a6](https://github.com/City-of-Helsinki/yjdh/commit/8c902a6b0324c3b22e5df31419fb1e154648c5d3))
+* **bf:** Fix Sentry edge runtime configuration ([accb89b](https://github.com/City-of-Helsinki/yjdh/commit/accb89b392c0780aa990585d3287878811c0aa40))
+* **deps:** Declare i18next directly in each next app ([646de0e](https://github.com/City-of-Helsinki/yjdh/commit/646de0ec0dd50d1ab655a33d03f62852db7d8a74))
+* Enhance test coverage ([c13dee8](https://github.com/City-of-Helsinki/yjdh/commit/c13dee8f39f4ffd6c3caf6288873d0a0556318b7))
+* **frontend:** Add React type deps and fix related typings ([d588cf3](https://github.com/City-of-Helsinki/yjdh/commit/d588cf383faa437de811f2e72e41d5532ad0fecb))
+* **frontend:** Dedupe styled-components via packageExtensions ([dc79eac](https://github.com/City-of-Helsinki/yjdh/commit/dc79eac04030027ca041ea4c57f5c81cf038d000))
+* **frontend:** Resolve lint and type issues ([78f3c0d](https://github.com/City-of-Helsinki/yjdh/commit/78f3c0d8b96c415297a0d656f33712557e639bbe))
+* **frontend:** Stabilize query side effects across frontend hooks ([ee8a9a7](https://github.com/City-of-Helsinki/yjdh/commit/ee8a9a71f79f52c9c150de80c64b7f0229ea2afb))
+* **handler:** Skip login redirect when already on login page ([8f9f8f7](https://github.com/City-of-Helsinki/yjdh/commit/8f9f8f7b35f6bdafb2c49f17214fb07e52c0bbf1))
+* Restore Sentry reporting for query failures ([c3d7337](https://github.com/City-of-Helsinki/yjdh/commit/c3d7337678e4757d6a8eab7aa022f06590c2fad3))
+
+
+### Dependencies
+
+* Bump dompurify to &gt;=3.4.11 to fix ALLOWED_ATTR pollution ([7c92929](https://github.com/City-of-Helsinki/yjdh/commit/7c929297f1a8356acaeab5c1faa02a8684be7bdf))
+* Bump dompurify to 3.4.13 for detached-subtree XSS ([ed0c61c](https://github.com/City-of-Helsinki/yjdh/commit/ed0c61cdcd87c2279d9a2c33e61fff41ddad22f7))
+* Bump next to 15.5.22 to patch security advisories ([940e56b](https://github.com/City-of-Helsinki/yjdh/commit/940e56b456b60b1e3103db04dd6f2470511a6bbf))
+* Upgrade @types/react to 19.2.18 and fix type compatibility ([fe768b0](https://github.com/City-of-Helsinki/yjdh/commit/fe768b0baa591a3151898c9b41a47a1958837f35))
+* Upgrade styled-components to v6.1.19 ([2503799](https://github.com/City-of-Helsinki/yjdh/commit/25037994d6c5a4f118f107759b5b1ad60e410a0a))
+
 ## [5.4.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.4.1...benefit-handler-v5.4.2) (2026-06-30)
 
 
