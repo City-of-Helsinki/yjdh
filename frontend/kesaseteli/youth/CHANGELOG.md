@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.3.1...kesaseteli-youth-v2.4.0) (2026-09-05)
+
+
+### Features
+
+* **frontend:** Upgrade React 19 and migrate JSX typings ([70d5fa4](https://github.com/City-of-Helsinki/yjdh/commit/70d5fa453fa446688700e22fef86f87935fe4f83))
+* Migrate from react-query v3 to @tanstack/react-query v5 ([e374042](https://github.com/City-of-Helsinki/yjdh/commit/e374042c9f1dfe0ff63fee9d2ac1d50b185b3a19))
+* Upgrade HDS to v6 and migrate ErrorSummary usage ([bc96633](https://github.com/City-of-Helsinki/yjdh/commit/bc96633c4d0f13cc59d813dbdfed6cc235cff580))
+
+
+### Bug Fixes
+
+* **frontend:** Restore error summary focus ([b0349ff](https://github.com/City-of-Helsinki/yjdh/commit/b0349ff48459ab42bf37ded148c797a190f1d3c0))
+* **frontend:** Stabilize query side effects across frontend hooks ([ee8a9a7](https://github.com/City-of-Helsinki/yjdh/commit/ee8a9a71f79f52c9c150de80c64b7f0229ea2afb))
+
+
+### Dependencies
+
+* Upgrade styled-components to v6.1.19 ([2503799](https://github.com/City-of-Helsinki/yjdh/commit/25037994d6c5a4f118f107759b5b1ad60e410a0a))
+
 ## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.3.0...kesaseteli-youth-v2.3.1) (2026-08-24)
 
 
