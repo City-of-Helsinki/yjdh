@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.24.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.1...benefit-backend-v2.24.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* **benefit:** Add PDF logo alt text ([08613e7](https://github.com/City-of-Helsinki/yjdh/commit/08613e7919159b31899ab492453f8129ee47ac97))
+* **benefit:** Use bash conditional syntax ([09b1f69](https://github.com/City-of-Helsinki/yjdh/commit/09b1f695d460a07bbcf2866a6e75acae8390e05e))
+* **benefit:** Wire decision template admin form ([6486e22](https://github.com/City-of-Helsinki/yjdh/commit/6486e2222f19eb182b69cb58c028d1e466ea0ee5))
+
+
+### Dependencies
+
+* Bump django from 5.2.14 to 5.2.15 in /backend/benefit ([1cb04c1](https://github.com/City-of-Helsinki/yjdh/commit/1cb04c17d75c5ee2bd1e8cd64d0a5eaaf2f56665))
+* Bump django from 5.2.15 to 5.2.16 in /backend/benefit ([b0adc85](https://github.com/City-of-Helsinki/yjdh/commit/b0adc85d763e1224636ed613ca3946d91ca969e0))
+* Bump djangorestframework from 3.16.1 to 3.17.2 in /backend/benefit ([b57801f](https://github.com/City-of-Helsinki/yjdh/commit/b57801fbe9179a6419e931e57689aee784e5dcb9))
+* Bump pillow from 12.2.0 to 12.3.0 in /backend/benefit ([3823a89](https://github.com/City-of-Helsinki/yjdh/commit/3823a8981e75dc76b33818f10252246b1c07f141))
+* Bump pyasn1 from 0.6.3 to 0.6.4 in /backend/benefit ([39e0a78](https://github.com/City-of-Helsinki/yjdh/commit/39e0a7884708a93705929b16210dcb8d5cde0a1a))
+* Bump sqlparse from 0.5.4 to 0.6.0 in /backend/benefit ([7adbe3b](https://github.com/City-of-Helsinki/yjdh/commit/7adbe3b0776a14238aebc95586f04385532f8f1a))
+
 ## [2.24.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.0...benefit-backend-v2.24.1) (2026-06-25)
 
 
