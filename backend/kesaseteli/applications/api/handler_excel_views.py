@@ -21,7 +21,7 @@ from applications.api.handler_excel_openapi import (
     openapi_employer_excel_export_schema,
     openapi_youth_excel_export_viewset_schema,
 )
-from applications.api.v1.serializers import YouthApplicationExcelExportSerializer
+from applications.api.v1.serializers import YouthApplicationExportSerializer
 from applications.employer_excel_export import (
     EmployerExcelExportError,
     EmployerExcelExportService,
@@ -85,7 +85,7 @@ class EmployerApplicationExcelExportView(APIView):
 @openapi_youth_excel_export_viewset_schema
 class YouthApplicationExcelExportViewSet(ModelViewSet):
     permission_classes = [AllowAny]  # Permissions are handled per function
-    serializer_class = YouthApplicationExcelExportSerializer
+    serializer_class = YouthApplicationExportSerializer
 
     def create(self, request, *args, **kwargs):
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -197,9 +197,7 @@ class YouthApplicationExcelExportViewSet(ModelViewSet):
         data = self.serializer_class(app).data
         return [
             (
-                YouthApplicationExcelExportSerializer.get_placeholder_value(
-                    source_field
-                )
+                YouthApplicationExportSerializer.get_placeholder_value(source_field)
                 if is_template and not data.get(source_field)
                 else data.get(source_field)
             )
