@@ -87,6 +87,7 @@ To run the Next.js server locally without Docker (requires Node.js `>=24.18.1`):
 ## Feature Flags & Next.js Routing
 
 The Handler UI implements a feature flag, `NEXT_PUBLIC_ENABLE_HANDLER_NEW_BETA_UI`, which controls the transition from the legacy MVP page to the modern dashboard/detail views.
+Another feature flag, `NEXT_PUBLIC_ENABLE_HANDLER_EXTERNAL_MESSAGES`, controls whether external messaging feature is enabled.
 
 ### Configuration & Build Requirements
 - **Build-Time Variable**: Because Next.js injects variables prefixed with `NEXT_PUBLIC_` during compilation, the value of this flag must be set **at build time** (e.g. inside `.env.kesaseteli-handler` or as a Docker build-arg). Changing this value in runtime environment files will not affect the production build without a full rebuild.
