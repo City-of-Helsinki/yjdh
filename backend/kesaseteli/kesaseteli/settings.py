@@ -22,6 +22,7 @@ from applications.target_groups import (
 )
 from common.backward_compatibility import convert_to_django_4_2_csrf_trusted_origins
 from kesaseteli.sentry_config import sentry_traces_sampler
+from kesaseteli.utils import validate_api_key
 from shared.suomi_fi.utils import get_contact_person_configuration
 
 checkout_dir = environ.Path(__file__) - 2
@@ -74,6 +75,12 @@ env = environ.Env(
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi/opendata-ytj-api/v3"),
     YTJ_TIMEOUT=(int, 30),
     UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT=(bool, False),
+    TALPA_WEBHOOK_API_KEY=(str, ""),
+    TALPA_ROBOT_AUTH_CREDENTIAL=(str, ""),
+    REPORTING_EXPORT_API_KEY=(str, ""),
+    YOUTH_EXPORT_API_KEY=(str, ""),
+    ANONYMOUS_REPORTING_EXPORT_API_KEY=(str, ""),
+    ANONYMOUS_YOUTH_EXPORT_API_KEY=(str, ""),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
@@ -491,6 +498,23 @@ UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT = env.bool("UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT"
 
 # Mock flag for testing purposes
 NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
+
+TALPA_WEBHOOK_API_KEY = env("TALPA_WEBHOOK_API_KEY", default="")
+TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL", default="")
+REPORTING_EXPORT_API_KEY = env("REPORTING_EXPORT_API_KEY", default="")
+YOUTH_EXPORT_API_KEY = env("YOUTH_EXPORT_API_KEY", default="")
+ANONYMOUS_REPORTING_EXPORT_API_KEY = env(
+    "ANONYMOUS_REPORTING_EXPORT_API_KEY", default=""
+)
+ANONYMOUS_YOUTH_EXPORT_API_KEY = env("ANONYMOUS_YOUTH_EXPORT_API_KEY", default="")
+
+validate_api_key("TALPA_WEBHOOK_API_KEY", TALPA_WEBHOOK_API_KEY)
+validate_api_key("REPORTING_EXPORT_API_KEY", REPORTING_EXPORT_API_KEY)
+validate_api_key("YOUTH_EXPORT_API_KEY", YOUTH_EXPORT_API_KEY)
+validate_api_key(
+    "ANONYMOUS_REPORTING_EXPORT_API_KEY", ANONYMOUS_REPORTING_EXPORT_API_KEY
+)
+validate_api_key("ANONYMOUS_YOUTH_EXPORT_API_KEY", ANONYMOUS_YOUTH_EXPORT_API_KEY)
 
 if NEXT_PUBLIC_MOCK_FLAG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
