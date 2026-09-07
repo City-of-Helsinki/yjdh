@@ -36,6 +36,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from applications.api.integration_views import IntegrationExportPagination
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_DELETE_STATUSES,
     ALLOWED_APPLICATION_MODIFY_STATUSES,
@@ -210,11 +211,6 @@ class JobTypeListView(ListAPIView):
         return Response(serializer.data)
 
 
-class YouthApplicationPagination(LimitOffsetPagination):
-    default_limit = 100
-    max_limit = 1000
-
-
 class YouthApplicationFilter(filters.FilterSet):
     status = filters.MultipleChoiceFilter(choices=YouthApplicationStatus.choices)
     # TODO: In the future, define search filters
@@ -319,7 +315,7 @@ class YouthApplicationViewSet(ModelViewSet):
     permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
-    pagination_class = YouthApplicationPagination
+    pagination_class = IntegrationExportPagination
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = YouthApplicationFilter
 

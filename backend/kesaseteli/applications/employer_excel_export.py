@@ -6,16 +6,15 @@ from functools import partial
 
 import xlsx_streaming
 from django.conf import settings
-from django.db import models
-from django.db.models import F, QuerySet, Window
-from django.db.models.functions import RowNumber
+from django.contrib.contenttypes.models import ContentType
+from django.db import models, transaction
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponseRedirect, StreamingHttpResponse
 from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 
 from applications.enums import (
-    EmployerApplicationStatus,
     EmployerExcelExportKind,
     ExcelColumns,
 )
@@ -26,6 +25,7 @@ from applications.exporters.excel_exporter import (
     get_xlsx_filename,
 )
 from applications.models import EmployerSummerVoucher
+from applications.services import AuditAccessLogService
 
 
 class EmployerExcelExportErrorCode(models.TextChoices):
@@ -160,37 +160,6 @@ class EmployerExcelExportService:
     def __init__(self, request: HttpRequest):
         self.request = request
 
-    @staticmethod
-    def base_queryset(filter_pks: set | None = None) -> QuerySet:
-        """Queryset for exports with relations loaded and stable row ordering.
-
-        Args:
-            filter_pks: Optional primary keys to restrict the export set.
-
-        Returns:
-            Employer summer vouchers ready for Excel serialization.
-        """
-        base_queryset = EmployerSummerVoucher.objects
-        if filter_pks is not None:
-            base_queryset = base_queryset.filter(pk__in=filter_pks)
-        return (
-            base_queryset.select_related(
-                "application",
-                "application__company",
-                "application__user",
-                "youth_summer_voucher",
-                "youth_summer_voucher__youth_application",
-            )
-            .prefetch_related("attachments")
-            .order_by("application__submitted_at", "created_at", "pk")
-            .annotate(
-                row_number=Window(
-                    expression=RowNumber(),
-                    order_by=[F("application__submitted_at"), F("created_at"), F("pk")],
-                )
-            )
-        )
-
     def build_xlsx_response(
         self,
         queryset: QuerySet,
@@ -250,30 +219,76 @@ class EmployerExcelExportService:
         )
 
     def _export_unhandled(self, columns: ExcelColumns) -> StreamingHttpResponse:
-        queryset_without_pks = self.base_queryset().filter(
-            is_exported=False,
-            application__status=EmployerApplicationStatus.SUBMITTED,
-        )
-        queryset_pks = set(queryset_without_pks.values_list("pk", flat=True))
+        """Export all not-yet-exported SUBMITTED vouchers as a spreadsheet.
 
-        if not queryset_pks:
-            raise EmployerExcelExportError(EmployerExcelExportErrorCode.NO_UNHANDLED)
+        Uses a two-phase approach to avoid both a streaming race condition and a
+        concurrency race between competing handler requests:
 
-        queryset_with_pks = self.base_queryset(filter_pks=queryset_pks).filter(
-            application__status=EmployerApplicationStatus.SUBMITTED
-        )
+        Phase 1 (inside ``transaction.atomic``): lock the unhandled rows with
+        ``select_for_update(skip_locked=True)``, write the audit entry, and mark
+        them as exported — all in one atomic operation.  A concurrent request
+        that arrives while the lock is held will see zero rows and raise
+        ``EmployerExcelExportError(NO_UNHANDLED)`` rather than waiting, which
+        prevents two handlers from ever receiving the same batch.
 
-        response = self.build_xlsx_response(queryset_with_pks, columns)
-        queryset_with_pks.order_by().update(is_exported=True)
-        return response
+        Phase 2 (outside the transaction): build the streaming queryset using
+        ``pk__in`` so the XLSX generation is unaffected by ``is_exported``
+        already being ``True`` on those rows.
+
+        Args:
+            columns: Column layout to include in the spreadsheet.
+
+        Returns:
+            Streaming spreadsheet response.
+
+        Raises:
+            EmployerExcelExportError: If there are no unhandled vouchers.
+        """
+        with transaction.atomic():
+            # Lock unhandled rows; skip any already locked by a concurrent request.
+            locked_pks = list(
+                EmployerSummerVoucher.objects.unhandled()
+                .select_for_update(skip_locked=True)
+                .values_list("pk", flat=True)
+            )
+            if not locked_pks:
+                raise EmployerExcelExportError(
+                    EmployerExcelExportErrorCode.NO_UNHANDLED
+                )
+
+            AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(  # noqa: E501
+                actor=self.request.user,
+                actor_email=getattr(self.request.user, "email", ""),
+                content_type=ContentType.objects.get_for_model(EmployerSummerVoucher),
+                additional_data={
+                    "method": f"{self.__class__.__name__}._export_unhandled",
+                    "ids": [str(pk) for pk in locked_pks],
+                },
+            )
+
+            EmployerSummerVoucher.objects.filter(pk__in=locked_pks).update(
+                is_exported=True
+            )
+
+        # Transaction committed: PKs are claimed and locks released.
+        # Build the stream queryset here — pk__in is unaffected by is_exported.
+        queryset = EmployerSummerVoucher.objects.filter(pk__in=locked_pks).for_export()
+        return self.build_xlsx_response(queryset, columns)
 
     def _export_annual(self, columns: ExcelColumns, year: int) -> StreamingHttpResponse:
-        queryset = (
-            self.base_queryset()
-            .filter(application__created_at__year=year)
-            .exclude(application__status=EmployerApplicationStatus.DRAFT)
-        )
+        """Export all non-DRAFT vouchers for the given calendar year.
+
+        Args:
+            columns: Column layout to include in the spreadsheet.
+            year: Calendar year to export (e.g. 2026).
+
+        Returns:
+            Streaming spreadsheet response.
+
+        Raises:
+            EmployerExcelExportError: If no vouchers exist for the year.
+        """
+        queryset = EmployerSummerVoucher.objects.annual(year).for_export()
         if not queryset.exists():
             raise EmployerExcelExportError(EmployerExcelExportErrorCode.NO_APPLICATIONS)
-
         return self.build_xlsx_response(queryset, columns)
