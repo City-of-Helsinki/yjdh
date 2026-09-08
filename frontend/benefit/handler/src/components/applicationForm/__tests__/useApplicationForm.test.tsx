@@ -225,12 +225,19 @@ describe('useApplicationForm', () => {
       query: { id: '123' },
       route: '',
     });
+    mockApplicationDataStatus = 'pending';
+    mockApplicationData = undefined;
+
+    const { result, rerender } = renderHook(() => useApplicationForm(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current.isLoading).toBe(true);
+
     mockApplicationDataStatus = 'success';
     mockApplicationData = { id: '123' };
 
-    const { result } = renderHook(() => useApplicationForm(), {
-      wrapper: createWrapper(),
-    });
+    rerender();
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.initialApplication).not.toBeNull();
