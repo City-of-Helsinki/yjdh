@@ -1,8 +1,5 @@
-import enum
-
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers, status
@@ -16,17 +13,13 @@ from applications.api.authentications import TalpaRobotBasicAuthentication
 from applications.api.integration_filters import IntegrationExportFilterSet
 from applications.api.integration_serializers import TalpaExportSerializer
 from applications.api.integration_views import (
-    TALPA_INVOICEABLE_STATUSES,
     TalpaApiKeyPermission,
     TalpaBasicAuthPermission,
 )
-from applications.enums import EmployerApplicationStatus
 from applications.models import (
-    EmployerApplication,
     EmployerSummerVoucher,
-    TimelineActivityLog,
 )
-from applications.services import AuditAccessLogService
+from applications.services import AuditAccessLogService, TalpaWebhookService
 
 
 class TalpaExportFilterSet(IntegrationExportFilterSet):
@@ -103,14 +96,6 @@ class TalpaWebhookInputSerializer(serializers.Serializer):
         return attrs
 
 
-class VoucherClassification(enum.Enum):
-    """Result of classifying a voucher in a Talpa webhook batch."""
-
-    VALID = "valid"
-    UNINVOICEABLE = "uninvoiceable"
-    CONFLICT = "conflict"
-
-
 @extend_schema(tags=["talpa-integration"])
 class TalpaWebhookView(APIView):
     """
@@ -142,192 +127,6 @@ class TalpaWebhookView(APIView):
     permission_classes = [TalpaApiKeyPermission | TalpaBasicAuthPermission]
     authentication_classes = [TalpaRobotBasicAuthentication]
     http_method_names = ["post"]
-
-    def _classify_voucher(
-        self,
-        voucher: EmployerSummerVoucher,
-        request_id: str,
-        is_failed: bool = False,
-    ) -> VoucherClassification:
-        """Classify a single voucher as uninvoiceable, conflict, or valid.
-
-        Args:
-            voucher: The locked voucher instance (with ``application`` pre-fetched).
-            request_id: The Talpa request ID, used to identify idempotent retries.
-            is_failed: Whether the voucher is being reported as failed in the current
-                request.
-
-        Returns:
-            ``VoucherClassification.UNINVOICEABLE`` if the voucher cannot be invoiced,
-            ``VoucherClassification.CONFLICT`` if it was invoiced by a
-            different request, or ``VoucherClassification.VALID`` if the
-            voucher is valid (including idempotent retries).
-        """
-        if voucher.invoiced_at is not None:
-            # Already invoiced by a different request — conflict.
-            # If it's the SAME request, it's an idempotent retry (no conflict).
-            if voucher.talpa_request_id != request_id:
-                return VoucherClassification.CONFLICT
-            if is_failed:
-                return VoucherClassification.CONFLICT
-            return VoucherClassification.VALID
-
-        app_status = voucher.application.status
-        if app_status not in TALPA_INVOICEABLE_STATUSES:
-            # Idempotent retry: same request already failed this voucher.
-            # Accept it so the caller is not forced to split the batch.
-            if (
-                app_status == EmployerApplicationStatus.ERROR_IN_PAYMENT
-                and request_id
-                and voucher.talpa_request_id == request_id
-            ):
-                # Same-request retry on ERROR_IN_PAYMENT — accept silently
-                if not is_failed:
-                    return VoucherClassification.CONFLICT
-                return VoucherClassification.VALID
-            return VoucherClassification.UNINVOICEABLE
-
-        return VoucherClassification.VALID
-
-    def _validate_and_lock_vouchers(
-        self, successful_ids: set, failed_ids: set, request_id: str
-    ) -> dict:
-        """
-        Lock vouchers for update and validate they can transition to invoiced.
-
-        Args:
-            successful_ids: A set of UUIDs to check and lock as successful.
-            failed_ids: A set of UUIDs to check and lock as failed.
-            request_id: The Talpa request ID, used to identify idempotent retries.
-
-        Returns:
-            A dictionary of errors (e.g. unknown_ids, uninvoiceable_ids, conflict_ids).
-            If empty, the batch is valid and locked.
-        """
-        voucher_ids = successful_ids | failed_ids
-        # Fetch with select_for_update to lock rows and prevent race conditions.
-        # select_related application is needed to check status without extra queries.
-        vouchers = (
-            EmployerSummerVoucher.objects.select_for_update(of=("self", "application"))
-            .select_related("application")
-            .filter(pk__in=voucher_ids)
-        )
-        found_ids = {v.pk for v in vouchers}
-
-        errors = {}
-        unknown_ids = voucher_ids - found_ids
-        if unknown_ids:
-            errors["unknown_ids"] = [str(i) for i in unknown_ids]
-
-        uninvoiceable_ids = []
-        conflict_ids = []
-
-        for v in vouchers:
-            classification = self._classify_voucher(
-                v, request_id, is_failed=v.pk in failed_ids
-            )
-            if classification == VoucherClassification.UNINVOICEABLE:
-                uninvoiceable_ids.append(str(v.pk))
-            elif classification == VoucherClassification.CONFLICT:
-                conflict_ids.append(str(v.pk))
-
-        if uninvoiceable_ids:
-            errors["uninvoiceable_ids"] = uninvoiceable_ids
-        if conflict_ids:
-            errors["conflict_ids"] = conflict_ids
-
-        return errors
-
-    def _mark_vouchers_as_invoiced(self, voucher_ids: set, request_id: str) -> int:
-        """
-        Mark a set of vouchers as invoiced and exported.
-
-        This uses QuerySet.update() which bypasses Django signals. See
-        TalpaIntegrationMixin docstring for the audit logging rationale.
-
-        Args:
-            voucher_ids: A set of UUIDs representing the vouchers to update.
-            request_id: The Talpa request ID to record.
-
-        Returns:
-            The number of rows matched by the update query
-            (excluding idempotent retries).
-        """
-        return EmployerSummerVoucher.objects.filter(
-            pk__in=voucher_ids,
-            invoiced_at__isnull=True,
-            application__status__in=TALPA_INVOICEABLE_STATUSES,
-        ).update(
-            invoiced_at=timezone.now(),
-            talpa_request_id=request_id,
-            is_exported=True,
-        )
-
-    def _handle_failed_vouchers(self, voucher_ids: set, request_id: str) -> None:
-        """
-        Persist request_id on failed vouchers and transition their applications
-        to ERROR_IN_PAYMENT.
-        """
-        EmployerSummerVoucher.objects.filter(pk__in=voucher_ids).update(
-            talpa_request_id=request_id
-        )
-
-        apps = (
-            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
-            .exclude(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
-            .distinct()
-        )
-        records = list(apps.values_list("id", "status"))
-        if not records:
-            return
-
-        TimelineActivityLog.objects.bulk_create(
-            [
-                TimelineActivityLog(
-                    application_id=app_id,
-                    application_type="employerapplication",
-                    old_value=old_status,
-                    new_value=EmployerApplicationStatus.ERROR_IN_PAYMENT,
-                )
-                for app_id, old_status in records
-            ]
-        )
-        apps.update(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
-
-    def _handle_successful_vouchers(self, voucher_ids: set) -> None:
-        """
-        Transition applications for successful vouchers to RECEIVED_BY_PAYMENT_SYSTEM.
-
-        Skips applications already in ERROR_IN_PAYMENT (failed vouchers take
-        priority when an application has mixed outcomes) and applications already
-        in RECEIVED_BY_PAYMENT_SYSTEM (idempotent).
-        """
-        apps = (
-            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
-            .exclude(
-                status__in=[
-                    EmployerApplicationStatus.ERROR_IN_PAYMENT,
-                    EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
-                ]
-            )
-            .distinct()
-        )
-        records = list(apps.values_list("id", "status"))
-        if not records:
-            return
-
-        TimelineActivityLog.objects.bulk_create(
-            [
-                TimelineActivityLog(
-                    application_id=app_id,
-                    application_type="employerapplication",
-                    old_value=old_status,
-                    new_value=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
-                )
-                for app_id, old_status in records
-            ]
-        )
-        apps.update(status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM)
 
     @extend_schema(
         summary="Acknowledge batch receipt (Webhook)",
@@ -441,25 +240,19 @@ class TalpaWebhookView(APIView):
             },
         )
 
-        if successful_ids & failed_ids:
+        service = TalpaWebhookService(successful_ids, failed_ids, request_id)
+
+        if service.has_overlapping_ids():
             return Response(
-                {"overlapping_ids": [str(i) for i in successful_ids & failed_ids]},
+                {"overlapping_ids": [str(i) for i in service.get_overlapping_ids()]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         with transaction.atomic():
-            errors = self._validate_and_lock_vouchers(
-                successful_ids, failed_ids, request_id
-            )
+            errors = service.validate_and_lock_vouchers()
             if errors:
                 return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-            updated = self._mark_vouchers_as_invoiced(successful_ids, request_id)
-
-            if failed_ids:
-                self._handle_failed_vouchers(failed_ids, request_id)
-
-            if successful_ids:
-                self._handle_successful_vouchers(successful_ids)
+            updated = service.process_batch()
 
         return Response({"updated": updated}, status=status.HTTP_200_OK)
