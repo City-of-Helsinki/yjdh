@@ -102,13 +102,15 @@ describe('useDependentFieldsEffect', () => {
     const callbacks = buildCallbacks();
 
     const { rerender } = renderDependentFieldsEffect(
-      { paySubsidyGranted: true },
+      { paySubsidyGranted: false },
       callbacks
     );
 
-    rerender({ paySubsidyGranted: true, startDate: '2024-01-01' });
-    rerender({ paySubsidyGranted: true, startDate: '2024-02-01' });
+    jest.clearAllMocks();
 
+    rerender({ paySubsidyGranted: true });
+
+    expect(callbacks.clearBenefitValues).toHaveBeenCalledTimes(1);
     expect(callbacks.clearPaySubsidyValues).not.toHaveBeenCalled();
   });
 
