@@ -1,11 +1,11 @@
+import Company from '@frontend/kesaseteli-shared/src/types/company';
+import ContactInfo from '@frontend/kesaseteli-shared/src/types/contact-info';
 import { fillInput } from '@frontend/shared/browser-tests/utils/input.utils';
 import {
   getErrorMessage,
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import Company from '@frontend/shared/src/types/company';
-import ContactInfo from '@frontend/shared/src/types/contact-info';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { friendlyFormatIBAN } from 'ibantools';
 import TestController, { Selector } from 'testcafe';

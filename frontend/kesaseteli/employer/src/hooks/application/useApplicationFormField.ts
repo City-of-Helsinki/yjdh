@@ -1,5 +1,8 @@
 import useGetApplicationFormFieldLabel from 'kesaseteli/employer/hooks/application/useGetApplicationFormFieldLabel';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
+import ApplicationFieldName from 'kesaseteli-shared/types/application-field-name';
+import Application from 'kesaseteli-shared/types/application-form-data';
+import Employment from 'kesaseteli-shared/types/employment';
 import { useTranslation } from 'next-i18next';
 import {
   Control,
@@ -9,9 +12,6 @@ import {
   useFormContext,
   UseFormRegister,
 } from 'react-hook-form';
-import ApplicationFieldName from 'shared/types/application-field-name';
-import Application from 'shared/types/application-form-data';
-import Employment from 'shared/types/employment';
 import { getLastValue } from 'shared/utils/array.utils';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import { isDateObject } from 'shared/utils/type-guards';

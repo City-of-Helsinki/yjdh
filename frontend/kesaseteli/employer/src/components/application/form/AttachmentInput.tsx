@@ -4,6 +4,7 @@ import useOpenAttachment from 'kesaseteli/employer/hooks/backend/useOpenAttachme
 import useRemoveAttachmentQuery from 'kesaseteli/employer/hooks/backend/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'kesaseteli/employer/hooks/backend/useUploadAttachmentQuery';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
+import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -11,7 +12,6 @@ import { FieldPathValue } from 'react-hook-form';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import ApplicationFormData from 'shared/types/application-form-data';
 import { AttachmentType, KesaseteliAttachment } from 'shared/types/attachment';
 
 type Props = {

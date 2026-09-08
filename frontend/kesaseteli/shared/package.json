@@ -17,7 +17,10 @@
     "@frontend/shared": "workspace:*",
     "@tanstack/react-query": "5.101.0",
     "axios": "^1.17.0",
-    "finnish-ssn": "^2.1.2"
+    "finnish-ssn": "^2.1.2",
+    "next-i18next": "^15.3.0",
+    "react-hook-form": "7.78.0",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "eslint-config-adjunct": "4.11.1",

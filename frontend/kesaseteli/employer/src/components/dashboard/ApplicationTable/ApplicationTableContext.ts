@@ -1,5 +1,5 @@
+import Application from 'kesaseteli-shared/types/application';
 import React from 'react';
-import Application from 'shared/types/application';
 
 export type ApplicationTableContextType = {
   applications: Application[];

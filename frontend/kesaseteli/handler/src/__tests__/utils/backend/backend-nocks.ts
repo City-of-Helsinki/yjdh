@@ -1,4 +1,5 @@
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
+import { waitForLoadingCompleted } from 'kesaseteli-shared/__tests__/utils/component.utils';
 import {
   BackendEndpoint,
   getBackendDomain,
@@ -7,7 +8,6 @@ import {
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import nock from 'nock';
-import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 
 // disable unnecessary axios' expected error messages

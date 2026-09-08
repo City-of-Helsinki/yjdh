@@ -1,10 +1,10 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import Axios from 'axios';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import Application from 'kesaseteli-shared/types/application';
+import { getFormApplication } from 'kesaseteli-shared/utils/application.utils';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
-import Application from 'shared/types/application';
-import { getFormApplication } from 'shared/utils/application.utils';
 
 const useApplicationQuery = <T = Application>(
   id?: string,

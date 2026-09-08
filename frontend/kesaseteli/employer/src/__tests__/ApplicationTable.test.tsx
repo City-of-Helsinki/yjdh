@@ -4,8 +4,8 @@ import ApplicationTable from 'kesaseteli/employer/components/dashboard/Applicati
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
 import React from 'react';
-import Application from 'shared/types/application';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 jest.mock('kesaseteli/employer/hooks/backend/useApplicationsQuery', () =>

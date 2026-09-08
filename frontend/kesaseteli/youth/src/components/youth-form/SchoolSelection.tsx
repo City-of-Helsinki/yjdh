@@ -1,13 +1,15 @@
 import useSchoolListQuery from 'kesaseteli/youth/hooks/backend/useSchoolListQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import Checkbox from 'kesaseteli-shared/components/forms/inputs/Checkbox';
+import Dropdown, {
+  HdsOption,
+} from 'kesaseteli-shared/components/forms/inputs/Dropdown';
+import TextInput from 'kesaseteli-shared/components/forms/inputs/TextInput';
 import School from 'kesaseteli-shared/types/School';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import Checkbox from 'shared/components/forms/inputs/Checkbox';
-import Dropdown, { HdsOption } from 'shared/components/forms/inputs/Dropdown';
-import TextInput from 'shared/components/forms/inputs/TextInput';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { NAMES_REGEX } from 'shared/constants';
 import useToggle from 'shared/hooks/useToggle';

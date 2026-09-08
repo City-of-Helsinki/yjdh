@@ -6,8 +6,8 @@ import {
   expectAuthorizedReply,
   expectToGetApplicationFromBackend,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
-import SLOW_JEST_TIMEOUT from 'shared/__tests__/utils/slow-jest-timeout';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
+import SLOW_JEST_TIMEOUT from 'kesaseteli-shared/__tests__/utils/slow-jest-timeout';
 
 const fakeObjectFactory = new FakeObjectFactory();
 

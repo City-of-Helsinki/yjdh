@@ -1,12 +1,9 @@
-import {
-  doLogin,
-  SuomiFiData,
-} from '@frontend/shared/browser-tests/actions/login-action';
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import User from '@frontend/shared/src/types/user';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
+import { doLogin, SuomiFiData } from './login-action';
 
 export const doEmployerLogin = async (
   t: TestController,

@@ -1,13 +1,13 @@
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
+import TextInputBase, {
+  TextInputProps as TextInputBaseProps,
+} from 'kesaseteli-shared/components/forms/inputs/TextInput';
+import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
-import TextInputBase, {
-  TextInputProps as TextInputBaseProps,
-} from 'shared/components/forms/inputs/TextInput';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
-import ApplicationFormData from 'shared/types/application-form-data';
 import AutoComplete from 'shared/types/auto-complete';
 
 export type TextInputProps = {

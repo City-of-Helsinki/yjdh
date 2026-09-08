@@ -1,6 +1,8 @@
 import { ButtonPresetTheme, NotificationSize } from 'hds-react';
 import useCreateAdditionalInfoQuery from 'kesaseteli/youth/hooks/backend/useCreateAdditionalInfoQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import MultiSelectDropdown from 'kesaseteli-shared/components/forms/inputs/MultiSelectDropdown';
+import TextInput from 'kesaseteli-shared/components/forms/inputs/TextInput';
 import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
 import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
@@ -10,8 +12,6 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
 import Heading from 'shared/components/forms/heading/Heading';
-import MultiSelectDropdown from 'shared/components/forms/inputs/MultiSelectDropdown';
-import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';

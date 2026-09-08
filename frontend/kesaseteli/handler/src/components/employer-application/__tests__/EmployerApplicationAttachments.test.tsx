@@ -1,9 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 
 import { HANDLED_EMPLOYER_APPLICATION_STATUSES } from '../../../types/application';
 import type HandlerEmployerApplication from '../../../types/HandlerEmployerApplication';

@@ -4,10 +4,10 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import Application from 'kesaseteli-shared/types/application';
 import { useRouter } from 'next/router';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import Application from 'shared/types/application';
 
 const useCreateApplicationQuery = (): UseMutationResult<
   Application,

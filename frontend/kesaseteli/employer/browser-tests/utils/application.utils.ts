@@ -1,8 +1,8 @@
-import { KesaseteliAttachment } from '@frontend/shared/src/types/attachment';
 import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
-} from '@frontend/shared/src/types/employment';
+} from '@frontend/kesaseteli-shared/src/types/employment';
+import { KesaseteliAttachment } from '@frontend/shared/src/types/attachment';
 import { getLastValue } from '@frontend/shared/src/utils/array.utils';
 
 import translations from '../../public/locales/fi/common.json';

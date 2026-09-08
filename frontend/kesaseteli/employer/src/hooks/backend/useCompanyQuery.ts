@@ -1,8 +1,8 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import Company from 'kesaseteli-shared/types/company';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
-import Company from 'shared/types/company';
 
 const useCompanyQuery = (): UseQueryResult<Company> => {
   // Company name is supplemental — don't redirect to /500 or /login if it fails.

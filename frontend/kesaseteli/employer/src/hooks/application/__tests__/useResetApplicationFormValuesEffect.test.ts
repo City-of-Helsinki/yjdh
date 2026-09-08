@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import Application from 'kesaseteli-shared/types/application-form-data';
 import { UseFormReturn } from 'react-hook-form';
-import Application from 'shared/types/application-form-data';
 
 import useResetApplicationFormValuesEffect from '../useResetApplicationFormValuesEffect';
 

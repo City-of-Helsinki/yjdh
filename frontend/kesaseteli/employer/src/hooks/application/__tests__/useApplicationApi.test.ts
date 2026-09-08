@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import type Application from 'kesaseteli-shared/types/application';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import type Application from 'shared/types/application';
 
 import useApplicationApi from '../useApplicationApi';
 

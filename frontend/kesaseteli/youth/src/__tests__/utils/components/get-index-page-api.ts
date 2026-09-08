@@ -1,11 +1,11 @@
 import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import YouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/youth-translations';
+import { waitForLoadingCompleted } from 'kesaseteli-shared/__tests__/utils/component.utils';
 import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
 import { convertFormDataToApplication } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import nock from 'nock';
-import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
 import {
   fireEvent,
   screen,

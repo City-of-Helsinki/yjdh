@@ -1,6 +1,6 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import LocalStorageApi from 'kesaseteli/employer/types/localstorage-api';
 import useLocalStorage from 'react-use/lib/useLocalStorage';
-import LocalStorageApi from 'shared/types/localstorage-api';
 
 const useStepStorage = (
   stepType: 'current' | 'last-completed'

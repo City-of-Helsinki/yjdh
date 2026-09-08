@@ -1,8 +1,7 @@
-import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
-import FakeObjectFactory from '@frontend/shared/src/__tests__/utils/FakeObjectFactory';
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import Application from '@frontend/shared/src/types/application';
-import Employment from '@frontend/shared/src/types/employment';
+import FakeObjectFactory from '@frontend/kesaseteli-shared/src/__tests__/utils/FakeObjectFactory';
+import isRealIntegrationsEnabled from '@frontend/kesaseteli-shared/src/flags/is-real-integrations-enabled';
+import Application from '@frontend/kesaseteli-shared/src/types/application';
+import Employment from '@frontend/kesaseteli-shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import TestController from 'testcafe';
 
@@ -12,6 +11,7 @@ import { getWizardComponents } from '../application-page/wizard.components';
 import { getDashboardComponents } from '../index-page/dashboard.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
+import type { SuomiFiData } from './login-action';
 
 type UserAndApplicationData = Omit<Application, 'user'> & SuomiFiData;
 
