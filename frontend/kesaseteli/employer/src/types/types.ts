@@ -1,5 +1,5 @@
-import Application from 'shared/types/application';
-import Employment from 'shared/types/employment';
+import Application from 'kesaseteli-shared/types/application';
+import Employment from 'kesaseteli-shared/types/employment';
 
 export type DashboardVoucher = Employment & {
   applicationId: string;

@@ -1,14 +1,14 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import usePersistFormValuesEffect from 'kesaseteli/employer/hooks/application/usePersistFormValuesEffect';
 import useResetApplicationFormValuesEffect from 'kesaseteli/employer/hooks/application/useResetApplicationFormValuesEffect';
+import useLeaveConfirm from 'kesaseteli/employer/hooks/useLeaveConfirm';
 import useSaveCurrentStepEffect from 'kesaseteli/employer/hooks/wizard/useSaveCurrentStepEffect';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
-import Application from 'shared/types/application-form-data';
 
 type Props = {
   title?: string;

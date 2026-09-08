@@ -1,7 +1,7 @@
 import Footer from 'kesaseteli/youth/components/footer/Footer';
 import Header from 'kesaseteli/youth/components/header/Header';
+import renderPageF from 'kesaseteli-shared/__tests__/utils/render-component/render-page';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
-import renderPageF from 'shared/__tests__/utils/render-component/render-page';
 
 const render = renderPageF({ backendUrl: getBackendDomain(), Header, Footer });
 

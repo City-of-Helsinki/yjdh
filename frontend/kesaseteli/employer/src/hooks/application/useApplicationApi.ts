@@ -9,19 +9,19 @@ import useDeleteApplicationQuery from 'kesaseteli/employer/hooks/backend/useDele
 import useEmploymentQuery from 'kesaseteli/employer/hooks/backend/useEmploymentQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import DraftApplication from 'kesaseteli/employer/types/draft-application';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
+import { EmploymentBase } from 'kesaseteli-shared/types/employment';
+import { getFormApplication } from 'kesaseteli-shared/utils/application.utils';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import { ErrorOption } from 'react-hook-form';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
-import Application from 'shared/types/application';
-import DraftApplication from 'shared/types/draft-application';
-import { EmploymentBase } from 'shared/types/employment';
-import { getFormApplication } from 'shared/utils/application.utils';
 
 export type ApplicationApi<T> = {
   applicationId?: string;

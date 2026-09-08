@@ -1,9 +1,9 @@
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import SelectionGroup from 'kesaseteli-shared/components/forms/inputs/SelectionGroup';
 import { useCurrentYearSummerVoucherConfig } from 'kesaseteli-shared/hooks/useCurrentYearSummerVoucherConfig';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import SelectionGroup from 'shared/components/forms/inputs/SelectionGroup';
 
 const TargetGroupSelection: React.FC = () => {
   const { t } = useTranslation();

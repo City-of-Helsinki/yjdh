@@ -1,13 +1,13 @@
+import { waitForBackendRequestsToComplete } from 'kesaseteli-shared/__tests__/utils/component.utils';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import type Application from 'kesaseteli-shared/types/application';
+import type Company from 'kesaseteli-shared/types/company';
 import nock from 'nock';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import type Application from 'shared/types/application';
-import type Company from 'shared/types/company';
 
 const fakeObjectFactory = new FakeObjectFactory();
 

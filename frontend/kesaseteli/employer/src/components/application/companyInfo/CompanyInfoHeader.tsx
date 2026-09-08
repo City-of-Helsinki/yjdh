@@ -1,7 +1,7 @@
 import { $CompanyInfoHeader } from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo.sc';
+import type Company from 'kesaseteli-shared/types/company';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import type Company from 'shared/types/company';
 
 type Props = { field: keyof Company };
 

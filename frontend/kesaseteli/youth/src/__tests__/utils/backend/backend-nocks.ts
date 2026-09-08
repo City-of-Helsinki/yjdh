@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { waitForBackendRequestsToComplete } from 'kesaseteli-shared/__tests__/utils/component.utils';
 import {
   fakeSchools,
   fakeTargetGroups,
@@ -15,7 +16,6 @@ import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import { ErrorType } from 'kesaseteli-shared/types/youth-application-creation-error';
 import YouthApplicationStatusProps from 'kesaseteli-shared/types/youth-application-status-props';
 import nock from 'nock';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests

@@ -1,7 +1,7 @@
 import { Notification, Tab, TabList, TabPanel } from 'hds-react';
+import useMediaQuery from 'kesaseteli/handler/hooks/useMediaQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
-import useMediaQuery from 'shared/hooks/useMediaQuery';
 import { useTheme } from 'styled-components';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';

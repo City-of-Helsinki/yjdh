@@ -1,10 +1,10 @@
 import ErrorNotificationRow from 'kesaseteli/employer/components/application/form/error-summary/ErrorNotificationRow';
+import usePreviousValue from 'kesaseteli/employer/hooks/usePreviousValue';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
+import Application from 'kesaseteli-shared/types/application-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import usePreviousValue from 'shared/hooks/usePreviousValue';
-import Application from 'shared/types/application-form-data';
 
 import { $ErrorSummary } from './EmployerErrorSummary.sc';
 

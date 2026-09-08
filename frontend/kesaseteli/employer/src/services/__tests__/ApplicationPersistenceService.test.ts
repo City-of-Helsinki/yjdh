@@ -1,6 +1,6 @@
 /* eslint-disable scanjs-rules/identifier_sessionStorage */
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
-import Application from 'shared/types/application';
+import Application from 'kesaseteli-shared/types/application';
 
 import ApplicationPersistenceService from '../ApplicationPersistenceService';
 

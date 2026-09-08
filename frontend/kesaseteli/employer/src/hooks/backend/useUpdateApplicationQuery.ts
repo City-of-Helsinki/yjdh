@@ -3,12 +3,12 @@ import {
   UseMutationResult,
   useQueryClient,
 } from '@tanstack/react-query';
+import DraftApplication from 'kesaseteli/employer/types/draft-application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import Application from 'kesaseteli-shared/types/application';
 import noop from 'lodash/noop';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
-import Application from 'shared/types/application';
-import DraftApplication from 'shared/types/draft-application';
 
 const useUpdateApplicationQuery = (
   id: Application['id'] | undefined,

@@ -1,7 +1,7 @@
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import Application from 'kesaseteli-shared/types/application';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import Application from 'shared/types/application';
 
 /**
  * Hook to automatically persist form values to SessionStorage as the user types.

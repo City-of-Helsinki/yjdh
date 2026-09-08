@@ -1,6 +1,6 @@
+import Application from 'kesaseteli-shared/types/application-form-data';
 import React from 'react';
 import { useWatch } from 'react-hook-form';
-import Application from 'shared/types/application-form-data';
 
 /**
  * Checks if the given bank account number is foreign.
