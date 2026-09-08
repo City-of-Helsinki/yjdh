@@ -8,7 +8,10 @@ from rest_framework import status
 
 from applications.enums import EmployerApplicationStatus
 from applications.models import TimelineActivityLog
-from common.tests.factories import EmployerSummerVoucherFactory
+from common.tests.factories import (
+    EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -441,3 +444,61 @@ def test_webhook_overlapping_ids_returns_400(unauthenticated_api_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "overlapping_ids" in response.data
     assert str(voucher.id) in response.data["overlapping_ids"]
+
+
+@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
+def test_webhook_mixed_outcomes_same_application(unauthenticated_api_client):
+    """
+    When an application has one successful and one failed voucher in the same
+    request, the application should transition to ERROR_IN_PAYMENT (failed
+    outcomes take priority) with exactly one TimelineActivityLog entry.
+    """
+    app = EmployerApplicationFactory(status="submitted")
+    voucher_ok = EmployerSummerVoucherFactory(application=app)
+    voucher_fail = EmployerSummerVoucherFactory(application=app)
+    url = reverse("talpa-webhook")
+    data = {
+        "successful_ids": [str(voucher_ok.id)],
+        "failed_ids": [str(voucher_fail.id)],
+    }
+    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
+    assert response.status_code == status.HTTP_200_OK
+
+    app.refresh_from_db()
+    assert app.status == EmployerApplicationStatus.ERROR_IN_PAYMENT
+
+    # Exactly one timeline entry for this application
+    tl = TimelineActivityLog.objects.filter(application_id=app.id)
+    assert tl.count() == 1
+    assert tl.first().new_value == EmployerApplicationStatus.ERROR_IN_PAYMENT
+
+
+# Conflict: Idempotent retry changes outcome from successful to failed
+@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
+def test_webhook_idempotent_retry_fails_if_invoiced_voucher_passed_as_failed(
+    unauthenticated_api_client,
+):
+    voucher = EmployerSummerVoucherFactory(
+        application__status="submitted",
+        invoiced_at="2026-08-20T10:00:00Z",
+        talpa_request_id="req-123",
+    )
+    url = reverse("talpa-webhook")
+    data = {"failed_ids": [str(voucher.id)], "request_id": "req-123"}
+    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "conflict_ids" in response.data
+
+
+# Conflict: Idempotent retry changes outcome from failed to successful
+@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
+def test_webhook_idempotent_retry_fails_if_failed_voucher_passed_as_successful(
+    unauthenticated_api_client,
+):
+    app = EmployerApplicationFactory(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
+    voucher = EmployerSummerVoucherFactory(application=app, talpa_request_id="req-123")
+    url = reverse("talpa-webhook")
+    data = {"successful_ids": [str(voucher.id)], "request_id": "req-123"}
+    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "conflict_ids" in response.data

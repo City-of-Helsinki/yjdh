@@ -116,10 +116,11 @@ class TalpaWebhookView(APIView):
     """
     Bulk-acknowledge endpoint for the Talpa invoicing integration.
 
-    Talpa calls this endpoint after it has successfully imported a batch of
-    employer summer vouchers into its invoicing system.  The view marks every
-    identified voucher as invoiced by setting ``invoiced_at``, ``is_exported``
-    and ``talpa_request_id`` in a single SQL UPDATE.
+    Talpa calls this endpoint after it has processed a batch of employer summer
+    vouchers. The view marks successfully processed vouchers as invoiced by
+    setting ``invoiced_at``, ``is_exported`` and ``talpa_request_id``. Failed
+    vouchers are recorded with their ``talpa_request_id``, and their respective
+    applications are transitioned to the ``ERROR_IN_PAYMENT`` status.
 
     Audit logging
     -------------
@@ -262,6 +263,72 @@ class TalpaWebhookView(APIView):
             is_exported=True,
         )
 
+    def _handle_failed_vouchers(self, voucher_ids: set, request_id: str) -> None:
+        """
+        Persist request_id on failed vouchers and transition their applications
+        to ERROR_IN_PAYMENT.
+        """
+        EmployerSummerVoucher.objects.filter(pk__in=voucher_ids).update(
+            talpa_request_id=request_id
+        )
+
+        apps = (
+            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
+            .exclude(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
+            .distinct()
+        )
+        records = list(apps.values_list("id", "status"))
+        if not records:
+            return
+
+        TimelineActivityLog.objects.bulk_create(
+            [
+                TimelineActivityLog(
+                    application_id=app_id,
+                    application_type="employerapplication",
+                    old_value=old_status,
+                    new_value=EmployerApplicationStatus.ERROR_IN_PAYMENT,
+                )
+                for app_id, old_status in records
+            ]
+        )
+        apps.update(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
+
+    def _handle_successful_vouchers(self, voucher_ids: set) -> None:
+        """
+        Transition applications for successful vouchers to RECEIVED_BY_PAYMENT_SYSTEM.
+
+        Skips applications already in ERROR_IN_PAYMENT (failed vouchers take
+        priority when an application has mixed outcomes) and applications already
+        in RECEIVED_BY_PAYMENT_SYSTEM (idempotent).
+        """
+        apps = (
+            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
+            .exclude(
+                status__in=[
+                    EmployerApplicationStatus.ERROR_IN_PAYMENT,
+                    EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+                ]
+            )
+            .distinct()
+        )
+        records = list(apps.values_list("id", "status"))
+        if not records:
+            return
+
+        TimelineActivityLog.objects.bulk_create(
+            [
+                TimelineActivityLog(
+                    application_id=app_id,
+                    application_type="employerapplication",
+                    old_value=old_status,
+                    new_value=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+                )
+                for app_id, old_status in records
+            ]
+        )
+        apps.update(status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM)
+
     @extend_schema(
         summary="Acknowledge batch receipt (Webhook)",
         description=(
@@ -346,7 +413,8 @@ class TalpaWebhookView(APIView):
         3. Inside an atomic transaction, verify that every provided voucher ID
            exists in the database and can be transitioned to invoiced. If any
            IDs fail validation, abort the transaction and return a 400 Bad Request.
-        4. If all IDs are valid, update those vouchers to mark them as invoiced.
+        4. If all IDs are valid, mark successful vouchers as invoiced, persist the
+           request ID on failed vouchers, and update the application statuses.
         5. Return a 200 OK response with the count of successfully updated vouchers.
         """
         serializer = TalpaWebhookInputSerializer(data=request.data)
@@ -388,87 +456,10 @@ class TalpaWebhookView(APIView):
 
             updated = self._mark_vouchers_as_invoiced(successful_ids, request_id)
 
-            if successful_ids:
-                self._handle_successful_vouchers(successful_ids, request_id)
-
             if failed_ids:
                 self._handle_failed_vouchers(failed_ids, request_id)
 
+            if successful_ids:
+                self._handle_successful_vouchers(successful_ids)
+
         return Response({"updated": updated}, status=status.HTTP_200_OK)
-
-    def _handle_failed_vouchers(self, voucher_ids: set, request_id: str) -> int:
-        """
-        Mark applications for the given voucher IDs as ERROR_IN_PAYMENT.
-
-        Transitions the EmployerApplication status to ERROR_IN_PAYMENT
-        and creates a TimelineActivityLog entry for each affected application.
-        """
-        # Audit log entry so the event is always recorded
-        AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
-            actor=None,
-            actor_email="talpa-system",
-            content_type=ContentType.objects.get_for_model(EmployerSummerVoucher),
-            additional_data={
-                "method": f"{self.__class__.__name__}._handle_failed_vouchers",
-                "ids": [str(i) for i in voucher_ids],
-                "request_id": request_id,
-            },
-        )
-
-        # Persist the request_id on voucher rows so that _validate_and_lock_vouchers
-        # can identify same-request retries on ERROR_IN_PAYMENT vouchers.
-        EmployerSummerVoucher.objects.filter(pk__in=voucher_ids).update(
-            talpa_request_id=request_id
-        )
-
-        apps_to_update = EmployerApplication.objects.filter(
-            summer_vouchers__id__in=voucher_ids
-        ).exclude(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
-
-        app_records = list(set(apps_to_update.values_list("id", "status")))
-
-        if not app_records:
-            return 0
-
-        TimelineActivityLog.objects.bulk_create(
-            [
-                TimelineActivityLog(
-                    application_id=app_id,
-                    application_type="employerapplication",
-                    old_value=old_status,
-                    new_value=EmployerApplicationStatus.ERROR_IN_PAYMENT,
-                )
-                for app_id, old_status in app_records
-            ]
-        )
-
-        return apps_to_update.update(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
-
-    def _handle_successful_vouchers(self, voucher_ids: set, request_id: str) -> int:
-        """
-        Transition applications for the given voucher IDs to RECEIVED_BY_PAYMENT_SYSTEM.
-
-        Creates TimelineActivityLog entries for each affected application.
-        Skips applications already in RECEIVED_BY_PAYMENT_SYSTEM (idempotent).
-        """
-        apps_to_update = EmployerApplication.objects.filter(
-            summer_vouchers__id__in=voucher_ids
-        ).exclude(status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM)
-        app_records = list(set(apps_to_update.values_list("id", "status")))
-        if not app_records:
-            return 0
-
-        TimelineActivityLog.objects.bulk_create(
-            [
-                TimelineActivityLog(
-                    application_id=app_id,
-                    application_type="employerapplication",
-                    old_value=old_status,
-                    new_value=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
-                )
-                for app_id, old_status in app_records
-            ]
-        )
-        return apps_to_update.update(
-            status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM
-        )
