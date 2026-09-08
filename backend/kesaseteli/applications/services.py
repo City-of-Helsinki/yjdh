@@ -1,8 +1,12 @@
+import enum
 import json
 import logging
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING, TypedDict
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import AbstractBaseUser
 
 import jsonpath_ng
 import sentry_sdk
@@ -13,15 +17,18 @@ from django.contrib.contenttypes.models import ContentType
 from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
+from django.utils import timezone
 from requests import ReadTimeout
 from requests.exceptions import RequestException
 
 import applications.target_groups
+from applications.api.integration_views import TALPA_INVOICEABLE_STATUSES
 from applications.api.v1.exceptions import VTJServiceUnavailableError
 from applications.enums import (
     ActionType,
     APPLICATION_LANGUAGE_CHOICES,
     EmailTemplateType,
+    EmployerApplicationStatus,
     TimelineItemType,
     VtjTestCase,
 )
@@ -29,6 +36,7 @@ from applications.mock_context_service import MockContextService
 from applications.models import (
     EmailTemplate,
     EmployerApplication,
+    EmployerSummerVoucher,
     School,
     SummerVoucherConfiguration,
     TimelineActivityLog,
@@ -287,7 +295,7 @@ class AuditAccessLogService:
     @staticmethod
     def create_access_log_entry_with_no_related_object_instance(
         *,
-        actor: User,
+        actor: "AbstractBaseUser",
         actor_email: str,
         content_type: "ContentType",
         additional_data: dict,
@@ -308,7 +316,7 @@ class AuditAccessLogService:
     def create_access_log_entry_with_related_object_and_additional_data(
         *,
         accessed_instance,
-        actor: User,
+        actor: "AbstractBaseUser",
         actor_email: str,
         additional_data: dict,
     ) -> LogEntry | None:
@@ -614,3 +622,208 @@ class TimelineService:
             key=lambda x: datetime.fromisoformat(x["created_at"]),
             reverse=True,
         )
+
+
+class _VoucherClassification(enum.Enum):
+    """Result of classifying a voucher in a Talpa webhook batch."""
+
+    VALID = "valid"
+    UNINVOICEABLE = "uninvoiceable"
+    CONFLICT = "conflict"
+
+
+class TalpaWebhookValidationError(TypedDict, total=False):
+    unknown_ids: list[str]
+    uninvoiceable_ids: list[str]
+    conflict_ids: list[str]
+
+
+class TalpaWebhookService:
+    def __init__(self, successful_ids: set, failed_ids: set, request_id: str):
+        self.successful_ids = successful_ids
+        self.failed_ids = failed_ids
+        self.request_id = request_id
+
+    def has_overlapping_ids(self) -> bool:
+        return bool(self.successful_ids & self.failed_ids)
+
+    def get_overlapping_ids(self) -> set:
+        return self.successful_ids & self.failed_ids
+
+    def validate_and_lock_vouchers(self) -> TalpaWebhookValidationError:
+        """
+        Lock vouchers for update and validate they can transition to invoiced.
+
+        Returns:
+            TalpaWebhookValidationError with missing or conflicting IDs.
+            If empty, the batch is valid and locked.
+        """
+        voucher_ids = self.successful_ids | self.failed_ids
+        # Fetch with select_for_update to lock rows and prevent race conditions.
+        # select_related application is needed to check status without extra queries.
+        vouchers = (
+            EmployerSummerVoucher.objects.select_for_update(of=("self", "application"))
+            .select_related("application")
+            .filter(pk__in=voucher_ids)
+        )
+        found_ids = {v.pk for v in vouchers}
+
+        errors: TalpaWebhookValidationError = {}
+        unknown_ids = voucher_ids - found_ids
+        if unknown_ids:
+            errors["unknown_ids"] = [str(i) for i in unknown_ids]
+
+        uninvoiceable_ids = []
+        conflict_ids = []
+
+        for v in vouchers:
+            classification = self._classify_voucher(
+                v, self.request_id, is_failed=v.pk in self.failed_ids
+            )
+            if classification == _VoucherClassification.UNINVOICEABLE:
+                uninvoiceable_ids.append(str(v.pk))
+            elif classification == _VoucherClassification.CONFLICT:
+                conflict_ids.append(str(v.pk))
+
+        if uninvoiceable_ids:
+            errors["uninvoiceable_ids"] = uninvoiceable_ids
+        if conflict_ids:
+            errors["conflict_ids"] = conflict_ids
+
+        return errors
+
+    def process_batch(self) -> int:
+        """
+        Execute the batch processing (mark successful, mark failed).
+        Must be called within an atomic block after validation.
+        """
+        updated = self._mark_vouchers_as_invoiced(self.successful_ids, self.request_id)
+
+        if self.failed_ids:
+            self._handle_failed_vouchers(self.failed_ids, self.request_id)
+
+        if self.successful_ids:
+            self._handle_successful_vouchers(self.successful_ids)
+
+        return updated
+
+    def _classify_voucher(
+        self,
+        voucher: EmployerSummerVoucher,
+        request_id: str,
+        is_failed: bool = False,
+    ) -> _VoucherClassification:
+        """Classify a single voucher as uninvoiceable, conflict, or valid."""
+        if voucher.invoiced_at is not None:
+            # Already invoiced by a different request — conflict.
+            # If it's the SAME request, it's an idempotent retry (no conflict).
+            if voucher.talpa_request_id != request_id:
+                return _VoucherClassification.CONFLICT
+            if is_failed:
+                return _VoucherClassification.CONFLICT
+            return _VoucherClassification.VALID
+
+        app_status = voucher.application.status
+        if app_status not in TALPA_INVOICEABLE_STATUSES:
+            # Idempotent retry: same request already failed this voucher.
+            # Accept it so the caller is not forced to split the batch.
+            if (
+                app_status == EmployerApplicationStatus.ERROR_IN_PAYMENT
+                and request_id
+                and voucher.talpa_request_id == request_id
+            ):
+                # Same-request retry on ERROR_IN_PAYMENT — accept silently
+                if not is_failed:
+                    return _VoucherClassification.CONFLICT
+                return _VoucherClassification.VALID
+            return _VoucherClassification.UNINVOICEABLE
+
+        return _VoucherClassification.VALID
+
+    def _mark_vouchers_as_invoiced(self, voucher_ids: set, request_id: str) -> int:
+        """
+        Mark a set of vouchers as invoiced and exported.
+        """
+        return EmployerSummerVoucher.objects.filter(
+            pk__in=voucher_ids,
+            invoiced_at__isnull=True,
+            application__status__in=TALPA_INVOICEABLE_STATUSES,
+        ).update(
+            invoiced_at=timezone.now(),
+            talpa_request_id=request_id,
+            is_exported=True,
+        )
+
+    def _handle_failed_vouchers(self, voucher_ids: set, request_id: str) -> None:
+        """
+        Persist request_id on failed vouchers and transition their applications
+        to ERROR_IN_PAYMENT.
+
+        State Changes:
+        - Vouchers: talpa_request_id is updated to the provided request_id.
+        - Applications: Status is transitioned to ERROR_IN_PAYMENT.
+        - Audit/Timeline: A TimelineActivityLog entry is created for each
+          application reflecting the status change to ERROR_IN_PAYMENT.
+        """
+        EmployerSummerVoucher.objects.filter(pk__in=voucher_ids).update(
+            talpa_request_id=request_id
+        )
+
+        apps = (
+            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
+            .exclude(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
+            .distinct()
+        )
+        records = list(apps.values_list("id", "status"))
+        if not records:
+            return
+
+        TimelineActivityLog.objects.bulk_create(
+            [
+                TimelineActivityLog(
+                    application_id=app_id,
+                    application_type="employerapplication",
+                    old_value=old_status,
+                    new_value=EmployerApplicationStatus.ERROR_IN_PAYMENT,
+                )
+                for app_id, old_status in records
+            ]
+        )
+        apps.update(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
+
+    def _handle_successful_vouchers(self, voucher_ids: set) -> None:
+        """
+        Transition applications for successful vouchers to RECEIVED_BY_PAYMENT_SYSTEM.
+
+        State Changes:
+        - Applications: Status is transitioned to RECEIVED_BY_PAYMENT_SYSTEM (unless
+          already in ERROR_IN_PAYMENT or RECEIVED_BY_PAYMENT_SYSTEM).
+        - Audit/Timeline: A TimelineActivityLog entry is created for each
+          application reflecting the status change to RECEIVED_BY_PAYMENT_SYSTEM.
+        """
+        apps = (
+            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
+            .exclude(
+                status__in=[
+                    EmployerApplicationStatus.ERROR_IN_PAYMENT,
+                    EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+                ]
+            )
+            .distinct()
+        )
+        records = list(apps.values_list("id", "status"))
+        if not records:
+            return
+
+        TimelineActivityLog.objects.bulk_create(
+            [
+                TimelineActivityLog(
+                    application_id=app_id,
+                    application_type="employerapplication",
+                    old_value=old_status,
+                    new_value=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
+                )
+                for app_id, old_status in records
+            ]
+        )
+        apps.update(status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM)

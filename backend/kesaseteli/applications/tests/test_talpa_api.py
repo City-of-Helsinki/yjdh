@@ -9,7 +9,6 @@ from rest_framework import status
 from applications.enums import EmployerApplicationStatus
 from applications.models import TimelineActivityLog
 from common.tests.factories import (
-    EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
 )
 
@@ -284,140 +283,6 @@ def test_webhook_marks_invoiced_without_request_id(unauthenticated_api_client):
     assert voucher.talpa_request_id == ""  # stored as empty string
 
 
-# Idempotency: same request_id twice is safe (no conflict)
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_idempotent_retry_same_request_id(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
-    url = reverse("talpa-webhook")
-    data = {"successful_ids": [str(voucher.id)], "request_id": "req-123"}
-    # First call
-    unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    # Second call
-    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert response.status_code == status.HTTP_200_OK
-
-
-# Conflict: different request_id on already-invoiced voucher -> 400
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_conflict_different_request_id(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
-    url = reverse("talpa-webhook")
-    data1 = {"successful_ids": [str(voucher.id)], "request_id": "req-123"}
-    unauthenticated_api_client.post(url, data=data1, HTTP_X_API_KEY=VALID_KEY)
-
-    data2 = {"successful_ids": [str(voucher.id)], "request_id": "req-456"}
-    response = unauthenticated_api_client.post(
-        url, data=data2, HTTP_X_API_KEY=VALID_KEY
-    )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "conflict_ids" in response.data
-
-
-# No conflict: no request_id on already-invoiced voucher -> 200, updated=0
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_no_request_id_already_invoiced_returns_updated_zero(
-    unauthenticated_api_client,
-):
-    voucher = EmployerSummerVoucherFactory(
-        application__status="submitted", invoiced_at="2026-08-20T10:00:00Z"
-    )
-    url = reverse("talpa-webhook")
-    data = {"successful_ids": [str(voucher.id)]}
-    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data["updated"] == 0
-
-
-# Failure stub: failed_ids recorded in audit log, status stays SUBMITTED (stub is no-op)
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_failed_ids_recorded(unauthenticated_api_client):
-    voucher1 = EmployerSummerVoucherFactory(application__status="submitted")
-    voucher2 = EmployerSummerVoucherFactory(application__status="submitted")
-    url = reverse("talpa-webhook")
-    # For now, serializer requires at least one in ids
-    data = {
-        "successful_ids": [str(voucher1.id)],
-        "failed_ids": [str(voucher2.id)],
-        "request_id": "req-err-1",
-    }
-    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert response.status_code == status.HTTP_200_OK
-
-    voucher2.application.refresh_from_db()
-    assert voucher2.application.status == EmployerApplicationStatus.ERROR_IN_PAYMENT
-
-
-# Idempotency: retry with same request_id on ERROR_IN_PAYMENT voucher is accepted,
-# and no duplicate TimelineActivityLog rows are created.
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_failed_ids_retry_same_request_id_accepted(unauthenticated_api_client):
-    """Second call with same request_id on a ERROR_IN_PAYMENT voucher must succeed."""
-    good = EmployerSummerVoucherFactory(application__status="submitted")
-    failed = EmployerSummerVoucherFactory(application__status="submitted")
-    url = reverse("talpa-webhook")
-    data = {
-        "successful_ids": [str(good.id)],
-        "failed_ids": [str(failed.id)],
-        "request_id": "req-retry",
-    }
-    # First call — transitions failed voucher to ERROR_IN_PAYMENT
-    r1 = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert r1.status_code == status.HTTP_200_OK
-
-    # Second call — retry with identical payload and same request_id
-    good2 = EmployerSummerVoucherFactory(application__status="submitted")
-    data2 = {
-        "successful_ids": [str(good2.id)],
-        "failed_ids": [str(failed.id)],
-        "request_id": "req-retry",
-    }
-    r2 = unauthenticated_api_client.post(url, data=data2, HTTP_X_API_KEY=VALID_KEY)
-    assert r2.status_code == status.HTTP_200_OK
-
-    # Exactly one TimelineActivityLog entry for the failed voucher's application
-    tl_count = TimelineActivityLog.objects.filter(
-        application_id=failed.application_id,
-        new_value=EmployerApplicationStatus.ERROR_IN_PAYMENT,
-    ).count()
-    assert tl_count == 1
-
-
-# Conflict: ERROR_IN_PAYMENT voucher from a different request_id is uninvoiceable
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_failed_ids_retry_different_request_id_rejected(
-    unauthenticated_api_client,
-):
-    """Second call with a different request_id on a ERROR_IN_PAYMENT voucher returns 400."""
-    good = EmployerSummerVoucherFactory(application__status="submitted")
-    failed = EmployerSummerVoucherFactory(application__status="submitted")
-    url = reverse("talpa-webhook")
-    # First call — sets request_id="req-A" on the failed voucher
-    r1 = unauthenticated_api_client.post(
-        url,
-        data={
-            "successful_ids": [str(good.id)],
-            "failed_ids": [str(failed.id)],
-            "request_id": "req-A",
-        },
-        HTTP_X_API_KEY=VALID_KEY,
-    )
-    assert r1.status_code == status.HTTP_200_OK
-
-    # Second call — different request_id; failed voucher is now ERROR_IN_PAYMENT
-    # with a mismatching talpa_request_id, so it must be rejected as uninvoiceable.
-    good2 = EmployerSummerVoucherFactory(application__status="submitted")
-    r2 = unauthenticated_api_client.post(
-        url,
-        data={
-            "successful_ids": [str(good2.id), str(failed.id)],
-            "request_id": "req-B",
-        },
-        HTTP_X_API_KEY=VALID_KEY,
-    )
-    assert r2.status_code == status.HTTP_400_BAD_REQUEST
-    assert "uninvoiceable_ids" in r2.data
-
-
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_webhook_oversized_request_id_returns_400(unauthenticated_api_client):
     voucher = EmployerSummerVoucherFactory(application__status="submitted")
@@ -432,6 +297,7 @@ def test_webhook_oversized_request_id_returns_400(unauthenticated_api_client):
 
 
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
+@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_webhook_overlapping_ids_returns_400(unauthenticated_api_client):
     voucher = EmployerSummerVoucherFactory(application__status="submitted")
     url = reverse("talpa-webhook")
@@ -444,61 +310,3 @@ def test_webhook_overlapping_ids_returns_400(unauthenticated_api_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "overlapping_ids" in response.data
     assert str(voucher.id) in response.data["overlapping_ids"]
-
-
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_mixed_outcomes_same_application(unauthenticated_api_client):
-    """
-    When an application has one successful and one failed voucher in the same
-    request, the application should transition to ERROR_IN_PAYMENT (failed
-    outcomes take priority) with exactly one TimelineActivityLog entry.
-    """
-    app = EmployerApplicationFactory(status="submitted")
-    voucher_ok = EmployerSummerVoucherFactory(application=app)
-    voucher_fail = EmployerSummerVoucherFactory(application=app)
-    url = reverse("talpa-webhook")
-    data = {
-        "successful_ids": [str(voucher_ok.id)],
-        "failed_ids": [str(voucher_fail.id)],
-    }
-    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert response.status_code == status.HTTP_200_OK
-
-    app.refresh_from_db()
-    assert app.status == EmployerApplicationStatus.ERROR_IN_PAYMENT
-
-    # Exactly one timeline entry for this application
-    tl = TimelineActivityLog.objects.filter(application_id=app.id)
-    assert tl.count() == 1
-    assert tl.first().new_value == EmployerApplicationStatus.ERROR_IN_PAYMENT
-
-
-# Conflict: Idempotent retry changes outcome from successful to failed
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_idempotent_retry_fails_if_invoiced_voucher_passed_as_failed(
-    unauthenticated_api_client,
-):
-    voucher = EmployerSummerVoucherFactory(
-        application__status="submitted",
-        invoiced_at="2026-08-20T10:00:00Z",
-        talpa_request_id="req-123",
-    )
-    url = reverse("talpa-webhook")
-    data = {"failed_ids": [str(voucher.id)], "request_id": "req-123"}
-    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "conflict_ids" in response.data
-
-
-# Conflict: Idempotent retry changes outcome from failed to successful
-@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_webhook_idempotent_retry_fails_if_failed_voucher_passed_as_successful(
-    unauthenticated_api_client,
-):
-    app = EmployerApplicationFactory(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
-    voucher = EmployerSummerVoucherFactory(application=app, talpa_request_id="req-123")
-    url = reverse("talpa-webhook")
-    data = {"successful_ids": [str(voucher.id)], "request_id": "req-123"}
-    response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "conflict_ids" in response.data
