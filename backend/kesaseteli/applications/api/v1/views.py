@@ -351,6 +351,42 @@ class YouthApplicationViewSet(ModelViewSet):
         )
         return Response(combined_data)
 
+    @enforce_handler_view_adfs_login
+    @action(detail=True, methods=["post"])
+    def resend_voucher(self, request, pk=None):
+        """
+        Resend the youth summer voucher email to the applicant.
+
+        Only accessible by authenticated handlers. This action is only allowed
+        for accepted applications.
+        """
+        youth_application: YouthApplication = self.get_object()
+
+        if not youth_application.is_accepted:
+            return Response(
+                data={
+                    "detail": (
+                        _("Invalid status %(status)s for resending voucher email")
+                        % {"status": youth_application.status}
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        was_email_sent = (
+            youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                language=youth_application.language
+            )
+        )
+        if not was_email_sent:
+            with translation.override(youth_application.language):
+                return HttpResponse(
+                    _("Failed to send youth summer voucher email"),
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+
+        return Response(status=status.HTTP_200_OK)
+
     def get_serializer_class(self):
         """
         Return the serializer class that should be used for the current action.

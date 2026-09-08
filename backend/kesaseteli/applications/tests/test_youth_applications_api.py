@@ -328,6 +328,7 @@ def get_test_vtj_json() -> dict:
             "list",
             "process",
             "reject",
+            "resend-voucher",
         ]
         # Leave out the allowed combinations
         if (http_method, action)
@@ -341,6 +342,7 @@ def get_test_vtj_json() -> dict:
             ("post", "additional-info"),
             ("post", "create-without-ssn"),
             ("post", "list"),
+            ("post", "resend-voucher"),
         ]
     ],
 )
@@ -2310,6 +2312,66 @@ def test_youth_applications_accept_acceptable__vtj_disabled(
     assert acceptable_youth_application.encrypted_handler_vtj_json is None
     assert acceptable_youth_application.has_youth_summer_voucher
     assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
+
+
+@pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
+)
+def test_youth_applications_resend_voucher(accepted_youth_application, staff_client):
+    start_mail_count = len(mail.outbox)
+
+    response = staff_client.post(
+        reverse_youth_application_action(
+            "resend-voucher", accepted_youth_application.pk
+        )
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(mail.outbox) == start_mail_count + 1
+    resent_email = mail.outbox[-1]
+    assert resent_email.to == [accepted_youth_application.email]
+    assert resent_email.bcc == ["Test handler <testhandler@hel.fi>"]
+
+
+@pytest.mark.django_db
+def test_youth_applications_resend_voucher_email_failure(
+    accepted_youth_application, staff_client
+):
+    with mock.patch.object(
+        YouthSummerVoucher, "send_youth_summer_voucher_email", return_value=False
+    ) as send_email:
+        response = staff_client.post(
+            reverse_youth_application_action(
+                "resend-voucher", accepted_youth_application.pk
+            )
+        )
+
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    send_email.assert_called_once_with(language=accepted_youth_application.language)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "youth_application_status",
+    [
+        YouthApplicationStatus.SUBMITTED,
+        YouthApplicationStatus.REJECTED,
+    ],
+)
+def test_youth_applications_resend_voucher_requires_accepted_application(
+    youth_application_status, staff_client
+):
+    youth_application = YouthApplicationFactory(status=youth_application_status)
+    start_mail_count = len(mail.outbox)
+
+    response = staff_client.post(
+        reverse_youth_application_action("resend-voucher", youth_application.pk)
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert len(mail.outbox) == start_mail_count
 
 
 @pytest.mark.django_db
