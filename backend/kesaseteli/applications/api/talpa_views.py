@@ -421,13 +421,11 @@ class TalpaWebhookView(APIView):
             talpa_request_id=request_id
         )
 
-        apps_to_update = (
-            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
-            .exclude(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
-            .distinct()
-        )
+        apps_to_update = EmployerApplication.objects.filter(
+            summer_vouchers__id__in=voucher_ids
+        ).exclude(status=EmployerApplicationStatus.ERROR_IN_PAYMENT)
 
-        app_records = list(apps_to_update.values_list("id", "status"))
+        app_records = list(set(apps_to_update.values_list("id", "status")))
 
         if not app_records:
             return 0
@@ -453,12 +451,10 @@ class TalpaWebhookView(APIView):
         Creates TimelineActivityLog entries for each affected application.
         Skips applications already in RECEIVED_BY_PAYMENT_SYSTEM (idempotent).
         """
-        apps_to_update = (
-            EmployerApplication.objects.filter(summer_vouchers__id__in=voucher_ids)
-            .exclude(status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM)
-            .distinct()
-        )
-        app_records = list(apps_to_update.values_list("id", "status"))
+        apps_to_update = EmployerApplication.objects.filter(
+            summer_vouchers__id__in=voucher_ids
+        ).exclude(status=EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM)
+        app_records = list(set(apps_to_update.values_list("id", "status")))
         if not app_records:
             return 0
 
