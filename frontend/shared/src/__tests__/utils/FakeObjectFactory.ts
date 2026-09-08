@@ -137,7 +137,7 @@ class FakeObjectFactory {
       employment_description: faker.lorem.paragraph(1),
       job_type: faker.random.arrayElement([
         'administration',
-        'cleaning',
+        'sports_and_leisure',
         'sales',
       ]),
       hired_without_voucher_assessment: faker.random.arrayElement([

@@ -45,6 +45,7 @@ export const FULLY_MOCKED_FORM_DATA = {
   employment_work_hours: 30,
   employment_description: 'Ekspertti töissä',
   employment_salary_paid: 1200,
+  job_type: 'sports_and_leisure',
   hired_without_voucher_assessment: 'yes',
 } as unknown as Partial<Employment>;
 
@@ -174,7 +175,7 @@ const restoreVoucherData = (
     'employee_birthdate',
   ] as const;
 
-  const updatedFields: Pick<Employment, typeof employeeFields[number]> = {};
+  const updatedFields: Pick<Employment, (typeof employeeFields)[number]> = {};
 
   employeeFields.forEach((key) => {
     updatedFields[key] =

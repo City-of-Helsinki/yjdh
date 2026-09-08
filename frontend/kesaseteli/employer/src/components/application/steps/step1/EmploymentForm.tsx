@@ -1,6 +1,7 @@
 import {
   ButtonPresetTheme,
   ButtonVariant,
+  Option,
   Select,
   TextInput as HdsTextInput,
 } from 'hds-react';
@@ -14,7 +15,7 @@ import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeign
 import useJobTypesQuery from 'kesaseteli-shared/hooks/useJobTypesQuery';
 import { Trans, useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, Path, useFormContext, useWatch } from 'react-hook-form';
 import Button from 'shared/components/button/Button';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -284,7 +285,7 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
           disabled={disableEmploymentFields}
         />
         <Controller
-          name={getId('job_type') as any}
+          name={getId('job_type') as Path<Application>}
           control={useFormContext<Application>().control}
           rules={{ required: true }}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
@@ -298,9 +299,7 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
                 id={getId('job_type')}
                 options={options}
                 value={selectedOption ? [selectedOption] : []}
-                onChange={(selected: any) =>
-                  onChange(selected?.value ?? selected?.[0]?.value)
-                }
+                onChange={(selected: Option[]) => onChange(selected[0]?.value)}
                 texts={{
                   label: t('common:application.form.inputs.job_type'),
                   placeholder: t(

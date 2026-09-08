@@ -13,6 +13,19 @@ import { electronicFormatIBAN, friendlyFormatIBAN } from 'ibantools';
 
 import { getSelectionGroupTranslation } from '../utils/application.utils';
 
+const JOB_TYPE_LABELS: Record<string, string> = {
+  sports_and_leisure: 'Liikunta ja vapaa-aika',
+  administration: 'Hallinto- ja toimistotyö',
+  sales: 'Myynti- ja kaupan ala',
+};
+
+const getAttachmentNames = (
+  field: 'employment_contract' | 'payslip'
+): string[] =>
+  field === 'employment_contract'
+    ? ['sample1', 'sample2', 'sample3', 'sample4', 'sample5']
+    : ['sample6', 'sample7'];
+
 export const getSummaryComponents = async (t: TestController) => {
   const screen = screenContext(t);
   const within = withinContext(t);
@@ -93,7 +106,9 @@ export const getSummaryComponents = async (t: TestController) => {
         );
         if (
           application.bank_account_number &&
-          !electronicFormatIBAN(application.bank_account_number)?.startsWith('FI')
+          !electronicFormatIBAN(application.bank_account_number)?.startsWith(
+            'FI'
+          )
         ) {
           await expectFieldHasValue('payee_name');
           await expectFieldHasValue('payee_address');
@@ -127,6 +142,15 @@ export const getSummaryComponents = async (t: TestController) => {
           .ok(await getErrorMessage(t));
       },
       async isFulFilledWith(employment: Employment) {
+        const {
+          employee_name,
+          employee_birthdate,
+          employment_start_date,
+          employment_end_date,
+          employment_description,
+          job_type,
+        } = employment;
+
         const expectEmploymentFieldhasValue = async (
           field: keyof Employment,
           value?: string | number
@@ -136,53 +160,53 @@ export const getSummaryComponents = async (t: TestController) => {
             value ?? String(employment[field])
           );
 
-        const expectTargetGroupHasValue = (
-          field: 'hired_without_voucher_assessment'
+        const expectTargetGroupHasValue = async (
+          field: 'hired_without_voucher_assessment' | 'job_type'
         ) => {
           const value = employment[field];
           if (!value) {
             throw new Error(`selection value is missing for ${field}`);
           }
-          return expectEmploymentFieldhasValue(
+          await expectEmploymentFieldhasValue(
             field,
             getSelectionGroupTranslation(field, value)
           );
         };
 
-        const expectAttachments = (
-          field: 'employment_contract' | 'payslip'
-        ) => {
-          const attachments =
-            field === 'employment_contract'
-              ? ['sample1', 'sample2', 'sample3', 'sample4', 'sample5']
-              : ['sample6', 'sample7'];
-          return Promise.all(
-            attachments.map((attachment) =>
+        const expectAttachments = (field: 'employment_contract' | 'payslip') =>
+          Promise.all(
+            getAttachmentNames(field).map((attachment) =>
               expectEmploymentFieldhasValue(field, attachment)
             )
           );
-        };
 
         const header = selectors.employmentHeading();
         await t
           .expect(header.textContent)
-          .contains(employment.employee_name ?? '', await getErrorMessage(t));
+          .contains(employee_name ?? '', await getErrorMessage(t));
         await expectEmploymentFieldhasValue(
           'employee_birthdate',
-          convertToUIDateFormat(employment.employee_birthdate)
+          convertToUIDateFormat(employee_birthdate)
         );
         await expectEmploymentFieldhasValue('employee_phone_number');
         await expectEmploymentFieldhasValue('employment_postcode');
         await expectAttachments('employment_contract');
         await expectAttachments('payslip');
-        const { employment_start_date, employment_end_date } = employment;
         const dateRange = [employment_start_date, employment_end_date]
           .map((date) => convertToUIDateFormat(date))
           .join(' - ');
         await expectEmploymentFieldhasValue('employment_start_date', dateRange);
         await expectEmploymentFieldhasValue('employment_work_hours');
         await expectEmploymentFieldhasValue('employment_salary_paid');
-        await expectEmploymentFieldhasValue('employment_description');
+        if (employment_description) {
+          await expectEmploymentFieldhasValue('employment_description');
+        }
+        if (job_type) {
+          await expectEmploymentFieldhasValue(
+            'job_type',
+            JOB_TYPE_LABELS[job_type] ?? job_type
+          );
+        }
         await expectTargetGroupHasValue('hired_without_voucher_assessment');
       },
     };

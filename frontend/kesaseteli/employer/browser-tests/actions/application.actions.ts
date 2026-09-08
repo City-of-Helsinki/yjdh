@@ -91,6 +91,7 @@ export const fillEmploymentDetails = async (
       employment_work_hours,
       employment_description,
       employment_salary_paid,
+      job_type,
       hired_without_voucher_assessment,
     } = voucher;
     await step1Form.actions.fillPhoneNumber(employee_phone_number ?? '');
@@ -120,7 +121,7 @@ export const fillEmploymentDetails = async (
     await step1Form.actions.fillWorkHours(String(employment_work_hours ?? ''));
     await step1Form.actions.fillDescription(employment_description ?? '');
     await step1Form.actions.fillSalary(String(employment_salary_paid ?? ''));
-    await step1Form.actions.selectJobType();
+    await step1Form.actions.selectJobType(job_type);
     await step1Form.actions.selectHiredWithoutVoucherAssessment(
       hired_without_voucher_assessment ?? 'maybe'
     );
