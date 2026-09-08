@@ -816,6 +816,15 @@ importers:
       finnish-ssn:
         specifier: ^2.1.2
         version: 2.1.2
+      next-i18next:
+        specifier: ^15.3.0
+        version: 15.4.3(@types/react@19.2.18)(i18next@25.10.10(typescript@5.9.3))(next@15.5.22(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@22.19.20)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-i18next@15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3))(react@19.2.8)
+      react-hook-form:
+        specifier: 7.78.0
+        version: 7.78.0(react@19.2.8)
+      styled-components:
+        specifier: ^6.1.19
+        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       eslint-config-adjunct:
         specifier: 4.11.1

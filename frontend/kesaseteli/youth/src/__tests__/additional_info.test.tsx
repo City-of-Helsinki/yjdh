@@ -11,9 +11,9 @@ import AdditionalInfoPage from 'kesaseteli/youth/pages/additional_info';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeAdditionalInfoApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import SLOW_JEST_TIMEOUT from 'kesaseteli-shared/__tests__/utils/slow-jest-timeout';
 import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
-import SLOW_JEST_TIMEOUT from 'shared/__tests__/utils/slow-jest-timeout';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 

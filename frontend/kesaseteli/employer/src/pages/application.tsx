@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import ApplicationWizard from 'kesaseteli/employer/components/application/ApplicationWizard';
 import Step1EmployerAndEmployment from 'kesaseteli/employer/components/application/steps/step1/Step1EmployerAndEmployment';
 import Step2Summary from 'kesaseteli/employer/components/application/steps/step2/Step2Summary';
 import withEmployerAuth from 'kesaseteli/employer/hocs/withEmployerAuth';
@@ -7,7 +8,6 @@ import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { GetStaticProps, NextPage } from 'next';
 import * as React from 'react';
-import ApplicationWizard from 'shared/components/application-wizard/ApplicationWizard';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useGoToPage from 'shared/hooks/useGoToPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';

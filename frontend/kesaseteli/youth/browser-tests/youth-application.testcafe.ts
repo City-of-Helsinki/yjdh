@@ -2,6 +2,7 @@ import {
   fakeYouthApplication,
   fakeYouthApplication as getApplication,
 } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
+import isRealIntegrationsEnabled from '@frontend/kesaseteli-shared/src/flags/is-real-integrations-enabled';
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, {
   filterLoggedRequests,
@@ -11,7 +12,6 @@ import {
   getCurrentUrl,
   goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 
 import getYouthTranslationsApi from '../src/__tests__/utils/i18n/get-youth-translations-api';
 import getActivationLinkExpirationSeconds from '../src/utils/get-activation-link-expiration-seconds';

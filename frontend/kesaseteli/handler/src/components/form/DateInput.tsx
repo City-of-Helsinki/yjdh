@@ -8,11 +8,11 @@ import type {
   ApplicationWithoutSsnFieldPath,
   ApplicationWithoutSsnFormData,
 } from 'kesaseteli/handler/types/application-without-ssn-types';
+import DateInputBase from 'kesaseteli-shared/components/forms/inputs/DateInput';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
-import DateInputBase from 'shared/components/forms/inputs/DateInput';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import {
   convertToBackendDateFormat,

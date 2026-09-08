@@ -7,9 +7,9 @@ import {
   StatusLabel,
 } from 'hds-react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Status from 'kesaseteli-shared/types/application-status';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import Status from 'shared/types/application-status';
 
 const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
   const { t } = useTranslation();

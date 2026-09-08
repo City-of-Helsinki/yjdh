@@ -4,6 +4,7 @@ import IbanInput from 'kesaseteli/employer/components/application/form/IbanInput
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import EmployerErrorSummary from 'kesaseteli/employer/components/application/steps/step1/EmployerErrorSummary';
 import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
+import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -11,7 +12,6 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import LinkText from 'shared/components/link-text/LinkText';
 import { EMAIL_REGEX } from 'shared/constants';
-import ApplicationFormData from 'shared/types/application-form-data';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();

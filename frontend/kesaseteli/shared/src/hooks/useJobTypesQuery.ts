@@ -1,6 +1,6 @@
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import JobType from 'kesaseteli-shared/types/job-type';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
