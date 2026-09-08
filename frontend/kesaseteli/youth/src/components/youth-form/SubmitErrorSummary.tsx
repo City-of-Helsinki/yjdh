@@ -1,11 +1,11 @@
 import { Notification } from 'hds-react';
 import { SubmitError } from 'kesaseteli/youth/hooks/useHandleYouthApplicationSubmit';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
+import { assertUnreachable } from 'kesaseteli-shared/utils/typescript.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import alignCenterSvg from 'shared/styles/svg/align-center-svg.sc';
-import { assertUnreachable } from 'shared/utils/typescript.utils';
 
 type Props = {
   error: SubmitError;

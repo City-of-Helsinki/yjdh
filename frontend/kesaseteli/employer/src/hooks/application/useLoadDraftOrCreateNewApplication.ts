@@ -4,12 +4,12 @@ import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCrea
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
-import Application from 'shared/types/application';
 
 export const useCreateApplication = (): {
   createApplication: () => void;

@@ -2,13 +2,13 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ButtonVariant } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import { setLeaveConfirmBypassed } from 'kesaseteli/employer/hooks/useLeaveConfirm';
+import useWizard from 'kesaseteli/employer/hooks/wizard/useWizard';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import useConfirm from 'shared/hooks/useConfirm';
 import useGoToPage from 'shared/hooks/useGoToPage';
-import { setLeaveConfirmBypassed } from 'shared/hooks/useLeaveConfirm';
-import useWizard from 'shared/hooks/useWizard';
 
 import ActionButtons from '../ActionButtons';
 
@@ -52,9 +52,9 @@ jest.mock('kesaseteli/employer/hooks/application/useApplicationApi', () =>
   jest.fn()
 );
 jest.mock('shared/hooks/useConfirm', () => jest.fn());
-jest.mock('shared/hooks/useWizard', () => jest.fn());
+jest.mock('kesaseteli/employer/hooks/wizard/useWizard', () => jest.fn());
 jest.mock('shared/hooks/useGoToPage', () => jest.fn());
-jest.mock('shared/hooks/useLeaveConfirm', () => ({
+jest.mock('kesaseteli/employer/hooks/useLeaveConfirm', () => ({
   setLeaveConfirmBypassed: jest.fn(),
 }));
 jest.mock('@tanstack/react-query', () => ({

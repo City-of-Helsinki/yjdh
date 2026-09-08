@@ -1,4 +1,4 @@
-import Employment from '@frontend/shared/src/types/employment';
+import Employment from '@frontend/kesaseteli-shared/src/types/employment';
 import axios, { AxiosResponseHeaders } from 'axios';
 import fs from 'fs';
 import https from 'https';

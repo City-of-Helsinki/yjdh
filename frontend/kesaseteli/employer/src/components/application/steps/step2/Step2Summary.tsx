@@ -2,11 +2,11 @@ import ApplicationForm from 'kesaseteli/employer/components/application/Applicat
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useWizard from 'kesaseteli/employer/hooks/wizard/useWizard';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useWizard from 'shared/hooks/useWizard';
 
 import Checkbox from '../../form/Checkbox';
 

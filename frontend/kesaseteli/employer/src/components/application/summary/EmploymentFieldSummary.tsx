@@ -1,9 +1,9 @@
 import { $EmploymentFieldSummary } from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary.sc';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useGetApplicationFormFieldLabel from 'kesaseteli/employer/hooks/application/useGetApplicationFormFieldLabel';
+import Application from 'kesaseteli-shared/types/application';
+import Employment from 'kesaseteli-shared/types/employment';
 import React from 'react';
-import Application from 'shared/types/application';
-import Employment from 'shared/types/employment';
 
 type Props = {
   index: number;

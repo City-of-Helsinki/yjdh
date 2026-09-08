@@ -4,9 +4,9 @@ import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicati
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
 import { useRouter } from 'next/router';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import Application from 'shared/types/application';
 
 import useLoadDraftOrCreateNewApplication, {
   useCreateApplication,

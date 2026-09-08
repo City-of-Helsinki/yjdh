@@ -1,7 +1,7 @@
 import type { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
-import Application from 'shared/types/application';
+import Application from 'kesaseteli-shared/types/application';
+import Employment from 'kesaseteli-shared/types/employment';
 import { KesaseteliAttachment } from 'shared/types/attachment';
-import Employment from 'shared/types/employment';
 
 export type HandlerAttachment = KesaseteliAttachment & {
   author_name?: string;

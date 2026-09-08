@@ -1,7 +1,7 @@
 /* eslint-disable scanjs-rules/identifier_sessionStorage */
 
 import { extractEmployerFields } from 'kesaseteli/employer/utils/application.utils';
-import Application from 'shared/types/application';
+import Application from 'kesaseteli-shared/types/application';
 
 const EMPLOYER_DATA_KEY = 'kesaseteli_employer_data';
 

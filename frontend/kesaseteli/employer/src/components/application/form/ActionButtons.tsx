@@ -8,9 +8,12 @@ import {
   IconTrash,
 } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import { setLeaveConfirmBypassed } from 'kesaseteli/employer/hooks/useLeaveConfirm';
+import useWizard from 'kesaseteli/employer/hooks/wizard/useWizard';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import Application from 'kesaseteli-shared/types/application-form-data';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -19,9 +22,6 @@ import Button from 'shared/components/button/Button';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
 import useGoToPage from 'shared/hooks/useGoToPage';
-import { setLeaveConfirmBypassed } from 'shared/hooks/useLeaveConfirm';
-import useWizard from 'shared/hooks/useWizard';
-import Application from 'shared/types/application-form-data';
 
 import { $ButtonSection } from './ActionButtons.sc';
 

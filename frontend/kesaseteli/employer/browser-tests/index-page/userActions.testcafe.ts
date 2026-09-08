@@ -1,11 +1,11 @@
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import isRealIntegrationsEnabled from '@frontend/kesaseteli-shared/src/flags/is-real-integrations-enabled';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { doEmployerLogin } from '../actions/employer-header.actions';

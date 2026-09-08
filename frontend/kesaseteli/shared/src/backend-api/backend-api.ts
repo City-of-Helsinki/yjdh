@@ -1,5 +1,4 @@
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-
+import isRealIntegrationsEnabled from '../flags/is-real-integrations-enabled';
 import isSuomiFiEnabled from '../flags/is-suomi-fi-enabled';
 
 // Django contrib admin site uses this field name for redirects

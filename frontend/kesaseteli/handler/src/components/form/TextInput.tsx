@@ -7,12 +7,12 @@ import type {
   ApplicationWithoutSsnFieldPath,
   ApplicationWithoutSsnFormData,
 } from 'kesaseteli/handler/types/application-without-ssn-types';
+import TextInputBase, {
+  TextInputProps as TextInputBaseProps,
+} from 'kesaseteli-shared/components/forms/inputs/TextInput';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
-import TextInputBase, {
-  TextInputProps as TextInputBaseProps,
-} from 'shared/components/forms/inputs/TextInput';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import type AutoComplete from 'shared/types/auto-complete';
 

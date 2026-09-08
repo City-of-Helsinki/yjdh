@@ -1,7 +1,7 @@
+import Accordion from 'kesaseteli/handler/components/accordion/Accordion';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import Accordion from 'shared/components/accordion/Accordion';
 import { useTheme } from 'styled-components';
 
 type Props = {

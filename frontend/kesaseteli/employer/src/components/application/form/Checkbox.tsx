@@ -1,15 +1,15 @@
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
+import CheckboxBase from 'kesaseteli-shared/components/forms/inputs/Checkbox';
+import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
-import CheckboxBase from 'shared/components/forms/inputs/Checkbox';
 import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import ApplicationFormData from 'shared/types/application-form-data';
 
 type Props = {
   id: ApplicationFieldPath;

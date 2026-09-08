@@ -4,10 +4,10 @@
  */
 import type { BackendApplicationWithoutSsn } from 'kesaseteli/handler/types/application-without-ssn-types';
 import { isApplicationWithoutSsnValidationError } from 'kesaseteli/handler/utils/type-guards';
+import isRealIntegrationsEnabled from 'kesaseteli-shared/flags/is-real-integrations-enabled';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useGdprMaskedFormValues from 'shared/hooks/useGdprMaskedFormValues';
 import useGoToPage from 'shared/hooks/useGoToPage';

@@ -1,5 +1,5 @@
 import { expectToLogout } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
-import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
+import { waitForLoadingCompleted } from 'kesaseteli-shared/__tests__/utils/component.utils';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 
 const ErrorPageApi = {

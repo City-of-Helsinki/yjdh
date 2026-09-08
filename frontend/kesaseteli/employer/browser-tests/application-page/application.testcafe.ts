@@ -1,4 +1,6 @@
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import isRealIntegrationsEnabled from '@frontend/kesaseteli-shared/src/flags/is-real-integrations-enabled';
+import Application from '@frontend/kesaseteli-shared/src/types/application';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, {
@@ -8,8 +10,6 @@ import {
   clearDataToPrintOnFailure,
   getErrorMessage,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import Application from '@frontend/shared/src/types/application';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { Selector } from 'testcafe';
 

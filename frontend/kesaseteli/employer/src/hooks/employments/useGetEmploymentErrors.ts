@@ -1,6 +1,6 @@
+import Application from 'kesaseteli-shared/types/application-form-data';
+import Employment from 'kesaseteli-shared/types/employment';
 import { DeepMap, FieldError, get, useFormContext } from 'react-hook-form';
-import Application from 'shared/types/application-form-data';
-import Employment from 'shared/types/employment';
 
 const useGetEmploymentErrors = (
   index: number

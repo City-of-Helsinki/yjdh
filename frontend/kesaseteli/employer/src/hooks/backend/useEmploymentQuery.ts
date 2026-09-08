@@ -1,7 +1,7 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { EmploymentBase } from 'kesaseteli-shared/types/employment';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import { EmploymentBase } from 'shared/types/employment';
 
 type EmploymentArgs = {
   employer_summer_voucher_id: string;

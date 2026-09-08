@@ -6,12 +6,12 @@ import {
 import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/get-handler-translations-api';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
-import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
-import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import {
   waitForBackendRequestsToComplete,
   waitForLoadingCompleted,
-} from 'shared/__tests__/utils/component.utils';
+} from 'kesaseteli-shared/__tests__/utils/component.utils';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import {
   BoundFunctions,
   queries,

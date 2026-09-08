@@ -1,12 +1,12 @@
 import EmploymentFieldSummary from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useJobTypesQuery from 'kesaseteli-shared/hooks/useJobTypesQuery';
+import Employment from 'kesaseteli-shared/types/employment';
+import { getApplicationFormFieldLabel as getLabel } from 'kesaseteli-shared/utils/application.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import Employment from 'shared/types/employment';
-import { getApplicationFormFieldLabel as getLabel } from 'shared/utils/application.utils';
 import { getAttachmentsSummary } from 'shared/utils/attachment.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 

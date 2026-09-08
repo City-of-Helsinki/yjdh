@@ -5,9 +5,9 @@ import {
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 

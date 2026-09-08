@@ -9,14 +9,14 @@ import {
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
 import nock from 'nock';
 import React from 'react';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import Application from 'shared/types/application';
 
 const fakeObjectFactory = new FakeObjectFactory();
 

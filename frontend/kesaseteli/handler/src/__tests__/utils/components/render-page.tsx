@@ -1,9 +1,9 @@
 import Header from 'kesaseteli/handler/components/header/Header';
 import { UserProvider } from 'kesaseteli/handler/contexts/UserContext';
 import { expectAuthorizedReply } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import renderPageF from 'kesaseteli-shared/__tests__/utils/render-component/render-page';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { ROUTES_FOR_ANONYMOUS_USERS } from 'kesaseteli-shared/constants/routes';
-import renderPageF from 'shared/__tests__/utils/render-component/render-page';
 
 const render = renderPageF({
   backendUrl: getBackendDomain(),

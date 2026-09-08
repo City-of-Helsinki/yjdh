@@ -12,7 +12,11 @@ import type { TextInputProps } from 'kesaseteli/employer/components/application/
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
+import { getDecimalNumberRegex } from 'kesaseteli/employer/utils/regex.utils';
+import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'kesaseteli-shared/constants/employee-constants';
 import useJobTypesQuery from 'kesaseteli-shared/hooks/useJobTypesQuery';
+import Application from 'kesaseteli-shared/types/application';
+import Employment from 'kesaseteli-shared/types/employment';
 import { Trans, useTranslation } from 'next-i18next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, Path, useFormContext, useWatch } from 'react-hook-form';
@@ -23,11 +27,7 @@ import FormSectionDivider from 'shared/components/forms/section/FormSectionDivid
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import LinkText from 'shared/components/link-text/LinkText';
 import { POSTAL_CODE_REGEX } from 'shared/constants';
-import { EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT } from 'shared/constants/employee-constants';
-import Application from 'shared/types/application';
-import Employment from 'shared/types/employment';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
 /**
  * Hook to manage the state of the "Fetch Employee Data" button.

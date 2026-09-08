@@ -5,12 +5,12 @@ import {
   fakeYouthApplication,
 } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import { ADDITIONAL_INFO_REASON_TYPE } from '@frontend/kesaseteli-shared/src/constants/additional-info-reason-type';
+import isRealIntegrationsEnabled from '@frontend/kesaseteli-shared/src/flags/is-real-integrations-enabled';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { getUrlParam } from '@frontend/shared/browser-tests/utils/url.utils';
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 
 import getYouthTranslationsApi from '../src/__tests__/utils/i18n/get-youth-translations-api';
 import AdditionalInfoPage from './page-models/AdditionalInfoPage';

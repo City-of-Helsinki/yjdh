@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { ButtonPresetTheme, IconSignin, NotificationSize } from 'hds-react';
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
+import useClearQueryParams from 'kesaseteli/employer/hooks/useClearQueryParams';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -9,7 +10,6 @@ import React, { useEffect } from 'react';
 import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
-import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 import { clearLocalStorage } from '../utils/localstorage.utils';

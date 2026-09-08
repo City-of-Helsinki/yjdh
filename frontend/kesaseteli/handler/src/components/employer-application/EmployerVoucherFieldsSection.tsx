@@ -1,8 +1,8 @@
+import Employment from 'kesaseteli-shared/types/employment';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import Employment from 'shared/types/employment';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 import Field, { $DescriptionList } from '../form/Field';

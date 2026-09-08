@@ -1,12 +1,12 @@
 import SchoolSelection from 'kesaseteli/youth/components/youth-form/SchoolSelection';
 import TargetGroupSelection from 'kesaseteli/youth/components/youth-form/TargetGroupSelection';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import Checkbox from 'kesaseteli-shared/components/forms/inputs/Checkbox';
+import SocialSecurityNumberInput from 'kesaseteli-shared/components/forms/inputs/SocialSecurityNumberInput';
+import TextInput from 'kesaseteli-shared/components/forms/inputs/TextInput';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
-import Checkbox from 'shared/components/forms/inputs/Checkbox';
-import SocialSecurityNumberInput from 'shared/components/forms/inputs/SocialSecurityNumberInput';
-import TextInput from 'shared/components/forms/inputs/TextInput';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import {
   EMAIL_REGEX,
