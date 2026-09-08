@@ -4,19 +4,25 @@ import {
   EmploymentExceptionReason,
 } from '@frontend/shared/src/types/employment';
 import { getLastValue } from '@frontend/shared/src/utils/array.utils';
-// eslint-disable-next-line you-dont-need-lodash-underscore/get
-import get from 'lodash/get';
 
 import translations from '../../public/locales/fi/common.json';
 
+type SelectionGroups = typeof translations.application.form.selectionGroups;
+type SelectionGroupType = keyof SelectionGroups;
+
 export const getSelectionGroupTranslation = (
-  type: 'hired_without_voucher_assessment',
-  value: EmploymentExceptionReason | EmployeeHiredWithoutVoucherAssessment
-): string =>
-  get(
-    translations,
-    `application.form.selectionGroups.${type}.${value}`
-  ) as string;
+  type: SelectionGroupType,
+  value:
+    | EmploymentExceptionReason
+    | EmployeeHiredWithoutVoucherAssessment
+    | string
+): string => {
+  const group = translations.application.form.selectionGroups[type] as Record<
+    string,
+    string
+  >;
+  return group?.[value] ?? '';
+};
 
 export const getAttachmentFilePath = (
   attachment: KesaseteliAttachment

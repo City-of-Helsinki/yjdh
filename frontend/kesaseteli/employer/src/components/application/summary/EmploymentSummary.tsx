@@ -1,5 +1,6 @@
 import EmploymentFieldSummary from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useJobTypesQuery from 'kesaseteli-shared/hooks/useJobTypesQuery';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
@@ -18,6 +19,8 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
     select: (application) => application.summer_vouchers[index],
   });
 
+  const { data: jobTypes = [] } = useJobTypesQuery();
+
   const { t } = useTranslation();
 
   if (applicationQuery.isSuccess) {
@@ -30,6 +33,7 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
       employment_end_date,
       employment_description,
       hired_without_voucher_assessment,
+      job_type,
     } = applicationQuery.data;
 
     return (
@@ -81,6 +85,12 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
             fieldName="employment_description"
             index={index}
           />
+        )}
+        {job_type && (
+          <EmploymentFieldSummary fieldName="job_type" index={index}>
+            {getLabel(t, 'job_type')}:{' '}
+            {jobTypes.find((jt) => jt.id === job_type)?.name ?? job_type}
+          </EmploymentFieldSummary>
         )}
         <EmploymentFieldSummary
           fieldName="hired_without_voucher_assessment"

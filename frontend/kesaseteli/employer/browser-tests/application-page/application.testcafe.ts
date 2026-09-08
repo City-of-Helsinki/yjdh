@@ -72,7 +72,11 @@ if (isRealIntegrationsEnabled()) {
     await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
-  test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+  test.requestHooks(
+    getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+    jobTypesMock,
+    attachmentsMock
+  )(
     'Fills up employer form and retrieves its data when reloading page',
     async (t: TestController) => {
       const { id: applicationId, ...applicationData } =
@@ -91,7 +95,11 @@ if (isRealIntegrationsEnabled()) {
   );
 }
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)(
   'can fill and send application and create another with pre-filled employer data',
   async (t: TestController) => {
     const application = await loginAndfillApplication(
@@ -123,7 +131,11 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
   }
 );
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)(
   'Fills up employer form and preserves data when navigating back and forth',
   async (t: TestController) => {
     const application = await loginAndfillApplication(
@@ -160,7 +172,11 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
   }
 );
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)(
   'can fill and send application with foreign IBAN',
   async (t: TestController) => {
     const application = await loginAndfillApplication(
@@ -207,79 +223,85 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
   }
 );
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
-  'can cancel application filling',
-  async (t: TestController) => {
-    await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
-    const wizard = await getWizardComponents(t);
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)('can cancel application filling', async (t: TestController) => {
+  await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+  const wizard = await getWizardComponents(t);
 
-    await wizard.actions.clickCancelButton();
+  await wizard.actions.clickCancelButton();
 
-    // Verify confirmation modal exists
-    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+  // Verify confirmation modal exists
+  await t.expect(wizard.selectors.confirmationDialog().exists).ok();
 
-    await wizard.actions.clickConfirmCancelButton();
+  await wizard.actions.clickConfirmCancelButton();
 
-    // Verify redirect to dashboard
-    const dashboard = getDashboardComponents(t);
-    await dashboard.expectations.isLoaded();
-    await urlUtils.expectations.urlChangedToLandingPage();
-  }
-);
+  // Verify redirect to dashboard
+  const dashboard = getDashboardComponents(t);
+  await dashboard.expectations.isLoaded();
+  await urlUtils.expectations.urlChangedToLandingPage();
+});
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
-  'warns when navigating away from wizard',
-  async (t: TestController) => {
-    await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)('warns when navigating away from wizard', async (t: TestController) => {
+  await loginAndfillApplication(t, 1, FULLY_MOCKED_FORM_DATA);
 
-    const wizard = await getWizardComponents(t);
-    const header = new Header(getEmployerTranslationsApi());
-    await header.isLoaded();
+  const wizard = await getWizardComponents(t);
+  const header = new Header(getEmployerTranslationsApi());
+  await header.isLoaded();
 
-    // eslint-disable-next-line scanjs-rules/call_eval
-    const appUrl = (await t.eval(() => window.location.href)) as string;
+  // eslint-disable-next-line scanjs-rules/call_eval
+  const appUrl = (await t.eval(() => window.location.href)) as string;
 
-    // Verify NO warning when navigating away from a clean form
-    const appTitle = Selector('a').withText(/kesäseteli/i);
-    await t.click(appTitle);
-    await t.expect(wizard.selectors.confirmationDialog().exists).notOk();
+  // Verify NO warning when navigating away from a clean form
+  const appTitle = Selector('a').withText(/kesäseteli/i);
+  await t.click(appTitle);
+  await t.expect(wizard.selectors.confirmationDialog().exists).notOk();
 
-    // Go back to application (restores to step 2 from localStorage)
-    await t.navigateTo(appUrl);
-    // Navigate back to step 1 where the employer form inputs are
-    const wizardOnReturn = await getWizardComponents(t);
-    await wizardOnReturn.actions.clickGoToStep1Button();
-    // Re-initialize step 1 components
-    const freshStep1 = getStep1Components(t);
-    const freshForm = await freshStep1.form();
+  // Go back to application (restores to step 2 from localStorage)
+  await t.navigateTo(appUrl);
+  // Navigate back to step 1 where the employer form inputs are
+  const wizardOnReturn = await getWizardComponents(t);
+  await wizardOnReturn.actions.clickGoToStep1Button();
+  // Re-initialize step 1 components
+  const freshStep1 = getStep1Components(t);
+  const freshForm = await freshStep1.form();
 
-    const contactPersonNameInput = freshForm.selectors.contactPersonNameInput();
-    // Wait for the step 1 form to be fully loaded and interactive
-    await t
-      .expect(contactPersonNameInput.exists)
-      .ok(await getErrorMessage(t), { timeout: 20_000 })
-      .expect(contactPersonNameInput.visible)
-      .ok(await getErrorMessage(t), { timeout: 20_000 });
+  const contactPersonNameInput = freshForm.selectors.contactPersonNameInput();
+  // Wait for the step 1 form to be fully loaded and interactive
+  await t
+    .expect(contactPersonNameInput.exists)
+    .ok(await getErrorMessage(t), { timeout: 20_000 })
+    .expect(contactPersonNameInput.visible)
+    .ok(await getErrorMessage(t), { timeout: 20_000 });
 
-    await freshForm.actions.fillContactPersonName('Changed Name');
+  await freshForm.actions.fillContactPersonName('Changed Name');
 
-    // Click on the app name in header to navigate away (form is dirty)
-    await t.click(appTitle);
+  // Click on the app name in header to navigate away (form is dirty)
+  await t.click(appTitle);
 
-    // Verify confirmation modal exists
-    await t.expect(wizard.selectors.confirmationDialog().exists).ok();
+  // Verify confirmation modal exists
+  await t.expect(wizard.selectors.confirmationDialog().exists).ok();
 
-    // Confirm navigation
-    await wizard.actions.clickConfirmCancelButton();
+  // Confirm navigation
+  await wizard.actions.clickConfirmCancelButton();
 
-    // Verify redirect to dashboard
-    const dashboard = getDashboardComponents(t);
-    await dashboard.expectations.isLoaded();
-    await urlUtils.expectations.urlChangedToLandingPage();
-  }
-);
+  // Verify redirect to dashboard
+  const dashboard = getDashboardComponents(t);
+  await dashboard.expectations.isLoaded();
+  await urlUtils.expectations.urlChangedToLandingPage();
+});
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)(
   'fetches employment data and ensures API does not overwrite user input',
   async (t: TestController) => {
     // 1. Start application and fill it normally using standard actions
@@ -321,7 +343,8 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
 );
 test.requestHooks(
   getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
-  attachmentsMock
+  attachmentsMock,
+  jobTypesMock
 )(
   'verifies data integrity and fetch behavior across all form sections',
   async (t: TestController) => {
@@ -400,7 +423,11 @@ test.requestHooks(
   }
 );
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)(
   'can cancel application filling and then resume editing from dashboard',
   async (t: TestController) => {
     const application = await loginAndfillApplication(
@@ -434,25 +461,26 @@ test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
   }
 );
 
-test.requestHooks(getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA))(
-  'can delete application from wizard',
-  async (t: TestController) => {
-    const application = await loginAndfillApplication(
-      t,
-      1,
-      FULLY_MOCKED_FORM_DATA
-    );
-    const wizard = await getWizardComponents(t);
+test.requestHooks(
+  getFetchEmployeeDataMock(FULLY_MOCKED_FORM_DATA),
+  jobTypesMock,
+  attachmentsMock
+)('can delete application from wizard', async (t: TestController) => {
+  const application = await loginAndfillApplication(
+    t,
+    1,
+    FULLY_MOCKED_FORM_DATA
+  );
+  const wizard = await getWizardComponents(t);
 
-    await wizard.actions.clickDeleteButton();
-    await t.expect(wizard.selectors.deleteConfirmationDialog().exists).ok();
-    await wizard.actions.clickConfirmDeleteButton();
+  await wizard.actions.clickDeleteButton();
+  await t.expect(wizard.selectors.deleteConfirmationDialog().exists).ok();
+  await wizard.actions.clickConfirmDeleteButton();
 
-    const dashboard = getDashboardComponents(t);
-    await dashboard.expectations.isLoaded();
-    await urlUtils.expectations.urlChangedToLandingPage();
+  const dashboard = getDashboardComponents(t);
+  await dashboard.expectations.isLoaded();
+  await urlUtils.expectations.urlChangedToLandingPage();
 
-    const employeeName = application.summer_vouchers[0].employee_name ?? '';
-    await dashboard.expectations.hasNoApplication(employeeName);
-  }
-);
+  const employeeName = application.summer_vouchers[0].employee_name ?? '';
+  await dashboard.expectations.hasNoApplication(employeeName);
+});

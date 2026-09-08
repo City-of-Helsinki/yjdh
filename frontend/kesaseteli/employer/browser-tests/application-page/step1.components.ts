@@ -458,13 +458,39 @@ export const getStep1Components = (t: TestController) => {
         salary
       );
     },
-    async selectJobType() {
+    async selectJobType(value?: string) {
       const select = selectors.jobTypeSelect();
-      await t.expect(select.exists).ok(await getErrorMessage(t), { timeout: 10_000 });
+      await t
+        .expect(select.exists)
+        .ok(await getErrorMessage(t), { timeout: 10_000 });
       await t.click(select);
-      const option = Selector('ul[role="listbox"]').find('li');
-      await t.expect(option.exists).ok(await getErrorMessage(t), { timeout: 10_000 });
-      await t.click(option.nth(0));
+      await t.wait(500);
+
+      const listbox = Selector('ul[role="listbox"]');
+      let option: Selector;
+      switch (value) {
+        case 'sports_and_leisure':
+          option = listbox.find('li').withText('Liikunta ja vapaa-aika');
+          break;
+
+        case 'administration':
+          option = listbox.find('li').withText('Hallinto- ja toimistotyö');
+          break;
+
+        case 'sales':
+          option = listbox.find('li').withText('Myynti- ja kaupan ala');
+          break;
+
+        default:
+          option = listbox.find('li').nth(0);
+      }
+
+      await t
+        .expect(option.exists)
+        .ok(await getErrorMessage(t), { timeout: 10_000 });
+      await t.click(option);
+      await t.pressKey('esc');
+      await t.wait(500);
     },
     async selectHiredWithoutVoucherAssessment(name: string) {
       const selector = selectors.hiredWithoutVoucherAssessmentRadioInput(name);
