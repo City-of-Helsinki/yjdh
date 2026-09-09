@@ -29,6 +29,10 @@ describe('NoteForm', () => {
         />
       );
 
+      expect(
+        screen.getByRole('form', { name: /lisää huomio/i })
+      ).toBeInTheDocument();
+
       const textArea = screen.getByLabelText(/kirjoita huomio/i);
       expect(textArea).toBeInTheDocument();
 

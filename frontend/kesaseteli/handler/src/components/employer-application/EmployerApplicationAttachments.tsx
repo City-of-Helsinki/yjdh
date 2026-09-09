@@ -112,11 +112,14 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
   const { t } = useTranslation();
 
   return (
-    <$UploadContainer>
+    <$UploadContainer
+      role="region"
+      aria-label={t('common:handlerApplication.attachmentsUploadTitle')}
+    >
       {/* Attachment type selection */}
       <$AttachmentTypeGroup
-        role="radiogroup"
-        aria-label={t('common:handlerApplication.attachmentsUploadTypeLabel')}
+        label={t('common:handlerApplication.attachmentsUploadTypeLabel')}
+        direction="horizontal"
       >
         <RadioButton
           id="attachment-type-employment-contract"

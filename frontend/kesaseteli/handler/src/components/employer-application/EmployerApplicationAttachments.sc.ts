@@ -1,3 +1,4 @@
+import { SelectionGroup } from 'hds-react';
 import styled, { DefaultTheme } from 'styled-components';
 
 export const $UploadContainer = styled.div`
@@ -60,19 +61,8 @@ export const $DragDropArea = styled.div<{ $isDragging: boolean }>`
   border-radius: 4px;
 `;
 
-export const $AttachmentTypeGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-m);
-  flex-wrap: wrap;
+export const $AttachmentTypeGroup = styled(SelectionGroup)`
   margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
-
-  /* Force HDS elements to reset vertical margins and align centered */
-  & > div {
-    margin: 0 !important;
-    display: inline-flex;
-    align-items: center;
-  }
 `;
 
 export const $PlaceholderInputArea = styled.div`

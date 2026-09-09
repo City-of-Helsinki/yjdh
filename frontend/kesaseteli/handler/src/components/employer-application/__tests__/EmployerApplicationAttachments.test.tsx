@@ -387,14 +387,17 @@ describe('EmployerApplicationAttachments', () => {
     }
   );
 
-  it('renders the attachment type selection group', () => {
+  it('renders the upload region and attachment type selection group', () => {
     renderComponent(
       <EmployerApplicationAttachments
         application={mockApplicationSingleVoucher}
       />
     );
     expect(
-      screen.getByRole('radiogroup', { name: /liitteen tyyppi/i })
+      screen.getByRole('region', { name: /lisää uusi liite/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('group', { name: /liitteen tyyppi/i })
     ).toBeInTheDocument();
   });
 });
