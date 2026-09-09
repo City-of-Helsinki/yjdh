@@ -373,6 +373,12 @@ class YouthApplicationViewSet(ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        if not youth_application.has_youth_summer_voucher:
+            return Response(
+                data={"detail": _("Youth application does not have a summer voucher")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         was_email_sent = (
             youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
                 language=youth_application.language
