@@ -261,4 +261,35 @@ describe('EmployerApplicationHandlerView', () => {
       screen.getByTestId('handlerApplication-hired_without_voucher_assessment')
     ).toHaveTextContent(/kyllä/i);
   });
+
+  it('renders info tooltips for company, voucher, and youth sections', async () => {
+    renderComponent(
+      <EmployerApplicationHandlerView
+        application={mockApplicationSingleVoucher}
+      />
+    );
+
+    const tooltipButtons = screen.getAllByRole('button', {
+      name: /näytä info/i,
+    });
+    expect(tooltipButtons).toHaveLength(3);
+
+    // Clicking company tooltip
+    await userEvent.click(tooltipButtons[0]);
+    expect(
+      screen.getByText(/prh:n avoimen datan rajapinnasta/i)
+    ).toBeInTheDocument();
+
+    // Clicking voucher tooltip
+    await userEvent.click(tooltipButtons[1]);
+    expect(
+      screen.getByText(/työnantajan hakemuksessa ilmoittamat tiedot/i)
+    ).toBeInTheDocument();
+
+    // Clicking youth tooltip
+    await userEvent.click(tooltipButtons[2]);
+    expect(
+      screen.getByText(/väestötietojärjestelmään \(vtj\)/i)
+    ).toBeInTheDocument();
+  });
 });

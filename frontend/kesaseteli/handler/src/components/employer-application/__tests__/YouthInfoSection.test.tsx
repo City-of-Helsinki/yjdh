@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 
@@ -38,5 +39,16 @@ describe('YouthInfoSection', () => {
     expect(
       screen.queryByRole('link', { name: /avaa nuoren hakemus/i })
     ).not.toBeInTheDocument();
+  });
+
+  it('renders info tooltip for youth section', async () => {
+    renderComponent(<YouthInfoSection voucher={mockVoucher1} />);
+    const tooltipBtn = screen.getByRole('button', { name: /näytä info/i });
+    expect(tooltipBtn).toBeInTheDocument();
+
+    await userEvent.click(tooltipBtn);
+    expect(
+      screen.getByText(/väestötietojärjestelmään \(vtj\)/i)
+    ).toBeInTheDocument();
   });
 });

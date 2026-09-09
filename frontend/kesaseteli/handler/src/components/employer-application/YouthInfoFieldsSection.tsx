@@ -31,6 +31,7 @@ const YouthInfoFieldsSection: React.FC<Props> = ({ voucher }) => {
         id="youth-info-heading"
         header={t('common:handlerApplication.youthApplicationTitle')}
         as="h4"
+        tooltip={t('common:handlerApplication.youthApplicationTooltip')}
       />
 
       <$DescriptionList aria-labelledby="youth-info-heading">
