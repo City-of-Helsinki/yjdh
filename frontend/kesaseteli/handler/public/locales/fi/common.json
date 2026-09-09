@@ -185,6 +185,8 @@
     "attachmentsInputPlaceholderDesktop": "Tai valitse tiedosto",
     "attachmentsInputPlaceholderMobile": "Valitse tiedosto",
     "attachmentsUploadMultiVoucherNote": "Huom: Liitteet lisätään hakemuksen ensimmäiseen kesäseteliin.",
+    "attachmentsUploadTitle": "Lisää uusi liite",
+    "attachmentsUploadTypeLabel": "Liitteen tyyppi",
     "attachmentName": "Tiedoston nimi",
     "attachmentType": "Tyyppi",
     "attachmentAddedBy": "Lisääjä",

@@ -1,5 +1,15 @@
 import styled, { DefaultTheme } from 'styled-components';
 
+export const $UploadContainer = styled.div`
+  border: 1px solid var(--color-black-10);
+  background-color: var(--color-black-5);
+  padding: var(--spacing-m);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
+`;
+
 export const $Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -32,7 +42,6 @@ export const $Table = styled.table`
 `;
 
 export const $DragDropArea = styled.div<{ $isDragging: boolean }>`
-  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
   border: 2px dashed
     ${({ $isDragging, theme }: { $isDragging: boolean; theme: DefaultTheme }) =>
       $isDragging ? theme.colors.coatOfArms : theme.colors.black50};
@@ -45,26 +54,28 @@ export const $DragDropArea = styled.div<{ $isDragging: boolean }>`
   }: {
     $isDragging: boolean;
     theme: DefaultTheme;
-  }) => ($isDragging ? theme.colors.coatOfArmsLight : theme.colors.black5)};
+  }) => ($isDragging ? theme.colors.coatOfArmsLight : theme.colors.white)};
   transition: border-color 0.15s ease, background-color 0.15s ease;
   cursor: pointer;
+  border-radius: 4px;
 `;
 
-export const $PlaceholderArea = $DragDropArea;
-
-export const $AttachmentTypeGroup = styled.fieldset`
-  border: none;
-  padding: 0;
-  margin: 0 0 ${(props: { theme: DefaultTheme }) => props.theme.spacing.m} 0;
+export const $AttachmentTypeGroup = styled.div`
   display: flex;
-  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
-  flex-wrap: wrap;
   align-items: center;
+  gap: var(--spacing-m);
+  flex-wrap: wrap;
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+
+  /* Force HDS elements to reset vertical margins and align centered */
+  & > div {
+    margin: 0 !important;
+    display: inline-flex;
+    align-items: center;
+  }
 `;
 
 export const $PlaceholderInputArea = styled.div`
-  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
-  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
   display: flex;
   flex-direction: column;
   gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
