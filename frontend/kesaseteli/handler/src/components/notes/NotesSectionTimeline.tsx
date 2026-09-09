@@ -37,7 +37,13 @@ const NotesSectionTimeline: React.FC<Props> = ({
     >
       {notes.map((note) => {
         const TypeIcon = getTimelineIcon(note.note_type);
-        const formattedDate = new Date(note.created_at).toLocaleString(locale);
+        const formattedDate = new Date(note.created_at).toLocaleString(locale, {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        });
 
         return (
           <Timeline.Item

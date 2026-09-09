@@ -186,7 +186,14 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
           const noteType = getItemThemeType(item);
           const TypeIcon = getTimelineIcon(noteType);
           const formattedDate = new Date(item.created_at).toLocaleString(
-            locale
+            locale,
+            {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+            }
           );
           const key =
             item.item_type === TimelineItemType.ACTIVITY
