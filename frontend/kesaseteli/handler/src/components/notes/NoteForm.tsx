@@ -92,7 +92,15 @@ const NoteForm: React.FC<Props> = ({
   const isNearLimit = charsLeft <= CHAR_COUNTER_WARN_THRESHOLD;
 
   return (
-    <$FormContainer onSubmit={handleSubmit} noValidate>
+    <$FormContainer
+      onSubmit={handleSubmit}
+      noValidate
+      aria-label={
+        isEditing
+          ? t('common:handlerNotes.saveNote')
+          : t('common:handlerNotes.addNote')
+      }
+    >
       <$TextArea
         id={isEditing ? `edit-note-${initialNote?.id}` : 'add-note-content'}
         label={
