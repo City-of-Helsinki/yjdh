@@ -100,6 +100,37 @@ describe('EmployerApplicationAttachments', () => {
     expect(screen.getByText('palkkakuitti.pdf')).toBeInTheDocument();
   });
 
+  it('renders author name or fallback for attachments', () => {
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={{
+          ...mockApplicationSingleVoucher,
+          summer_vouchers: [
+            {
+              ...mockVoucher1,
+              attachments: [
+                {
+                  ...fakeObjectFactory.fakeAttachment('employment_contract'),
+                  id: 'attachment-with-author',
+                  attachment_file_name: 'sopimus.pdf',
+                  author_name: 'Matti Meikäläinen',
+                },
+                {
+                  ...fakeObjectFactory.fakeAttachment('payslip'),
+                  id: 'attachment-without-author',
+                  attachment_file_name: 'palkkakuitti.pdf',
+                },
+              ],
+            },
+          ],
+        }}
+      />
+    );
+    expect(screen.getByText('Matti Meikäläinen')).toBeInTheDocument();
+    // common:handlerApplication.attachmentEmployer translates to "Työnantaja"
+    expect(screen.getByText('Työnantaja')).toBeInTheDocument();
+  });
+
   it('calls openAttachment when clicking an attachment name link', async () => {
     const attachment = {
       ...fakeObjectFactory.fakeAttachment('employment_contract'),

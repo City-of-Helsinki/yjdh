@@ -160,6 +160,10 @@ class EmployerApplicationStatusValidator:
 
 class AttachmentSerializer(serializers.ModelSerializer):
     notes_count = serializers.IntegerField(read_only=True, default=0)
+    author_name = serializers.SerializerMethodField(
+        "get_author_name",
+        help_text="Name of the person who uploaded the attachment",
+    )
 
     class Meta:
         model = Attachment
@@ -172,8 +176,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "content_type",
             "created_at",
             "notes_count",
+            "author_name",
         ]
-        read_only_fields = ["created_at"]
+        read_only_fields = ["created_at", "author_name"]
 
     MAX_ATTACHMENTS_PER_TYPE = 5
 
@@ -199,6 +204,19 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def get_is_handler(self) -> bool:
         return self.context.get("is_handler", False)
+
+    def get_author_name(self, obj) -> str:
+        if not obj.author:
+            return ""
+        if HandlerPermission.has_user_permission(obj.author):
+            return obj.author.get_full_name() or obj.author.username or _("Käsittelijä")
+        return _("Työnantaja")
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            validated_data["author"] = request.user
+        return super().create(validated_data)
 
     def validate(self, data):
         """

@@ -30,6 +30,7 @@ import useOpenAttachment from '../../hooks/backend/useOpenAttachment';
 import useUploadAttachmentQuery from '../../hooks/backend/useUploadAttachmentQuery';
 import { isHandledEmployerApplicationStatus } from '../../types/application';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
+import type { HandlerAttachment } from '../../types/HandlerEmployerApplication';
 import AttachmentCommentsDialog from './AttachmentCommentsDialog';
 import DeleteAttachmentDialog from './DeleteAttachmentDialog';
 import {
@@ -195,7 +196,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
 };
 
 type AttachmentTableProps = {
-  attachments: KesaseteliAttachment[];
+  attachments: HandlerAttachment[];
   isMobile: boolean;
   canDeleteAttachments: boolean;
   isDeleting: boolean;
@@ -280,7 +281,7 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
                 )}
                 {!isMobile && (
                   <>
-                    <td>{t('common:handlerApplication.attachmentUploaded')}</td>
+                    <td>{attachment.author_name || '—'}</td>
                     <td>
                       {convertToUIDateAndTimeFormat(attachment.created_at)}
                     </td>

@@ -1148,9 +1148,9 @@ class EmployerApplicationViewSet(ModelViewSet):
                     ).prefetch_related(
                         Prefetch(
                             "attachments",
-                            queryset=Attachment.objects.annotate(
-                                notes_count=Count("notes")
-                            ),
+                            queryset=Attachment.objects.select_related(
+                                "author"
+                            ).annotate(notes_count=Count("notes")),
                         )
                     ),
                 )
@@ -1276,7 +1276,11 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
             .get_queryset()
             .select_related("application")
             .select_related("youth_summer_voucher__youth_application")
-            .prefetch_related("attachments")
+            .prefetch_related(
+                Prefetch(
+                    "attachments", queryset=Attachment.objects.select_related("author")
+                )
+            )
         )
 
         user = self.request.user

@@ -126,6 +126,10 @@ def on_attachment_added(sender, instance, created, raw=False, **kwargs):
     if not created or raw:
         return
     actor_user, actor_name = _resolve_actor()
+    actor_user = actor_user or instance.author
+    if not actor_name and actor_user and actor_user.is_active:
+        actor_name = actor_user.get_full_name() or ""
+
     attachment_ct = ContentType.objects.get_for_model(Attachment)
     TimelineActivityLog.objects.create(
         application_type=EmployerApplication._meta.model_name,
