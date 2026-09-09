@@ -199,8 +199,8 @@ describe('EmployerApplicationAttachments', () => {
     fireEvent.change(fileInput, { target: { files: [invalidFile] } });
 
     expect(mockShowErrorToast).toHaveBeenCalledWith(
-      'error.attachments.title',
-      'error.attachments.fileType'
+      'Tiedoston latauksessa tapahtui virhe',
+      'Tiedoston tyyppi ei ole sallittu.'
     );
     expect(mockMutate).not.toHaveBeenCalled();
   });
@@ -221,8 +221,8 @@ describe('EmployerApplicationAttachments', () => {
     fireEvent.change(fileInput, { target: { files: [hugeFile] } });
 
     expect(mockShowErrorToast).toHaveBeenCalledWith(
-      'error.attachments.title',
-      'error.attachments.tooBig'
+      'Tiedoston latauksessa tapahtui virhe',
+      'Tiedosto on liian iso'
     );
     expect(mockMutate).not.toHaveBeenCalled();
   });
@@ -246,7 +246,8 @@ describe('EmployerApplicationAttachments', () => {
         summer_voucher: mockApplicationSingleVoucher.summer_vouchers[0].id,
         applicationId: mockApplicationSingleVoucher.id,
         data: expect.any(FormData),
-      })
+      }),
+      expect.any(Object)
     );
 
     const formDataCalled = mockMutate.mock.calls[0][0].data as FormData;
@@ -279,7 +280,8 @@ describe('EmployerApplicationAttachments', () => {
         summer_voucher: mockApplicationSingleVoucher.summer_vouchers[0].id,
         applicationId: mockApplicationSingleVoucher.id,
         data: expect.any(FormData),
-      })
+      }),
+      expect.any(Object)
     );
 
     const formDataCalled = mockMutate.mock.calls[0][0].data as FormData;
@@ -399,5 +401,40 @@ describe('EmployerApplicationAttachments', () => {
     expect(
       screen.getByRole('group', { name: /liitteen tyyppi/i })
     ).toBeInTheDocument();
+  });
+
+  it('shows error toast when upload mutation fails with too many attachments error', () => {
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={mockApplicationSingleVoucher}
+      />
+    );
+
+    const fileInput = screen.getByLabelText(/tai valitse tiedosto/i);
+    const validFile = new File(['dummy content'], 'sopimus.pdf', {
+      type: 'application/pdf',
+    });
+
+    fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+    expect(mockMutate).toHaveBeenCalled();
+
+    // Trigger the onError callback manually
+    const mutateOptions = mockMutate.mock.calls[0][1];
+    const mockAxiosError = {
+      isAxiosError: true,
+      response: {
+        data: {
+          non_field_errors: ['Korkeintaan viisi liitettä tyyppiä kohden'],
+        },
+      },
+    };
+
+    mutateOptions.onError(mockAxiosError);
+
+    expect(mockShowErrorToast).toHaveBeenCalledWith(
+      'Tiedoston latauksessa tapahtui virhe',
+      'Korkeintaan viisi liitettä tyyppiä kohden'
+    );
   });
 });

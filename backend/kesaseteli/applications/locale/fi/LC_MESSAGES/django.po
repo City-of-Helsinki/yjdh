@@ -164,7 +164,7 @@ msgid "Upload file size cannot be greater than {size} bytes"
 msgstr ""
 
 msgid "At most five attachments per type"
-msgstr ""
+msgstr "Korkeintaan viisi liitettä tyyppiä kohden"
 
 msgid "Not a valid pdf file"
 msgstr ""

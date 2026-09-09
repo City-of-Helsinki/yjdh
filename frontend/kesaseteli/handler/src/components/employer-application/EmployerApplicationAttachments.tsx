@@ -31,6 +31,7 @@ import useUploadAttachmentQuery from '../../hooks/backend/useUploadAttachmentQue
 import { isHandledEmployerApplicationStatus } from '../../types/application';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import type { HandlerAttachment } from '../../types/HandlerEmployerApplication';
+import { getAttachmentUploadErrorMessage } from '../../utils/attachment.utils';
 import AttachmentCommentsDialog from './AttachmentCommentsDialog';
 import DeleteAttachmentDialog from './DeleteAttachmentDialog';
 import {
@@ -287,7 +288,10 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
                 )}
                 {!isMobile && (
                   <>
-                    <td>{attachment.author_name || '—'}</td>
+                    <td>
+                      {attachment.author_name ||
+                        t('common:handlerApplication.attachmentUploaded')}
+                    </td>
                     <td>
                       {convertToUIDateAndTimeFormat(attachment.created_at)}
                     </td>
@@ -382,11 +386,19 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
   const validateAndUpload = (file: File): void => {
     if (!validateAttachmentFile(file, t)) return;
     if (!uploadVoucherId) return;
-    uploadMutation.mutate({
-      summer_voucher: uploadVoucherId,
-      applicationId: application.id,
-      data: buildFormData(file),
-    });
+    uploadMutation.mutate(
+      {
+        summer_voucher: uploadVoucherId,
+        applicationId: application.id,
+        data: buildFormData(file),
+      },
+      {
+        onError: (error: unknown) => {
+          const errorMessage = getAttachmentUploadErrorMessage(error, t);
+          showErrorToast(t(ERROR_ATTACHMENTS_TITLE), errorMessage);
+        },
+      }
+    );
   };
 
   const handleFileInputChange = (

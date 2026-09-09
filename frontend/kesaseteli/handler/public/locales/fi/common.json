@@ -110,6 +110,12 @@
     "generic": {
       "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu.",
+      "generic": "Liitteen lisääminen epäonnistui. Yritä myöhemmin uudelleen."
     }
   },
   "handlerApplication": {
