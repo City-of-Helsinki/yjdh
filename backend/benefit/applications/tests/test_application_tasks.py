@@ -18,6 +18,7 @@ from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
 )
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
+from applications.services.ahjo.exceptions import AhjoDecisionError
 from applications.services.ahjo.response_handler import (
     AhjoDecisionDetailsResponseHandler,
 )
@@ -284,6 +285,46 @@ def test_send_ahjo_requests(
             assert (
                 application.batch.proposal_for_decision == AhjoDecision.DECIDED_ACCEPTED
             )
+
+
+def test_send_ahjo_requests_continues_after_decision_error():
+    from applications.management.commands.send_ahjo_requests import Command
+
+    first_application = MagicMock(application_number=127475)
+    second_application = MagicMock(application_number=127541)
+    ahjo_request = Mock(
+        side_effect=[
+            AhjoDecisionError("Decision maker not found in the decision content html"),
+            (second_application, "response"),
+        ]
+    )
+    command = Command()
+    command.stdout = StringIO()
+
+    with (
+        patch.object(command, "_get_request_handler", return_value=ahjo_request),
+        patch.object(command, "_handle_successful_request") as handle_success,
+        patch.object(command, "_handle_failed_request") as handle_failure,
+    ):
+        command.run_requests(
+            [first_application, second_application],
+            MagicMock(AhjoToken),
+            AhjoRequestType.GET_DECISION_DETAILS,
+        )
+
+    assert ahjo_request.call_count == 2
+    handle_failure.assert_called_once_with(
+        1,
+        first_application,
+        AhjoRequestType.GET_DECISION_DETAILS,
+        "Decision error for application 127475: Decision maker not found in the decision content html",
+    )
+    handle_success.assert_called_once_with(
+        2,
+        second_application,
+        "response",
+        AhjoRequestType.GET_DECISION_DETAILS,
+    )
 
 
 @pytest.mark.django_db(transaction=True)
