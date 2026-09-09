@@ -2,8 +2,15 @@ import type { EmployerApplicationStatus } from 'kesaseteli-shared/constants/empl
 import Application from 'shared/types/application';
 import Employment from 'shared/types/employment';
 
-export type HandlerSummerVoucher = Employment & {
+import { KesaseteliAttachment } from 'shared/types/attachment';
+
+export type HandlerAttachment = KesaseteliAttachment & {
+  author_name?: string;
+};
+
+export type HandlerSummerVoucher = Omit<Employment, 'attachments'> & {
   youth_application_id?: string;
+  attachments: HandlerAttachment[];
 };
 
 // Note: HandlerEmployerApplication is the detail/serializer-shaped type extending Application

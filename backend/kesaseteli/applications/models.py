@@ -1780,6 +1780,15 @@ class Attachment(UUIDModel, TimeStampedModel):
 
     notes = GenericRelation("handler_notes.Note")
 
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("author"),
+        on_delete=models.SET_NULL,
+        related_name="uploaded_attachments",
+        blank=True,
+        null=True,
+    )
+
     summer_voucher = models.ForeignKey(
         EmployerSummerVoucher,
         verbose_name=_("employer summer voucher"),

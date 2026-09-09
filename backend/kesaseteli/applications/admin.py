@@ -1048,6 +1048,7 @@ class AttachmentAdmin(
         "summer_voucher_link",
         "employer_application_link",
         "company_name",
+        "author",
         "attachment_type",
         "content_type",
         "download_link",
@@ -1060,12 +1061,17 @@ class AttachmentAdmin(
         "summer_voucher__youth_summer_voucher__summer_voucher_serial_number",
         "summer_voucher__application__company__name",
         "summer_voucher__application__company__business_id",
+        "author__email",
+        "author__username",
+        "author__first_name",
+        "author__last_name",
     ]
     readonly_fields = [
         "summer_voucher",
         "attachment_type",
         "content_type",
         "attachment_file",
+        "author",
         "created_at",
     ]
     date_hierarchy = "created_at"
@@ -1075,6 +1081,7 @@ class AttachmentAdmin(
             super()
             .get_queryset(request)
             .select_related(
+                "author",
                 "summer_voucher",
                 "summer_voucher__application",
                 "summer_voucher__application__company",

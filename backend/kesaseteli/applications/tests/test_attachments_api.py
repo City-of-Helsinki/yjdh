@@ -96,6 +96,7 @@ def test_attachment_upload(
         "content_type",
         "created_at",
         "notes_count",
+        "author_name",
     }
     assert response.data["id"] == str(attachment.pk)
     assert response.data["summer_voucher"] == summer_voucher.pk
@@ -105,6 +106,40 @@ def test_attachment_upload(
     assert response.data["attachment_file_name"].endswith(f".{extension}")
     assert response.data["content_type"] == expected_content_type
     assert datetime.fromisoformat(response.data["created_at"]) == upload_time
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_employer_upload_sets_author_and_returns_employer_author_name(
+    request, user, api_client, summer_voucher
+):
+    response = _upload_file(
+        request,
+        api_client,
+        summer_voucher,
+        "pdf",
+        AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    attachment = summer_voucher.attachments.first()
+    assert attachment.author == user
+    assert response.data["author_name"] == "Työnantaja"
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_attachment_without_author_returns_fallback_author_name(
+    employment_contract_attachment,
+):
+    from applications.api.v1.serializers import AttachmentSerializer
+
+    # Ensure author is not set (it should be None by default from factory, but let's be sure)
+    assert employment_contract_attachment.author is None
+
+    serializer = AttachmentSerializer(
+        employment_contract_attachment, context={"is_handler": True}
+    )
+    assert serializer.data["author_name"] == ""
 
 
 @pytest.mark.django_db
@@ -618,7 +653,9 @@ def test_employer_cannot_delete_additional_info_attachment(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-def test_handler_can_upload_attachment(request, staff_client, submitted_summer_voucher):
+def test_handler_can_upload_attachment(
+    request, staff_user, staff_client, submitted_summer_voucher
+):
     """
     Handlers may upload attachments to applications in any status (e.g. SUBMITTED).
     """
@@ -631,6 +668,10 @@ def test_handler_can_upload_attachment(request, staff_client, submitted_summer_v
     )
     assert response.status_code == status.HTTP_201_CREATED
     assert submitted_summer_voucher.attachments.count() == 1
+
+    attachment = submitted_summer_voucher.attachments.first()
+    assert attachment.author == staff_user
+    assert response.data["author_name"] == staff_user.get_full_name()
 
 
 @pytest.mark.django_db
