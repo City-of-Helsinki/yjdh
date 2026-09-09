@@ -43,6 +43,7 @@ import {
   $PlaceholderInputArea,
   $Table,
   $TableWrapper,
+  $UploadContainer,
 } from './EmployerApplicationAttachments.sc';
 
 const ERROR_ATTACHMENTS_TITLE = 'common:error.attachments.title';
@@ -111,10 +112,12 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
   const { t } = useTranslation();
 
   return (
-    <>
+    <$UploadContainer>
       {/* Attachment type selection */}
-      <$AttachmentTypeGroup>
-        <legend>{t('common:handlerApplication.attachmentType')}</legend>
+      <$AttachmentTypeGroup
+        role="radiogroup"
+        aria-label={t('common:handlerApplication.attachmentsUploadTypeLabel')}
+      >
         <RadioButton
           id="attachment-type-employment-contract"
           name="attachment-type"
@@ -191,7 +194,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
             : t('common:handlerApplication.attachmentsInputPlaceholderDesktop')}
         </Button>
       </$PlaceholderInputArea>
-    </>
+    </$UploadContainer>
   );
 };
 

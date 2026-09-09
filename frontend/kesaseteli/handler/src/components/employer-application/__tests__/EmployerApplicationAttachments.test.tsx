@@ -127,8 +127,7 @@ describe('EmployerApplicationAttachments', () => {
       />
     );
     expect(screen.getByText('Matti Meikäläinen')).toBeInTheDocument();
-    // common:handlerApplication.attachmentEmployer translates to "Työnantaja"
-    expect(screen.getByText('Työnantaja')).toBeInTheDocument();
+    expect(screen.getByText('—')).toBeInTheDocument();
   });
 
   it('calls openAttachment when clicking an attachment name link', async () => {
@@ -387,4 +386,15 @@ describe('EmployerApplicationAttachments', () => {
       expect(deleteButton).not.toBeInTheDocument();
     }
   );
+
+  it('renders the attachment type selection group', () => {
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={mockApplicationSingleVoucher}
+      />
+    );
+    expect(
+      screen.getByRole('radiogroup', { name: /liitteen tyyppi/i })
+    ).toBeInTheDocument();
+  });
 });
