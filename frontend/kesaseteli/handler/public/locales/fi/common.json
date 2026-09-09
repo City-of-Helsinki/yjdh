@@ -268,6 +268,11 @@
       "content": "Toimintoa ei voi peruuttaa.",
       "submit": "Hylkää"
     },
+    "resendVoucher": {
+      "title": "Oletko varma?",
+      "content": "Kesäseteli lähetetään sähköpostiin uudelleen. Toimintoa ei voi peruuttaa.",
+      "submit": "Lähetä kesäseteli uudelleen"
+    },
     "deleteAttachment": "Poista liite",
     "deleteAttachmentHeader": "Haluatko varmasti poistaa liitteen?",
     "deleteAttachmentContent": "Olet poistamassa liitteen \"{{name}}\".",
