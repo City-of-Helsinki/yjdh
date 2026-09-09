@@ -158,7 +158,7 @@ msgid "Upload file size cannot be greater than {size} bytes"
 msgstr ""
 
 msgid "At most five attachments per type"
-msgstr ""
+msgstr "Högst fem bilagor per typ"
 
 msgid "Not a valid pdf file"
 msgstr ""
