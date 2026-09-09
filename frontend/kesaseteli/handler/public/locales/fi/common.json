@@ -6,6 +6,9 @@
     "saving": "Tallennetaan...",
     "deleting": "Poistetaan..."
   },
+  "application": {
+    "tooltipShowInfo": "Näytä info"
+  },
   "appName": "Kesäsetelin käsittelijäliittymä",
   "cookieSettings": "Evästeasetukset",
   "dashboard": {
@@ -129,6 +132,7 @@
     "status": "Tila",
     "employerApplicationTitle": "Työnantajan tiedot",
     "employerCompanySectionTitle": "Yrityksen tiedot",
+    "employerCompanySectionTooltip": "Tiedot on haettu automaattisesti PRH:n avoimen datan rajapinnasta (kolmannen osapuolen rekisteridata yrityksen Y-tunnuksella).",
     "employerApplicationTitleLinked": "Liitetty työnantajahakemus",
     "employerApplicationsTitle": "Liitetyt työnantajahakemukset",
     "employerApplicationDescription": "Seuraava työnantajahakemus on liitetty tähän nuoren hakemukseen.",
@@ -191,6 +195,7 @@
     "company_street_address": "Yrityksen katuosoite",
     "company_postcode": "Yrityksen postinumero",
     "youthApplicationTitle": "Nuoren tiedot",
+    "youthApplicationTooltip": "Tiedot perustuvat nuoren täyttämään hakemukseen ja Väestötietojärjestelmään (VTJ). Automaattinen integraatio tuo nuoren tiedot käsittelijälle nuoren hakemuksesta.",
     "employee_name": "Työntekijän nimi",
     "employee_birthdate": "Syntymäaika",
     "employee_school": "Koulun nimi",
@@ -200,6 +205,7 @@
     "youthApplicationLink": "Avaa nuoren hakemus",
     "voucherTab": "Kesäseteli {{number}}",
     "voucherTitle": "Kesäseteli",
+    "voucherSectionTooltip": "Työnantajan hakemuksessa ilmoittamat tiedot työsuhteesta ja kesäsetelistä. Tietojen avulla nuoren hakemus yhdistetään tähän työnantajahakemukseen.",
     "additionalInfoTitle": "Lisätiedot",
     "additional_info_user_reasons": "Otsikko",
     "additional_info_description": "Lisätiedot",

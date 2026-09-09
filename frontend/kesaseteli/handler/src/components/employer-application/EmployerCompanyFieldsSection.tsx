@@ -16,6 +16,7 @@ const EmployerCompanyFieldsSection: React.FC<{
         id="employer-company-heading"
         header={t('common:handlerApplication.employerCompanySectionTitle')}
         as="h4"
+        tooltip={t('common:handlerApplication.employerCompanySectionTooltip')}
       />
       <$DescriptionList aria-labelledby="employer-company-heading">
         <Field type="name" value={application.company.name || '-'} />

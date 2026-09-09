@@ -24,6 +24,7 @@ const EmployerVoucherFieldsSection: React.FC<Props> = ({ voucher }) => {
         id="employer-voucher-heading"
         header={t('common:handlerApplication.voucherTitle')}
         as="h4"
+        tooltip={t('common:handlerApplication.voucherSectionTooltip')}
       />
 
       <$DescriptionList aria-labelledby="employer-voucher-heading">
