@@ -2353,6 +2353,25 @@ def test_youth_applications_resend_voucher_email_failure(
 
 
 @pytest.mark.django_db
+def test_youth_applications_resend_voucher_requires_existing_voucher(staff_client):
+    youth_application = YouthApplicationFactory(
+        status=YouthApplicationStatus.ACCEPTED, youth_summer_voucher=None
+    )
+    assert not youth_application.has_youth_summer_voucher
+    start_mail_count = len(mail.outbox)
+
+    response = staff_client.post(
+        reverse_youth_application_action("resend-voucher", youth_application.pk)
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.data == {
+        "detail": "Youth application does not have a summer voucher"
+    }
+    assert len(mail.outbox) == start_mail_count
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "youth_application_status",
     [
