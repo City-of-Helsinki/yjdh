@@ -35,6 +35,7 @@ export const $Table = styled.table`
     border-bottom: 1px solid
       ${(props: { theme: DefaultTheme }) => props.theme.colors.black20};
     text-align: left;
+    vertical-align: middle;
   }
 
   th {
@@ -87,6 +88,21 @@ export const $AttachmentsContainer = styled.div`
   max-width: 100%;
   min-width: 0;
   overflow: hidden;
+
+  /* Align HDS button icons with text */
+  button {
+    div[class*='Button-module_icon'] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        display: block;
+        position: relative;
+        top: -2px;
+      }
+    }
+  }
 `;
 
 export const $AttachmentLink = styled.button.attrs({ type: 'button' })`
