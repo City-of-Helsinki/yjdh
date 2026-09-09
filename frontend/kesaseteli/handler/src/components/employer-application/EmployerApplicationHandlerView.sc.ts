@@ -15,6 +15,30 @@ export const $PanelGrid = styled.div`
     padding: var(--spacing-m);
   }
 
+  /* Align HDS Tooltip icons with heading text */
+  div[class*='Tooltip-module_root'] {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      line-height: 1;
+
+      span {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      svg {
+        display: block;
+        position: relative;
+        top: -2px;
+      }
+    }
+  }
+
   @media (max-width: ${(props: { theme: DefaultTheme }) =>
       props.theme.breakpoints.m}) {
     grid-template-columns: 1fr;
