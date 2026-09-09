@@ -9,7 +9,10 @@ from django.db.models import QuerySet
 
 from applications.enums import AhjoRequestType
 from applications.models import Application
-from applications.services.ahjo.exceptions import DecisionProposalAlreadyAcceptedError
+from applications.services.ahjo.exceptions import (
+    AhjoDecisionError,
+    DecisionProposalAlreadyAcceptedError,
+)
 from applications.services.ahjo.response_handler import (
     AhjoDecisionDetailsResponseHandler,
 )
@@ -151,6 +154,7 @@ class Command(BaseCommand):
             DecisionProposalAlreadyAcceptedError: (
                 "Decision proposal error for application"
             ),
+            AhjoDecisionError: "Decision error for application",
         }
 
         for application in applications:
