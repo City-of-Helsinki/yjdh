@@ -41,6 +41,7 @@ const EmployerCompanyFieldsSection: React.FC<{
         <Field
           type="street_address"
           value={application.street_address || '-'}
+          tooltip={t('common:handlerApplication.employerEnteredDataTooltip')}
         />
       </$DescriptionList>
     </FormSection>

@@ -1,3 +1,4 @@
+import { Tooltip } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -12,6 +13,7 @@ type Props = GridCellProps &
     type?: string;
     label?: string;
     value?: React.ReactNode;
+    tooltip?: string;
   };
 
 export const $DescriptionList = styled.dl`
@@ -23,6 +25,9 @@ const $StyledGridCell = styled($GridCell)`
 `;
 
 const $Label = styled.dt`
+  display: flex;
+  align-items: center;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs2};
   font-size: ${(props: { theme: DefaultTheme }) => props.theme.fontSize.body.m};
   font-weight: 600;
   color: ${(props: { theme: DefaultTheme }) => props.theme.colors.black60};
@@ -43,6 +48,7 @@ const Field: React.FC<Props> = ({
   value,
   children,
   style,
+  tooltip,
   ...gridCellProps
 }) => {
   const { t } = useTranslation();
@@ -54,7 +60,19 @@ const Field: React.FC<Props> = ({
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
       {...gridCellProps}
     >
-      {labelContent && <$Label>{labelContent}</$Label>}
+      {labelContent && (
+        <$Label>
+          {labelContent}
+          {tooltip && (
+            <Tooltip
+              buttonLabel={t('common:application.tooltipShowInfo')}
+              tooltipLabel={tooltip}
+            >
+              {tooltip}
+            </Tooltip>
+          )}
+        </$Label>
+      )}
       <$Value>
         {value || '-'}
         {children}

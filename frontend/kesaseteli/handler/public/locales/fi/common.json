@@ -139,6 +139,7 @@
     "employerApplicationTitle": "Työnantajan tiedot",
     "employerCompanySectionTitle": "Yrityksen tiedot",
     "employerCompanySectionTooltip": "Yrityksen rekisteritiedot (nimi, Y-tunnus, toimiala, yritysmuoto ja katuosoite) on haettu automaattisesti PRH:n avoimen datan rajapinnasta. Yrityksen osoite on työnantajan itsensä ilmoittama.",
+    "employerEnteredDataTooltip": "Työnantajan itsensä ilmoittama osoite",
     "employerApplicationTitleLinked": "Liitetty työnantajahakemus",
     "employerApplicationsTitle": "Liitetyt työnantajahakemukset",
     "employerApplicationDescription": "Seuraava työnantajahakemus on liitetty tähän nuoren hakemukseen.",

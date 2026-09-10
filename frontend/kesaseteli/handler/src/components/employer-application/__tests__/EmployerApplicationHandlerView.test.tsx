@@ -272,26 +272,33 @@ describe('EmployerApplicationHandlerView', () => {
     const tooltipButtons = screen.getAllByRole('button', {
       name: /näytä info/i,
     });
-    expect(tooltipButtons).toHaveLength(3);
+    expect(tooltipButtons).toHaveLength(4);
 
-    // Clicking company tooltip
+    // Clicking company section tooltip
     await userEvent.click(tooltipButtons[0]);
     expect(
       screen.getByText(/prh:n avoimen datan rajapinnasta/i)
     ).toBeInTheDocument();
 
-    // Clicking voucher tooltip
+    // Clicking the new street_address field tooltip
     await userEvent.click(tooltipButtons[1]);
+    expect(
+      screen.getByText(/työnantajan itsensä ilmoittama osoite/i)
+    ).toBeInTheDocument();
+
+    // Clicking voucher tooltip
+    await userEvent.click(tooltipButtons[2]);
     expect(
       screen.getByText(/työnantajan hakemuksessa ilmoittamat tiedot/i)
     ).toBeInTheDocument();
 
     // Clicking youth tooltip
-    await userEvent.click(tooltipButtons[2]);
+    await userEvent.click(tooltipButtons[3]);
     expect(
       screen.getByText(/väestötietojärjestelmään \(vtj\)/i)
     ).toBeInTheDocument();
   });
+
   it('renders employer-entered address in company section', () => {
     renderComponent(
       <EmployerApplicationHandlerView
