@@ -21,6 +21,7 @@ from applications.enums import (
     ActionType,
     AdditionalInfoUserReason,
     AttachmentType,
+    EMPLOYER_REQUIRED_ATTACHMENT_TYPES,
     EmployerApplicationStatus,
     get_supported_languages,
     TimelineItemType,
@@ -170,6 +171,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "summer_voucher",
+            "youth_application",
             "attachment_file",
             "attachment_type",
             "attachment_file_name",
@@ -226,13 +228,18 @@ class AttachmentSerializer(serializers.ModelSerializer):
         """
 
         is_handler = self.get_is_handler()
-        if not is_handler and (
-            data["summer_voucher"].application.status
-            not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-        ):
-            raise serializers.ValidationError(
-                _("Can not add attachment to an application in this state")
-            )
+        summer_voucher = data.get("summer_voucher")
+        youth_application = data.get("youth_application")
+
+        if not is_handler:
+            if (
+                summer_voucher
+                and summer_voucher.application.status
+                not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
+            ) or (youth_application and not youth_application.can_set_additional_info):
+                raise serializers.ValidationError(
+                    _("Can not add attachment to an application in this state")
+                )
 
         if data["attachment_file"].size > settings.MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
@@ -242,10 +249,18 @@ class AttachmentSerializer(serializers.ModelSerializer):
                 )
             )
 
+        if bool(summer_voucher) == bool(youth_application):
+            raise serializers.ValidationError(
+                _(
+                    "Exactly one of summer_voucher or youth_application must be provided."  # noqa E504
+                )
+            )
+
+        related_obj = summer_voucher or youth_application
         if (
-            data["summer_voucher"]
-            .attachments.filter(attachment_type=data["attachment_type"])
-            .count()
+            related_obj.attachments.filter(
+                attachment_type=data["attachment_type"]
+            ).count()
             >= self.MAX_ATTACHMENTS_PER_TYPE
         ):
             raise serializers.ValidationError(_("At most five attachments per type"))
@@ -256,7 +271,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         elif not self._is_valid_image(data["attachment_file"]):
             # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so
             # if we get here,
-            # the content type is an image file
+            # we should have a valid image file.
             raise serializers.ValidationError(_("Not a valid image file"))
         return data
 
@@ -842,7 +857,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
                     _("Attachments missing from summer voucher")
                 )
 
-            required_attachment_types = AttachmentType.values
+            required_attachment_types = EMPLOYER_REQUIRED_ATTACHMENT_TYPES[:]
             for attachment in summer_voucher.attachments.all():
                 if attachment.attachment_type in required_attachment_types:
                     required_attachment_types.remove(attachment.attachment_type)
@@ -989,6 +1004,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "non_vtj_home_municipality",
             "is_vtj_data_restricted",
             "employer_applications",
+            "attachments",
         ] + vtj_data_fields
         fields = read_only_fields + [
             "first_name",
@@ -1025,6 +1041,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "Returns an empty list for unauthorized or public users."
         )
     )
+    attachments = AttachmentSerializer(many=True, read_only=True)
     creator = serializers.PrimaryKeyRelatedField(
         required=False,
         allow_null=True,
@@ -1430,6 +1447,16 @@ class EmployerSummerVoucherAttachmentUploadInputSerializer(serializers.Serialize
 
     attachment_file = BinaryFileField()
     attachment_type = serializers.ChoiceField(choices=AttachmentType.choices)
+
+
+class YouthApplicationAttachmentUploadInputSerializer(serializers.Serializer):
+    """
+    Request body (input) for uploading an attachment to a youth application.
+    No attachment_type is required from the caller; it defaults to UNCLASSIFIED,
+    since youth attachments are not categorised by the system.
+    """
+
+    attachment_file = BinaryFileField()
 
 
 class AnonymousYouthApplicationExportSerializer(serializers.ModelSerializer):

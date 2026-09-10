@@ -39,13 +39,12 @@ class TalpaRobotBasicAuthentication(authentication.BaseAuthentication):
 
         expected = getattr(settings, "TALPA_ROBOT_AUTH_CREDENTIAL", "")
         if not expected:
-            raise AuthenticationFailed(
-                "Basic Auth is not configured for this endpoint."
-            )
+            # Basic Auth is not configured; let the API-key permission decide.
+            return None
         if not secrets.compare_digest(
             expected.encode("utf-8"), credentials.encode("utf-8")
         ):
-            raise AuthenticationFailed("Invalid credentials.")
+            return None
         return (AnonymousUser(), TALPA_ROBOT_AUTH_NAME)
 
     def authenticate_header(self, request):

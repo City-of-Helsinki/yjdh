@@ -208,6 +208,7 @@ def get_read_only_fields() -> List[str]:
         "non_vtj_home_municipality",
         "is_vtj_data_restricted",
         "employer_applications",
+        "attachments",
     ]
 
 
@@ -1280,7 +1281,7 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
         ), f"{optional_field} created youth application attribute incorrect"
 
     for read_only_field in read_only_fields:
-        if read_only_field == "employer_applications":
+        if read_only_field in ["employer_applications", "attachments"]:
             continue
         assert (
             getattr(created_app, read_only_field)

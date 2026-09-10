@@ -58,6 +58,7 @@ from applications.api.v1.serializers import (
     TargetGroupSerializer,
     validate_timeline_item_types,
     YouthApplicationAdditionalInfoSerializer,
+    YouthApplicationAttachmentUploadInputSerializer,
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
     YouthApplicationHandlingSerializer,
@@ -67,6 +68,7 @@ from applications.api.v1.serializers import (
     YouthApplicationStatusSerializer,
 )
 from applications.enums import (
+    AttachmentType,
     EmployerApplicationStatus,
     JobType,
     YouthApplicationRejectedReason,
@@ -324,6 +326,14 @@ class YouthApplicationViewSet(ModelViewSet):
             super()
             .get_queryset()
             .select_related("youth_summer_voucher")
+            .prefetch_related(
+                Prefetch(
+                    "attachments",
+                    queryset=Attachment.objects.select_related("author").annotate(
+                        notes_count=Count("notes")
+                    ),
+                )
+            )
             .order_by("-created_at", "id")
         )
 
@@ -1001,6 +1011,107 @@ class YouthApplicationViewSet(ModelViewSet):
                 f"Validation error codes: {str(e.get_codes())}"
             )
             raise
+
+    @extend_schema(
+        request=YouthApplicationAttachmentUploadInputSerializer,
+        responses={
+            201: AttachmentSerializer,
+            400: OpenApiResponse(description="Invalid input"),
+            403: OpenApiResponse(
+                description="You don't have permission to upload this file"
+            ),
+        },
+    )
+    @action(
+        methods=["post"],
+        detail=True,
+        parser_classes=(MultiPartParser,),
+    )
+    @transaction.atomic
+    def post_attachment(self, request, *args, **kwargs) -> HttpResponse:
+        """
+        Upload a single attachment for the Youth Application.
+        Does not require authentication because youth users are anonymous.
+        """
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if not youth_application.can_set_additional_info:
+            return Response(
+                {
+                    "detail": _(
+                        "Cannot upload attachments to an application in this state"
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = YouthApplicationAttachmentUploadInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        attachment_data = {
+            "youth_application": youth_application.pk,
+            "attachment_type": AttachmentType.UNCLASSIFIED,
+            "attachment_file": serializer.validated_data["attachment_file"],
+            "content_type": serializer.validated_data["attachment_file"].content_type,
+        }
+
+        attachment_serializer = AttachmentSerializer(
+            data=attachment_data,
+            context={"request": request, "is_handler": False},
+        )
+        attachment_serializer.is_valid(raise_exception=True)
+        attachment_serializer.save()
+
+        LOGGER.info(
+            f"Uploaded attachment {attachment_serializer.instance.pk} "
+            f"for youth application {youth_application.pk}"
+        )
+
+        return Response(
+            attachment_serializer.data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    @extend_schema(
+        responses={
+            200: AttachmentSerializer,
+            204: OpenApiResponse(description="Attachment deleted"),
+            404: OpenApiResponse(description="Attachment not found"),
+        },
+    )
+    @action(
+        methods=["get", "delete"],
+        detail=True,
+        url_path=r"attachments/(?P<attachment_pk>[^/.]+)",
+    )
+    @enforce_handler_view_adfs_login
+    def handle_attachment(
+        self, request, pk, attachment_pk, *args, **kwargs
+    ) -> HttpResponse:
+        """
+        GET / DELETE a specific attachment belonging to a youth application.
+        Strictly restricted to handler users.
+        """
+        youth_application: YouthApplication = self.get_object()
+
+        try:
+            attachment = youth_application.attachments.annotate(
+                notes_count=Count("notes")
+            ).get(pk=attachment_pk)
+        except Attachment.DoesNotExist:
+            return Response(
+                {"detail": _("Attachment not found.")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if request.method == "GET":
+            return Response(AttachmentSerializer(attachment).data)
+        elif request.method == "DELETE":
+            attachment.delete()
+            LOGGER.info(
+                f"Deleted youth attachment {attachment_pk} via handle_attachment"
+            )
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EmployerApplicationFilter(filters.FilterSet):

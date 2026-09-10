@@ -1028,3 +1028,6 @@ msgstr "beräknad"
 
 msgid "selvittämätön"
 msgstr "oavgjord"
+
+msgid "unclassified"
+msgstr "oklassificerad"
