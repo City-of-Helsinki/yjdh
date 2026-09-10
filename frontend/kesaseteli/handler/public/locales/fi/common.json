@@ -353,6 +353,8 @@
     "sectionTitle": "Käsittelijän huomiot",
     "addNote": "Lisää huomio",
     "saveNote": "Tallenna huomio",
+    "addNoteSuccess": "Huomion lisääminen onnistui",
+    "addMessageSuccess": "Viestin lisääminen onnistui",
     "editNote": "Muokkaa",
     "editError": "Huomion tallentaminen epäonnistui.",
     "deleteError": "Huomion poistaminen epäonnistui.",

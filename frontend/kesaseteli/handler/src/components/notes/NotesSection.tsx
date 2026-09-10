@@ -1,9 +1,10 @@
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import showSuccessToast from 'shared/components/toast/show-success-toast';
 
 import useCreateNoteMutation from '../../hooks/backend/useCreateNoteMutation';
 import useHandlerNotesQuery from '../../hooks/backend/useHandlerNotesQuery';
-import { CreateNotePayload, NoteTargetType } from '../../types/note';
+import { CreateNotePayload, NoteTargetType, NoteType } from '../../types/note';
 import NoteForm from './NoteForm';
 import { $Instructions, $NotesContainer } from './NotesSection.sc';
 import NotesSectionTimeline from './NotesSectionTimeline';
@@ -46,7 +47,16 @@ const NotesSection: React.FC<Props> = ({
           targetId={targetId}
           isLoading={createMutation.isPending}
           onSubmit={(payload, onSuccess) =>
-            createMutation.mutate(payload as CreateNotePayload, { onSuccess })
+            createMutation.mutate(payload as CreateNotePayload, {
+              onSuccess: () => {
+                onSuccess();
+                const toastTitle =
+                  payload.note_type === NoteType.EXTERNAL_MESSAGE
+                    ? t('common:handlerNotes.addMessageSuccess')
+                    : t('common:handlerNotes.addNoteSuccess');
+                showSuccessToast(toastTitle, '');
+              },
+            })
           }
         />
       )}

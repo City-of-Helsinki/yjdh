@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 
@@ -10,6 +11,21 @@ import NotesSection from '../NotesSection';
 
 jest.mock('../../../hooks/useUser');
 jest.mock('../../../hooks/backend/useHandlerNotesQuery');
+
+const mockMutate = jest.fn();
+jest.mock('../../../hooks/backend/useCreateNoteMutation', () => ({
+  __esModule: true,
+  default: () => ({
+    mutate: mockMutate,
+    isPending: false,
+  }),
+}));
+
+const mockShowSuccessToast = jest.fn();
+jest.mock('shared/components/toast/show-success-toast', () => ({
+  __esModule: true,
+  default: (...args: unknown[]) => mockShowSuccessToast(...args),
+}));
 
 describe('NotesSection', () => {
   beforeEach(() => {
@@ -76,5 +92,70 @@ describe('NotesSection', () => {
     );
 
     expect(screen.getByText('Important note content')).toBeInTheDocument();
+  });
+
+  it('shows success toast when adding an internal note succeeds', async () => {
+    renderComponent(
+      <NotesSection
+        targetId="app-1"
+        targetType={NoteTargetType.YOUTH_APPLICATION}
+      />
+    );
+
+    const textArea = screen.getByRole('textbox', { name: /kirjoita huomio/i });
+    await userEvent.type(textArea, 'Internal note test');
+
+    const submitBtn = screen.getByRole('button', { name: /lisää huomio/i });
+    await userEvent.click(submitBtn);
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: 'Internal note test',
+        note_type: NoteType.INTERNAL,
+      }),
+      expect.any(Object)
+    );
+
+    const mutateOptions = mockMutate.mock.calls[0][1];
+    mutateOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Huomion lisääminen onnistui',
+      ''
+    );
+  });
+
+  it('shows success toast when adding an external message succeeds', async () => {
+    renderComponent(
+      <NotesSection
+        targetId="app-1"
+        targetType={NoteTargetType.EMPLOYER_APPLICATION}
+      />
+    );
+
+    const textArea = screen.getByRole('textbox', { name: /kirjoita huomio/i });
+    await userEvent.type(textArea, 'External message test');
+
+    const externalRadio = screen.getByLabelText(/ulkoinen viesti/i);
+    await userEvent.click(externalRadio);
+
+    const submitBtn = screen.getByRole('button', { name: /lisää huomio/i });
+    await userEvent.click(submitBtn);
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: 'External message test',
+        note_type: NoteType.EXTERNAL_MESSAGE,
+      }),
+      expect.any(Object)
+    );
+
+    const mutateOptions = mockMutate.mock.calls[0][1];
+    mutateOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Viestin lisääminen onnistui',
+      ''
+    );
   });
 });
