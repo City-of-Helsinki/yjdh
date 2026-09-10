@@ -31,6 +31,12 @@ jest.mock('shared/components/toast/show-error-toast', () => ({
   default: (...args: unknown[]) => mockShowErrorToast(...args),
 }));
 
+const mockShowSuccessToast = jest.fn();
+jest.mock('shared/components/toast/show-success-toast', () => ({
+  __esModule: true,
+  default: (...args: unknown[]) => mockShowSuccessToast(...args),
+}));
+
 describe('EmployerApplicationAttachments', () => {
   const fakeObjectFactory = new FakeObjectFactory();
 
@@ -435,6 +441,32 @@ describe('EmployerApplicationAttachments', () => {
     expect(mockShowErrorToast).toHaveBeenCalledWith(
       'Tiedoston latauksessa tapahtui virhe',
       'Korkeintaan viisi liitettä tyyppiä kohden'
+    );
+  });
+
+  it('shows success toast when upload mutation succeeds', () => {
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={mockApplicationSingleVoucher}
+      />
+    );
+
+    const fileInput = screen.getByLabelText(/tai valitse tiedosto/i);
+    const validFile = new File(['dummy content'], 'sopimus.pdf', {
+      type: 'application/pdf',
+    });
+
+    fireEvent.change(fileInput, { target: { files: [validFile] } });
+
+    expect(mockMutate).toHaveBeenCalled();
+
+    // Trigger the onSuccess callback manually
+    const mutateOptions = mockMutate.mock.calls[0][1];
+    mutateOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Liitteen lisääminen onnistui',
+      ''
     );
   });
 });

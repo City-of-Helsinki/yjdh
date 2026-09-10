@@ -393,6 +393,12 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
         data: buildFormData(file),
       },
       {
+        onSuccess: () => {
+          showSuccessToast(
+            t('common:handlerApplication.attachmentsUploadSuccess'),
+            ''
+          );
+        },
         onError: (error: unknown) => {
           const errorMessage = getAttachmentUploadErrorMessage(error, t);
           showErrorToast(t(ERROR_ATTACHMENTS_TITLE), errorMessage);
