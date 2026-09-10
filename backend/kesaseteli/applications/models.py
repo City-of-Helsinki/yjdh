@@ -1794,6 +1794,16 @@ class Attachment(UUIDModel, TimeStampedModel):
         verbose_name=_("employer summer voucher"),
         related_name="attachments",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    youth_application = models.ForeignKey(
+        YouthApplication,
+        verbose_name=_("youth application"),
+        related_name="attachments",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     attachment_type = models.CharField(
         max_length=64,
@@ -1817,7 +1827,20 @@ class Attachment(UUIDModel, TimeStampedModel):
     class Meta:
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")
-        ordering = ["-summer_voucher__created_at", "attachment_type", "-created_at"]
+        ordering = ["-created_at", "pk"]
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(
+                        summer_voucher__isnull=False, youth_application__isnull=True
+                    )
+                    | models.Q(
+                        summer_voucher__isnull=True, youth_application__isnull=False
+                    )
+                ),
+                name="attachment_must_belong_to_exactly_one_application_type",
+            )
+        ]
 
 
 class EmailTemplate(TimeStampedModel, UUIDModel):
