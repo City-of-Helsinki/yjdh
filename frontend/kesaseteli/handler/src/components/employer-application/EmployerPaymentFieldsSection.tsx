@@ -53,10 +53,6 @@ const EmployerPaymentFieldsSection: React.FC<{
       />
       <$DescriptionList aria-labelledby="employer-payment-heading">
         <Field
-          type="street_address"
-          value={application.street_address || '-'}
-        />
-        <Field
           type="bank_account_number"
           value={
             friendlyFormatIBAN(application.bank_account_number) ||
