@@ -212,6 +212,13 @@ class AdditionalInfoUserReason(models.TextChoices):
 class AttachmentType(models.TextChoices):
     EMPLOYMENT_CONTRACT = "employment_contract", _("employment contract")
     PAYSLIP = "payslip", _("payslip")
+    UNCLASSIFIED = "unclassified", _("unclassified")
+
+
+EMPLOYER_REQUIRED_ATTACHMENT_TYPES = [
+    AttachmentType.EMPLOYMENT_CONTRACT,
+    AttachmentType.PAYSLIP,
+]
 
 
 class OrganizationType(models.TextChoices):

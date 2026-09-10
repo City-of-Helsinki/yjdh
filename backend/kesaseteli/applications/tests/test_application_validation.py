@@ -10,7 +10,10 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     YouthApplicationSerializer,
 )
-from applications.enums import AttachmentType, EmployerApplicationStatus
+from applications.enums import (
+    EMPLOYER_REQUIRED_ATTACHMENT_TYPES,
+    EmployerApplicationStatus,
+)
 from applications.models import School, validate_name, YouthApplication
 from applications.tests.test_applications_api import get_detail_url
 from shared.common.tests.names import INVALID_NAMES, VALID_NAMES
@@ -774,7 +777,7 @@ def test_application_status_change_with_missing_summer_voucher_data(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "missing_attachment",
-    AttachmentType.values + ["all"],
+    EMPLOYER_REQUIRED_ATTACHMENT_TYPES + ["all"],
 )
 def test_application_status_change_with_missing_attachments(
     api_client,

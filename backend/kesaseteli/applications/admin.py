@@ -1047,6 +1047,7 @@ class AttachmentAdmin(
         "id",
         "summer_voucher_link",
         "employer_application_link",
+        "youth_application_link",
         "company_name",
         "author",
         "attachment_type",
@@ -1061,6 +1062,7 @@ class AttachmentAdmin(
         "summer_voucher__youth_summer_voucher__summer_voucher_serial_number",
         "summer_voucher__application__company__name",
         "summer_voucher__application__company__business_id",
+        "youth_application__id",
         "author__email",
         "author__username",
         "author__first_name",
@@ -1068,6 +1070,7 @@ class AttachmentAdmin(
     ]
     readonly_fields = [
         "summer_voucher",
+        "youth_application",
         "attachment_type",
         "content_type",
         "attachment_file",
@@ -1086,6 +1089,7 @@ class AttachmentAdmin(
                 "summer_voucher__application",
                 "summer_voucher__application__company",
                 "summer_voucher__youth_summer_voucher",
+                "youth_application",
             )
         )
 
@@ -1111,6 +1115,17 @@ class AttachmentAdmin(
         return format_html('<a href="{}">{}</a>', url, app.pk)
 
     employer_application_link.short_description = _("employer application")
+
+    def youth_application_link(self, obj):
+        if not obj.youth_application:
+            return ""
+        url = reverse(
+            "admin:applications_youthapplication_change",
+            args=[obj.youth_application.pk],
+        )
+        return format_html('<a href="{}">{}</a>', url, obj.youth_application.pk)
+
+    youth_application_link.short_description = _("youth application")
 
     def company_name(self, obj):
         if (

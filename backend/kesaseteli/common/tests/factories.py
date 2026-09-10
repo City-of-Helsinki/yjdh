@@ -71,6 +71,25 @@ class AttachmentFactory(
         "random_element", elements=[val[1] for val in ATTACHMENT_CONTENT_TYPE_CHOICES]
     )
     attachment_file = factory.django.FileField(filename="file.pdf")
+    summer_voucher = factory.SubFactory(
+        "common.tests.factories.EmployerSummerVoucherFactory"
+    )
+
+    class Meta:
+        model = Attachment
+
+
+class YouthAttachmentFactory(
+    SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory
+):
+    attachment_type = AttachmentType.UNCLASSIFIED
+    content_type = factory.Faker(
+        "random_element", elements=[val[1] for val in ATTACHMENT_CONTENT_TYPE_CHOICES]
+    )
+    attachment_file = factory.django.FileField(filename="file.pdf")
+    youth_application = factory.SubFactory(
+        "common.tests.factories.YouthApplicationFactory"
+    )
 
     class Meta:
         model = Attachment

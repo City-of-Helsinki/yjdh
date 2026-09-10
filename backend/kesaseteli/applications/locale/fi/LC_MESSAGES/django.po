@@ -1025,3 +1025,6 @@ msgstr "laskettu"
 
 msgid "selvittämätön"
 msgstr "selvittämätön"
+
+msgid "unclassified"
+msgstr "luokittelematon"
