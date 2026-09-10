@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import Footer from 'kesaseteli/handler/components/footer/Footer';
 import Header from 'kesaseteli/handler/components/header/Header';
 import { UserProvider } from 'kesaseteli/handler/contexts/UserContext';
+import HandlerGlobalStyle from 'kesaseteli/handler/styles/HandlerGlobalStyle';
 import getRequiredHandlerCookieGroups from 'kesaseteli/handler/utils/get-required-handler-cookie-groups';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { COOKIE_CONSENT_SITE_NAME } from 'kesaseteli-shared/constants/cookie-consent';
@@ -52,6 +53,7 @@ const App: React.FC<AppProps> = (appProps: AppProps) => {
                 siteName={COOKIE_CONSENT_SITE_NAME}
               />
             )}
+            <HandlerGlobalStyle />
             <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
             <Portal>
               <DialogContext.Consumer>
