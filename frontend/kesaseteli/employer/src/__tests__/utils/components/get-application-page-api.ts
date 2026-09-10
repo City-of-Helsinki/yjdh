@@ -217,7 +217,7 @@ const getApplicationPageApi = (
             )
           ).toHaveTextContent(company.postcode);
           expect(
-            screen.queryByLabelText(/(kunta)|(companyinfogrid.header.city)/i)
+            screen.queryByLabelText(/^(kunta|companyinfogrid\.header\.city)$/i)
           ).toHaveTextContent(company.city);
         },
 
