@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, viewsets
 
@@ -20,6 +23,17 @@ class IsNoteAuthor(permissions.BasePermission):
                 self.message = _("You can only delete your own notes.")
             else:
                 self.message = _("You can only modify your own notes.")
+            return False
+        now = timezone.now()
+        if now < obj.created_at or now - obj.created_at >= timedelta(hours=24):
+            if request.method == "DELETE":
+                self.message = _(
+                    "You can only delete notes within 24 hours of creation."
+                )
+            else:
+                self.message = _(
+                    "You can only modify notes within 24 hours of creation."
+                )
             return False
         return True
 
