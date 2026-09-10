@@ -28,6 +28,11 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
   const currentUserId = user?.id;
   const isAuthor =
     Boolean(currentUserId) && note.author_username === currentUserId;
+  const createdAtMs = new Date(note.created_at).getTime();
+  const nowMs = Date.now();
+  const isModifiableDate =
+    nowMs >= createdAtMs && nowMs - createdAtMs < 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -82,7 +87,7 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
       ) : (
         <>
           <$NoteContent>{note.content}</$NoteContent>
-          {isAuthor && (
+          {isAuthor && isModifiableDate && (
             <$NoteActions>
               {/*
                 $ButtonText visually hides the label text on mobile view to prevent layout breaking/wrapping,
