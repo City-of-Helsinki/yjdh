@@ -571,6 +571,20 @@ def test_youth_applications_detail_response_field(api_client, youth_application,
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+def test_youth_applications_detail_response_includes_summer_voucher_serial_number(
+    api_client,
+):
+    youth_application = AcceptedYouthApplicationFactory.create()
+
+    response = api_client.get(get_detail_url(pk=youth_application.pk))
+
+    assert response.data["summer_voucher_serial_number"] == (
+        youth_application.youth_summer_voucher.user_showable_serial_number
+    )
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize(
     "youth_application_factory,expect_encrypted_handler_vtj_json_update",
     [

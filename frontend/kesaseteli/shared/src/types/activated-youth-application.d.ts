@@ -17,6 +17,7 @@ type ActivatedYouthApplication = CreatedYouthApplication &
     encrypted_handler_vtj_json: VtjData;
     is_vtj_data_restricted?: boolean;
     employer_applications?: LinkedEmployerApplication[];
+    summer_voucher_serial_number?: string;
   };
 
 export default ActivatedYouthApplication;

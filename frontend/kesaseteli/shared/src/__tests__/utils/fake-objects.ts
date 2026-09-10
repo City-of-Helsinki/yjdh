@@ -328,6 +328,7 @@ export const fakeActivatedYouthApplication = (
         override?.employer_applications?.map((app) =>
           fakeLinkedEmployerApplication(app)
         ) ?? [],
+      summer_voucher_serial_number: faker.datatype.number().toString(),
     },
     override
   ) as ActivatedYouthApplication;

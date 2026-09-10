@@ -218,6 +218,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
     additional_info_provided_at,
     additional_info_description,
     employer_applications,
+    summer_voucher_serial_number,
   } = application;
 
   const vtjException = showVtj ? getVtjException(application) : undefined;
@@ -295,6 +296,10 @@ const FormLayout: React.FC<FormLayoutProps> = ({
                 }
               />
               <Field type="target_group" value={targetGroupName} />
+              <Field
+                type="summer_voucher_serial_number"
+                value={summer_voucher_serial_number}
+              />
             </$DescriptionList>
 
             {additionalInfoProvided && (
