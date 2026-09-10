@@ -38,6 +38,10 @@ const EmployerCompanyFieldsSection: React.FC<{
           value={application.company.postcode || '-'}
         />
         <Field type="city" value={application.company.city || '-'} />
+        <Field
+          type="street_address"
+          value={application.street_address || '-'}
+        />
       </$DescriptionList>
     </FormSection>
   );

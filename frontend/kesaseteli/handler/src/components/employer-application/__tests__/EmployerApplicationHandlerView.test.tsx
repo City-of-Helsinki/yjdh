@@ -292,4 +292,28 @@ describe('EmployerApplicationHandlerView', () => {
       screen.getByText(/väestötietojärjestelmään \(vtj\)/i)
     ).toBeInTheDocument();
   });
+  it('renders employer-entered address in company section', () => {
+    renderComponent(
+      <EmployerApplicationHandlerView
+        application={mockApplicationSingleVoucher}
+      />
+    );
+    // field must exist and show the employer-entered value
+    expect(
+      screen.getByTestId('handlerApplication-street_address')
+    ).toHaveTextContent('Laskutuskatu 2');
+    // and it must live in the company section, not payment section
+    // (company section is identified by its heading)
+    const companyHeading = screen.getByText('Yrityksen tiedot');
+    expect(companyHeading).toBeInTheDocument();
+  });
+
+  it('does not render employer address under payment section label Laskutusosoite', () => {
+    renderComponent(
+      <EmployerApplicationHandlerView
+        application={mockApplicationSingleVoucher}
+      />
+    );
+    expect(screen.queryByText(/laskutusosoite/i)).not.toBeInTheDocument();
+  });
 });
