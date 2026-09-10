@@ -18,6 +18,12 @@ jest.mock('shared/hooks/useLocale', () => jest.fn());
 jest.mock('../../../hooks/backend/useDeleteNoteMutation');
 jest.mock('../../../hooks/useUser');
 
+const mockShowSuccessToast = jest.fn();
+jest.mock('shared/components/toast/show-success-toast', () => ({
+  __esModule: true,
+  default: (...args: unknown[]) => mockShowSuccessToast(...args),
+}));
+
 const mockNote: HandlerNote = fakeNote({
   id: 'note-1',
   content: 'Original note content',
@@ -119,6 +125,40 @@ describe('NoteCard', () => {
       },
       expect.any(Object)
     );
+
+    const updateOptions = mockMutateUpdate.mock.calls[0][1];
+    updateOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Huomion tallentaminen onnistui',
+      ''
+    );
+  });
+
+  it('shows success toast when editing an external message succeeds', async () => {
+    const externalNote = {
+      ...mockNote,
+      note_type: NoteType.EXTERNAL_MESSAGE,
+    };
+    renderComponent(<NoteCard note={externalNote} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /muokkaa/i }));
+
+    const textArea = screen.getByRole('textbox', { name: /muokkaa/i });
+    await userEvent.clear(textArea);
+    await userEvent.type(textArea, 'Updated message content');
+
+    await userEvent.click(
+      screen.getByRole('button', { name: /tallenna huomio/i })
+    );
+
+    const updateOptions = mockMutateUpdate.mock.calls[0][1];
+    updateOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Viestin tallentaminen onnistui',
+      ''
+    );
   });
 
   it('renders delete dialog and confirms deletion', async () => {
@@ -136,6 +176,37 @@ describe('NoteCard', () => {
     await userEvent.click(confirmButton);
 
     expect(mockMutateDelete).toHaveBeenCalledWith('note-1', expect.any(Object));
+
+    const deleteOptions = mockMutateDelete.mock.calls[0][1];
+    deleteOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Huomion poistaminen onnistui',
+      ''
+    );
+  });
+
+  it('shows success toast when deleting an external message succeeds', async () => {
+    const externalNote = {
+      ...mockNote,
+      note_type: NoteType.EXTERNAL_MESSAGE,
+    };
+    renderComponent(<NoteCard note={externalNote} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /poista/i }));
+
+    const [, confirmButton] = await screen.findAllByRole('button', {
+      name: /poista/i,
+    });
+    await userEvent.click(confirmButton);
+
+    const deleteOptions = mockMutateDelete.mock.calls[0][1];
+    deleteOptions.onSuccess();
+
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'Viestin poistaminen onnistui',
+      ''
+    );
   });
 
   it('applies visual treatment for important notes', () => {

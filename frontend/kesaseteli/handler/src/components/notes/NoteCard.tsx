@@ -2,11 +2,12 @@ import { ButtonSize, ButtonVariant, IconPenLine, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
+import showSuccessToast from 'shared/components/toast/show-success-toast';
 
 import useDeleteNoteMutation from '../../hooks/backend/useDeleteNoteMutation';
 import useUpdateNoteMutation from '../../hooks/backend/useUpdateNoteMutation';
 import useUser from '../../hooks/useUser';
-import { HandlerNote, UpdateNotePayload } from '../../types/note';
+import { HandlerNote, NoteType, UpdateNotePayload } from '../../types/note';
 import DeleteNoteDialog from './DeleteNoteDialog';
 import {
   $ButtonText,
@@ -45,7 +46,14 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
 
   const handleDeleteConfirm = (): void => {
     deleteMutation.mutate(note.id, {
-      onSuccess: () => setIsDeleteDialogOpen(false),
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false);
+        const toastTitle =
+          note.note_type === NoteType.EXTERNAL_MESSAGE
+            ? t('common:handlerNotes.deleteMessageSuccess')
+            : t('common:handlerNotes.deleteNoteSuccess');
+        showSuccessToast(toastTitle, '');
+      },
     });
   };
 
@@ -58,7 +66,16 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
           targetId={note.target_id}
           isLoading={updateMutation.isPending}
           onSubmit={(payload, onSuccess) =>
-            updateMutation.mutate(payload as UpdateNotePayload, { onSuccess })
+            updateMutation.mutate(payload as UpdateNotePayload, {
+              onSuccess: () => {
+                onSuccess();
+                const toastTitle =
+                  payload.note_type === NoteType.EXTERNAL_MESSAGE
+                    ? t('common:handlerNotes.editMessageSuccess')
+                    : t('common:handlerNotes.editNoteSuccess');
+                showSuccessToast(toastTitle, '');
+              },
+            })
           }
           onCancel={() => setIsEditing(false)}
         />
