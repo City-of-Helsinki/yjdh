@@ -271,7 +271,9 @@
     "resendVoucher": {
       "title": "Oletko varma?",
       "content": "Kesäseteli lähetetään sähköpostiin uudelleen. Toimintoa ei voi peruuttaa.",
-      "submit": "Lähetä kesäseteli uudelleen"
+      "submit": "Lähetä kesäseteli uudelleen",
+      "success": "Kesäseteli lähetetty uudelleen",
+      "successText": "Kesäseteli on lähetetty uudelleen sähköpostiin."
     },
     "deleteAttachment": "Poista liite",
     "deleteAttachmentHeader": "Haluatko varmasti poistaa liitteen?",

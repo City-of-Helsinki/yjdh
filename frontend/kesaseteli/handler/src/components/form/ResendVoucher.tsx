@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Button from 'shared/components/button/Button';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import showSuccessToast from 'shared/components/toast/show-success-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useConfirm from 'shared/hooks/useConfirm';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
@@ -31,6 +32,12 @@ const ResendVoucher: React.FC<Props> = ({ id }) => {
       handleResponse(
         axios.post(`/v1/youthapplications/${id}/resend_voucher/`)
       ),
+    onSuccess: () => {
+      showSuccessToast(
+        t('common:dialog.resendVoucher.success'),
+        t('common:dialog.resendVoucher.successText')
+      );
+    },
     onError: handleError,
   });
   const resendVoucher = async (): Promise<void> => {
