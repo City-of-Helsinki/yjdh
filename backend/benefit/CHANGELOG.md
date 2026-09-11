@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.24.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.2...benefit-backend-v2.24.3) (2026-09-11)
+
+
+### Bug Fixes
+
+* **benefit:** Continue after Ahjo parsing errors ([68da58b](https://github.com/City-of-Helsinki/yjdh/commit/68da58b38865e091a49188d7df6ab6537d160bb7))
+* **benefit:** Continue processing after Ahjo request failures ([7765840](https://github.com/City-of-Helsinki/yjdh/commit/7765840f6e704b68e65cf9a0fab7c909781a5f41))
+
 ## [2.24.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.1...benefit-backend-v2.24.2) (2026-09-10)
 
 
