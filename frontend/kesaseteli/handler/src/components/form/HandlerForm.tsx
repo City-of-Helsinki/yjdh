@@ -10,6 +10,7 @@ import Field, {
   $DescriptionList,
 } from 'kesaseteli/handler/components/form/Field';
 import LinkedEmployerApplications from 'kesaseteli/handler/components/form/LinkedEmployerApplications';
+import ResendVoucher from 'kesaseteli/handler/components/form/ResendVoucher';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
 import { getVtjException } from 'kesaseteli/handler/utils/map-vtj-data';
@@ -128,6 +129,31 @@ const $DescriptionField = styled(Field)`
   margin-bottom: ${(props) => props.theme.spacing.s};
 `;
 
+const FormActions: React.FC<{
+  application: ActivatedYouthApplication;
+  waitingForHandlerAction: boolean;
+}> = ({ application, waitingForHandlerAction }) => {
+  const { id, status } = application;
+
+  if (waitingForHandlerAction) {
+    return (
+      <$ActionButtonsWrapper>
+        <ActionButtons application={application} />
+      </$ActionButtonsWrapper>
+    );
+  }
+
+  if (status === YouthApplicationStatus.ACCEPTED) {
+    return (
+      <$ActionButtonsWrapper>
+        <ResendVoucher id={id} />
+      </$ActionButtonsWrapper>
+    );
+  }
+
+  return null;
+};
+
 const AdditionalInfoSection: React.FC<{
   t: (key: string) => string;
   providedAt?: string;
@@ -192,6 +218,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
     additional_info_provided_at,
     additional_info_description,
     employer_applications,
+    summer_voucher_serial_number,
   } = application;
 
   const vtjException = showVtj ? getVtjException(application) : undefined;
@@ -269,6 +296,10 @@ const FormLayout: React.FC<FormLayoutProps> = ({
                 }
               />
               <Field type="target_group" value={targetGroupName} />
+              <Field
+                type="summer_voucher_serial_number"
+                value={summer_voucher_serial_number}
+              />
             </$DescriptionList>
 
             {additionalInfoProvided && (
@@ -280,11 +311,10 @@ const FormLayout: React.FC<FormLayoutProps> = ({
               />
             )}
 
-            {waitingForHandlerAction && (
-              <$ActionButtonsWrapper>
-                <ActionButtons application={application} />
-              </$ActionButtonsWrapper>
-            )}
+            <FormActions
+              application={application}
+              waitingForHandlerAction={waitingForHandlerAction}
+            />
           </FormSection>
         </$Column>
 

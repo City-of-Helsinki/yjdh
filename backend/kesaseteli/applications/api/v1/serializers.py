@@ -942,6 +942,9 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         Object instance -> Dict of primitive datatypes.
         """
         result = super().to_representation(instance)
+        result["summer_voucher_serial_number"] = self.get_summer_voucher_serial_number(
+            instance
+        )
         if self.hide_vtj_data:
             for vtj_data_field in self.Meta.vtj_data_fields:
                 if vtj_data_field in result:
@@ -1016,6 +1019,12 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         allow_null=True,
         queryset=HandlerPermission.get_handler_users_queryset(),
     )
+
+    @extend_schema_field(serializers.CharField(allow_null=True))
+    def get_summer_voucher_serial_number(self, obj: YouthApplication) -> Optional[str]:
+        if not obj.has_youth_summer_voucher:
+            return None
+        return obj.youth_summer_voucher.user_showable_serial_number
 
     def create(self, validated_data):
         if "request_additional_information" in validated_data:

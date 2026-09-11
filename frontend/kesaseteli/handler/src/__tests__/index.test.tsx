@@ -94,6 +94,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     await indexPageApi.expectations.fieldValueIsPresent('school');
     await indexPageApi.expectations.fieldValueIsPresent('phone_number');
     await indexPageApi.expectations.fieldValueIsPresent('email');
+    await indexPageApi.expectations.fieldValueIsPresent(
+      'summer_voucher_serial_number'
+    );
     indexPageApi.expectations.additionalInfoIsNotPresent();
   });
 
