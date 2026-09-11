@@ -164,6 +164,13 @@ class Command(BaseCommand):
                 sent_application, response_text = request_handler(
                     application, ahjo_auth_token
                 )
+
+                if sent_application:
+                    self._handle_successful_request(
+                        counter, sent_application, response_text, ahjo_request_type
+                    )
+                    successful_applications.append(sent_application)
+                    continue
             except tuple(exception_messages.keys()) as e:
                 error_text = (
                     f"{exception_messages[type(e)]}"
@@ -181,14 +188,10 @@ class Command(BaseCommand):
                 )
                 continue
 
-            if sent_application:
-                successful_applications.append(sent_application)
-                self._handle_successful_request(
-                    counter, sent_application, response_text, ahjo_request_type
-                )
-            else:
-                failed_applications.append(application)
-                self._handle_failed_request(counter, application, ahjo_request_type)
+            # This handles the case where the request did not raise an exception
+            # but also did not return a sent application.
+            failed_applications.append(application)
+            self._handle_failed_request(counter, application, ahjo_request_type)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
