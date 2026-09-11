@@ -91,7 +91,11 @@ class YouthApplicationExportView(ListAPIView):
     serializer_class = YouthApplicationExportSerializer
 
     def get_queryset(self):
-        return YouthApplication.objects.active().order_by("created_at", "pk")
+        return (
+            YouthApplication.objects.active()
+            .select_related("youth_summer_voucher")
+            .order_by("created_at", "pk")
+        )
 
 
 @extend_schema(
