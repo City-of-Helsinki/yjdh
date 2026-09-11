@@ -10,7 +10,7 @@ from handler_notes.api.v1.serializers import NoteSerializer
 from handler_notes.models import Note
 
 
-class IsNoteAuthor(permissions.BasePermission):
+class NoteModificationPermission(permissions.BasePermission):
     """
     Permission class to only allow the author of a note to edit or delete it.
     """
@@ -40,7 +40,11 @@ class IsNoteAuthor(permissions.BasePermission):
 
 class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = NoteSerializer
-    permission_classes = [permissions.IsAuthenticated, HandlerPermission, IsNoteAuthor]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        HandlerPermission,
+        NoteModificationPermission,
+    ]
 
     def get_queryset(self):
         qs = Note.objects.all().select_related("author", "content_type")
