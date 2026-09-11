@@ -3,7 +3,8 @@ import os
 from auditlog_extra.context import get_actor
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import post_save, pre_delete, pre_save
+from django.db import transaction
+from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
 from applications.enums import ActionType
@@ -197,3 +198,13 @@ def on_attachment_deleted(sender, instance, **kwargs):
             application_id=instance.youth_application_id,
             **timeline_activitylog_kwargs,
         )
+
+
+@receiver(post_delete, sender=Attachment, dispatch_uid="attachment_post_delete_cleanup")
+def on_attachment_post_delete(sender, instance, **kwargs):
+    """
+    post_delete shared cleanup that schedules file deletion via transaction.on_commit()
+    so it works for both single instance and bulk cascaded deletes.
+    """
+    if instance.attachment_file:
+        transaction.on_commit(lambda: instance.attachment_file.delete(save=False))
