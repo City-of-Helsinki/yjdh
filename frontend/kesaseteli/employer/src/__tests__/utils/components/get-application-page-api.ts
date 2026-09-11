@@ -1,18 +1,18 @@
 import { expectToGetApplicationFromBackend } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import {
+  waitForBackendRequestsToComplete,
+  waitForLoadingCompleted,
+} from 'kesaseteli-shared/__tests__/utils/component.utils';
+import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
+import ContactPerson from 'kesaseteli-shared/types/contact-info';
 import nock from 'nock';
-import {
-  waitForBackendRequestsToComplete,
-  waitForLoadingCompleted,
-} from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
-import Application from 'shared/types/application';
-import ContactPerson from 'shared/types/contact-info';
 
 type StepExpections = {
   stepIsLoaded: () => Promise<void>;

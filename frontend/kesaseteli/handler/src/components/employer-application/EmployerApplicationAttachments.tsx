@@ -7,6 +7,7 @@ import {
   IconTrash,
   RadioButton,
 } from 'hds-react';
+import useMediaQuery from 'kesaseteli/handler/hooks/useMediaQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useRef, useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -16,7 +17,6 @@ import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_MAX_SIZE,
 } from 'shared/constants/attachment-constants';
-import useMediaQuery from 'shared/hooks/useMediaQuery';
 import type {
   AttachmentContentType,
   AttachmentType,

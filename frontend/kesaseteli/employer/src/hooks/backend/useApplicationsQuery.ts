@@ -4,11 +4,11 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import Application from 'kesaseteli-shared/types/application';
 import { useCallback, useRef } from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
-import Application from 'shared/types/application';
 
 export type PaginatedResponse<T> = {
   count: number;

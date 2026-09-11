@@ -1,5 +1,5 @@
+import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import { UseFormRegister } from 'react-hook-form';
-import ApplicationFormData from 'shared/types/application-form-data';
 
 type ApplicationFieldPath = NonNullable<
   Parameters<UseFormRegister<ApplicationFormData>>[0]

@@ -11,11 +11,11 @@ import type {
   ApplicationWithoutSsnFieldPath,
   ApplicationWithoutSsnFormData,
 } from 'kesaseteli/handler/types/application-without-ssn-types';
+import SelectionGroupBase from 'kesaseteli-shared/components/forms/inputs/SelectionGroup';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
-import SelectionGroupBase from 'shared/components/forms/inputs/SelectionGroup';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 
 type Props<V extends readonly string[]> = {

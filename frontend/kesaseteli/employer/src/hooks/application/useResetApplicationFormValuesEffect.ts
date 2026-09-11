@@ -1,11 +1,11 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import ApplicationPersistenceService from 'kesaseteli/employer/services/ApplicationPersistenceService';
+import Application from 'kesaseteli-shared/types/application-form-data';
+import ContactInfo from 'kesaseteli-shared/types/contact-info';
+import Employment from 'kesaseteli-shared/types/employment';
+import { getFormApplication } from 'kesaseteli-shared/utils/application.utils';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import Application from 'shared/types/application-form-data';
-import ContactInfo from 'shared/types/contact-info';
-import Employment from 'shared/types/employment';
-import { getFormApplication } from 'shared/utils/application.utils';
 
 const EMPTY_VOUCHER: Employment = {
   summer_voucher_serial_number: '',

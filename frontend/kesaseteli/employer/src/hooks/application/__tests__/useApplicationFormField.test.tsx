@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
+import Application from 'kesaseteli-shared/types/application-form-data';
 import React from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import Application from 'shared/types/application-form-data';
 
 import useApplicationFormField from '../useApplicationFormField';
 

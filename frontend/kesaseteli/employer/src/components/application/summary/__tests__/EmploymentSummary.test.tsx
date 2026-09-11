@@ -3,8 +3,8 @@ import { expectToGetJobTypesFromBackend } from 'kesaseteli/employer/__tests__/ut
 import EmploymentSummary from 'kesaseteli/employer/components/application/summary/EmploymentSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import React from 'react';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 
 jest.mock('kesaseteli/employer/hooks/application/useApplicationApi');

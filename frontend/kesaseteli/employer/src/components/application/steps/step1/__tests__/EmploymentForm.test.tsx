@@ -4,12 +4,12 @@ import userEvent from '@testing-library/user-event';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
+import Employment from 'kesaseteli-shared/types/employment';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import theme from 'shared/styles/theme';
-import Application from 'shared/types/application';
-import Employment from 'shared/types/employment';
 import { ThemeProvider } from 'styled-components';
 
 import EmploymentForm from '../EmploymentForm';

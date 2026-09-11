@@ -4,13 +4,13 @@ import {
 } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
+import SelectionGroupBase from 'kesaseteli-shared/components/forms/inputs/SelectionGroup';
+import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
-import SelectionGroupBase from 'shared/components/forms/inputs/SelectionGroup';
 import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
-import ApplicationFormData from 'shared/types/application-form-data';
 
 type Props<V extends readonly string[]> = {
   validation?: RegisterOptions<ApplicationFormData>;

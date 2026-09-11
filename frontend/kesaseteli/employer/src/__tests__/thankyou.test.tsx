@@ -6,15 +6,15 @@ import {
   expectToGetApplicationFromBackend,
   expectToGetCompanyFromBackend,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import Application from 'kesaseteli-shared/types/application';
 import nock from 'nock';
-import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
-import Application from 'shared/types/application';
 
 const fakeObjectFactory = new FakeObjectFactory();
 

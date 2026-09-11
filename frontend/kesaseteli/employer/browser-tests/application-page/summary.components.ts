@@ -1,13 +1,13 @@
+import isRealIntegrationsEnabled from '@frontend/kesaseteli-shared/src/flags/is-real-integrations-enabled';
+import Application from '@frontend/kesaseteli-shared/src/types/application';
+import Company from '@frontend/kesaseteli-shared/src/types/company';
+import ContactInfo from '@frontend/kesaseteli-shared/src/types/contact-info';
+import Employment from '@frontend/kesaseteli-shared/src/types/employment';
 import {
   getErrorMessage,
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import Application from '@frontend/shared/src/types/application';
-import Company from '@frontend/shared/src/types/company';
-import ContactInfo from '@frontend/shared/src/types/contact-info';
-import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import { electronicFormatIBAN, friendlyFormatIBAN } from 'ibantools';
 

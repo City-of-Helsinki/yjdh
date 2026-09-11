@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook } from '@testing-library/react';
+import Application from 'kesaseteli-shared/types/application';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import Application from 'shared/types/application';
 
 import useCreateApplicationQuery from '../useCreateApplicationQuery';
 
