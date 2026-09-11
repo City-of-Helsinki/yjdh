@@ -11,6 +11,10 @@ import NotesSection from '../NotesSection';
 
 jest.mock('../../../hooks/useUser');
 jest.mock('../../../hooks/backend/useHandlerNotesQuery');
+jest.mock('kesaseteli/handler/flags/is-handler-external-messages-enabled', () => ({
+  __esModule: true,
+  default: () => true,
+}));
 
 const mockMutate = jest.fn();
 jest.mock('../../../hooks/backend/useCreateNoteMutation', () => ({
