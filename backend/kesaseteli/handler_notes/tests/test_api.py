@@ -5,6 +5,7 @@ import pytest
 from django.db.models.signals import post_save
 from django.test import override_settings
 from django.urls import reverse
+from freezegun import freeze_time
 from rest_framework import serializers, status
 
 from applications.enums import ActionType, TimelineItemType
@@ -203,6 +204,24 @@ def test_update_note_author(staff_client, user):
 
 
 @pytest.mark.django_db
+def test_update_note_author_after_24_hours(staff_client, user):
+    with freeze_time("2026-09-09 12:00:00"):
+        note = NoteFactory(author=user, content="Original content")
+    url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
+
+    with freeze_time("2026-09-10 12:00:00"):
+        response = staff_client.patch(url, {"content": "Updated content"})
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert (
+        response.data["detail"]
+        == "You can only modify notes within 24 hours of creation."
+    )
+    note.refresh_from_db()
+    assert note.content == "Original content"
+
+
+@pytest.mark.django_db
 def test_update_note_non_author(staff_client):
     """Test that updating another user's note fails with a 403 Forbidden."""
     other_user = UserFactory(is_staff=True)
@@ -226,6 +245,23 @@ def test_delete_note_author(staff_client, user):
     response = staff_client.delete(url)
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert Note.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_delete_note_author_after_24_hours(staff_client, user):
+    with freeze_time("2026-09-09 12:00:00"):
+        note = NoteFactory(author=user)
+    url = reverse("v1:handlernotes-detail", kwargs={"pk": note.id})
+
+    with freeze_time("2026-09-10 12:00:00"):
+        response = staff_client.delete(url)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert (
+        response.data["detail"]
+        == "You can only delete notes within 24 hours of creation."
+    )
+    assert Note.objects.filter(pk=note.id).exists()
 
 
 @pytest.mark.django_db

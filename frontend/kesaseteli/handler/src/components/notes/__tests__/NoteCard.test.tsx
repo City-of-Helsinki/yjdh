@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IconSpeechbubbleText } from 'hds-react';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
@@ -44,6 +44,10 @@ describe('NoteCard', () => {
     });
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('renders note content and author meta info', () => {
     (useUser as jest.Mock).mockReturnValue({
       user: { id: 'user-2' },
@@ -79,6 +83,57 @@ describe('NoteCard', () => {
       screen.getByRole('button', { name: /muokkaa/i })
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /poista/i })).toBeInTheDocument();
+  });
+
+  it.each([
+    ['less than 24 hours old', 24 * 60 * 60 * 1000 - 1, true],
+    ['exactly 24 hours old', 24 * 60 * 60 * 1000, false],
+  ])(
+    'shows/hides edit button for notes that are %s',
+    (_description, ageInMilliseconds, canEdit) => {
+      const currentTime = new Date('2026-09-10T00:00:00.000Z');
+      jest.useFakeTimers().setSystemTime(currentTime);
+      const note = {
+        ...mockNote,
+        created_at: new Date(
+          currentTime.getTime() - ageInMilliseconds
+        ).toISOString(),
+      };
+
+      renderComponent(<NoteCard note={note} />);
+
+      const editButton = screen.queryByRole('button', { name: /muokkaa/i });
+      if (canEdit) {
+        expect(editButton).toBeInTheDocument();
+      } else {
+        expect(editButton).not.toBeInTheDocument();
+      }
+    }
+  );
+
+  it('hides note actions when the modification window expires', () => {
+    const currentTime = new Date('2026-09-10T00:00:00.000Z');
+    jest.useFakeTimers().setSystemTime(currentTime);
+    const note = {
+      ...mockNote,
+      created_at: new Date(
+        currentTime.getTime() - 24 * 60 * 60 * 1000 + 1
+      ).toISOString(),
+    };
+
+    renderComponent(<NoteCard note={note} />);
+
+    expect(screen.getByRole('button', { name: /muokkaa/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /poista/i })).toBeInTheDocument();
+
+    act(() => jest.advanceTimersByTime(1));
+
+    expect(
+      screen.queryByRole('button', { name: /muokkaa/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /poista/i })
+    ).not.toBeInTheDocument();
   });
 
   it('opens edit form when Muokkaa is clicked and cancels correctly', async () => {

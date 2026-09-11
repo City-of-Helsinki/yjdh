@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, viewsets
 
@@ -7,7 +10,7 @@ from handler_notes.api.v1.serializers import NoteSerializer
 from handler_notes.models import Note
 
 
-class IsNoteAuthor(permissions.BasePermission):
+class NoteModificationPermission(permissions.BasePermission):
     """
     Permission class to only allow the author of a note to edit or delete it.
     """
@@ -21,12 +24,27 @@ class IsNoteAuthor(permissions.BasePermission):
             else:
                 self.message = _("You can only modify your own notes.")
             return False
+        now = timezone.now()
+        if now < obj.created_at or now - obj.created_at >= timedelta(hours=24):
+            if request.method == "DELETE":
+                self.message = _(
+                    "You can only delete notes within 24 hours of creation."
+                )
+            else:
+                self.message = _(
+                    "You can only modify notes within 24 hours of creation."
+                )
+            return False
         return True
 
 
 class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = NoteSerializer
-    permission_classes = [permissions.IsAuthenticated, HandlerPermission, IsNoteAuthor]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        HandlerPermission,
+        NoteModificationPermission,
+    ]
 
     def get_queryset(self):
         qs = Note.objects.all().select_related("author", "content_type")

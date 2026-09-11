@@ -1,6 +1,6 @@
 import { ButtonSize, ButtonVariant, IconPenLine, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'shared/components/button/Button';
 
 import useDeleteNoteMutation from '../../hooks/backend/useDeleteNoteMutation';
@@ -21,14 +21,37 @@ type Props = {
   parentApplicationId?: string;
 };
 
+const modifiableForTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
 const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
   const { t } = useTranslation();
   const { user } = useUser();
   const currentUserId = user?.id;
   const isAuthor =
     Boolean(currentUserId) && note.author_username === currentUserId;
+  const createdAtMs = new Date(note.created_at).getTime();
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  const isModifiableDate =
+    nowMs >= createdAtMs && nowMs - createdAtMs < modifiableForTime;
+
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const millisecondsUntilExpiration =
+      createdAtMs + modifiableForTime - Date.now();
+    const timeoutId =
+      millisecondsUntilExpiration > 0
+        ? window.setTimeout(
+            () => setNowMs(Date.now()),
+            millisecondsUntilExpiration
+          )
+        : null;
+
+    return () => {
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    };
+  }, [createdAtMs]);
 
   const updateMutation = useUpdateNoteMutation(
     note.id,
@@ -65,7 +88,7 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
       ) : (
         <>
           <$NoteContent>{note.content}</$NoteContent>
-          {isAuthor && (
+          {isAuthor && isModifiableDate && (
             <$NoteActions>
               {/*
                 $ButtonText visually hides the label text on mobile view to prevent layout breaking/wrapping,
