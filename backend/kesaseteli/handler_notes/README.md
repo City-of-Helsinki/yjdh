@@ -116,7 +116,8 @@ The system exposes two ways to fetch note data via the REST API, serving differe
 To prevent handlers from accidentally modifying or deleting each other's audit trails:
 * **Read Access**: Any authenticated handler can view all notes.
 * **Write/Delete Access**: Only the **author** of the note is allowed to edit (`update`, `partial_update`) or delete (`destroy`) the note.
-* This restriction is enforced by the custom permission class `IsNoteAuthor` in `handler_notes/api/v1/views.py`.
+* **Time window**: There is a time-based restriction on editing/deleting a note: it has to be done in less than 24 hours from original creation.
+* This restriction is enforced by the custom permission class `NoteModificationPermission` in `handler_notes/api/v1/views.py`.
 
 ---
 
