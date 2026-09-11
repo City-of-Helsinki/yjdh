@@ -1821,7 +1821,6 @@ class Attachment(UUIDModel, TimeStampedModel):
         self._deleted_attachment_name = (
             getattr(self.attachment_file, "name", None) or ""
         )
-        self.attachment_file.delete()
         super().delete(using=using, keep_parents=keep_parents)
 
     class Meta:
