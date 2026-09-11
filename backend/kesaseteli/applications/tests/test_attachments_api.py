@@ -91,6 +91,7 @@ def test_attachment_upload(
     assert response.data.keys() == {
         "id",
         "summer_voucher",
+        "youth_application",
         "attachment_type",
         "attachment_file_name",
         "content_type",
