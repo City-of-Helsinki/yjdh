@@ -1,10 +1,10 @@
-import { APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit/applicant/src/constants';
 import { SUPPORTED_LANGUAGES } from 'benefit/handler/constants';
 import DeMinimisContext from 'benefit/handler/context/DeMinimisContext';
 import {
   Application,
   ApplicationFields,
 } from 'benefit/handler/types/application';
+import { APPLICANT_APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit-shared/constants';
 import { getErrorText } from 'benefit-shared/utils/forms';
 import { addYears } from 'date-fns';
 import parse from 'date-fns/parse';
@@ -120,9 +120,9 @@ const useFormContent = (
 
     return (
       diffMonths(new Date(), parsedStartDate) >
-        APPLICATION_START_DATE_WITHIN_MONTHS ||
+        APPLICANT_APPLICATION_START_DATE_WITHIN_MONTHS ||
       diffMonths(new Date(), parsedEndDate) >
-        APPLICATION_START_DATE_WITHIN_MONTHS
+        APPLICANT_APPLICATION_START_DATE_WITHIN_MONTHS
     );
   };
 

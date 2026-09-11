@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "node ../../shared/src/server/next-server.js",
-    "build": "next build",
+    "build": "node ../../shared/src/server/next-build.js",
     "start": "NODE_ENV=production node ../../shared/src/server/next-server.js",
     "lint": "eslint --ext js,ts,tsx src",
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
@@ -34,7 +34,7 @@
     "hds-react": "^6.0.5",
     "ibantools": "^4.5.4",
     "lodash": "^4.17.21",
-    "next": "15.5.22",
+    "next": "16.3.3",
     "next-i18next": "^15.3.0",
     "next-router-mock": "0.9.12",
     "pdfjs-dist": "4.8.69",

@@ -213,6 +213,9 @@ export const TRUTHY_SUBSIDIES = new Set([
 
 export const APPLICATION_START_DATE = new Date(new Date().getFullYear(), 0, 1);
 
+// Period the applicant is expected to report, counted back from the application date
+export const APPLICANT_APPLICATION_START_DATE_WITHIN_MONTHS = 4;
+
 export enum CALCULATION_ROW_TYPES {
   DESCRIPTION = 'description',
   SALARY_COSTS_EUR = 'salary_costs',

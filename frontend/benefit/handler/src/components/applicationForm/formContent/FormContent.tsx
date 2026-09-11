@@ -1,4 +1,3 @@
-import { APPLICATION_START_DATE_WITHIN_MONTHS } from 'benefit/applicant/src/constants';
 import { APPLICATION_START_DATE } from 'benefit/handler/constants';
 import { useAlertBeforeLeaving } from 'benefit/handler/hooks/useAlertBeforeLeaving';
 import { useApplicationFormContext } from 'benefit/handler/hooks/useApplicationFormContext';
@@ -8,6 +7,7 @@ import {
   ApplicationFields,
 } from 'benefit/handler/types/application';
 import {
+  APPLICANT_APPLICATION_START_DATE_WITHIN_MONTHS,
   APPLICATION_ORIGINS,
   ATTACHMENT_TYPES,
   ORGANIZATION_TYPES,
@@ -692,7 +692,7 @@ const FormContent: React.FC<Props> = ({
             >
               {t(
                 'common:applications.sections.notifications.pastApplicationDates.content',
-                { months: APPLICATION_START_DATE_WITHIN_MONTHS }
+                { months: APPLICANT_APPLICATION_START_DATE_WITHIN_MONTHS }
               )}
             </Notification>
           </$GridCell>

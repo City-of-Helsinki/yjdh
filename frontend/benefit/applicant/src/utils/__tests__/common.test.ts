@@ -1,12 +1,12 @@
 import { TFunction } from 'next-i18next';
 
-import i18n from '../../test/i18n/i18n-test';
+import i18n from '../../../test/i18n/i18n-test';
 import {
   getApplicationStepFromString,
   getApplicationStepString,
   getLanguageOptions,
   translateBackendErrorMessage,
-} from './common';
+} from '../common';
 
 describe('common utils', () => {
   it('returns translated language options for all supported languages', () => {
