@@ -20,7 +20,10 @@ from shared.oidc.views.mock_views import (
     MockUserInfoView,
 )
 
-urlpatterns = [
+# Base OIDC url patterns (Helsinki OIDC login/logout/userinfo/callback + mock
+# proxy + mozilla_django_oidc), shared by every project. Projects append their own
+# on-behalf/eAuthorizations mechanism on top of this list.
+base_oidc_urlpatterns = [
     path(
         "authenticate/",
         MockEnabledProxyView(
@@ -64,6 +67,9 @@ urlpatterns = [
         name="oidc_backchannel_logout",
     ),
     path("", include("mozilla_django_oidc.urls")),
+]
+
+urlpatterns = base_oidc_urlpatterns + [
     path(
         "eauthorizations/authenticate/",
         EauthAuthenticationRequestView.as_view(),
