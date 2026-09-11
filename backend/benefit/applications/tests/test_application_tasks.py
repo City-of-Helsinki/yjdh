@@ -3,7 +3,7 @@ import random
 import uuid
 from datetime import datetime, timedelta
 from io import StringIO
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock, call, patch
 
 import pytest
 from django.core.management import call_command
@@ -17,6 +17,7 @@ from applications.enums import (
 from applications.enums import (
     AhjoStatus as AhjoStatusEnum,
 )
+from applications.management.commands.send_ahjo_requests import Command
 from applications.models import AhjoSetting, AhjoStatus, Application, Attachment
 from applications.services.ahjo.exceptions import AhjoDecisionError
 from applications.services.ahjo.response_handler import (
@@ -288,8 +289,6 @@ def test_send_ahjo_requests(
 
 
 def test_send_ahjo_requests_continues_after_decision_error():
-    from applications.management.commands.send_ahjo_requests import Command
-
     first_application = MagicMock(application_number=127475)
     second_application = MagicMock(application_number=127541)
     ahjo_request = Mock(
@@ -327,13 +326,77 @@ def test_send_ahjo_requests_continues_after_decision_error():
     )
 
 
+def test_send_ahjo_requests_continues_after_decision_details_parsing_error():
+    first_application = MagicMock(application_number=127475)
+    second_application = MagicMock(application_number=127541)
+    malformed_response = [
+        {
+            "Content": '<div class="Puheenjohtajanimi">Test Person</div>',
+            "Organization": {"Name": "Test organization"},
+            "Section": "37",
+        }
+    ]
+    ahjo_request = Mock(
+        side_effect=[
+            (first_application, malformed_response),
+            (second_application, "response"),
+        ]
+    )
+    command = Command()
+    command.stdout = StringIO()
+    response_handler = AhjoDecisionDetailsResponseHandler()
+
+    def handle_successful_request(counter, application, response, request_type):
+        if counter == 1:
+            response_handler._parse_details_from_decision_response(response[0])
+
+    with (
+        patch.object(command, "_get_request_handler", return_value=ahjo_request),
+        patch.object(
+            command,
+            "_handle_successful_request",
+            side_effect=handle_successful_request,
+        ) as handle_success,
+        patch.object(command, "_handle_failed_request") as handle_failure,
+    ):
+        command.run_requests(
+            [first_application, second_application],
+            MagicMock(AhjoToken),
+            AhjoRequestType.GET_DECISION_DETAILS,
+        )
+
+    assert ahjo_request.call_count == 2
+    assert handle_failure.call_count == 1
+    failure_call = handle_failure.call_args.args
+    assert failure_call[:3] == (
+        1,
+        first_application,
+        AhjoRequestType.GET_DECISION_DETAILS,
+    )
+    assert failure_call[3] == (
+        "Decision details parsing error for application 127475: "
+        "Error in parsing decision details: 'DateDecision'"
+    )
+    assert handle_success.call_args_list == [
+        call(
+            1,
+            first_application,
+            malformed_response,
+            AhjoRequestType.GET_DECISION_DETAILS,
+        ),
+        call(
+            2,
+            second_application,
+            "response",
+            AhjoRequestType.GET_DECISION_DETAILS,
+        ),
+    ]
+
+
 @pytest.mark.django_db(transaction=True)
 class TestHandleSuccessfulRequest:
     @pytest.fixture(autouse=True)
     def setup(self):
-        # Import here to avoid import issues in test setup
-        from applications.management.commands.send_ahjo_requests import Command
-
         self.command = Command()
 
         # Create mock application
