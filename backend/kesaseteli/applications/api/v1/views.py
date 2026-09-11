@@ -1134,6 +1134,13 @@ class EmployerApplicationViewSet(ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = EmployerApplicationFilter
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        request = self.request
+        if request and request.user.is_authenticated:
+            context["is_handler"] = HandlerPermission.has_user_permission(request.user)
+        return context
+
     def get_queryset(self):
         queryset = (
             super()

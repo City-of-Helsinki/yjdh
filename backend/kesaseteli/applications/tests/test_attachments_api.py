@@ -110,7 +110,7 @@ def test_attachment_upload(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
-def test_employer_upload_sets_author_and_returns_employer_author_name(
+def test_employer_upload_sets_author_and_returns_empty_author_name(
     request, user, api_client, summer_voucher
 ):
     response = _upload_file(
@@ -123,7 +123,7 @@ def test_employer_upload_sets_author_and_returns_employer_author_name(
     assert response.status_code == status.HTTP_201_CREATED
     attachment = summer_voucher.attachments.first()
     assert attachment.author == user
-    assert response.data["author_name"] == "Työnantaja"
+    assert response.data["author_name"] == ""
 
 
 @pytest.mark.django_db

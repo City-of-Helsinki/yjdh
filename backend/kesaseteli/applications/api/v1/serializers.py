@@ -206,11 +206,12 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return self.context.get("is_handler", False)
 
     def get_author_name(self, obj) -> str:
-        if not obj.author:
+        """
+        Get the author name. Only shown if the current user is a handler.
+        """
+        if not self.get_is_handler() or not obj.author:
             return ""
-        if HandlerPermission.has_user_permission(obj.author):
-            return obj.author.get_full_name() or obj.author.username or _("Käsittelijä")
-        return _("Työnantaja")
+        return obj.author.get_full_name() or obj.author.username or ""
 
     def create(self, validated_data):
         request = self.context.get("request")
