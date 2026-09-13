@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.19.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.18.0...kesaseteli-backend-v1.19.0) (2026-09-13)
+
+
+### Features
+
+* **ks,backend:** Add new employer application statuses & status changes ([35a4c8c](https://github.com/City-of-Helsinki/yjdh/commit/35a4c8c65ba8bd4f536270e42e996696c0f34b1f))
+* **ks,backend:** Add RECEIVED_BY_PAYMENT_SYSTEM,ERROR_IN_PAYMENT status ([e660ed9](https://github.com/City-of-Helsinki/yjdh/commit/e660ed9dd10d2fde701ca0e4ff2d0d10ce984fc3))
+* **ks,handler:** Add dashboard application statistics endpoint ([df74218](https://github.com/City-of-Helsinki/yjdh/commit/df742185fe6a8b1c8bd1dba4535ba0b1e0545ac2))
+* **ks,shared,employer:** Add job type selection to employer app ([580bddf](https://github.com/City-of-Helsinki/yjdh/commit/580bddf400359ad3f484456e96665e98fd0c3c7f))
+* **ks,shared:** Synchronize payment statuses ([60d10f1](https://github.com/City-of-Helsinki/yjdh/commit/60d10f14d175b8bd7b3f6abb600082a8eeac6cdd))
+* **ks:** Add author tracking for attachments ([7e18300](https://github.com/City-of-Helsinki/yjdh/commit/7e18300a9c72035959fc9045bac5c8a3b24357ad))
+* **ks:** Add fields for talpa integration on employer vouchers ([4be89c5](https://github.com/City-of-Helsinki/yjdh/commit/4be89c5e8ccdaaf32738bdc26598d931dee4aaf2))
+* **ks:** Add handler attachment admin API and timeline support ([055f869](https://github.com/City-of-Helsinki/yjdh/commit/055f86900ff382def14148010d528e7ee1e318c5))
+* **ks:** Implement talpa and reporting integration endpoints ([17c802d](https://github.com/City-of-Helsinki/yjdh/commit/17c802d2b5f786d0d6a6c1709fcf7bfec8cef408))
+
+
+### Bug Fixes
+
+* **ks,handler:** Show error toast on attachment upload failure ([740e049](https://github.com/City-of-Helsinki/yjdh/commit/740e049732a79c515bb7af1e3c3e43511ace8d36))
+* **ks:** Aggregate voucher outcomes per application in webhook ([8858bb7](https://github.com/City-of-Helsinki/yjdh/commit/8858bb7c3425a5c2c5f32250ea9a7bb562b99420))
+* **ks:** Hide attachment author name from employers ([1139633](https://github.com/City-of-Helsinki/yjdh/commit/1139633fc14f3d260cc6edd23f03c0191a470784))
+* **ks:** Remove distinct from talpa voucher updates ([b1ed0ce](https://github.com/City-of-Helsinki/yjdh/commit/b1ed0ce5f41d5cacf9aa7484b93cb1c8871aac30))
+
+
+### Performance Improvements
+
+* **ks:** Resolve N+1 query in YouthApplicationExportView ([608db3c](https://github.com/City-of-Helsinki/yjdh/commit/608db3cec56fe051a9dfb50101eebd5bf64f1adb))
+
+
+### Dependencies
+
+* Bump djangorestframework in /backend/kesaseteli ([e6fa901](https://github.com/City-of-Helsinki/yjdh/commit/e6fa9016cbbc298cf183c1c46489e1ffe223cb7e))
+
 ## [1.18.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.17.0...kesaseteli-backend-v1.18.0) (2026-08-18)
 
 
