@@ -1,5 +1,51 @@
 # Changelog
 
+## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.3.1...kesaseteli-handler-v2.4.0) (2026-09-13)
+
+
+### Features
+
+* **frontend:** Upgrade React 19 and migrate JSX typings ([70d5fa4](https://github.com/City-of-Helsinki/yjdh/commit/70d5fa453fa446688700e22fef86f87935fe4f83))
+* **ks, handler:** Add application status changes to timelinee ([6bf5cbf](https://github.com/City-of-Helsinki/yjdh/commit/6bf5cbffe322ced5651e84cb011d9aa30b125f91))
+* **ks, handler:** Change env variable handling ([ce3a6de](https://github.com/City-of-Helsinki/yjdh/commit/ce3a6dec7805bee51acccf93ed7f77dcce83d3c4))
+* **ks, handler:** Change README.md ([13b1288](https://github.com/City-of-Helsinki/yjdh/commit/13b12880171d32f950eacc6775bd8db9cdb68c88))
+* **ks, handler:** Create notes timeline ([27398aa](https://github.com/City-of-Helsinki/yjdh/commit/27398aac5a39055f1b7ca4279bf4b3a334b042ee))
+* **ks, handler:** Disable external messages ([616bb7a](https://github.com/City-of-Helsinki/yjdh/commit/616bb7af0f5096f90bfd435941f4ed1b213906dd))
+* **ks, handler:** Fixed linting errors ([797d218](https://github.com/City-of-Helsinki/yjdh/commit/797d21869f5f58e2f873abdd214aa5bb8cdb9166))
+* **ks, handler:** Instructions for notes section and modified tag ([f395ada](https://github.com/City-of-Helsinki/yjdh/commit/f395ada9798cb332a41dda09443db3fb4920b29f))
+* **ks, handler:** Move sidebar timeline to bottom ([ec9a93c](https://github.com/City-of-Helsinki/yjdh/commit/ec9a93c583028dc2c28872b037b529ed5c661bc6))
+* **ks, handler:** Remove sidebar timeline ([aaa5096](https://github.com/City-of-Helsinki/yjdh/commit/aaa5096c239774b2630a6ca1aa92869eaac35ba7))
+* **ks,handler:** Add dashboard application statistics endpoint ([df74218](https://github.com/City-of-Helsinki/yjdh/commit/df742185fe6a8b1c8bd1dba4535ba0b1e0545ac2))
+* **ks,handler:** Add info tooltips to employer application sections ([99214ef](https://github.com/City-of-Helsinki/yjdh/commit/99214ef13a39223d052bdec4f513e9c6b3e5ff74))
+* **ks,handler:** Add new employer application statuses & refactor ([da0a41a](https://github.com/City-of-Helsinki/yjdh/commit/da0a41aaeea8b870787291b5714100d5e68f8543))
+* **ks,handler:** Add tooltip to employer-entered address field ([46ba60a](https://github.com/City-of-Helsinki/yjdh/commit/46ba60a27765f9068840beadbc7b7a1f1b839626))
+* **ks,handler:** Implement attachment admin UI ([7fa704f](https://github.com/City-of-Helsinki/yjdh/commit/7fa704f33c7226b179bfae8081059d130719f3da))
+* **ks,handler:** Notify on note and message creation ([28660b5](https://github.com/City-of-Helsinki/yjdh/commit/28660b555c6633fcd45b1ec91e766136740bdd13))
+* **ks,handler:** Notify on note edit and deletion ([58022f0](https://github.com/City-of-Helsinki/yjdh/commit/58022f0b41381b589e7528bd7c6a146d3929cd2a))
+* **ks,handler:** Notify on successful attachment upload ([a3ef0ee](https://github.com/City-of-Helsinki/yjdh/commit/a3ef0ee71d1255a88f41ce49ebfb7efe49a5a734))
+* **ks,handler:** Remove seconds from timeline timestamps ([97987ef](https://github.com/City-of-Helsinki/yjdh/commit/97987ef4afa15a961d251ac6c823c3d781f4cac7))
+* **ks,handler:** Style attachment upload form to match notes section ([357d9ea](https://github.com/City-of-Helsinki/yjdh/commit/357d9eabf4c1890f6b75f6b740a47d4dcf17383e))
+* **ks,handler:** Use HDS SelectionGroup and accessible landmarks ([e943bf7](https://github.com/City-of-Helsinki/yjdh/commit/e943bf7a7c0da315a9d061528aabf48cb9297b9b))
+* **ks,shared:** Synchronize payment statuses ([60d10f1](https://github.com/City-of-Helsinki/yjdh/commit/60d10f14d175b8bd7b3f6abb600082a8eeac6cdd))
+* **ks:** Add author tracking for attachments ([7e18300](https://github.com/City-of-Helsinki/yjdh/commit/7e18300a9c72035959fc9045bac5c8a3b24357ad))
+* Migrate from react-query v3 to @tanstack/react-query v5 ([e374042](https://github.com/City-of-Helsinki/yjdh/commit/e374042c9f1dfe0ff63fee9d2ac1d50b185b3a19))
+* Upgrade HDS to v6 and migrate ErrorSummary usage ([bc96633](https://github.com/City-of-Helsinki/yjdh/commit/bc96633c4d0f13cc59d813dbdfed6cc235cff580))
+
+
+### Bug Fixes
+
+* **frontend:** Restore error summary focus ([b0349ff](https://github.com/City-of-Helsinki/yjdh/commit/b0349ff48459ab42bf37ded148c797a190f1d3c0))
+* **frontend:** Stabilize query side effects across frontend hooks ([ee8a9a7](https://github.com/City-of-Helsinki/yjdh/commit/ee8a9a71f79f52c9c150de80c64b7f0229ea2afb))
+* **ks,handler:** Align HDS icons with text in handler views ([90da24b](https://github.com/City-of-Helsinki/yjdh/commit/90da24bbbcd7a1831f8c33bcc4e6248988ae037d))
+* **ks,handler:** Move employer address to company info section ([fce3b59](https://github.com/City-of-Helsinki/yjdh/commit/fce3b59be90ab6a20126a6cc9cb6fb5492f98e97))
+* **ks,handler:** Show error toast on attachment upload failure ([740e049](https://github.com/City-of-Helsinki/yjdh/commit/740e049732a79c515bb7af1e3c3e43511ace8d36))
+
+
+### Dependencies
+
+* Upgrade @types/react to 19.2.18 and fix type compatibility ([fe768b0](https://github.com/City-of-Helsinki/yjdh/commit/fe768b0baa591a3151898c9b41a47a1958837f35))
+* Upgrade styled-components to v6.1.19 ([2503799](https://github.com/City-of-Helsinki/yjdh/commit/25037994d6c5a4f118f107759b5b1ad60e410a0a))
+
 ## [2.3.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.3.0...kesaseteli-handler-v2.3.1) (2026-08-24)
 
 
