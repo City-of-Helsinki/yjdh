@@ -1,24 +1,42 @@
 import {
   IconAlertCircle,
+  IconBagCogwheel,
   IconCheckCircle,
   IconClock,
+  IconCogwheels,
+  IconError,
   IconPen,
   IconTrash,
   StatusLabel,
 } from 'hds-react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
-import Status from 'kesaseteli-shared/types/application-status';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
+const StatusTag: React.FC<{ status: EmployerApplicationStatus }> = ({
+  status,
+}) => {
   const { t } = useTranslation();
   const label = t(`common:applications.statuses.${status}`);
 
-  // FIXME(YJDH-988): Get rid of Status type from shared frontend and after that
-  //                  add the new statuses in EmployerApplicationStatus to this switch case.
   switch (status) {
-    case 'accepted':
+    case EmployerApplicationStatus.PAYMENT_REVIEW:
+      return (
+        <StatusLabel type="alert" iconStart={<IconBagCogwheel aria-hidden />}>
+          {label}
+        </StatusLabel>
+      );
+
+    case EmployerApplicationStatus.APPLICATION_HANDLING:
+      return (
+        <StatusLabel type="alert" iconStart={<IconCogwheels aria-hidden />}>
+          {label}
+        </StatusLabel>
+      );
+
+    case EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT:
+    case EmployerApplicationStatus.SENT_FOR_PAYMENT:
+    case EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM:
       return (
         <StatusLabel type="success" iconStart={<IconCheckCircle aria-hidden />}>
           {label}
@@ -52,9 +70,16 @@ const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
         <StatusLabel iconStart={<IconPen aria-hidden />}>{label}</StatusLabel>
       );
 
-    case 'deleted_by_customer':
+    case EmployerApplicationStatus.CANCELLED:
       return (
         <StatusLabel iconStart={<IconTrash aria-hidden />}>{label}</StatusLabel>
+      );
+
+    case EmployerApplicationStatus.ERROR_IN_PAYMENT:
+      return (
+        <StatusLabel type="error" iconStart={<IconError aria-hidden />}>
+          {label}
+        </StatusLabel>
       );
 
     default:
