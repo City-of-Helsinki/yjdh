@@ -26,6 +26,19 @@ const $TabList = styled(TabList)`
   margin-bottom: 1rem;
 `;
 
+const $PassiveText = styled.span`
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: italic;
+
+  &::before {
+    content: '(';
+  }
+
+  &::after {
+    content: ')';
+  }
+`;
+
 /**
  * All possible statuses that fall under the "pending" category for youth applications.
  * Used to define the available options in the pending status search filter component.
@@ -68,7 +81,11 @@ export const useYouthApplicationListColumns =
         isSortable: false,
         transform: (row) => (
           <ActionCell
-            value={row.social_security_number || '-'}
+            value={
+              row.social_security_number || (
+                <$PassiveText>{t('common:applicationList.noSsn')}</$PassiveText>
+              )
+            }
             row={row}
             type="youth"
           />

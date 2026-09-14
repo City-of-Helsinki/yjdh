@@ -20,6 +20,8 @@
   "applicationList": {
     "filterTitle": "Rajaa hakemuksia",
     "filterError": "Valitse vähintään yksi tila",
+    "noSsn": "Ei hetua",
+    "noSerialNumber": "Ei sarjanumeroa",
     "ageFormat": "{{age}}v (synt. {{birthYear}})",
     "columns": {
       "applicantName": "Hakijan nimi",

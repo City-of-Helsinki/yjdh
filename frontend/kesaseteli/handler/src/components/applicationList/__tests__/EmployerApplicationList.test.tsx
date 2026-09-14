@@ -5,7 +5,6 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 
-import fi from '../../../../public/locales/fi/common.json';
 import useEmployerApplicationsListQuery from '../../../hooks/backend/useEmployerApplicationsListQuery';
 import EmployerApplicationList from '../EmployerApplicationList';
 
@@ -57,25 +56,28 @@ describe('EmployerApplicationList', () => {
   it('shows pending and processed tab counts and renders first tab content by default', () => {
     renderComponent(<EmployerApplicationList />);
     expect(
-      screen.getByText(`${fi.applicationList.tabs.pending} (5)`)
+      screen.getByText('Käsiteltävät (5)')
     ).toBeInTheDocument();
     expect(
-      screen.getByText(`${fi.applicationList.tabs.processed} (10)`)
+      screen.getByText('Käsitellyt (10)')
     ).toBeInTheDocument();
 
     // Verify first tab content is displayed
     expect(screen.getByText('Company Pending Oy')).toBeInTheDocument();
+    expect(
+      screen.getByText('Ei sarjanumeroa')
+    ).toBeInTheDocument();
     expect(screen.queryByText('Company Processed Oy')).not.toBeInTheDocument();
   });
 
   it('switches to the processed tab on click and renders processed content', async () => {
     renderComponent(<EmployerApplicationList />);
     await userEvent.click(
-      screen.getByText(`${fi.applicationList.tabs.processed} (10)`)
+      screen.getByText('Käsitellyt (10)')
     );
     // The processed tab becomes active; verify it's selected/visible
     expect(
-      screen.getByText(`${fi.applicationList.tabs.processed} (10)`)
+      screen.getByText('Käsitellyt (10)')
     ).toBeVisible();
 
     // Verify processed tab content is displayed
@@ -104,9 +106,7 @@ describe('EmployerApplicationList', () => {
 
     // Select "Lisätietoja pyydetty" to check it
     await userEvent.click(
-      screen.getByText(
-        fi.applicationList.employer.status.additional_information_requested
-      )
+      screen.getByText('Lisätietoja pyydetty')
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
@@ -131,19 +131,15 @@ describe('EmployerApplicationList', () => {
 
     // Deselect "Uusi hakemus" (submitted) -> should query with [additional_information_provided, error_in_payment]
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.employer.status.submitted)
+      within(listbox).getByText('Uusi hakemus')
     );
     // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> should query with [error_in_payment]
     await userEvent.click(
-      within(listbox).getByText(
-        fi.applicationList.employer.status.additional_information_provided
-      )
+      within(listbox).getByText('Lisätiedot annettu')
     );
     // Deselect "Virhe maksussa" (error_in_payment) -> empty selection, should not trigger query
     await userEvent.click(
-      within(listbox).getByText(
-        fi.applicationList.employer.status.error_in_payment
-      )
+      within(listbox).getByText('Virhe maksussa')
     );
 
     expect(mockUseQuery).not.toHaveBeenCalledWith(
@@ -179,7 +175,7 @@ describe('EmployerApplicationList', () => {
 
     // Switch to processed tab
     await userEvent.click(
-      screen.getByText(`${fi.applicationList.tabs.processed} (10)`)
+      screen.getByText('Käsitellyt (10)')
     );
 
     const combobox = screen.getByRole('combobox', { name: /tila/i });
@@ -189,9 +185,7 @@ describe('EmployerApplicationList', () => {
 
     // Deselect "Hyväksytty maksuun" (Accepted for payment)
     await userEvent.click(
-      within(listbox).getByText(
-        fi.applicationList.employer.status.accepted_for_payment
-      )
+      within(listbox).getByText('Hyväksytty maksuun')
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
