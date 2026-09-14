@@ -5,7 +5,6 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
 
-import fi from '../../../../public/locales/fi/common.json';
 import useYouthApplicationsListQuery from '../../../hooks/backend/useYouthApplicationsListQuery';
 import YouthApplicationList from '../YouthApplicationList';
 
@@ -18,6 +17,13 @@ const mockPendingApps = [
     social_security_number: '111111-1111',
     first_name: 'Matti',
     last_name: 'Meikäläinen',
+    status: YouthApplicationStatus.SUBMITTED,
+  },
+  {
+    id: 'pending-2',
+    social_security_number: '',
+    first_name: 'Teppo',
+    last_name: 'Testaaja',
     status: YouthApplicationStatus.SUBMITTED,
   },
 ];
@@ -44,32 +50,33 @@ describe('YouthApplicationList', () => {
           isLoading: false,
         };
       }
-      return { data: { count: 3, results: mockPendingApps }, isLoading: false };
+      return { data: { count: 4, results: mockPendingApps }, isLoading: false };
     });
   });
 
   it('shows pending and processed tab counts and renders first tab content by default', () => {
     renderComponent(<YouthApplicationList />);
     expect(
-      screen.getByText(`${fi.applicationList.tabs.pending} (3)`)
+      screen.getByText('Käsiteltävät (4)')
     ).toBeInTheDocument();
     expect(
-      screen.getByText(`${fi.applicationList.tabs.processed} (8)`)
+      screen.getByText('Käsitellyt (8)')
     ).toBeInTheDocument();
 
     // Verify first tab content is displayed
     expect(screen.getByText('111111-1111')).toBeInTheDocument();
     expect(screen.getByText('Matti Meikäläinen')).toBeInTheDocument();
+    expect(screen.getByText('Ei hetua')).toBeInTheDocument();
     expect(screen.queryByText('222222-2222')).not.toBeInTheDocument();
   });
 
   it('switches to the processed tab on click and renders processed content', async () => {
     renderComponent(<YouthApplicationList />);
     await userEvent.click(
-      screen.getByText(`${fi.applicationList.tabs.processed} (8)`)
+      screen.getByText('Käsitellyt (8)')
     );
     expect(
-      screen.getByText(`${fi.applicationList.tabs.processed} (8)`)
+      screen.getByText('Käsitellyt (8)')
     ).toBeVisible();
 
     // Verify processed tab content is displayed
@@ -95,9 +102,7 @@ describe('YouthApplicationList', () => {
 
     // Select "Lisätietoja pyydetty" to check it
     await userEvent.click(
-      screen.getByText(
-        fi.applicationList.youth.status.additional_information_requested
-      )
+      screen.getByText('Lisätietoja pyydetty')
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(
@@ -120,13 +125,11 @@ describe('YouthApplicationList', () => {
 
     // Deselect "Avoin" (submitted) -> should query with only [additional_information_provided]
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.youth.status.submitted)
+      within(listbox).getByText('Vahvistamaton')
     );
     // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> empty selection, should not trigger query
     await userEvent.click(
-      within(listbox).getByText(
-        fi.applicationList.youth.status.additional_information_provided
-      )
+      within(listbox).getByText('Lisätiedot annettu')
     );
 
     expect(mockUseQuery).not.toHaveBeenCalledWith(
@@ -158,7 +161,7 @@ describe('YouthApplicationList', () => {
 
     // Switch to processed tab
     await userEvent.click(
-      screen.getByText(`${fi.applicationList.tabs.processed} (8)`)
+      screen.getByText('Käsitellyt (8)')
     );
 
     const combobox = screen.getByRole('combobox', { name: /tila/i });
@@ -168,7 +171,7 @@ describe('YouthApplicationList', () => {
 
     // Deselect "Hyväksytty" (Accepted)
     await userEvent.click(
-      within(listbox).getByText(fi.applicationList.youth.status.accepted)
+      within(listbox).getByText('Hyväksytty')
     );
 
     expect(mockUseQuery).toHaveBeenCalledWith(

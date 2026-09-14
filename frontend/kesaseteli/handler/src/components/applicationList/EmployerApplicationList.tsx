@@ -26,6 +26,19 @@ const $TabList = styled(TabList)`
   margin-bottom: 1rem;
 `;
 
+const $PassiveText = styled.span`
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: italic;
+
+  &::before {
+    content: '(';
+  }
+
+  &::after {
+    content: ')';
+  }
+`;
+
 const EMPLOYER_PENDING_STATUSES = [
   EmployerApplicationStatus.SUBMITTED,
   EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
@@ -70,7 +83,11 @@ export const useEmployerApplicationListColumns =
               row.summer_vouchers
                 ?.map((v) => v.summer_voucher_serial_number)
                 .filter(Boolean)
-                .join(', ') || '-'
+                .join(', ') || (
+                <$PassiveText>
+                  {t('common:applicationList.noSerialNumber')}
+                </$PassiveText>
+              )
             }
             row={row}
             type="employer"
