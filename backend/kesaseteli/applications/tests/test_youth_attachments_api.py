@@ -6,6 +6,7 @@ import pytest
 from django.test import override_settings
 from rest_framework import status
 from rest_framework.reverse import reverse
+from rest_framework.test import APIClient
 
 from applications.enums import AttachmentType
 from applications.models import Attachment, YouthApplication
@@ -27,14 +28,14 @@ def post_attachment_url(youth_application: YouthApplication):
     )
 
 
-def _upload_file(request, unauthenticated_api_client, youth_application, extension):
+def _upload_file(request, api_client, youth_application, extension):
     with open(
         os.path.join(
             request.fspath.dirname, "data", f"valid_{extension}_file.{extension}"
         ),
         "rb",
     ) as valid_file:
-        return unauthenticated_api_client.post(
+        return api_client.post(
             post_attachment_url(youth_application),
             {
                 "attachment_file": valid_file,
@@ -154,7 +155,8 @@ def test_youth_attachment_handler_can_read(staff_client, youth_attachment):
         handle_attachment_url(youth_attachment.youth_application, youth_attachment.pk)
     )
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["id"] == str(youth_attachment.pk)
+    assert response.get("Content-Disposition")
+    assert "attachment; filename=" in response.get("Content-Disposition")
 
 
 @pytest.mark.django_db
@@ -168,6 +170,57 @@ def test_youth_attachment_handler_can_delete(staff_client, youth_attachment):
     )
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Attachment.objects.filter(pk=youth_attachment.pk).exists()
+
+
+@pytest.mark.django_db
+def test_youth_attachment_handler_cannot_delete_from_handled_application(
+    staff_client, youth_attachment
+):
+    """
+    Test that an authenticated handler cannot delete youth attachments if the
+    application is already fully handled.
+    """
+    youth_attachment.youth_application.status = (
+        "handled"  # assuming this satisfies is_handled
+    )
+    youth_attachment.youth_application.save()
+
+    with mock.patch(
+        "applications.models.YouthApplication.is_handled",
+        new_callable=mock.PropertyMock,
+    ) as mock_is_handled:
+        mock_is_handled.return_value = True
+        response = staff_client.delete(
+            handle_attachment_url(
+                youth_attachment.youth_application, youth_attachment.pk
+            )
+        )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_youth_attachment_handler_can_upload_regardless_of_status(
+    request, staff_user, youth_application
+):
+    """
+    Test that an authenticated handler can upload attachments even if the youth application
+    is in a state where it no longer accepts additional information.
+    """
+    staff_api_client = APIClient()
+    staff_api_client.force_authenticate(user=staff_user)
+
+    with mock.patch(
+        "applications.models.YouthApplication.can_set_additional_info",
+        new_callable=mock.PropertyMock,
+    ) as mock_can_set:
+        mock_can_set.return_value = False
+        response = _upload_file(
+            request,
+            staff_api_client,
+            youth_application,
+            "pdf",
+        )
+    assert response.status_code == status.HTTP_201_CREATED
 
 
 @pytest.mark.django_db
