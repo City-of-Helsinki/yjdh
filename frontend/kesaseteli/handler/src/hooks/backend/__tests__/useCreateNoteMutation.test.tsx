@@ -126,7 +126,10 @@ describe('useCreateNoteMutation', () => {
         `${BackendEndpoint.EMPLOYER_APPLICATIONS}${parentAppId}/timeline/`,
       ],
     });
-    expect(invalidateQueriesSpy).not.toHaveBeenCalledWith({
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+      queryKey: [`${BackendEndpoint.YOUTH_APPLICATIONS}${parentAppId}/`],
+    });
+    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
       queryKey: [
         `${BackendEndpoint.YOUTH_APPLICATIONS}${parentAppId}/timeline/`,
       ],

@@ -4,9 +4,9 @@ import {
   getEmployerApplicationTimelineKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
 
-import invalidateAttachmentQueries from '../invalidateAttachmentQueries';
+import invalidateEmployerAttachmentQueries from '../invalidateEmployerAttachmentQueries';
 
-describe('invalidateAttachmentQueries', () => {
+describe('invalidateEmployerAttachmentQueries', () => {
   it('invalidates employer application query and timeline query', async () => {
     const invalidateQueries = jest.fn().mockResolvedValue([]);
     const queryClient = {
@@ -14,7 +14,7 @@ describe('invalidateAttachmentQueries', () => {
     } as unknown as QueryClient;
 
     const applicationId = 'app-123';
-    await invalidateAttachmentQueries(queryClient, applicationId);
+    await invalidateEmployerAttachmentQueries(queryClient, applicationId);
 
     expect(invalidateQueries).toHaveBeenCalledWith({
       queryKey: [getEmployerApplicationQueryKey(applicationId)],

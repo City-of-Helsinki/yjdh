@@ -1,3 +1,4 @@
+import YouthApplicationAttachments from 'kesaseteli/handler/components/attachments/YouthApplicationAttachments';
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
@@ -26,7 +27,8 @@ function YouthApplicationDetail(): React.ReactElement {
     useYouthApplicationQuery(applicationId);
   const notFound = isError || (!applicationId && !isRouterLoading);
 
-
+  const attachments = data?.attachments ?? [];
+  const attachmentsCount = attachments.length;
 
   if (isRouterLoading || isLoading) {
     return <PageLoadingSpinner />;
@@ -60,6 +62,16 @@ function YouthApplicationDetail(): React.ReactElement {
       {isSuccess && applicationId && (
         <>
           <$AccordionSection
+            heading={t('common:handlerApplication.attachmentsTitle', {
+              count: attachmentsCount,
+            })}
+            initiallyOpen
+            card
+            border
+          >
+            <YouthApplicationAttachments application={data} />
+          </$AccordionSection>
+          <$AccordionSection
             heading={t('common:handlerNotes.sectionTitle')}
             initiallyOpen
             card
@@ -73,6 +85,7 @@ function YouthApplicationDetail(): React.ReactElement {
           <ApplicationTimeline
             applicationId={applicationId}
             applicationType={APPLICATION_LIST_TYPES.YOUTH}
+            attachments={attachments}
           />
         </>
       )}

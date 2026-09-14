@@ -7,6 +7,7 @@ export type LinkedEmployerApplication = {
   company_name: string;
   company_business_id: string;
   summer_voucher_serial_number: string;
+  attachments?: KesaseteliAttachment[];
   submitted_at: string;
 };
 
@@ -18,6 +19,7 @@ type ActivatedYouthApplication = CreatedYouthApplication &
     is_vtj_data_restricted?: boolean;
     employer_applications?: LinkedEmployerApplication[];
     summer_voucher_serial_number?: string;
+    attachments?: KesaseteliAttachment[];
   };
 
 export default ActivatedYouthApplication;
