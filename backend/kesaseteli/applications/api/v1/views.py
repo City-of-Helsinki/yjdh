@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Count, F, Func, Prefetch
 from django.db.utils import ProgrammingError
-from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.decorators import method_decorator
@@ -37,6 +37,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from applications.api.integration_views import IntegrationExportPagination
+from applications.api.v1.mixins import AttachmentDownloadMixin
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_DELETE_STATUSES,
     ALLOWED_APPLICATION_MODIFY_STATUSES,
@@ -300,7 +301,7 @@ class YouthApplicationFilter(filters.FilterSet):
         },
     ),
 )
-class YouthApplicationViewSet(ModelViewSet):
+class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
     """
     ViewSet for handling YouthApplication instances.
 
@@ -373,6 +374,13 @@ class YouthApplicationViewSet(ModelViewSet):
         elif self.action == "list":
             return YouthApplicationListSerializer
         return super().get_serializer_class()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        request = self.request
+        if request and request.user.is_authenticated:
+            context["is_handler"] = HandlerPermission.has_user_permission(request.user)
+        return context
 
     @enforce_handler_view_adfs_login
     @extend_schema(responses=YouthApplicationListSerializer(many=True))
@@ -1035,15 +1043,18 @@ class YouthApplicationViewSet(ModelViewSet):
         """
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        if not youth_application.can_set_additional_info:
-            return Response(
-                {
-                    "detail": _(
-                        "Cannot upload attachments to an application in this state"
-                    )
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        is_handler = HandlerPermission.has_user_permission(request.user)
+
+        if not is_handler:
+            if not youth_application.can_set_additional_info:
+                return Response(
+                    {
+                        "detail": _(
+                            "Cannot upload attachments to an application in this state"
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         serializer = YouthApplicationAttachmentUploadInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -1057,7 +1068,7 @@ class YouthApplicationViewSet(ModelViewSet):
 
         attachment_serializer = AttachmentSerializer(
             data=attachment_data,
-            context={"request": request, "is_handler": False},
+            context={"request": request, "is_handler": is_handler},
         )
         attachment_serializer.is_valid(raise_exception=True)
         attachment_serializer.save()
@@ -1105,8 +1116,12 @@ class YouthApplicationViewSet(ModelViewSet):
             )
 
         if request.method == "GET":
-            return Response(AttachmentSerializer(attachment).data)
+            return self.get_attachment_download_response(attachment)
         elif request.method == "DELETE":
+            if youth_application.is_handled:
+                raise PermissionDenied(
+                    "Attachments cannot be deleted from a fully handled application."
+                )
             attachment.delete()
             LOGGER.info(
                 f"Deleted youth attachment {attachment_pk} via handle_attachment"
@@ -1376,7 +1391,7 @@ class EmployerApplicationViewSet(ModelViewSet):
     list=extend_schema(exclude=True),
     destroy=extend_schema(exclude=True),
 )
-class EmployerSummerVoucherViewSet(ModelViewSet):
+class EmployerSummerVoucherViewSet(AttachmentDownloadMixin, ModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
     serializer_class = EmployerSummerVoucherSerializer
     permission_classes = [
@@ -1511,16 +1526,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
                 )
 
         attachment = obj.attachments.filter(pk=attachment_pk).first()
-        if not attachment or not attachment.attachment_file:
-            return Response(
-                {
-                    "detail": format_lazy(
-                        _(f"{FILE_NOT_FOUND_MESSAGE}."),
-                    )
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return FileResponse(attachment.attachment_file)
+        return self.get_attachment_download_response(attachment)
 
     def _delete_attachment(
         self, request: Request, obj: EmployerSummerVoucher, attachment_pk: str
