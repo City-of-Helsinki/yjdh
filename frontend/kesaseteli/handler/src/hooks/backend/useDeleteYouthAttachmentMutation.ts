@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 import invalidateYouthAttachmentQueries from './invalidateYouthAttachmentQueries';
 
@@ -39,6 +40,7 @@ const useDeleteYouthAttachmentMutation = (): UseMutationResult<
     onSuccess: async (_data, { applicationId }) => {
       await invalidateYouthAttachmentQueries(queryClient, applicationId);
     },
+    onError: useErrorHandler(),
   });
 };
 
