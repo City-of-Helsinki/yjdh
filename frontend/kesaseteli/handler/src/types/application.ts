@@ -35,6 +35,26 @@ export const isHandledEmployerApplicationStatus = (
       ).includes(status as EmployerApplicationStatus)
   );
 
+/**
+ * Youth application statuses that have been fully handled.
+ * Attachments cannot be deleted from applications in these statuses.
+ */
+export const HANDLED_YOUTH_APPLICATION_STATUSES = [
+  'accepted',
+  'rejected',
+] as const satisfies readonly string[];
+
+export type HandledYouthApplicationStatus =
+  (typeof HANDLED_YOUTH_APPLICATION_STATUSES)[number];
+
+export const isHandledYouthApplicationStatus = (
+  status?: string | null
+): status is HandledYouthApplicationStatus =>
+  Boolean(
+    status &&
+      (HANDLED_YOUTH_APPLICATION_STATUSES as readonly string[]).includes(status)
+  );
+
 export type BaseApplicationFields = {
   id: string;
   created_at?: string;

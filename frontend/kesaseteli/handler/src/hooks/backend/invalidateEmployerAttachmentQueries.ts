@@ -4,7 +4,13 @@ import {
   getEmployerApplicationTimelineKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
 
-const invalidateAttachmentQueries = (
+/**
+ * Invalidates the react-query cache for an employer application and its timeline.
+ *
+ * This is used to force a refetch of the application state and timeline events
+ * after an attachment is successfully uploaded or deleted.
+ */
+const invalidateEmployerAttachmentQueries = (
   queryClient: QueryClient,
   applicationId: string
 ): Promise<void[]> =>
@@ -17,4 +23,4 @@ const invalidateAttachmentQueries = (
     }),
   ]);
 
-export default invalidateAttachmentQueries;
+export default invalidateEmployerAttachmentQueries;

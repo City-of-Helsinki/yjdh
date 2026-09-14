@@ -41,11 +41,8 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
   const deleteMutation = useDeleteNoteMutation(
     note.target_type,
     note.target_id,
-    parentApplicationId
-  );
-
-  const handleDeleteConfirm = (): void => {
-    deleteMutation.mutate(note.id, {
+    parentApplicationId,
+    {
       onSuccess: () => {
         setIsDeleteDialogOpen(false);
         const toastTitle =
@@ -54,7 +51,11 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
             : t('common:handlerNotes.deleteNoteSuccess');
         showSuccessToast(toastTitle, '');
       },
-    });
+    }
+  );
+
+  const handleDeleteConfirm = (): void => {
+    deleteMutation.mutate(note.id);
   };
 
   return (
