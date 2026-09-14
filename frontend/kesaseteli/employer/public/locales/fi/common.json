@@ -279,11 +279,15 @@
       "draft": "Luonnos",
       "submitted": "Lähetetty",
       "additional_information_requested": "Lisätietoja pyydetty",
-      "additional_information_provided": "Lisätietoja toimitettu",
-      "accepted": "Hyväksytty",
+      "additional_information_provided": "Lisätiedot annettu",
+      "application_handling": "Käsittelyssä",
+      "payment_review": "Maksatuksen tarkistuksessa",
+      "accepted_for_payment": "Hyväksytty maksuun",
+      "sent_for_payment": "Siirretty maksatukseen",
+      "received_by_payment_system": "Vastaanotettu maksujärjestelmässä",
+      "error_in_payment": "Virhe maksussa",
       "rejected": "Hylätty",
-      "deleted_by_customer": "Poistettu",
-      "received_by_payment_system": "Vastaanotettu maksatusjärjestelmässä"
+      "cancelled": "Peruttu"
     }
   },
   "noOrganisationPage": {

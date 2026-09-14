@@ -21,6 +21,7 @@ import path from 'path';
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import { EmployerApplicationStatus } from '../../constants/employer-application-status';
 import type Application from '../../types/application';
 import type Company from '../../types/company';
 import ContactInfo from '../../types/contact-info';
@@ -178,7 +179,7 @@ class FakeObjectFactory {
     return getFormApplication({
       id: id ?? this.generateId(),
       company: company ?? this.fakeCompany,
-      status: 'draft',
+      status: EmployerApplicationStatus.DRAFT,
       summer_vouchers: this.fakeEmployments(1),
       ...this.fakeContactInfo(),
       submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),

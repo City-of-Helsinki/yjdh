@@ -280,10 +280,14 @@
       "submitted": "Skickad",
       "additional_information_requested": "Ytterligare information begärd",
       "additional_information_provided": "Ytterligare information lämnad",
-      "accepted": "Accepterad",
+      "application_handling": "Behandlas",
+      "payment_review": "Betalningsgranskning",
+      "accepted_for_payment": "Godkänd för betalning",
+      "sent_for_payment": "Skickad för betalning",
+      "received_by_payment_system": "Mottagen av betalningssystemet",
+      "error_in_payment": "Fel vid betalning",
       "rejected": "Avvisad",
-      "deleted_by_customer": "Raderad",
-      "received_by_payment_system": "Mottagen av betalningssystemet"
+      "cancelled": "Inställt"
     }
   },
   "noOrganisationPage": {

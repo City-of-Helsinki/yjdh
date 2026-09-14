@@ -280,10 +280,14 @@
       "submitted": "Submitted",
       "additional_information_requested": "Additional information requested",
       "additional_information_provided": "Additional information provided",
-      "accepted": "Accepted",
+      "application_handling": "Being processed",
+      "payment_review": "Payment review",
+      "accepted_for_payment": "Accepted for payment",
+      "sent_for_payment": "Sent for payment",
+      "received_by_payment_system": "Received by payment system",
+      "error_in_payment": "Error in payment",
       "rejected": "Rejected",
-      "deleted_by_customer": "Deleted",
-      "received_by_payment_system": "Received by payment system"
+      "cancelled": "Cancelled"
     }
   },
   "noOrganisationPage": {
