@@ -230,9 +230,12 @@ describe('NoteCard', () => {
     });
     await userEvent.click(confirmButton);
 
-    expect(mockMutateDelete).toHaveBeenCalledWith('note-1', expect.any(Object));
+    expect(mockMutateDelete).toHaveBeenCalledWith('note-1');
 
-    const deleteOptions = mockMutateDelete.mock.calls[0][1];
+    const useDeleteNoteMutationCalls = (useDeleteNoteMutation as jest.Mock).mock
+      .calls;
+    const deleteOptions =
+      useDeleteNoteMutationCalls[useDeleteNoteMutationCalls.length - 1][3];
     deleteOptions.onSuccess();
 
     expect(mockShowSuccessToast).toHaveBeenCalledWith(
@@ -255,7 +258,10 @@ describe('NoteCard', () => {
     });
     await userEvent.click(confirmButton);
 
-    const deleteOptions = mockMutateDelete.mock.calls[0][1];
+    const useDeleteNoteMutationCalls = (useDeleteNoteMutation as jest.Mock).mock
+      .calls;
+    const deleteOptions =
+      useDeleteNoteMutationCalls[useDeleteNoteMutationCalls.length - 1][3];
     deleteOptions.onSuccess();
 
     expect(mockShowSuccessToast).toHaveBeenCalledWith(
