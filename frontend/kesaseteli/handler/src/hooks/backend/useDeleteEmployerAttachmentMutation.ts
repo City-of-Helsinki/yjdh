@@ -7,7 +7,7 @@ import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
-import invalidateAttachmentQueries from './invalidateAttachmentQueries';
+import invalidateEmployerAttachmentQueries from './invalidateEmployerAttachmentQueries';
 
 type DeleteAttachmentVariables = {
   voucherId: string;
@@ -15,7 +15,14 @@ type DeleteAttachmentVariables = {
   attachmentId: string;
 };
 
-const useDeleteAttachmentMutation = (): UseMutationResult<
+/**
+ * Provides a mutation to delete an existing attachment from an employer application.
+ *
+ * Upon success, it invalidates both the employer application state and its timeline
+ * queries so that the UI correctly reflects the removed attachment and decreased
+ * attachment count.
+ */
+const useDeleteEmployerAttachmentMutation = (): UseMutationResult<
   void,
   unknown,
   DeleteAttachmentVariables
@@ -31,10 +38,10 @@ const useDeleteAttachmentMutation = (): UseMutationResult<
         )
       ),
     onSuccess: async (_data, { applicationId }) => {
-      await invalidateAttachmentQueries(queryClient, applicationId);
+      await invalidateEmployerAttachmentQueries(queryClient, applicationId);
     },
     onError: useErrorHandler(),
   });
 };
 
-export default useDeleteAttachmentMutation;
+export default useDeleteEmployerAttachmentMutation;

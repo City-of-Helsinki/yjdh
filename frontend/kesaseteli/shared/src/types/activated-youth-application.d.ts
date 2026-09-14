@@ -1,6 +1,7 @@
 import AdditionalInfoApplication from './additional-info-application';
 import CreatedYouthApplication from './created-youth-application';
 import VtjData from './vtj-data';
+import type { KesaseteliAttachment } from './attachment';
 
 export type LinkedEmployerApplication = {
   id: string;
@@ -17,6 +18,7 @@ type ActivatedYouthApplication = CreatedYouthApplication &
     encrypted_handler_vtj_json: VtjData;
     is_vtj_data_restricted?: boolean;
     employer_applications?: LinkedEmployerApplication[];
+    attachments?: KesaseteliAttachment[];
   };
 
 export default ActivatedYouthApplication;

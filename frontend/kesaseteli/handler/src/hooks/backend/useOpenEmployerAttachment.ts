@@ -5,7 +5,12 @@ import {
 import * as React from 'react';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 
-const useOpenAttachment = (): ((attachment: KesaseteliAttachment) => void) =>
+/**
+ * Returns a callback to open an employer application's attachment in a new browser tab.
+ */
+const useOpenEmployerAttachment = (): ((
+  attachment: KesaseteliAttachment
+) => void) =>
   React.useCallback((attachment: KesaseteliAttachment) => {
     const { id: attachmentId, summer_voucher } = attachment;
     const url = `${getBackendDomain()}${
@@ -15,4 +20,4 @@ const useOpenAttachment = (): ((attachment: KesaseteliAttachment) => void) =>
     window.open(url, '_blank', 'noopener,noreferrer');
   }, []);
 
-export default useOpenAttachment;
+export default useOpenEmployerAttachment;
