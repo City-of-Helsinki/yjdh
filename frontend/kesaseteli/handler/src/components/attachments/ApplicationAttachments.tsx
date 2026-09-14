@@ -12,7 +12,6 @@ import { useTranslation } from 'next-i18next';
 import React, { useRef, useState } from 'react';
 import Button from 'shared/components/button/Button';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import showSuccessToast from 'shared/components/toast/show-success-toast';
 import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_MAX_SIZE,
@@ -25,15 +24,7 @@ import type {
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import useDeleteAttachmentMutation from '../../hooks/backend/useDeleteAttachmentMutation';
-import useOpenAttachment from '../../hooks/backend/useOpenAttachment';
-import useUploadAttachmentQuery from '../../hooks/backend/useUploadAttachmentQuery';
-import { isHandledEmployerApplicationStatus } from '../../types/application';
-import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import type { HandlerAttachment } from '../../types/HandlerEmployerApplication';
-import { getAttachmentUploadErrorMessage } from '../../utils/attachment.utils';
-import AttachmentCommentsDialog from './AttachmentCommentsDialog';
-import DeleteAttachmentDialog from './DeleteAttachmentDialog';
 import {
   $AttachmentLink,
   $AttachmentsContainer,
@@ -45,17 +36,11 @@ import {
   $Table,
   $TableWrapper,
   $UploadContainer,
-} from './EmployerApplicationAttachments.sc';
+} from './ApplicationAttachments.sc';
+import AttachmentCommentsDialog from './AttachmentCommentsDialog';
+import DeleteAttachmentDialog from './DeleteAttachmentDialog';
 
 const ERROR_ATTACHMENTS_TITLE = 'common:error.attachments.title';
-
-const findVoucherIdForAttachment = (
-  application: HandlerEmployerApplication,
-  attachmentId: string
-): string =>
-  application.summer_vouchers.find((v) =>
-    v.attachments?.some((a) => a.id === attachmentId)
-  )?.id ?? '';
 
 const validateAttachmentFile = (
   file: File,
@@ -84,9 +69,10 @@ const getTableColSpan = (isMobile: boolean, canDelete: boolean): number => {
 };
 
 type AttachmentInputAreaProps = {
-  attachmentType: AttachmentType;
+  attachmentTypes?: readonly AttachmentType[];
+  attachmentType?: AttachmentType;
   setAttachmentType: (type: AttachmentType) => void;
-  isMultiVoucher: boolean;
+  isMultiVoucher?: boolean;
   isMobile: boolean;
   isDragging: boolean;
   isUploading: boolean;
@@ -97,7 +83,14 @@ type AttachmentInputAreaProps = {
   onFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+/**
+ * Renders the drag-and-drop area, file input, and optional attachment type radio buttons.
+ *
+ * It conditionally displays elements based on viewport size (mobile vs desktop), handles
+ * the drag-and-drop state, and displays a warning note if the application has multiple vouchers.
+ */
 const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
+  attachmentTypes,
   attachmentType,
   setAttachmentType,
   isMultiVoucher,
@@ -111,6 +104,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
   onFileInputChange,
 }) => {
   const { t } = useTranslation();
+  const hasAttachmentTypes = attachmentTypes && attachmentTypes.length > 0;
 
   return (
     <$UploadContainer
@@ -118,27 +112,24 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
       aria-label={t('common:handlerApplication.attachmentsUploadTitle')}
     >
       {/* Attachment type selection */}
-      <$AttachmentTypeGroup
-        label={t('common:handlerApplication.attachmentsUploadTypeLabel')}
-        direction="horizontal"
-      >
-        <RadioButton
-          id="attachment-type-employment-contract"
-          name="attachment-type"
-          label={t('common:handlerApplication.employment_contract')}
-          value="employment_contract"
-          checked={attachmentType === 'employment_contract'}
-          onChange={() => setAttachmentType('employment_contract')}
-        />
-        <RadioButton
-          id="attachment-type-payslip"
-          name="attachment-type"
-          label={t('common:handlerApplication.payslip')}
-          value="payslip"
-          checked={attachmentType === 'payslip'}
-          onChange={() => setAttachmentType('payslip')}
-        />
-      </$AttachmentTypeGroup>
+      {hasAttachmentTypes && (
+        <$AttachmentTypeGroup
+          label={t('common:handlerApplication.attachmentsUploadTypeLabel')}
+          direction="horizontal"
+        >
+          {attachmentTypes.map((type) => (
+            <RadioButton
+              key={type}
+              id={`attachment-type-${type}`}
+              name="attachment-type"
+              label={t(`common:handlerApplication.${type}`)}
+              value={type}
+              checked={attachmentType === type}
+              onChange={() => setAttachmentType(type)}
+            />
+          ))}
+        </$AttachmentTypeGroup>
+      )}
 
       {/* Multi-voucher warning note if applicable */}
       {isMultiVoucher && (
@@ -204,6 +195,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
 
 type AttachmentTableProps = {
   attachments: HandlerAttachment[];
+  hasAttachmentTypes: boolean;
   isMobile: boolean;
   canDeleteAttachments: boolean;
   isDeleting: boolean;
@@ -213,8 +205,16 @@ type AttachmentTableProps = {
   onDeleteAttachment: (attachment: KesaseteliAttachment) => void;
 };
 
+/**
+ * Renders a data table listing all uploaded attachments for an application.
+ *
+ * The table displays varying columns depending on the viewport (mobile vs desktop)
+ * and whether the attachment type classification is enabled (e.g., for employer applications).
+ * It provides action buttons to view comments or delete attachments.
+ */
 const AttachmentTable: React.FC<AttachmentTableProps> = ({
   attachments,
+  hasAttachmentTypes,
   isMobile,
   canDeleteAttachments,
   isDeleting,
@@ -237,7 +237,9 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
         <thead>
           <tr>
             <th>{t('common:handlerApplication.attachmentName')}</th>
-            <th>{t('common:handlerApplication.attachmentType')}</th>
+            {hasAttachmentTypes && (
+              <th>{t('common:handlerApplication.attachmentType')}</th>
+            )}
             {isMobile && (
               <th
                 aria-label={t('common:handlerApplication.attachmentComments')}
@@ -264,11 +266,15 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
                     {attachment.attachment_file_name}
                   </$AttachmentLink>
                 </td>
-                <td>
-                  {attachment.attachment_type === 'employment_contract'
-                    ? t('common:handlerApplication.employment_contract')
-                    : t('common:handlerApplication.payslip')}
-                </td>
+                {hasAttachmentTypes && (
+                  <td>
+                    {attachment.attachment_type
+                      ? t(
+                          `common:handlerApplication.${attachment.attachment_type}`
+                        )
+                      : ''}
+                  </td>
+                )}
                 {isMobile && (
                   <td>
                     <Button
@@ -347,64 +353,61 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
   );
 };
 
-type Props = {
-  application: HandlerEmployerApplication;
+export type ApplicationAttachmentsProps = {
+  attachments: HandlerAttachment[];
+  applicationId: string;
+  canDeleteAttachments: boolean;
+  isMultiVoucher?: boolean;
+  attachmentTypes?: readonly AttachmentType[];
+  isUploading: boolean;
+  isDeleting: boolean;
+  onUpload: (file: File, attachmentType?: AttachmentType) => void;
+  onDeleteConfirm: (
+    attachment: HandlerAttachment,
+    onSettled: () => void
+  ) => void;
+  onOpenAttachment: (attachment: HandlerAttachment) => void;
 };
 
-const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
+/**
+ * Generic container component for application attachments.
+ *
+ * It orchestrates the state and interactions for uploading, displaying, and deleting
+ * attachments, as well as managing dialogs for deletion confirmation and attachment notes.
+ * This component is intended to be wrapped by type-specific components (e.g.,
+ * `EmployerApplicationAttachments` or `YouthApplicationAttachments`) which inject the
+ * necessary backend mutation hooks and logic.
+ */
+const ApplicationAttachments: React.FC<ApplicationAttachmentsProps> = ({
+  attachments,
+  applicationId,
+  canDeleteAttachments,
+  isMultiVoucher = false,
+  attachmentTypes,
+  isUploading,
+  isDeleting,
+  onUpload,
+  onDeleteConfirm,
+  onOpenAttachment,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
-  const openAttachment = useOpenAttachment();
-  const uploadMutation = useUploadAttachmentQuery();
 
   const uploadRef = useRef<HTMLInputElement>(null);
-  const [attachmentType, setAttachmentType] = useState<AttachmentType>(
-    'employment_contract'
-  );
+  const [attachmentType, setAttachmentType] = useState<
+    AttachmentType | undefined
+  >(attachmentTypes?.[0]);
   const [isDragging, setIsDragging] = useState(false);
 
-  const deleteMutation = useDeleteAttachmentMutation();
   const [deleteTargetAttachment, setDeleteTargetAttachment] =
-    useState<KesaseteliAttachment | null>(null);
+    useState<HandlerAttachment | null>(null);
   const [commentsTargetAttachment, setCommentsTargetAttachment] =
-    useState<KesaseteliAttachment | null>(null);
-
-  const canDeleteAttachments = !isHandledEmployerApplicationStatus(
-    application.status
-  );
-
-  const uploadVoucherId = application.summer_vouchers[0]?.id;
-
-  const buildFormData = (file: File): FormData => {
-    const fd = new FormData();
-    fd.append('attachment_type', attachmentType);
-    fd.append('attachment_file', file);
-    return fd;
-  };
+    useState<HandlerAttachment | null>(null);
 
   const validateAndUpload = (file: File): void => {
     if (!validateAttachmentFile(file, t)) return;
-    if (!uploadVoucherId) return;
-    uploadMutation.mutate(
-      {
-        summer_voucher: uploadVoucherId,
-        applicationId: application.id,
-        data: buildFormData(file),
-      },
-      {
-        onSuccess: () => {
-          showSuccessToast(
-            t('common:handlerApplication.attachmentsUploadSuccess'),
-            ''
-          );
-        },
-        onError: (error: unknown) => {
-          const errorMessage = getAttachmentUploadErrorMessage(error, t);
-          showErrorToast(t(ERROR_ATTACHMENTS_TITLE), errorMessage);
-        },
-      }
-    );
+    onUpload(file, attachmentType);
   };
 
   const handleFileInputChange = (
@@ -431,49 +434,27 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
     setIsDragging(false);
   };
 
-  const attachments = application.summer_vouchers.flatMap(
-    (voucher) => voucher.attachments || []
-  );
-
   const handleDeleteConfirm = (): void => {
     if (!deleteTargetAttachment) return;
-    const voucherId = findVoucherIdForAttachment(
-      application,
-      deleteTargetAttachment.id
-    );
-    deleteMutation.mutate(
-      {
-        voucherId,
-        applicationId: application.id,
-        attachmentId: deleteTargetAttachment.id,
-      },
-      {
-        onSuccess: () => {
-          setDeleteTargetAttachment(null);
-          showSuccessToast(t('common:dialog.deleteAttachmentSuccess'), '');
-        },
-        onError: () => {
-          showErrorToast(
-            t(ERROR_ATTACHMENTS_TITLE),
-            t('common:dialog.deleteAttachmentError')
-          );
-          setDeleteTargetAttachment(null);
-        },
-      }
-    );
+    onDeleteConfirm(deleteTargetAttachment, () => {
+      setDeleteTargetAttachment(null);
+    });
   };
 
-  const isMultiVoucher = application.summer_vouchers.length > 1;
+  const hasAttachmentTypes = Boolean(
+    attachmentTypes && attachmentTypes.length > 0
+  );
 
   return (
     <$AttachmentsContainer>
       <AttachmentInputArea
+        attachmentTypes={attachmentTypes}
         attachmentType={attachmentType}
-        setAttachmentType={setAttachmentType}
+        setAttachmentType={setAttachmentType as (type: AttachmentType) => void}
         isMultiVoucher={isMultiVoucher}
         isMobile={isMobile}
         isDragging={isDragging}
-        isUploading={uploadMutation.isPending}
+        isUploading={isUploading}
         uploadRef={uploadRef}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -483,20 +464,25 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
 
       <AttachmentTable
         attachments={attachments}
+        hasAttachmentTypes={hasAttachmentTypes}
         isMobile={isMobile}
         canDeleteAttachments={canDeleteAttachments}
-        isDeleting={deleteMutation.isPending}
+        isDeleting={isDeleting}
         deletingAttachmentId={deleteTargetAttachment?.id}
-        onOpenAttachment={openAttachment}
-        onOpenComments={setCommentsTargetAttachment}
-        onDeleteAttachment={setDeleteTargetAttachment}
+        onOpenAttachment={onOpenAttachment}
+        onOpenComments={(att) =>
+          setCommentsTargetAttachment(att as HandlerAttachment)
+        }
+        onDeleteAttachment={(att) =>
+          setDeleteTargetAttachment(att as HandlerAttachment)
+        }
       />
 
       {deleteTargetAttachment && (
         <DeleteAttachmentDialog
           attachment={deleteTargetAttachment}
           isOpen={Boolean(deleteTargetAttachment)}
-          isDeleting={deleteMutation.isPending}
+          isDeleting={isDeleting}
           onClose={() => setDeleteTargetAttachment(null)}
           onConfirm={handleDeleteConfirm}
         />
@@ -505,7 +491,7 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
       {commentsTargetAttachment && (
         <AttachmentCommentsDialog
           attachment={commentsTargetAttachment}
-          applicationId={application.id}
+          applicationId={applicationId}
           isOpen={Boolean(commentsTargetAttachment)}
           onClose={() => setCommentsTargetAttachment(null)}
         />
@@ -514,4 +500,4 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
   );
 };
 
-export default EmployerApplicationAttachments;
+export default ApplicationAttachments;

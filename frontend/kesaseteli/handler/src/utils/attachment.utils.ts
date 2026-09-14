@@ -1,6 +1,15 @@
 import axios from 'axios';
 import { TFunction } from 'next-i18next';
+import { AttachmentType } from 'shared/types/attachment';
 
+/**
+ * Extracts a human-readable error message from an attachment upload failure.
+ *
+ * It checks the Django REST Framework response for standard field errors like
+ * `non_field_errors`, `detail`, or specifically `attachment_file` errors, and
+ * returns the first one it finds. If no specific error is found, it falls back
+ * to a generic translation.
+ */
 export const getAttachmentUploadErrorMessage = (
   error: unknown,
   t: TFunction
@@ -30,4 +39,23 @@ export const getAttachmentUploadErrorMessage = (
   }
 
   return t('common:error.attachments.generic');
+};
+
+/**
+ * Constructs a `FormData` object required by the backend to upload an attachment.
+ *
+ * Both Employer and Youth applications use the same underlying endpoint format for uploads,
+ * which requires the file itself (`attachment_file`). Employer applications additionally
+ * require the attachment classification (`attachment_type`).
+ */
+export const buildAttachmentFormData = (
+  file: File,
+  attachmentType?: AttachmentType
+): FormData => {
+  const fd = new FormData();
+  if (attachmentType) {
+    fd.append('attachment_type', attachmentType);
+  }
+  fd.append('attachment_file', file);
+  return fd;
 };

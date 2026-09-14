@@ -7,17 +7,20 @@ import React from 'react';
 
 import { HANDLED_EMPLOYER_APPLICATION_STATUSES } from '../../../types/application';
 import type HandlerEmployerApplication from '../../../types/HandlerEmployerApplication';
+import {
+  mockApplicationSingleVoucher,
+  mockVoucher1,
+} from '../../employer-application/fixtures';
 import EmployerApplicationAttachments from '../EmployerApplicationAttachments';
-import { mockApplicationSingleVoucher, mockVoucher1 } from '../fixtures';
 
 const mockOpenAttachment = jest.fn();
-jest.mock('../../../hooks/backend/useOpenAttachment', () => ({
+jest.mock('../../../hooks/backend/useOpenEmployerAttachment', () => ({
   __esModule: true,
   default: () => mockOpenAttachment,
 }));
 
 const mockMutate = jest.fn();
-jest.mock('../../../hooks/backend/useUploadAttachmentQuery', () => ({
+jest.mock('../../../hooks/backend/useUploadEmployerAttachmentMutation', () => ({
   __esModule: true,
   default: () => ({
     mutate: mockMutate,

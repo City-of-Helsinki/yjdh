@@ -1,4 +1,4 @@
-import EmployerApplicationAttachments from 'kesaseteli/handler/components/employer-application/EmployerApplicationAttachments';
+import EmployerApplicationAttachments from 'kesaseteli/handler/components/attachments/EmployerApplicationAttachments';
 import EmployerApplicationHandlerView from 'kesaseteli/handler/components/employer-application/EmployerApplicationHandlerView';
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
@@ -33,8 +33,6 @@ function EmployerApplicationDetail(): React.ReactElement {
   const { isError, isLoading, isSuccess, data } =
     useEmployerApplicationQuery<HandlerEmployerApplication>(applicationId);
   const notFound = isError || (!applicationId && !isRouterLoading);
-
-
 
   const attachments =
     data?.summer_vouchers?.flatMap((voucher) => voucher.attachments || []) ??

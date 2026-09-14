@@ -7,7 +7,7 @@ import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 
-import invalidateAttachmentQueries from './invalidateAttachmentQueries';
+import invalidateEmployerAttachmentQueries from './invalidateEmployerAttachmentQueries';
 
 type UploadAttachmentData = {
   summer_voucher: string;
@@ -15,7 +15,13 @@ type UploadAttachmentData = {
   data: FormData;
 };
 
-const useUploadAttachmentQuery = (): UseMutationResult<
+/**
+ * Provides a mutation to upload a new attachment to an employer application.
+ *
+ * Upon success, it invalidates both the employer application state and its timeline
+ * queries so that the UI correctly reflects the newly added attachment.
+ */
+const useUploadEmployerAttachmentMutation = (): UseMutationResult<
   KesaseteliAttachment,
   unknown,
   UploadAttachmentData
@@ -34,9 +40,9 @@ const useUploadAttachmentQuery = (): UseMutationResult<
         )
       ),
     onSuccess: async (_data, { applicationId }) => {
-      await invalidateAttachmentQueries(queryClient, applicationId);
+      await invalidateEmployerAttachmentQueries(queryClient, applicationId);
     },
   });
 };
 
-export default useUploadAttachmentQuery;
+export default useUploadEmployerAttachmentMutation;
