@@ -59,6 +59,14 @@ Builds the app for production to the `build` folder.
 Runs the built app in the production mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
+### Readiness endpoint
+
+`GET /readiness` returns JSON with the service status, package version, release,
+build time, and commit hash after the server is ready. The release is formatted from
+the app package version as `<release-please-component>@<version>`, for example
+`kesaseteli-handler@2.4.0`.
+The commit hash is taken from CI/CD's `OPENSHIFT_BUILD_COMMIT` variable.
+
 ### `pnpm test`
 
 Launches the test runner in the interactive watch mode.

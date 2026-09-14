@@ -3,7 +3,22 @@ const next = require('next');
 const https = require('https');
 const fs = require('fs');
 const port = process.env.PORT || 3000;
-const { version: packageVersion } = require(process.cwd() + '/package.json');
+const { name: packageName, version: packageVersion } = require(
+  process.cwd() + '/package.json'
+);
+const buildIdPath = process.cwd() + '/.next/BUILD_ID';
+const buildTime = fs.existsSync(buildIdPath)
+  ? fs.statSync(buildIdPath).mtime.toISOString()
+  : null;
+const commitHash = process.env.OPENSHIFT_BUILD_COMMIT || '';
+const releaseNameByPackageName = {
+  '@frontend/employer': 'kesaseteli-employer',
+  '@frontend/ks-handler': 'kesaseteli-handler',
+  '@frontend/youth': 'kesaseteli-youth',
+  '@frontend/applicant': 'benefit-applicant',
+  '@frontend/bf-handler': 'benefit-handler',
+};
+const releaseName = releaseNameByPackageName[packageName] || packageName;
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 const handle = app.getRequestHandler();
 
@@ -82,13 +97,13 @@ const checkIsServerReady = (response) => {
       return res.status(503).send(RESPONSES.SERVER_IS_NOT_READY);
     }
 
-    if (!process.env.NEXT_PUBLIC_RELEASE) {
-      return res.send(RESPONSES.OK);
-    }
-
-    const release = process.env.NEXT_PUBLIC_RELEASE;
-
-    return res.json({ status: 'ok', release, packageVersion });
+    return res.json({
+      status: 'ok',
+      packageVersion,
+      release: `${releaseName}@${packageVersion}`,
+      buildTime,
+      commitHash,
+    });
   });
 
   server.get('*', (req, res) => handle(req, res));
