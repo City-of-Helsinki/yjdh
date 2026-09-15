@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.4.0...kesaseteli-handler-v2.5.0) (2026-09-15)
+
+
+### Features
+
+* **handler:** Add descriptive fallback text for missing values ([205bca5](https://github.com/City-of-Helsinki/yjdh/commit/205bca516c590c39aaa2d35d4512818d0891c85f))
+
 ## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.3.1...kesaseteli-handler-v2.4.0) (2026-09-14)
 
 
