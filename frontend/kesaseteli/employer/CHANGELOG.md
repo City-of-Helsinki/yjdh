@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.0...kesaseteli-employer-v2.5.1) (2026-09-15)
+
+
+### Bug Fixes
+
+* **ks,employer:** Add job type placeholder translation ([3142f2a](https://github.com/City-of-Helsinki/yjdh/commit/3142f2a4a0c8d412840312c56d01dad9e538261a))
+
 ## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.4.1...kesaseteli-employer-v2.5.0) (2026-09-14)
 
 
