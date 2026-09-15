@@ -154,6 +154,7 @@
       "inputs": {
         "organization_type": "Organization type",
         "job_type": "Main category of work tasks",
+        "job_type_placeholder": "Select...",
         "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
         "street_address": "Company address",

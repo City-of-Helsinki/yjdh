@@ -154,6 +154,7 @@
       "inputs": {
         "organization_type": "Organisationstyp",
         "job_type": "Huvudkategori av arbetsuppgifter",
+        "job_type_placeholder": "Välj...",
         "contact_person_name": "Kontakt personens namn",
         "contact_person_email": "Kontakt personens epost",
         "street_address": "Företagets adress",
