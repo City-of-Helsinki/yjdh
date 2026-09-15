@@ -56,7 +56,7 @@ parso==0.8.5
     # via jedi
 pexpect==4.9.0
     # via ipython
-pip-tools==7.5.2
+pip-tools==7.6.0
     # via -r requirements-dev.in
 pluggy==1.6.0
     # via
