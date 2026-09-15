@@ -10,6 +10,7 @@ from django.db.models import QuerySet
 from applications.enums import AhjoRequestType
 from applications.models import Application
 from applications.services.ahjo.exceptions import (
+    AhjoApiClientError,
     AhjoDecisionDetailsParsingError,
     AhjoDecisionError,
     DecisionProposalAlreadyAcceptedError,
@@ -56,6 +57,11 @@ class Command(BaseCommand):
         parser.add_argument(
             "--request-type",
             type=AhjoRequestType,
+            choices=[
+                request_type
+                for request_type in AhjoRequestType
+                if request_type != AhjoRequestType.GET_CASE_RECORDS
+            ],
             help="The type of request to send to Ahjo",
         )
 
@@ -149,6 +155,7 @@ class Command(BaseCommand):
 
         counter = 0
         exception_messages = {
+            AhjoApiClientError: "Ahjo API client error for application",
             ValueError: "Value error for application",
             ObjectDoesNotExist: "Object not found error for application",
             ImproperlyConfigured: "Improperly configured error for application",
@@ -322,7 +329,10 @@ class Command(BaseCommand):
             AhjoRequestType.GET_DECISION_DETAILS: get_decision_details_from_ahjo,
             AhjoRequestType.DELETE_APPLICATION: delete_application_in_ahjo,
         }
-        return request_handlers.get(request_type)
+        try:
+            return request_handlers[request_type]
+        except KeyError:
+            raise ValueError(f"Unsupported Ahjo request type: {request_type}")
 
     def _print_with_timestamp(self, text: str) -> str:
         return f"{datetime.now()}: {text}"

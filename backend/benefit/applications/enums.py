@@ -213,6 +213,10 @@ class AhjoStatus(models.TextChoices):
         "decision_details_request_sent",
         _("Decision details request sent"),
     )
+    CASE_RECORDS_REQUEST_SENT = (
+        "case_records_request_sent",
+        _("Case records request sent"),
+    )
     DETAILS_RECEIVED_FROM_AHJO = (
         "details_received",
         _("Decision details received from Ahjo"),
@@ -238,6 +242,7 @@ class AhjoRequestType(models.TextChoices):
     ADD_RECORDS = "add_records", _("Send new records to Ahjo")
     SEND_DECISION_PROPOSAL = "send_decision", _("Send decision to Ahjo")
     GET_DECISION_DETAILS = "get_decision_details", _("Get decision details from Ahjo")
+    GET_CASE_RECORDS = "get_case_records", _("Get case records from Ahjo")
     SUBSCRIBE_TO_DECISIONS = "subscribe_to_decisions", _("Subscribe to decisions API")
     GET_DECISION_MAKER = (
         "get_decision_maker",

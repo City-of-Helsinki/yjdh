@@ -134,17 +134,38 @@ class AhjoSubscribeDecisionRequest(AhjoRequest):
         return f"{self.url_base}/decisions/subscribe"
 
 
+@dataclass
 class AhjoDecisionDetailsRequest(AhjoRequest):
     """Request to get a decision detail from Ahjo."""
 
-    request_type = AhjoRequestType.GET_DECISION_DETAILS
-    result_status = AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT
-    request_method = "GET"
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.GET_DECISION_DETAILS
+    result_status: ClassVar[AhjoStatusEnum] = (
+        AhjoStatusEnum.DECISION_DETAILS_REQUEST_SENT
+    )
+    request_method: ClassVar[str] = "GET"
+    decision_id: Optional[str] = None
+
+    def api_url(self) -> str:
+        if self.decision_id:
+            return f"{self.url_base}/decisions/{self.decision_id}"
+
+        if not self.application.ahjo_case_id:
+            raise MissingAhjoCaseIdError(MISSING_AHJO_CASE_ID_MESSAGE)
+        return f"{self.url_base}/decisions/{self.application.ahjo_case_id}"
+
+
+@dataclass
+class AhjoCaseRecordsRequest(AhjoRequest):
+    """Request to get the case records from Ahjo."""
+
+    request_type: ClassVar[AhjoRequestType] = AhjoRequestType.GET_CASE_RECORDS
+    result_status: ClassVar[AhjoStatusEnum] = AhjoStatusEnum.CASE_RECORDS_REQUEST_SENT
+    request_method: ClassVar[str] = "GET"
 
     def api_url(self) -> str:
         if not self.application.ahjo_case_id:
             raise MissingAhjoCaseIdError(MISSING_AHJO_CASE_ID_MESSAGE)
-        return f"{self.url_base}/decisions/{self.application.ahjo_case_id}"
+        return f"{self.url_base}/cases/{self.application.ahjo_case_id}/records"
 
 
 class AhjoDecisionMakerRequest(AhjoRequest):
@@ -250,6 +271,7 @@ class AhjoApiClient:
 
         if self._request.request_type not in [
             AhjoRequestType.GET_DECISION_DETAILS,
+            AhjoRequestType.GET_CASE_RECORDS,
             AhjoRequestType.SUBSCRIBE_TO_DECISIONS,
             AhjoRequestType.GET_DECISION_MAKER,
             AhjoRequestType.GET_SIGNER,
@@ -312,6 +334,7 @@ class AhjoApiClient:
                 # Other requests return a text response
                 if self._request.request_type not in [
                     AhjoRequestType.GET_DECISION_DETAILS,
+                    AhjoRequestType.GET_CASE_RECORDS,
                     AhjoRequestType.GET_DECISION_MAKER,
                     AhjoRequestType.GET_SIGNER,
                 ]:

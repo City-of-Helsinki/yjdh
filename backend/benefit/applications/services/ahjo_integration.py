@@ -32,13 +32,19 @@ from applications.models import (
     Attachment,
 )
 from applications.services.ahjo.exceptions import (
+    AhjoApiClientError,
+    AhjoDecisionError,
     DecisionProposalAlreadyAcceptedError,
     DecisionProposalError,
+)
+from applications.services.ahjo.response_handler import (
+    AhjoDecisionDetailsResponseHandler,
 )
 from applications.services.ahjo_authentication import AhjoConnector, AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
+    AhjoCaseRecordsRequest,
     AhjoDecisionDetailsRequest,
     AhjoDecisionProposalRequest,
     AhjoDeleteCaseRequest,
@@ -668,6 +674,45 @@ def send_subscription_request_to_ahjo(
 def get_decision_details_from_ahjo(
     application: Application, ahjo_token: AhjoToken
 ) -> Tuple[Application, List] | Tuple[None, None]:
-    ahjo_request = AhjoDecisionDetailsRequest(application)
-    ahjo_client = AhjoApiClient(ahjo_token, ahjo_request)
-    return ahjo_client.send_request_to_ahjo()
+    decision_request = AhjoDecisionDetailsRequest(application)
+    decision_client = AhjoApiClient(ahjo_token, decision_request)
+    _, decision_details = decision_client.send_request_to_ahjo()
+
+    # Use the initial decision when it contains the expected decision-maker field.
+    if decision_details:
+        try:
+            decision_content = decision_details[0]["Content"]
+            if decision_content is not None:
+                AhjoDecisionDetailsResponseHandler()._parse_decision_maker_from_html(
+                    decision_content
+                )
+                return application, decision_details
+        except (AhjoDecisionError, KeyError):
+            pass
+
+    # The initial response may be an appeal decision whose HTML lacks Puheenjohtajanimi.
+    # Keep the parser unchanged and get the original decision ID from the case records.
+    records_request = AhjoCaseRecordsRequest(application)
+    records_client = AhjoApiClient(ahjo_token, records_request)
+    _, records = records_client.send_request_to_ahjo()
+
+    decision_id = next(
+        (
+            record.get("NativeId")
+            for record in records or []
+            if record.get("Type") == "viranhaltijan päätös" and record.get("NativeId")
+        ),
+        None,
+    )
+    if not decision_id:
+        raise AhjoApiClientError(
+            f"Original decision not found in Ahjo records for application"
+            f" {application.application_number}"
+        )
+
+    # Fetch the full original decision using the NativeId from the case records.
+    decision_request = AhjoDecisionDetailsRequest(
+        application=application, decision_id=decision_id
+    )
+    decision_client = AhjoApiClient(ahjo_token, decision_request)
+    return decision_client.send_request_to_ahjo()
