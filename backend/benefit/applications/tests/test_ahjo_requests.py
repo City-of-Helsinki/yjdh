@@ -20,6 +20,7 @@ from applications.services.ahjo_authentication import AhjoToken
 from applications.services.ahjo_client import (
     AhjoAddRecordsRequest,
     AhjoApiClient,
+    AhjoCaseRecordsRequest,
     AhjoDecisionDetailsRequest,
     AhjoDecisionMakerRequest,
     AhjoDecisionProposalRequest,
@@ -212,16 +213,13 @@ def test_ahjo_application_requests(
         )
 
     elif request.request_type == AhjoRequestType.GET_DECISION_DETAILS:
-        assert (
-            request.api_url()
-            == f"{settings.AHJO_REST_API_URL}/decisions/{application.ahjo_case_id}"
+        assert request.api_url() == (
+            f"{settings.AHJO_REST_API_URL}/decisions/{application.ahjo_case_id}"
         )
 
     client = AhjoApiClient(non_expired_token, request)
 
-    if request.request_type not in [
-        AhjoRequestType.GET_DECISION_DETAILS,
-    ]:
+    if request.request_type != AhjoRequestType.GET_DECISION_DETAILS:
         url = reverse(
             callback_route,
             kwargs={
@@ -286,6 +284,12 @@ def test_ahjo_application_requests(
             AhjoRequestType.ADD_RECORDS,
             "POST",
             AhjoStatusEnum.NEW_RECORDS_REQUEST_SENT,
+        ),
+        (
+            AhjoCaseRecordsRequest,
+            AhjoRequestType.GET_CASE_RECORDS,
+            "GET",
+            AhjoStatusEnum.CASE_RECORDS_REQUEST_SENT,
         ),
         (
             AhjoSubscribeDecisionRequest,

@@ -4,7 +4,7 @@ import uuid
 import zipfile
 from datetime import date, timedelta
 from typing import List, Union
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
@@ -34,10 +34,12 @@ from applications.models import (
     ApplicationBatch,
     Attachment,
 )
+from applications.services.ahjo.exceptions import AhjoApiClientError
 from applications.services.ahjo_application_service import (
     AhjoApplicationsService,
     AhjoQueryParameters,
 )
+from applications.services.ahjo_client import AhjoDecisionDetailsRequest
 from applications.services.ahjo_integration import (
     ACCEPTED_TITLE,
     REJECTED_TITLE,
@@ -48,6 +50,7 @@ from applications.services.ahjo_integration import (
     generate_single_approved_file,
     generate_single_declined_file,
     get_application_for_ahjo,
+    get_decision_details_from_ahjo,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
@@ -63,6 +66,83 @@ DE_MINIMIS_AID_PARTIAL_TEXT = (
     # In English ~= "support is granted as insignificant i.e. de minimis support"
     "tuki myönnetään vähämerkityksisenä eli ns. de minimis -tukena"
 )
+
+
+@pytest.mark.django_db
+def test_get_decision_details_returns_initial_response_when_decision_maker_exists(
+    application_with_ahjo_case_id, non_expired_token
+):
+    decision_details = [{"Content": '<div class="Puheenjohtajanimi">Test Person</div>'}]
+    ahjo_client = MagicMock()
+    ahjo_client.send_request_to_ahjo.return_value = (
+        application_with_ahjo_case_id,
+        decision_details,
+    )
+
+    with patch(
+        "applications.services.ahjo_integration.AhjoApiClient",
+        return_value=ahjo_client,
+    ) as client_class:
+        result = get_decision_details_from_ahjo(
+            application_with_ahjo_case_id, non_expired_token
+        )
+
+    assert result == (application_with_ahjo_case_id, decision_details)
+    client_class.assert_called_once()
+    ahjo_client.send_request_to_ahjo.assert_called_once_with()
+
+
+@pytest.mark.django_db
+def test_get_decision_details_fetches_original_decision_after_appeal(
+    application_with_ahjo_case_id, non_expired_token
+):
+    appeal_details = [{"Content": None}]
+    records = [
+        {"Type": "päätös", "NativeId": "appeal-decision-id"},
+        {"Type": "viranhaltijan päätös", "NativeId": "original-decision-id"},
+    ]
+    original_details = [{"Content": "Original decision"}]
+    ahjo_client = MagicMock()
+    ahjo_client.send_request_to_ahjo.side_effect = [
+        (application_with_ahjo_case_id, appeal_details),
+        (application_with_ahjo_case_id, records),
+        (application_with_ahjo_case_id, original_details),
+    ]
+
+    with patch(
+        "applications.services.ahjo_integration.AhjoApiClient",
+        return_value=ahjo_client,
+    ) as client_class:
+        result = get_decision_details_from_ahjo(
+            application_with_ahjo_case_id, non_expired_token
+        )
+
+    assert result == (application_with_ahjo_case_id, original_details)
+    assert client_class.call_count == 3
+    assert ahjo_client.send_request_to_ahjo.call_count == 3
+    original_decision_request = client_class.call_args_list[2].args[1]
+    assert isinstance(original_decision_request, AhjoDecisionDetailsRequest)
+    assert original_decision_request.decision_id == "original-decision-id"
+
+
+@pytest.mark.django_db
+def test_get_decision_details_raises_when_original_decision_is_missing(
+    application_with_ahjo_case_id, non_expired_token
+):
+    ahjo_client = MagicMock()
+    ahjo_client.send_request_to_ahjo.side_effect = [
+        (application_with_ahjo_case_id, [{"Content": "Appeal decision"}]),
+        (application_with_ahjo_case_id, [{"Type": "päätös", "NativeId": "id"}]),
+    ]
+
+    with (
+        patch(
+            "applications.services.ahjo_integration.AhjoApiClient",
+            return_value=ahjo_client,
+        ),
+        pytest.raises(AhjoApiClientError, match="Original decision not found"),
+    ):
+        get_decision_details_from_ahjo(application_with_ahjo_case_id, non_expired_token)
 
 
 def _assert_html_content(html, include_keys=(), excluded_keys=()):
