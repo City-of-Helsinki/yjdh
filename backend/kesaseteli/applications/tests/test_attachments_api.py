@@ -91,6 +91,7 @@ def test_attachment_upload(
     assert response.data.keys() == {
         "id",
         "summer_voucher",
+        "youth_application",
         "attachment_type",
         "attachment_file_name",
         "content_type",
@@ -404,12 +405,11 @@ def test_get_attachment(request, api_client, summer_voucher, attachment_type):
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response, FileResponse)
 
-    # No filename in response.filename
-    assert not response.filename
+    assert response.filename
 
     # But has a valid filename in Content-Disposition header
     filename_match = re.match(
-        '^inline; filename="([^"]+)"$', response.headers["Content-Disposition"]
+        '^attachment; filename="([^"]+)"$', response.headers["Content-Disposition"]
     )
     assert filename_match is not None
     assert len(filename_match.groups()) == 1

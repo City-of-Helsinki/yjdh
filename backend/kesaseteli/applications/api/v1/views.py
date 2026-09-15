@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Count, F, Func, Prefetch
 from django.db.utils import ProgrammingError
-from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.decorators import method_decorator
@@ -37,6 +37,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from applications.api.integration_views import IntegrationExportPagination
+from applications.api.v1.mixins import AttachmentDownloadMixin
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_DELETE_STATUSES,
     ALLOWED_APPLICATION_MODIFY_STATUSES,
@@ -58,6 +59,7 @@ from applications.api.v1.serializers import (
     TargetGroupSerializer,
     validate_timeline_item_types,
     YouthApplicationAdditionalInfoSerializer,
+    YouthApplicationAttachmentUploadInputSerializer,
     YouthApplicationFetchEmployeeDataInputSerializer,
     YouthApplicationFetchEmployeeDataOutputSerializer,
     YouthApplicationHandlingSerializer,
@@ -67,6 +69,7 @@ from applications.api.v1.serializers import (
     YouthApplicationStatusSerializer,
 )
 from applications.enums import (
+    AttachmentType,
     EmployerApplicationStatus,
     JobType,
     YouthApplicationRejectedReason,
@@ -298,7 +301,7 @@ class YouthApplicationFilter(filters.FilterSet):
         },
     ),
 )
-class YouthApplicationViewSet(ModelViewSet):
+class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
     """
     ViewSet for handling YouthApplication instances.
 
@@ -324,6 +327,14 @@ class YouthApplicationViewSet(ModelViewSet):
             super()
             .get_queryset()
             .select_related("youth_summer_voucher")
+            .prefetch_related(
+                Prefetch(
+                    "attachments",
+                    queryset=Attachment.objects.select_related("author").annotate(
+                        notes_count=Count("notes")
+                    ),
+                )
+            )
             .order_by("-created_at", "id")
         )
 
@@ -405,6 +416,13 @@ class YouthApplicationViewSet(ModelViewSet):
         elif self.action == "list":
             return YouthApplicationListSerializer
         return super().get_serializer_class()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        request = self.request
+        if request and request.user.is_authenticated:
+            context["is_handler"] = HandlerPermission.has_user_permission(request.user)
+        return context
 
     @enforce_handler_view_adfs_login
     @extend_schema(responses=YouthApplicationListSerializer(many=True))
@@ -1044,6 +1062,114 @@ class YouthApplicationViewSet(ModelViewSet):
             )
             raise
 
+    @extend_schema(
+        request=YouthApplicationAttachmentUploadInputSerializer,
+        responses={
+            201: AttachmentSerializer,
+            400: OpenApiResponse(description="Invalid input"),
+            403: OpenApiResponse(
+                description="You don't have permission to upload this file"
+            ),
+        },
+    )
+    @action(
+        methods=["post"],
+        detail=True,
+        parser_classes=(MultiPartParser,),
+    )
+    @transaction.atomic
+    def post_attachment(self, request, *args, **kwargs) -> HttpResponse:
+        """
+        Upload a single attachment for the Youth Application.
+        Does not require authentication because youth users are anonymous.
+        """
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        is_handler = HandlerPermission.has_user_permission(request.user)
+
+        if not is_handler:
+            if not youth_application.can_set_additional_info:
+                return Response(
+                    {
+                        "detail": _(
+                            "Cannot upload attachments to an application in this state"
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        serializer = YouthApplicationAttachmentUploadInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        attachment_data = {
+            "youth_application": youth_application.pk,
+            "attachment_type": AttachmentType.UNCLASSIFIED,
+            "attachment_file": serializer.validated_data["attachment_file"],
+            "content_type": serializer.validated_data["attachment_file"].content_type,
+        }
+
+        attachment_serializer = AttachmentSerializer(
+            data=attachment_data,
+            context={"request": request, "is_handler": is_handler},
+        )
+        attachment_serializer.is_valid(raise_exception=True)
+        attachment_serializer.save()
+
+        LOGGER.info(
+            f"Uploaded attachment {attachment_serializer.instance.pk} "
+            f"for youth application {youth_application.pk}"
+        )
+
+        return Response(
+            attachment_serializer.data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    @extend_schema(
+        responses={
+            200: AttachmentSerializer,
+            204: OpenApiResponse(description="Attachment deleted"),
+            404: OpenApiResponse(description="Attachment not found"),
+        },
+    )
+    @action(
+        methods=["get", "delete"],
+        detail=True,
+        url_path=r"attachments/(?P<attachment_pk>[^/.]+)",
+    )
+    @enforce_handler_view_adfs_login
+    def handle_attachment(
+        self, request, pk, attachment_pk, *args, **kwargs
+    ) -> HttpResponse:
+        """
+        GET / DELETE a specific attachment belonging to a youth application.
+        Strictly restricted to handler users.
+        """
+        youth_application: YouthApplication = self.get_object()
+
+        try:
+            attachment = youth_application.attachments.annotate(
+                notes_count=Count("notes")
+            ).get(pk=attachment_pk)
+        except Attachment.DoesNotExist:
+            return Response(
+                {"detail": _("Attachment not found.")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if request.method == "GET":
+            return self.get_attachment_download_response(attachment)
+        elif request.method == "DELETE":
+            if youth_application.is_handled:
+                raise PermissionDenied(
+                    "Attachments cannot be deleted from a fully handled application."
+                )
+            attachment.delete()
+            LOGGER.info(
+                f"Deleted youth attachment {attachment_pk} via handle_attachment"
+            )
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class EmployerApplicationFilter(filters.FilterSet):
     """
@@ -1307,7 +1433,7 @@ class EmployerApplicationViewSet(ModelViewSet):
     list=extend_schema(exclude=True),
     destroy=extend_schema(exclude=True),
 )
-class EmployerSummerVoucherViewSet(ModelViewSet):
+class EmployerSummerVoucherViewSet(AttachmentDownloadMixin, ModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
     serializer_class = EmployerSummerVoucherSerializer
     permission_classes = [
@@ -1442,16 +1568,7 @@ class EmployerSummerVoucherViewSet(ModelViewSet):
                 )
 
         attachment = obj.attachments.filter(pk=attachment_pk).first()
-        if not attachment or not attachment.attachment_file:
-            return Response(
-                {
-                    "detail": format_lazy(
-                        _(f"{FILE_NOT_FOUND_MESSAGE}."),
-                    )
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return FileResponse(attachment.attachment_file)
+        return self.get_attachment_download_response(attachment)
 
     def _delete_attachment(
         self, request: Request, obj: EmployerSummerVoucher, attachment_pk: str

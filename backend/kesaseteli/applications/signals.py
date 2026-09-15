@@ -3,7 +3,8 @@ import os
 from auditlog_extra.context import get_actor
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import post_save, pre_delete, pre_save
+from django.db import transaction
+from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
 from applications.enums import ActionType
@@ -133,19 +134,32 @@ def on_attachment_added(sender, instance, created, raw=False, **kwargs):
         )
 
     attachment_ct = ContentType.objects.get_for_model(Attachment)
-    TimelineActivityLog.objects.create(
-        application_type=EmployerApplication._meta.model_name,
-        application_id=instance.summer_voucher.application_id,
-        action_type=ActionType.ATTACHMENT_ADDED,
-        old_value="",
-        new_value=os.path.basename(
+    timeline_activitylog_kwargs = {
+        "action_type": ActionType.ATTACHMENT_ADDED,
+        "old_value": "",
+        "new_value": os.path.basename(
             getattr(instance.attachment_file, "name", None) or ""
         ),
-        actor=actor_user,
-        actor_name=actor_name,
-        target_content_type=attachment_ct,
-        target_object_id=instance.pk,
-    )
+        "actor": actor_user,
+        "actor_name": actor_name,
+        "target_content_type": attachment_ct,
+        "target_object_id": instance.pk,
+    }
+
+    # Employer application path
+    if instance.summer_voucher:
+        TimelineActivityLog.objects.create(
+            application_type=EmployerApplication._meta.model_name,
+            application_id=instance.summer_voucher.application_id,
+            **timeline_activitylog_kwargs,
+        )
+    # Youth application path
+    elif instance.youth_application:
+        TimelineActivityLog.objects.create(
+            application_type=YouthApplication._meta.model_name,
+            application_id=instance.youth_application_id,
+            **timeline_activitylog_kwargs,
+        )
 
 
 @receiver(pre_delete, sender=Attachment, dispatch_uid="attachment_deleted_timeline")
@@ -156,18 +170,41 @@ def on_attachment_deleted(sender, instance, **kwargs):
     """
     actor_user, actor_name = _resolve_actor()
     attachment_ct = ContentType.objects.get_for_model(Attachment)
-    TimelineActivityLog.objects.create(
-        application_type=EmployerApplication._meta.model_name,
-        application_id=instance.summer_voucher.application_id,
-        action_type=ActionType.ATTACHMENT_DELETED,
-        old_value=os.path.basename(
+    timeline_activitylog_kwargs = {
+        "action_type": ActionType.ATTACHMENT_DELETED,
+        "old_value": os.path.basename(
             getattr(instance, "_deleted_attachment_name", "")
             or getattr(instance.attachment_file, "name", None)
             or ""
         ),
-        new_value="",
-        actor=actor_user,
-        actor_name=actor_name,
-        target_content_type=attachment_ct,
-        target_object_id=instance.pk,
-    )
+        "new_value": "",
+        "actor": actor_user,
+        "actor_name": actor_name,
+        "target_content_type": attachment_ct,
+        "target_object_id": instance.pk,
+    }
+
+    # Employer application path
+    if instance.summer_voucher:
+        TimelineActivityLog.objects.create(
+            application_type=EmployerApplication._meta.model_name,
+            application_id=instance.summer_voucher.application_id,
+            **timeline_activitylog_kwargs,
+        )
+    # Youth application path
+    elif instance.youth_application:
+        TimelineActivityLog.objects.create(
+            application_type=YouthApplication._meta.model_name,
+            application_id=instance.youth_application_id,
+            **timeline_activitylog_kwargs,
+        )
+
+
+@receiver(post_delete, sender=Attachment, dispatch_uid="attachment_post_delete_cleanup")
+def on_attachment_post_delete(sender, instance, **kwargs):
+    """
+    post_delete shared cleanup that schedules file deletion via transaction.on_commit()
+    so it works for both single instance and bulk cascaded deletes.
+    """
+    if instance.attachment_file:
+        transaction.on_commit(lambda: instance.attachment_file.delete(save=False))

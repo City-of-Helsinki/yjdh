@@ -18,6 +18,7 @@ from common.tests.factories import (
     RejectableYouthApplicationFactory,
     RejectedYouthApplicationFactory,
     YouthApplicationFactory,
+    YouthAttachmentFactory,
 )
 from shared.common.tests.conftest import *  # noqa
 from shared.common.tests.conftest import store_tokens_in_session
@@ -89,6 +90,16 @@ def employment_contract_attachment(summer_voucher):
 def payslip_attachment(summer_voucher):
     attachment = AttachmentFactory(
         summer_voucher=summer_voucher, attachment_type=AttachmentType.PAYSLIP
+    )
+    yield attachment
+    attachment.attachment_file.delete(save=False)
+
+
+@pytest.fixture
+def youth_attachment(youth_application):
+    attachment = YouthAttachmentFactory(
+        youth_application=youth_application,
+        attachment_type=AttachmentType.UNCLASSIFIED,
     )
     yield attachment
     attachment.attachment_file.delete(save=False)
