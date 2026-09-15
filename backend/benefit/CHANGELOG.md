@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.24.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.3...benefit-backend-v2.24.4) (2026-09-15)
+
+
+### Bug Fixes
+
+* **ahjo:** Retrieve original decision after appeal ([07873e3](https://github.com/City-of-Helsinki/yjdh/commit/07873e3599ed38c03ffdcc38780b1d3b75532759))
+
 ## [2.24.3](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.2...benefit-backend-v2.24.3) (2026-09-11)
 
 
