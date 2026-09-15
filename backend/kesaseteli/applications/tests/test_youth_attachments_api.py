@@ -45,6 +45,7 @@ def _upload_file(request, api_client, youth_application, extension):
 
 
 @pytest.mark.django_db
+@override_settings(ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS=True)
 @pytest.mark.parametrize(
     "extension, expected_content_type",
     [
@@ -99,6 +100,7 @@ def test_youth_attachment_upload(
 
 
 @pytest.mark.django_db
+@override_settings(ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS=True)
 def test_youth_attachment_upload_size_limit(
     request, unauthenticated_api_client, youth_application
 ):
@@ -123,6 +125,26 @@ def test_youth_attachment_upload_size_limit(
 
 
 @pytest.mark.django_db
+@override_settings(ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS=False)
+def test_youth_attachment_upload_disabled(
+    request, unauthenticated_api_client, youth_application
+):
+    """
+    Test that uploading an attachment fails with 403 Forbidden when the
+    ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS setting is False.
+    """
+    response = _upload_file(
+        request,
+        unauthenticated_api_client,
+        youth_application,
+        "pdf",
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert "detail" in response.data
+
+
+@pytest.mark.django_db
+@override_settings(ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS=True)
 def test_youth_attachment_upload_fails_if_cannot_set_additional_info(
     request, unauthenticated_api_client, youth_application
 ):

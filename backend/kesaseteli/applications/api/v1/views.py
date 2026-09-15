@@ -1088,6 +1088,18 @@ class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
         is_handler = HandlerPermission.has_user_permission(request.user)
 
         if not is_handler:
+            if not getattr(
+                settings, "ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS", False
+            ):
+                return Response(
+                    {
+                        "detail": _(
+                            "Attachment uploads are currently disabled for youth applications."  # noqa: E501
+                        )
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
             if not youth_application.can_set_additional_info:
                 return Response(
                     {

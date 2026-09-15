@@ -144,6 +144,7 @@ env = environ.Env(
         12 * 60 * 60,
     ),
     NEXT_PUBLIC_DISABLE_VTJ=(bool, False),
+    ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS=(bool, False),
     VTJ_PERSONAL_ID_QUERY_URL=(
         str,
         "https://vtj-integration-test.agw.arodevtest.hel.fi/api/HenkilonTunnuskysely",
@@ -194,6 +195,9 @@ ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
 AD_ADMIN_GROUP_NAME = env.str("AD_ADMIN_GROUP_NAME")
 PASSWORD_LOGIN_DISABLED = env.bool("PASSWORD_LOGIN_DISABLED")
 NEXT_PUBLIC_DISABLE_VTJ = env.bool("NEXT_PUBLIC_DISABLE_VTJ")
+ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS = env.bool(
+    "ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS"
+)
 VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
 VTJ_USERNAME = env.str("VTJ_USERNAME")
 VTJ_PASSWORD = env.str("VTJ_PASSWORD")
