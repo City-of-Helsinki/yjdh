@@ -154,6 +154,7 @@
       "inputs": {
         "organization_type": "Organisaatiotyyppi",
         "job_type": "Työtehtävien pääluokka",
+        "job_type_placeholder": "Valitse...",
         "contact_person_name": "Yhteyshenkilön nimi",
         "contact_person_email": "Yhteyshenkilön sähköposti",
         "street_address": "Yrityksen osoite",
