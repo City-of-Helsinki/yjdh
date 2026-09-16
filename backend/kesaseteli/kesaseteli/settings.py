@@ -34,6 +34,8 @@ if os.path.isdir(parent_dir("etc")):
     default_var_root = environ.Path(parent_dir("var"))
 else:
     env_file = checkout_dir(".env.kesaseteli-backend")
+    if not os.path.exists(env_file):
+        env_file = parent_dir.path("..")(".env.kesaseteli-backend")
     default_var_root = environ.Path(checkout_dir("var"))
 
 env = environ.Env(
