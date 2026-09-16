@@ -8,4 +8,4 @@
 
 # Applicant
 
-User interface for applicant to send Helsinki-benifit applications
+User interface for applicant to send Helsinki benefit applications
