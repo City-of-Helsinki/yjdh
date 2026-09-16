@@ -8,9 +8,17 @@ ARG UWSGI_COMMON_REF=main
 USER root
 WORKDIR /app
 
+COPY --from=ghcr.io/astral-sh/uv:0.12.13@sha256:b485bd65cc2cf1c9a93b3554012c9c3778cf7b1b5fd3d3096ce9e1226c97e1e6 /uv /uvx /usr/local/bin/
+
+ENV UV_PROJECT_ENVIRONMENT=/opt/app-root \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_NO_CACHE=1 \
+    UV_PYTHON_DOWNLOADS=never
+
 RUN mkdir /entrypoint
 
-COPY --chown=default:root benefit/requirements.txt /app/requirements.txt
+COPY --chown=default:root benefit/pyproject.toml benefit/uv.lock /app/
 COPY --chown=default:root shared /shared/
 
 RUN dnf update -y \
@@ -24,8 +32,7 @@ RUN dnf update -y \
        xmlsec1-openssl \
        cyrus-sasl-devel \
        openssl-devel \
-    && pip install -U pip setuptools wheel \
-    && pip install --no-cache-dir -r /app/requirements.txt \
+    && uv sync --locked --no-dev --group prod \
     && mkdir -p /usr/local/lib/uwsgi/plugins \
     && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
     && mv sentry_plugin.so /usr/local/lib/uwsgi/plugins/ \
@@ -66,9 +73,8 @@ ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 FROM appbase AS development
 # ==============================
 
-COPY --chown=default:root benefit/requirements-dev.txt /app/requirements-dev.txt
 RUN dnf install -y gcc --allowerasing \
-    && pip install --no-cache-dir -r /app/requirements-dev.txt \
+    && uv sync --locked --group prod \
     && dnf remove -y gcc \
     && dnf clean all
 
