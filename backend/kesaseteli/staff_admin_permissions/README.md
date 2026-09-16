@@ -32,7 +32,7 @@ This command is responsible for calculating and assigning permissions to the adm
 
 **Usage:**
 ```bash
-python manage.py setup_admin_permissions
+uv run python manage.py setup_admin_permissions
 ```
 
 **What it does:**
