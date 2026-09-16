@@ -259,7 +259,6 @@ class HelsinkiBenefitCalculator:
         This method is intentionally empty to preserve compatibility
         with DummyBenefitCalculator.
         """
-        pass
 
 
 class DummyBenefitCalculator(HelsinkiBenefitCalculator):

@@ -11,7 +11,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from applications.api.v1.serializers.deminimis_callback import DeMinimisCallbackSerializer
+from applications.api.v1.serializers.deminimis_callback import (
+    DeMinimisCallbackSerializer,
+)
 from applications.models import Application, ApplicationBatch
 from applications.services.applications_deminimis_csv_report import (
     ApplicationsDeminimisCsvService,
@@ -32,18 +34,18 @@ class ApplicationDeMinimisFilter(filters.FilterSet):
 
     def filter_queryset(self, queryset):
         """
-        Custom filtering logic that ensures only applications with 
+        Custom filtering logic that ensures only applications with
         a batch and a non-null decision_date
         and benefit is granted as de minimis aid
-        and that it is not yet reported as aid are returned, 
-        and then applies any additional filters 
+        and that it is not yet reported as aid are returned,
+        and then applies any additional filters
         such as decision_date range if provided.
         """
         queryset = queryset.filter(
             batch__isnull=False,
             batch__decision_date__isnull=False,
             batch__de_minimis_grant_send=False,
-            calculation__granted_as_de_minimis_aid=True
+            calculation__granted_as_de_minimis_aid=True,
         )
         return super().filter_queryset(queryset)
 
@@ -96,14 +98,16 @@ class DeMinimisIntegrationView(APIView):
         return f"deminimis_data_{timezone.now().strftime('%Y%m%d_%H%M%S')}"
 
 
-# The callback view is implemented in the same file for better cohesion, as it is closely related to the integration view and handles the callback from the de minimis aid reporting system.
+# The callback view is implemented in the same file for better cohesion, as it
+# is closely related to the integration view and handles the callback from the
+# de minimis aid reporting system.
 class DeMinimisCallbackView(APIView):
     authentication_classes = [DeMinimisAuthentication]
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = DeMinimisCallbackSerializer(data=request.data)
-        
+
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

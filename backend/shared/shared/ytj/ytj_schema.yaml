@@ -6,7 +6,7 @@ info:
   license:
     name: Creative Commons Nimeä 4.0
     url: https://creativecommons.org/licenses/by/4.0/
-servers: 
+servers:
   - url: https://avoindata.prh.fi/opendata-ytj-api/v3
 paths:
   /companies:
@@ -594,7 +594,7 @@ components:
           $ref: '#/components/schemas/Source'
     RegisteredEntry:
       type: object
-      required: ["type", "register", "authority"] 
+      required: ["type", "register", "authority"]
       description: "Rekisterimerkinnät"
       properties:
         type:

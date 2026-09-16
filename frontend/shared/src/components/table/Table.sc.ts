@@ -89,7 +89,7 @@ export const $Header = styled.div`
       margin: 0;
       padding: units(1);
     }
-    
+
     &.noMainHeader .header {
     top: 0;
   }*/

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ ! -z "$@" ]]; then
+if (($# > 0)); then
     apt-get remove -y "$@"
 fi
 

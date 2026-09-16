@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0090_alter_application_talpa_status_and_more'),
+        ("applications", "0090_alter_application_talpa_status_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationbatch',
-            name='de_minimis_grant_send',
-            field=models.BooleanField(blank=True, default=False, verbose_name='De minimis aid data has been sent'),
+            model_name="applicationbatch",
+            name="de_minimis_grant_send",
+            field=models.BooleanField(
+                blank=True,
+                default=False,
+                verbose_name="De minimis aid data has been sent",
+            ),
         ),
     ]

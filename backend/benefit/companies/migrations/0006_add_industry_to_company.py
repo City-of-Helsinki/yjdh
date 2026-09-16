@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('companies', '0005_alter_company_bank_account_number'),
+        ("companies", "0005_alter_company_bank_account_number"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='industry',
-            field=models.CharField(blank=True, default='', max_length=255, verbose_name='industry (TOL code description)'),
+            model_name="company",
+            name="industry",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=255,
+                verbose_name="industry (TOL code description)",
+            ),
         ),
     ]

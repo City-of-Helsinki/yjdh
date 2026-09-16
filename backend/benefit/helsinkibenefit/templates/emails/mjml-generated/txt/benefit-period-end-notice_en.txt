@@ -11,4 +11,4 @@ Application number: {{application.application_number}}
 Receiver: {{benefit_company_name}}
 Helsinki benefit period: {{benefit_start_date}} - {{benefit_end_date}}
 
-This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi. 
+This is an automatic notification of an online message sent to you. Please do not reply to this message, as responses will not be processed. Please do not hesitate to contact the advisory service by e-mail at helsinkilisa@hel.fi.
