@@ -23,9 +23,9 @@ def test_email_template_save_strips_head_and_excessive_newlines():
 <body>
     <h1>Header</h1>
     <p>Paragraph 1.</p>
-    
-    
-    
+
+
+
     <p>Paragraph 2.</p>
 </body>
 </html>
