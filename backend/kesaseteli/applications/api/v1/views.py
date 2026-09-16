@@ -900,15 +900,14 @@ class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
             email = serializer.validated_data["email"]
             social_security_number = serializer.validated_data["social_security_number"]
 
-            if YouthApplication.objects.is_email_or_social_security_number_active_this_year(  # noqa: E501
-                email, social_security_number
+            if (
+                YouthApplication.objects.is_email_or_social_security_number_active_this_year(  # noqa: E501
+                    email, social_security_number
+                )
+                or YouthApplication.objects.is_email_used_this_year(email)
             ):
                 return self.error_response_with_logging(
-                    YouthApplicationRejectedReason.ALREADY_ASSIGNED
-                )
-            elif YouthApplication.objects.is_email_used_this_year(email):
-                return self.error_response_with_logging(
-                    YouthApplicationRejectedReason.EMAIL_IN_USE
+                    YouthApplicationRejectedReason.INADMISSIBLE_DATA
                 )
 
             # Data was valid and other criteria passed too, so let's create the object
