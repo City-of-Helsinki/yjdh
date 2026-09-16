@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 from django.test import override_settings
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
@@ -64,6 +65,8 @@ def test_youth_attachment_upload(
     Test that an anonymous user can successfully upload an attachment to their
     youth application. Verifies that the correct fields and content types are returned.
     """
+    youth_application.receipt_confirmed_at = timezone.now()
+    youth_application.save()
     assert not youth_application.attachments.exists()
 
     with mock.patch(
@@ -113,6 +116,8 @@ def test_youth_attachment_upload_size_limit(
         new_callable=mock.PropertyMock,
     ) as mock_can_set:
         mock_can_set.return_value = True
+        youth_application.receipt_confirmed_at = timezone.now()
+        youth_application.save()
         with override_settings(MAX_UPLOAD_SIZE=1):
             response = _upload_file(
                 request,
@@ -133,6 +138,9 @@ def test_youth_attachment_upload_disabled(
     Test that uploading an attachment fails with 403 Forbidden when the
     ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS setting is False.
     """
+    youth_application.receipt_confirmed_at = timezone.now()
+    youth_application.save()
+
     response = _upload_file(
         request,
         unauthenticated_api_client,
@@ -157,6 +165,37 @@ def test_youth_attachment_upload_fails_if_cannot_set_additional_info(
         new_callable=mock.PropertyMock,
     ) as mock_can_set:
         mock_can_set.return_value = False
+        youth_application.receipt_confirmed_at = timezone.now()
+        youth_application.save()
+        response = _upload_file(
+            request,
+            unauthenticated_api_client,
+            youth_application,
+            "pdf",
+        )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "detail" in response.data
+
+
+@pytest.mark.django_db
+@override_settings(ENABLE_ANONYMOUS_YOUTH_ATTACHMENT_UPLOADS=True)
+def test_youth_attachment_upload_fails_if_inactive(
+    request, unauthenticated_api_client, youth_application
+):
+    """
+    Test that an anonymous user cannot upload attachments if the youth application
+    is not active yet (email receipt not confirmed).
+    """
+    with mock.patch(
+        "applications.models.YouthApplication.can_set_additional_info",
+        new_callable=mock.PropertyMock,
+    ) as mock_can_set:
+        mock_can_set.return_value = True
+
+        youth_application.receipt_confirmed_at = None
+        youth_application.save()
+        assert not youth_application.is_active
+
         response = _upload_file(
             request,
             unauthenticated_api_client,
