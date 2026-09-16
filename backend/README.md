@@ -17,6 +17,13 @@ Refer to [top level README](https://github.com/City-of-Helsinki/yjdh/blob/main/R
 
 [kesaseteli/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/kesaseteli/README.md) or [benefit/README.md](https://github.com/City-of-Helsinki/yjdh/blob/main/backend/benefit/README.md) contain more information about the local setup.
 
+Each backend manages its dependencies separately with uv. From `backend/benefit`
+or `backend/kesaseteli`, run `uv sync --locked` to install its locked application
+and development dependencies, then `uv run pytest` to run tests locally. Both
+environments install `backend/shared` in editable mode.
+Compile translations before the first test run with
+`uv run manage.py compilemessages --ignore .venv`.
+
 ## Running tests in Docker
 
 From the repository root you can run backend tests inside the same containers used for development:
