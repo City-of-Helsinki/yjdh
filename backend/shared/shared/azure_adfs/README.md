@@ -48,11 +48,11 @@ To start using this package, follow these steps:
 4. Add settings:
     ```
     LOGIN_URL = "django_auth_adfs:login"
-    
+
     ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID") or "client_id"
     ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET") or "client_secret"
     ADFS_TENANT_ID = env.str("ADFS_TENANT_ID") or "tenant_id"
-    
+
     AUTH_ADFS = {
         "AUDIENCE": ADFS_CLIENT_ID,
         "CLIENT_ID": ADFS_CLIENT_ID,
@@ -62,7 +62,7 @@ To start using this package, follow these steps:
         "TENANT_ID": ADFS_TENANT_ID,
         "RELYING_PARTY_ID": ADFS_CLIENT_ID,
     }
-    
+
     ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
     ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
     ```

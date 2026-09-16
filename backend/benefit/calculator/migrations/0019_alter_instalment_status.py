@@ -4,15 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('calculator', '0018_instalment_amount_paid'),
+        ("calculator", "0018_instalment_amount_paid"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='instalment',
-            name='status',
-            field=models.CharField(blank=True, choices=[('waiting', 'Waiting'), ('accepted', 'Accepted'), ('paid', 'Paid'), ('cancelled', 'Cancelled'), ('error_in_talpa', 'Error in TALPA'), ('completed', 'Completed'), ('requested', 'Requested'), ('responded', 'Responded'), ('pending', 'Pending')], default='waiting', max_length=64, verbose_name='status'),
+            model_name="instalment",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("waiting", "Waiting"),
+                    ("accepted", "Accepted"),
+                    ("paid", "Paid"),
+                    ("cancelled", "Cancelled"),
+                    ("error_in_talpa", "Error in TALPA"),
+                    ("completed", "Completed"),
+                    ("requested", "Requested"),
+                    ("responded", "Responded"),
+                    ("pending", "Pending"),
+                ],
+                default="waiting",
+                max_length=64,
+                verbose_name="status",
+            ),
         ),
     ]

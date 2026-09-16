@@ -475,6 +475,7 @@ def test_power_bi_report_csv_output(application_powerbi_csv_service):
             application_powerbi_csv_service.get_alteration_amount(application)
         )
 
+
 @pytest.mark.django_db
 def test_deminimis_report_csv_output(application_deminimis_csv_service):
     csv_lines = split_lines_at_semicolon(
@@ -510,9 +511,13 @@ def test_deminimis_report_csv_output(application_deminimis_csv_service):
         assert csv_row[2] == f'"{application.company.business_id}"'
         assert csv_row[3] == f'"{application.company.industry_code}"'  # TOL-koodi
         assert csv_row[4] == f'"{format_datetime(application.batch.decision_date)}"'
-        
-        instalment_1 = application_deminimis_csv_service.get_instalment_1_amount(application)
-        instalment_2 = application_deminimis_csv_service.get_instalment_2_amount(application)
+
+        instalment_1 = application_deminimis_csv_service.get_instalment_1_amount(
+            application
+        )
+        instalment_2 = application_deminimis_csv_service.get_instalment_2_amount(
+            application
+        )
         assert csv_row[5] == ('""' if instalment_1 is None else str(instalment_1))
         assert csv_row[6] == ('""' if instalment_2 is None else str(instalment_2))
 

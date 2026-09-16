@@ -196,4 +196,3 @@ test('Handler deletes a file', async (t: TestController) => {
 
   await t.expect(Selector('a').withText('.pdf').visible).notOk();
 });
-

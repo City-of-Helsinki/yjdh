@@ -6,7 +6,7 @@ ${draftExpiring.ctaButton}: https://helsinkilisa.hel.fi/
 
 ${draftExpiring.helper.text}
 
-${draftExpiring.helper.link.title}: ${draftExpiring.helper.link.url} 
+${draftExpiring.helper.link.title}: ${draftExpiring.helper.link.url}
 
 ${general.bestRegards1}
 ${general.bestRegards2}

@@ -7,7 +7,6 @@ from datetime import date, timedelta
 
 from dateutil.relativedelta import relativedelta
 from django.core.files import File
-from django.http import HttpRequest
 from phonenumber_field.serializerfields import (
     PhoneNumberField as DefaultPhoneNumberField,
 )
