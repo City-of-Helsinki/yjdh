@@ -41,9 +41,14 @@ Runs **`pre-commit run --hook-stage commit-msg`**, which executes **commitlint**
 From the repo root (after [Requirements](../README.md#requirements) are satisfied):
 
 ```bash
+uv tool install pre-commit
 pnpm install
 pnpm husky
 ```
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first.
+Installing pre-commit as a uv tool makes it available to Husky from the repository
+root, independently of either backend's `.venv`.
 
 Root `pnpm install` is required so `husky` and other root `package.json` dependencies used by the hooks are on `PATH`.
 
