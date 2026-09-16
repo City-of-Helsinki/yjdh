@@ -46,11 +46,15 @@ Prerequisites:
 
 - PostgreSQL 17
 - Python 3.12
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.12.13 or newer
 
 ### Installing Python requirements
 
-- Run `pip install -r requirements.txt`
-- Run `pip install -r requirements-dev.txt` (development requirements)
+Run commands from `backend/benefit`. This backend has its own `pyproject.toml`,
+`uv.lock`, and `.venv`, independent of Kesäseteli.
+
+- Run `uv sync --locked` to install application and development dependencies into `.venv`.
+- The shared backend at `../shared` is installed in editable mode automatically.
 - If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
   `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
 
@@ -69,9 +73,9 @@ Allow user to create test database
 
 Load test fixtures
 
-    python manage.py loaddata default_terms.json
-    python manage.py loaddata groups.json
-    python manage.py loaddata test_applications.json
+    uv run python manage.py loaddata default_terms.json
+    uv run python manage.py loaddata groups.json
+    uv run python manage.py loaddata test_applications.json
 
 This creates terms of service and applicant terms in the database. The attachment PDF files are not actually
 created by loading the fixture. In order to actually download the PDF files, log in via the django admin
@@ -79,7 +83,7 @@ and upload the files manually.
 
 Set default permissions
 
-    python manage.py set_group_permissions
+    uv run python manage.py set_group_permissions
 
 This creates permissions for the handler's group so they have access to the Terms in
 the django admin.
@@ -104,9 +108,9 @@ also their .env files, see instructions in the frontend folder
 
 - Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
 - Set the `DEBUG` environment variable to `1`.
-- Run `python manage.py migrate`
-- Run `python manage.py compilemessages`
-- Run `python manage.py runserver 0:8000`
+- Run `uv run python manage.py migrate`
+- Run `uv run python manage.py compilemessages --ignore .venv`
+- Run `uv run python manage.py runserver 0:8000`
 
 The project is now running at [localhost:8000](https://localhost:8000)
 
@@ -114,8 +118,8 @@ The project is now running at [localhost:8000](https://localhost:8000)
 
 In `backend/benefit/`:
 
-- Run `python manage.py makemessages -e xml,txt,html,py --no-location -l fi -l sv -l en`
-- Run `python manage.py compilemessages`
+- Run `uv run python manage.py makemessages --ignore .venv -e xml,txt,html,py --no-location -l fi -l sv -l en`
+- Run `uv run python manage.py compilemessages --ignore .venv`
 
 ⚠️ **Note 1: if you have technical keywords such as enum that need to have a translation, check applications/enums.py on how to get makemessages to detect them**
 
@@ -127,8 +131,8 @@ To run the backend without integrations/authentication, set NEXT_PUBLIC_MOCK_FLA
 .env.benefit-backend If NEXT_PUBLIC_MOCK_FLAG is set, additionally
 DUMMY_COMPANY_FORM_CODE can be set to test with different company_form parameters.
 
-To seed the database with some mock application data, run `python manage.py seed`
-, which by default generates 10 applications for each of the seven possible application statuses and one attachment with a .pdf-file for each of them. To generate more applications, use the optional `--number` flag, for example, running `python manage.py seed --number=30` creates 30 applications of each status. **Note that running the command deletes all previous application data from the database and clears the media folder.**
+To seed the database with some mock application data, run `uv run python manage.py seed`
+, which by default generates 10 applications for each of the seven possible application statuses and one attachment with a .pdf-file for each of them. To generate more applications, use the optional `--number` flag, for example, running `uv run python manage.py seed --number=30` creates 30 applications of each status. **Note that running the command deletes all previous application data from the database and clears the media folder.**
 
 [Mailpit](https://github.com/axllent/mailpit) is available for the local development environment (localhost:8025)[http://localhost:8025/] for previewing
 and testing the emails sent by the application after setting the `EMAIL_HOST` and `EMAIL_PORT` as in the `.env.benefit-backend.example`.
@@ -139,25 +143,23 @@ application using the applicant UI.
 
 ## Keeping Python requirements up to date
 
-1. Install `pip-tools`:
+Run these commands from `backend/benefit`:
 
-   - `pip install pip-tools`
-   - `pip install --upgrade pip-tools`
+- Add an application dependency: `uv add <package>`.
+- Add a development dependency: `uv add --dev <package>`.
+- Add a production-only dependency: `uv add --group prod <package>`.
+- Update one dependency: `uv lock --upgrade-package <package>`.
+- Update all dependencies: `uv lock --upgrade`.
+- After editing `pyproject.toml` manually, run `uv lock`.
+- Install the locked application and development dependencies: `uv sync --locked`.
 
-2. Add new packages to `requirements.in` or `requirements-dev.in`
+Commit both `pyproject.toml` and `uv.lock` when dependencies change. The
+`exclude-newer = "P3D"` setting excludes releases uploaded in the last three days.
+IPython belongs to the `dev` group; uWSGI belongs to `prod`. Production images use
+`uv sync --locked --no-dev --group prod`.
 
-3. Update `.txt` file for the changed requirements file:
-
-   - `pip-compile requirements.in`
-   - `pip-compile requirements-dev.in`
-
-4. If you want to update dependencies to their newest versions, run:
-
-   - `pip-compile --upgrade requirements.in`
-
-5. To install Python requirements run:
-
-   - `pip-sync requirements.txt requirements-dev.txt`
+Run Python commands through `uv run`, for example `uv run pytest` or
+`uv run python manage.py shell_plus`. No virtual environment activation is needed.
 
 ## Documentation
 
@@ -216,7 +218,9 @@ Currently configured jobs (registered in the `applications/jobs`-directory):
 
 ## Code format
 
-This project uses [](https://docs.astral.sh/ruff/) for code formatting and quality checking.
+This project uses [Ruff](https://docs.astral.sh/ruff/) for code formatting and quality checking.
+The pre-commit hooks install their own pinned Ruff version. To use Ruff without
+the hooks, install it separately with `uv tool install ruff==0.16.7`.
 
 Basic `ruff` commands:
 
@@ -228,6 +232,9 @@ Basic `ruff` commands:
 [`pre-commit`](https://pre-commit.com/) can be used to install and
 run all the formatting tools as git hooks automatically before a
 commit.
+
+Run `uv run pre-commit run --all-files` to execute the hooks manually. See the
+[repository hook setup](../../.husky/README.md#setup) to enable them on commits.
 
 ## Storages
 
@@ -282,7 +289,7 @@ AHJO_REDIRECT_URL
 4. In the Django admin, on the AhjoSetting tab, set the setting ahjo_code to a JSON object:
    `{"code": "5510FE3A7A99D4A8D0FB69C0BAB70A31DD38243EFB1D606B1F96FE75383684E4-1"}`
 5. Now the AhjoConnector class can fetch the new token. At this stage of development, there is one dummy function for testing authentication, which can be used like this:
-   `$ python manage.py shell`
+   `$ uv run python manage.py shell`
    `$ from applications.services.ahjo_integration import dummy_ahjo_request`
    `$ dummy_ahjo_request()`
 6. Unless there is an error, there will be a new ahjo_access_token object (example below) in the database, which can be used for making actual requests to AHJO.
@@ -296,7 +303,7 @@ AHJO_REDIRECT_URL
 ### Refreshing the token
 
 The token retrieved the first time is valid for 30,000 seconds, or about 8 hours. A successful token call also returns the refresh_token information, which is also stored in the Django database. Django has a registered command refresh_ahjo_token which can be scheduled to perform token refresh. The command can be run manually with
-`$ python manage.py refresh_ahjo_token`
+`$ uv run python manage.py refresh_ahjo_token`
 
 ## ClamAV integration
 
