@@ -22,7 +22,14 @@
   "packages": {
     "backend/benefit": {
       "release-type": "python",
-      "package-name": "benefit-backend"
+      "package-name": "benefit-backend",
+      "extra-files": [
+        {
+          "path": "uv.lock",
+          "type": "toml",
+          "jsonpath": "$.package[?(@.name.value=='benefit-backend')].version"
+        }
+      ]
     },
     "frontend/benefit/applicant": {
       "release-type": "node",
