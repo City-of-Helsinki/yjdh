@@ -2,6 +2,9 @@ name: Pre-commit
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -13,9 +16,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - name: Setup Python 3.12
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Run pre-commit
         uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+        with:
+          extra_args: ${{ github.event_name == 'pull_request' && format('--from-ref origin/{0} --to-ref HEAD', github.base_ref) || '--all-files' }}

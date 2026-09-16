@@ -23,6 +23,7 @@ jobs:
       python-version: '3.12'
       postgres-major-version: 17
       working-directory: ./backend/benefit
+      skip-pre-commit: true
       extra-commands: |
         echo 'DEBUG=1' >> .env
         echo 'OIDC_OP_BASE_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect' >> .env
