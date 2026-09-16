@@ -47,7 +47,6 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     Object.entries(envOverrides ?? {}).filter(([key]) => !RESERVED_ENV_KEYS.has(key)),
   );
 
-  const NEXTJS_IGNORE_ESLINT = trueEnv.includes(process.env?.NEXTJS_IGNORE_ESLINT ?? 'false');
   const NEXTJS_IGNORE_TYPECHECK = trueEnv.includes(process.env?.NEXTJS_IGNORE_TYPECHECK ?? 'false');
   const NEXTJS_DISABLE_SENTRY = trueEnv.includes(process.env?.NEXTJS_DISABLE_SENTRY ?? 'false');
   const NEXTJS_SENTRY_UPLOAD_DRY_RUN = trueEnv.includes(process.env?.NEXTJS_SENTRY_UPLOAD_DRY_RUN ?? 'false');
@@ -72,10 +71,10 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
   const config = {
     productionBrowserSourceMaps: !disableSourceMaps,
     poweredByHeader: false,
-    // Disable the dev static/build indicator. Its HMR `isrManifest` handler in
-    // next@15.5 throws "Cannot read properties of undefined (reading 'components')"
-    // when it runs before window.next.router is ready, polluting the browser-test
-    // console. The indicator is a cosmetic dev-only badge with no app impact.
+    // Disable the dev static/build indicator. Its HMR `isrManifest` handler still
+    // throws "Cannot read properties of undefined (reading 'components')" in
+    // next@16.3.3 when it runs before window.next.router is ready, polluting the
+    // browser-test console. The indicator is a cosmetic dev-only badge.
     devIndicators: false,
     compiler: {
       styledComponents: true,
@@ -86,11 +85,11 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       /** Do not run TypeScript during production builds (`next build`). */
       ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,
     },
-    eslint: {
-      ignoreDuringBuilds: NEXTJS_IGNORE_ESLINT,
-    },
     transpilePackages: ['@frontend', 'styled-components', 'uuid'],
     experimental: {
+      // Page-data collection otherwise uses all detected CPUs. Limit its worker
+      // pool so constrained CI build containers do not run out of memory.
+      cpus: 4,
       // Allow CJS packages (e.g. hds-react) to require ESM-only packages such as
       // `uuid`. With pnpm's strict resolution these packages resolve to their ESM
       // builds, which Next.js otherwise refuses to import from CJS by default.
@@ -165,10 +164,6 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
       APP_VERSION: packageJson.version,
       BUILD_TIME: new Date().toISOString(),
       ...safeEnvOverrides,
-    },
-    serverRuntimeConfig: {
-      // to bypass https://github.com/zeit/next.js/issues/8251
-      PROJECT_ROOT: __dirname,
     },
     ...restOverrides,
   };

@@ -31,7 +31,7 @@ describe('errors utils', () => {
     // A field value with a long run of spaces stresses the whitespace-collapsing
     // regexes. With the old unbounded \s\s+/\s+ patterns this call takes several
     // seconds (quadratic); with bounded quantifiers it stays well under 1s.
-    const longSpaces = ' '.repeat(60000);
+    const longSpaces = ' '.repeat(60_000);
     const start = Date.now();
     prettyPrintObject({ data: { field: [longSpaces] } });
     const durationMs = Date.now() - start;
