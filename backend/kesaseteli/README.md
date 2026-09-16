@@ -66,8 +66,8 @@ Allow user to create test database
 
 ### Daily running
 
-* Create `.env.kesaseteli-backend` file: `touch .env.kesaseteli-backend`. An example can be found from monorepo root directory in `.env.kesaseteli-backend.example`. For local development, `.env` is also accepted when the named file is absent.
-    * **NOTE:** The env file should be found in the root directory of the developed Django app (`backend/kesaseteli/.env.kesaseteli-backend`). You can also use symlink to the env file.
+* Create `.env.kesaseteli-backend` file: `touch .env.kesaseteli-backend`. An example can be found from monorepo root directory in `.env.kesaseteli-backend.example`. The file may be stored in either `backend/kesaseteli` or the monorepo root.
+    * **NOTE:** The app directory is checked first, followed by the monorepo root. You can also use a symlink to the env file.
     * **INFO:** If you want to run only the database from a Docker container, remember to configure `DATABASE_URL` so that it points to the database (e.g. `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/kesaseteli`).
 * Set the `DEBUG` environment variable to `1`.
 * Run `uv run python manage.py migrate`
