@@ -73,7 +73,7 @@ updates:
     commit-message:
       prefix: "deps"
     open-pull-requests-limit: 0
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directories:
       - "/backend/benefit"
       - "/backend/kesaseteli"
