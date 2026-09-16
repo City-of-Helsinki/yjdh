@@ -42,7 +42,14 @@
     "backend/kesaseteli": {
       "release-type": "python",
       "package-name": "kesaseteli-backend",
-      "extra-files": ["backend/kesaseteli/kesaseteli/__init__.py"]
+      "extra-files": [
+        "kesaseteli/__init__.py",
+        {
+          "path": "uv.lock",
+          "type": "toml",
+          "jsonpath": "$.package[?(@.name.value=='kesaseteli-backend')].version"
+        }
+      ]
     },
     "frontend/kesaseteli/employer": {
       "release-type": "node",
