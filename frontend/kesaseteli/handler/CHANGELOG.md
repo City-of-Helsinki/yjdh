@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.5.0...kesaseteli-handler-v2.5.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ks,frontend:** Deduplicate employer application status definitions ([a6829ca](https://github.com/City-of-Helsinki/yjdh/commit/a6829cac8257b7c6d66f0ff47d515c91ebdc95a2))
+
 ## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.4.0...kesaseteli-handler-v2.5.0) (2026-09-15)
 
 
