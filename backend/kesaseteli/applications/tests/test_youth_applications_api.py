@@ -2033,9 +2033,9 @@ def get_expected_reason(
     ):
         return None
     elif (same_email or same_social_security_number) and is_existing_active:
-        return YouthApplicationRejectedReason.ALREADY_ASSIGNED
+        return YouthApplicationRejectedReason.INADMISSIBLE_DATA
     elif same_email and (is_existing_active or not is_existing_expired):
-        return YouthApplicationRejectedReason.EMAIL_IN_USE
+        return YouthApplicationRejectedReason.INADMISSIBLE_DATA
     else:
         return None
 
