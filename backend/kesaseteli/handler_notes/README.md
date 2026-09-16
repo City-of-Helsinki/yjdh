@@ -140,7 +140,7 @@ Note.objects.create(
     content="Waiting for the applicant to submit the revised contract.",
     author=request.user,
     note_type=NoteType.INTERNAL,
-    is_important=True
+    is_important=True,
 )
 ```
 
