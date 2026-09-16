@@ -280,7 +280,7 @@ sequenceDiagram
     KS-->>Talpa: JSON list of vouchers
     Talpa->>Talpa: Import & process invoices
     alt Import Successful
-        Talpa->>KS: POST /v1/talpa/webhook/ (ids: [...], X-Api-Key or Basic Auth)
+        Talpa->>KS: POST /v1/talpa/webhook/ (successful_ids: [...], X-Api-Key or Basic Auth)
         KS->>DB: UPDATE vouchers SET invoiced_at=now, is_exported=true
         DB-->>KS: Success
         KS-->>Talpa: 200 OK (updated: N)
