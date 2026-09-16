@@ -1100,7 +1100,10 @@ class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-            if not youth_application.can_set_additional_info:
+            if (
+                not youth_application.is_active
+                or not youth_application.can_set_additional_info
+            ):
                 return Response(
                     {
                         "detail": _(
