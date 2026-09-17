@@ -1,12 +1,12 @@
 import datetime
 
+import jwt
 import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from helusers.settings import api_token_auth_settings
-from jose import jwt
 
 from shared.common.tests.factories import HelsinkiProfileUserFactory
 from users.models import format_date
@@ -42,7 +42,7 @@ def get_api_token_for_user_with_scopes(user, scopes: list, requests_mock):
         "authorization": {"permissions": [{"scopes": scopes}]},
     }
     encoded_jwt = jwt.encode(
-        jwt_data, key=rsa_key.private_key_pem, algorithm=rsa_key.jose_algorithm
+        jwt_data, key=rsa_key.private_key_pem, algorithm=rsa_key.algorithm
     )
 
     requests_mock.get(config_url, json=configuration)
