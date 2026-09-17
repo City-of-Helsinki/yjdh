@@ -4,23 +4,18 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
-import styled from 'styled-components';
 
 import { BaseApplication, PaginatedResponse } from '../../types/application';
+import {
+  $LoadingContainer,
+  $PaginationContainer,
+  $TableContainer,
+  $TableWrapper,
+} from './ApplicationListTable.sc';
 import FilterSection from './searchFilters/FilterSection';
 
 export const PAGE_SIZE = 20;
 export const DEFAULT_ORDERING = '-created_at';
-
-const $PaginationContainer = styled.div`
-  margin-top: var(--spacing-xl);
-`;
-
-const $LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: var(--spacing-xl) 0;
-`;
 
 export type OrderingField<T extends BaseApplication = BaseApplication> =
   | OrderDirection<T>
@@ -210,23 +205,25 @@ const ApplicationListTable: ApplicationListTableComponent =
     const initialSortingOrder = isDescending ? 'desc' : 'asc';
 
     return (
-      <>
-        <Table
-          cols={cols}
-          rows={data}
-          indexKey="id"
-          renderIndexCol={false}
-          initialSortingColumnKey={initialSortingColumnKey}
-          initialSortingOrder={initialSortingOrder}
-          onSort={handleSort}
-          variant="dark"
-          zebra
-          caption={
-            data.length === 0
-              ? t('common:applicationList.noApplications')
-              : undefined
-          }
-        />
+      <$TableContainer>
+        <$TableWrapper>
+          <Table
+            cols={cols}
+            rows={data}
+            indexKey="id"
+            renderIndexCol={false}
+            initialSortingColumnKey={initialSortingColumnKey}
+            initialSortingOrder={initialSortingOrder}
+            onSort={handleSort}
+            variant="dark"
+            zebra
+            caption={
+              data.length === 0
+                ? t('common:applicationList.noApplications')
+                : undefined
+            }
+          />
+        </$TableWrapper>
         {pageCount > 1 && (
           <$PaginationContainer>
             <Pagination
@@ -239,7 +236,7 @@ const ApplicationListTable: ApplicationListTableComponent =
             />
           </$PaginationContainer>
         )}
-      </>
+      </$TableContainer>
     );
   };
 
