@@ -9,6 +9,7 @@ export type NavigationItem = {
   label: React.ReactNode;
   url: string;
   icon?: React.ReactNode;
+  subItems?: Array<{ label: string; url: string }>;
 };
 
 export type Headers = {
