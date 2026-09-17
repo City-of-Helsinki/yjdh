@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-11 14:48+0300\n"
+"POT-Creation-Date: 2026-09-17 13:38+0300\n"
 "PO-Revision-Date: 2022-03-29 08:43+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -17,6 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
+
+msgid "Download"
+msgstr ""
+
+msgid "download link"
+msgstr ""
 
 #, python-brace-format
 msgid "Imported {created_count} new school. {existing_count} already existed."
@@ -81,6 +87,12 @@ msgstr[1] ""
 msgid "school"
 msgstr ""
 
+msgid "youth summer voucher"
+msgstr ""
+
+msgid "youth summer vouchers"
+msgstr ""
+
 msgid "is in school list"
 msgstr ""
 
@@ -106,6 +118,18 @@ msgstr ""
 msgid "social security number"
 msgstr ""
 
+msgid "employer summer voucher"
+msgstr ""
+
+msgid "employer summer vouchers"
+msgstr ""
+
+msgid "employer application"
+msgstr ""
+
+msgid "company"
+msgstr ""
+
 msgid "youth application"
 msgstr ""
 
@@ -125,16 +149,40 @@ msgid_plural "Failed to resend summer voucher to {count} applicants."
 msgstr[0] "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
 msgstr[1] "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
 
-msgid "Employee"
+msgid "employee social security number"
+msgstr ""
+
+msgid "Contact Information"
+msgstr ""
+
+msgid "Payment Information"
+msgstr ""
+
+msgid "Invoicer Information"
 msgstr ""
 
 msgid "Timestamps"
 msgstr ""
 
-msgid "Has obsolete serial number been migrated?"
+msgid "attachment"
 msgstr ""
 
-msgid "employee social security number"
+msgid "attachments"
+msgstr ""
+
+msgid "Attachment not found"
+msgstr ""
+
+msgid "You do not have permission to download this file"
+msgstr ""
+
+msgid "Attachment file not found"
+msgstr ""
+
+msgid "Employee"
+msgstr ""
+
+msgid "Has obsolete serial number been migrated?"
 msgstr ""
 
 msgid ""
@@ -149,6 +197,92 @@ msgstr ""
 msgid "Enter school names, one per line. Existing schools will be skipped."
 msgstr ""
 
+msgid "Hakupvm"
+msgstr ""
+
+msgid "Tunniste"
+msgstr ""
+
+msgid "Hakemuksen tila"
+msgstr ""
+
+msgid "Hakuvuosi"
+msgstr ""
+
+msgid "Kesäsetelinro"
+msgstr ""
+
+msgid "Erikoistapaus (esim yhdeksäsluokkalainen)"
+msgstr ""
+
+msgid "Syntymävuosi"
+msgstr ""
+
+msgid "Syntymäpvm"
+msgstr ""
+
+msgid "Etunimi"
+msgstr ""
+
+msgid "Sukunimi"
+msgstr ""
+
+msgid "VTJ-sukunimi"
+msgstr ""
+
+msgid "Koulu"
+msgstr ""
+
+msgid "Listaamaton koulu?"
+msgstr ""
+
+msgid "Sähköposti"
+msgstr ""
+
+msgid "Puhelinnro"
+msgstr ""
+
+msgid "Postinro"
+msgstr ""
+
+msgid "VTJ-kotikunta"
+msgstr ""
+
+msgid "Lisätietosyyt"
+msgstr ""
+
+msgid "Lisätiedot"
+msgstr ""
+
+msgid "Kieli"
+msgstr ""
+
+msgid "Vahvistettu"
+msgstr ""
+
+msgid "Lisätiedot annettu"
+msgstr ""
+
+msgid "Käsitelty"
+msgstr ""
+
+msgid "Erikoistapauksen laskentatila"
+msgstr "Erikoistapauksen laskentatila"
+
+msgid "Hakemuksia ei löytynyt."
+msgstr ""
+
+msgid "Nuorten kesäsetelihakemukset"
+msgstr ""
+
+msgid ""
+"Population Information System is temporarily unavailable. Please try again "
+"later."
+msgstr ""
+
+msgid "File not found."
+msgstr ""
+
 #, python-brace-format
 msgid "EmployerApplication state transition not allowed: {status} to {value}"
 msgstr ""
@@ -161,6 +295,9 @@ msgstr ""
 
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
+msgstr ""
+
+msgid "Exactly one of summer_voucher or youth_application must be provided."
 msgstr ""
 
 msgid "At most five attachments per type"
@@ -233,6 +370,16 @@ msgid ""
 msgstr ""
 
 #, python-format
+msgid "Invalid status %(status)s for resending voucher email"
+msgstr ""
+
+msgid "Youth application does not have a summer voucher"
+msgstr ""
+
+msgid "Failed to send youth summer voucher email"
+msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
+
+#, python-format
 msgid "Invalid status %(status)s for setting additional info"
 msgstr ""
 
@@ -240,22 +387,48 @@ msgid "Failed to send manual processing email to handler"
 msgstr ""
 "Manuaaliprosessointisähköpostin lähettäminen käsittelijälle epäonnistui"
 
-msgid "Failed to send youth summer voucher email"
-msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
-
 msgid "Send anyway was used needlessly"
 msgstr ""
 
 msgid "Failed to send activation/additional info request email"
 msgstr "Aktivointi/lisätietopyyntösähköpostin lähettäminen epäonnistui"
 
-msgid "File not found."
+msgid "Attachment uploads are currently disabled for youth applications."
+msgstr ""
+
+msgid "Cannot upload attachments to an application in this state"
+msgstr ""
+
+msgid "Attachment not found."
+msgstr ""
+
+msgid "Method not allowed."
+msgstr ""
+
+msgid "Ei uusia käsittelemättömiä hakemuksia."
+msgstr ""
+
+#, python-format
+msgid "Virheellinen vientitapa. Sallitut arvot: %(values)s."
+msgstr ""
+
+#, python-format
+msgid "Virheellinen saraketyyppi. Sallitut arvot: %(values)s."
 msgstr ""
 
 msgid "Reporting"
 msgstr ""
 
 msgid "Talpa"
+msgstr ""
+
+msgid "Unhandled applications"
+msgstr ""
+
+msgid "Current year applications"
+msgstr ""
+
+msgid "Previous year applications"
 msgstr ""
 
 msgid "Draft"
@@ -270,16 +443,34 @@ msgstr ""
 msgid "Additional information provided"
 msgstr ""
 
-msgid "Accepted"
+msgid "Application handling"
+msgstr ""
+
+msgid "Payment review"
+msgstr ""
+
+msgid "Accepted for payment"
+msgstr ""
+
+msgid "Sent for payment"
+msgstr ""
+
+msgid "Received by payment system"
+msgstr ""
+
+msgid "Error in payment"
 msgstr ""
 
 msgid "Rejected"
 msgstr ""
 
-msgid "Deleted by customer"
+msgid "Cancelled"
 msgstr ""
 
 msgid "Awaiting manual processing"
+msgstr ""
+
+msgid "Accepted"
 msgstr ""
 
 msgid "Student in Helsinki but not resident"
@@ -305,6 +496,9 @@ msgstr ""
 
 msgid "payslip"
 msgstr ""
+
+msgid "unclassified"
+msgstr "luokittelematon"
 
 msgid "Company"
 msgstr ""
@@ -392,6 +586,21 @@ msgstr ""
 msgid "Youth summer voucher"
 msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
 
+msgid "Note"
+msgstr ""
+
+msgid "Activity"
+msgstr ""
+
+msgid "Application status change"
+msgstr ""
+
+msgid "Attachment added"
+msgstr ""
+
+msgid "Attachment deleted"
+msgstr ""
+
 msgid "Hakemuksen kieli"
 msgstr ""
 
@@ -416,9 +625,6 @@ msgstr ""
 msgid "Maksettu palkka (€)"
 msgstr ""
 
-msgid "Erikoistapaus (esim yhdeksäsluokkalainen)"
-msgstr ""
-
 msgid "Summa (€)"
 msgstr ""
 
@@ -436,6 +642,18 @@ msgstr ""
 
 msgid "Setelin numero"
 msgstr ""
+
+msgid "Työtehtävien pääluokka"
+msgstr ""
+
+msgid "selvittämätön"
+msgstr "selvittämätön"
+
+msgid "annettu"
+msgstr "annettu"
+
+msgid "laskettu"
+msgstr "laskettu"
 
 msgid "Y-tunnus"
 msgstr ""
@@ -494,9 +712,6 @@ msgstr ""
 msgid "Henkilötunnus"
 msgstr ""
 
-msgid "Koulu"
-msgstr ""
-
 msgid "Kotipostinumero"
 msgstr ""
 
@@ -533,10 +748,25 @@ msgstr ""
 msgid "Muuta"
 msgstr ""
 
-msgid "Nuoren nimi"
+msgid "VTJ-tietojen luovutuskielto (ts. turvakielto)"
 msgstr ""
 
-msgid "VTJ-tietojen luovutuskielto (ts. turvakielto)"
+msgid "Maksunsaajan nimi"
+msgstr ""
+
+msgid "Maksunsaajan osoite"
+msgstr ""
+
+msgid "Pankin SWIFT / BIC koodi"
+msgstr ""
+
+msgid "Pankin nimi"
+msgstr ""
+
+msgid "Pankin käyntiosoite"
+msgstr ""
+
+msgid "Nuoren nimi"
 msgstr ""
 
 msgid "Työnantaja"
@@ -578,6 +808,18 @@ msgstr "syntynyt 2004"
 #| msgid "secondary target group"
 msgid "summer voucher configurations"
 msgstr "syntynyt 2004"
+
+msgid "is exported"
+msgstr ""
+
+msgid "Has been exported to Excel or JSON"
+msgstr ""
+
+msgid "timestamp when sent to invoicing"
+msgstr ""
+
+msgid "external request ID"
+msgstr ""
 
 msgid "first name"
 msgstr ""
@@ -690,15 +932,6 @@ msgstr "30.11.%(year)d"
 msgid "Unable to send youth summer voucher email"
 msgstr ""
 
-msgid "youth summer voucher"
-msgstr ""
-
-msgid "youth summer vouchers"
-msgstr ""
-
-msgid "company"
-msgstr ""
-
 msgid "user"
 msgstr ""
 
@@ -714,6 +947,21 @@ msgid ""
 msgstr ""
 
 msgid "bank account number"
+msgstr ""
+
+msgid "payee name"
+msgstr ""
+
+msgid "payee address"
+msgstr ""
+
+msgid "bank SWIFT/BIC code"
+msgstr ""
+
+msgid "bank name"
+msgstr ""
+
+msgid "bank address"
 msgstr ""
 
 msgid "contact person name"
@@ -738,9 +986,6 @@ msgid "invoicer email"
 msgstr ""
 
 msgid "invoicer phone number"
-msgstr ""
-
-msgid "employer application"
 msgstr ""
 
 msgid "employer applications"
@@ -785,16 +1030,7 @@ msgstr ""
 msgid "Whether the employee would have been hired without a summer voucher."
 msgstr ""
 
-msgid "is exported"
-msgstr ""
-
-msgid "Has been exported to Excel"
-msgstr ""
-
-msgid "employer summer voucher"
-msgstr ""
-
-msgid "employer summer vouchers"
+msgid "author"
 msgstr ""
 
 msgid "attachment type in business rules"
@@ -804,12 +1040,6 @@ msgid "technical content type of the attachment"
 msgstr ""
 
 msgid "application attachment content"
-msgstr ""
-
-msgid "attachment"
-msgstr ""
-
-msgid "attachments"
 msgstr ""
 
 msgid "template type"
@@ -834,6 +1064,44 @@ msgid "email template"
 msgstr ""
 
 msgid "email templates"
+msgstr ""
+
+msgid "application type"
+msgstr ""
+
+msgid "application id"
+msgstr ""
+
+#, fuzzy
+#| msgid "job type"
+msgid "action type"
+msgstr "Työtehtävien pääluokka"
+
+msgid "old value"
+msgstr ""
+
+msgid "new value"
+msgstr ""
+
+msgid "target content type"
+msgstr ""
+
+msgid "target object id"
+msgstr ""
+
+msgid "actor"
+msgstr ""
+
+msgid "actor name snapshot"
+msgstr ""
+
+msgid "actor name snapshot or \"Deleted User\""
+msgstr ""
+
+msgid "timeline activity log"
+msgstr ""
+
+msgid "timeline activity logs"
 msgstr ""
 
 msgid "8. luokkalainen"
@@ -926,9 +1194,6 @@ msgstr ""
 msgid "Kaikki viime vuoden (myös käsitellyt)"
 msgstr ""
 
-msgid "Nuorten kesäsetelihakemukset"
-msgstr ""
-
 msgid "Lataa kaikki nuorten vahvistetut kesäsetelihakemukset"
 msgstr ""
 
@@ -944,87 +1209,3 @@ msgstr ""
 #, python-format
 msgid "Invalid template syntax: %(error)s"
 msgstr ""
-
-msgid "Ei uusia käsittelemättömiä hakemuksia."
-msgstr ""
-
-msgid "Hakemuksia ei löytynyt."
-msgstr ""
-
-msgid "Hakupvm"
-msgstr ""
-
-msgid "Tunniste"
-msgstr ""
-
-msgid "Hakemuksen tila"
-msgstr ""
-
-msgid "Hakuvuosi"
-msgstr ""
-
-msgid "Kesäsetelinro"
-msgstr ""
-
-msgid "Syntymävuosi"
-msgstr ""
-
-msgid "Syntymäpvm"
-msgstr ""
-
-msgid "Etunimi"
-msgstr ""
-
-msgid "Sukunimi"
-msgstr ""
-
-msgid "VTJ-sukunimi"
-msgstr ""
-
-msgid "Listaamaton koulu?"
-msgstr ""
-
-msgid "Sähköposti"
-msgstr ""
-
-msgid "Puhelinnro"
-msgstr ""
-
-msgid "Postinro"
-msgstr ""
-
-msgid "VTJ-kotikunta"
-msgstr ""
-
-msgid "Lisätietosyyt"
-msgstr ""
-
-msgid "Lisätiedot"
-msgstr ""
-
-msgid "Kieli"
-msgstr ""
-
-msgid "Vahvistettu"
-msgstr ""
-
-msgid "Lisätiedot annettu"
-msgstr ""
-
-msgid "Käsitelty"
-msgstr ""
-
-msgid "Erikoistapauksen laskentatila"
-msgstr "Erikoistapauksen laskentatila"
-
-msgid "annettu"
-msgstr "annettu"
-
-msgid "laskettu"
-msgstr "laskettu"
-
-msgid "selvittämätön"
-msgstr "selvittämätön"
-
-msgid "unclassified"
-msgstr "luokittelematon"
