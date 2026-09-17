@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleClickLink = React.useCallback(
     (url = '/') =>
-      (event?: Event | MouseEvent) => {
+      (event?: React.MouseEvent<HTMLAnchorElement>) => {
         event?.preventDefault();
         closeMenu();
         goToPage(url);
@@ -190,7 +190,15 @@ const Header: React.FC<HeaderProps> = ({
                     : isTabActive(item.url)
                 }
                 href={item.url}
-                onClick={() => handleClickLink(item.url)}
+                onClick={handleClickLink(item.url)}
+                dropdownLinks={item.subItems?.map((subItem) => (
+                  <HdsHeader.Link
+                    key={subItem.url}
+                    label={subItem.label}
+                    href={subItem.url}
+                    onClick={handleClickLink(subItem.url)}
+                  />
+                ))}
               />
             ))}
           </HdsHeader.NavigationMenu>

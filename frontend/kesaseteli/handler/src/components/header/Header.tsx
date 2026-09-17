@@ -26,6 +26,12 @@ const Header: React.FC = () => {
           {
             label: t('common:header.youthApplicationsLabel'),
             url: ROUTES.YOUTH_APPLICATIONS,
+            subItems: [
+              {
+                label: t('common:header.createApplicationWithoutSsnLabel'),
+                url: ROUTES.CREATE_APPLICATION_WITHOUT_SSN,
+              },
+            ],
           },
           {
             label: t('common:header.employerApplicationsLabel'),

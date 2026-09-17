@@ -1,21 +1,12 @@
-import { ButtonVariant, IconPlus } from 'hds-react';
 import YouthApplicationList from 'kesaseteli/handler/components/applicationList/YouthApplicationList';
-import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import Button from 'shared/components/button/Button';
 import Container from 'shared/components/container/Container';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
-
-const $CreateButtonContainer = styled.div`
-  margin-top: var(--spacing-m);
-  margin-bottom: var(--spacing-l);
-`;
 
 const $PageContainer = styled(Container)`
   position: relative;
@@ -28,12 +19,6 @@ const $PageContainer = styled(Container)`
 
 function YouthApplicationsIndex(): React.ReactElement {
   const { t } = useTranslation();
-  const router = useRouter();
-
-  const handleCreateWithoutSsnClick = React.useCallback(
-    () => void router.push(ROUTES.CREATE_APPLICATION_WITHOUT_SSN),
-    [router]
-  );
 
   return (
     <$PageContainer>
@@ -45,15 +30,7 @@ function YouthApplicationsIndex(): React.ReactElement {
         header={t('common:header.youthApplicationsLabel')}
         as="h1"
       />
-      <$CreateButtonContainer>
-        <Button
-          variant={ButtonVariant.Secondary}
-          iconStart={<IconPlus aria-hidden />}
-          onClick={handleCreateWithoutSsnClick}
-        >
-          {t('common:header.createApplicationWithoutSsnLabel')}
-        </Button>
-      </$CreateButtonContainer>
+
       <YouthApplicationList />
     </$PageContainer>
   );
