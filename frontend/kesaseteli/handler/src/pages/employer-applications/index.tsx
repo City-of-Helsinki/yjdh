@@ -6,12 +6,22 @@ import React from 'react';
 import Container from 'shared/components/container/Container';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import styled from 'styled-components';
+
+const $PageContainer = styled(Container)`
+  position: relative;
+  z-index: 0;
+
+  & > div {
+    min-width: 0;
+  }
+`;
 
 function EmployerApplicationsIndex(): React.ReactElement {
   const { t } = useTranslation();
 
   return (
-    <Container>
+    <$PageContainer>
       <Head>
         <title>{t('common:appName')}</title>
       </Head>
@@ -21,7 +31,7 @@ function EmployerApplicationsIndex(): React.ReactElement {
         as="h1"
       />
       <EmployerApplicationList />
-    </Container>
+    </$PageContainer>
   );
 }
 

@@ -17,6 +17,15 @@ const $CreateButtonContainer = styled.div`
   margin-bottom: var(--spacing-l);
 `;
 
+const $PageContainer = styled(Container)`
+  position: relative;
+  z-index: 0;
+
+  & > div {
+    min-width: 0;
+  }
+`;
+
 function YouthApplicationsIndex(): React.ReactElement {
   const { t } = useTranslation();
   const router = useRouter();
@@ -27,7 +36,7 @@ function YouthApplicationsIndex(): React.ReactElement {
   );
 
   return (
-    <Container>
+    <$PageContainer>
       <Head>
         <title>{t('common:appName')}</title>
       </Head>
@@ -46,7 +55,7 @@ function YouthApplicationsIndex(): React.ReactElement {
         </Button>
       </$CreateButtonContainer>
       <YouthApplicationList />
-    </Container>
+    </$PageContainer>
   );
 }
 
