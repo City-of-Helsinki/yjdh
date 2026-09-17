@@ -9,7 +9,7 @@ dependencies = [
     "django-environ",
     "django-extensions",
     "django-filter",
-    "django-helusers",
+    "django-helusers>=1.2.0",
     "social-auth-app-django",
     "django-localflavor",
     "django-logger-extra",
