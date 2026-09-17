@@ -1232,6 +1232,7 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
         "modified_at",
         "encrypted_original_vtj_json",
         "encrypted_handler_vtj_json",
+        "attachments",
     ]
     required_fields = sorted(set(get_required_fields()) - set(manually_checked_fields))
     optional_fields = sorted(set(get_optional_fields()) - set(manually_checked_fields))
@@ -1280,6 +1281,8 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
             assert created_app.encrypted_handler_vtj_json is None or isinstance(
                 json.loads(created_app.encrypted_handler_vtj_json), dict
             )
+        elif manually_checked_field == "attachments":
+            assert not created_app.attachments.exists()
         else:
             raise AssertionError(
                 f"Please add manual check for field {manually_checked_field}"
@@ -1297,7 +1300,7 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
         ), f"{optional_field} created youth application attribute incorrect"
 
     for read_only_field in read_only_fields:
-        if read_only_field in ["employer_applications", "attachments"]:
+        if read_only_field == "employer_applications":
             continue
         assert (
             getattr(created_app, read_only_field)

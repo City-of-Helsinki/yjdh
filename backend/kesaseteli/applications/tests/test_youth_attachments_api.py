@@ -5,9 +5,9 @@ from unittest import mock
 import pytest
 from django.test import override_settings
 from django.utils import timezone
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APIClient
 
 from applications.enums import AttachmentType
 from applications.models import Attachment, YouthApplication
@@ -74,12 +74,13 @@ def test_youth_attachment_upload(
         new_callable=mock.PropertyMock,
     ) as mock_can_set:
         mock_can_set.return_value = True
-        response = _upload_file(
-            request,
-            unauthenticated_api_client,
-            youth_application,
-            extension,
-        )
+        with freeze_time("2026-06-12"):
+            response = _upload_file(
+                request,
+                unauthenticated_api_client,
+                youth_application,
+                extension,
+            )
 
     assert response.status_code == status.HTTP_201_CREATED
     assert youth_application.attachments.count() == 1
@@ -88,18 +89,17 @@ def test_youth_attachment_upload(
     assert attachment.attachment_type == AttachmentType.UNCLASSIFIED
     assert attachment.content_type == expected_content_type
 
-    assert response.data.keys() == {
-        "id",
-        "youth_application",
-        "attachment_type",
-        "attachment_file_name",
-        "content_type",
-        "created_at",
-        "notes_count",
-        "author_name",
-        "summer_voucher",
+    assert response.data == {
+        "id": str(attachment.pk),
+        "youth_application": youth_application.pk,
+        "attachment_type": AttachmentType.UNCLASSIFIED.value,
+        "attachment_file_name": attachment.attachment_file.name,
+        "content_type": expected_content_type,
+        "created_at": "2026-06-12T03:00:00+03:00",
+        "notes_count": 0,
+        "author_name": "",
+        "summer_voucher": None,
     }
-    assert response.data["attachment_type"] == AttachmentType.UNCLASSIFIED
 
 
 @pytest.mark.django_db
@@ -261,15 +261,12 @@ def test_youth_attachment_handler_cannot_delete_from_handled_application(
 
 @pytest.mark.django_db
 def test_youth_attachment_handler_can_upload_regardless_of_status(
-    request, staff_user, youth_application
+    request, staff_client, youth_application
 ):
     """
     Test that an authenticated handler can upload attachments even if the youth application
     is in a state where it no longer accepts additional information.
     """
-    staff_api_client = APIClient()
-    staff_api_client.force_authenticate(user=staff_user)
-
     with mock.patch(
         "applications.models.YouthApplication.can_set_additional_info",
         new_callable=mock.PropertyMock,
@@ -277,7 +274,7 @@ def test_youth_attachment_handler_can_upload_regardless_of_status(
         mock_can_set.return_value = False
         response = _upload_file(
             request,
-            staff_api_client,
+            staff_client,
             youth_application,
             "pdf",
         )

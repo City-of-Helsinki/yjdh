@@ -1,12 +1,9 @@
 import os
 
 from django.http import FileResponse
-from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.response import Response
-
-FILE_NOT_FOUND_MESSAGE = "File not found"
 
 
 class AttachmentDownloadMixin:
@@ -28,10 +25,6 @@ class AttachmentDownloadMixin:
                 pass
 
         return Response(
-            {
-                "detail": format_lazy(
-                    _(f"{FILE_NOT_FOUND_MESSAGE}."),
-                )
-            },
+            {"detail": _("File not found.")},
             status=status.HTTP_404_NOT_FOUND,
         )

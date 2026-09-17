@@ -1160,30 +1160,38 @@ class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
         GET / DELETE a specific attachment belonging to a youth application.
         Strictly restricted to handler users.
         """
-        youth_application: YouthApplication = self.get_object()
-
-        try:
-            attachment = youth_application.attachments.annotate(
-                notes_count=Count("notes")
-            ).get(pk=attachment_pk)
-        except Attachment.DoesNotExist:
-            return Response(
-                {"detail": _("Attachment not found.")},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
         if request.method == "GET":
+            youth_application: YouthApplication = self.get_object()
+            try:
+                attachment = youth_application.attachments.get(pk=attachment_pk)
+            except Attachment.DoesNotExist:
+                return Response(
+                    {"detail": _("Attachment not found.")},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             return self.get_attachment_download_response(attachment)
         elif request.method == "DELETE":
-            if youth_application.is_handled:
-                raise PermissionDenied(
-                    "Attachments cannot be deleted from a fully handled application."
+            with transaction.atomic():
+                youth_application: YouthApplication = (
+                    self.get_object().lock_for_update()
                 )
-            attachment.delete()
-            LOGGER.info(
-                f"Deleted youth attachment {attachment_pk} via handle_attachment"
-            )
-            return Response(status=status.HTTP_204_NO_CONTENT)
+                if youth_application.is_handled:
+                    raise PermissionDenied(
+                        "Attachments cannot be deleted from a fully handled "
+                        "application."
+                    )
+                try:
+                    attachment = youth_application.attachments.get(pk=attachment_pk)
+                except Attachment.DoesNotExist:
+                    return Response(
+                        {"detail": _("Attachment not found.")},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+                attachment.delete()
+                LOGGER.info(
+                    f"Deleted youth attachment {attachment_pk} via handle_attachment"
+                )
+                return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class EmployerApplicationFilter(filters.FilterSet):
