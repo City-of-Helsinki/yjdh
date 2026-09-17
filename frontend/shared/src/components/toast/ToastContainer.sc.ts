@@ -34,5 +34,8 @@ export const $ToastContainer = styled(ToastContainer).attrs({
 `;
 
 export const $Notification = styled(Notification)`
-  min-width: ${(props) => props.theme.containerWidth.s};
+  width: 100%;
+  max-width: ${(props) => props.theme.containerWidth.s};
+  box-sizing: border-box;
+  word-break: break-word;
 `;
