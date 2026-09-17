@@ -462,6 +462,8 @@ REST_FRAMEWORK = {
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Preserve the list-shaped nested validation errors used by the API contract.
+    "LIST_SERIALIZER_ERRORS_AS_DICT": False,
 }  # TODO: Replace with actual authentication & permissions.
 
 SPECTACULAR_SETTINGS = {
