@@ -18,26 +18,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "email"
+msgid ""
+"Both target_type and target_id must be provided together, or both omitted."
 msgstr ""
 
-msgid "Has email"
+msgid "Invalid target type"
 msgstr ""
 
-msgid "No email"
+msgid "Note target is read-only after creation."
 msgstr ""
 
-msgid "User count"
+msgid "Attachments cannot have external messages."
 msgstr ""
 
-msgid "Extra details"
+msgid "You can only delete your own notes."
 msgstr ""
 
-msgid "Finnish"
+msgid "You can only modify your own notes."
 msgstr ""
 
-msgid "English"
+msgid "You can only delete notes within 24 hours of creation."
 msgstr ""
 
-msgid "Swedish"
+msgid "You can only modify notes within 24 hours of creation."
+msgstr ""
+
+msgid "Handler Notes"
+msgstr ""
+
+msgid "Internal Note"
+msgstr ""
+
+msgid "External Message"
+msgstr ""
+
+msgid "is important"
+msgstr ""
+
+msgid "content"
+msgstr ""
+
+msgid "author"
+msgstr ""
+
+msgid "note"
+msgstr ""
+
+msgid "notes"
 msgstr ""
