@@ -174,7 +174,7 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
     ],
 )
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
+@patch("applications.services.ahjo_integration.render_pdf")
 def test_generate_single_approved_template_html(
     mock_pdf_convert,
     company_form_code: YtjOrganizationCode,
@@ -217,7 +217,7 @@ def test_generate_single_approved_template_html(
 
 
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
+@patch("applications.services.ahjo_integration.render_pdf")
 def test_generate_single_declined_template_html(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     company = CompanyFactory()
@@ -248,7 +248,7 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
 
 
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
+@patch("applications.services.ahjo_integration.render_pdf")
 def test_generate_composed_template_html(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     accepted_app_1 = DecidedApplicationFactory(
@@ -347,7 +347,7 @@ def test_export_application_batch(application_batch):
 
 
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
+@patch("applications.services.ahjo_integration.render_pdf")
 def test_multiple_benefit_per_application(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
     # Test case data and expected results collected from

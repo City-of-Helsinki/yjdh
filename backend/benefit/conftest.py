@@ -12,18 +12,18 @@ def test_media_root(tmp_path_factory):
 
 
 @pytest.fixture(autouse=True)
-def pdfkit_without_system_binary(monkeypatch):
+def pdf_renderer_without_system_binary(monkeypatch):
     if shutil.which("wkhtmltopdf"):
         return
 
-    def fake_pdf_from_string(*_args, **_kwargs):
+    def fake_render_pdf(*_args, **_kwargs):
         return b"%PDF-1.4\n% test PDF\n"
 
     monkeypatch.setattr(
-        "applications.services.ahjo_integration.pdfkit.from_string",
-        fake_pdf_from_string,
+        "applications.services.ahjo_integration.render_pdf",
+        fake_render_pdf,
     )
     monkeypatch.setattr(
-        "applications.services.generate_application_summary.pdfkit.from_string",
-        fake_pdf_from_string,
+        "applications.services.generate_application_summary.render_pdf",
+        fake_render_pdf,
     )

@@ -35,7 +35,6 @@ dependencies = [
     "mozilla-django-oidc",
     "openpyxl",
     "pandas",
-    "pdfkit",
     "pillow",
     "psycopg2",
     "python-dateutil",

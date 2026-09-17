@@ -8,7 +8,6 @@ from io import BytesIO
 from typing import List, Optional, Tuple
 
 import jinja2
-import pdfkit
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.files.base import ContentFile
@@ -67,6 +66,7 @@ from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.generate_application_summary import (
     generate_application_summary_file,
 )
+from applications.services.pdf_renderer import render_pdf
 from companies.models import Company
 
 
@@ -339,7 +339,7 @@ def generate_pdf(
     html: str = template.render({**template_config["context"], "apps": apps})
     return ExportFileInfo(
         filename=file_name,
-        file_content=pdfkit.from_string(html, False),
+        file_content=render_pdf(html),
         html_content=html,
     )
 
