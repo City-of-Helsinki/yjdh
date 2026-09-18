@@ -1,6 +1,8 @@
 import os
 from unittest.mock import patch
 
+import pytest
+
 
 class TestSentryConfiguration:
     """Tests for Sentry configuration and traces sampler."""
@@ -105,3 +107,20 @@ class TestSentryConfiguration:
         import helsinkibenefit.settings  # noqa: F401
 
         assert not mock_sentry_init.called
+
+
+class TestHelsinkiProfileAudience:
+    """Tests for deriving the Helsinki Profile API token audience."""
+
+    @pytest.mark.parametrize(
+        "api_url,expected",
+        [
+            ("https://profile-api.test.hel.ninja/graphql/", "profile-api-test"),
+            ("https://profile-api.stage.hel.ninja/graphql/", "profile-api-stage"),
+            ("https://api.hel.fi/profiili/graphql/", "profile-api"),
+        ],
+    )
+    def test_audience_is_derived_from_profile_api_url(self, api_url, expected):
+        from helsinkibenefit.settings import helsinki_profile_audience
+
+        assert helsinki_profile_audience(api_url) == expected
