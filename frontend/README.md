@@ -9,6 +9,7 @@
   - [`pnpm dev`](#pnpm-dev)
   - [`pnpm build`](#pnpm-build)
   - [`pnpm ks-empl:start`](#pnpm-ks-emplstart)
+  - [Readiness endpoint](#readiness-endpoint)
   - [`pnpm test`](#pnpm-test)
   - [`pnpm audit`](#pnpm-audit)
     - [how to fix audit errors](#how-to-fix-audit-errors)
