@@ -713,7 +713,7 @@ wheels = [
 
 [[package]]
 name = "kesaseteli-backend"
-version = "1.18.0"
+version = "1.19.0"
 source = { virtual = "." }
 dependencies = [
     { name = "base32-lib" },
