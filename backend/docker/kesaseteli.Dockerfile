@@ -15,7 +15,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/app-root \
 
 RUN mkdir /entrypoint
 
-COPY --chown=default:root kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
+COPY --chown=root:root --chmod=644 kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
 COPY --chown=default:root kesaseteli/.prod/escape_json.c /app/.prod/escape_json.c
 COPY --chown=default:root shared /shared/
 
@@ -53,6 +53,8 @@ RUN dnf install -y gcc --allowerasing \
 ENV DEV_SERVER=1
 
 COPY --chown=default:root /kesaseteli/ /app/
+COPY --chown=root:root --chmod=644 kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
+RUN chown root:root /app && chmod 755 /app
 
 # Mark the app directory as safe to get rid of git's
 # "fatal: detected dubious ownership in repository at '/app'" warning
@@ -72,6 +74,8 @@ FROM appbase AS production
 # ==============================
 
 COPY --chown=default:root /kesaseteli/ /app/
+COPY --chown=root:root --chmod=644 kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
+RUN chown root:root /app && chmod 755 /app
 
 # Mark the app directory as safe to get rid of git's
 # "fatal: detected dubious ownership in repository at '/app'" warning
