@@ -2923,6 +2923,40 @@ def test_notify_applications_one_application(mock_send_notification_mail):
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 @mock.patch(
     "applications.management.commands.request_payslip._send_notification_mail",
+    return_value=1,
+)
+def test_notify_applications_includes_applications_over_150_days_old(
+    mock_send_notification_mail,
+):
+    days_to_notify = 150
+    target_date = date.today() - relativedelta(days=days_to_notify)
+
+    app = DecidedApplicationFactory(
+        application_origin=ApplicationOrigin.APPLICANT,
+        status=ApplicationStatus.ACCEPTED,
+        start_date=target_date - relativedelta(days=1),
+    )
+    instalment = Instalment.objects.create(
+        calculation=app.calculation,
+        amount=1000,
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+        due_date=target_date + relativedelta(months=6),
+    )
+
+    (count, apps) = notify_applications(days_to_notify)
+
+    mock_send_notification_mail.assert_called_once_with(app)
+    assert count == 1
+    assert apps == [app.application_number]
+    instalment.refresh_from_db()
+    assert instalment.status == InstalmentStatus.REQUESTED
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@mock.patch(
+    "applications.management.commands.request_payslip._send_notification_mail",
     return_value=0,
 )
 def test_notify_applications_no_applications(mock_send_notification_mail):

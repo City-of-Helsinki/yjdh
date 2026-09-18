@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand
+from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -49,30 +50,39 @@ def notify_applications(days_to_notify: int) -> tuple[int, list[int]]:
     Returns the number of notified applications."""
 
     target_date = timezone.now().date() - timedelta(days=days_to_notify)
-    applications_to_notify = Application.objects.filter(
-        application_origin=ApplicationOrigin.APPLICANT,
-        status=ApplicationStatus.ACCEPTED,
-        start_date=target_date,
-        alteration_set__isnull=True,
+
+    waiting_second_instalment = Instalment.objects.filter(
+        calculation=OuterRef("calculation"),
+        instalment_number=2,
+        status=InstalmentStatus.WAITING,
+    ).order_by("pk")
+
+    applications_to_notify = (
+        Application.objects.filter(
+            application_origin=ApplicationOrigin.APPLICANT,
+            status=ApplicationStatus.ACCEPTED,
+            start_date__lte=target_date,
+            alteration_set__isnull=True,
+        )
+        .annotate(instalment_2_id=Subquery(waiting_second_instalment.values("pk")[:1]))
+        .filter(instalment_2_id__isnull=False)
     )
 
     sent_mail_count = 0
     application_numbers = []
+    instalment_ids_to_request = []
     for application in applications_to_notify:
-        # Change the instalment status to REQUESTED
-        instalment_2_qs = Instalment.objects.filter(
-            calculation=application.calculation,
-            instalment_number=2,
+        mail_sent = _send_notification_mail(application)
+        sent_mail_count += mail_sent
+        if mail_sent > 0:
+            instalment_ids_to_request.append(application.instalment_2_id)
+            application_numbers.append(application.application_number)
+
+    if instalment_ids_to_request:
+        Instalment.objects.filter(
+            pk__in=instalment_ids_to_request,
             status=InstalmentStatus.WAITING,
-        )
-        if instalment_2_qs:
-            mail_sent = _send_notification_mail(application)
-            sent_mail_count += mail_sent
-            if mail_sent > 0:
-                instalment_2 = instalment_2_qs[0]
-                instalment_2.status = InstalmentStatus.REQUESTED
-                instalment_2.save()
-                application_numbers.append(application.application_number)
+        ).update(status=InstalmentStatus.REQUESTED)
 
     return sent_mail_count, application_numbers
 
