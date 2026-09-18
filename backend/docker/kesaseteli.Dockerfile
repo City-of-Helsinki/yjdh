@@ -5,16 +5,20 @@ FROM registry.access.redhat.com/ubi9/python-312 AS appbase
 USER root
 WORKDIR /app
 
+COPY --from=ghcr.io/astral-sh/uv:0.12.13@sha256:b485bd65cc2cf1c9a93b3554012c9c3778cf7b1b5fd3d3096ce9e1226c97e1e6 /uv /uvx /usr/local/bin/
+
+ENV UV_PROJECT_ENVIRONMENT=/opt/app-root \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_NO_CACHE=1 \
+    UV_PYTHON_DOWNLOADS=never
+
 RUN mkdir /entrypoint
 
-COPY --chown=default:root kesaseteli/requirements.txt /app/requirements.txt
-COPY --chown=default:root kesaseteli/requirements-prod.txt /app/requirements-prod.txt
+COPY --chown=root:root --chmod=644 kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
 COPY --chown=default:root kesaseteli/.prod/escape_json.c /app/.prod/escape_json.c
 COPY --chown=default:root shared /shared/
 
-# WORKAROUND: pip 25.3 used until https://github.com/jazzband/pip-tools/issues/2319 really works.
-# Otherwise "AttributeError: 'PackageFinder' object has no attribute 'allow_all_prereleases'"
-# can happen when using pip-tools / pip-compile in development.
 RUN dnf update -y \
     && dnf install -y \
            git \
@@ -26,9 +30,7 @@ RUN dnf update -y \
            xmlsec1-openssl \
            cyrus-sasl-devel \
            openssl-devel \
-    && pip install -U pip==25.3 setuptools wheel \
-    && pip install --no-cache-dir -r /app/requirements.txt \
-    && pip install --no-cache-dir -r /app/requirements-prod.txt \
+    && uv sync --locked --no-dev --group prod \
     && uwsgi --build-plugin /app/.prod/escape_json.c \
     && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
     && dnf remove -y gcc cyrus-sasl-devel openssl-devel \
@@ -43,15 +45,16 @@ COPY --chown=default:root kesaseteli/media/ /var/media/
 FROM appbase AS development
 # ==============================
 
-COPY --chown=default:root kesaseteli/requirements-dev.txt /app/requirements-dev.txt
 RUN dnf install -y gcc --allowerasing \
-    && pip install --no-cache-dir -r /app/requirements-dev.txt \
+    && uv sync --locked --group prod \
     && dnf remove -y gcc \
     && dnf clean all
 
 ENV DEV_SERVER=1
 
 COPY --chown=default:root /kesaseteli/ /app/
+COPY --chown=root:root --chmod=644 kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
+RUN chown root:root /app && chmod 755 /app
 
 # Mark the app directory as safe to get rid of git's
 # "fatal: detected dubious ownership in repository at '/app'" warning
@@ -71,6 +74,8 @@ FROM appbase AS production
 # ==============================
 
 COPY --chown=default:root /kesaseteli/ /app/
+COPY --chown=root:root --chmod=644 kesaseteli/pyproject.toml kesaseteli/uv.lock /app/
+RUN chown root:root /app && chmod 755 /app
 
 # Mark the app directory as safe to get rid of git's
 # "fatal: detected dubious ownership in repository at '/app'" warning

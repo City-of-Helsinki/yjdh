@@ -3385,7 +3385,7 @@ def _create_random_applications():
 
 @pytest.mark.django_db
 @mock.patch(
-    "applications.services.generate_application_summary.pdfkit.from_string",
+    "applications.services.generate_application_summary.render_pdf",
     return_value=b"%PDF-1.4 fake",
 )
 def test_handler_application_pdf_accepted(
@@ -3405,7 +3405,7 @@ def test_handler_application_pdf_accepted(
 
 @pytest.mark.django_db
 @mock.patch(
-    "applications.services.generate_application_summary.pdfkit.from_string",
+    "applications.services.generate_application_summary.render_pdf",
     return_value=b"%PDF-1.4 fake",
 )
 def test_handler_application_pdf_rejected(mock_pdf, handler_api_client):

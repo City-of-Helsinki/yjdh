@@ -1,3 +1,75 @@
+[project]
+name = "benefit-backend"
+version = "2.24.4"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "yjdh-backend-shared",
+    "babel",
+    "django-cors-headers",
+    "django-environ",
+    "django-extensions",
+    "django-filter",
+    "django-helusers>=1.2.0",
+    "social-auth-app-django",
+    "django-localflavor",
+    "django-logger-extra",
+    "django-phonenumber-field[phonenumbers]",
+    "django-resilient-logger",
+    "django-searchable-encrypted-fields",
+    "django-simple-history",
+    "django-sql-utils",
+    "django-storages[azure]",
+    "django-auth-adfs",
+    "djangorestframework",
+    "django~=5.2",
+    "drf-nested-routers",
+    "drf-spectacular",
+    "elasticsearch~=8.19",
+    # Required by NEXT_PUBLIC_MOCK_FLAG in development deployments.
+    "factory-boy",
+    "filetype",
+    "fuzzywuzzy",
+    "helsinki-profile-gdpr-api",
+    "jinja2",
+    "lxml",
+    "mozilla-django-oidc",
+    "openpyxl",
+    "pandas",
+    "pillow",
+    "psycopg2",
+    "python-dateutil",
+    "python-stdnum>=1.19",
+    "python-Levenshtein",
+    "pyyaml",
+    "requests",
+    "sentry-sdk[django]",
+    "uritemplate",
+]
+
+[dependency-groups]
+dev = [
+    "ipython",
+    "langdetect",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-freezer",
+    "requests-mock",
+    "werkzeug",
+]
+prod = ["uwsgi"]
+
+[tool.uv]
+package = false
+exclude-newer = "P3D"
+# pysaml2's upper bound predates the pyOpenSSL releases compatible with
+# cryptography 50.
+override-dependencies = ["pyOpenSSL>=26.4.0,<27"]
+
+[tool.uv.sources]
+yjdh-backend-shared = { path = "../shared", editable = true }
+
 [tool.ruff]
 target-version = "py312"
 
@@ -23,7 +95,3 @@ extend-per-file-ignores = { "*/migrations/*" = ["E501"], "*/tests/*" = ["E501"] 
 
 [tool.ruff.lint.isort]
 known-first-party = ["shared"]
-
-[tool.pip-tools.compile]
-strip-extras = true
-allow-unsafe = true

@@ -37,11 +37,17 @@ Prerequisites:
 
 * PostgreSQL 17
 * Python 3.12
+* `xmlsec1` (required by SAML authentication; on macOS install it with
+  `brew install libxmlsec1`)
+* [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.12.13 or newer
 
 ### Installing Python requirements
 
-* Run `pip install -r requirements.txt`
-* Run `pip install -r requirements-dev.txt` (development requirements)
+Run commands from `backend/kesaseteli`. This backend has its own `pyproject.toml`,
+`uv.lock`, and `.venv`, independent of Benefit.
+
+* Run `uv sync --locked` to install application and development dependencies into `.venv`.
+* The shared backend at `../shared` is installed in editable mode automatically.
 
 **Note on Database Drivers:** This project uses `psycopg` (v3) with the `[binary]` extension. This handles the PostgreSQL client library (`libpq`) requirements automatically for most platforms, including macOS (even with architecture mismatches), Windows, and Linux. No manual installation of `libpq` is usually required.
 
@@ -60,15 +66,15 @@ Allow user to create test database
 
 ### Daily running
 
-* Create `.env.kesaseteli-backend` file: `touch .env.kesaseteli-backend`. An example can be found from monorepo root directory in `.env.kesaseteli-backend.example`.
-    * **NOTE:** The env file should be found in the root directory of the developed Django app (`backend/kesaseteli/.env.kesaseteli-backend`). You can also use symlink to the env file.
+* Create `.env.kesaseteli-backend` file: `touch .env.kesaseteli-backend`. An example can be found from monorepo root directory in `.env.kesaseteli-backend.example`. The file may be stored in either `backend/kesaseteli` or the monorepo root.
+    * **NOTE:** The app directory is checked first, followed by the monorepo root. You can also use a symlink to the env file.
     * **INFO:** If you want to run only the database from a Docker container, remember to configure `DATABASE_URL` so that it points to the database (e.g. `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/kesaseteli`).
 * Set the `DEBUG` environment variable to `1`.
-* Run `python manage.py migrate`
-* Run `python manage.py compilemessages`
-* Run `python manage.py ensure_email_templates` (populates email templates)
-* Run `python manage.py setup_admin_permissions` (sets up admin permissions)
-* Run `python manage.py runserver 0:8000`
+* Run `uv run python manage.py migrate`
+* Run `uv run python manage.py compilemessages --ignore .venv`
+* Run `uv run python manage.py ensure_email_templates` (populates email templates)
+* Run `uv run python manage.py setup_admin_permissions` (sets up admin permissions)
+* Run `uv run python manage.py runserver 0:8000`
 
 The project is now running at [localhost:8000](https://localhost:8000)
 
@@ -77,36 +83,34 @@ The project is now running at [localhost:8000](https://localhost:8000)
 ### Updating translations
 
 In `backend/kesaseteli/`:
-* Run `python manage.py makemessages --no-location -l fi -l sv -l en`
-* Run `python manage.py compilemessages`
+* Run `uv run python manage.py makemessages --ignore .venv --no-location -l fi -l sv -l en`
+* Run `uv run python manage.py compilemessages --ignore .venv`
 
 ## Keeping Python requirements up to date
 
-1. Install `pip-tools`:
+Run these commands from `backend/kesaseteli`:
 
-    * `pip install pip-tools`
-    * `pip install --upgrade pip-tools`
+- Add an application dependency: `uv add <package>`.
+- Add a development dependency: `uv add --dev <package>`.
+- Add a production-only dependency: `uv add --group prod <package>`.
+- Update one dependency: `uv lock --upgrade-package <package>`.
+- Update all dependencies: `uv lock --upgrade`.
+- After editing `pyproject.toml` manually, run `uv lock`.
+- Install the locked application and development dependencies: `uv sync --locked`.
 
-2. Add new packages to `requirements.in` or `requirements-dev.in`
+Commit both `pyproject.toml` and `uv.lock` when dependencies change. The
+`exclude-newer = "P3D"` setting excludes releases uploaded in the last three days.
+IPython belongs to the `dev` group; uWSGI belongs to `prod`. Production images use
+`uv sync --locked --no-dev --group prod`.
 
-3. Update `.txt` file for the changed requirements file:
-
-    * `pip-compile requirements.in`
-    * `pip-compile requirements-dev.in`
-      * If the above fails with `Unnamed requirements are not allowed as constraints`
-        * Comment out `-e file:../shared` in [requirements.txt](./requirements.txt)
-
-4. If you want to update dependencies to their newest versions, run:
-
-    * `pip-compile --upgrade requirements.in`
-
-5. To install Python requirements run:
-
-    * `pip-sync requirements.txt`
+Run Python commands through `uv run`, for example `uv run pytest` or
+`uv run python manage.py shell_plus`. No virtual environment activation is needed.
 
 ## Code format
 
-This project uses [](https://docs.astral.sh/ruff/) for code formatting and quality checking.
+This project uses [Ruff](https://docs.astral.sh/ruff/) for code formatting and quality checking.
+The pre-commit hooks install their own pinned Ruff version. To use Ruff without
+the hooks, install it separately with `uv tool install ruff==0.16.7`.
 
 Basic `ruff` commands:
 
@@ -118,6 +122,9 @@ Basic `ruff` commands:
 [`pre-commit`](https://pre-commit.com/) can be used to install and
 run all the formatting tools as git hooks automatically before a
 commit.
+
+Run `uv run pre-commit run --all-files` to execute the hooks manually. See the
+[repository hook setup](../../.husky/README.md#setup) to enable them on commits.
 
 ## Storages
 
@@ -316,7 +323,7 @@ A `SummerVoucherConfiguration` for the current year is **required** for creating
 
 #### Create Summer Voucher Configuration
 
-`python manage.py create_summervoucher_configuration`
+`uv run python manage.py create_summervoucher_configuration`
 
 Creates a new `SummerVoucherConfiguration` for the specified year.
 

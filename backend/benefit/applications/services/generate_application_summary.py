@@ -1,8 +1,9 @@
 from datetime import date
 
-import pdfkit
 from django.template import loader
 from django.utils import translation
+
+from applications.services.pdf_renderer import render_pdf
 
 
 def get_context_for_summary_context(application):
@@ -39,7 +40,7 @@ def generate_application_summary_file(application, request=None) -> bytes | None
     def generate_summary_pdf(context) -> bytes:
         template = loader.get_template("application.html")
         rendered_template = template.render(context, request)
-        return pdfkit.from_string(rendered_template, False, None)
+        return render_pdf(rendered_template)
 
     try:
         context = get_context_for_summary_context(application)
@@ -83,7 +84,7 @@ def generate_handler_application_pdf(application, request=None) -> bytes | None:
     def generate_pdf(context) -> bytes:
         template = loader.get_template("application_handler.html")
         rendered_template = template.render(context, request)
-        return pdfkit.from_string(rendered_template, False, None)
+        return render_pdf(rendered_template)
 
     try:
         context = get_handler_context_for_summary(application)

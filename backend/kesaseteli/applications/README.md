@@ -43,7 +43,7 @@ This configuration is managed via the Django Admin interface and is used to vali
 NOTE: The `SummerVoucherConfiguration` model is also initialized via a management command. This is done automatically via the docker entrypoint script.
 
 ```shell
-python manage.py create_summervoucher_configuration
+uv run python manage.py create_summervoucher_configuration
 ```
 
 ### Target Groups Management
@@ -89,7 +89,7 @@ Because templates are stored in the database but sourced from files, a restorati
 Use the following command to create missing templates and populate them with content from the corresponding files:
 
 ```bash
-python manage.py ensure_email_templates
+uv run python manage.py ensure_email_templates
 ```
 
 #### 2. Admin Interface Action

@@ -503,6 +503,9 @@ def _delete_attachments(application: Application):
 
 
 def pytest_sessionfinish(session, exitstatus):
+    if not os.path.isdir(settings.MEDIA_ROOT):
+        return
+
     try:
         # Delete all files in the media folder
         files_in_media = os.listdir(settings.MEDIA_ROOT)

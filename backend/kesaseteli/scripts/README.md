@@ -70,11 +70,11 @@ Save the output to `scripts/data/business_ids.json`.
 
 ```bash
 cd backend/kesaseteli/scripts
-python filter_ytj_dump_by_business_ids.py
+uv run --no-project --with ijson filter_ytj_dump_by_business_ids.py
 ```
 
-> The script can be run with any Python that has `ijson` installed. It does
-> not require Django.
+> `--with ijson` provides the optional streaming dependency for this invocation.
+> The script does not require Django.
 
 ---
 
@@ -107,13 +107,14 @@ abort the run. A summary is printed at the end.
 
 ```bash
 cd backend/kesaseteli/scripts
-../../../.venv/bin/python populate_ytj_data_to_companies.py
+uv run populate_ytj_data_to_companies.py
 ```
 
-Or from the repo root:
+Or from the backend directory:
 
 ```bash
-backend/kesaseteli/.venv/bin/python backend/kesaseteli/scripts/populate_ytj_data_to_companies.py
+cd backend/kesaseteli
+uv run scripts/populate_ytj_data_to_companies.py
 ```
 
 ---
@@ -127,13 +128,13 @@ backend/kesaseteli/.venv/bin/python backend/kesaseteli/scripts/populate_ytj_data
 2. Download YTJ dump (ZIP) → extract JSON → scripts/data/
        │
        ▼
-3. python filter_ytj_dump_by_business_ids.py
+3. uv run --no-project --with ijson filter_ytj_dump_by_business_ids.py
        │
        ├── data/data_<date>_filtered.json     (matched records)
        └── data/business_ids_not_found.json   (no match in dump)
        │
        ▼
-4. python populate_ytj_data_to_companies.py
+4. uv run populate_ytj_data_to_companies.py
        │
        └── Company rows updated / created in DB
 ```

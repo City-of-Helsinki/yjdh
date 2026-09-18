@@ -21,7 +21,7 @@ fi
 # Compile translations on startup
 if [[ "$COMPILE_TRANSLATIONS" = "1" ]]; then
     echo "Compiling translations..."
-    ./manage.py compilemessages
+    ./manage.py compilemessages --ignore .venv
 fi
 
 # Create admin user. Generate password if there isn't one in the
