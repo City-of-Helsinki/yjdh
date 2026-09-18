@@ -53,9 +53,9 @@ def test_export_wrong_api_key(unauthenticated_api_client):
 
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_export_returns_records(unauthenticated_api_client):
-    # DRAFT status apps are not included in base_queryset, we need SUBMITTED
+    # talpa_exportable() requires ACCEPTED_FOR_PAYMENT; SUBMITTED is excluded
     voucher = EmployerSummerVoucherFactory(
-        application__status="submitted",
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         is_exported=False,
     )
     url = reverse("talpa-export")
@@ -72,9 +72,24 @@ def test_export_returns_records(unauthenticated_api_client):
 
 
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
-def test_export_excludes_invoiced(unauthenticated_api_client):
+def test_export_excludes_submitted_applications(unauthenticated_api_client):
+    """SUBMITTED applications must not appear in the Talpa export."""
     EmployerSummerVoucherFactory(
         application__status="submitted",
+        is_exported=False,
+    )
+    url = reverse("talpa-export")
+    response = unauthenticated_api_client.get(
+        f"{url}?limit=10", HTTP_X_API_KEY=VALID_KEY
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data["results"]) == 0
+
+
+@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
+def test_export_excludes_invoiced(unauthenticated_api_client):
+    EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         invoiced_at="2026-08-20T10:00:00Z",
     )
     url = reverse("talpa-export")
@@ -94,7 +109,9 @@ def test_webhook_requires_api_key(unauthenticated_api_client):
 
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_webhook_marks_invoiced(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     url = reverse("talpa-webhook")
     data = {"successful_ids": [str(voucher.id)], "request_id": "req-123"}
     response = unauthenticated_api_client.post(url, data=data, HTTP_X_API_KEY=VALID_KEY)
@@ -139,12 +156,12 @@ def test_webhook_empty_ids(unauthenticated_api_client):
 def test_export_filters_by_submitted_at(unauthenticated_api_client):
     # Voucher submitted before the cutoff — should be excluded.
     EmployerSummerVoucherFactory(
-        application__status="submitted",
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         application__submitted_at="2024-01-01T00:00:00Z",
     )
     # Voucher submitted after the cutoff — should be included.
     recent = EmployerSummerVoucherFactory(
-        application__status="submitted",
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         application__submitted_at="2026-06-01T00:00:00Z",
     )
     url = reverse("talpa-export")
@@ -161,17 +178,17 @@ def test_export_filters_by_submitted_at(unauthenticated_api_client):
 def test_export_cursor_pagination_prevents_skipping(unauthenticated_api_client):
     # Create 3 vouchers in order of submission
     v1 = EmployerSummerVoucherFactory(
-        application__status="submitted",
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         is_exported=False,
         application__submitted_at="2026-01-01T10:00:00Z",
     )
     v2 = EmployerSummerVoucherFactory(
-        application__status="submitted",
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         is_exported=False,
         application__submitted_at="2026-01-02T10:00:00Z",
     )
     v3 = EmployerSummerVoucherFactory(
-        application__status="submitted",
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         is_exported=False,
         application__submitted_at="2026-01-03T10:00:00Z",
     )
@@ -228,7 +245,9 @@ def test_webhook_disallows_non_post_methods(unauthenticated_api_client, method):
     TALPA_ROBOT_AUTH_CREDENTIAL="talpa-robot:a-very-secret-password",
 )
 def test_webhook_accepts_basic_auth(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     url = reverse("talpa-webhook")
     b64 = base64.b64encode(b"talpa-robot:a-very-secret-password").decode()
     response = unauthenticated_api_client.post(
@@ -244,7 +263,9 @@ def test_webhook_accepts_basic_auth(unauthenticated_api_client):
     TALPA_WEBHOOK_API_KEY=VALID_KEY, TALPA_ROBOT_AUTH_CREDENTIAL="talpa-robot:correct"
 )
 def test_webhook_rejects_wrong_basic_auth(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     url = reverse("talpa-webhook")
     b64 = base64.b64encode(b"talpa-robot:wrong").decode()
     response = unauthenticated_api_client.post(
@@ -258,7 +279,9 @@ def test_webhook_rejects_wrong_basic_auth(unauthenticated_api_client):
 # Basic Auth — not configured → 401 (authenticator raises AuthenticationFailed)
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY, TALPA_ROBOT_AUTH_CREDENTIAL="")
 def test_webhook_basic_auth_not_configured_returns_401(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     url = reverse("talpa-webhook")
     b64 = base64.b64encode(b"talpa-robot:correct").decode()
     response = unauthenticated_api_client.post(
@@ -272,7 +295,9 @@ def test_webhook_basic_auth_not_configured_returns_401(unauthenticated_api_clien
 # Optional request_id — success with no request_id
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_webhook_marks_invoiced_without_request_id(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     data = {"successful_ids": [str(voucher.id)]}  # no request_id
     response = unauthenticated_api_client.post(
         reverse("talpa-webhook"), data=data, HTTP_X_API_KEY=VALID_KEY
@@ -285,7 +310,9 @@ def test_webhook_marks_invoiced_without_request_id(unauthenticated_api_client):
 
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_webhook_oversized_request_id_returns_400(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     url = reverse("talpa-webhook")
     data = {
         "successful_ids": [str(voucher.id)],
@@ -299,7 +326,9 @@ def test_webhook_oversized_request_id_returns_400(unauthenticated_api_client):
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
 def test_webhook_overlapping_ids_returns_400(unauthenticated_api_client):
-    voucher = EmployerSummerVoucherFactory(application__status="submitted")
+    voucher = EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+    )
     url = reverse("talpa-webhook")
     data = {
         "successful_ids": [str(voucher.id)],

@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
+from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers, status
@@ -47,10 +48,9 @@ class TalpaExportView(ListAPIView):
     serializer_class = TalpaExportSerializer
 
     def get_queryset(self):
-        from django.db.models import F
 
         return (
-            EmployerSummerVoucher.objects.unhandled()
+            EmployerSummerVoucher.objects.talpa_exportable()
             .for_export()
             .annotate(_submitted_at=F("application__submitted_at"))
         )
@@ -181,7 +181,10 @@ class TalpaWebhookView(APIView):
                     "uninvoiceable_ids": serializers.ListField(
                         child=serializers.UUIDField(),
                         required=False,
-                        help_text="List of UUIDs for vouchers not in SUBMITTED state.",
+                        help_text=(
+                            "List of UUIDs for vouchers not in "
+                            "ACCEPTED_FOR_PAYMENT state."
+                        ),
                     ),
                     "conflict_ids": serializers.ListField(
                         child=serializers.UUIDField(),
