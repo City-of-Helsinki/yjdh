@@ -19,7 +19,7 @@ class Command(BaseCommand):
             "--count",
             type=int,
             required=True,
-            help="Target number of unhandled Talpa-exportable vouchers.",
+            help="Target number of ACCEPTED_FOR_PAYMENT Talpa-exportable vouchers.",
         )
 
     def handle(self, *args, **options):

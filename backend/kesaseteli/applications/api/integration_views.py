@@ -11,10 +11,10 @@ from kesaseteli.constants import MIN_API_KEY_LENGTH
 
 logger = logging.getLogger(__name__)
 
-# Only vouchers on SUBMITTED applications may be marked as invoiced by Talpa.
+# Only vouchers on ACCEPTED_FOR_PAYMENT applications may be marked as invoiced by Talpa.
 # ERROR_IN_PAYMENT is intentionally excluded: Talpa itself set that status,
 # so the voucher should not cycle back through invoicing.
-TALPA_INVOICEABLE_STATUSES = [EmployerApplicationStatus.SUBMITTED]
+TALPA_INVOICEABLE_STATUSES = [EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT]
 
 
 class ApiKeyPermission(BasePermission):
