@@ -1493,8 +1493,8 @@ class EmployerSummerVoucherQuerySet(models.QuerySet):
         """Return vouchers that have not yet been exported.
 
         Includes only vouchers on SUBMITTED applications that have not been
-        marked as exported (``is_exported=False``). Used by both the Excel
-        "unhandled" export and the Talpa JSON export endpoint.
+        marked as exported (``is_exported=False``). Used exclusively by the Excel
+        "unhandled" export. For Talpa JSON export, see ``talpa_exportable()``.
 
         Returns:
             QuerySet filtered to unexported SUBMITTED vouchers.
@@ -1502,6 +1502,21 @@ class EmployerSummerVoucherQuerySet(models.QuerySet):
         return self.filter(
             is_exported=False,
             application__status=EmployerApplicationStatus.SUBMITTED,
+        )
+
+    def talpa_exportable(self):
+        """Return vouchers eligible for Talpa JSON export.
+
+        Includes only unexported vouchers (``is_exported=False``) on applications
+        that a handler has accepted for payment (``status=ACCEPTED_FOR_PAYMENT``).
+        Used exclusively by ``TalpaExportView`` — not by Excel exports.
+
+        Returns:
+            QuerySet filtered to unexported ACCEPTED_FOR_PAYMENT vouchers.
+        """
+        return self.filter(
+            is_exported=False,
+            application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         )
 
     def annual(self, year: int):
@@ -1533,6 +1548,9 @@ class EmployerSummerVoucherManager(models.Manager):
 
     def unhandled(self):
         return self.get_queryset().unhandled()
+
+    def talpa_exportable(self):
+        return self.get_queryset().talpa_exportable()
 
     def annual(self, year: int):
         return self.get_queryset().annual(year)

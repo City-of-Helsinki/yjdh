@@ -8,60 +8,60 @@ from common.tests.factories import EmployerSummerVoucherFactory
 
 @pytest.mark.django_db
 def test_creates_all_when_none_exist():
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 0
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 0
 
     created = TalpaExportMockService.ensure_talpa_export_test_applications(5)
 
     assert created == 5
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 5
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 5
 
 
 @pytest.mark.django_db
 def test_creates_difference_when_some_exist():
     for _ in range(3):
         EmployerSummerVoucherFactory(
-            application__status=EmployerApplicationStatus.SUBMITTED,
+            application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             is_exported=False,
             youth_summer_voucher__youth_application__youth_summer_voucher=None,
         )
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 3
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 3
 
     created = TalpaExportMockService.ensure_talpa_export_test_applications(5)
 
     assert created == 2
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 5
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 5
 
 
 @pytest.mark.django_db
 def test_creates_nothing_when_at_target():
     for _ in range(5):
         EmployerSummerVoucherFactory(
-            application__status=EmployerApplicationStatus.SUBMITTED,
+            application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             is_exported=False,
             youth_summer_voucher__youth_application__youth_summer_voucher=None,
         )
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 5
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 5
 
     created = TalpaExportMockService.ensure_talpa_export_test_applications(5)
 
     assert created == 0
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 5
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 5
 
 
 @pytest.mark.django_db
 def test_creates_nothing_when_above_target():
     for _ in range(7):
         EmployerSummerVoucherFactory(
-            application__status=EmployerApplicationStatus.SUBMITTED,
+            application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             is_exported=False,
             youth_summer_voucher__youth_application__youth_summer_voucher=None,
         )
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 7
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 7
 
     created = TalpaExportMockService.ensure_talpa_export_test_applications(5)
 
     assert created == 0
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 7
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 7
 
 
 @pytest.mark.django_db
@@ -78,11 +78,11 @@ def test_created_names_are_labelled():
 
 
 @pytest.mark.django_db
-def test_created_vouchers_appear_in_unhandled_for_export():
+def test_created_vouchers_appear_in_talpa_exportable_for_export():
     created = TalpaExportMockService.ensure_talpa_export_test_applications(5)
 
     assert created == 5
-    assert EmployerSummerVoucher.objects.unhandled().for_export().count() == 5
+    assert EmployerSummerVoucher.objects.talpa_exportable().for_export().count() == 5
 
 
 @pytest.mark.django_db
