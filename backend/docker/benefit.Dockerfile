@@ -18,7 +18,7 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/app-root \
 
 RUN mkdir /entrypoint
 
-COPY --chown=default:root benefit/pyproject.toml benefit/uv.lock /app/
+COPY --chown=root:root --chmod=644 benefit/pyproject.toml benefit/uv.lock /app/
 COPY --chown=default:root shared /shared/
 
 RUN dnf update -y \
@@ -60,6 +60,9 @@ RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official \
     && rm -f /etc/yum.repos.d/centos9.repo && rm -f wkhtmltox-0.12.6.1-3.fedora37.x86_64.rpm && dnf clean all
 
 COPY --chown=default:root /benefit/ /app/
+COPY --chown=root:root --chmod=644 benefit/pyproject.toml benefit/uv.lock /app/
+RUN chown root:root /app && chmod 755 /app
+
 # Mark the app directory as safe to get rid of git's
 # "fatal: detected dubious ownership in repository at '/app'" warning
 # when spinning up the container
