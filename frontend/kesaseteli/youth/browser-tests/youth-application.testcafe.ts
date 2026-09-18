@@ -66,7 +66,7 @@ test('I can send application and return to front page', async () => {
   await youthForm.isLoaded();
 });
 
-test('If I send two applications with same email, I will see "email is in use" -message', async () => {
+test('If I send two applications with same email, I will see "inadmissible data" -message', async () => {
   const application = getApplication(autoAcceptedApplication());
   await youthForm.sendYouthApplication(application);
   await thankYouPage.isLoaded();
@@ -75,7 +75,7 @@ test('If I send two applications with same email, I will see "email is in use" -
   await youthForm.sendYouthApplication(
     getApplication({ email: application.email })
   );
-  await new NotificationPage('emailInUse').isLoaded();
+  await new NotificationPage('inadmissibleData').isLoaded();
 });
 
 if (!isRealIntegrationsEnabled()) {
@@ -240,7 +240,7 @@ if (!isRealIntegrationsEnabled()) {
     await new NotificationPage('accepted').isLoaded();
   });
 
-  test('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "You already sent a Summer Job Voucher application" -message', async (t) => {
+  test('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "Inadmissible Data" -message', async (t) => {
     const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
@@ -253,10 +253,10 @@ if (!isRealIntegrationsEnabled()) {
         email: application.email,
       })
     );
-    await new NotificationPage('alreadyAssigned').isLoaded();
+    await new NotificationPage('inadmissibleData').isLoaded();
   });
 
-  test('If I have forgot that I already sent and activated an application, and then I send another application with same ssn, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
+  test('If I have forgot that I already sent and activated an application, and then I send another application with same ssn, I see "Inadmissible Data" -message', async (t) => {
     const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
@@ -268,7 +268,7 @@ if (!isRealIntegrationsEnabled()) {
         social_security_number: application.social_security_number,
       })
     );
-    await new NotificationPage('alreadyAssigned').isLoaded();
+    await new NotificationPage('inadmissibleData').isLoaded();
   });
 
   test('If I accidentally send two applications with different emails, and then I activate first application and then second application, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
