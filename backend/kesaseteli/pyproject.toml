@@ -1,6 +1,6 @@
 [project]
 name = "kesaseteli-backend"
-version = "1.18.0"
+version = "1.19.0"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "yjdh-backend-shared",
