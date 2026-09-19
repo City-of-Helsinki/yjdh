@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.20.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.19.0...kesaseteli-backend-v1.20.0) (2026-09-19)
+
+
+### Features
+
+* **ks:** Add ensure_talpa_export_test_applications command ([1f48715](https://github.com/City-of-Helsinki/yjdh/commit/1f4871550fcb7df2e4516ca26a386145c2b66510))
+* **ks:** Add setting to disable anonymous youth attachments ([737cf6c](https://github.com/City-of-Helsinki/yjdh/commit/737cf6cbcd7bdd4dff8bfb727a8767ad175b32e9))
+* **ks:** Add youth application attachments backend implementation ([889ed67](https://github.com/City-of-Helsinki/yjdh/commit/889ed67f7f5a592c6b5901cd8309321b56abcb56))
+* **ks:** Require youth applications to be active for attachments ([1b7460d](https://github.com/City-of-Helsinki/yjdh/commit/1b7460d17c61d47945d13ed40e270d978feecb05))
+* **ks:** Secure youth attachment delivery and handler uploads ([2bb8242](https://github.com/City-of-Helsinki/yjdh/commit/2bb8242a7f5641244cdce4e7e0a708ba073427f8))
+
+
+### Bug Fixes
+
+* **ks:** Add post_delete cleanup for attachment files ([e76f359](https://github.com/City-of-Helsinki/yjdh/commit/e76f359d9a2aec8cffad89199f8681d0dffd09a8))
+* **ks:** Lock youth application during attachment deletion ([eb6ea0e](https://github.com/City-of-Helsinki/yjdh/commit/eb6ea0e730fc66a0ab8ae097cdb90049682ac70f))
+
+
+### Documentation
+
+* **ks:** Fix Talpa webhook payload in README diagram ([d4d80f5](https://github.com/City-of-Helsinki/yjdh/commit/d4d80f5c96c623c5e40592101478b6f3c30fa7ba))
+* Remove readiness endpoint from frontend readme ([caf6f82](https://github.com/City-of-Helsinki/yjdh/commit/caf6f825503c555ea51725f98d14b3ecfa92e306))
+
 ## [1.19.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.18.0...kesaseteli-backend-v1.19.0) (2026-09-14)
 
 
