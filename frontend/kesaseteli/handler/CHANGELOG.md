@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.5.0...kesaseteli-handler-v2.6.0) (2026-09-19)
+
+
+### Features
+
+* **ks,handler:** Implement youth application attachments and refactor ([a37d3ca](https://github.com/City-of-Helsinki/yjdh/commit/a37d3cafc85b34e7ee3ff16d878b540b3fda0b01))
+* **ks,shared,handler:** Move create app without ssn to nav ([b9be595](https://github.com/City-of-Helsinki/yjdh/commit/b9be5958fa58227a74c6bc9d35528456011e7402))
+
+
+### Bug Fixes
+
+* **ks,frontend:** Deduplicate employer application status definitions ([a6829ca](https://github.com/City-of-Helsinki/yjdh/commit/a6829cac8257b7c6d66f0ff47d515c91ebdc95a2))
+* **ks,handler:** Add page containers to prevent layout blowout ([ad6b333](https://github.com/City-of-Helsinki/yjdh/commit/ad6b33316d6492c3b05a1d6a99e47dafb934ce35))
+* **ks,handler:** Fix application list table layout blowout on mobile ([cb76e4a](https://github.com/City-of-Helsinki/yjdh/commit/cb76e4ae1c9d3bc0211178566d6bd999856ecdd2))
+* **ks,handler:** Show success toast when note is deleted ([0948dbe](https://github.com/City-of-Helsinki/yjdh/commit/0948dbec1f548298dcc541209dfbd96ea80f346b))
+
 ## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.4.0...kesaseteli-handler-v2.5.0) (2026-09-15)
 
 
