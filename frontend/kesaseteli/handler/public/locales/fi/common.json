@@ -54,7 +54,6 @@
         "application_handling": "Käsittelyssä",
         "payment_review": "Maksatuksen tarkistuksessa",
         "accepted_for_payment": "Hyväksytty maksuun",
-        "sent_for_payment": "Siirretty maksatukseen",
         "received_by_payment_system": "Vastaanotettu maksujärjestelmässä",
         "error_in_payment": "Virhe maksussa",
         "rejected": "Hylätty",

@@ -1598,8 +1598,7 @@ class EmployerSummerVoucherViewSet(AttachmentDownloadMixin, ModelViewSet):
         """Delete a single attachment.
 
         Handlers (staff/superuser) may delete from any application status
-        except ACCEPTED_FOR_PAYMENT, SENT_FOR_PAYMENT,
-        RECEIVED_BY_PAYMENT_SYSTEM, REJECTED, and CANCELLED
+        except ACCEPTED_FOR_PAYMENT, RECEIVED_BY_PAYMENT_SYSTEM, REJECTED, and CANCELLED
         (which are handled states; attachments serve as proof of handling).
         Employers retain the existing company-ownership + DRAFT-only restriction.
         """

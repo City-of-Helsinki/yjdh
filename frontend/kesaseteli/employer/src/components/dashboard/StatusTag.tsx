@@ -35,7 +35,6 @@ const StatusTag: React.FC<{ status: EmployerApplicationStatus }> = ({
       );
 
     case EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT:
-    case EmployerApplicationStatus.SENT_FOR_PAYMENT:
     case EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM:
       return (
         <StatusLabel type="success" iconStart={<IconCheckCircle aria-hidden />}>

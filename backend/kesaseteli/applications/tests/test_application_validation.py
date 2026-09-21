@@ -111,15 +111,11 @@ def test_validate_name_with_invalid_unlisted_school(name):
         ),
         (
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
         ),
         # Payment error paths:
         (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ),
         (
@@ -230,10 +226,6 @@ def test_validate_name_with_invalid_unlisted_school(name):
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
         (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
-        (
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
         ),
@@ -278,7 +270,6 @@ def test_employer_application_status_validator_success(
             EmployerApplicationStatus.DRAFT,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
-        (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.SENT_FOR_PAYMENT),
         (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.REJECTED),
         (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.CANCELLED),
         # No jumping from SUBMITTED over parts of the process:
@@ -302,10 +293,6 @@ def test_employer_application_status_validator_success(
         (
             EmployerApplicationStatus.SUBMITTED,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-        ),
-        (
-            EmployerApplicationStatus.SUBMITTED,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
         ),
         # No jumping from ADDITIONAL_INFORMATION_PROVIDED over parts of the process:
         (
@@ -332,10 +319,6 @@ def test_employer_application_status_validator_success(
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
-        (
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
         # No going back from CANCELLED:
         (EmployerApplicationStatus.CANCELLED, EmployerApplicationStatus.DRAFT),
         (
@@ -360,10 +343,6 @@ def test_employer_application_status_validator_success(
             EmployerApplicationStatus.CANCELLED,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
-        (
-            EmployerApplicationStatus.CANCELLED,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
         # No jumping from ADDITIONAL_INFORMATION_REQUESTED over parts of the process:
         (
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
@@ -385,58 +364,16 @@ def test_employer_application_status_validator_success(
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
-        (
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
         # No jumping from PAYMENT_REVIEW over parts of the process:
         (EmployerApplicationStatus.PAYMENT_REVIEW, EmployerApplicationStatus.DRAFT),
         (EmployerApplicationStatus.PAYMENT_REVIEW, EmployerApplicationStatus.CANCELLED),
         (
             EmployerApplicationStatus.PAYMENT_REVIEW,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
-        (
-            EmployerApplicationStatus.PAYMENT_REVIEW,
             EmployerApplicationStatus.APPLICATION_HANDLING,
         ),
         (
             EmployerApplicationStatus.PAYMENT_REVIEW,
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-        ),
-        # No going back from SENT_FOR_PAYMENT:
-        (EmployerApplicationStatus.SENT_FOR_PAYMENT, EmployerApplicationStatus.DRAFT),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.CANCELLED,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.SUBMITTED,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.APPLICATION_HANDLING,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.REJECTED,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.PAYMENT_REVIEW,
-        ),
-        (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
         # No jumping from ACCEPTED_FOR_PAYMENT over parts of the process:
         (
@@ -483,10 +420,6 @@ def test_employer_application_status_validator_success(
             EmployerApplicationStatus.REJECTED,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
         ),
-        (
-            EmployerApplicationStatus.REJECTED,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
         # No jumping from APPLICATION_HANDLING over parts of the process:
         (
             EmployerApplicationStatus.APPLICATION_HANDLING,
@@ -499,10 +432,6 @@ def test_employer_application_status_validator_success(
         (
             EmployerApplicationStatus.APPLICATION_HANDLING,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-        ),
-        (
-            EmployerApplicationStatus.APPLICATION_HANDLING,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
         ),
         # No transition to payment statuses before payment processing:
         (
@@ -551,14 +480,6 @@ def test_employer_application_status_validator_success(
             EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ),
         (
-            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
-        ),
-        (
-            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-            EmployerApplicationStatus.ERROR_IN_PAYMENT,
-        ),
-        (
             EmployerApplicationStatus.REJECTED,
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
         ),
@@ -601,10 +522,6 @@ def test_employer_application_status_validator_success(
         ),
         (
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-        ),
-        (
-            EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
             EmployerApplicationStatus.REJECTED,
         ),
         (
@@ -635,10 +552,6 @@ def test_employer_application_status_validator_success(
         (
             EmployerApplicationStatus.ERROR_IN_PAYMENT,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-        ),
-        (
-            EmployerApplicationStatus.ERROR_IN_PAYMENT,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
         ),
         (
             EmployerApplicationStatus.ERROR_IN_PAYMENT,

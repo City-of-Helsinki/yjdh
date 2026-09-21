@@ -27,7 +27,6 @@ EMPLOYER_PENDING_STATUSES = [
 EMPLOYER_PROCESSED_STATUSES = [
     EmployerApplicationStatus.PAYMENT_REVIEW.value,
     EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT.value,
-    EmployerApplicationStatus.SENT_FOR_PAYMENT.value,
     EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM.value,
     EmployerApplicationStatus.REJECTED.value,
     EmployerApplicationStatus.CANCELLED.value,

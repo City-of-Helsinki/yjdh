@@ -6,7 +6,6 @@ export enum EmployerApplicationStatus {
   APPLICATION_HANDLING = 'application_handling',
   PAYMENT_REVIEW = 'payment_review',
   ACCEPTED_FOR_PAYMENT = 'accepted_for_payment',
-  SENT_FOR_PAYMENT = 'sent_for_payment',
   RECEIVED_BY_PAYMENT_SYSTEM = 'received_by_payment_system',
   ERROR_IN_PAYMENT = 'error_in_payment',
   REJECTED = 'rejected',

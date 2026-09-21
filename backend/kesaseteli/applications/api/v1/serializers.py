@@ -112,10 +112,7 @@ class EmployerApplicationStatusValidator:
             EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
         ),
         EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT: (
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
             EmployerApplicationStatus.PAYMENT_REVIEW,
-        ),
-        EmployerApplicationStatus.SENT_FOR_PAYMENT: (
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
             EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ),
