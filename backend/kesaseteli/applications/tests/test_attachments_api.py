@@ -288,11 +288,6 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
         ),
         (
             "api_client",
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
-            status.HTTP_404_NOT_FOUND,
-        ),
-        (
-            "api_client",
             EmployerApplicationStatus.CANCELLED,
             status.HTTP_404_NOT_FOUND,
         ),
@@ -331,11 +326,6 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
         (
             "staff_client",
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-            status.HTTP_201_CREATED,
-        ),
-        (
-            "staff_client",
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
             status.HTTP_201_CREATED,
         ),
         (
@@ -735,7 +725,6 @@ def test_handler_can_upload_to_any_application_status(
     "terminal_status",
     [
         EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-        EmployerApplicationStatus.SENT_FOR_PAYMENT,
         EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
         EmployerApplicationStatus.CANCELLED,
         EmployerApplicationStatus.REJECTED,
@@ -746,8 +735,7 @@ def test_handler_cannot_delete_attachment_from_terminal_application(
 ):
     """
     Handlers may NOT delete attachments from terminal applications
-    (ACCEPTED_FOR_PAYMENT, SENT_FOR_PAYMENT, RECEIVED_BY_PAYMENT_SYSTEM,
-    CANCELLED, REJECTED)
+    (ACCEPTED_FOR_PAYMENT, RECEIVED_BY_PAYMENT_SYSTEM, CANCELLED, REJECTED)
     — all are fully handled terminal states where attachments serve as proof.
     """
     _upload_file(

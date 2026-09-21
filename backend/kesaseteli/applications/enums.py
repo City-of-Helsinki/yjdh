@@ -66,7 +66,6 @@ class EmployerApplicationStatus(models.TextChoices):
     APPLICATION_HANDLING = "application_handling", _("Application handling")
     PAYMENT_REVIEW = "payment_review", _("Payment review")
     ACCEPTED_FOR_PAYMENT = "accepted_for_payment", _("Accepted for payment")
-    SENT_FOR_PAYMENT = "sent_for_payment", _("Sent for payment")
     RECEIVED_BY_PAYMENT_SYSTEM = (
         "received_by_payment_system",
         _("Received by payment system"),
@@ -82,7 +81,6 @@ class EmployerApplicationStatus(models.TextChoices):
         """
         return [
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-            EmployerApplicationStatus.SENT_FOR_PAYMENT,
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
             EmployerApplicationStatus.REJECTED,
             EmployerApplicationStatus.CANCELLED,

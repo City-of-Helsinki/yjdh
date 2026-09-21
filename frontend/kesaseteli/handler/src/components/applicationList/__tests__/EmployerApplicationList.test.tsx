@@ -37,7 +37,6 @@ describe('EmployerApplicationList', () => {
         params?.status?.includes(
           EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
         ) ||
-        params?.status?.includes(EmployerApplicationStatus.SENT_FOR_PAYMENT) ||
         params?.status?.includes(
           EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM
         ) ||
@@ -55,30 +54,20 @@ describe('EmployerApplicationList', () => {
 
   it('shows pending and processed tab counts and renders first tab content by default', () => {
     renderComponent(<EmployerApplicationList />);
-    expect(
-      screen.getByText('Käsiteltävät (5)')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Käsitellyt (10)')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Käsiteltävät (5)')).toBeInTheDocument();
+    expect(screen.getByText('Käsitellyt (10)')).toBeInTheDocument();
 
     // Verify first tab content is displayed
     expect(screen.getByText('Company Pending Oy')).toBeInTheDocument();
-    expect(
-      screen.getByText('Ei sarjanumeroa')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Ei sarjanumeroa')).toBeInTheDocument();
     expect(screen.queryByText('Company Processed Oy')).not.toBeInTheDocument();
   });
 
   it('switches to the processed tab on click and renders processed content', async () => {
     renderComponent(<EmployerApplicationList />);
-    await userEvent.click(
-      screen.getByText('Käsitellyt (10)')
-    );
+    await userEvent.click(screen.getByText('Käsitellyt (10)'));
     // The processed tab becomes active; verify it's selected/visible
-    expect(
-      screen.getByText('Käsitellyt (10)')
-    ).toBeVisible();
+    expect(screen.getByText('Käsitellyt (10)')).toBeVisible();
 
     // Verify processed tab content is displayed
     expect(screen.getByText('Company Processed Oy')).toBeInTheDocument();
@@ -105,9 +94,7 @@ describe('EmployerApplicationList', () => {
     await userEvent.click(combobox);
 
     // Select "Lisätietoja pyydetty" to check it
-    await userEvent.click(
-      screen.getByText('Lisätietoja pyydetty')
-    );
+    await userEvent.click(screen.getByText('Lisätietoja pyydetty'));
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -130,17 +117,11 @@ describe('EmployerApplicationList', () => {
     const listbox = screen.getByRole('listbox');
 
     // Deselect "Uusi hakemus" (submitted) -> should query with [additional_information_provided, error_in_payment]
-    await userEvent.click(
-      within(listbox).getByText('Uusi hakemus')
-    );
+    await userEvent.click(within(listbox).getByText('Uusi hakemus'));
     // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> should query with [error_in_payment]
-    await userEvent.click(
-      within(listbox).getByText('Lisätiedot annettu')
-    );
+    await userEvent.click(within(listbox).getByText('Lisätiedot annettu'));
     // Deselect "Virhe maksussa" (error_in_payment) -> empty selection, should not trigger query
-    await userEvent.click(
-      within(listbox).getByText('Virhe maksussa')
-    );
+    await userEvent.click(within(listbox).getByText('Virhe maksussa'));
 
     expect(mockUseQuery).not.toHaveBeenCalledWith(
       expect.objectContaining({
@@ -161,7 +142,6 @@ describe('EmployerApplicationList', () => {
         status: [
           EmployerApplicationStatus.PAYMENT_REVIEW,
           EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-          EmployerApplicationStatus.SENT_FOR_PAYMENT,
           EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
           EmployerApplicationStatus.REJECTED,
           EmployerApplicationStatus.CANCELLED,
@@ -174,9 +154,7 @@ describe('EmployerApplicationList', () => {
     renderComponent(<EmployerApplicationList />);
 
     // Switch to processed tab
-    await userEvent.click(
-      screen.getByText('Käsitellyt (10)')
-    );
+    await userEvent.click(screen.getByText('Käsitellyt (10)'));
 
     const combobox = screen.getByRole('combobox', { name: /tila/i });
     await userEvent.click(combobox);
@@ -184,15 +162,12 @@ describe('EmployerApplicationList', () => {
     const listbox = screen.getByRole('listbox');
 
     // Deselect "Hyväksytty maksuun" (Accepted for payment)
-    await userEvent.click(
-      within(listbox).getByText('Hyväksytty maksuun')
-    );
+    await userEvent.click(within(listbox).getByText('Hyväksytty maksuun'));
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
           EmployerApplicationStatus.PAYMENT_REVIEW,
-          EmployerApplicationStatus.SENT_FOR_PAYMENT,
           EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
           EmployerApplicationStatus.REJECTED,
           EmployerApplicationStatus.CANCELLED,

@@ -283,7 +283,6 @@
       "application_handling": "Behandlas",
       "payment_review": "Betalningsgranskning",
       "accepted_for_payment": "Godkänd för betalning",
-      "sent_for_payment": "Skickad för betalning",
       "received_by_payment_system": "Mottagen av betalningssystemet",
       "error_in_payment": "Fel vid betalning",
       "rejected": "Avvisad",

@@ -41,7 +41,6 @@ _NON_VIEWABLE_STATUSES = [
     EmployerApplicationStatus.APPLICATION_HANDLING,
     EmployerApplicationStatus.PAYMENT_REVIEW,
     EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-    EmployerApplicationStatus.SENT_FOR_PAYMENT,
     EmployerApplicationStatus.REJECTED,
     EmployerApplicationStatus.CANCELLED,
 ]

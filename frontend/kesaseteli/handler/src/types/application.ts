@@ -16,7 +16,6 @@ export type ApplicationListType =
  */
 export const HANDLED_EMPLOYER_APPLICATION_STATUSES = [
   EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-  EmployerApplicationStatus.SENT_FOR_PAYMENT,
   EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
   EmployerApplicationStatus.REJECTED,
   EmployerApplicationStatus.CANCELLED,

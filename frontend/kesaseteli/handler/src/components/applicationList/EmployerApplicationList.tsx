@@ -60,7 +60,6 @@ const DEFAULT_PENDING_STATUSES = [
 const PROCESSED_STATUSES = [
   EmployerApplicationStatus.PAYMENT_REVIEW,
   EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
-  EmployerApplicationStatus.SENT_FOR_PAYMENT,
   EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
   EmployerApplicationStatus.REJECTED,
   EmployerApplicationStatus.CANCELLED,
