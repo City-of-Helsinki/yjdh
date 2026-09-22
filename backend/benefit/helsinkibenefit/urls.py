@@ -196,7 +196,7 @@ urlpatterns = [
         SearchView.as_view(),
         name="search_applications",
     ),
-    path("oidc/", include("shared.oidc.urls")),
+    path("oidc/", include("helsinkibenefit.oidc_urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path("pysocial/", include("social_django.urls", namespace="social")),
     path("helauth/", include("helusers.urls")),
