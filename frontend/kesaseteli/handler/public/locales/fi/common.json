@@ -7,7 +7,11 @@
     "deleting": "Poistetaan..."
   },
   "application": {
-    "tooltipShowInfo": "Näytä info"
+    "tooltipShowInfo": "Näytä info",
+    "assignApplication": "Ota käsittelyyn",
+    "unassignApplication": "Vapauta käsittelystäni",
+    "assignConflict": "Toinen käsittelijä on jo ottanut tämän hakemuksen käsittelyyn.",
+    "assignee": "Käsittelijä"
   },
   "appName": "Kesäsetelin käsittelijäliittymä",
   "cookieSettings": "Evästeasetukset",
@@ -40,6 +44,7 @@
         "awaiting_manual_processing": "Odottaa käsittelyä",
         "additional_information_requested": "Lisätietoja pyydetty",
         "additional_information_provided": "Lisätiedot annettu",
+        "application_handling": "Käsittelyssä",
         "accepted": "Hyväksytty",
         "rejected": "Hylätty",
         "None": "Ei asetettu"
@@ -120,6 +125,8 @@
     }
   },
   "handlerApplication": {
+    "actionsTitle": "Käsittelytoiminnot",
+    "assignee": "Käsittelijä",
     "attachmentComments": "Kommentit",
     "viewAttachmentComments": "Näytä liitteen kommentit",
     "title": "Hakemuksen tiedot",
@@ -192,6 +199,7 @@
     "attachmentsDragAndDropPlaceholder": "Raahaa ja pudota uudet liitteet tähän",
     "attachmentsInputPlaceholderDesktop": "Tai valitse tiedosto",
     "attachmentsInputPlaceholderMobile": "Valitse tiedosto",
+    "attachmentsUploadButton": "Valitse tiedosto",
     "attachmentsUploadMultiVoucherNote": "Huom: Liitteet lisätään hakemuksen ensimmäiseen kesäseteliin.",
     "attachmentsUploadTitle": "Lisää uusi liite",
     "attachmentsUploadTypeLabel": "Liitteen tyyppi",
@@ -235,6 +243,7 @@
       "awaiting_manual_processing": "Hakemus odottaa käsittelijän tarkistusta ja päätöstä (hyväksymistä tai hylkäämistä).",
       "additional_information_requested": "Hakemukseen on pyydetty lisätietoja. Odotetaan nuoren vastausta.",
       "additional_information_provided": "Hakija on toimittanut pyydetyt lisätiedot. Hakemus odottaa käsittelijän tarkistusta.",
+      "application_handling": "Hakemus on käsittelyssä.",
       "accepted": "Hakemus on hyväksytty ja kesäseteli on lähetetty sähköpostitse.",
       "rejected": "Hakemus on hylätty."
     },

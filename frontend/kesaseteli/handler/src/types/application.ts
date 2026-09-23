@@ -1,5 +1,8 @@
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import type { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
+import type { Assignee } from 'kesaseteli-shared/types/application';
+
+export type { Assignee };
 
 export const APPLICATION_LIST_TYPES = {
   YOUTH: 'youth',
@@ -57,6 +60,8 @@ export const isHandledYouthApplicationStatus = (
 export type BaseApplicationFields = {
   id: string;
   created_at?: string;
+  modified_at?: string;
+  assignee?: Assignee | string | null;
 };
 
 export type YouthApplication = BaseApplicationFields & {
