@@ -448,7 +448,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     for (const status of YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION) {
       describe(`when application status is "${status}"`, () => {
-        it('shows accept and reject buttons', async () => {
+        it('shows accept and reject buttons and assignment controls', async () => {
           const application = fakeActivatedYouthApplication({ status });
           expectToGetYouthApplication(application);
           renderPage(HandlerIndex, {
@@ -457,10 +457,25 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           const indexPageApi = await getIndexPageApi(application);
           await indexPageApi.expectations.pageIsLoaded();
           await indexPageApi.expectations.actionButtonsArePresent();
+          await indexPageApi.expectations.assigneeBoxIsPresent();
         });
       });
     }
   });
+  for (const status of YOUTH_APPLICATION_STATUS_COMPLETED) {
+    describe(`when application status is "${status}"`, () => {
+      it('omits assignment controls', async () => {
+        const application = fakeActivatedYouthApplication({ status });
+        expectToGetYouthApplication(application);
+        renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = await getIndexPageApi(application);
+        await indexPageApi.expectations.pageIsLoaded();
+        indexPageApi.expectations.assigneeBoxIsNotPresent();
+      });
+    });
+  }
   for (const status of YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED) {
     describe(`when application status is "${status}"`, () => {
       it('shows notification message and buttons are not present', async () => {

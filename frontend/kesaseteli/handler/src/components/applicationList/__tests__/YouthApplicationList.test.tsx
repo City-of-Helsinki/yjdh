@@ -56,12 +56,8 @@ describe('YouthApplicationList', () => {
 
   it('shows pending and processed tab counts and renders first tab content by default', () => {
     renderComponent(<YouthApplicationList />);
-    expect(
-      screen.getByText('Käsiteltävät (4)')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Käsitellyt (8)')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Käsiteltävät (4)')).toBeInTheDocument();
+    expect(screen.getByText('Käsitellyt (8)')).toBeInTheDocument();
 
     // Verify first tab content is displayed
     expect(screen.getByText('111111-1111')).toBeInTheDocument();
@@ -72,12 +68,8 @@ describe('YouthApplicationList', () => {
 
   it('switches to the processed tab on click and renders processed content', async () => {
     renderComponent(<YouthApplicationList />);
-    await userEvent.click(
-      screen.getByText('Käsitellyt (8)')
-    );
-    expect(
-      screen.getByText('Käsitellyt (8)')
-    ).toBeVisible();
+    await userEvent.click(screen.getByText('Käsitellyt (8)'));
+    expect(screen.getByText('Käsitellyt (8)')).toBeVisible();
 
     // Verify processed tab content is displayed
     expect(screen.getByText('222222-2222')).toBeInTheDocument();
@@ -89,7 +81,10 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
+        status: [
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          YouthApplicationStatus.APPLICATION_HANDLING,
+        ],
       })
     );
   });
@@ -101,15 +96,14 @@ describe('YouthApplicationList', () => {
     await userEvent.click(combobox);
 
     // Select "Lisätietoja pyydetty" to check it
-    await userEvent.click(
-      screen.getByText('Lisätietoja pyydetty')
-    );
+    await userEvent.click(screen.getByText('Lisätietoja pyydetty'));
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [
           YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
           YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          YouthApplicationStatus.APPLICATION_HANDLING,
         ],
       })
     );
@@ -123,14 +117,10 @@ describe('YouthApplicationList', () => {
 
     const listbox = screen.getByRole('listbox');
 
-    // Deselect "Avoin" (submitted) -> should query with only [additional_information_provided]
-    await userEvent.click(
-      within(listbox).getByText('Vahvistamaton')
-    );
-    // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> empty selection, should not trigger query
-    await userEvent.click(
-      within(listbox).getByText('Lisätiedot annettu')
-    );
+    // Deselect "Lisätiedot annettu" (additional_information_provided)
+    await userEvent.click(within(listbox).getByText('Lisätiedot annettu'));
+    // Deselect "Käsittelyssä" (application_handling) -> empty selection, should not trigger query
+    await userEvent.click(within(listbox).getByText('Käsittelyssä'));
 
     expect(mockUseQuery).not.toHaveBeenCalledWith(
       expect.objectContaining({
@@ -139,7 +129,10 @@ describe('YouthApplicationList', () => {
     );
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: [YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
+        status: [
+          YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          YouthApplicationStatus.APPLICATION_HANDLING,
+        ],
       })
     );
   });
@@ -160,9 +153,7 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
 
     // Switch to processed tab
-    await userEvent.click(
-      screen.getByText('Käsitellyt (8)')
-    );
+    await userEvent.click(screen.getByText('Käsitellyt (8)'));
 
     const combobox = screen.getByRole('combobox', { name: /tila/i });
     await userEvent.click(combobox);
@@ -170,9 +161,7 @@ describe('YouthApplicationList', () => {
     const listbox = screen.getByRole('listbox');
 
     // Deselect "Hyväksytty" (Accepted)
-    await userEvent.click(
-      within(listbox).getByText('Hyväksytty')
-    );
+    await userEvent.click(within(listbox).getByText('Hyväksytty'));
 
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
