@@ -4,18 +4,23 @@ from unittest.mock import patch
 import pytest
 
 from applications.enums import ActionType
-from applications.models import TimelineActivityLog
+from applications.models import TimelineActivityLog, YouthApplication
 from applications.signals import (
+    _PRE_SAVE_ASSIGNEE_ATTR,
     _PRE_SAVE_STATUS_ATTR,
+    _stash_pre_save_state,
+)
+from applications.timeline_service import (
     _resolve_actor,
-    _stash_pre_save_status,
-    _track_status_change,
+    track_assignee_change,
+    track_status_change,
 )
 from common.tests.factories import (
     AttachmentFactory,
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
     YouthApplicationFactory,
+    YouthAttachmentFactory,
 )
 from shared.common.tests.factories import HandlerUserFactory
 
@@ -30,7 +35,7 @@ def _make_actor_context(user):
 
 
 # ---------------------------------------------------------------------------
-# _stash_pre_save_status
+# _stash_pre_save_state
 # ---------------------------------------------------------------------------
 
 
@@ -38,7 +43,7 @@ def _make_actor_context(user):
 def test_stash_pre_save_status_stores_current_db_status():
     """The current DB status is stored on the instance attribute."""
     app = YouthApplicationFactory(status="submitted")
-    _stash_pre_save_status(type(app), app)
+    _stash_pre_save_state(type(app), app)
     assert getattr(app, _PRE_SAVE_STATUS_ATTR) == "submitted"
 
 
@@ -48,7 +53,7 @@ def test_stash_pre_save_status_skips_unsaved_instance():
     app = YouthApplicationFactory.build()  # not saved -> no PK
     app.pk = None  # UUIDModel assigns a uuid4 on __init__; null it to simulate unsaved
     assert app.pk is None
-    _stash_pre_save_status(type(app), app)
+    _stash_pre_save_state(type(app), app)
     assert not hasattr(app, _PRE_SAVE_STATUS_ATTR)
 
 
@@ -59,7 +64,7 @@ def test_stash_pre_save_status_skips_unsaved_instance():
 
 def test_resolve_actor_returns_empty_when_no_context():
     """No auditlog context -> (None, '')."""
-    with patch("applications.signals.get_actor", return_value=None):
+    with patch("applications.timeline_service.get_actor", return_value=None):
         user, name = _resolve_actor()
     assert user is None
     assert name == ""
@@ -67,7 +72,7 @@ def test_resolve_actor_returns_empty_when_no_context():
 
 def test_resolve_actor_returns_empty_when_context_has_no_actor():
     """Context dict without 'actor' key -> (None, '')."""
-    with patch("applications.signals.get_actor", return_value={}):
+    with patch("applications.timeline_service.get_actor", return_value={}):
         user, name = _resolve_actor()
     assert user is None
     assert name == ""
@@ -78,7 +83,7 @@ def test_resolve_actor_returns_full_name_for_active_user():
     """Active user -> (user_object, full_name)."""
     actor = HandlerUserFactory(first_name="Matti", last_name="Meikalainen")
     with patch(
-        "applications.signals.get_actor",
+        "applications.timeline_service.get_actor",
         return_value=_make_actor_context(actor),
     ):
         user, name = _resolve_actor()
@@ -91,7 +96,7 @@ def test_resolve_actor_returns_deleted_user_for_inactive_user():
     """Inactive (deactivated) user -> (user_object, 'Deleted User')."""
     actor = HandlerUserFactory(is_active=False)
     with patch(
-        "applications.signals.get_actor",
+        "applications.timeline_service.get_actor",
         return_value=_make_actor_context(actor),
     ):
         user, name = _resolve_actor()
@@ -107,7 +112,7 @@ def test_resolve_actor_returns_deleted_user_when_user_not_in_db():
         pk = 999_999_999  # does not exist
 
     with patch(
-        "applications.signals.get_actor",
+        "applications.timeline_service.get_actor",
         return_value={"actor": _StubUser()},
     ):
         user, name = _resolve_actor()
@@ -116,7 +121,7 @@ def test_resolve_actor_returns_deleted_user_when_user_not_in_db():
 
 
 # ---------------------------------------------------------------------------
-# _track_status_change
+# track_status_change
 # ---------------------------------------------------------------------------
 
 
@@ -127,8 +132,8 @@ def test_track_status_change_creates_log_when_status_differs():
     setattr(app, _PRE_SAVE_STATUS_ATTR, "submitted")
     app.status = "accepted"
 
-    with patch("applications.signals.get_actor", return_value=None):
-        _track_status_change("youthapplication", app)
+    with patch("applications.timeline_service.get_actor", return_value=None):
+        track_status_change("youthapplication", app)
 
     log = TimelineActivityLog.objects.get(application_id=app.pk)
     assert log.old_value == "submitted"
@@ -139,12 +144,41 @@ def test_track_status_change_creates_log_when_status_differs():
 def test_track_status_change_skips_when_status_unchanged():
     """No log entry when old_status == instance.status."""
     app = YouthApplicationFactory(status="submitted")
+
     setattr(app, _PRE_SAVE_STATUS_ATTR, "submitted")
 
-    with patch("applications.signals.get_actor", return_value=None):
-        _track_status_change("youthapplication", app)
+    with patch("applications.timeline_service.get_actor", return_value=None):
+        track_status_change("youthapplication", app)
 
     assert not TimelineActivityLog.objects.filter(application_id=app.pk).exists()
+
+
+# ---------------------------------------------------------------------------
+# track_assignee_change
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_track_assignee_change_creates_log_when_assignee_differs():
+    """A log entry is created when the old and new assignees differ."""
+    app = YouthApplicationFactory()
+    old_handler = HandlerUserFactory(first_name="Old", last_name="Handler")
+    new_handler = HandlerUserFactory(first_name="New", last_name="Handler")
+
+    YouthApplication.objects.filter(pk=app.pk).update(assignee=new_handler)
+    app.refresh_from_db()
+
+    setattr(app, _PRE_SAVE_ASSIGNEE_ATTR, old_handler.pk)
+
+    with patch("applications.timeline_service.get_actor", return_value=None):
+        track_assignee_change("youthapplication", app)
+
+    log = TimelineActivityLog.objects.get(
+        application_id=app.pk, action_type=ActionType.ASSIGNEE_CHANGE
+    )
+
+    assert log.old_value == "Old Handler"
+    assert log.new_value == "New Handler"
 
 
 @pytest.mark.django_db
@@ -153,8 +187,8 @@ def test_track_status_change_skips_when_stash_absent():
     app = YouthApplicationFactory(status="submitted")
     # Do NOT set _PRE_SAVE_STATUS_ATTR
 
-    with patch("applications.signals.get_actor", return_value=None):
-        _track_status_change("youthapplication", app)
+    with patch("applications.timeline_service.get_actor", return_value=None):
+        track_status_change("youthapplication", app)
 
     assert not TimelineActivityLog.objects.filter(application_id=app.pk).exists()
 
@@ -168,10 +202,10 @@ def test_track_status_change_records_actor():
     app.status = "accepted"
 
     with patch(
-        "applications.signals.get_actor",
+        "applications.timeline_service.get_actor",
         return_value=_make_actor_context(actor),
     ):
-        _track_status_change("youthapplication", app)
+        track_status_change("youthapplication", app)
 
     log = TimelineActivityLog.objects.get(application_id=app.pk)
     assert log.actor == actor
@@ -327,6 +361,46 @@ def test_attachment_post_delete_creates_timeline_log():
     ).last()
 
     assert log is not None
+    assert log.old_value == filename
+    assert log.new_value == ""
+    assert log.target_object_id == attachment_pk
+
+
+@pytest.mark.django_db
+def test_youth_attachment_post_save_creates_timeline_log():
+    """Saving a new Attachment for a YouthApplication creates a TimelineActivityLog."""
+    youth_app = YouthApplicationFactory()
+    attachment = YouthAttachmentFactory(youth_application=youth_app)
+
+    log = TimelineActivityLog.objects.filter(
+        application_id=youth_app.pk,
+        action_type=ActionType.ATTACHMENT_ADDED,
+    ).last()
+
+    assert log is not None
+    assert log.application_type == "youthapplication"
+    assert log.old_value == ""
+    assert log.new_value == os.path.basename(attachment.attachment_file.name)
+    assert log.target_object_id == attachment.pk
+
+
+@pytest.mark.django_db
+def test_youth_attachment_post_delete_creates_timeline_log():
+    """Deleting an Attachment for a YouthApplication creates a TimelineActivityLog."""
+    youth_app = YouthApplicationFactory()
+    attachment = YouthAttachmentFactory(youth_application=youth_app)
+    filename = os.path.basename(getattr(attachment.attachment_file, "name", None) or "")
+    attachment_pk = attachment.pk
+
+    attachment.delete()
+
+    log = TimelineActivityLog.objects.filter(
+        application_id=youth_app.pk,
+        action_type=ActionType.ATTACHMENT_DELETED,
+    ).last()
+
+    assert log is not None
+    assert log.application_type == "youthapplication"
     assert log.old_value == filename
     assert log.new_value == ""
     assert log.target_object_id == attachment_pk

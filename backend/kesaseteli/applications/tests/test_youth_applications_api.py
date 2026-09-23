@@ -200,6 +200,7 @@ def get_read_only_fields() -> List[str]:
         "encrypted_handler_vtj_json",
         "status",
         "handler",
+        "assignee",
         "handled_at",
         "additional_info_user_reasons",
         "additional_info_description",
@@ -3014,6 +3015,7 @@ def test_list_youth_applications_staff_success(staff_client):
         "summer_voucher_serial_number": app.youth_summer_voucher.user_showable_serial_number,
         "age": app.created_at.year - app.birthdate.year if app.birthdate else None,
         "birth_year": app.birthdate.year if app.birthdate else None,
+        "assignee": None,
     }
 
 

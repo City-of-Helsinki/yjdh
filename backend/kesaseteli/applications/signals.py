@@ -1,40 +1,29 @@
-import os
-
-from auditlog_extra.context import get_actor
-from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models.signals import post_delete, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
-from applications.enums import ActionType
 from applications.models import (
     Attachment,
     EmployerApplication,
-    TimelineActivityLog,
     YouthApplication,
+)
+from applications.timeline_service import (
+    track_assignee_change,
+    track_attachment_added,
+    track_attachment_deleted,
+    track_status_change,
 )
 
 _PRE_SAVE_STATUS_ATTR = "_pre_save_status"
+_PRE_SAVE_ASSIGNEE_ATTR = "_pre_save_assignee_id"
+_ASSIGNEE_FIELDS = ["assignee", "assignee_id"]
 
 
-def _stash_pre_save_status(sender, instance, **kwargs):
+def _stash_status(sender, instance):
     """
-    Store the current DB status on the instance before the UPDATE is applied.
-    Called via pre_save so that _track_status_change can compare old vs. new
-    status without re-querying the database (which would return the already-
-    updated row in post_save).
+    Helper function to retrieve and stash the previous status of an
+    instance before it is updated. The value is stored in a private attribute.
     """
-    if (
-        instance.pk is None
-        or instance._state.adding
-        or kwargs.get("raw")
-        or (
-            kwargs.get("update_fields") is not None
-            and "status" not in kwargs.get("update_fields")
-        )
-    ):
-        return
     try:
         old_status = sender.objects.values_list("status", flat=True).get(pk=instance.pk)
     except sender.DoesNotExist:
@@ -42,124 +31,81 @@ def _stash_pre_save_status(sender, instance, **kwargs):
     setattr(instance, _PRE_SAVE_STATUS_ATTR, old_status)
 
 
-def _resolve_actor():
+def _stash_assignee(sender, instance):
     """
-    Resolve the current request actor from the auditlog context.
-
-    Returns a (user, name) tuple where user may be None and name is
-    the user's full name for active accounts, or "Deleted User" for
-    missing / inactive ones.
+    Helper function to retrieve and stash the previous assignee_id of an
+    instance before it is updated. The value is stored in a private attribute.
     """
-    actor_context = get_actor()
-    if not isinstance(actor_context, dict):
-        return None, ""
-
-    lazy_user = actor_context.get("actor")
-    if not lazy_user:
-        return None, ""
-
-    # Force evaluation of SimpleLazyObject and verify user exists in DB.
-    user_pk = getattr(lazy_user, "pk", None)
-    actor_user = None
-    if user_pk:
-        user_model = get_user_model()
-        try:
-            actor_user = user_model.objects.get(pk=user_pk)
-        except user_model.DoesNotExist:
-            # Actor may have been deleted between context capture and lookup.
-            # Keep actor_user as None so caller uses the "Deleted User" fallback.
-            actor_user = None
-
-    if actor_user and actor_user.is_active:
-        return actor_user, actor_user.get_full_name() or ""
-
-    # User is deleted or inactive – use a non-identifying placeholder.
-    return actor_user, "Deleted User"
+    try:
+        old_assignee_id = sender.objects.values_list("assignee_id", flat=True).get(
+            pk=instance.pk
+        )
+    except sender.DoesNotExist:
+        old_assignee_id = None
+    setattr(instance, _PRE_SAVE_ASSIGNEE_ATTR, old_assignee_id)
 
 
-def _track_status_change(application_type, instance):
-    """Create a TimelineActivityLog entry if status changed on an existing instance."""
-    if not instance.pk:
+def _stash_pre_save_state(sender, instance, **kwargs):
+    """
+    Store the current DB state on the instance before the UPDATE is applied.
+    Called via pre_save so that tracking functions can compare old vs. new
+    values without re-querying the database (which would return the already-
+    updated row in post_save).
+    """
+    if instance.pk is None or instance._state.adding or kwargs.get("raw"):
         return
 
-    # Read the status that was stashed before the save (see _stash_pre_save_status).
-    old_status = getattr(instance, _PRE_SAVE_STATUS_ATTR, None)
-    if old_status is None or old_status == instance.status:
-        return
+    update_fields = kwargs.get("update_fields")
+    update_all = update_fields is None
 
-    actor_user, actor_name = _resolve_actor()
+    if update_all or "status" in update_fields:
+        _stash_status(sender, instance)
 
-    TimelineActivityLog.objects.create(
-        application_type=application_type,
-        application_id=instance.pk,
-        old_value=old_status,
-        new_value=instance.status,
-        actor=actor_user,
-        actor_name=actor_name,
-    )
+    if update_all or any(field in update_fields for field in _ASSIGNEE_FIELDS):
+        _stash_assignee(sender, instance)
 
 
 @receiver(pre_save, sender=YouthApplication)
 @receiver(pre_save, sender=EmployerApplication)
-def stash_application_pre_save_status(sender, instance, **kwargs):
-    _stash_pre_save_status(sender, instance, **kwargs)
+def stash_application_pre_save_state(sender, instance, **kwargs):
+    """
+    Signal receiver that triggers before an application is saved.
+    Stashes the old values of tracked fields (e.g., status, assignee)
+    to allow comparison after the save completes.
+    """
+    _stash_pre_save_state(sender, instance, **kwargs)
 
 
 @receiver(post_save, sender=YouthApplication)
 @receiver(post_save, sender=EmployerApplication)
-def track_application_status_change(
-    sender, instance, created, raw, update_fields, **kwargs
-):
+def track_application_changes(sender, instance, created, raw, update_fields, **kwargs):
     """
-    Track status changes for application instances, creating TimelineActivityLog
-    entries when status changes. Skips creation events, raw saves, and updates where
-    status wasn't modified.
+    Track changes for application instances, creating TimelineActivityLog
+    entries when fields like status or assignee change. Skips creation events
+    and raw saves.
     """
     if created or raw:
         return
-    if update_fields is not None and "status" not in update_fields:
-        return
-    _track_status_change(sender._meta.model_name, instance)
+
+    update_all = update_fields is None
+
+    if update_all or "status" in update_fields:
+        track_status_change(sender._meta.model_name, instance)
+
+    if update_all or any(field in update_fields for field in _ASSIGNEE_FIELDS):
+        track_assignee_change(sender._meta.model_name, instance)
 
 
 @receiver(post_save, sender=Attachment, dispatch_uid="attachment_added_timeline")
 def on_attachment_added(sender, instance, created, raw=False, **kwargs):
+    """
+    Signal receiver that fires after an attachment is saved.
+    If a new attachment was created, logs the addition to the
+    TimelineActivityLog for the corresponding application.
+    """
     if not created or raw:
         return
-    actor_user, actor_name = _resolve_actor()
-    if not actor_user and getattr(instance, "author", None):
-        actor_user = instance.author
-        actor_name = (
-            actor_user.get_full_name() or "" if actor_user.is_active else "Deleted User"
-        )
-
-    attachment_ct = ContentType.objects.get_for_model(Attachment)
-    timeline_activitylog_kwargs = {
-        "action_type": ActionType.ATTACHMENT_ADDED,
-        "old_value": "",
-        "new_value": os.path.basename(
-            getattr(instance.attachment_file, "name", None) or ""
-        ),
-        "actor": actor_user,
-        "actor_name": actor_name,
-        "target_content_type": attachment_ct,
-        "target_object_id": instance.pk,
-    }
-
-    # Employer application path
-    if instance.summer_voucher:
-        TimelineActivityLog.objects.create(
-            application_type=EmployerApplication._meta.model_name,
-            application_id=instance.summer_voucher.application_id,
-            **timeline_activitylog_kwargs,
-        )
-    # Youth application path
-    elif instance.youth_application:
-        TimelineActivityLog.objects.create(
-            application_type=YouthApplication._meta.model_name,
-            application_id=instance.youth_application_id,
-            **timeline_activitylog_kwargs,
-        )
+    track_attachment_added(instance)
 
 
 @receiver(pre_delete, sender=Attachment, dispatch_uid="attachment_deleted_timeline")
@@ -168,36 +114,7 @@ def on_attachment_deleted(sender, instance, **kwargs):
     pre_delete fires before the DB row is deleted, allowing us to read the
     attachment_file name before it might be cleared.
     """
-    actor_user, actor_name = _resolve_actor()
-    attachment_ct = ContentType.objects.get_for_model(Attachment)
-    timeline_activitylog_kwargs = {
-        "action_type": ActionType.ATTACHMENT_DELETED,
-        "old_value": os.path.basename(
-            getattr(instance, "_deleted_attachment_name", "")
-            or getattr(instance.attachment_file, "name", None)
-            or ""
-        ),
-        "new_value": "",
-        "actor": actor_user,
-        "actor_name": actor_name,
-        "target_content_type": attachment_ct,
-        "target_object_id": instance.pk,
-    }
-
-    # Employer application path
-    if instance.summer_voucher:
-        TimelineActivityLog.objects.create(
-            application_type=EmployerApplication._meta.model_name,
-            application_id=instance.summer_voucher.application_id,
-            **timeline_activitylog_kwargs,
-        )
-    # Youth application path
-    elif instance.youth_application:
-        TimelineActivityLog.objects.create(
-            application_type=YouthApplication._meta.model_name,
-            application_id=instance.youth_application_id,
-            **timeline_activitylog_kwargs,
-        )
+    track_attachment_deleted(instance)
 
 
 @receiver(post_delete, sender=Attachment, dispatch_uid="attachment_post_delete_cleanup")

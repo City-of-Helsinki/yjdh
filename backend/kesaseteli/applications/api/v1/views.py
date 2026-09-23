@@ -48,6 +48,7 @@ from applications.api.v1.permissions import (
 )
 from applications.api.v1.serializers import (
     ActivityLogItemSerializer,
+    ApplicationAssignSerializer,
     AttachmentSerializer,
     EmployerApplicationSerializer,
     EmployerSummerVoucherAttachmentUploadInputSerializer,
@@ -75,6 +76,7 @@ from applications.enums import (
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
 )
+from applications.exceptions import OptimisticLockError
 from applications.models import (
     Attachment,
     EmployerApplication,
@@ -264,6 +266,74 @@ class YouthApplicationFilter(filters.FilterSet):
         return queryset.order_by(*ordered_fields)
 
 
+class ApplicationAssignmentViewSetMixin:
+    """
+    ViewSet mixin providing `assign` and `unassign` actions for application
+    viewsets.
+    """
+
+    @enforce_handler_view_adfs_login
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="assign",
+        permission_classes=[HandlerPermission],
+    )
+    def assign(self, request, pk=None):
+        """
+        Assign the application to the current handler user.
+
+        Uses the `modified_at` field from the payload as an optimistic lock.
+        Changes the status to `APPLICATION_HANDLING` and assigns the user.
+        """
+        input_serializer = ApplicationAssignSerializer(data=request.data)
+        if not input_serializer.is_valid():
+            return Response(input_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        payload_modified_at = input_serializer.validated_data["modified_at"]
+        application = self.get_object()
+
+        try:
+            application.assign(request.user, payload_modified_at)
+        except OptimisticLockError:
+            return Response(
+                {"detail": _("The application has been modified by someone else.")},
+                status=status.HTTP_409_CONFLICT,
+            )
+        except ValueError:
+            return Response(
+                {"detail": _("Application cannot be assigned.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = self.get_serializer(application)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @enforce_handler_view_adfs_login
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="unassign",
+        permission_classes=[HandlerPermission],
+    )
+    def unassign(self, request, pk=None):
+        """
+        Unassign the application from the current handler user.
+        """
+        application = self.get_object()
+
+        try:
+            application.unassign(request.user)
+        except ValueError:
+            return Response(
+                {"detail": _("Application cannot be unassigned.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = self.get_serializer(application)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @extend_schema_view(
     update=extend_schema(exclude=True),
     partial_update=extend_schema(exclude=True),
@@ -301,7 +371,9 @@ class YouthApplicationFilter(filters.FilterSet):
         },
     ),
 )
-class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
+class YouthApplicationViewSet(
+    ApplicationAssignmentViewSetMixin, AttachmentDownloadMixin, ModelViewSet
+):
     """
     ViewSet for handling YouthApplication instances.
 
@@ -326,7 +398,7 @@ class YouthApplicationViewSet(AttachmentDownloadMixin, ModelViewSet):
         return (
             super()
             .get_queryset()
-            .select_related("youth_summer_voucher")
+            .select_related("youth_summer_voucher", "assignee")
             .prefetch_related(
                 Prefetch(
                     "attachments",
@@ -1316,7 +1388,7 @@ class EmployerApplicationFilter(filters.FilterSet):
         },
     ),
 )
-class EmployerApplicationViewSet(ModelViewSet):
+class EmployerApplicationViewSet(ApplicationAssignmentViewSetMixin, ModelViewSet):
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
     permission_classes = [IsAuthenticated, EmployerApplicationPermission]
@@ -1337,6 +1409,7 @@ class EmployerApplicationViewSet(ModelViewSet):
             .get_queryset()
             .select_related("company")
             .select_related("user")
+            .select_related("assignee")
             .prefetch_related(
                 Prefetch(
                     "summer_vouchers",

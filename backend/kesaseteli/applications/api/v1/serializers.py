@@ -8,6 +8,7 @@ import filetype
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone, translation
+from django.utils.dateparse import parse_datetime
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
@@ -70,6 +71,22 @@ def validate_timeline_item_types(requested_types: set) -> set:
             f"Valid values: {', '.join(sorted(VALID_TIMELINE_ITEM_TYPES))}"
         )
     return requested_types
+
+
+def _clear_assignee_on_terminal_status(
+    validated_data: dict, new_status: str, handled_values: list[str]
+) -> None:
+    """
+    Clear the assignee field if the application transitions to a terminal
+    (handled) status.
+
+    This is necessary because once an application is fully processed
+    (accepted, rejected, etc.), it is no longer actively being handled by
+    anyone, and retaining the assignee lock would be misleading or prevent
+    necessary automated operations.
+    """
+    if new_status and new_status in handled_values:
+        validated_data["assignee"] = None
 
 
 class EmployerApplicationStatusValidator:
@@ -587,7 +604,35 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
     ]
 
 
-class EmployerApplicationSerializer(serializers.ModelSerializer):
+class AssigneeSerializer(serializers.Serializer):
+    """Serializer representing an application's assignee."""
+
+    id = serializers.CharField(help_text=_("Stable ID of the assignee"))
+    name = serializers.CharField(help_text=_("Full name of the assignee"))
+
+
+class AssigneeSerializerMixin(serializers.Serializer):
+    """Mixin adding the `assignee` SerializerMethodField and getter to serializers."""
+
+    assignee = serializers.SerializerMethodField(
+        "get_assignee",
+        help_text=_("Assignee ID and name"),
+    )
+
+    @extend_schema_field(AssigneeSerializer(allow_null=True))
+    def get_assignee(self, obj) -> Optional[dict]:
+        """Return the stable ID and display name of the current assignee, if any."""
+        if obj.assignee_id and self.context.get("is_handler", False):
+            return {
+                "id": obj.assignee.username or str(obj.assignee.pk),
+                "name": obj.assignee.get_full_name() or obj.assignee.username,
+            }
+        return None
+
+
+class EmployerApplicationSerializer(
+    AssigneeSerializerMixin, serializers.ModelSerializer
+):
     company = CompanySerializer(read_only=True)
     summer_vouchers = EmployerSummerVoucherSerializer(
         many=True, required=False, allow_null=True
@@ -627,8 +672,15 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             "language",
             "submitted_at",
             "is_mine",
+            "assignee",
         ]
-        read_only_fields = ["created_at", "modified_at", "submitted_at", "user"]
+        read_only_fields = [
+            "created_at",
+            "modified_at",
+            "submitted_at",
+            "user",
+            "assignee",
+        ]
 
     def _schedule_ytj_update(self, company):
         """
@@ -696,6 +748,12 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             # This is best-effort: errors are logged but do NOT block submission.
             if settings.UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT:
                 self._schedule_ytj_update(instance.company)
+
+        _clear_assignee_on_terminal_status(
+            validated_data=validated_data,
+            new_status=new_status,
+            handled_values=EmployerApplicationStatus.handled_values(),
+        )
 
         return super().update(instance, validated_data)
 
@@ -922,7 +980,7 @@ class YouthApplicationEmployerApplicationSerializer(serializers.Serializer):
     )
 
 
-class YouthApplicationSerializer(serializers.ModelSerializer):
+class YouthApplicationSerializer(AssigneeSerializerMixin, serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         self.hide_vtj_data = kwargs.pop("hide_vtj_data", False)
         super().__init__(*args, **kwargs)
@@ -996,6 +1054,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "receipt_confirmed_at",
             "status",
             "handler",
+            "assignee",
             "handled_at",
             "additional_info_user_reasons",
             "additional_info_description",
@@ -1027,7 +1086,6 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         choices=get_target_group_choices(),
         required=True,
     )
-
     encrypted_original_vtj_json = serializers.SerializerMethodField(
         "get_encrypted_original_vtj_json"
     )
@@ -1124,7 +1182,9 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         return results
 
 
-class YouthApplicationListSerializer(serializers.ModelSerializer):
+class YouthApplicationListSerializer(
+    AssigneeSerializerMixin, serializers.ModelSerializer
+):
     social_security_number = serializers.SerializerMethodField()
     summer_voucher_serial_number = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
@@ -1147,6 +1207,7 @@ class YouthApplicationListSerializer(serializers.ModelSerializer):
             "summer_voucher_serial_number",
             "age",
             "birth_year",
+            "assignee",
         ]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
@@ -1463,6 +1524,30 @@ class YouthApplicationAttachmentUploadInputSerializer(serializers.Serializer):
     """
 
     attachment_file = BinaryFileField()
+
+
+class ApplicationAssignSerializer(serializers.Serializer):
+    """Request body (input) for assigning an application with optimistic locking."""
+
+    modified_at = serializers.DateTimeField(required=True)
+
+    def validate_modified_at(self, value):
+        raw_value = (
+            self.initial_data.get("modified_at")
+            if isinstance(self.initial_data, dict)
+            else None
+        )
+        if isinstance(raw_value, str):
+            dt = parse_datetime(raw_value)
+            if dt is not None and dt.tzinfo is None:
+                raise serializers.ValidationError(
+                    _("Timezone is required for modified_at.")
+                )
+        elif isinstance(raw_value, datetime) and timezone.is_naive(raw_value):
+            raise serializers.ValidationError(
+                _("Timezone is required for modified_at.")
+            )
+        return value
 
 
 class AnonymousYouthApplicationExportSerializer(serializers.ModelSerializer):

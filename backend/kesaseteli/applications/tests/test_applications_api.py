@@ -268,7 +268,7 @@ def test_application_create(api_client, company):
     for field in [
         field
         for field in EmployerApplication._meta.fields
-        if field.name not in ["created_at", "modified_at"]
+        if field.name not in ["created_at", "modified_at", "assignee", "handler"]
     ]:
         assert field.name in response.data
 
@@ -285,7 +285,7 @@ def test_application_create_mock(api_client, company):
     for field in [
         field
         for field in EmployerApplication._meta.fields
-        if field.name not in ["created_at", "modified_at"]
+        if field.name not in ["created_at", "modified_at", "assignee", "handler"]
     ]:
         assert field.name in response.data
 
