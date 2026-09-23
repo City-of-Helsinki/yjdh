@@ -6,7 +6,7 @@ export const $PanelGrid = styled.div`
   gap: 2rem;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
-    'status . .'
+    'status status status'
     'company voucher youth'
     'contact payment invoicer'
     'attachments attachments attachments';
@@ -55,6 +55,9 @@ export const $PanelGrid = styled.div`
 `;
 
 export const $StatusSection = styled.div`
+  && {
+    padding: 0;
+  }
   grid-area: status;
 `;
 
