@@ -5,6 +5,7 @@ import {
   StatusLabel,
   Tooltip,
 } from 'hds-react';
+import AssignmentControls from 'kesaseteli/handler/components/assignment/AssignmentControls';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
 import Field, {
   $DescriptionList,
@@ -13,6 +14,10 @@ import LinkedEmployerApplications from 'kesaseteli/handler/components/form/Linke
 import ResendVoucher from 'kesaseteli/handler/components/form/ResendVoucher';
 import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import isHandlerNewBetaUiEnabled from 'kesaseteli/handler/flags/is-handler-new-beta-ui-enabled';
+import {
+  APPLICATION_LIST_TYPES,
+  isHandledYouthApplicationStatus,
+} from 'kesaseteli/handler/types/application';
 import { getVtjException } from 'kesaseteli/handler/utils/map-vtj-data';
 import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import { YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION } from 'kesaseteli-shared/constants/youth-application-status-arrays';
@@ -24,12 +29,21 @@ import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import { $Notification } from 'shared/components/notification/Notification.sc';
 import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
 } from 'shared/utils/date.utils';
-import styled from 'styled-components';
+
+import {
+  $ActionButtonsWrapper,
+  $AssigneeBox,
+  $AssigneeHeading,
+  $Column,
+  $DescriptionField,
+  $PanelGrid,
+  $StatusValueWrapper,
+  $VtjBlockerNotification,
+} from './HandlerForm.sc';
 
 type Props = {
   application: ActivatedYouthApplication;
@@ -94,40 +108,6 @@ const getStatusLabelProps = (
   }
 };
 
-const $StatusValueWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${(props) => props.theme.spacing.xs2};
-`;
-
-const $PanelGrid = styled.div`
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  > * {
-    flex: 1 1 400px;
-    min-width: 0;
-  }
-`;
-
-const $Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${(props) => props.theme.spacing.m};
-`;
-
-const $VtjBlockerNotification = styled($Notification)`
-  margin-bottom: ${(props) => props.theme.spacing.m};
-`;
-
-const $ActionButtonsWrapper = styled.div`
-  margin-top: ${(props) => props.theme.spacing.m};
-`;
-
-const $DescriptionField = styled(Field)`
-  margin-bottom: ${(props) => props.theme.spacing.s};
-`;
 
 const FormActions: React.FC<{
   application: ActivatedYouthApplication;
@@ -214,6 +194,9 @@ const FormLayout: React.FC<FormLayoutProps> = ({
     postcode,
     phone_number,
     email,
+    id,
+    assignee,
+    modified_at,
     status,
     additional_info_provided_at,
     additional_info_description,
@@ -236,6 +219,20 @@ const FormLayout: React.FC<FormLayoutProps> = ({
             social_security_number,
           })}
         </$VtjBlockerNotification>
+      )}
+
+      {!isHandledYouthApplicationStatus(status) && (
+        <$AssigneeBox data-testid="handlerApplication-assignee-box">
+          <$AssigneeHeading id="assignee-box-heading">
+            {t('common:handlerApplication.assignee')}
+          </$AssigneeHeading>
+          <AssignmentControls
+            id={id}
+            assignee={assignee}
+            modified_at={modified_at}
+            applicationType={APPLICATION_LIST_TYPES.YOUTH}
+          />
+        </$AssigneeBox>
       )}
 
       <$PanelGrid>
@@ -310,11 +307,6 @@ const FormLayout: React.FC<FormLayoutProps> = ({
                 description={additional_info_description}
               />
             )}
-
-            <FormActions
-              application={application}
-              waitingForHandlerAction={waitingForHandlerAction}
-            />
           </FormSection>
         </$Column>
 
@@ -329,6 +321,11 @@ const FormLayout: React.FC<FormLayoutProps> = ({
           </$Column>
         )}
       </$PanelGrid>
+
+      <FormActions
+        application={application}
+        waitingForHandlerAction={waitingForHandlerAction}
+      />
     </$GridCell>
   );
 };

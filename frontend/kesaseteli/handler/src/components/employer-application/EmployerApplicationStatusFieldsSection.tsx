@@ -1,3 +1,8 @@
+import AssignmentControls from 'kesaseteli/handler/components/assignment/AssignmentControls';
+import {
+  APPLICATION_LIST_TYPES,
+  isHandledEmployerApplicationStatus,
+} from 'kesaseteli/handler/types/application';
 import HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -24,6 +29,19 @@ const EmployerApplicationStatusSection: React.FC<{
         />
       )}
       <$DescriptionList aria-label={sectionTitle}>
+        {!isHandledEmployerApplicationStatus(application.status) && (
+          <Field
+            type="assignee"
+            value={
+              <AssignmentControls
+                id={application.id}
+                assignee={application.assignee}
+                modified_at={application.modified_at}
+                applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+              />
+            }
+          />
+        )}
         <Field
           type="status"
           value={t(

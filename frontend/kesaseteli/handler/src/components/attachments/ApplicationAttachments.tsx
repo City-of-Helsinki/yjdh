@@ -184,9 +184,11 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
           iconStart={<IconPlus />}
           theme={ButtonPresetTheme.Coat}
         >
-          {isMobile
-            ? t('common:handlerApplication.attachmentsInputPlaceholderMobile')
-            : t('common:handlerApplication.attachmentsInputPlaceholderDesktop')}
+          {t('common:handlerApplication.attachmentsUploadButton', {
+            defaultValue: t(
+              'common:handlerApplication.attachmentsInputPlaceholderMobile'
+            ),
+          })}
         </Button>
       </$PlaceholderInputArea>
     </$UploadContainer>
