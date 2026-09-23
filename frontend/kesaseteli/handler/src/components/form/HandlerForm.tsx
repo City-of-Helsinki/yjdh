@@ -5,8 +5,8 @@ import {
   StatusLabel,
   Tooltip,
 } from 'hds-react';
-import AssignmentControls from 'kesaseteli/handler/components/assignment/AssignmentControls';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
+import ApplicationStatusCard from 'kesaseteli/handler/components/form/ApplicationStatusCard';
 import Field, {
   $DescriptionList,
 } from 'kesaseteli/handler/components/form/Field';
@@ -36,8 +36,6 @@ import {
 
 import {
   $ActionButtonsWrapper,
-  $AssigneeBox,
-  $AssigneeHeading,
   $Column,
   $DescriptionField,
   $PanelGrid,
@@ -107,7 +105,6 @@ const getStatusLabelProps = (
       return { type: 'info' as const, icon: <IconAlertCircle aria-hidden /> };
   }
 };
-
 
 const FormActions: React.FC<{
   application: ActivatedYouthApplication;
@@ -221,47 +218,29 @@ const FormLayout: React.FC<FormLayoutProps> = ({
         </$VtjBlockerNotification>
       )}
 
-      {!isHandledYouthApplicationStatus(status) && (
-        <$AssigneeBox data-testid="handlerApplication-assignee-box">
-          <$AssigneeHeading id="assignee-box-heading">
-            {t('common:handlerApplication.assignee')}
-          </$AssigneeHeading>
-          <AssignmentControls
-            id={id}
-            assignee={assignee}
-            modified_at={modified_at}
-            applicationType={APPLICATION_LIST_TYPES.YOUTH}
-          />
-        </$AssigneeBox>
-      )}
+      <ApplicationStatusCard
+        submittedAt={receipt_confirmed_at}
+        status={
+          <$StatusValueWrapper>
+            <StatusLabel type={statusProps.type} iconStart={statusProps.icon}>
+              {t(`common:applicationList.youth.status.${status}`)}
+            </StatusLabel>
+            <Tooltip>
+              {t(`common:handlerApplication.statusTooltip.${status}`)}
+            </Tooltip>
+          </$StatusValueWrapper>
+        }
+        id={id}
+        assignee={assignee}
+        modified_at={modified_at}
+        applicationType={APPLICATION_LIST_TYPES.YOUTH}
+        isHandled={isHandledYouthApplicationStatus(status)}
+      />
 
       <$PanelGrid>
         <$Column>
           <FormSection columns={1} withoutDivider>
             <$DescriptionList aria-label={t('common:handlerApplication.title')}>
-              <Field
-                type="status"
-                value={
-                  <$StatusValueWrapper>
-                    <StatusLabel
-                      type={statusProps.type}
-                      iconStart={statusProps.icon}
-                    >
-                      {t(`common:applicationList.youth.status.${status}`)}
-                    </StatusLabel>
-                    <Tooltip>
-                      {t(`common:handlerApplication.statusTooltip.${status}`)}
-                    </Tooltip>
-                  </$StatusValueWrapper>
-                }
-              />
-              {receipt_confirmed_at && (
-                <Field
-                  id="receipt_confirmed_at"
-                  type="receipt_confirmed_at"
-                  value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
-                />
-              )}
               <Field type="name" value={`${first_name} ${last_name}`} />
 
               {social_security_number && (
