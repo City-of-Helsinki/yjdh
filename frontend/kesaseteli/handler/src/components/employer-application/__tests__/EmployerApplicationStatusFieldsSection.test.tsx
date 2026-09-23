@@ -8,7 +8,7 @@ import EmployerApplicationStatusSection from '../EmployerApplicationStatusFields
 import { mockApplicationSingleVoucher } from '../fixtures';
 
 describe('EmployerApplicationStatusFieldsSection', () => {
-  it('renders AssignmentControls when application status is not handled', () => {
+  it('renders AssignmentControls inside $AssigneeBox when application status is not handled', () => {
     renderComponent(
       <EmployerApplicationStatusSection
         application={{
@@ -19,7 +19,7 @@ describe('EmployerApplicationStatusFieldsSection', () => {
     );
 
     expect(
-      screen.getByTestId('handlerApplication-assignee')
+      screen.getByTestId('handlerApplication-assignee-box')
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /ota käsittelyyn/i })
@@ -40,7 +40,7 @@ describe('EmployerApplicationStatusFieldsSection', () => {
       );
 
       expect(
-        screen.queryByTestId('handlerApplication-assignee')
+        screen.queryByTestId('handlerApplication-assignee-box')
       ).not.toBeInTheDocument();
       expect(
         screen.queryByRole('button', { name: /ota käsittelyyn/i })
@@ -50,4 +50,17 @@ describe('EmployerApplicationStatusFieldsSection', () => {
       ).not.toBeInTheDocument();
     }
   );
+
+  it('renders status as a StatusLabel pill', () => {
+    renderComponent(
+      <EmployerApplicationStatusSection
+        application={{
+          ...mockApplicationSingleVoucher,
+          status: EmployerApplicationStatus.SUBMITTED,
+        }}
+      />
+    );
+
+    expect(screen.getByText('Uusi hakemus')).toBeInTheDocument();
+  });
 });
