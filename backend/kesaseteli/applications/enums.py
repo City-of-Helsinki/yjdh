@@ -89,6 +89,8 @@ class EmployerApplicationStatus(models.TextChoices):
 
 class YouthApplicationStatus(models.TextChoices):
     SUBMITTED = "submitted", _("Submitted")
+    # Deprecated: AWAITING_MANUAL_PROCESSING is no longer actively used; unassigned
+    # applications now go to ADDITIONAL_INFORMATION_PROVIDED.
     AWAITING_MANUAL_PROCESSING = (
         "awaiting_manual_processing",
         _("Awaiting manual processing"),
@@ -101,6 +103,7 @@ class YouthApplicationStatus(models.TextChoices):
         "additional_information_provided",
         _("Additional information provided"),
     )
+    APPLICATION_HANDLING = "application_handling", _("Application handling")
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
 
@@ -114,6 +117,7 @@ class YouthApplicationStatus(models.TextChoices):
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            YouthApplicationStatus.APPLICATION_HANDLING.value,
             YouthApplicationStatus.ACCEPTED.value,
             YouthApplicationStatus.REJECTED.value,
         ]
@@ -126,6 +130,7 @@ class YouthApplicationStatus(models.TextChoices):
         """
         return [
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            YouthApplicationStatus.APPLICATION_HANDLING.value,
             YouthApplicationStatus.ACCEPTED.value,
             YouthApplicationStatus.REJECTED.value,
         ]
@@ -149,6 +154,7 @@ class YouthApplicationStatus(models.TextChoices):
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            YouthApplicationStatus.APPLICATION_HANDLING.value,
         ]
 
     @staticmethod
@@ -161,6 +167,7 @@ class YouthApplicationStatus(models.TextChoices):
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            YouthApplicationStatus.APPLICATION_HANDLING.value,
         ]
 
     @staticmethod
@@ -305,5 +312,6 @@ class ActionType(models.TextChoices):
         "application_status_change",
         _("Application status change"),
     )
+    ASSIGNEE_CHANGE = ("assignee_change", _("Assignee change"))
     ATTACHMENT_ADDED = ("attachment_added", _("Attachment added"))
     ATTACHMENT_DELETED = ("attachment_deleted", _("Attachment deleted"))

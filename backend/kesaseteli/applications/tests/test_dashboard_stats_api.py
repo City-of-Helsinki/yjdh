@@ -14,7 +14,9 @@ from shared.common.tests.factories import UserFactory
 @pytest.mark.django_db
 def test_dashboard_stats_api_staff_success(staff_client, django_assert_max_num_queries):
     # Create Youth Applications
-    YouthApplicationFactory(status=YouthApplicationStatus.AWAITING_MANUAL_PROCESSING)
+    YouthApplicationFactory(
+        status=YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    )
     YouthApplicationFactory.create_batch(2, status=YouthApplicationStatus.ACCEPTED)
     YouthApplicationFactory(status=YouthApplicationStatus.REJECTED)
     YouthApplicationFactory(
@@ -43,7 +45,7 @@ def test_dashboard_stats_api_staff_success(staff_client, django_assert_max_num_q
             "pending": 2,
             "processed": 3,
             "raw_counts": {
-                "awaiting_manual_processing": 1,
+                "additional_information_requested": 1,
                 "additional_information_provided": 1,
                 "accepted": 2,
                 "rejected": 1,

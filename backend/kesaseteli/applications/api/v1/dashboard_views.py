@@ -8,7 +8,6 @@ from applications.models import EmployerApplication, YouthApplication
 from common.decorators import enforce_handler_view_adfs_login
 
 YOUTH_PENDING_STATUSES = [
-    YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
     YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
     YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
 ]

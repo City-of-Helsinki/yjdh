@@ -36,6 +36,7 @@ from applications.enums import (
     JobType,
     YouthApplicationStatus,
 )
+from applications.exceptions import OptimisticLockError
 from applications.target_groups import get_target_group_choices
 from applications.validators import validate_template_syntax
 from common.permissions import HandlerPermission
@@ -58,6 +59,10 @@ from shared.models.abstract_models import TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
 
 LOGGER = logging.getLogger(__name__)
+
+# Optimization. When assigning or unassigning, we only need to update and refresh
+# these fields to handle locked rows correctly when using select_for_update.
+_ASSIGNEE_UPDATE_FIELDS = ("assignee", "status", "modified_at")
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -373,6 +378,15 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         on_delete=models.SET_NULL,
         related_name="handled_youth_applications",
         verbose_name=_("handler"),
+        help_text=_("The handler who made the final accept/reject decision."),
+        blank=True,
+        null=True,
+    )
+    assignee = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="assigned_youth_applications",
+        verbose_name=_("assignee"),
         blank=True,
         null=True,
     )
@@ -608,6 +622,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         if status not in YouthApplicationStatus.handled_values():
             raise ValueError(f"Invalid handle status: {status}")
         self.status = status
+        self.assignee = None
         self._set_handler(handler, automatic_handling)
         self.encrypted_handler_vtj_json = encrypted_handler_vtj_json
         self.handled_at = timezone.now()
@@ -960,6 +975,62 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             first_name=self.first_name,
             last_name=self.last_name,
         )
+
+    def assign(self, user, payload_modified_at):
+        """
+        Assign the application to a handler user with optimistic concurrency control.
+
+        :param user: Handler user to assign to the application.
+        :param payload_modified_at: Datetime from request for optimistic lock check.
+        :raises OptimisticLockError: If the application was modified concurrently.
+        :raises ValueError: If the application status does not allow assignment.
+        """
+        with transaction.atomic():
+            locked = self.lock_for_update()
+
+            if locked.modified_at != payload_modified_at:
+                raise OptimisticLockError(
+                    "The application has been modified by someone else."
+                )
+
+            if locked.status not in YouthApplicationStatus.active_unhandled_values():
+                raise ValueError(
+                    f"Cannot assign youth application with status {locked.status}"
+                )
+
+            locked.assignee = user
+            locked.status = YouthApplicationStatus.APPLICATION_HANDLING
+            locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
+            self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
+
+    def unassign(self, user):
+        """
+        Unassign the application from the current handler user.
+
+        :param user: Handler user requesting to unassign the application.
+        :raises ValueError: If the user is not the assignee or status is not
+            APPLICATION_HANDLING.
+        """
+        with transaction.atomic():
+            locked = self.lock_for_update()
+
+            if (
+                locked.assignee_id != user.pk
+                or locked.status != YouthApplicationStatus.APPLICATION_HANDLING
+            ):
+                raise ValueError(
+                    f"Cannot unassign youth application with status {locked.status} "
+                    f"for user {user.pk}"
+                )
+
+            locked.assignee = None
+            locked.status = (
+                YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+                if locked.has_additional_info
+                else YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+            )
+            locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
+            self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
 
     def __str__(self):
         return f"{self.created_at}: {self.name} ({self.email})"
@@ -1339,7 +1410,7 @@ class YouthSummerVoucher(TimeStampedModel, UUIDModel):
         ordering = ["summer_voucher_serial_number"]
 
 
-class EmployerApplication(TimeStampedModel, UUIDModel):
+class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     notes = GenericRelation("handler_notes.Note")
 
     company = models.ForeignKey(
@@ -1435,6 +1506,89 @@ class EmployerApplication(TimeStampedModel, UUIDModel):
         default=APPLICATION_LANGUAGE_CHOICES[0][0],  # fi
         max_length=2,
     )
+    assignee = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="assigned_employer_applications",
+        verbose_name=_("assignee"),
+        blank=True,
+        null=True,
+    )
+    handler = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="handled_employer_applications",
+        verbose_name=_("handler"),
+        help_text=_("The handler who made the final accept/reject decision."),
+        blank=True,
+        null=True,
+    )
+
+    def assign(self, user, payload_modified_at):
+        """
+        Assign the application to a handler user with optimistic concurrency control.
+
+        :param user: Handler user to assign to the application.
+        :param payload_modified_at: Datetime from request for optimistic lock check.
+        :raises OptimisticLockError: If the application was modified concurrently.
+        :raises ValueError: If the application status does not allow assignment.
+        """
+        with transaction.atomic():
+            locked = self.lock_for_update()
+
+            if locked.modified_at != payload_modified_at:
+                raise OptimisticLockError(
+                    "The application has been modified by someone else."
+                )
+
+            # Inline import to prevent circular dependency with applications.models
+            from applications.api.v1.serializers import (
+                EmployerApplicationStatusValidator,
+            )
+
+            allowed_transitions = (
+                EmployerApplicationStatusValidator.APPLICATION_STATUS_TRANSITIONS.get(
+                    locked.status, ()
+                )
+            )
+            target_status = EmployerApplicationStatus.APPLICATION_HANDLING
+            if (
+                locked.status != target_status
+                and target_status not in allowed_transitions
+            ):
+                raise ValueError(
+                    f"Cannot assign employer application with status {locked.status}"
+                )
+
+            locked.assignee = user
+            locked.status = EmployerApplicationStatus.APPLICATION_HANDLING
+            locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
+            self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
+
+    def unassign(self, user):
+        """
+        Unassign the application from the current handler user.
+
+        :param user: Handler user requesting to unassign the application.
+        :raises ValueError: If the user is not the assignee or status is not
+            APPLICATION_HANDLING.
+        """
+        with transaction.atomic():
+            locked = self.lock_for_update()
+
+            if (
+                locked.assignee_id != user.pk
+                or locked.status != EmployerApplicationStatus.APPLICATION_HANDLING
+            ):
+                raise ValueError(
+                    f"Cannot unassign employer application with status {locked.status} "
+                    f"for user {user.pk}"
+                )
+
+            locked.assignee = None
+            locked.status = EmployerApplicationStatus.SUBMITTED
+            locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
+            self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
 
     class Meta:
         verbose_name = _("employer application")

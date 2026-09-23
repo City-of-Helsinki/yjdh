@@ -928,6 +928,7 @@ def test_resolve_target_group_and_status_always_finnish():
         target_group="",
         social_security_number="",
         non_vtj_birthdate=date(date.today().year - 15, 7, 1),
+        additional_info_user_reasons=[],
     )
     with translation.override("en"):
         display, status = resolve_target_group_and_status(app_calculated)
