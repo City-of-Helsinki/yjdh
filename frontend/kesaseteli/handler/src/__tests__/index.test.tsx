@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import {
   expectToGetYouthApplication,
@@ -82,9 +83,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     renderPage(HandlerIndex, { query: { id: application.id } });
     const indexPageApi = await getIndexPageApi(application);
     await indexPageApi.expectations.pageIsLoaded();
-    await indexPageApi.expectations.fieldValueIsPresent(
-      'receipt_confirmed_at',
-      convertToUIDateAndTimeFormat
+    await screen.findByText(
+      convertToUIDateAndTimeFormat(application.receipt_confirmed_at) || '-'
     );
     await indexPageApi.expectations.nameIsPresent(application);
     await indexPageApi.expectations.fieldValueIsPresent(
