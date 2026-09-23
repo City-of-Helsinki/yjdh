@@ -297,6 +297,7 @@ export const fakeLinkedEmployerApplication = (
       id: faker.datatype.uuid(),
       company_name: faker.company.companyName(),
       company_business_id: '1234567-8',
+      assignee: 'Test User',
       summer_voucher_serial_number: faker.datatype.number().toString(),
       submitted_at: convertToBackendDateFormat(faker.date.past()),
     },
@@ -328,6 +329,10 @@ export const fakeActivatedYouthApplication = (
         override?.employer_applications?.map((app) =>
           fakeLinkedEmployerApplication(app)
         ) ?? [],
+      assignee: override?.assignee ?? {
+        id: 'test-user-id',
+        name: 'Test User',
+      },
       summer_voucher_serial_number: faker.datatype.number().toString(),
     },
     override

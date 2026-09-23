@@ -8,6 +8,7 @@ export const YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION = [
 export const YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION = [
   YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
   YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.APPLICATION_HANDLING,
 ] as const satisfies readonly YouthApplicationStatus[];
 
 export const YOUTH_APPLICATION_STATUS_COMPLETED = [

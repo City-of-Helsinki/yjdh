@@ -1,4 +1,5 @@
 import AdditionalInfoApplication from './additional-info-application';
+import type { Assignee } from './application';
 import CreatedYouthApplication from './created-youth-application';
 import VtjData from './vtj-data';
 
@@ -20,6 +21,8 @@ type ActivatedYouthApplication = CreatedYouthApplication &
     employer_applications?: LinkedEmployerApplication[];
     summer_voucher_serial_number?: string;
     attachments?: KesaseteliAttachment[];
+    assignee?: Assignee | string | null;
+    modified_at?: string;
   };
 
 export default ActivatedYouthApplication;
