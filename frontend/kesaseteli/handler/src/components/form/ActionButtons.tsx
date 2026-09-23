@@ -5,17 +5,20 @@ import {
   IconCross,
 } from 'hds-react';
 import useCompleteYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useCompleteYouthApplicationQuery';
+import useAssignee from 'kesaseteli/handler/hooks/useAssignee';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Button from 'shared/components/button/Button';
-import {
-  $GridCell,
-  GridCellProps,
-} from 'shared/components/forms/section/FormSection.sc';
+import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
-import { useTheme } from 'styled-components';
+
+import {
+  $ActionsContainer,
+  $ActionsHeading,
+  $ButtonsRow,
+} from './ActionButtons.sc';
 
 type Props = GridCellProps & {
   application: ActivatedYouthApplication;
@@ -23,15 +26,17 @@ type Props = GridCellProps & {
 
 const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const {
     id,
     encrypted_handler_vtj_json,
     non_vtj_birthdate,
     social_security_number,
+    assignee,
   } = application;
   const { confirm } = useConfirm();
   const { isPending, mutate } = useCompleteYouthApplicationQuery(id);
+  const { isAssignee } = useAssignee(assignee);
+
   const icon = React.useMemo(
     () => ({
       accept: <IconCheck aria-hidden />,
@@ -60,31 +65,34 @@ const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
     (!social_security_number && !non_vtj_birthdate);
 
   return (
-    <$GridCell {...gridCellprops}>
-      <Button
-        loadingText={t(`common:handlerApplication.saving`)}
-        theme={ButtonPresetTheme.Coat}
-        data-testid="accept-button"
-        iconStart={icon.accept}
-        onClick={() => complete('accept')}
-        isLoading={isPending}
-        disabled={isDisabled}
-        style={{ marginRight: theme.spacing.l }}
-      >
-        {t(`common:handlerApplication.accept`)}
-      </Button>
-      <Button
-        variant={ButtonVariant.Danger}
-        data-testid="reject-button"
-        iconStart={icon.reject}
-        onClick={() => complete('reject')}
-        loadingText={t(`common:handlerApplication.saving`)}
-        isLoading={isPending}
-        disabled={isDisabled}
-      >
-        {t(`common:handlerApplication.reject`)}
-      </Button>
-    </$GridCell>
+    <$ActionsContainer {...gridCellprops}>
+      <$ActionsHeading id="action-buttons-heading">
+        {t('common:handlerApplication.actionsTitle')}
+      </$ActionsHeading>
+      <$ButtonsRow aria-labelledby="action-buttons-heading">
+        <Button
+          loadingText={t(`common:handlerApplication.saving`)}
+          theme={ButtonPresetTheme.Coat}
+          iconStart={icon.accept}
+          onClick={() => complete('accept')}
+          isLoading={isPending}
+          disabled={isDisabled || !isAssignee}
+        >
+          {t(`common:handlerApplication.accept`)}
+        </Button>
+
+        <Button
+          variant={ButtonVariant.Danger}
+          iconStart={icon.reject}
+          onClick={() => complete('reject')}
+          loadingText={t(`common:handlerApplication.saving`)}
+          isLoading={isPending}
+          disabled={isDisabled || !isAssignee}
+        >
+          {t(`common:handlerApplication.reject`)}
+        </Button>
+      </$ButtonsRow>
+    </$ActionsContainer>
   );
 };
 
