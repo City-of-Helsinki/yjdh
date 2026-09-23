@@ -5,6 +5,11 @@ import type Company from './company';
 import type ContactPerson from './contact-info';
 import type Employment from './employment';
 
+export type Assignee = {
+  id: string;
+  name: string;
+};
+
 type Application = ContactPerson & {
   id: string;
   company: Company;
@@ -14,6 +19,8 @@ type Application = ContactPerson & {
   language: Language;
   user?: string;
   is_mine?: boolean;
+  assignee?: Assignee | string | null;
+  modified_at?: string;
 };
 
 export default Application;
