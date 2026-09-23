@@ -137,45 +137,45 @@ const getIndexPageApi = async (
 
     actionButtonsArePresent: async (): Promise<void> => {
       await screen.findByRole('button', {
-        name: translations.handlerApplication.accept,
+        name: /hyväksy/i,
       });
       await screen.findByRole('button', {
-        name: translations.handlerApplication.reject,
+        name: /hylkää/i,
       });
     },
     actionButtonsAreNotPresent: (): void => {
       expect(
         screen.queryByRole('button', {
-          name: translations.handlerApplication.accept,
+          name: /hyväksy/i,
         })
       ).not.toBeInTheDocument();
       expect(
         screen.queryByRole('button', {
-          name: translations.handlerApplication.reject,
+          name: /hylkää/i,
         })
       ).not.toBeInTheDocument();
     },
     actionButtonsAreEnabled: (): void => {
       expect(
         screen.getByRole('button', {
-          name: translations.handlerApplication.accept,
+          name: /hyväksy/i,
         })
       ).toBeEnabled();
       expect(
         screen.getByRole('button', {
-          name: translations.handlerApplication.reject,
+          name: /hylkää/i,
         })
       ).toBeEnabled();
     },
     actionButtonsAreDisabled: (): void => {
       expect(
         screen.getByRole('button', {
-          name: translations.handlerApplication.accept,
+          name: /hyväksy/i,
         })
       ).toBeDisabled();
       expect(
         screen.getByRole('button', {
-          name: translations.handlerApplication.reject,
+          name: /hylkää/i,
         })
       ).toBeDisabled();
     },
@@ -195,10 +195,21 @@ const getIndexPageApi = async (
       const dialog = await screen.findByRole('dialog');
       return within(dialog).findByText(translations.dialog[type].content);
     },
+    assigneeBoxIsPresent: async (): Promise<HTMLElement> =>
+      screen.findByTestId('handlerApplication-assignee-box'),
+    assigneeBoxIsNotPresent: (): void => {
+      expect(
+        screen.queryByTestId('handlerApplication-assignee-box')
+      ).not.toBeInTheDocument();
+    },
   };
   const actions = {
     clickCompleteButton: (type: CompleteOperation['type']) =>
-      userEvent.click(screen.getByTestId(`${type}-button`)),
+      userEvent.click(
+        screen.getByRole('button', {
+          name: type === 'accept' ? /hyväksy/i : /hylkää/i,
+        })
+      ),
     clickConfirmButton: async (
       type: CompleteOperation['type'],
       errorCode?: 400 | 500

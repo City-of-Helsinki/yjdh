@@ -99,7 +99,6 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   for (const status of [
     YouthApplicationStatus.SUBMITTED,
-    YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
   ] as YouthApplicationStatus[]) {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {

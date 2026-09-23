@@ -14,6 +14,7 @@ import {
   EmployerApplication,
   PaginatedResponse,
 } from '../../types/application';
+import { getAssigneeName } from '../../utils/assignee.utils';
 import ActionCell from './ActionCell';
 import ApplicationListTable, {
   HdsHeader,
@@ -134,6 +135,12 @@ export const useEmployerApplicationListColumns =
           row.submitted_at
             ? new Date(row.submitted_at).toLocaleDateString(locale)
             : '-',
+      },
+      {
+        key: 'assignee',
+        headerName: t('common:application.assignee'),
+        isSortable: false,
+        transform: (row) => getAssigneeName(row.assignee) || '-',
       },
     ];
   };

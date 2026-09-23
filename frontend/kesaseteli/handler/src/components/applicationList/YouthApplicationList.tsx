@@ -14,6 +14,7 @@ import {
   PaginatedResponse,
   YouthApplication,
 } from '../../types/application';
+import { getAssigneeName } from '../../utils/assignee.utils';
 import ActionCell from './ActionCell';
 import ApplicationListTable, {
   HdsHeader,
@@ -42,16 +43,12 @@ const $PassiveText = styled.span`
 /**
  * All possible statuses that fall under the "pending" category for youth applications.
  * Used to define the available options in the pending status search filter component.
- *
- * NOTE: Youth application's status AWAITING_MANUAL_PROCESSING is left out because the
- * last youth application using this status in production is from year 2022, and
- * no new youth applications using this status can be created using the normal
- * process in the codebase anymore. Not showing it in UI basically removes noise.
  */
 const YOUTH_PENDING_STATUSES = [
   YouthApplicationStatus.SUBMITTED,
   YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
   YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.APPLICATION_HANDLING,
 ];
 
 /**
@@ -60,6 +57,7 @@ const YOUTH_PENDING_STATUSES = [
  */
 const DEFAULT_PENDING_STATUSES = [
   YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  YouthApplicationStatus.APPLICATION_HANDLING,
 ];
 
 /**
@@ -145,6 +143,12 @@ export const useYouthApplicationListColumns =
           row.created_at
             ? new Date(row.created_at).toLocaleDateString(locale)
             : '-',
+      },
+      {
+        key: 'assignee',
+        headerName: t('common:application.assignee'),
+        isSortable: false,
+        transform: (row) => getAssigneeName(row.assignee) || '-',
       },
     ];
   };

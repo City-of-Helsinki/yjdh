@@ -57,7 +57,6 @@ const AdditionalInfo: NextPage = () => {
                 );
 
               case YouthApplicationStatus.SUBMITTED:
-              case YouthApplicationStatus.AWAITING_MANUAL_PROCESSING:
               default:
                 return (
                   <$Notification
