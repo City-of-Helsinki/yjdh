@@ -3,16 +3,14 @@ import {
   IconHistory,
   IconPaperclip,
   IconSpeechbubbleText,
+  IconUser,
 } from 'hds-react';
 import React from 'react';
 
 import { NoteType } from '../../types/note';
+import { ActionType } from '../../types/timeline';
 
-export type TimelineItemThemeType =
-  | NoteType
-  | 'attachment_added'
-  | 'attachment_deleted'
-  | 'activity';
+export type TimelineItemThemeType = NoteType | ActionType;
 
 export interface TimelineItemThemeConfig {
   icon: React.ComponentType;
@@ -45,26 +43,33 @@ export const TIMELINE_ITEM_THEME_CONFIGS: Record<
     avatarColor: 'var(--color-bus)',
     borderColor: 'var(--color-bus)',
   },
-  attachment_added: {
+  [ActionType.ATTACHMENT_ADDED]: {
     icon: IconPaperclip,
     background: COLOR_WHITE,
     avatarBackground: COLOR_METRO_LIGHT,
     avatarColor: COLOR_METRO_DARK,
     borderColor: COLOR_METRO,
   },
-  attachment_deleted: {
+  [ActionType.ATTACHMENT_DELETED]: {
     icon: IconPaperclip,
     background: COLOR_WHITE,
     avatarBackground: COLOR_METRO_LIGHT,
     avatarColor: COLOR_METRO_DARK,
     borderColor: COLOR_METRO,
   },
-  activity: {
+  [ActionType.APPLICATION_STATUS_CHANGE]: {
     icon: IconHistory,
     background: COLOR_WHITE,
     avatarBackground: 'var(--color-tram-light)',
     avatarColor: 'var(--color-tram)',
     borderColor: 'var(--color-tram)',
+  },
+  [ActionType.ASSIGNEE_CHANGE]: {
+    icon: IconUser,
+    background: COLOR_WHITE,
+    avatarBackground: 'var(--color-suomenlinna-light)',
+    avatarColor: 'var(--color-suomenlinna-dark)',
+    borderColor: 'var(--color-suomenlinna)',
   },
 };
 

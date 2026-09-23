@@ -10,6 +10,7 @@ import {
 import useApplicationTimelineQuery from '../../../hooks/backend/useApplicationTimelineQuery';
 import useUser from '../../../hooks/useUser';
 import { APPLICATION_LIST_TYPES } from '../../../types/application';
+import { ActionType } from '../../../types/timeline';
 import ApplicationTimeline from '../ApplicationTimeline';
 
 jest.mock('shared/hooks/useLocale', () => jest.fn());
@@ -70,6 +71,94 @@ describe('ApplicationTimeline', () => {
     expect(screen.getByText(/tila muuttunut:/i)).toBeInTheDocument();
     expect(screen.getByText('Uusi hakemus')).toBeInTheDocument();
     expect(screen.getByText('Lisätietoja pyydetty')).toBeInTheDocument();
+  });
+
+  it('renders assignee assignment event', () => {
+    (useApplicationTimelineQuery as jest.Mock).mockReturnValue({
+      data: [
+        fakeActivityLogItem({
+          action_type: ActionType.ASSIGNEE_CHANGE,
+          old_value: '',
+          new_value: 'William Meyer',
+        }),
+      ],
+    });
+    renderComponent(
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
+    );
+
+    expect(screen.getByText('Käsittelijä')).toBeInTheDocument();
+    expect(screen.getByText(/käsittelijäksi asetettu:/i)).toBeInTheDocument();
+    expect(screen.getByText('William Meyer')).toBeInTheDocument();
+  });
+
+  it('renders assignee reassignment event', () => {
+    (useApplicationTimelineQuery as jest.Mock).mockReturnValue({
+      data: [
+        fakeActivityLogItem({
+          action_type: ActionType.ASSIGNEE_CHANGE,
+          old_value: 'Old Handler',
+          new_value: 'New Handler',
+        }),
+      ],
+    });
+    renderComponent(
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
+    );
+
+    expect(screen.getByText('Käsittelijä')).toBeInTheDocument();
+    expect(screen.getByText(/käsittelijä vaihdettu:/i)).toBeInTheDocument();
+    expect(screen.getByText('Old Handler')).toBeInTheDocument();
+    expect(screen.getByText('New Handler')).toBeInTheDocument();
+  });
+
+  it('renders assignee unassignment event', () => {
+    (useApplicationTimelineQuery as jest.Mock).mockReturnValue({
+      data: [
+        fakeActivityLogItem({
+          action_type: ActionType.ASSIGNEE_CHANGE,
+          old_value: 'William Meyer',
+          new_value: '',
+        }),
+      ],
+    });
+    renderComponent(
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
+    );
+
+    expect(screen.getByText('Käsittelijä')).toBeInTheDocument();
+    expect(screen.getByText(/käsittelijä tyhjennetty:/i)).toBeInTheDocument();
+    expect(screen.getByText('William Meyer')).toBeInTheDocument();
+  });
+
+  it('skips activity items with unknown or unhandled action_type', () => {
+    (useApplicationTimelineQuery as jest.Mock).mockReturnValue({
+      data: [
+        fakeActivityLogItem({
+          action_type: 'unknown_action' as unknown as ActionType,
+          old_value: 'old',
+          new_value: 'new',
+        }),
+      ],
+    });
+    renderComponent(
+      <ApplicationTimeline
+        applicationId="test-id"
+        applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+      />
+    );
+
+    expect(screen.queryByText('Tilamuutos')).not.toBeInTheDocument();
+    expect(screen.queryByText('Käsittelijä')).not.toBeInTheDocument();
   });
 
   it('displays the empty timeline state when there are no entries', () => {

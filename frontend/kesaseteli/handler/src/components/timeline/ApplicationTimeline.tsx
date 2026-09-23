@@ -8,6 +8,7 @@ import type { KesaseteliAttachment } from 'shared/types/attachment';
 import useApplicationTimelineQuery from '../../hooks/backend/useApplicationTimelineQuery';
 import {
   ActionType,
+  ActivityLogItem,
   TimelineItem,
   TimelineItemType,
 } from '../../types/timeline';
@@ -30,17 +31,43 @@ export type ApplicationTimelineProps = {
   attachments?: KesaseteliAttachment[];
 };
 
-const getItemThemeType = (item: TimelineItem): TimelineItemThemeType => {
-  if (item.item_type === TimelineItemType.ACTIVITY) {
-    if (item.action_type === ActionType.ATTACHMENT_ADDED) {
-      return 'attachment_added';
-    }
-    if (item.action_type === ActionType.ATTACHMENT_DELETED) {
-      return 'attachment_deleted';
-    }
-    return 'activity';
+const getItemThemeType = (item: TimelineItem): TimelineItemThemeType =>
+  item.item_type === TimelineItemType.NOTE ? item.note_type : item.action_type;
+
+const getAssigneeChangeContent = (log: ActivityLogItem): React.ReactNode => {
+  const hasOld = Boolean(log.old_value);
+  const hasNew = Boolean(log.new_value);
+  if (!hasOld && hasNew) {
+    return (
+      <$PreWrapParagraph>
+        <Trans
+          i18nKey="common:timeline.assigneeAssigned"
+          values={{ newAssignee: log.new_value }}
+          components={{ statusValue: <$StatusValue /> }}
+        />
+      </$PreWrapParagraph>
+    );
   }
-  return item.note_type;
+  if (hasOld && hasNew) {
+    return (
+      <$PreWrapParagraph>
+        <Trans
+          i18nKey="common:timeline.assigneeChanged"
+          values={{ oldAssignee: log.old_value, newAssignee: log.new_value }}
+          components={{ statusValue: <$StatusValue /> }}
+        />
+      </$PreWrapParagraph>
+    );
+  }
+  return (
+    <$PreWrapParagraph>
+      <Trans
+        i18nKey="common:timeline.assigneeRemoved"
+        values={{ oldAssignee: log.old_value }}
+        components={{ statusValue: <$StatusValue /> }}
+      />
+    </$PreWrapParagraph>
+  );
 };
 
 /**
@@ -106,6 +133,9 @@ const getTimelineItemContent = (
             />
           </$PreWrapParagraph>
         );
+
+      case ActionType.ASSIGNEE_CHANGE:
+        return getAssigneeChangeContent(log);
 
       default:
         return null;
@@ -185,6 +215,19 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
         {timeline.map((item) => {
           const noteType = getItemThemeType(item);
           const TypeIcon = getTimelineIcon(noteType);
+          const content = getTimelineItemContent(
+            item,
+            t,
+            applicationId,
+            applicationType,
+            attachments
+          );
+          if (
+            item.item_type === TimelineItemType.ACTIVITY &&
+            content === null
+          ) {
+            return null;
+          }
           const formattedDate = new Date(item.created_at).toLocaleString(
             locale,
             {
@@ -225,15 +268,7 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
                     : formattedDate}
                 </Timeline.Item.Author>
               </Timeline.Item.Header>
-              <Timeline.Item.Content>
-                {getTimelineItemContent(
-                  item,
-                  t,
-                  applicationId,
-                  applicationType,
-                  attachments
-                )}
-              </Timeline.Item.Content>
+              <Timeline.Item.Content>{content}</Timeline.Item.Content>
             </Timeline.Item>
           );
         })}
