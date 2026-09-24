@@ -16,6 +16,12 @@ import ApplicationTimeline from '../ApplicationTimeline';
 jest.mock('shared/hooks/useLocale', () => jest.fn());
 jest.mock('../../../hooks/useUser');
 jest.mock('../../../hooks/backend/useApplicationTimelineQuery');
+jest.mock('kesaseteli/handler/contexts/HandlerPermissionsContext', () => ({
+  useHandlerPermissions: () => ({
+    canAddAttachmentComments: true,
+    hasNotePermission: () => true,
+  }),
+}));
 
 describe('ApplicationTimeline', () => {
   beforeEach(() => {

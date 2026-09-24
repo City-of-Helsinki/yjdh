@@ -43,23 +43,53 @@ export const $Table = styled.table`
   }
 `;
 
-export const $DragDropArea = styled.div<{ $isDragging: boolean }>`
+export const $DragDropArea = styled.div<{
+  $isDragging: boolean;
+  $disabled?: boolean;
+}>`
   border: 2px dashed
-    ${({ $isDragging, theme }: { $isDragging: boolean; theme: DefaultTheme }) =>
-      $isDragging ? theme.colors.coatOfArms : theme.colors.black50};
+    ${({
+      $isDragging,
+      $disabled,
+      theme,
+    }: {
+      $isDragging: boolean;
+      $disabled?: boolean;
+      theme: DefaultTheme;
+    }) =>
+      $disabled
+        ? theme.colors.black20
+        : $isDragging
+        ? theme.colors.coatOfArms
+        : theme.colors.black50};
   padding: ${(props: { theme: DefaultTheme }) => props.theme.spacing.l};
   text-align: center;
   margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
   background-color: ${({
     $isDragging,
+    $disabled,
     theme,
   }: {
     $isDragging: boolean;
+    $disabled?: boolean;
     theme: DefaultTheme;
-  }) => ($isDragging ? theme.colors.coatOfArmsLight : theme.colors.white)};
+  }) =>
+    $disabled
+      ? theme.colors.black5
+      : $isDragging
+      ? theme.colors.coatOfArmsLight
+      : theme.colors.white};
   transition: border-color 0.15s ease, background-color 0.15s ease;
-  cursor: pointer;
+  cursor: ${({ $disabled }: { $disabled?: boolean }) =>
+    $disabled ? 'not-allowed' : 'pointer'};
   border-radius: 4px;
+  color: ${({
+    $disabled,
+    theme,
+  }: {
+    $disabled?: boolean;
+    theme: DefaultTheme;
+  }) => ($disabled ? theme.colors.black50 : 'inherit')};
 `;
 
 export const $AttachmentTypeGroup = styled(SelectionGroup)`

@@ -24,6 +24,7 @@ import type {
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
+import { useHandlerPermissions } from '../../contexts/HandlerPermissionsContext';
 import type { HandlerAttachment } from '../../types/HandlerEmployerApplication';
 import {
   $AttachmentLink,
@@ -76,6 +77,7 @@ type AttachmentInputAreaProps = {
   isMobile: boolean;
   isDragging: boolean;
   isUploading: boolean;
+  disabled?: boolean;
   uploadRef: React.RefObject<HTMLInputElement | null>;
   onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
   onDragLeave: () => void;
@@ -97,6 +99,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
   isMobile,
   isDragging,
   isUploading,
+  disabled,
   uploadRef,
   onDragOver,
   onDragLeave,
@@ -126,6 +129,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
               value={type}
               checked={attachmentType === type}
               onChange={() => setAttachmentType(type)}
+              disabled={disabled}
             />
           ))}
         </$AttachmentTypeGroup>
@@ -142,17 +146,21 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
       {!isMobile && (
         <$DragDropArea
           $isDragging={isDragging}
-          onDragOver={onDragOver}
-          onDragEnter={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
-          onClick={() => uploadRef.current?.click()}
+          $disabled={disabled}
+          onDragOver={disabled ? undefined : onDragOver}
+          onDragEnter={disabled ? undefined : onDragOver}
+          onDragLeave={disabled ? undefined : onDragLeave}
+          onDrop={disabled ? undefined : onDrop}
+          onClick={() => {
+            if (!disabled) uploadRef.current?.click();
+          }}
           role="button"
-          tabIndex={0}
+          tabIndex={disabled ? -1 : 0}
           aria-label={t(
             'common:handlerApplication.attachmentsDragAndDropPlaceholder'
           )}
           onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (disabled) return;
             if (e.key === 'Enter' || e.key === ' ') uploadRef.current?.click();
           }}
         >
@@ -173,6 +181,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
           id="attachment-file-input"
           ref={uploadRef}
           type="file"
+          disabled={disabled}
           accept={ATTACHMENT_CONTENT_TYPES.join(', ')}
           onChange={onFileInputChange}
         />
@@ -180,6 +189,7 @@ const AttachmentInputArea: React.FC<AttachmentInputAreaProps> = ({
           id="attachment-upload-button"
           onClick={() => uploadRef.current?.click()}
           isLoading={isUploading}
+          disabled={disabled || isUploading}
           loadingText={t('common:upload.isUploading')}
           iconStart={<IconPlus />}
           theme={ButtonPresetTheme.Coat}
@@ -358,7 +368,6 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
 export type ApplicationAttachmentsProps = {
   attachments: HandlerAttachment[];
   applicationId: string;
-  canDeleteAttachments: boolean;
   isMultiVoucher?: boolean;
   attachmentTypes?: readonly AttachmentType[];
   isUploading: boolean;
@@ -383,7 +392,6 @@ export type ApplicationAttachmentsProps = {
 const ApplicationAttachments: React.FC<ApplicationAttachmentsProps> = ({
   attachments,
   applicationId,
-  canDeleteAttachments,
   isMultiVoucher = false,
   attachmentTypes,
   isUploading,
@@ -395,6 +403,9 @@ const ApplicationAttachments: React.FC<ApplicationAttachmentsProps> = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
+
+  const { canUploadAttachments, canDeleteAttachments } =
+    useHandlerPermissions();
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const [attachmentType, setAttachmentType] = useState<
@@ -457,6 +468,7 @@ const ApplicationAttachments: React.FC<ApplicationAttachmentsProps> = ({
         isMobile={isMobile}
         isDragging={isDragging}
         isUploading={isUploading}
+        disabled={!canUploadAttachments}
         uploadRef={uploadRef}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
