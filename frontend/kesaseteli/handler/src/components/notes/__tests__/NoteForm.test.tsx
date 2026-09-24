@@ -132,7 +132,7 @@ describe('NoteForm', () => {
       expect(screen.getByText('4 093 / 4 096')).toBeInTheDocument();
     });
 
-    it('renders nothing if targetType is ATTACHMENT and canAddAttachmentComments is false', () => {
+    it('renders a notification if targetType is ATTACHMENT and canAddAttachmentComments is false', () => {
       currentPermissions = {
         canAddAttachmentComments: false,
         canAddExternalMessage: true,
@@ -149,7 +149,11 @@ describe('NoteForm', () => {
         </div>
       );
 
-      expect(screen.getByTestId('wrapper')).toBeEmptyDOMElement();
+      expect(
+        screen.getByText(
+          /et voi lisätä huomioita, koska et ole hakemuksen käsittelijä/i
+        )
+      ).toBeInTheDocument();
     });
 
     it('disables external message radio if canAddExternalMessage is false', () => {
@@ -169,6 +173,12 @@ describe('NoteForm', () => {
 
       const externalRadio = screen.getByLabelText(/ulkoinen viesti/i);
       expect(externalRadio).toBeDisabled();
+
+      expect(
+        screen.getByText(
+          /vain hakemuksen käsittelijä voi lähettää ulkoisia viestejä/i
+        )
+      ).toBeInTheDocument();
     });
   });
 

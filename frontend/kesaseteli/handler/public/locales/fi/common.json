@@ -369,6 +369,8 @@
   },
   "handlerNotes": {
     "sectionTitle": "Käsittelijän huomiot",
+    "cannotAddNoteNotAssignee": "Et voi lisätä huomioita, koska et ole hakemuksen käsittelijä.",
+    "cannotAddExternalMessageNotAssignee": "Vain hakemuksen käsittelijä voi lähettää ulkoisia viestejä.",
     "addNote": "Lisää huomio",
     "saveNote": "Tallenna huomio",
     "addNoteSuccess": "Huomion lisääminen onnistui",

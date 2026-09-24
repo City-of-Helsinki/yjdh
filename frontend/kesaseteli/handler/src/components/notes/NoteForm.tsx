@@ -1,4 +1,12 @@
-import { ButtonSize, ButtonVariant, Checkbox, RadioButton } from 'hds-react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import {
+  ButtonSize,
+  ButtonVariant,
+  Checkbox,
+  Notification,
+  NotificationSize,
+  RadioButton,
+} from 'hds-react';
 import { useHandlerPermissions } from 'kesaseteli/handler/contexts/HandlerPermissionsContext';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -62,7 +70,17 @@ const NoteForm: React.FC<Props> = ({
   // Gate by assignee permission based on target type and note type, even when editing.
   const canAddNotes = hasNotePermission(targetType, noteType);
 
-  if (!canAddNotes) return null;
+  if (!canAddNotes) {
+    return isEditing ? null : (
+      <Notification
+        type="info"
+        size={NotificationSize.Small}
+        style={{ marginBottom: 'var(--spacing-m)' }}
+      >
+        {t('common:handlerNotes.cannotAddNoteNotAssignee')}
+      </Notification>
+    );
+  }
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
@@ -96,6 +114,7 @@ const NoteForm: React.FC<Props> = ({
 
   const charsLeft = NOTE_MAX_CHARS - content.length;
   const isNearLimit = charsLeft <= CHAR_COUNTER_WARN_THRESHOLD;
+  const showExternalOptions = targetType !== NoteTargetType.ATTACHMENT;
 
   return (
     <$FormContainer
@@ -127,6 +146,15 @@ const NoteForm: React.FC<Props> = ({
       </$CharCounter>
 
       <$Toolbar>
+        {showExternalOptions && !canAddExternalMessage && (
+          <Notification
+            type="info"
+            size={NotificationSize.Small}
+            style={{ marginTop: 'var(--spacing-s)', width: '100%' }}
+          >
+            {t('common:handlerNotes.cannotAddExternalMessageNotAssignee')}
+          </Notification>
+        )}
         <$OptionsGroup>
           <RadioButton
             id={
@@ -139,7 +167,7 @@ const NoteForm: React.FC<Props> = ({
             checked={noteType === NoteType.INTERNAL}
             onChange={() => setNoteType(NoteType.INTERNAL)}
           />
-          {targetType !== NoteTargetType.ATTACHMENT && (
+          {showExternalOptions && (
             <RadioButton
               id={
                 isEditing
@@ -197,3 +225,4 @@ const NoteForm: React.FC<Props> = ({
 };
 
 export default NoteForm;
+/* eslint-enable sonarjs/cognitive-complexity */
