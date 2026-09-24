@@ -93,7 +93,7 @@ wheels = [
 
 [[package]]
 name = "benefit-backend"
-version = "2.24.4"
+version = "2.24.5"
 source = { virtual = "." }
 dependencies = [
     { name = "babel" },
