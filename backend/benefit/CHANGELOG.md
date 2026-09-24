@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.24.5](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.4...benefit-backend-v2.24.5) (2026-09-24)
+
+
+### Bug Fixes
+
+* **backend:** Align project versions with release manifest ([d26269f](https://github.com/City-of-Helsinki/yjdh/commit/d26269f8f0cf07d1f03b572ac7bd83460f42adad))
+* **backend:** Exclude local virtualenvs from translation compilation ([6091a0c](https://github.com/City-of-Helsinki/yjdh/commit/6091a0ce13e8aea015f8f79218a45c298ab63388))
+* **benefit:** Remove vulnerable ecdsa dependency ([83f7864](https://github.com/City-of-Helsinki/yjdh/commit/83f78640dc2f32c94fd603ceb3b9666982cdb305))
+* **benefit:** Upgrade urllib3 for security fixes ([0d5be4f](https://github.com/City-of-Helsinki/yjdh/commit/0d5be4f2b362795e850610afb1ad2068dda6e7b9))
+* Make request_payslip include older application start_dates ([0ccebe4](https://github.com/City-of-Helsinki/yjdh/commit/0ccebe42c8f12e3fc34c4d81d71c0fea77584b02))
+
+
+### Dependencies
+
+* **benefit:** Upgrade Python dependencies ([4016950](https://github.com/City-of-Helsinki/yjdh/commit/401695070c9a3c489d0f67809d9bf71049c1448d))
+
 ## [2.24.4](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.3...benefit-backend-v2.24.4) (2026-09-15)
 
 
