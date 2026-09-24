@@ -1,5 +1,7 @@
 import { ApplicationListType } from 'kesaseteli/handler/types/application';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
+import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import { TFunction, Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
@@ -70,6 +72,13 @@ const getAssigneeChangeContent = (log: ActivityLogItem): React.ReactNode => {
   );
 };
 
+const isValidApplicationStatus = (val: string): boolean =>
+  val === '' ||
+  Object.values(EmployerApplicationStatus).includes(
+    val as EmployerApplicationStatus
+  ) ||
+  Object.values(YouthApplicationStatus).includes(val as YouthApplicationStatus);
+
 /**
  * Returns the rendered content for a timeline item based on its type and action.
  * Handles all cases: activity log entries (status changes, attachment events) and handler notes.
@@ -85,6 +94,20 @@ const getTimelineItemContent = (
     const log = item;
     switch (log.action_type) {
       case ActionType.APPLICATION_STATUS_CHANGE:
+        // Safeguard for bad data in developer environments where older attachment
+        // logs might have defaulted to a status change.
+        if (
+          !isValidApplicationStatus(log.old_value) ||
+          !isValidApplicationStatus(log.new_value)
+        ) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            'Invalid status change log detected (likely an old attachment log from local db)',
+            log
+          );
+          return null;
+        }
+
         return (
           <$PreWrapParagraph>
             <Trans
