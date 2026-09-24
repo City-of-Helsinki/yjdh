@@ -395,7 +395,8 @@
       "application_status_change": "Tilamuutos",
       "attachment_added": "Liite lisätty",
       "attachment_deleted": "Liite poistettu",
-      "assignee_change": "Käsittelijä"
+      "assignee_change": "Käsittelijä",
+      "application_received": "Vastaanottopäivä"
     },
     "noteTypeHelperText": "Huomion tyyppi vaikuttaa vain sen ulkoasuun tässä näkymässä. Ulkoinen viesti ei vielä lähetä viestiä hakijalle.",
     "isImportantLabel": "Merkitse tärkeäksi",
@@ -423,6 +424,7 @@
     "assigneeAssigned": "Käsittelijäksi asetettu: <statusValue>{{newAssignee}}</statusValue>",
     "assigneeChanged": "Käsittelijä vaihdettu: <statusValue>{{oldAssignee}}</statusValue> → <statusValue>{{newAssignee}}</statusValue>",
     "assigneeRemoved": "Käsittelijä tyhjennetty: <statusValue>{{oldAssignee}}</statusValue>",
+    "applicationReceived": "Hakemus vastaanotettu",
     "developerNote": {
       "label": "Kehittäjän huomiot",
       "content": "Sivupalkki on testikäytössä. Sivupalkin aikajanan tarkoituksena on näyttää tulevaisuudessa kommenttien lisäksi myös mm. hakemuksen tilamuutokset. Näin ollen se eroaa päänäkymän \"käsittelijän huomiot\" -osiosta, jossa listataan toistaiseksi vain huomioita. Sivupalkista voitaisiin luopua kokonaan ja listata kaikki yllämainitut asiat samassa päänäkymän huomio-osiossa, eli huomio-osio vaihdettaisiin aikajanaksi. Tällöin sivupalkkia ei tarvita ollenkaan."

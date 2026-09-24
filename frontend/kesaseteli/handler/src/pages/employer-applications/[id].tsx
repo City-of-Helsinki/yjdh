@@ -98,6 +98,7 @@ function EmployerApplicationDetail(): React.ReactElement {
               applicationId={applicationId}
               applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
               attachments={attachments}
+              createdAt={data.submitted_at || data.created_at}
             />
           </HandlerPermissionsProvider>
         )}
