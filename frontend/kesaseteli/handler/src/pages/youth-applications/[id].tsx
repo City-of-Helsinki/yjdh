@@ -3,6 +3,7 @@ import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSecti
 import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
 import ApplicationTimeline from 'kesaseteli/handler/components/timeline/ApplicationTimeline';
+import { HandlerPermissionsProvider } from 'kesaseteli/handler/contexts/HandlerPermissionsContext';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
 import { APPLICATION_LIST_TYPES } from 'kesaseteli/handler/types/application';
 import { NoteTargetType } from 'kesaseteli/handler/types/note';
@@ -60,7 +61,11 @@ function YouthApplicationDetail(): React.ReactElement {
         )}
       </FormSection>
       {isSuccess && applicationId && (
-        <>
+        <HandlerPermissionsProvider
+          applicationType={APPLICATION_LIST_TYPES.YOUTH}
+          status={data.status}
+          assignee={data.assignee}
+        >
           <$AccordionSection
             heading={t('common:handlerApplication.attachmentsTitle', {
               count: attachmentsCount,
@@ -87,7 +92,7 @@ function YouthApplicationDetail(): React.ReactElement {
             applicationType={APPLICATION_LIST_TYPES.YOUTH}
             attachments={attachments}
           />
-        </>
+        </HandlerPermissionsProvider>
       )}
     </Container>
   );

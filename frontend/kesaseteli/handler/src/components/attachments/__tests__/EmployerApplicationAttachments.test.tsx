@@ -2,11 +2,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
-import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 
-import { HANDLED_EMPLOYER_APPLICATION_STATUSES } from '../../../types/application';
-import type HandlerEmployerApplication from '../../../types/HandlerEmployerApplication';
 import {
   mockApplicationSingleVoucher,
   mockVoucher1,
@@ -17,6 +14,19 @@ const mockOpenAttachment = jest.fn();
 jest.mock('../../../hooks/backend/useOpenEmployerAttachment', () => ({
   __esModule: true,
   default: () => mockOpenAttachment,
+}));
+const mockPermissions = {
+  canUploadAttachments: true,
+  canDeleteAttachments: true,
+  canAddAttachmentComments: true,
+  canAddExternalMessage: true,
+};
+
+jest.mock('kesaseteli/handler/contexts/HandlerPermissionsContext', () => ({
+  useHandlerPermissions: () => ({
+    ...mockPermissions,
+    hasNotePermission: () => true,
+  }),
 }));
 
 const mockMutate = jest.fn();
@@ -61,6 +71,19 @@ describe('EmployerApplicationAttachments', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
   });
 
   it('renders "no attachments" placeholder when empty', () => {
@@ -325,26 +348,13 @@ describe('EmployerApplicationAttachments', () => {
       screen.getByRole('button', { name: /valitse tiedosto/i })
     ).toBeInTheDocument();
   });
-  it('shows remove button when application status allows it', () => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: jest.fn().mockImplementation((query) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-      })),
-    });
+  it('shows remove button when canDeleteAttachments is true', () => {
+    mockPermissions.canDeleteAttachments = true;
 
     renderComponent(
       <EmployerApplicationAttachments
         application={{
           ...mockApplicationSingleVoucher,
-          status: EmployerApplicationStatus.SUBMITTED,
           summer_vouchers: [
             {
               ...mockVoucher1,
@@ -367,36 +377,34 @@ describe('EmployerApplicationAttachments', () => {
     expect(deleteButton).toBeInTheDocument();
   });
 
-  it.each(HANDLED_EMPLOYER_APPLICATION_STATUSES)(
-    'hides remove button when application status is %s',
-    (status) => {
-      renderComponent(
-        <EmployerApplicationAttachments
-          application={{
-            ...mockApplicationSingleVoucher,
-            status: status as unknown as HandlerEmployerApplication['status'],
-            summer_vouchers: [
-              {
-                ...mockVoucher1,
-                attachments: [
-                  {
-                    ...fakeObjectFactory.fakeAttachment('employment_contract'),
-                    id: 'attachment-1',
-                    attachment_file_name: 'sopimus.pdf',
-                  },
-                ],
-              },
-            ],
-          }}
-        />
-      );
+  it('hides remove button when canDeleteAttachments is false', () => {
+    mockPermissions.canDeleteAttachments = false;
 
-      const deleteButton = screen.queryByTestId(
-        'delete-attachment-button-attachment-1'
-      );
-      expect(deleteButton).not.toBeInTheDocument();
-    }
-  );
+    renderComponent(
+      <EmployerApplicationAttachments
+        application={{
+          ...mockApplicationSingleVoucher,
+          summer_vouchers: [
+            {
+              ...mockVoucher1,
+              attachments: [
+                {
+                  ...fakeObjectFactory.fakeAttachment('employment_contract'),
+                  id: 'attachment-1',
+                  attachment_file_name: 'sopimus.pdf',
+                },
+              ],
+            },
+          ],
+        }}
+      />
+    );
+
+    const deleteButton = screen.queryByTestId(
+      'delete-attachment-button-attachment-1'
+    );
+    expect(deleteButton).not.toBeInTheDocument();
+  });
 
   it('renders the upload region and attachment type selection group', () => {
     renderComponent(

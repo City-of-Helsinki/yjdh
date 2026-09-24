@@ -3,6 +3,7 @@ import EmployerApplicationHandlerView from 'kesaseteli/handler/components/employ
 import $AccordionSection from 'kesaseteli/handler/components/form/AccordionSection.sc';
 import NotesSection from 'kesaseteli/handler/components/notes/NotesSection';
 import ApplicationTimeline from 'kesaseteli/handler/components/timeline/ApplicationTimeline';
+import { HandlerPermissionsProvider } from 'kesaseteli/handler/contexts/HandlerPermissionsContext';
 import useEmployerApplicationQuery from 'kesaseteli/handler/hooks/backend/useEmployerApplicationQuery';
 import { APPLICATION_LIST_TYPES } from 'kesaseteli/handler/types/application';
 import type HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
@@ -66,7 +67,11 @@ function EmployerApplicationDetail(): React.ReactElement {
           />
         )}
         {isSuccess && applicationId && (
-          <>
+          <HandlerPermissionsProvider
+            applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
+            status={data.status}
+            assignee={data.assignee}
+          >
             <$AccordionSection
               heading={t('common:handlerApplication.attachmentsTitle', {
                 count: attachmentsCount,
@@ -94,7 +99,7 @@ function EmployerApplicationDetail(): React.ReactElement {
               applicationType={APPLICATION_LIST_TYPES.EMPLOYER}
               attachments={attachments}
             />
-          </>
+          </HandlerPermissionsProvider>
         )}
       </Container>
     </$DetailPageWrapper>

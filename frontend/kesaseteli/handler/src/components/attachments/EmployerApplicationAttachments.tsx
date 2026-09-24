@@ -6,7 +6,6 @@ import useAttachmentActionToasts from '../../hooks/attachments/useAttachmentActi
 import useDeleteEmployerAttachmentMutation from '../../hooks/backend/useDeleteEmployerAttachmentMutation';
 import useOpenEmployerAttachment from '../../hooks/backend/useOpenEmployerAttachment';
 import useUploadEmployerAttachmentMutation from '../../hooks/backend/useUploadEmployerAttachmentMutation';
-import { isHandledEmployerApplicationStatus } from '../../types/application';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import type { HandlerAttachment } from '../../types/HandlerEmployerApplication';
 import { buildAttachmentFormData } from '../../utils/attachment.utils';
@@ -30,10 +29,6 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
   const deleteMutation = useDeleteEmployerAttachmentMutation();
   const { getUploadCallbacks, getDeleteCallbacks } =
     useAttachmentActionToasts();
-
-  const canDeleteAttachments = !isHandledEmployerApplicationStatus(
-    application.status
-  );
 
   const attachments = application.summer_vouchers.flatMap(
     (voucher) => voucher.attachments || []
@@ -73,7 +68,6 @@ const EmployerApplicationAttachments: React.FC<Props> = ({ application }) => {
     <ApplicationAttachments
       attachments={attachments}
       applicationId={application.id}
-      canDeleteAttachments={canDeleteAttachments}
       isMultiVoucher={isMultiVoucher}
       attachmentTypes={ATTACHMENT_TYPES}
       isUploading={uploadMutation.isPending}

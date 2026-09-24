@@ -1,5 +1,5 @@
 import { ButtonSize, ButtonVariant, Checkbox, RadioButton } from 'hds-react';
-import isHandlerExternalMessagesEnabled from 'kesaseteli/handler/flags/is-handler-external-messages-enabled';
+import { useHandlerPermissions } from 'kesaseteli/handler/contexts/HandlerPermissionsContext';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -47,6 +47,7 @@ const NoteForm: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const locale = useLocale();
+  const { canAddExternalMessage, hasNotePermission } = useHandlerPermissions();
 
   const [content, setContent] = useState(initialNote?.content || '');
   const [noteType, setNoteType] = useState<NoteType>(
@@ -57,6 +58,11 @@ const NoteForm: React.FC<Props> = ({
   );
 
   const isEditing = Boolean(initialNote);
+
+  // Gate by assignee permission based on target type and note type, even when editing.
+  const canAddNotes = hasNotePermission(targetType, noteType);
+
+  if (!canAddNotes) return null;
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
@@ -144,7 +150,7 @@ const NoteForm: React.FC<Props> = ({
               value={NoteType.EXTERNAL_MESSAGE}
               checked={noteType === NoteType.EXTERNAL_MESSAGE}
               onChange={() => setNoteType(NoteType.EXTERNAL_MESSAGE)}
-              disabled={!isHandlerExternalMessagesEnabled()}
+              disabled={!canAddExternalMessage}
             />
           )}
           <$Separator aria-hidden="true" />

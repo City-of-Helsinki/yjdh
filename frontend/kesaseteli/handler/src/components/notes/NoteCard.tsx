@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Button from 'shared/components/button/Button';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 
+import { useHandlerPermissions } from '../../contexts/HandlerPermissionsContext';
 import useDeleteNoteMutation from '../../hooks/backend/useDeleteNoteMutation';
 import useUpdateNoteMutation from '../../hooks/backend/useUpdateNoteMutation';
 import useUser from '../../hooks/useUser';
@@ -27,6 +28,7 @@ const modifiableForTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
   const { t } = useTranslation();
   const { user } = useUser();
+  const { hasNotePermission } = useHandlerPermissions();
   const currentUserId = user?.id;
   const isAuthor =
     Boolean(currentUserId) && note.author_username === currentUserId;
@@ -34,6 +36,11 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
   const [nowMs, setNowMs] = useState(() => Date.now());
   const isModifiableDate =
     nowMs >= createdAtMs && nowMs - createdAtMs < modifiableForTime;
+
+  const canEditOrDelete =
+    isAuthor &&
+    isModifiableDate &&
+    hasNotePermission(note.target_type, note.note_type);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -106,7 +113,7 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
       ) : (
         <>
           <$NoteContent>{note.content}</$NoteContent>
-          {isAuthor && isModifiableDate && (
+          {canEditOrDelete && (
             <$NoteActions>
               {/*
                 $ButtonText visually hides the label text on mobile view to prevent layout breaking/wrapping,

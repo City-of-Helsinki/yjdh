@@ -10,12 +10,32 @@ import NoteForm from '../NoteForm';
 
 jest.mock('shared/hooks/useLocale', () => jest.fn());
 
+let currentPermissions = {
+  canAddAttachmentComments: true,
+  canAddExternalMessage: true,
+};
+
+jest.mock('kesaseteli/handler/contexts/HandlerPermissionsContext', () => ({
+  useHandlerPermissions: () => ({
+    ...currentPermissions,
+    hasNotePermission: (targetType: string, noteType: string) =>
+      (targetType !== 'attachment' ||
+        currentPermissions.canAddAttachmentComments) &&
+      (noteType !== 'external_message' ||
+        currentPermissions.canAddExternalMessage),
+  }),
+}));
+
 describe('NoteForm', () => {
   const mockSubmit = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
     (useLocale as jest.Mock).mockReturnValue('fi');
+    currentPermissions = {
+      canAddAttachmentComments: true,
+      canAddExternalMessage: true,
+    };
   });
 
   describe('Create Mode', () => {
@@ -111,6 +131,45 @@ describe('NoteForm', () => {
 
       expect(screen.getByText('4 093 / 4 096')).toBeInTheDocument();
     });
+
+    it('renders nothing if targetType is ATTACHMENT and canAddAttachmentComments is false', () => {
+      currentPermissions = {
+        canAddAttachmentComments: false,
+        canAddExternalMessage: true,
+      };
+
+      renderComponent(
+        <div data-testid="wrapper">
+          <NoteForm
+            targetType={NoteTargetType.ATTACHMENT}
+            targetId="app-1"
+            onSubmit={mockSubmit}
+            isLoading={false}
+          />
+        </div>
+      );
+
+      expect(screen.getByTestId('wrapper')).toBeEmptyDOMElement();
+    });
+
+    it('disables external message radio if canAddExternalMessage is false', () => {
+      currentPermissions = {
+        canAddAttachmentComments: true,
+        canAddExternalMessage: false,
+      };
+
+      renderComponent(
+        <NoteForm
+          targetType={NoteTargetType.YOUTH_APPLICATION}
+          targetId="app-1"
+          onSubmit={mockSubmit}
+          isLoading={false}
+        />
+      );
+
+      const externalRadio = screen.getByLabelText(/ulkoinen viesti/i);
+      expect(externalRadio).toBeDisabled();
+    });
   });
 
   describe('Edit Mode', () => {
@@ -178,6 +237,32 @@ describe('NoteForm', () => {
         },
         expect.any(Function)
       );
+    });
+
+    it('renders nothing if editing external message and canAddExternalMessage is false', () => {
+      currentPermissions = {
+        canAddAttachmentComments: true,
+        canAddExternalMessage: false,
+      };
+
+      const note = {
+        ...mockNote,
+        note_type: NoteType.EXTERNAL_MESSAGE,
+      };
+
+      renderComponent(
+        <div data-testid="wrapper">
+          <NoteForm
+            initialNote={note}
+            targetType={note.target_type}
+            targetId={note.target_id}
+            onSubmit={mockSubmit}
+            isLoading={false}
+          />
+        </div>
+      );
+
+      expect(screen.getByTestId('wrapper')).toBeEmptyDOMElement();
     });
   });
 });

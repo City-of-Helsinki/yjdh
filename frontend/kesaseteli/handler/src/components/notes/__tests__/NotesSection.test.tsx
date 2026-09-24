@@ -11,9 +11,12 @@ import NotesSection from '../NotesSection';
 
 jest.mock('../../../hooks/useUser');
 jest.mock('../../../hooks/backend/useHandlerNotesQuery');
-jest.mock('kesaseteli/handler/flags/is-handler-external-messages-enabled', () => ({
-  __esModule: true,
-  default: () => true,
+jest.mock('kesaseteli/handler/contexts/HandlerPermissionsContext', () => ({
+  useHandlerPermissions: () => ({
+    canAddAttachmentComments: true,
+    canAddExternalMessage: true,
+    hasNotePermission: () => true,
+  }),
 }));
 
 const mockMutate = jest.fn();

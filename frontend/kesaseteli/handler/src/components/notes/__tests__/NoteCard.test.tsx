@@ -17,6 +17,13 @@ jest.mock('../../../hooks/backend/useUpdateNoteMutation');
 jest.mock('shared/hooks/useLocale', () => jest.fn());
 jest.mock('../../../hooks/backend/useDeleteNoteMutation');
 jest.mock('../../../hooks/useUser');
+jest.mock('kesaseteli/handler/contexts/HandlerPermissionsContext', () => ({
+  useHandlerPermissions: () => ({
+    canAddAttachmentComments: true,
+    canAddExternalMessage: true,
+    hasNotePermission: () => true,
+  }),
+}));
 
 const mockShowSuccessToast = jest.fn();
 jest.mock('shared/components/toast/show-success-toast', () => ({
@@ -129,7 +136,9 @@ describe('NoteCard', () => {
 
     renderComponent(<NoteCard note={note} />);
 
-    expect(screen.getByRole('button', { name: /muokkaa/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /muokkaa/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /poista/i })).toBeInTheDocument();
 
     act(() => jest.advanceTimersByTime(1));
