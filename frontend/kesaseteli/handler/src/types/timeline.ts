@@ -10,6 +10,7 @@ export enum ActionType {
   ASSIGNEE_CHANGE = 'assignee_change',
   ATTACHMENT_ADDED = 'attachment_added',
   ATTACHMENT_DELETED = 'attachment_deleted',
+  APPLICATION_RECEIVED = 'application_received',
 }
 
 export type ActivityLogItem = {

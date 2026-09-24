@@ -31,6 +31,7 @@ export type ApplicationTimelineProps = {
   title?: string;
   description?: string;
   attachments?: KesaseteliAttachment[];
+  createdAt?: string;
 };
 
 const getItemThemeType = (item: TimelineItem): TimelineItemThemeType =>
@@ -160,6 +161,13 @@ const getTimelineItemContent = (
       case ActionType.ASSIGNEE_CHANGE:
         return getAssigneeChangeContent(log);
 
+      case ActionType.APPLICATION_RECEIVED:
+        return (
+          <$PreWrapParagraph>
+            <Trans i18nKey="common:timeline.applicationReceived" />
+          </$PreWrapParagraph>
+        );
+
       default:
         return null;
     }
@@ -214,14 +222,28 @@ const ApplicationTimeline: React.FC<ApplicationTimelineProps> = ({
   title,
   description,
   attachments,
+  createdAt,
 }) => {
   const locale = useLocale();
   const { t } = useTranslation();
 
-  const { data: timeline = [] } = useApplicationTimelineQuery(
+  const { data: timelineData = [] } = useApplicationTimelineQuery(
     applicationId,
     applicationType
   );
+
+  const timeline = [...timelineData];
+
+  if (createdAt) {
+    timeline.push({
+      item_type: TimelineItemType.ACTIVITY,
+      action_type: ActionType.APPLICATION_RECEIVED,
+      old_value: '',
+      new_value: '',
+      author_name: '',
+      created_at: createdAt,
+    });
+  }
 
   const heading = title ?? t('common:timeline.title');
   const note = description ?? t('common:timeline.description');

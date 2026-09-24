@@ -91,6 +91,7 @@ function YouthApplicationDetail(): React.ReactElement {
             applicationId={applicationId}
             applicationType={APPLICATION_LIST_TYPES.YOUTH}
             attachments={attachments}
+            createdAt={data.created_at}
           />
         </HandlerPermissionsProvider>
       )}

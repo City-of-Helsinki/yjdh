@@ -1,4 +1,5 @@
 import {
+  IconDocument,
   IconEnvelope,
   IconHistory,
   IconPaperclip,
@@ -70,6 +71,13 @@ export const TIMELINE_ITEM_THEME_CONFIGS: Record<
     avatarBackground: 'var(--color-suomenlinna-light)',
     avatarColor: 'var(--color-suomenlinna-dark)',
     borderColor: 'var(--color-suomenlinna)',
+  },
+  [ActionType.APPLICATION_RECEIVED]: {
+    icon: IconDocument,
+    background: COLOR_WHITE,
+    avatarBackground: 'var(--color-silver-light)',
+    avatarColor: 'var(--color-black-50)',
+    borderColor: 'var(--color-silver)',
   },
 };
 
