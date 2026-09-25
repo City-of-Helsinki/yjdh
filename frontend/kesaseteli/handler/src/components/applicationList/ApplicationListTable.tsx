@@ -93,9 +93,11 @@ export function useApplicationTableQuery<T extends BaseApplication>(
     limit: number;
     offset: number;
     ordering: OrderingField<T>;
+    is_assigned_to_me?: boolean;
   }) => UseQueryResult<PaginatedResponse<T>>,
   status: T['status'][],
-  defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>
+  defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>,
+  isAssignedToMe?: boolean
 ): TableState<T> & {
   query: UseQueryResult<PaginatedResponse<T>>;
   count: number;
@@ -107,6 +109,7 @@ export function useApplicationTableQuery<T extends BaseApplication>(
     limit: PAGE_SIZE,
     offset: tableState.page * PAGE_SIZE,
     ordering: tableState.ordering,
+    is_assigned_to_me: isAssignedToMe,
   });
 
   const count = query.data?.count ?? 0;
