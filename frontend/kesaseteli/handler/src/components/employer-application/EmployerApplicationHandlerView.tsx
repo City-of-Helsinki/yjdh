@@ -1,12 +1,16 @@
 import { Notification, Tab, TabList, TabPanel } from 'hds-react';
+import { $ActionButtonsWrapper } from 'kesaseteli/handler/components/form/HandlerForm.sc';
 import useMediaQuery from 'kesaseteli/handler/hooks/useMediaQuery';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import { useTheme } from 'styled-components';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
+import EmployerActionButtons from './EmployerActionButtons';
 import {
+  $ActionsSection,
   $CompanySection,
   $ContactSection,
   $InvoicerSection,
@@ -27,6 +31,43 @@ import YouthInfoFieldsSection from './YouthInfoFieldsSection';
 
 type Props = {
   application: HandlerEmployerApplication;
+};
+
+const EMPLOYER_STATUSES_WAITING_FOR_HANDLER_ACTION = [
+  EmployerApplicationStatus.APPLICATION_HANDLING,
+  EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+] as const;
+
+const EmployerFormActions: React.FC<{
+  application: HandlerEmployerApplication;
+}> = ({ application }) => {
+  const { t } = useTranslation();
+  const waitingForHandlerAction = (
+    EMPLOYER_STATUSES_WAITING_FOR_HANDLER_ACTION as readonly EmployerApplicationStatus[]
+  ).includes(application.status);
+
+  if (waitingForHandlerAction) {
+    return (
+      <$ActionButtonsWrapper>
+        <EmployerActionButtons application={application} />
+      </$ActionButtonsWrapper>
+    );
+  }
+
+  return (
+    <$ActionButtonsWrapper>
+      <Notification
+        type="info"
+        label={t(
+          `common:applicationList.employer.status.${application.status}`
+        )}
+      >
+        {t(
+          'common:handlerApplication.statusTooltip.employer.noActionsAvailable'
+        )}
+      </Notification>
+    </$ActionButtonsWrapper>
+  );
 };
 
 const EmployerApplicationPanel: React.FC<
@@ -57,6 +98,9 @@ const EmployerApplicationPanel: React.FC<
     <$InvoicerSection>
       <EmployerInvoicerFieldsSection application={application} />
     </$InvoicerSection>
+    <$ActionsSection>
+      <EmployerFormActions application={application} />
+    </$ActionsSection>
   </$PanelGrid>
 );
 

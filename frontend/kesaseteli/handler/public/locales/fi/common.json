@@ -245,7 +245,10 @@
       "additional_information_provided": "Hakija on toimittanut pyydetyt lisätiedot. Hakemus odottaa käsittelijän tarkistusta.",
       "application_handling": "Hakemus on käsittelyssä.",
       "accepted": "Hakemus on hyväksytty ja kesäseteli on lähetetty sähköpostitse.",
-      "rejected": "Hakemus on hylätty."
+      "rejected": "Hakemus on hylätty.",
+      "employer": {
+        "noActionsAvailable": "Sovellukselle ei ole saatavilla käsittelytoimintoja tässä tilassa."
+      }
     },
     "vtjInfo": {
       "title": "Tiedot väestötietojärjestelmästä",

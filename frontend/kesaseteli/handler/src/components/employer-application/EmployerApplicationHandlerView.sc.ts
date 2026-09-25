@@ -9,7 +9,8 @@ export const $PanelGrid = styled.div`
     'status status status'
     'company voucher youth'
     'contact payment invoicer'
-    'attachments attachments attachments';
+    'attachments attachments attachments'
+    'actions actions actions';
 
   > div {
     padding: var(--spacing-m);
@@ -50,7 +51,15 @@ export const $PanelGrid = styled.div`
       'contact'
       'payment'
       'invoicer'
-      'attachments';
+      'attachments'
+      'actions';
+  }
+`;
+
+export const $ActionsSection = styled.div`
+  grid-area: actions;
+  && {
+    padding: 0;
   }
 `;
 
