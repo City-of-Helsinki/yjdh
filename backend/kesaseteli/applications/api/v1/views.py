@@ -1403,6 +1403,42 @@ class EmployerApplicationViewSet(ApplicationAssignmentViewSetMixin, ModelViewSet
             context["is_handler"] = HandlerPermission.has_user_permission(request.user)
         return context
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: OpenApiResponse(description="Application accepted for payment review"),
+            400: OpenApiResponse(description="Application was not accepted"),
+        },
+    )
+    @transaction.atomic
+    @action(methods=["patch"], detail=True)
+    @enforce_handler_view_adfs_login
+    def accept(self, request, *args, **kwargs) -> HttpResponse:
+        application: EmployerApplication = self.get_object().lock_for_update()
+
+        if not application.is_accepted and application.accept_manually(
+            handler=request.user
+        ):
+            return HttpResponse(status=status.HTTP_200_OK)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        request=None,
+        responses={
+            200: OpenApiResponse(description="Application rejected"),
+            400: OpenApiResponse(description="Application was not rejected"),
+        },
+    )
+    @transaction.atomic
+    @action(methods=["patch"], detail=True)
+    @enforce_handler_view_adfs_login
+    def reject(self, request, *args, **kwargs) -> HttpResponse:
+        application: EmployerApplication = self.get_object().lock_for_update()
+
+        if not application.is_rejected and application.reject(handler=request.user):
+            return HttpResponse(status=status.HTTP_200_OK)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
     def get_queryset(self):
         queryset = (
             super()

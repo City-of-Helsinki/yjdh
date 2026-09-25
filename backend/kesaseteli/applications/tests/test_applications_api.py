@@ -863,3 +863,97 @@ def test_applications_list_filtered_by_year(api_client, company, user):
     assert response.status_code == 200
     assert len(response.data) == 1
     assert str(response.data[0]["id"]) == str(app_2025.id)
+
+
+@pytest.mark.django_db
+def test_handler_can_accept_application_in_handling_state(staff_client, application):
+    from django.urls import reverse
+    from rest_framework import status
+
+    from applications.enums import EmployerApplicationStatus
+
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": application.pk})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.PAYMENT_REVIEW
+    assert application.handler is not None
+
+
+@pytest.mark.django_db
+def test_handler_cannot_accept_application_not_in_handling_state(
+    staff_client, application
+):
+    from django.urls import reverse
+    from rest_framework import status
+
+    from applications.enums import EmployerApplicationStatus
+
+    application.status = EmployerApplicationStatus.SUBMITTED
+    application.save()
+
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": application.pk})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_handler_can_reject_application_in_handling_state(staff_client, application):
+    from django.urls import reverse
+    from rest_framework import status
+
+    from applications.enums import EmployerApplicationStatus
+
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-reject", kwargs={"pk": application.pk})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.REJECTED
+    assert application.handler is not None
+
+
+@pytest.mark.django_db
+def test_non_handler_cannot_accept(api_client, application):
+    from django.urls import reverse
+    from rest_framework import status
+
+    from applications.enums import EmployerApplicationStatus
+
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": application.pk})
+    response = api_client.patch(url)
+
+    assert response.status_code in [
+        status.HTTP_403_FORBIDDEN,
+        status.HTTP_404_NOT_FOUND,
+    ]
+
+
+@pytest.mark.django_db
+def test_non_handler_cannot_reject(api_client, application):
+    from django.urls import reverse
+    from rest_framework import status
+
+    from applications.enums import EmployerApplicationStatus
+
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-reject", kwargs={"pk": application.pk})
+    response = api_client.patch(url)
+
+    assert response.status_code in [
+        status.HTTP_403_FORBIDDEN,
+        status.HTTP_404_NOT_FOUND,
+    ]

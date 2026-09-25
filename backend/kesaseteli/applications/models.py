@@ -63,6 +63,7 @@ LOGGER = logging.getLogger(__name__)
 # Optimization. When assigning or unassigning, we only need to update and refresh
 # these fields to handle locked rows correctly when using select_for_update.
 _ASSIGNEE_UPDATE_FIELDS = ("assignee", "status", "modified_at")
+_HANDLE_UPDATE_FIELDS = ("status", "assignee", "handler", "modified_at")
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -1589,6 +1590,67 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             locked.status = EmployerApplicationStatus.SUBMITTED
             locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
             self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
+
+    @property
+    def is_accepted(self) -> bool:
+        return self.status == EmployerApplicationStatus.PAYMENT_REVIEW
+
+    @property
+    def is_rejected(self) -> bool:
+        return self.status == EmployerApplicationStatus.REJECTED
+
+    def _handle(self, status: str, handler):
+        """
+        Handle the employer application by setting the status,
+        handler and clearing the assignee.
+        """
+        if status not in EmployerApplicationStatus.handled_values():
+            raise ValueError(f"Invalid handle status: {status}")
+        self.status = status
+        self.assignee = None
+        self.handler = handler
+        self.save(update_fields=_HANDLE_UPDATE_FIELDS)
+        self.refresh_from_db(fields=_HANDLE_UPDATE_FIELDS)
+
+    def can_accept_manually(self, handler) -> bool:
+        return (
+            self.status == EmployerApplicationStatus.APPLICATION_HANDLING
+            and HandlerPermission.has_user_permission(handler)
+        )
+
+    @transaction.atomic
+    def accept_manually(self, handler) -> bool:
+        """
+        Accept this employer application manually using given handler user.
+
+        :return: self.is_accepted
+        """
+        if self.can_accept_manually(handler=handler):
+            self._handle(
+                status=EmployerApplicationStatus.PAYMENT_REVIEW,
+                handler=handler,
+            )
+        return self.is_accepted
+
+    def can_reject(self, handler) -> bool:
+        return self.status in [
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        ] and HandlerPermission.has_user_permission(handler)
+
+    @transaction.atomic
+    def reject(self, handler) -> bool:
+        """
+        Reject this employer application using given handler user.
+
+        :return: self.is_rejected
+        """
+        if self.can_reject(handler=handler):
+            self._handle(
+                status=EmployerApplicationStatus.REJECTED,
+                handler=handler,
+            )
+        return self.is_rejected
 
     class Meta:
         verbose_name = _("employer application")
