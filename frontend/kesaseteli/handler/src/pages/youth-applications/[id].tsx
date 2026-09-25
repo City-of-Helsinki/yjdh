@@ -85,6 +85,7 @@ function YouthApplicationDetail(): React.ReactElement {
             <NotesSection
               targetId={applicationId}
               targetType={NoteTargetType.YOUTH_APPLICATION}
+              applicationLanguage={data?.language}
             />
           </$AccordionSection>
           <ApplicationTimeline

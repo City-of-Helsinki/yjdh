@@ -3,8 +3,10 @@
     "close": "Sulje",
     "cancel": "Peruuta",
     "delete": "Poista",
+    "send": "Lähetä",
     "saving": "Tallennetaan...",
-    "deleting": "Poistetaan..."
+    "deleting": "Poistetaan...",
+    "sending": "Lähetetään..."
   },
   "application": {
     "tooltipShowInfo": "Näytä info",
@@ -438,6 +440,40 @@
     "instructions": {
       "label": "Ohjeet",
       "content": "Kenttä on tarkoitettu huomioiden jakamiseen käsittelijöiden välillä. Älä kirjoita sensitiivistä tai muutakaan informaatiota, jota et halua tallentaa järjestelmään pysyvästi."
+    }
+  },
+  "externalMessages": {
+    "selectTemplate": "Valitse viestipohja",
+    "selectTemplatePlaceholder": "Valitse viestipohja",
+    "applicationLanguage": {
+      "title": "Hakemuksen kieli",
+      "fi": "suomi",
+      "sv": "ruotsi",
+      "en": "englanti"
+    },
+    "instructions": {
+      "label": "Ohjeet",
+      "content": "Kenttä on tarkoitettu ulkoiseen viestintään. Viestistä lähtee sähköposti hakijalle, ja itse viesti tallennetaan järjestelmään hakijan nähtäväksi. Viestiä ei lähetyksen jälkeen voi muokata tai poistaa. Älä kirjoita sensitiivistä informaatiota, kuten henkilötunnuksia, viestiin."
+    },
+    "confirmation": {
+      "title": "Haluatko varmasti lähettää viestin?",
+      "text": "Oletko varma, että haluat lähettää viestin? Viestistäsi lähtee tiedoksianto hakijan sähköpostiosoitteeseen, eikä viestiä voi poistaa."
+    },
+    "suspiciousString": {
+      "title": "Teksti sisältää henkilötunnuksen",
+      "text": "Viesti ei saa sisältää henkilötunnusta."
+    },
+    "additionalInformationRequired": {
+      "label": "Lisätietoja tarvitaan",
+      "fi": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec lobortis ipsum. Fusce tempor euismod lectus, non faucibus ligula. Integer sed ligula sed arcu tincidunt ultrices ac eu risus. In hac habitasse platea dictumst. Morbi vehicula, erat et mollis hendrerit, nisl nibh interdum tellus, congue malesuada elit purus ac lectus. Aliquam tincidunt lacinia tincidunt. Morbi faucibus placerat orci, eu cursus tellus placerat eu. Fusce id rhoncus elit, ac ultrices arcu. Sed nec sem enim.\n\nMauris gravida leo id mollis ornare. Vestibulum aliquam enim eget nunc euismod convallis. Curabitur dapibus nulla sit amet libero bibendum bibendum quis id neque. Sed eu pulvinar arcu, eu vulputate lacus. Fusce sem tortor, porta at efficitur ut, sollicitudin id diam. Proin sodales feugiat libero, id cursus leo lobortis et. Phasellus in lacus dui. Cras lacinia elit ut sapien imperdiet ultrices. Aenean consequat in neque et consequat. Donec pellentesque, turpis mattis mollis mattis, eros turpis facilisis erat, vitae pretium augue libero eget mauris. In feugiat elit mollis, pulvinar est id, pharetra velit. Praesent interdum ex in lorem scelerisque placerat. Nunc semper erat commodo posuere laoreet. Etiam vel pretium lectus. Proin facilisis turpis leo, ac suscipit enim laoreet eget. Donec aliquam felis purus, ac ultrices dui porta nec.",
+      "sv": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec lobortis ipsum. Fusce tempor euismod lectus, non faucibus ligula. Integer sed ligula sed arcu tincidunt ultrices ac eu risus. In hac habitasse platea dictumst. Morbi vehicula, erat et mollis hendrerit, nisl nibh interdum tellus, congue malesuada elit purus ac lectus. Aliquam tincidunt lacinia tincidunt. Morbi faucibus placerat orci, eu cursus tellus placerat eu. Fusce id rhoncus elit, ac ultrices arcu. Sed nec sem enim.\n\nMauris gravida leo id mollis ornare. Vestibulum aliquam enim eget nunc euismod convallis. Curabitur dapibus nulla sit amet libero bibendum bibendum quis id neque. Sed eu pulvinar arcu, eu vulputate lacus. Fusce sem tortor, porta at efficitur ut, sollicitudin id diam. Proin sodales feugiat libero, id cursus leo lobortis et. Phasellus in lacus dui. Cras lacinia elit ut sapien imperdiet ultrices. Aenean consequat in neque et consequat. Donec pellentesque, turpis mattis mollis mattis, eros turpis facilisis erat, vitae pretium augue libero eget mauris. In feugiat elit mollis, pulvinar est id, pharetra velit. Praesent interdum ex in lorem scelerisque placerat. Nunc semper erat commodo posuere laoreet. Etiam vel pretium lectus. Proin facilisis turpis leo, ac suscipit enim laoreet eget. Donec aliquam felis purus, ac ultrices dui porta nec.",
+      "en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec lobortis ipsum. Fusce tempor euismod lectus, non faucibus ligula. Integer sed ligula sed arcu tincidunt ultrices ac eu risus. In hac habitasse platea dictumst. Morbi vehicula, erat et mollis hendrerit, nisl nibh interdum tellus, congue malesuada elit purus ac lectus. Aliquam tincidunt lacinia tincidunt. Morbi faucibus placerat orci, eu cursus tellus placerat eu. Fusce id rhoncus elit, ac ultrices arcu. Sed nec sem enim.\n\nMauris gravida leo id mollis ornare. Vestibulum aliquam enim eget nunc euismod convallis. Curabitur dapibus nulla sit amet libero bibendum bibendum quis id neque. Sed eu pulvinar arcu, eu vulputate lacus. Fusce sem tortor, porta at efficitur ut, sollicitudin id diam. Proin sodales feugiat libero, id cursus leo lobortis et. Phasellus in lacus dui. Cras lacinia elit ut sapien imperdiet ultrices. Aenean consequat in neque et consequat. Donec pellentesque, turpis mattis mollis mattis, eros turpis facilisis erat, vitae pretium augue libero eget mauris. In feugiat elit mollis, pulvinar est id, pharetra velit. Praesent interdum ex in lorem scelerisque placerat. Nunc semper erat commodo posuere laoreet. Etiam vel pretium lectus. Proin facilisis turpis leo, ac suscipit enim laoreet eget. Donec aliquam felis purus, ac ultrices dui porta nec."
+    },
+    "applicationWillBeRejected": {
+      "label": "Hakemus hylätään",
+      "fi": "Aliquam at nisi enim. Cras pharetra pulvinar consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam in metus elit. Maecenas finibus pellentesque orci, eu vestibulum nisi ultricies ut. Curabitur sollicitudin scelerisque turpis vel condimentum. Aenean consectetur mi ante, sit amet varius tortor placerat eu. Nulla bibendum nisl ac eleifend facilisis. Fusce gravida est ante, ut lobortis diam pulvinar nec. Fusce tristique nulla non iaculis aliquet. Pellentesque commodo odio mauris, at ornare arcu tempus sed. Duis non mauris nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis urna quis elit aliquam porttitor eu eget ligula.\n\nVestibulum tristique nisi vitae consequat porttitor. Donec quis congue libero. Sed at urna ullamcorper, vestibulum nisl at, blandit turpis. Ut suscipit tempor molestie. Aenean efficitur scelerisque nisl sed porttitor. Proin luctus bibendum hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin sit amet quam sed purus volutpat ornare bibendum in odio. Suspendisse nisl tellus, pellentesque a pretium vel, ornare sed massa. Vivamus sollicitudin aliquet tellus, vitae luctus mauris eleifend vel. Donec ac libero vel ligula sodales porttitor in et dui. Proin at pharetra ligula. Fusce euismod sit amet sem at bibendum. Aenean dapibus facilisis ante, vel sollicitudin nibh. Aenean vitae ipsum semper, euismod justo sodales, iaculis metus. Suspendisse pretium odio nec lorem pharetra, ut posuere augue laoreet.",
+      "sv": "Aliquam at nisi enim. Cras pharetra pulvinar consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam in metus elit. Maecenas finibus pellentesque orci, eu vestibulum nisi ultricies ut. Curabitur sollicitudin scelerisque turpis vel condimentum. Aenean consectetur mi ante, sit amet varius tortor placerat eu. Nulla bibendum nisl ac eleifend facilisis. Fusce gravida est ante, ut lobortis diam pulvinar nec. Fusce tristique nulla non iaculis aliquet. Pellentesque commodo odio mauris, at ornare arcu tempus sed. Duis non mauris nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis urna quis elit aliquam porttitor eu eget ligula.\n\nVestibulum tristique nisi vitae consequat porttitor. Donec quis congue libero. Sed at urna ullamcorper, vestibulum nisl at, blandit turpis. Ut suscipit tempor molestie. Aenean efficitur scelerisque nisl sed porttitor. Proin luctus bibendum hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin sit amet quam sed purus volutpat ornare bibendum in odio. Suspendisse nisl tellus, pellentesque a pretium vel, ornare sed massa. Vivamus sollicitudin aliquet tellus, vitae luctus mauris eleifend vel. Donec ac libero vel ligula sodales porttitor in et dui. Proin at pharetra ligula. Fusce euismod sit amet sem at bibendum. Aenean dapibus facilisis ante, vel sollicitudin nibh. Aenean vitae ipsum semper, euismod justo sodales, iaculis metus. Suspendisse pretium odio nec lorem pharetra, ut posuere augue laoreet.",
+      "en": "Aliquam at nisi enim. Cras pharetra pulvinar consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam in metus elit. Maecenas finibus pellentesque orci, eu vestibulum nisi ultricies ut. Curabitur sollicitudin scelerisque turpis vel condimentum. Aenean consectetur mi ante, sit amet varius tortor placerat eu. Nulla bibendum nisl ac eleifend facilisis. Fusce gravida est ante, ut lobortis diam pulvinar nec. Fusce tristique nulla non iaculis aliquet. Pellentesque commodo odio mauris, at ornare arcu tempus sed. Duis non mauris nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis urna quis elit aliquam porttitor eu eget ligula.\n\nVestibulum tristique nisi vitae consequat porttitor. Donec quis congue libero. Sed at urna ullamcorper, vestibulum nisl at, blandit turpis. Ut suscipit tempor molestie. Aenean efficitur scelerisque nisl sed porttitor. Proin luctus bibendum hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin sit amet quam sed purus volutpat ornare bibendum in odio. Suspendisse nisl tellus, pellentesque a pretium vel, ornare sed massa. Vivamus sollicitudin aliquet tellus, vitae luctus mauris eleifend vel. Donec ac libero vel ligula sodales porttitor in et dui. Proin at pharetra ligula. Fusce euismod sit amet sem at bibendum. Aenean dapibus facilisis ante, vel sollicitudin nibh. Aenean vitae ipsum semper, euismod justo sodales, iaculis metus. Suspendisse pretium odio nec lorem pharetra, ut posuere augue laoreet."
     }
   },
   "timeline": {

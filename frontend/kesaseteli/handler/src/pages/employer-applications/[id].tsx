@@ -92,6 +92,7 @@ function EmployerApplicationDetail(): React.ReactElement {
               <NotesSection
                 targetId={applicationId}
                 targetType={NoteTargetType.EMPLOYER_APPLICATION}
+                applicationLanguage={data?.language}
               />
             </$AccordionSection>
             <ApplicationTimeline
