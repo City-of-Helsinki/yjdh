@@ -1,5 +1,5 @@
 import { UseQueryResult } from '@tanstack/react-query';
-import { Checkbox, Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { Checkbox, Tab, TabList, TabPanel, Tabs, Tooltip } from 'hds-react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +25,7 @@ import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
 import StatusFilter from './searchFilters/StatusFilter';
 
 const ASSIGNEE_TRANSLATION_KEY = 'common:application.assignee';
+const ASSIGNEE_TOOLTIP_TRANSLATION_KEY = 'common:application.assigneeTooltip';
 
 const $TabList = styled(TabList)`
   margin-bottom: 1rem;
@@ -58,6 +59,7 @@ const EMPLOYER_PENDING_STATUSES = [
 const DEFAULT_PENDING_STATUSES = [
   EmployerApplicationStatus.SUBMITTED,
   EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+  EmployerApplicationStatus.APPLICATION_HANDLING,
   EmployerApplicationStatus.ERROR_IN_PAYMENT,
 ];
 
@@ -158,6 +160,7 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
   setSelectedStatuses: React.Dispatch<
     React.SetStateAction<EmployerApplicationStatus[]>
   >;
+  selectedStatuses: EmployerApplicationStatus[];
 };
 
 /**
@@ -191,6 +194,7 @@ const useEmployerApplications = (
   return {
     ...tableQuery,
     setSelectedStatuses,
+    selectedStatuses,
     isAssignedToMe,
     setIsAssignedToMe,
   };
@@ -209,6 +213,7 @@ export default function EmployerApplicationList(): React.JSX.Element {
     page: pendingPage,
     setPage: setPendingPage,
     setOrdering: setPendingOrdering,
+    selectedStatuses: selectedPendingStatuses,
     setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
@@ -221,6 +226,7 @@ export default function EmployerApplicationList(): React.JSX.Element {
     page: processedPage,
     setPage: setProcessedPage,
     setOrdering: setProcessedOrdering,
+    selectedStatuses: selectedProcessedStatuses,
     setSelectedStatuses: setSelectedProcessedStatuses,
     query: processedQuery,
     count: processedCount,
@@ -248,17 +254,43 @@ export default function EmployerApplicationList(): React.JSX.Element {
           <StatusFilter
             id="employer-application-pending-status-filter"
             statuses={EMPLOYER_PENDING_STATUSES}
-            defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
+            selectedStatuses={selectedPendingStatuses}
             onChange={setSelectedPendingStatuses}
             listType={APPLICATION_LIST_TYPES.EMPLOYER}
           />
           <$FilterWrapper>
-            <$FilterLabel>{t(ASSIGNEE_TRANSLATION_KEY)}</$FilterLabel>
+            <$FilterLabel>
+              {t(ASSIGNEE_TRANSLATION_KEY)}
+              <Tooltip
+                buttonLabel={t('common:application.tooltipShowInfo')}
+                tooltipLabel={t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              >
+                {t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              </Tooltip>
+            </$FilterLabel>
             <Checkbox
               id="employer-application-pending-assigned-to-me-filter"
               label={t('common:applicationList.filterAssignedToMe')}
               checked={isPendingAssignedToMe}
-              onChange={(e) => setIsPendingAssignedToMe(e.target.checked)}
+              onChange={(e) => {
+                const isChecked = e.target.checked;
+                setIsPendingAssignedToMe(isChecked);
+                if (isChecked) {
+                  setSelectedPendingStatuses((prev) => {
+                    if (
+                      !prev.includes(
+                        EmployerApplicationStatus.APPLICATION_HANDLING
+                      )
+                    ) {
+                      return [
+                        ...prev,
+                        EmployerApplicationStatus.APPLICATION_HANDLING,
+                      ];
+                    }
+                    return prev;
+                  });
+                }
+              }}
             />
           </$FilterWrapper>
         </ApplicationListTable.FilterSection>
@@ -281,12 +313,20 @@ export default function EmployerApplicationList(): React.JSX.Element {
           <StatusFilter
             id="employer-application-processed-status-filter"
             statuses={PROCESSED_STATUSES}
-            defaultSelectedStatuses={PROCESSED_STATUSES}
+            selectedStatuses={selectedProcessedStatuses}
             onChange={setSelectedProcessedStatuses}
             listType={APPLICATION_LIST_TYPES.EMPLOYER}
           />
           <$FilterWrapper>
-            <$FilterLabel>{t(ASSIGNEE_TRANSLATION_KEY)}</$FilterLabel>
+            <$FilterLabel>
+              {t(ASSIGNEE_TRANSLATION_KEY)}
+              <Tooltip
+                buttonLabel={t('common:application.tooltipShowInfo')}
+                tooltipLabel={t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              >
+                {t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              </Tooltip>
+            </$FilterLabel>
             <Checkbox
               id="employer-application-processed-assigned-to-me-filter"
               label={t('common:applicationList.filterAssignedToMe')}

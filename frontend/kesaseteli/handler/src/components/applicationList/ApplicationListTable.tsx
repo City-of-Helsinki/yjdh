@@ -1,4 +1,4 @@
-import { UseQueryResult } from '@tanstack/react-query';
+import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import { Pagination, Table } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -88,13 +88,19 @@ export function useTableState<T extends BaseApplication = BaseApplication>(
  * @returns An object containing { page, setPage, ordering, setOrdering, query, count }
  */
 export function useApplicationTableQuery<T extends BaseApplication>(
-  useQueryHook: (params: {
-    status: T['status'][];
-    limit: number;
-    offset: number;
-    ordering: OrderingField<T>;
-    is_assigned_to_me?: boolean;
-  }) => UseQueryResult<PaginatedResponse<T>>,
+  useQueryHook: (
+    params: {
+      status: T['status'][];
+      limit: number;
+      offset: number;
+      ordering: OrderingField<T>;
+      is_assigned_to_me?: boolean;
+    },
+    options?: Omit<
+      UseQueryOptions<PaginatedResponse<T>>,
+      'queryKey' | 'queryFn'
+    >
+  ) => UseQueryResult<PaginatedResponse<T>>,
   status: T['status'][],
   defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>,
   isAssignedToMe?: boolean
@@ -104,13 +110,20 @@ export function useApplicationTableQuery<T extends BaseApplication>(
 } {
   const tableState = useTableState(defaultOrdering);
 
-  const query = useQueryHook({
+  const queryParams = {
     status,
     limit: PAGE_SIZE,
     offset: tableState.page * PAGE_SIZE,
     ordering: tableState.ordering,
     is_assigned_to_me: isAssignedToMe,
-  });
+  };
+
+  // Only pass options argument when we need to disable the query,
+  // to avoid breaking mock calls that expect 1 argument in tests
+  const query = useQueryHook(
+    queryParams,
+    ...(status.length === 0 ? [{ enabled: false }] : [])
+  );
 
   const count = query.data?.count ?? 0;
 

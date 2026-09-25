@@ -26,7 +26,9 @@ const $FilterTitle = styled.h2`
 `;
 
 export const $FilterLabel = styled.span`
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
   font-weight: 500;
   margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
 `;
