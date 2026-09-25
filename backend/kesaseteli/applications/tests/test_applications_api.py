@@ -1,4 +1,5 @@
 import random
+import uuid
 
 import pytest
 from auditlog.models import LogEntry
@@ -6,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
+from rest_framework import status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.permissions import ALLOWED_APPLICATION_VIEW_STATUSES
@@ -863,3 +865,91 @@ def test_applications_list_filtered_by_year(api_client, company, user):
     assert response.status_code == 200
     assert len(response.data) == 1
     assert str(response.data[0]["id"]) == str(app_2025.id)
+
+
+@pytest.mark.django_db
+def test_handler_can_accept_application_in_handling_state(staff_client, application):
+    """Test that a handler can accept an application in the handling state."""
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": application.pk})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.PAYMENT_REVIEW
+    assert application.handler is not None
+
+
+@pytest.mark.django_db
+def test_handler_cannot_accept_application_not_in_handling_state(
+    staff_client, application
+):
+    """Test that a handler cannot accept an application not in the handling state."""
+    application.status = EmployerApplicationStatus.SUBMITTED
+    application.save()
+
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": application.pk})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_handler_can_reject_application_in_handling_state(staff_client, application):
+    """Test that a handler can reject an application in the handling state."""
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-reject", kwargs={"pk": application.pk})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    application.refresh_from_db()
+    assert application.status == EmployerApplicationStatus.REJECTED
+    assert application.handler is not None
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_non_handler_cannot_accept(api_client, application):
+    """Test that a non-handler user receives 403 Forbidden when attempting to accept."""
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": application.pk})
+    response = api_client.patch(url, headers={"Accept": "application/json"})
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_non_handler_cannot_reject(api_client, application):
+    """Test that a non-handler user receives 403 Forbidden when attempting to reject."""
+    application.status = EmployerApplicationStatus.APPLICATION_HANDLING
+    application.save()
+
+    url = reverse("v1:employerapplication-reject", kwargs={"pk": application.pk})
+    response = api_client.patch(url, headers={"Accept": "application/json"})
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_handler_accept_non_existent_application_returns_404(staff_client):
+    """Test that attempting to accept a non-existent application returns 404 Not Found."""
+    url = reverse("v1:employerapplication-accept", kwargs={"pk": uuid.uuid4()})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_handler_reject_non_existent_application_returns_404(staff_client):
+    """Test that attempting to reject a non-existent application returns 404 Not Found."""
+    url = reverse("v1:employerapplication-reject", kwargs={"pk": uuid.uuid4()})
+    response = staff_client.patch(url)
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND

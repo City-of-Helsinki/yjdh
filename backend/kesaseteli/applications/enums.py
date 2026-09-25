@@ -80,6 +80,7 @@ class EmployerApplicationStatus(models.TextChoices):
         Employer application statuses which have been handled.
         """
         return [
+            EmployerApplicationStatus.PAYMENT_REVIEW,
             EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
             EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
             EmployerApplicationStatus.REJECTED,
