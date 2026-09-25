@@ -4,7 +4,7 @@ import {
   StatusTypeForListType,
 } from 'kesaseteli/handler/types/application';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import { OptionType } from 'shared/types/common';
 import styled from 'styled-components';
@@ -16,50 +16,19 @@ const $Wrapper = styled.div`
 type StatusFilterProps<T extends ApplicationListType> = {
   id: string;
   statuses: StatusTypeForListType<T>[];
-  defaultSelectedStatuses?: StatusTypeForListType<T>[];
+  selectedStatuses: StatusTypeForListType<T>[];
   onChange: (statuses: StatusTypeForListType<T>[]) => void;
   listType: T;
 };
 
-type UseStatusFilterProps<T extends ApplicationListType> = {
-  defaultSelectedStatuses?: StatusTypeForListType<T>[];
-  statuses: StatusTypeForListType<T>[];
-};
-
-export function useStatusFilter<T extends ApplicationListType>({
-  defaultSelectedStatuses,
-  statuses,
-}: Readonly<UseStatusFilterProps<T>>): {
-  selectedStatuses: StatusTypeForListType<T>[];
-  setSelectedStatuses: React.Dispatch<
-    React.SetStateAction<StatusTypeForListType<T>[]>
-  >;
-} {
-  const [selectedStatuses, setSelectedStatuses] = useState<
-    StatusTypeForListType<T>[]
-  >(defaultSelectedStatuses ?? statuses);
-
-  useEffect(() => {
-    if (defaultSelectedStatuses) {
-      setSelectedStatuses(defaultSelectedStatuses);
-    }
-  }, [defaultSelectedStatuses]);
-
-  return { selectedStatuses, setSelectedStatuses };
-}
-
 function StatusFilter<T extends ApplicationListType>({
   id,
   statuses,
-  defaultSelectedStatuses,
+  selectedStatuses,
   onChange,
   listType,
 }: Readonly<StatusFilterProps<T>>): React.JSX.Element {
   const { t } = useTranslation();
-  const { selectedStatuses, setSelectedStatuses } = useStatusFilter<T>({
-    defaultSelectedStatuses,
-    statuses,
-  });
 
   const options = useMemo<OptionType<StatusTypeForListType<T>>[]>(
     () =>
@@ -92,11 +61,7 @@ function StatusFilter<T extends ApplicationListType>({
           const nextStatuses = nextSelectedOptions.map(
             (option) => option.value as StatusTypeForListType<T>
           );
-          setSelectedStatuses(nextStatuses);
-          // Only update query if selection is valid (not empty) to avoid querying every status
-          if (nextStatuses.length > 0) {
-            onChange(nextStatuses);
-          }
+          onChange(nextStatuses);
         }}
       />
       {isInvalid && (

@@ -11,7 +11,8 @@
     "assignApplication": "Ota käsittelyyn",
     "unassignApplication": "Vapauta käsittelystäni",
     "assignConflict": "Toinen käsittelijä on jo ottanut tämän hakemuksen käsittelyyn.",
-    "assignee": "Käsittelijä"
+    "assignee": "Käsittelijä",
+    "assigneeTooltip": "Valitsemalla 'Omassa käsittelyssäni' listaukseen suodatetaan automaattisesti myös Käsittelyssä-tilaiset hakemukset."
   },
   "appName": "Kesäsetelin käsittelijäliittymä",
   "cookieSettings": "Evästeasetukset",

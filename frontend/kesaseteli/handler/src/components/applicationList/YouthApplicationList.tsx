@@ -1,5 +1,5 @@
 import { UseQueryResult } from '@tanstack/react-query';
-import { Checkbox, Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { Checkbox, Tab, TabList, TabPanel, Tabs, Tooltip } from 'hds-react';
 import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
@@ -27,6 +27,7 @@ import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
 import StatusFilter from './searchFilters/StatusFilter';
 
 const ASSIGNEE_TRANSLATION_KEY = 'common:application.assignee';
+const ASSIGNEE_TOOLTIP_TRANSLATION_KEY = 'common:application.assigneeTooltip';
 
 const $TabList = styled(TabList)`
   margin-bottom: 1rem;
@@ -168,6 +169,7 @@ type UseYouthApplicationsResultType = TableState<YouthApplication> & {
   setSelectedStatuses: React.Dispatch<
     React.SetStateAction<YouthApplicationStatus[]>
   >;
+  selectedStatuses: YouthApplicationStatus[];
 };
 
 const useYouthApplications = (
@@ -198,6 +200,7 @@ const useYouthApplications = (
   return {
     ...tableQuery,
     setSelectedStatuses,
+    selectedStatuses,
     isAssignedToMe,
     setIsAssignedToMe,
   };
@@ -215,6 +218,7 @@ export default function YouthApplicationList(): React.JSX.Element {
     page: pendingPage,
     setPage: setPendingPage,
     setOrdering: setPendingOrdering,
+    selectedStatuses: selectedPendingStatuses,
     setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
@@ -226,6 +230,7 @@ export default function YouthApplicationList(): React.JSX.Element {
     page: processedPage,
     setPage: setProcessedPage,
     setOrdering: setProcessedOrdering,
+    selectedStatuses: selectedProcessedStatuses,
     setSelectedStatuses: setSelectedProcessedStatuses,
     query: processedQuery,
     count: processedCount,
@@ -253,17 +258,43 @@ export default function YouthApplicationList(): React.JSX.Element {
           <StatusFilter
             id="youth-application-pending-status-filter"
             statuses={YOUTH_PENDING_STATUSES}
-            defaultSelectedStatuses={DEFAULT_PENDING_STATUSES}
+            selectedStatuses={selectedPendingStatuses}
             onChange={setSelectedPendingStatuses}
             listType={APPLICATION_LIST_TYPES.YOUTH}
           />
           <$FilterWrapper>
-            <$FilterLabel>{t(ASSIGNEE_TRANSLATION_KEY)}</$FilterLabel>
+            <$FilterLabel>
+              {t(ASSIGNEE_TRANSLATION_KEY)}
+              <Tooltip
+                buttonLabel={t('common:application.tooltipShowInfo')}
+                tooltipLabel={t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              >
+                {t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              </Tooltip>
+            </$FilterLabel>
             <Checkbox
               id="youth-application-pending-assigned-to-me-filter"
               label={t('common:applicationList.filterAssignedToMe')}
               checked={isPendingAssignedToMe}
-              onChange={(e) => setIsPendingAssignedToMe(e.target.checked)}
+              onChange={(e) => {
+                const isChecked = e.target.checked;
+                setIsPendingAssignedToMe(isChecked);
+                if (isChecked) {
+                  setSelectedPendingStatuses((prev) => {
+                    if (
+                      !prev.includes(
+                        YouthApplicationStatus.APPLICATION_HANDLING
+                      )
+                    ) {
+                      return [
+                        ...prev,
+                        YouthApplicationStatus.APPLICATION_HANDLING,
+                      ];
+                    }
+                    return prev;
+                  });
+                }
+              }}
             />
           </$FilterWrapper>
         </ApplicationListTable.FilterSection>
@@ -285,12 +316,20 @@ export default function YouthApplicationList(): React.JSX.Element {
           <StatusFilter
             id="youth-application-processed-status-filter"
             statuses={PROCESSED_STATUSES}
-            defaultSelectedStatuses={PROCESSED_STATUSES}
+            selectedStatuses={selectedProcessedStatuses}
             onChange={setSelectedProcessedStatuses}
             listType={APPLICATION_LIST_TYPES.YOUTH}
           />
           <$FilterWrapper>
-            <$FilterLabel>{t(ASSIGNEE_TRANSLATION_KEY)}</$FilterLabel>
+            <$FilterLabel>
+              {t(ASSIGNEE_TRANSLATION_KEY)}
+              <Tooltip
+                buttonLabel={t('common:application.tooltipShowInfo')}
+                tooltipLabel={t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              >
+                {t(ASSIGNEE_TOOLTIP_TRANSLATION_KEY)}
+              </Tooltip>
+            </$FilterLabel>
             <Checkbox
               id="youth-application-processed-assigned-to-me-filter"
               label={t('common:applicationList.filterAssignedToMe')}

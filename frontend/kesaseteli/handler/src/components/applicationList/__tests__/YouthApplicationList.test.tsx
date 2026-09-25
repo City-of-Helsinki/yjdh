@@ -122,9 +122,12 @@ describe('YouthApplicationList', () => {
     // Deselect "Käsittelyssä" (application_handling) -> empty selection, should not trigger query
     await userEvent.click(within(listbox).getByText('Käsittelyssä'));
 
-    expect(mockUseQuery).not.toHaveBeenCalledWith(
+    expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [],
+      }),
+      expect.objectContaining({
+        enabled: false,
       })
     );
     expect(mockUseQuery).toHaveBeenCalledWith(
@@ -166,6 +169,41 @@ describe('YouthApplicationList', () => {
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [YouthApplicationStatus.REJECTED],
+      })
+    );
+  });
+  it('automatically adds APPLICATION_HANDLING to status filter when assignee checkbox is checked in pending tab', async () => {
+    renderComponent(<YouthApplicationList />);
+
+    // Switch to pending tab explicitly (just in case)
+    await userEvent.click(screen.getByText(/käsiteltävät/i));
+
+    // Deselect "Käsittelyssä" from the dropdown to test the behavior
+    const combobox = screen.getByRole('combobox', { name: /tila/i });
+    await userEvent.click(combobox);
+    const listbox = screen.getByRole('listbox');
+    await userEvent.click(within(listbox).getByText('Käsittelyssä'));
+
+    // Verify it was removed
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED],
+      })
+    );
+
+    // Check the assignee checkbox
+    const checkbox = screen.getByRole('checkbox', {
+      name: /omassa käsittelyssäni/i,
+    });
+    await userEvent.click(checkbox);
+
+    // Verify it added APPLICATION_HANDLING back
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: expect.arrayContaining([
+          YouthApplicationStatus.APPLICATION_HANDLING,
+        ]),
+        is_assigned_to_me: true,
       })
     );
   });
