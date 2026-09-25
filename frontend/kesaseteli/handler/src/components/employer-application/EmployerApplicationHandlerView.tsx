@@ -1,12 +1,15 @@
 import { Notification, Tab, TabList, TabPanel } from 'hds-react';
 import useMediaQuery from 'kesaseteli/handler/hooks/useMediaQuery';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import { useTheme } from 'styled-components';
 
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
+import EmployerActionButtons from './EmployerActionButtons';
 import {
+  $ActionsSection,
   $CompanySection,
   $ContactSection,
   $InvoicerSection,
@@ -27,6 +30,21 @@ import YouthInfoFieldsSection from './YouthInfoFieldsSection';
 
 type Props = {
   application: HandlerEmployerApplication;
+};
+
+const EmployerFormActions: React.FC<{
+  application: HandlerEmployerApplication;
+}> = ({ application }) => {
+  const waitingForHandlerAction =
+    application.status === EmployerApplicationStatus.APPLICATION_HANDLING;
+
+  return (
+    <EmployerActionButtons
+      application={application}
+      disabled={!waitingForHandlerAction}
+      showNotification={!waitingForHandlerAction}
+    />
+  );
 };
 
 const EmployerApplicationPanel: React.FC<
@@ -57,6 +75,9 @@ const EmployerApplicationPanel: React.FC<
     <$InvoicerSection>
       <EmployerInvoicerFieldsSection application={application} />
     </$InvoicerSection>
+    <$ActionsSection>
+      <EmployerFormActions application={application} />
+    </$ActionsSection>
   </$PanelGrid>
 );
 
