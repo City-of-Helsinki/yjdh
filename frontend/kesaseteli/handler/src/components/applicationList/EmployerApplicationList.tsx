@@ -1,5 +1,5 @@
 import { UseQueryResult } from '@tanstack/react-query';
-import { Tab, TabList, TabPanel, Tabs } from 'hds-react';
+import { Checkbox, Tab, TabList, TabPanel, Tabs } from 'hds-react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
@@ -21,7 +21,10 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
+import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
 import StatusFilter from './searchFilters/StatusFilter';
+
+const ASSIGNEE_TRANSLATION_KEY = 'common:application.assignee';
 
 const $TabList = styled(TabList)`
   margin-bottom: 1rem;
@@ -138,7 +141,7 @@ export const useEmployerApplicationListColumns =
       },
       {
         key: 'assignee',
-        headerName: t('common:application.assignee'),
+        headerName: t(ASSIGNEE_TRANSLATION_KEY),
         isSortable: false,
         transform: (row) => getAssigneeName(row.assignee) || '-',
       },
@@ -162,26 +165,34 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
  * Handles default and user-selected status filters.
  */
 const useEmployerApplications = (
-  initialStatuses: EmployerApplicationStatus[]
-): UseEmployerApplicationsResultType => {
+  initialStatuses: EmployerApplicationStatus[],
+  initialAssignedToMe = false
+): UseEmployerApplicationsResultType & {
+  isAssignedToMe: boolean;
+  setIsAssignedToMe: React.Dispatch<React.SetStateAction<boolean>>;
+} => {
   const [selectedStatuses, setSelectedStatuses] =
     useState<EmployerApplicationStatus[]>(initialStatuses);
+  const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
 
   const tableQuery = useApplicationTableQuery<EmployerApplication>(
     useEmployerApplicationsListQuery,
     selectedStatuses,
-    '-submitted_at'
+    '-submitted_at',
+    isAssignedToMe
   );
 
   const { setPage } = tableQuery;
 
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, setPage]);
+  }, [selectedStatuses, isAssignedToMe, setPage]);
 
   return {
     ...tableQuery,
     setSelectedStatuses,
+    isAssignedToMe,
+    setIsAssignedToMe,
   };
 };
 
@@ -201,6 +212,8 @@ export default function EmployerApplicationList(): React.JSX.Element {
     setSelectedStatuses: setSelectedPendingStatuses,
     query: pendingQuery,
     count: pendingCount,
+    isAssignedToMe: isPendingAssignedToMe,
+    setIsAssignedToMe: setIsPendingAssignedToMe,
   } = useEmployerApplications(DEFAULT_PENDING_STATUSES);
 
   // Processed Tab States & Query
@@ -211,6 +224,8 @@ export default function EmployerApplicationList(): React.JSX.Element {
     setSelectedStatuses: setSelectedProcessedStatuses,
     query: processedQuery,
     count: processedCount,
+    isAssignedToMe: isProcessedAssignedToMe,
+    setIsAssignedToMe: setIsProcessedAssignedToMe,
   } = useEmployerApplications(PROCESSED_STATUSES);
 
   const columns = useEmployerApplicationListColumns();
@@ -237,6 +252,15 @@ export default function EmployerApplicationList(): React.JSX.Element {
             onChange={setSelectedPendingStatuses}
             listType={APPLICATION_LIST_TYPES.EMPLOYER}
           />
+          <$FilterWrapper>
+            <$FilterLabel>{t(ASSIGNEE_TRANSLATION_KEY)}</$FilterLabel>
+            <Checkbox
+              id="employer-application-pending-assigned-to-me-filter"
+              label={t('common:applicationList.filterAssignedToMe')}
+              checked={isPendingAssignedToMe}
+              onChange={(e) => setIsPendingAssignedToMe(e.target.checked)}
+            />
+          </$FilterWrapper>
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
           columns={columns}
@@ -261,6 +285,15 @@ export default function EmployerApplicationList(): React.JSX.Element {
             onChange={setSelectedProcessedStatuses}
             listType={APPLICATION_LIST_TYPES.EMPLOYER}
           />
+          <$FilterWrapper>
+            <$FilterLabel>{t(ASSIGNEE_TRANSLATION_KEY)}</$FilterLabel>
+            <Checkbox
+              id="employer-application-processed-assigned-to-me-filter"
+              label={t('common:applicationList.filterAssignedToMe')}
+              checked={isProcessedAssignedToMe}
+              onChange={(e) => setIsProcessedAssignedToMe(e.target.checked)}
+            />
+          </$FilterWrapper>
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
           columns={columns}

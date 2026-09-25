@@ -235,10 +235,16 @@ class YouthApplicationFilter(filters.FilterSet):
         ],
         method="order_by_with_id_tiebreaker",
     )
+    is_assigned_to_me = filters.BooleanFilter(method="filter_is_assigned_to_me")
 
     class Meta:
         model = YouthApplication
         fields = ["status"]
+
+    def filter_is_assigned_to_me(self, queryset, name, value):
+        if value:
+            return queryset.filter(assignee=self.request.user)
+        return queryset
 
     def order_by_with_id_tiebreaker(self, queryset, name, value):
         if not value:
@@ -1311,6 +1317,13 @@ class EmployerApplicationFilter(filters.FilterSet):
         """
         if value:
             return self._filter_by_user(queryset)
+        return queryset
+
+    is_assigned_to_me = filters.BooleanFilter(method="filter_is_assigned_to_me")
+
+    def filter_is_assigned_to_me(self, queryset, name, value):
+        if value:
+            return queryset.filter(assignee=self.request.user)
         return queryset
 
     class Meta:

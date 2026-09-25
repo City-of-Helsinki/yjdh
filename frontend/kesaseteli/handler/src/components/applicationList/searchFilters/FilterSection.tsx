@@ -25,6 +25,28 @@ const $FilterTitle = styled.h2`
   gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
 `;
 
+export const $FilterLabel = styled.span`
+  display: block;
+  font-weight: 500;
+  margin-bottom: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xs};
+`;
+
+export const $FilterWrapper = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const $FilterControls = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+  flex-wrap: wrap;
+
+  @media (min-width: ${(props: { theme: DefaultTheme }) =>
+      props.theme.breakpoints.m}) {
+    gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl4};
+  }
+`;
+
 type FilterSectionProps = {
   ariaLabelledBy: string;
   title: string;
@@ -41,7 +63,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
       <IconSliders size={IconSize.Small} aria-hidden="true" />
       {title}
     </$FilterTitle>
-    {children}
+    <$FilterControls>{children}</$FilterControls>
   </$FiltersSection>
 );
 

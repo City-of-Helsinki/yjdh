@@ -23,6 +23,7 @@
   },
   "applicationList": {
     "filterTitle": "Rajaa hakemuksia",
+    "filterAssignedToMe": "Omassa käsittelyssäni",
     "filterError": "Valitse vähintään yksi tila",
     "noSsn": "Ei hetua",
     "noSerialNumber": "Ei sarjanumeroa",
