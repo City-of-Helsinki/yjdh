@@ -94,3 +94,20 @@ export const $CharCounter = styled.small<{ $isNearLimit: boolean }>`
     $isNearLimit ? 'var(--color-error)' : 'var(--color-black-60)'};
   font-size: var(--fontsize-body-xs);
 `;
+
+export const $Instructions = styled.div`
+  display: block;
+  flex-direction: column;
+  gap: var(--spacing-4-xs);
+  padding: 0;
+
+  h1 {
+    font-size: var(--fontsize-heading-s);
+    font-weight: var(--fontweight-bold);
+    margin-bottom: 0;
+  }
+
+  p {
+    font-size: var(--fontsize-body-m);
+  }
+`;

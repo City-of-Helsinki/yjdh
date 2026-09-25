@@ -41,3 +41,8 @@ export type UpdateNotePayload = {
   note_type: NoteType;
   is_important: boolean;
 };
+
+export enum ExternalMessages {
+  ADDITIONAL_INFORMATION_REQUIRED = 'additionalInformationRequired',
+  APPLICATION_WILL_BE_REJECTED = 'applicationWillBeRejected'
+}

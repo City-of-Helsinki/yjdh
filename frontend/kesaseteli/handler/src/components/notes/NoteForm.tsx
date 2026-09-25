@@ -3,11 +3,14 @@ import {
   ButtonSize,
   ButtonVariant,
   Checkbox,
+  Dialog,
   Notification,
   NotificationSize,
   RadioButton,
+  Select,
 } from 'hds-react';
 import { useHandlerPermissions } from 'kesaseteli/handler/contexts/HandlerPermissionsContext';
+import isHandlerExternalMessagesEnabled from 'kesaseteli/handler/flags/is-handler-external-messages-enabled';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -15,6 +18,7 @@ import useLocale from 'shared/hooks/useLocale';
 
 import {
   CreateNotePayload,
+  ExternalMessages,
   HandlerNote,
   NoteTargetType,
   NoteType,
@@ -24,6 +28,7 @@ import {
   $CharCounter,
   $FormActions,
   $FormContainer,
+  $Instructions,
   $OptionsGroup,
   $Separator,
   $TextArea,
@@ -43,6 +48,7 @@ type Props = {
   ) => void;
   onCancel?: () => void;
   isLoading: boolean;
+  applicationLanguage?: string;
 };
 
 const NoteForm: React.FC<Props> = ({
@@ -52,6 +58,7 @@ const NoteForm: React.FC<Props> = ({
   onSubmit,
   onCancel,
   isLoading,
+  applicationLanguage,
 }) => {
   const { t } = useTranslation();
   const locale = useLocale();
@@ -64,8 +71,12 @@ const NoteForm: React.FC<Props> = ({
   const [isImportant, setIsImportant] = useState(
     initialNote?.is_important || false
   );
+  const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>('');
 
   const isEditing = Boolean(initialNote);
+
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isSuspiciousStringDialogOpen, setIsSuspiciousStringDialogOpen] = useState(false);
 
   // Gate by assignee permission based on target type and note type, even when editing.
   const canAddNotes = hasNotePermission(targetType, noteType);
@@ -85,6 +96,34 @@ const NoteForm: React.FC<Props> = ({
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     if (!content.trim()) return;
+
+    if (noteType === NoteType.EXTERNAL_MESSAGE && hasSuspiciousString(content)) {
+      setIsSuspiciousStringDialogOpen(true);
+      return;
+    }
+
+    // Show confirmation dialog for external messages
+    if (noteType === NoteType.EXTERNAL_MESSAGE) {
+      setIsConfirmDialogOpen(true);
+      return;
+    }
+
+    // For internal notes, submit directly
+    submitForm();
+  };
+
+  const getSubmitButtonText = (): string => {
+    if (noteType === NoteType.EXTERNAL_MESSAGE) {
+      return t('common:common.send');
+    }
+    if (isEditing) {
+      return t('common:handlerNotes.saveNote');
+    }
+    return t('common:handlerNotes.addNote');
+  };
+
+  const submitForm = (): void => {
+    if (noteType === NoteType.EXTERNAL_MESSAGE) setSelectedTemplate('');
 
     const payload = isEditing
       ? ({
@@ -112,12 +151,21 @@ const NoteForm: React.FC<Props> = ({
     });
   };
 
+  const handleConfirmSend = (): void => {
+    setIsConfirmDialogOpen(false);
+    submitForm();
+  };
+
+  const hasSuspiciousString = (text: string): boolean => {
+    return /\d{6}.?\d{3}[\dA-Z]/.exec(text) !== null;
+  }
+
   const charsLeft = NOTE_MAX_CHARS - content.length;
   const isNearLimit = charsLeft <= CHAR_COUNTER_WARN_THRESHOLD;
   const showExternalOptions = targetType !== NoteTargetType.ATTACHMENT;
 
-  return (
-    <$FormContainer
+  return (<>
+      <$FormContainer
       onSubmit={handleSubmit}
       noValidate
       aria-label={
@@ -125,7 +173,52 @@ const NoteForm: React.FC<Props> = ({
           ? t('common:handlerNotes.saveNote')
           : t('common:handlerNotes.addNote')
       }
-    >
+    >       {noteType === NoteType.EXTERNAL_MESSAGE ? (
+          <$Instructions>
+            <h3>{t('common:externalMessages.instructions.label')}</h3>
+            <p>{t('common:externalMessages.instructions.content')}</p>
+          </$Instructions>
+        ) : (
+          <$Instructions>
+            <h3>{t('common:handlerNotes.instructions.label')}</h3>
+            <p>{t('common:handlerNotes.instructions.content')}</p>
+          </$Instructions>
+        )}
+
+        {noteType === NoteType.EXTERNAL_MESSAGE && (
+          <Select
+            required
+            texts={{
+              label: t('common:externalMessages.selectTemplate'),
+              language: 'fi',
+              assistive: `Hakemuksen kieli: ${applicationLanguage || 'fi'}`
+            }}
+            options={(
+              Object.keys(ExternalMessages) as Array<
+                keyof typeof ExternalMessages
+              >
+            ).map((key) => ({
+              label: t(
+                `common:externalMessages.${ExternalMessages[key]}.label`
+              ),
+              value: ExternalMessages[key],
+            }))}
+            value={selectedTemplate}
+            onChange={(
+              selectedOptions: Array<{ label: string; value: string }>
+            ) => {
+              const selected = selectedOptions[0];
+              if (selected) {
+                setSelectedTemplate(selected.value);
+                setContent(
+                  t(
+                    `common:externalMessages.${selected.value}.${applicationLanguage || 'fi'}`,
+                  )
+                );
+              }
+            }}
+          />
+        )}
       <$TextArea
         id={isEditing ? `edit-note-${initialNote?.id}` : 'add-note-content'}
         label={
@@ -214,13 +307,61 @@ const NoteForm: React.FC<Props> = ({
             isLoading={isLoading}
             loadingText={t('common:common.saving')}
           >
-            {isEditing
-              ? t('common:handlerNotes.saveNote')
-              : t('common:handlerNotes.addNote')}
+            {getSubmitButtonText()}
           </Button>
         </$FormActions>
       </$Toolbar>
     </$FormContainer>
+    <Dialog
+        id="external-message-confirm-dialog"
+        aria-labelledby="external-message-confirm-title"
+        isOpen={isConfirmDialogOpen}
+        close={() => setIsConfirmDialogOpen(false)}
+        closeButtonLabelText={t('common:common.close')}
+      >
+        <Dialog.Header
+          id="external-message-confirm-title"
+          title={t('common:externalMessages.confirmation.title')}
+        />
+        <Dialog.Content>
+          {t('common:externalMessages.confirmation.text')}
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button
+            onClick={() => setIsConfirmDialogOpen(false)}
+            variant={ButtonVariant.Secondary}
+          >
+            {t('common:common.cancel')}
+          </Button>
+          <Button onClick={handleConfirmSend} disabled={isLoading}>
+            {t('common:common.send')}
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
+      <Dialog
+        id="external-message-suspicious-string-dialog"
+        aria-labelledby="external-message-suspicious-string-title"
+        isOpen={isSuspiciousStringDialogOpen}
+        close={() => setIsSuspiciousStringDialogOpen(false)}
+        closeButtonLabelText={t('common:common.close')}
+      >
+        <Dialog.Header
+          id="external-message-suspicious-string-title"
+          title={t('common:externalMessages.suspiciousString.title')}
+        />
+        <Dialog.Content>
+          {t('common:externalMessages.suspiciousString.text')}
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button
+            onClick={() => setIsSuspiciousStringDialogOpen(false)}
+            variant={ButtonVariant.Primary}
+          >
+            {t('common:common.cancel')}
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
+    </>
   );
 };
 
