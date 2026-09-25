@@ -89,3 +89,35 @@ class HandlerPermission(BasePermission):
             user, otherwise False.
         """
         return HandlerPermission.has_user_permission(request.user)
+
+
+class ApproverPermission(BasePermission):
+    """
+    Does the user have permission to handle payment-review status transitions?
+
+    ADFS synchronizes group UUIDs to Django group names with an ``adfs-`` prefix.
+    The configured groups are an additional permission requirement on top of handler
+    access.
+
+    NOTE: An empty ADFS_APPROVER_GROUP_UUIDS setting means that no user is an
+    approver, i.e. all approver-gated actions are denied.
+    """
+
+    @staticmethod
+    def get_approver_group_names() -> list[str]:
+        return [
+            f"adfs-{group_uuid}"
+            for group_uuid in getattr(settings, "ADFS_APPROVER_GROUP_UUIDS", [])
+        ]
+
+    @staticmethod
+    def has_user_permission(user) -> bool:
+        if not HandlerPermission.has_user_permission(user):
+            return False
+
+        return user.groups.filter(
+            name__in=ApproverPermission.get_approver_group_names()
+        ).exists()
+
+    def has_permission(self, request, view):
+        return ApproverPermission.has_user_permission(request.user)

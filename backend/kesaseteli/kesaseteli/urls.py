@@ -31,6 +31,7 @@ from shared.suomi_fi.views import (
     SuomiFiAssertionConsumerServiceView,
     SuomiFiMetadataView,
 )
+from users.api.v1.views import CurrentUserView
 
 router = routers.DefaultRouter()
 router.register(r"employerapplications", application_views.EmployerApplicationViewSet)
@@ -60,6 +61,7 @@ urlpatterns = [
         name="summer-voucher-configuration",
     ),
     path("v1/dashboard/stats/", DashboardStatsView.as_view(), name="dashboard-stats"),
+    path("v1/users/me/", CurrentUserView.as_view(), name="users-me"),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(

@@ -1436,6 +1436,21 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("timestamp when employer application was submitted"),
     )
+    additional_info_provided_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when additional info was last provided by employer"),
+    )
+    handled_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when last handled by handler or approver"),
+    )
+    accepted_for_payment_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when last accepted for payment by approver"),
+    )
     # Historically street address, but now meant to be a full postal address.
     # Production database may contain both types, or since this is a free text,
     # it may contain anything.
@@ -1523,6 +1538,18 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         blank=True,
         null=True,
     )
+    approver = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        # Prevent deleting the approver because they are essential for the payment trail
+        on_delete=models.PROTECT,
+        related_name="approved_employer_applications",
+        verbose_name=_("approver"),
+        help_text=_(
+            "The user who accepted employer application for payment i.e. approved it"
+        ),
+        blank=True,
+        null=True,
+    )
 
     def assign(self, user, payload_modified_at):
         """
@@ -1589,6 +1616,34 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             locked.status = EmployerApplicationStatus.SUBMITTED
             locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
             self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
+
+    # Timestamps to set when in specific status:
+    _TIMESTAMPS_TO_SET: dict[EmployerApplicationStatus, tuple[str, ...]] = {
+        EmployerApplicationStatus.SUBMITTED: ("submitted_at",),
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
+            "additional_info_provided_at",
+        ),
+        EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT: (
+            "handled_at",
+            "accepted_for_payment_at",
+        ),
+        EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM: ("handled_at",),
+        EmployerApplicationStatus.REJECTED: ("handled_at",),
+        EmployerApplicationStatus.CANCELLED: ("handled_at",),
+    }
+
+    def set_timestamps(self) -> None:
+        """Set timestamps for the current status, if they are not yet set."""
+        now = timezone.now()
+        fields = self._TIMESTAMPS_TO_SET.get(self.status, ())
+        for field in fields:
+            if getattr(self, field) is None:
+                setattr(self, field, now)
+
+    def save(self, *args, **kwargs):
+        """Save EmployerApplication and set related timestamps, if not yet set."""
+        self.set_timestamps()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("employer application")

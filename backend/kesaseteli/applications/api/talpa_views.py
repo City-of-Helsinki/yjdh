@@ -48,7 +48,6 @@ class TalpaExportView(ListAPIView):
     serializer_class = TalpaExportSerializer
 
     def get_queryset(self):
-
         return (
             EmployerSummerVoucher.objects.talpa_exportable()
             .for_export()

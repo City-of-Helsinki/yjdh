@@ -49,6 +49,8 @@ from applications.api.v1.permissions import (
 from applications.api.v1.serializers import (
     ActivityLogItemSerializer,
     ApplicationAssignSerializer,
+    ApproverBulkActionResultSerializer,
+    ApproverBulkActionSerializer,
     AttachmentSerializer,
     EmployerApplicationSerializer,
     EmployerSummerVoucherAttachmentUploadInputSerializer,
@@ -86,14 +88,19 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.services import AuditAccessLogService, TimelineService, VTJService
+from applications.services import (
+    AuditAccessLogService,
+    EmployerApplicationApproverService,
+    TimelineService,
+    VTJService,
+)
 from applications.target_groups import (
     AbstractTargetGroup,
     get_target_group_data,
 )
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
-from common.permissions import HandlerPermission
+from common.permissions import ApproverPermission, HandlerPermission
 from handler_notes.api.v1.serializers import NoteSerializer
 from shared.vtj.vtj_client import VTJClient
 
@@ -1389,12 +1396,28 @@ class EmployerApplicationFilter(filters.FilterSet):
     ),
 )
 class EmployerApplicationViewSet(ApplicationAssignmentViewSetMixin, ModelViewSet):
+    APPROVER_ACTIONS = {
+        "approver_accept_for_payment",
+        "approver_reject",
+        "approver_return_to_handler_queue",
+        "approver_return_to_payment_review",
+        "approver_bulk_accept_for_payment",
+        "approver_bulk_reject",
+        "approver_bulk_return_to_handler_queue",
+        "approver_bulk_return_to_payment_review",
+    }
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
     permission_classes = [IsAuthenticated, EmployerApplicationPermission]
     pagination_class = LimitOffsetPagination
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = EmployerApplicationFilter
+
+    def get_permissions(self):
+        permission_classes = list(self.permission_classes)
+        if self.action in self.APPROVER_ACTIONS:
+            permission_classes.append(ApproverPermission)
+        return [permission() for permission in permission_classes]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -1484,6 +1507,144 @@ class EmployerApplicationViewSet(ApplicationAssignmentViewSetMixin, ModelViewSet
             raise ValidationError("Company & user can have only one draft application")
 
         return super().create(request, *args, **kwargs)
+
+    def _run_approver_action(self, request, action) -> Response:
+        application = self.get_object()
+        updated_id = action(application.id, approver=request.user)
+        success = updated_id == application.id
+        return Response(
+            {"id": str(application.id)},
+            status=status.HTTP_200_OK if success else status.HTTP_409_CONFLICT,
+        )
+
+    def _run_bulk_approver_action(self, request: Request, action) -> Response:
+        """
+        Run an approver action over several applications, reporting each outcome.
+
+        Every application is processed in its own transaction. The response is
+        always 200, updated_ids/failed_ids tell which applications succeeded/failed.
+        """
+        serializer = ApproverBulkActionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = action(
+            serializer.validated_data["application_ids"], approver=request.user
+        )
+        response_serializer = ApproverBulkActionResultSerializer(
+            {"updated_ids": result.updated_ids, "failed_ids": result.failed_ids}
+        )
+        return Response(response_serializer.data)
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="Accepted application for payment"),
+            409: OpenApiResponse(description="Action failed"),
+        },
+        description="Accept employer application for payment as approver",
+    )
+    @action(detail=True, methods=["post"])
+    def approver_accept_for_payment(
+        self, request: Request, *args, **kwargs
+    ) -> Response:
+        return self._run_approver_action(
+            request, EmployerApplicationApproverService.accept_for_payment
+        )
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="Rejected application"),
+            409: OpenApiResponse(description="Action failed"),
+        },
+        description="Reject employer application as approver",
+    )
+    @action(detail=True, methods=["post"])
+    def approver_reject(self, request: Request, *args, **kwargs) -> Response:
+        return self._run_approver_action(
+            request, EmployerApplicationApproverService.reject
+        )
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="Returned application to handler queue"),
+            409: OpenApiResponse(description="Action failed"),
+        },
+        description="Return employer application to handler queue as approver",
+    )
+    @action(detail=True, methods=["post"])
+    def approver_return_to_handler_queue(
+        self, request: Request, *args, **kwargs
+    ) -> Response:
+        return self._run_approver_action(
+            request, EmployerApplicationApproverService.return_to_handler_queue
+        )
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="Returned application to payment review"),
+            409: OpenApiResponse(description="Action failed"),
+        },
+        description="Return employer application to payment review as approver",
+    )
+    @action(detail=True, methods=["post"])
+    def approver_return_to_payment_review(
+        self, request: Request, *args, **kwargs
+    ) -> Response:
+        return self._run_approver_action(
+            request, EmployerApplicationApproverService.return_to_payment_review
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses=ApproverBulkActionResultSerializer,
+        description="Accept employer applications for payment as approver",
+    )
+    @action(detail=False, methods=["post"])
+    def approver_bulk_accept_for_payment(
+        self, request: Request, *args, **kwargs
+    ) -> Response:
+        return self._run_bulk_approver_action(
+            request,
+            EmployerApplicationApproverService.bulk_accept_for_payment,
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses=ApproverBulkActionResultSerializer,
+        description="Reject employer applications as approver",
+    )
+    @action(detail=False, methods=["post"])
+    def approver_bulk_reject(self, request: Request, *args, **kwargs) -> Response:
+        return self._run_bulk_approver_action(
+            request,
+            EmployerApplicationApproverService.bulk_reject,
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses=ApproverBulkActionResultSerializer,
+        description="Return employer applications to handler queue as approver",
+    )
+    @action(detail=False, methods=["post"])
+    def approver_bulk_return_to_handler_queue(
+        self, request: Request, *args, **kwargs
+    ) -> Response:
+        return self._run_bulk_approver_action(
+            request,
+            EmployerApplicationApproverService.bulk_return_to_handler_queue,
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses=ApproverBulkActionResultSerializer,
+        description="Return employer applications to payment review as approver",
+    )
+    @action(detail=False, methods=["post"])
+    def approver_bulk_return_to_payment_review(
+        self, request: Request, *args, **kwargs
+    ) -> Response:
+        return self._run_bulk_approver_action(
+            request,
+            EmployerApplicationApproverService.bulk_return_to_payment_review,
+        )
 
     def update(self, request: Request, *args, **kwargs) -> Response:
         """

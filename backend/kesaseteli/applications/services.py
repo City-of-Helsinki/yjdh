@@ -1,6 +1,8 @@
 import enum
 import json
 import logging
+import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING, TypedDict
@@ -14,6 +16,7 @@ from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
@@ -53,6 +56,155 @@ from shared.vtj.vtj_client import VTJClient
 LOGGER = logging.getLogger(__name__)
 
 User = get_user_model()
+
+
+@dataclass
+class ApproverActionResult:
+    def __init__(self, updated_ids=None, failed_ids=None):
+        self.updated_ids = updated_ids or []
+        self.failed_ids = failed_ids or []
+
+    updated_ids: list[uuid.UUID | str]
+    failed_ids: list[uuid.UUID | str]
+
+
+class EmployerApplicationApproverService:
+    @staticmethod
+    def get_handler_queue_status(app: EmployerApplication) -> EmployerApplicationStatus:
+        """
+        Determine the status for an employer application when returned to handler queue.
+        """
+        return (
+            EmployerApplicationStatus.SUBMITTED
+            if app.additional_info_provided_at is None
+            else EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+        )
+
+    @classmethod
+    def _transition_one(
+        cls,
+        app_id: uuid.UUID | str,
+        source_status: EmployerApplicationStatus,
+        target: EmployerApplicationStatus
+        | Callable[[EmployerApplication], EmployerApplicationStatus],
+        **kwargs,
+    ) -> uuid.UUID | str:
+        """
+        Transition a single application inside its own transaction, so audit logging and
+        timeline activity logs are also either all updated or nothing is updated.
+
+        Also set approver and handler to the application, if given in keyword arguments.
+        """
+        with transaction.atomic():
+            app = EmployerApplication.objects.select_for_update().get(pk=app_id)
+            if app.status != source_status:
+                raise ValueError("Invalid source status for approver action")
+            target_status: EmployerApplicationStatus = (
+                target(app) if callable(target) else target
+            )
+            app.status = target_status
+            if "approver" in kwargs:
+                app.approver = kwargs["approver"]
+            if "handler" in kwargs:
+                app.handler = kwargs["handler"]
+            app.save()
+            return app.pk
+
+    @classmethod
+    def _transition(
+        cls,
+        app_ids: list[uuid.UUID | str],
+        source_status: EmployerApplicationStatus,
+        target: EmployerApplicationStatus
+        | Callable[[EmployerApplication], EmployerApplicationStatus],
+        **kwargs,
+    ) -> ApproverActionResult:
+        """
+        Transition given applications, collecting successful and failed IDs.
+        """
+        ok, failed = [], []
+        for app_id in app_ids:
+            try:
+                ok.append(cls._transition_one(app_id, source_status, target, **kwargs))
+            except (EmployerApplication.DoesNotExist, ValueError):
+                failed.append(app_id)
+        return ApproverActionResult(updated_ids=ok, failed_ids=failed)
+
+    @classmethod
+    def _get_single_success_id(
+        cls, result: ApproverActionResult
+    ) -> uuid.UUID | str | None:
+        """
+        Return the single successful employer application ID, or None if not available.
+        :raises ValueError: if input values are incorrect
+        """
+        if not result or len(result.failed_ids) + len(result.updated_ids) != 1:
+            raise ValueError("Incorrect input values")
+        if result.failed_ids:
+            return None
+        return result.updated_ids[0]
+
+    @classmethod
+    def accept_for_payment(cls, app_id, approver) -> uuid.UUID | str | None:
+        return cls._get_single_success_id(
+            cls.bulk_accept_for_payment(app_ids=[app_id], approver=approver)
+        )
+
+    @classmethod
+    def reject(cls, app_id, approver) -> uuid.UUID | str | None:
+        return cls._get_single_success_id(
+            cls.bulk_reject(app_ids=[app_id], approver=approver)
+        )
+
+    @classmethod
+    def return_to_handler_queue(cls, app_id, approver) -> uuid.UUID | str | None:
+        return cls._get_single_success_id(
+            cls.bulk_return_to_handler_queue(app_ids=[app_id], approver=approver)
+        )
+
+    @classmethod
+    def return_to_payment_review(cls, app_id, approver) -> uuid.UUID | str | None:
+        return cls._get_single_success_id(
+            cls.bulk_return_to_payment_review(app_ids=[app_id], approver=approver)
+        )
+
+    @classmethod
+    def bulk_accept_for_payment(cls, app_ids, approver) -> ApproverActionResult:
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.PAYMENT_REVIEW,
+            target=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            approver=approver,  # Set approver when accepting for payment
+        )
+
+    @classmethod
+    def bulk_reject(cls, app_ids, approver) -> ApproverActionResult:
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.PAYMENT_REVIEW,
+            target=EmployerApplicationStatus.REJECTED,
+            handler=approver,  # Set handler when rejecting
+            approver=None,  # Empty approver when not accepting for payment
+        )
+
+    @classmethod
+    def bulk_return_to_handler_queue(cls, app_ids, approver) -> ApproverActionResult:
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.PAYMENT_REVIEW,
+            target=cls.get_handler_queue_status,
+            handler=None,  # Empty handler when back to handler queue
+            approver=None,  # Empty approver when back to handler queue
+        )
+
+    @classmethod
+    def bulk_return_to_payment_review(cls, app_ids, approver) -> ApproverActionResult:
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            target=EmployerApplicationStatus.PAYMENT_REVIEW,
+            approver=None,  # Empty approver when removing existing approval
+        )
 
 
 class TargetGroupValidationService:

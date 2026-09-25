@@ -8,11 +8,16 @@ from unittest import mock
 import base32_lib
 import pytest
 from django.core import mail
+from django.db.models import DateTimeField
 from django.test import override_settings
 from freezegun import freeze_time
 
 from applications.enums import EmployerApplicationStatus
-from applications.models import EmployerSummerVoucher, YouthSummerVoucher
+from applications.models import (
+    EmployerApplication,
+    EmployerSummerVoucher,
+    YouthSummerVoucher,
+)
 from common.tests.factories import (
     AttachmentFactory,
     EmployerApplicationFactory,
@@ -62,6 +67,38 @@ def create_test_employer_summer_vouchers(year) -> List[EmployerSummerVoucher]:
             vouchers.append(voucher)
 
     return sorted(vouchers, key=operator.attrgetter("submitted_at"))
+
+
+@pytest.mark.parametrize(
+    "field_name",
+    sorted(
+        {
+            field_name
+            for field_names in EmployerApplication._TIMESTAMPS_TO_SET.values()
+            for field_name in field_names
+        }
+    ),
+)
+def test_employer_application_timestamp_fields_are_nullable_datetime_fields(field_name):
+    """
+    Test that the used field names in EmployerApplication._TIMESTAMPS_TO_SET are all
+    nullable DateTimeFields in EmployerApplication.
+    """
+    field = EmployerApplication._meta.get_field(field_name)
+
+    assert isinstance(field, DateTimeField)
+    assert field.null
+
+
+@pytest.mark.parametrize("status", EmployerApplicationStatus.handled_values())
+def test_employer_application_handled_statuses_should_set_handled_at(status):
+    """
+    Test that the EmployerApplication._TIMESTAMPS_TO_SET for handled statuses includes
+    "handled_at" i.e. that handled_at is meant to be set in all handled statuses.
+    """
+    timestamp_fields = EmployerApplication._TIMESTAMPS_TO_SET.get(status, ())
+
+    assert "handled_at" in timestamp_fields
 
 
 @pytest.mark.django_db

@@ -22,6 +22,19 @@ from common.tests.factories import (
 )
 from shared.common.tests.utils import utc_datetime
 
+# Fields that aren't expected to be returned on application creation:
+_EMPLOYER_APPLICATION_CREATE_RESULT_EXCLUDE_FIELDS = frozenset(
+    {
+        "accepted_for_payment_at",
+        "approver",
+        "assignee",
+        "created_at",
+        "handled_at",
+        "handler",
+        "modified_at",
+    }
+)
+
 
 def get_list_url():
     return reverse("v1:employerapplication-list")
@@ -268,7 +281,7 @@ def test_application_create(api_client, company):
     for field in [
         field
         for field in EmployerApplication._meta.fields
-        if field.name not in ["created_at", "modified_at", "assignee", "handler"]
+        if field.name not in _EMPLOYER_APPLICATION_CREATE_RESULT_EXCLUDE_FIELDS
     ]:
         assert field.name in response.data
 
@@ -285,7 +298,7 @@ def test_application_create_mock(api_client, company):
     for field in [
         field
         for field in EmployerApplication._meta.fields
-        if field.name not in ["created_at", "modified_at", "assignee", "handler"]
+        if field.name not in _EMPLOYER_APPLICATION_CREATE_RESULT_EXCLUDE_FIELDS
     ]:
         assert field.name in response.data
 

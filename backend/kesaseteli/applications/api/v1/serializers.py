@@ -146,24 +146,40 @@ class EmployerApplicationStatusValidator:
         EmployerApplicationStatus.CANCELLED: (),
     }
 
+    @classmethod
+    def validate_status_transition(
+        cls,
+        old_status: EmployerApplicationStatus,
+        new_status: EmployerApplicationStatus,
+    ) -> None:
+        """
+        Validate EmployerApplication's status transition from old_status to new_status.
+
+        Raises:
+            serializers.ValidationError: If the transition is not allowed.
+        """
+        if (
+            old_status != new_status
+            and new_status not in cls.APPLICATION_STATUS_TRANSITIONS.get(old_status, ())
+        ):
+            raise serializers.ValidationError(
+                format_lazy(
+                    _(
+                        "EmployerApplication status transition not allowed from "
+                        "{old_status} to {new_status}"
+                    ),
+                    old_status=old_status,
+                    new_status=new_status,
+                )
+            )
+
     def __call__(self, value, serializer_field):
         if application := serializer_field.parent.instance:
             # In case it's an update operation, validate with the current status in
             # database
-            if (
-                value != application.status
-                and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
-            ):
-                raise serializers.ValidationError(
-                    format_lazy(
-                        _(
-                            "EmployerApplication state transition not allowed: {status}"
-                            " to {value}"
-                        ),
-                        status=application.status,
-                        value=value,
-                    )
-                )
+            self.validate_status_transition(
+                old_status=application.status, new_status=value
+            )
         else:
             if value != EmployerApplicationStatus.DRAFT:
                 raise serializers.ValidationError(
@@ -171,6 +187,29 @@ class EmployerApplicationStatusValidator:
                 )
 
         return value
+
+
+class ApproverBulkActionSerializer(serializers.Serializer):
+    application_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        allow_empty=False,
+    )
+
+    def validate_application_ids(self, value):
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError("Application IDs must be unique.")
+        return value
+
+
+class ApproverBulkActionResultSerializer(serializers.Serializer):
+    updated_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        help_text=_("Applications that were updated"),
+    )
+    failed_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        help_text=_("Applications that failed to be updated"),
+    )
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -672,6 +711,7 @@ class EmployerApplicationSerializer(
             "language",
             "submitted_at",
             "is_mine",
+            "additional_info_provided_at",
             "assignee",
         ]
         read_only_fields = [
@@ -679,6 +719,7 @@ class EmployerApplicationSerializer(
             "modified_at",
             "submitted_at",
             "user",
+            "additional_info_provided_at",
             "assignee",
         ]
 
