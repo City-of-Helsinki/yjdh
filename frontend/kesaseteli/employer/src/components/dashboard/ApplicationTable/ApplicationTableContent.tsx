@@ -3,6 +3,7 @@ import {
   ButtonSize,
   ButtonVariant,
   IconPen,
+  Link,
   Pagination,
 } from 'hds-react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
@@ -83,7 +84,11 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
 
   return (
     <tr>
-      <td>{employeeNames}</td>
+      <td>
+        <Link href={`/${locale}/applications/${application.id}`}>
+          {employeeNames}
+        </Link>
+      </td>
       <td>{serialNumbers}</td>
       <td>{convertToUIDateAndTimeFormat(modifiedAt)}</td>
       <td>
