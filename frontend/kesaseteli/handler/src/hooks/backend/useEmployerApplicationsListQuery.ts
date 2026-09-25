@@ -20,6 +20,7 @@ export type EmployerApplicationsQueryParams = {
   offset: number;
   /** Valid ordering fields: created_at, company__name, company__business_id, status, modified_at, submitted_at */
   ordering?: string;
+  is_assigned_to_me?: boolean;
 };
 
 const useEmployerApplicationsListQuery = <
@@ -39,6 +40,9 @@ const useEmployerApplicationsListQuery = <
   searchParams.append('offset', String(params.offset));
   if (params.ordering) {
     searchParams.append('ordering', params.ordering);
+  }
+  if (params.is_assigned_to_me !== undefined) {
+    searchParams.append('is_assigned_to_me', String(params.is_assigned_to_me));
   }
 
   const query = useQuery({

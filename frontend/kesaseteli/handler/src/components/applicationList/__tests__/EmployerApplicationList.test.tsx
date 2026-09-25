@@ -81,6 +81,7 @@ describe('EmployerApplicationList', () => {
         status: [
           EmployerApplicationStatus.SUBMITTED,
           EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          EmployerApplicationStatus.APPLICATION_HANDLING,
           EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ],
       })
@@ -102,6 +103,7 @@ describe('EmployerApplicationList', () => {
           EmployerApplicationStatus.SUBMITTED,
           EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
           EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          EmployerApplicationStatus.APPLICATION_HANDLING,
           EmployerApplicationStatus.ERROR_IN_PAYMENT,
         ],
       })
@@ -116,16 +118,17 @@ describe('EmployerApplicationList', () => {
 
     const listbox = screen.getByRole('listbox');
 
-    // Deselect "Uusi hakemus" (submitted) -> should query with [additional_information_provided, error_in_payment]
     await userEvent.click(within(listbox).getByText('Uusi hakemus'));
-    // Deselect "Lisätiedot toimitettu" (additional_information_provided) -> should query with [error_in_payment]
     await userEvent.click(within(listbox).getByText('Lisätiedot annettu'));
-    // Deselect "Virhe maksussa" (error_in_payment) -> empty selection, should not trigger query
+    await userEvent.click(within(listbox).getByText('Käsittelyssä'));
     await userEvent.click(within(listbox).getByText('Virhe maksussa'));
 
-    expect(mockUseQuery).not.toHaveBeenCalledWith(
+    expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         status: [],
+      }),
+      expect.objectContaining({
+        enabled: false,
       })
     );
     expect(mockUseQuery).toHaveBeenCalledWith(
@@ -172,6 +175,45 @@ describe('EmployerApplicationList', () => {
           EmployerApplicationStatus.REJECTED,
           EmployerApplicationStatus.CANCELLED,
         ],
+      })
+    );
+  });
+  it('automatically adds APPLICATION_HANDLING to status filter when assignee checkbox is checked in pending tab', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    // Switch to pending tab explicitly (just in case)
+    await userEvent.click(screen.getByText('Käsiteltävät (5)'));
+
+    // Deselect "Käsittelyssä" from the dropdown to test the behavior
+    const combobox = screen.getByRole('combobox', { name: /tila/i });
+    await userEvent.click(combobox);
+    const listbox = screen.getByRole('listbox');
+    await userEvent.click(within(listbox).getByText('Käsittelyssä'));
+
+    // Verify it was removed
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: [
+          EmployerApplicationStatus.SUBMITTED,
+          EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+          EmployerApplicationStatus.ERROR_IN_PAYMENT,
+        ],
+      })
+    );
+
+    // Check the assignee checkbox
+    const checkbox = screen.getByRole('checkbox', {
+      name: /omassa käsittelyssäni/i,
+    });
+    await userEvent.click(checkbox);
+
+    // Verify it added APPLICATION_HANDLING back
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: expect.arrayContaining([
+          EmployerApplicationStatus.APPLICATION_HANDLING,
+        ]),
+        is_assigned_to_me: true,
       })
     );
   });

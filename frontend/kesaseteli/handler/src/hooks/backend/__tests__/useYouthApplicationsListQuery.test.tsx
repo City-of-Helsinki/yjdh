@@ -142,4 +142,29 @@ describe('useYouthApplicationsListQuery', () => {
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
+
+  it('serializes is_assigned_to_me query parameter', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.YOUTH_APPLICATIONS)
+      .query(
+        (queryObj) =>
+          queryObj.limit === '20' &&
+          queryObj.offset === '0' &&
+          queryObj.is_assigned_to_me === 'true'
+      )
+      .reply(200, mockListResponse);
+
+    const { result } = renderHook(
+      () =>
+        useYouthApplicationsListQuery({
+          limit: 20,
+          offset: 0,
+          is_assigned_to_me: true,
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
 });
