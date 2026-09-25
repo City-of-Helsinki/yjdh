@@ -18,6 +18,7 @@ export type ApplicationListType =
  * Mirrors backend EmployerApplicationStatus.handled_values().
  */
 export const HANDLED_EMPLOYER_APPLICATION_STATUSES = [
+  EmployerApplicationStatus.PAYMENT_REVIEW,
   EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
   EmployerApplicationStatus.RECEIVED_BY_PAYMENT_SYSTEM,
   EmployerApplicationStatus.REJECTED,

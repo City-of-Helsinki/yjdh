@@ -4,40 +4,42 @@ import {
   UseMutationResult,
   useQueryClient,
 } from '@tanstack/react-query';
-import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
+import EmployerCompleteOperation from 'kesaseteli/handler/types/employer-complete-operation';
+import HandlerEmployerApplication from 'kesaseteli/handler/types/HandlerEmployerApplication';
 import {
   BackendEndpoint,
-  getYouthApplicationQueryKey,
-  getYouthApplicationTimelineKey,
+  getEmployerApplicationQueryKey,
+  getEmployerApplicationTimelineKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
-const useCompleteYouthApplicationQuery = (
-  id: ActivatedYouthApplication['id'],
+const useCompleteEmployerApplicationQuery = (
+  id: HandlerEmployerApplication['id'],
   options?: UseMutationOptions<
-    ActivatedYouthApplication,
+    HandlerEmployerApplication,
     unknown,
-    CompleteOperation
+    EmployerCompleteOperation
   >
-): UseMutationResult<ActivatedYouthApplication, unknown, CompleteOperation> => {
+): UseMutationResult<
+  HandlerEmployerApplication,
+  unknown,
+  EmployerCompleteOperation
+> => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const { onSuccess, ...restOptions } = options ?? {};
   return useMutation({
-    mutationFn: ({ type, encrypted_handler_vtj_json }) =>
-      handleResponse<ActivatedYouthApplication>(
-        axios.patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${type}/`, {
-          encrypted_handler_vtj_json,
-        })
+    mutationFn: ({ type }) =>
+      handleResponse<HandlerEmployerApplication>(
+        axios.patch(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/${type}/`)
       ),
     onSuccess: (data, variables, onMutateResult, context) => {
       void queryClient.invalidateQueries({
-        queryKey: [getYouthApplicationQueryKey(id)],
+        queryKey: [getEmployerApplicationQueryKey(id)],
       });
       void queryClient.invalidateQueries({
-        queryKey: [getYouthApplicationTimelineKey(id)],
+        queryKey: [getEmployerApplicationTimelineKey(id)],
       });
       if (onSuccess) {
         void onSuccess(data, variables, onMutateResult, context);
@@ -48,4 +50,4 @@ const useCompleteYouthApplicationQuery = (
   });
 };
 
-export default useCompleteYouthApplicationQuery;
+export default useCompleteEmployerApplicationQuery;

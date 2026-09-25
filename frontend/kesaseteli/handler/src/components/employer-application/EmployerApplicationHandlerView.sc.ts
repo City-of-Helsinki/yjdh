@@ -9,7 +9,7 @@ export const $PanelGrid = styled.div`
     'status status status'
     'company voucher youth'
     'contact payment invoicer'
-    'attachments attachments attachments';
+    'actions actions actions';
 
   > div {
     padding: var(--spacing-m);
@@ -50,7 +50,14 @@ export const $PanelGrid = styled.div`
       'contact'
       'payment'
       'invoicer'
-      'attachments';
+      'actions';
+  }
+`;
+
+export const $ActionsSection = styled.div`
+  grid-area: actions;
+  && {
+    padding: 0;
   }
 `;
 
@@ -85,11 +92,6 @@ export const $PaymentSection = styled.div`
 
 export const $InvoicerSection = styled.div`
   grid-area: invoicer;
-`;
-
-export const $AttachmentsSection = styled.div`
-  grid-area: attachments;
-  // background-color: var(--color-silver-light);
 `;
 
 export const $StickyTabs = styled(Tabs)`
