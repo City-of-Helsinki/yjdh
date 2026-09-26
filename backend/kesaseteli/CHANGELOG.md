@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.20.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.19.0...kesaseteli-backend-v1.20.0) (2026-09-26)
+
+
+### Features
+
+* **ks:** Add application assignee functionality and endpoints ([a8abef0](https://github.com/City-of-Helsinki/yjdh/commit/a8abef013f1ce0e477e8156b8488e54eeecd2508))
+* **ks:** Add ensure_talpa_export_test_applications command ([1f48715](https://github.com/City-of-Helsinki/yjdh/commit/1f4871550fcb7df2e4516ca26a386145c2b66510))
+* **ks:** Add setting to disable anonymous youth attachments ([737cf6c](https://github.com/City-of-Helsinki/yjdh/commit/737cf6cbcd7bdd4dff8bfb727a8767ad175b32e9))
+* **ks:** Add youth application attachments backend implementation ([889ed67](https://github.com/City-of-Helsinki/yjdh/commit/889ed67f7f5a592c6b5901cd8309321b56abcb56))
+* **ks:** Require youth applications to be active for attachments ([1b7460d](https://github.com/City-of-Helsinki/yjdh/commit/1b7460d17c61d47945d13ed40e270d978feecb05))
+* **ks:** Secure youth attachment delivery and handler uploads ([2bb8242](https://github.com/City-of-Helsinki/yjdh/commit/2bb8242a7f5641244cdce4e7e0a708ba073427f8))
+* **ks:** Transition Talpa export to ACCEPTED_FOR_PAYMENT ([1b408d7](https://github.com/City-of-Helsinki/yjdh/commit/1b408d7ef83f87969018065984db44ef66fc48ee))
+
+
+### Bug Fixes
+
+* **backend:** Align project versions with release manifest ([d26269f](https://github.com/City-of-Helsinki/yjdh/commit/d26269f8f0cf07d1f03b572ac7bd83460f42adad))
+* **backend:** Exclude local virtualenvs from translation compilation ([6091a0c](https://github.com/City-of-Helsinki/yjdh/commit/6091a0ce13e8aea015f8f79218a45c298ab63388))
+* **ks, youth:** Uniform response to ssn and email in use ([bca0510](https://github.com/City-of-Helsinki/yjdh/commit/bca05107a8576ba4f17b4bcf757015302da63cd0))
+* **ks:** Add post_delete cleanup for attachment files ([e76f359](https://github.com/City-of-Helsinki/yjdh/commit/e76f359d9a2aec8cffad89199f8681d0dffd09a8))
+* **ks:** Load root dotenv fallback ([08b7f2c](https://github.com/City-of-Helsinki/yjdh/commit/08b7f2cd5bd2b1b99c0e50f48a3f0588b40117d0))
+* **ks:** Lock youth application during attachment deletion ([eb6ea0e](https://github.com/City-of-Helsinki/yjdh/commit/eb6ea0e730fc66a0ab8ae097cdb90049682ac70f))
+* **ks:** Remove unnecessary EmployerApplicationStatus.SENT_FOR_PAYMENT ([1260597](https://github.com/City-of-Helsinki/yjdh/commit/1260597b28f81eb3b84f4319031b587c7a8a925b))
+
+
+### Documentation
+
+* **ks:** Fix Talpa webhook payload in README diagram ([d4d80f5](https://github.com/City-of-Helsinki/yjdh/commit/d4d80f5c96c623c5e40592101478b6f3c30fa7ba))
+* Remove readiness endpoint from frontend readme ([caf6f82](https://github.com/City-of-Helsinki/yjdh/commit/caf6f825503c555ea51725f98d14b3ecfa92e306))
+
 ## [1.19.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.18.0...kesaseteli-backend-v1.19.0) (2026-09-14)
 
 
