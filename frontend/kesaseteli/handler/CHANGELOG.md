@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.5.0...kesaseteli-handler-v2.6.0) (2026-09-26)
+
+
+### Features
+
+* **ks,handler,youth:** Add assignee column and refactor lists ([b8580f5](https://github.com/City-of-Helsinki/yjdh/commit/b8580f5df0f7b086a42becfd6a01a94506ebd0d3))
+* **ks,handler:** Add application received event to timeline ([02117b1](https://github.com/City-of-Helsinki/yjdh/commit/02117b1530ea49e6a400920cabd3419394b69a67))
+* **ks,handler:** Add assignee mutation hooks and invalidator ([a21ac56](https://github.com/City-of-Helsinki/yjdh/commit/a21ac567ad536227f45cd6fded8eacdb8197be12))
+* **ks,handler:** Add assignee permission notifications to note forms ([c8bc415](https://github.com/City-of-Helsinki/yjdh/commit/c8bc41578c55991f4b15fc765c0c9e024f6edc39))
+* **ks,handler:** Add assignment controls and update handler form ([5959b66](https://github.com/City-of-Helsinki/yjdh/commit/5959b66f0f8e45b6b061588efe547c7e15d3c174))
+* **ks,handler:** Implement youth application attachments and refactor ([a37d3ca](https://github.com/City-of-Helsinki/yjdh/commit/a37d3cafc85b34e7ee3ff16d878b540b3fda0b01))
+* **ks,handler:** Render assignee change activities in timeline ([c20b52f](https://github.com/City-of-Helsinki/yjdh/commit/c20b52fa6c82dda13b22bbd223713e6dc3104565))
+* **ks,handler:** Standardize assignee permission restrictions ([6b13e9e](https://github.com/City-of-Helsinki/yjdh/commit/6b13e9e17f04a458dbf3757ab2253467c89a5d88))
+* **ks,handler:** Unify employer application assignee box and status ([80dec8a](https://github.com/City-of-Helsinki/yjdh/commit/80dec8a02ad534235da55ad46ed548292a7e6c62))
+* **ks,shared,handler:** Move create app without ssn to nav ([b9be595](https://github.com/City-of-Helsinki/yjdh/commit/b9be5958fa58227a74c6bc9d35528456011e7402))
+
+
+### Bug Fixes
+
+* **ks,frontend:** Deduplicate employer application status definitions ([a6829ca](https://github.com/City-of-Helsinki/yjdh/commit/a6829cac8257b7c6d66f0ff47d515c91ebdc95a2))
+* **ks,handler:** Add page containers to prevent layout blowout ([ad6b333](https://github.com/City-of-Helsinki/yjdh/commit/ad6b33316d6492c3b05a1d6a99e47dafb934ce35))
+* **ks,handler:** Fix application list table layout blowout on mobile ([cb76e4a](https://github.com/City-of-Helsinki/yjdh/commit/cb76e4ae1c9d3bc0211178566d6bd999856ecdd2))
+* **ks,handler:** Safeguard timeline from bad status changes ([4463e9c](https://github.com/City-of-Helsinki/yjdh/commit/4463e9c9ddb675a7b9e153f83a860057677c6c14))
+* **ks,handler:** Show success toast when note is deleted ([0948dbe](https://github.com/City-of-Helsinki/yjdh/commit/0948dbec1f548298dcc541209dfbd96ea80f346b))
+* **ks:** Remove unnecessary EmployerApplicationStatus.SENT_FOR_PAYMENT ([1260597](https://github.com/City-of-Helsinki/yjdh/commit/1260597b28f81eb3b84f4319031b587c7a8a925b))
+* **shared:** Prevent toast overflow on mobile screens ([f011fe3](https://github.com/City-of-Helsinki/yjdh/commit/f011fe3def3893cb7fb47698d775a1626be10d76))
+
 ## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.4.0...kesaseteli-handler-v2.5.0) (2026-09-15)
 
 
