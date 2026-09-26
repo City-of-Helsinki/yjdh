@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.5.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.4.0...kesaseteli-youth-v2.5.0) (2026-09-26)
+
+
+### Features
+
+* **ks,handler,youth:** Add assignee column and refactor lists ([b8580f5](https://github.com/City-of-Helsinki/yjdh/commit/b8580f5df0f7b086a42becfd6a01a94506ebd0d3))
+* **ks,handler:** Unify employer application assignee box and status ([80dec8a](https://github.com/City-of-Helsinki/yjdh/commit/80dec8a02ad534235da55ad46ed548292a7e6c62))
+
+
+### Bug Fixes
+
+* **ks, youth:** Uniform response to ssn and email in use ([bca0510](https://github.com/City-of-Helsinki/yjdh/commit/bca05107a8576ba4f17b4bcf757015302da63cd0))
+
 ## [2.4.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-youth-v2.3.1...kesaseteli-youth-v2.4.0) (2026-09-14)
 
 
