@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.1...kesaseteli-employer-v2.5.2) (2026-09-26)
+
+
+### Bug Fixes
+
+* **ks,frontend:** Deduplicate employer application status definitions ([a6829ca](https://github.com/City-of-Helsinki/yjdh/commit/a6829cac8257b7c6d66f0ff47d515c91ebdc95a2))
+* **ks:** Remove unnecessary EmployerApplicationStatus.SENT_FOR_PAYMENT ([1260597](https://github.com/City-of-Helsinki/yjdh/commit/1260597b28f81eb3b84f4319031b587c7a8a925b))
+
 ## [2.5.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.0...kesaseteli-employer-v2.5.1) (2026-09-15)
 
 
