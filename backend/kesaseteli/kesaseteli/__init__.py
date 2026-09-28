@@ -2,7 +2,7 @@
 Code from https://github.com/benslavin/django-db-prefix
 """
 
-__version__ = "1.11.0"  # x-release-please-version
+__version__ = "1.20.0"  # x-release-please-version
 
 from django.conf import settings
 from django.db.models.signals import class_prepared
