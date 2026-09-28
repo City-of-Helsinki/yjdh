@@ -5,11 +5,13 @@ import {
   IconPen,
   Link,
   Pagination,
+  StatusLabel,
 } from 'hds-react';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import Application from 'kesaseteli-shared/types/application';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import useUnreadMessagesCountQuery from 'kesaseteli/employer/hooks/backend/useUnreadMessagesCountQuery';
 import React from 'react';
 import Button from 'shared/components/button/Button';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
@@ -78,6 +80,11 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
     application.submitted_at ||
     '';
 
+  const { data: unreadCountData } = useUnreadMessagesCountQuery(
+    application.id ?? ''
+  );
+  const unreadCount = unreadCountData?.count ?? 0;
+
   const handleEdit = React.useCallback(async () => {
     await router.push(`/${locale}/application?id=${application.id}`);
   }, [router, locale, application.id]);
@@ -93,6 +100,11 @@ const ApplicationTableRow: React.FC<ApplicationTableRowProps> = ({
       <td>{convertToUIDateAndTimeFormat(modifiedAt)}</td>
       <td>
         <StatusTag status={application.status} />
+      </td>
+      <td>
+        {unreadCount > 0 && (
+          <StatusLabel type="info">{unreadCount}</StatusLabel>
+        )}
       </td>
       <td>
         {application.status === EmployerApplicationStatus.DRAFT && (
@@ -155,6 +167,7 @@ const ApplicationTableContent: React.FC = () => {
             </th>
             <th>{t('common:application.form.inputs.modified_at')}</th>
             <th>{t('common:application.form.inputs.status')}</th>
+            <th>{t('common:application.form.inputs.unread_messages_count')}</th>
             <th>
               <span className="sr-only">{t('common:dashboard.actions')}</span>
             </th>
@@ -163,7 +176,7 @@ const ApplicationTableContent: React.FC = () => {
         <tbody>
           {applications.length === 0 ? (
             <tr>
-              <td colSpan={5} style={{ textAlign: 'center' }}>
+              <td colSpan={6} style={{ textAlign: 'center' }}>
                 {t('common:dashboard.noApplications')}
               </td>
             </tr>

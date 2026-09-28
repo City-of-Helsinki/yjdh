@@ -184,6 +184,7 @@
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
         "modified_at": "Viimeksi päivitetty",
         "status": "Tila",
+        "unread_messages_count": "Viestejä",
         "summer_vouchers": "Kesäsetelit",
         "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne."
       },

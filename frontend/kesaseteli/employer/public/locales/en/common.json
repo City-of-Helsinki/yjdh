@@ -184,6 +184,7 @@
         "hired_without_voucher_assessment": "Would you have employed without the Summer Job Voucher?",
         "modified_at": "Last updated",
         "status": "Status",
+        "unread_messages_count": "Messages",
         "summer_vouchers": "Summer vouchers",
         "termsAndConditions": "I have read and accept the <a>terms of service</a>."
       },
