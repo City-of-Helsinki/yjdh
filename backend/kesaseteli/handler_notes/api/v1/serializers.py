@@ -31,6 +31,8 @@ class NoteSerializer(serializers.ModelSerializer):
             "modified_at",
             "target_type",
             "target_id",
+            "seen_at",
+            "seen_by",
         ]
         read_only_fields = [
             "id",

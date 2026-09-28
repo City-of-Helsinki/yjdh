@@ -35,6 +35,16 @@ class Note(TimeStampedModel, UUIDModel):
 
     objects = NoteQuerySet.as_manager()
 
+    seen_at = models.DateTimeField(null=True, blank=True, verbose_name=_("seen at"))
+    seen_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="seen_by_notes",
+        verbose_name=_("seen by"),
+    )
+
     class Meta:
         db_table = "handler_notes_note"
         verbose_name = _("note")

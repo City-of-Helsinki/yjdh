@@ -3,10 +3,13 @@ from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from common.permissions import HandlerPermission
 from handler_notes.api.v1.serializers import NoteSerializer
+from handler_notes.enums import NoteType
 from handler_notes.models import Note
 
 
@@ -64,3 +67,18 @@ class NoteViewSet(viewsets.ModelViewSet):
                 qs = qs.none()
 
         return qs.order_by("-created_at")
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="unread-messages-count",
+        url_name="unread-messages-count",
+    )
+    def unread_messages_count(self, request, pk=None):
+        count = Note.objects.filter(
+            object_id=pk,
+            note_type=NoteType.EXTERNAL_MESSAGE,
+            seen_at__isnull=True,
+        ).count()
+
+        return Response(status=status.HTTP_200_OK, data={"count": count})
