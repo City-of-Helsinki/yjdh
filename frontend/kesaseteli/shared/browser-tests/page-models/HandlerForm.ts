@@ -34,6 +34,10 @@ export default class HandlerForm<
     return this.component.findByTestId(`handlerApplication-${id as string}`);
   }
 
+  private assignButton = this.component.findByRole('button', {
+    name: /ota käsittelyyn/i,
+  });
+
   private acceptButton = this.component.findByRole('button', {
     name: /hyväksy/i,
   });
@@ -144,6 +148,15 @@ export default class HandlerForm<
     return this.expect(this.isRejected);
   }
 
+  public async clickAssignButton() {
+    // Button only exists if not already assigned
+    const assignButtonExists = await this.assignButton.with({ timeout: 1000 })
+      .exists;
+    if (assignButtonExists) {
+      return t.click(this.assignButton);
+    }
+  }
+
   public async clickAcceptButton() {
     return t.click(this.acceptButton);
   }
@@ -162,6 +175,7 @@ export default class HandlerForm<
 
   public async acceptApplication() {
     await this.isLoaded();
+    await this.clickAssignButton();
     await this.clickAcceptButton();
     await this.confirmationDialogIsPresent();
     await this.clickConfirmAcceptButton();
@@ -170,6 +184,7 @@ export default class HandlerForm<
 
   public async rejectApplication() {
     await this.isLoaded();
+    await this.clickAssignButton();
     await this.clickRejectButton();
     await this.confirmationDialogIsPresent();
     await this.clickConfirmRejectButton();
