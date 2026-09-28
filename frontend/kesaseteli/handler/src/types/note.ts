@@ -26,6 +26,7 @@ export type HandlerNote = {
   modified_at: string;
   target_type: NoteTargetType;
   target_id: string;
+  seen_at?: string | null;
 };
 
 export type CreateNotePayload = {

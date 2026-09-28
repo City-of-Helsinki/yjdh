@@ -9,7 +9,8 @@ export const $PanelGrid = styled.div`
     'status . .'
     'company voucher youth'
     'contact payment invoicer'
-    'attachments attachments attachments';
+    'attachments attachments attachments'
+    'messages messages messages';
 
   > div {
     padding: var(--spacing-m);
@@ -50,7 +51,8 @@ export const $PanelGrid = styled.div`
       'contact'
       'payment'
       'invoicer'
-      'attachments';
+      'attachments'
+      'messages';
   }
 `;
 
@@ -95,5 +97,33 @@ export const $StickyTabs = styled(Tabs)`
     top: 0;
     z-index: 1000;
     background-color: var(--color-white);
+  }
+`;
+
+export const $Message = styled.div`
+  padding: var(--spacing-xs);
+  border: 1px dashed var(--color-bus);
+  margin: var(--spacing-s);
+  background-color: var(--color-bus-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  p[class*='message-date'] {
+    font-weight: bold;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  div[class*='StatusLabel'] {
+    margin-bottom: 0;
+  }
+
+  div[class*='message-content'] {
+    padding: 0 1em 1em 1em;
+  }
+
+  p[class*='message-line'] {
+    margin-bottom: 0;
   }
 `;
