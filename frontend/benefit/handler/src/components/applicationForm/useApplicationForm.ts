@@ -77,7 +77,7 @@ type ExtendedComponentProps = {
   isLoading: boolean;
   checkedConsentArray: boolean[];
   getConsentErrorText: (consentIndex: number) => string;
-  handleConsentClick: (consentIndex: number) => void;
+  handleConsentClick: (consentIndex: number, isChecked: boolean) => void;
   initialApplication: Application | null;
   user: User | undefined;
 };
@@ -350,16 +350,19 @@ export const useApplicationForm = (): ExtendedComponentProps => {
     setConsentErrorsArray(getInitialConsentValues());
   }
 
-  const handleConsentClick = (consentIndex: number): void => {
+  const handleConsentClick = (
+    consentIndex: number,
+    isChecked: boolean
+  ): void => {
     setCheckedConsentArray((prev) => {
       const newArray = [...prev];
-      newArray[consentIndex] = !prev[consentIndex];
-      setConsentErrorsArray((prevErrors) => {
-        const newErrorsArray = [...prevErrors];
-        newErrorsArray[consentIndex] = !newArray[consentIndex];
-        return newErrorsArray;
-      });
+      newArray[consentIndex] = isChecked;
       return newArray;
+    });
+    setConsentErrorsArray((prevErrors) => {
+      const newErrorsArray = [...prevErrors];
+      newErrorsArray[consentIndex] = !isChecked;
+      return newErrorsArray;
     });
   };
 

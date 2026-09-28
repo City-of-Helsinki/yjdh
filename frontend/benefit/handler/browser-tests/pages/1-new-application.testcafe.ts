@@ -12,6 +12,15 @@ import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
 
+const clickAndVerifyConsent = async (
+  t: TestController,
+  consentSelector: string
+): Promise<void> => {
+  const consent = Selector(consentSelector);
+  await t.click(consent);
+  await t.expect(consent.checked).eql(true);
+};
+
 fixture('Create new application')
   .page(url)
   .beforeEach(async (t) => {
@@ -115,12 +124,13 @@ test('Fill form and submit', async (t: TestController) => {
    * Click through all applicant terms.
    * Assume terms are loaded from fixture default_terms.json using LOAD_DEFAULT_TERMS=1
    */
-  const firstConsent = Selector('[name="application_consent_0"]');
-  await t.expect(firstConsent.exists).ok({ timeout: 10000 });
-  await t.click(firstConsent);
-  await t.click(Selector('[name="application_consent_1"]'));
-  await t.click(Selector('[name="application_consent_2"]'));
-  await t.click(Selector('[name="application_consent_3"]'));
+  await t
+    .expect(Selector('[name="application_consent_0"]').exists)
+    .ok({ timeout: 10000 });
+  await clickAndVerifyConsent(t, '[name="application_consent_0"]');
+  await clickAndVerifyConsent(t, '[name="application_consent_1"]');
+  await clickAndVerifyConsent(t, '[name="application_consent_2"]');
+  await clickAndVerifyConsent(t, '[name="application_consent_3"]');
 
   // Validate form and submit
   const buttonSelector = 'main button';
