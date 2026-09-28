@@ -1,15 +1,19 @@
-import { Notification, Tab, TabList, TabPanel } from 'hds-react';
+import { Notification, StatusLabel, Tab, TabList, TabPanel } from 'hds-react';
 import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import { useTheme } from 'styled-components';
 
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import useExternalMessagesQuery from '../../hooks/backend/useExternalMessagesQuery';
+import useUnreadMessagesCountQuery from '../../hooks/backend/useUnreadMessagesCountQuery';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
 import {
   $CompanySection,
   $ContactSection,
   $InvoicerSection,
+  $Message,
   $PanelGrid,
   $PaymentSection,
   $StatusSection,
@@ -31,34 +35,60 @@ type Props = {
 
 const EmployerApplicationPanel: React.FC<
   Props & { voucher: HandlerSummerVoucher }
-> = ({ application, voucher }) => (
-  <$PanelGrid>
-    <$StatusSection>
-      <EmployerApplicationStatusSection
-        application={application}
-        withoutTitle
-      />
-    </$StatusSection>
-    <$CompanySection>
-      <EmployerCompanyFieldsSection application={application} />
-    </$CompanySection>
-    <$VoucherSection>
-      <EmployerVoucherFieldsSection voucher={voucher} />
-    </$VoucherSection>
-    <$YouthSection>
-      <YouthInfoFieldsSection voucher={voucher} />
-    </$YouthSection>
-    <$ContactSection>
-      <EmployerContactPersonFieldsSection application={application} />
-    </$ContactSection>
-    <$PaymentSection>
-      <EmployerPaymentFieldsSection application={application} />
-    </$PaymentSection>
-    <$InvoicerSection>
-      <EmployerInvoicerFieldsSection application={application} />
-    </$InvoicerSection>
-  </$PanelGrid>
-);
+> = ({ application, voucher }) => {
+  const { data: messages } = useExternalMessagesQuery(application.id);
+  const { t } = useTranslation();
+
+  return (
+    <$PanelGrid>
+      <$StatusSection>
+        <EmployerApplicationStatusSection
+          application={application}
+          withoutTitle
+        />
+      </$StatusSection>
+      <$CompanySection>
+        <EmployerCompanyFieldsSection application={application} />
+      </$CompanySection>
+      <$VoucherSection>
+        <EmployerVoucherFieldsSection voucher={voucher} />
+      </$VoucherSection>
+      <$YouthSection>
+        <YouthInfoFieldsSection voucher={voucher} />
+      </$YouthSection>
+      <$ContactSection>
+        <EmployerContactPersonFieldsSection application={application} />
+      </$ContactSection>
+      <$PaymentSection>
+        <EmployerPaymentFieldsSection application={application} />
+      </$PaymentSection>
+      <$InvoicerSection>
+        <EmployerInvoicerFieldsSection application={application} />
+      </$InvoicerSection>
+      {messages && messages.length > 0 && (
+        <div style={{ gridArea: 'messages', marginTop: '2rem' }}>
+          <h3>{t('common:handlerApplication.messages')}</h3>
+          {messages.map((message) => (
+            <$Message key={message.id}>
+              <p className={'message-date'}>{convertToUIDateAndTimeFormat(message.created_at)}</p>
+              {!message.seen_at && (
+                <StatusLabel type="info" style={{ marginBottom: '1rem' }}>Uusi</StatusLabel>
+              )}
+              <div className={'message-content'}>
+                {message.content.split('\n').map((line, index) => (
+                  <React.Fragment key={line.replace(/\s+/g, '-').concat(index.toString())}>
+                    <p className={'message-line'}>{line}</p>
+                  </React.Fragment>
+                )
+                )}
+              </div>
+            </$Message>
+          ))}
+        </div>
+      )}
+    </$PanelGrid>
+  );
+};
 
 /**
  * Renders the handler's detail view of an employer application.
@@ -71,17 +101,35 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
   const [isNotificationOpen, setIsNotificationOpen] = useState(true);
+  const { data: unreadCountData } = useUnreadMessagesCountQuery(application.id);
   const vouchers = application.summer_vouchers;
 
   if (vouchers.length === 0) {
     return <div data-testid="no-vouchers">-</div>;
   }
 
+  const showNotification = isNotificationOpen && unreadCountData?.count && unreadCountData.count > 0;
+
   if (vouchers.length === 1) {
     const voucher = vouchers[0];
 
     return (
-      <EmployerApplicationPanel application={application} voucher={voucher} />
+      <>
+        {showNotification && (
+          <Notification
+            label="Sinulla on uusia viestejä"
+            type="info"
+            position={isMobile ? 'bottom-right' : 'inline'}
+            dismissible={isMobile}
+            closeButtonLabelText={t('common:common.close')}
+            onClose={() => setIsNotificationOpen(false)}
+            style={{ marginBottom: '2rem' }}
+          >
+            Käsittelijä on jättänyt sinulle viestejä.
+          </Notification>
+        )}
+        <EmployerApplicationPanel application={application} voucher={voucher} />
+      </>
     );
   }
 
@@ -97,7 +145,20 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
 
   return (
     <>
-      {isNotificationOpen && (
+      {showNotification && (
+        <Notification
+          label="Sinulla on uusia viestejä"
+          type="info"
+          position={isMobile ? 'bottom-right' : 'inline'}
+          dismissible={isMobile}
+          closeButtonLabelText={t('common:common.close')}
+          onClose={() => setIsNotificationOpen(false)}
+          style={{ marginBottom: '2rem' }}
+        >
+          Käsittelijä on jättänyt sinulle viestejä.
+        </Notification>
+      )}
+      {isNotificationOpen && vouchers.length > 1 && (
         <Notification
           label={t('common:handlerApplication.multipleVouchersNotification')}
           type="info"
