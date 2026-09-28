@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from django.core.exceptions import ValidationError
@@ -11,6 +12,8 @@ from common.permissions import HandlerPermission
 from handler_notes.api.v1.serializers import NoteSerializer
 from handler_notes.enums import NoteType
 from handler_notes.models import Note
+
+LOGGER = logging.getLogger(__name__)
 
 
 class NoteModificationPermission(permissions.BasePermission):
@@ -96,3 +99,19 @@ class NoteViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="mark-read",
+        url_name="mark-read",
+    )
+    def mark_read(self, request, pk=None):
+        LOGGER.debug(f"Marking external messages as read for {pk=}")
+        Note.objects.filter(
+            object_id=pk,
+            note_type=NoteType.EXTERNAL_MESSAGE,
+            seen_at__isnull=True,
+        ).update(seen_at=timezone.now(), seen_by=request.user)
+
+        return Response(status=status.HTTP_200_OK)
