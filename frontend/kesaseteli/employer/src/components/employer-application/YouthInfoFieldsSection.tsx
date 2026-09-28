@@ -54,16 +54,6 @@ const YouthInfoFieldsSection: React.FC<Props> = ({ voucher }) => {
           value={voucher.employee_postcode ?? '-'}
         />
       </$DescriptionList>
-
-      {voucher.youth_application_id && (
-        <$LinkContainer>
-          <Link
-            href={`${ROUTES.YOUTH_APPLICATIONS}/${voucher.youth_application_id}`}
-          >
-            {t('common:handlerApplication.youthApplicationLink')}
-          </Link>
-        </$LinkContainer>
-      )}
     </FormSection>
   );
 };

@@ -6,6 +6,7 @@ import { useTheme } from 'styled-components';
 
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import useExternalMessagesQuery from '../../hooks/backend/useExternalMessagesQuery';
+import useMarkMessagesReadMutation from '../../hooks/backend/useMarkMessagesReadMutation';
 import useUnreadMessagesCountQuery from '../../hooks/backend/useUnreadMessagesCountQuery';
 import type HandlerEmployerApplication from '../../types/HandlerEmployerApplication';
 import { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
@@ -102,13 +103,21 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
   const [isNotificationOpen, setIsNotificationOpen] = useState(true);
   const { data: unreadCountData } = useUnreadMessagesCountQuery(application.id);
+  const { mutate: markMessagesRead } = useMarkMessagesReadMutation(application.id);
+
+  React.useEffect(() => {
+    if (unreadCountData && unreadCountData.count > 0) {
+      markMessagesRead();
+    }
+  }, [markMessagesRead, unreadCountData])
+
   const vouchers = application.summer_vouchers;
 
   if (vouchers.length === 0) {
     return <div data-testid="no-vouchers">-</div>;
   }
 
-  const showNotification = isNotificationOpen && unreadCountData?.count && unreadCountData.count > 0;
+  const showNotification = isNotificationOpen && unreadCountData && unreadCountData.count > 0;
 
   if (vouchers.length === 1) {
     const voucher = vouchers[0];
@@ -125,7 +134,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
             onClose={() => setIsNotificationOpen(false)}
             style={{ marginBottom: '2rem' }}
           >
-            Käsittelijä on jättänyt sinulle viestejä.
+            Sinulle on uusia viestejä. Katso ne sivun alalaidasta.
           </Notification>
         )}
         <EmployerApplicationPanel application={application} voucher={voucher} />
@@ -155,7 +164,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
           onClose={() => setIsNotificationOpen(false)}
           style={{ marginBottom: '2rem' }}
         >
-          Käsittelijä on jättänyt sinulle viestejä.
+          Sinulle on uusia viestejä. Katso ne sivun alalaidasta.
         </Notification>
       )}
       {isNotificationOpen && vouchers.length > 1 && (
