@@ -31,7 +31,7 @@ const App: React.FC<AppProps> = (appProps: AppProps) => {
 
   const showCookieBanner =
     (isMatomoConfigured ||
-      process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER === '1') &&
+      process.env.NEXT_PUBLIC_SHOW_COOKIE_BANNER == '1') &&
     router.route !== ROUTES.COOKIE_SETTINGS;
 
   return (
