@@ -63,7 +63,7 @@ type Props = {
   attachments: BenefitAttachment[];
   checkedConsentArray: boolean[];
   getConsentErrorText: (consentIndex: number) => string;
-  handleConsentClick: (consentIndex: number) => void;
+  handleConsentClick: (consentIndex: number, isChecked: boolean) => void;
 };
 
 const FormContent: React.FC<Props> = ({
@@ -804,7 +804,9 @@ const FormContent: React.FC<Props> = ({
                   checked={checkedConsentArray[i]}
                   errorText={getConsentErrorText(i)}
                   aria-invalid={false}
-                  onChange={() => handleConsentClick(i)}
+                  onChange={(event) =>
+                    handleConsentClick(i, event.currentTarget.checked)
+                  }
                 />
               </$GridCell>
             )

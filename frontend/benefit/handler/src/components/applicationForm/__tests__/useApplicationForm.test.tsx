@@ -387,7 +387,7 @@ describe('useApplicationForm', () => {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await act(async () => {
       isValid = // eslint-disable-next-line @typescript-eslint/await-thenable
- await result.current.handleValidation();
+        await result.current.handleValidation();
     });
 
     expect(isValid).toBe(true);
@@ -406,7 +406,7 @@ describe('useApplicationForm', () => {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await act(async () => {
       isValid = // eslint-disable-next-line @typescript-eslint/await-thenable
- await result.current.handleValidation();
+        await result.current.handleValidation();
     });
 
     expect(isValid).toBe(false);
@@ -475,11 +475,34 @@ describe('useApplicationForm', () => {
     expect(result.current.checkedConsentArray).toEqual([false, false]);
 
     act(() => {
-      result.current.handleConsentClick(0);
+      result.current.handleConsentClick(0, true);
     });
 
     expect(result.current.checkedConsentArray).toEqual([true, false]);
     expect(result.current.getConsentErrorText(0)).toBe('');
+  });
+
+  it('should preserve multiple consent selections in the same update batch', () => {
+    mockGetApplicationResult = {
+      ...baseApplication(),
+      applicantTermsInEffect: {
+        id: 'terms-1',
+        applicantConsents: [{ id: 'consent-1' }, { id: 'consent-2' }],
+      },
+    } as unknown as Application;
+
+    const { result } = renderHook(() => useApplicationForm(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.handleConsentClick(0, true);
+      result.current.handleConsentClick(1, true);
+    });
+
+    expect(result.current.checkedConsentArray).toEqual([true, true]);
+    expect(result.current.getConsentErrorText(0)).toBe('');
+    expect(result.current.getConsentErrorText(1)).toBe('');
   });
 
   it('should compute showDeminimisSection based on organization type and business activities', () => {
