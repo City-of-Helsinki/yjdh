@@ -86,14 +86,12 @@ class NoteViewSet(viewsets.ModelViewSet):
     @action(
         methods=["get"],
         detail=True,
-        url_path="unread-messages",
-        url_name="unread-messages",
+        url_path="external-messages",
+        url_name="external-messages",
     )
-    def unread_messages(self, request, pk=None):
+    def external_messages(self, request, pk=None):
         queryset = Note.objects.filter(
-            object_id=pk,
-            note_type=NoteType.EXTERNAL_MESSAGE,
-            seen_at__isnull=True,
+            object_id=pk, note_type=NoteType.EXTERNAL_MESSAGE
         ).order_by("-created_at")
 
         serializer = self.get_serializer(queryset, many=True)
