@@ -82,3 +82,19 @@ class NoteViewSet(viewsets.ModelViewSet):
         ).count()
 
         return Response(status=status.HTTP_200_OK, data={"count": count})
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="unread-messages",
+        url_name="unread-messages",
+    )
+    def unread_messages(self, request, pk=None):
+        queryset = Note.objects.filter(
+            object_id=pk,
+            note_type=NoteType.EXTERNAL_MESSAGE,
+            seen_at__isnull=True,
+        ).order_by("-created_at")
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
