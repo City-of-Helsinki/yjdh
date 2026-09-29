@@ -19,6 +19,7 @@ from freezegun import freeze_time
 from rest_framework import status
 
 from applications.api.handler_excel_views import YouthApplicationExcelExportViewSet
+from applications.api.v1.serializers import EmployerApplicationSerializer
 from applications.employer_excel_export import (
     EmployerExcelExportErrorCode,
     get_excel_download_error_message,
@@ -157,10 +158,14 @@ def test_excel_view_get_with_unauthenticated_user(user_client):
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+@pytest.mark.parametrize("status", EmployerApplicationStatus.pending_payment_values())
 def test_excel_view_download_unhandled(
-    staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
+    staff_client,
+    submitted_summer_voucher,
+    submitted_employment_contract_attachment,
+    status,
 ):
-    submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
+    submitted_summer_voucher.application.status = status
     submitted_summer_voucher.application.save()
 
     response = staff_client.get(
@@ -1016,3 +1021,55 @@ def test_export_unhandled_concurrent_requests_no_duplicate_batch(staff_user):
     assert sorted(results) == [200, 302]
     # The voucher is marked exported exactly once — no double-claiming.
     assert EmployerSummerVoucher.objects.filter(is_exported=True).count() == 1
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "from_status,to_status",
+    [
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.SUBMITTED,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.SUBMITTED,
+        ),
+        (
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        ),
+        (
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        ),
+    ],
+)
+def test_reset_is_exported_on_status_transitions(from_status, to_status):
+    """Vouchers without invoiced_at have is_exported reset on queue return and accepted_for_payment."""
+    application = EmployerApplicationFactory(status=from_status)
+    un_invoiced_voucher = EmployerSummerVoucherFactory(
+        application=application,
+        is_exported=True,
+        invoiced_at=None,
+    )
+    invoiced_voucher = EmployerSummerVoucherFactory(
+        application=application,
+        is_exported=True,
+        invoiced_at=utc_datetime(2026, 8, 1),
+    )
+
+    serializer = EmployerApplicationSerializer(context={"request": None})
+    serializer.update(application, {"status": to_status})
+
+    un_invoiced_voucher.refresh_from_db()
+    invoiced_voucher.refresh_from_db()
+
+    # Un-invoiced vouchers have is_exported reset to False
+    assert un_invoiced_voucher.is_exported is False
+    # Already invoiced vouchers must NEVER have is_exported reset
+    assert invoiced_voucher.is_exported is True

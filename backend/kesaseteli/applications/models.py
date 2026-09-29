@@ -1707,16 +1707,16 @@ class EmployerSummerVoucherQuerySet(models.QuerySet):
     def unhandled(self):
         """Return vouchers that have not yet been exported.
 
-        Includes only vouchers on SUBMITTED applications that have not been
+        Includes only vouchers on pending payment applications that have not been
         marked as exported (``is_exported=False``). Used exclusively by the Excel
         "unhandled" export. For Talpa JSON export, see ``talpa_exportable()``.
 
         Returns:
-            QuerySet filtered to unexported SUBMITTED vouchers.
+            QuerySet filtered to unexported pending payment vouchers.
         """
         return self.filter(
             is_exported=False,
-            application__status=EmployerApplicationStatus.SUBMITTED,
+            application__status__in=EmployerApplicationStatus.pending_payment_values(),
         )
 
     def talpa_exportable(self):
