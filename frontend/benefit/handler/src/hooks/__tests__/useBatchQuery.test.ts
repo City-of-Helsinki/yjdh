@@ -59,6 +59,27 @@ describe('useBatchQuery', () => {
     );
   });
 
+  it('uses a distinct query key for each batch status filter and order', () => {
+    renderHook(() =>
+      useBatchQuery([
+        BATCH_STATUSES.DRAFT,
+        BATCH_STATUSES.AWAITING_FOR_DECISION,
+      ])
+    );
+
+    expect(useQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        queryKey: [
+          'applicationsList',
+          'batches',
+          BATCH_STATUSES.DRAFT,
+          BATCH_STATUSES.AWAITING_FOR_DECISION,
+          '-created_at',
+        ],
+      })
+    );
+  });
+
   it.each([
     ['provided', 'created_at', 'created_at'],
     ['default', undefined, '-created_at'],
