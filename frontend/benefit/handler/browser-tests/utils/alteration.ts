@@ -1,6 +1,7 @@
 import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
+import { getApplicationLinkByEmployeeName } from './application';
 
 export const navigateToAlterationTestApplication = async (
   t: TestController
@@ -8,11 +9,7 @@ export const navigateToAlterationTestApplication = async (
   // Navigate to archive
   await t.click(Selector('a').withText(fi.header.navigation.archive));
 
-  const applicationLink = Selector('td')
-    .withText('Enkilö, Koeh')
-    .sibling('td')
-    .nth(0)
-    .find('a');
+  const applicationLink = getApplicationLinkByEmployeeName('Enkilö, Koeh');
 
   // Click on the application
   // If the link is on multiple lines, it's possible for the test runner to try to click the

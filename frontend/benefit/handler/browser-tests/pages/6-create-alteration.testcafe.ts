@@ -25,15 +25,48 @@ const submitButton = Selector('button').withText(
   fi.applications.alterations.new.actions.submit
 );
 const accordionItemTitle = 'div[role="heading"]';
+const testContactPersonName = `${
+  terminationForm.contactPersonName
+} ${Date.now()}`;
+const testAlteration = alterationList
+  .find('[data-testid="alteration-item"]')
+  .withText(/päättynyt 23\.8\.2024/)
+  .withText(fi.applications.decision.alterationList.item.state.received);
+
+const removeReceivedAlterations = async (t: TestController): Promise<void> => {
+  const receivedAlterations = alterationList
+    .find('[data-testid="alteration-item"]')
+    .withText(fi.applications.decision.alterationList.item.state.received);
+  let remaining = await receivedAlterations.count;
+
+  while (remaining > 0) {
+    const alteration = receivedAlterations.nth(0);
+    await t.click(alteration.find(accordionItemTitle));
+    await t.click(
+      alteration
+        .find('button')
+        .withText(fi.applications.decision.alterationList.item.actions.delete)
+    );
+    await t
+      .expect(
+        Selector('div[role="dialog"] h2').withText(
+          fi.applications.decision.alterationList.deleteModal.title
+        ).visible
+      )
+      .ok();
+    await t.click(
+      Selector('div[role="dialog"] button').withText(
+        fi.applications.decision.alterationList.deleteModal.delete
+      )
+    );
+    await t
+      .expect(receivedAlterations.count)
+      .eql(remaining - 1, { timeout: 10_000 });
+    remaining -= 1;
+  }
+};
 
 test('Handler creates a new alteration', async (t: TestController) => {
-  // Note: on local development, any existing alterations should be deleted before
-  // running test files six through nine:
-  //   delete from applications_applicationalteration where application_id = '3544c528-73cc-4a08-8240-09f713a14990';
-  // Any test assertions regarding the alteration list fail if old cancelled alterations
-  // from previous test runs still linger in the UI, and the test controller is unable
-  // to clear them itself before the tests.
-
   await navigateToAlterationTestApplication(t);
 
   // Find the decision box
@@ -44,8 +77,11 @@ test('Handler creates a new alteration', async (t: TestController) => {
     )
     .ok();
 
-  // Find the alteration list, confirm it's empty
-  await t.expect(alterationList.childNodeCount).eql(0);
+  // A previous interrupted run may leave a received alteration, which disables
+  // the create button. Remove those records before this test starts.
+  await removeReceivedAlterations(t);
+
+  const initialAlterationCount = await alterationList.childNodeCount;
 
   // Click the new alteration button
   await t.click(
@@ -68,7 +104,7 @@ test('Handler creates a new alteration', async (t: TestController) => {
   await clearAndFill(
     t,
     '#alteration-contact-person-name',
-    terminationForm.contactPersonName
+    testContactPersonName
   );
   await t.typeText(
     '#alteration-einvoice-provider-name',
@@ -91,41 +127,48 @@ test('Handler creates a new alteration', async (t: TestController) => {
         .visible
     )
     .ok();
-  await t.expect(alterationList.childNodeCount).eql(1);
+  await t.expect(alterationList.childNodeCount).eql(initialAlterationCount + 1);
 
-  const item = alterationList.child(0);
+  await t.expect(testAlteration.exists).ok({ timeout: 10_000 });
   await t
     .expect(
-      item.find(accordionItemTitle).withText(/päättynyt 23\.8\.2024/).exists
+      testAlteration.find(accordionItemTitle).withText(/päättynyt 23\.8\.2024/)
+        .exists
     )
     .ok();
   await t
     .expect(
-      item
-        .find('div')
+      testAlteration
+        .find('[data-testid="alteration-state-tag"]')
         .withText(fi.applications.decision.alterationList.item.state.received)
         .exists
     )
     .ok();
-  await t.click(item.find(accordionItemTitle));
+  await t.click(testAlteration.find(accordionItemTitle));
   await t
-    .expect(
-      item.find('dl dd').withText(terminationForm.contactPersonName).exists
-    )
+    .expect(testAlteration.find('dl dd').withText(testContactPersonName).exists)
     .ok();
 });
 
 test('Handler deletes the pending alteration', async (t: TestController) => {
   await navigateToAlterationTestApplication(t);
 
-  // Find the alteration created in the previous test
-  await t.expect(alterationList.childNodeCount).eql(1);
-  const item = alterationList.child(0);
+  // Locate this run's alteration by its unique contact name.
+  await t.expect(testAlteration.exists).ok({ timeout: 10_000 });
+  await t
+    .expect(
+      testAlteration.find(accordionItemTitle).withText(/päättynyt 23\.8\.2024/)
+        .exists
+    )
+    .ok();
 
   // Open the list item and click the delete button
-  await t.click(item.find(accordionItemTitle));
+  await t.click(testAlteration.find(accordionItemTitle));
+  await t
+    .expect(testAlteration.find('dl dd').withText(testContactPersonName).exists)
+    .ok();
   await t.click(
-    item
+    testAlteration
       .find('button')
       .withText(fi.applications.decision.alterationList.item.actions.delete)
   );
@@ -144,14 +187,16 @@ test('Handler deletes the pending alteration', async (t: TestController) => {
     )
   );
 
-  // Verify that the alteration was deleted and no longer shown in the list in any form
+  // Verify that this run's alteration was deleted; older records may remain.
   await t
     .expect(
       Selector('h2').withText(fi.applications.decision.headings.mainHeading)
         .visible
     )
     .ok();
-  await t.expect(alterationList.childNodeCount).eql(0);
+  await t
+    .expect(alterationList.find('dl dd').withText(testContactPersonName).exists)
+    .notOk();
 });
 
 /* eslint-enable unicorn/no-array-callback-reference */
