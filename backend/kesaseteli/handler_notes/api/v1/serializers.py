@@ -5,6 +5,7 @@ from rest_framework import serializers
 from applications.enums import TimelineItemType
 from handler_notes.enums import NoteType
 from handler_notes.models import Note
+from handler_notes.services import send_external_message_email
 from handler_notes.utils import get_note_target_model
 
 
@@ -111,7 +112,12 @@ class NoteSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
 
-        return super().create(validated_data)
+        instance = super().create(validated_data)
+
+        if instance.note_type == NoteType.EXTERNAL_MESSAGE:
+            send_external_message_email(instance)
+
+        return instance
 
     def get_author_name(self, obj) -> str:
         if obj.author:
