@@ -5,11 +5,34 @@ import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
 import { EDIT_FORM_DATA as form } from '../constants/forms';
+import { getApplicationLinkByEmployeeName } from '../utils/application';
 import handlerUser from '../utils/handlerUser';
 import { clearAndFill } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
+
+const getBatchTab = (label: string): Selector => Selector('li').withText(label);
+
+const getVisibleBatchPanel = (label: string): Selector =>
+  Selector('[role="tabpanel"]').filterVisible().withText(label);
+
+const getBatchHeading = (label: string): Selector =>
+  getVisibleBatchPanel(label).find('h2').withText(label);
+
+const getBatchApplicationsList = (label: string): Selector =>
+  getVisibleBatchPanel(label).find('[data-testid="batch-application-list"]');
+
+const getExpandedBatchBody = (index = 0): Selector =>
+  Selector('[data-testid="batch-table-body"]').filterVisible().nth(index);
+
+const getBatchExpandButton = (index = 0): Selector =>
+  Selector('[data-testid="toggle-batch-applications"]')
+    .filterVisible()
+    .nth(index);
+
+const getInspectionField = (batchBody: Selector, name: string): Selector =>
+  batchBody.find(`[name="${name}"]`);
 
 fixture('Review edited application')
   .page(url)
@@ -20,11 +43,9 @@ fixture('Review edited application')
   });
 
 test('Handler makes a favorable decision', async (t: TestController) => {
-  const applicationLink = Selector('td')
-    .withText(`${form.employee.firstName} ${form.employee.lastName}`)
-    .sibling('td')
-    .nth(0)
-    .find('a');
+  const applicationLink = getApplicationLinkByEmployeeName(
+    `${form.employee.firstName} ${form.employee.lastName}`
+  );
 
   await t.expect(applicationLink.visible).ok();
   await t.click(applicationLink);
@@ -52,7 +73,7 @@ test('Handler makes a favorable decision', async (t: TestController) => {
   // Expect a "receipt" of calculation
   await t
     .expect(Selector('main').withText(fi.calculators.result.header2).exists)
-    .ok({ timeout: 10000 });
+    .ok({ timeout: 10_000 });
 
   // Click "accepted" radio
   await t.click(Selector('label').withText(fi.review.fields.support));
@@ -82,18 +103,22 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
   // Navigate to batches
   await t.click(Selector('a').withText(fi.header.navigation.batches));
 
-  // Visit the completed tab and read the current number of listed applications
-  await t.click(Selector('li').withText(fi.batches.tabs.completion));
-  const completionHeading = Selector('[role="tabpanel"] h2').withText(
-    fi.batches.tabs.completion
-  );
-  await t.expect(completionHeading.exists).ok();
-  const currentCompletedBatchesCount = await completionHeading.textContent.then(
-    (text) => text.match(/\((\d+)\)/)?.[1] ?? '0'
+  // Visit the completed tab and read the current number of listed batches
+  await t.click(getBatchTab(fi.batches.tabs.completion));
+  const completionHeading = getBatchHeading(fi.batches.tabs.completion);
+  const completionList = getBatchApplicationsList(fi.batches.tabs.completion);
+  await t.expect(completionList.exists).ok({ timeout: 10_000 });
+  await t.expect(completionHeading.textContent).match(/\(\d+\)/, {
+    timeout: 10_000,
+  });
+  const currentCompletedBatchesCount = Number(
+    await completionHeading.textContent.then(
+      (text) => /\((\d+)\)/.exec(text)?.[1]
+    )
   );
 
   // Return to pending tab and click "Mark as ready for Ahjo" button
-  await t.click(Selector('li').withText(fi.batches.tabs.pending));
+  await t.click(getBatchTab(fi.batches.tabs.pending));
   await t.click(
     Selector('button').withText(fi.batches.actions.markAsReadyForAhjo)
   );
@@ -116,32 +141,61 @@ test('Handler processes favorable decision to Ahjo / Talpa', async (t: TestContr
 
   // Click the submit button on modal prompt
   await t.click(Selector('button').withText(fi.utility.confirm));
-  await t.click(Selector('li').withText(fi.batches.tabs.inspection));
+  await t.click(getBatchTab(fi.batches.tabs.inspection));
+
+  // Inspection batches are collapsed by default; expand the newest batch.
+  await t.click(getBatchExpandButton());
+  const inspectionBatchBody = getExpandedBatchBody();
+  await t
+    .expect(
+      getInspectionField(inspectionBatchBody, 'decision_maker_name').visible
+    )
+    .ok({ timeout: 10_000 });
 
   // Type in the inspection / P2P details
-  await t.typeText(Selector('[name="decision_maker_name"]'), 'Hissun kissun');
-  await t.typeText(Selector('[name="decision_maker_title"]'), 'Vaapulavissun');
-  await t.typeText(Selector('[name="section_of_the_law"]'), '1234');
   await t.typeText(
-    Selector('[name="expert_inspector_name"]'),
+    getInspectionField(inspectionBatchBody, 'decision_maker_name'),
+    'Hissun kissun'
+  );
+  await t.typeText(
+    getInspectionField(inspectionBatchBody, 'decision_maker_title'),
+    'Vaapulavissun'
+  );
+  await t.typeText(
+    getInspectionField(inspectionBatchBody, 'section_of_the_law'),
+    '1234'
+  );
+  await t.typeText(
+    getInspectionField(inspectionBatchBody, 'expert_inspector_name'),
     'Entten Tentten'
   );
   await t.typeText(
-    Selector('[name="expert_inspector_title"]'),
+    getInspectionField(inspectionBatchBody, 'expert_inspector_title'),
     'Teelikamentten'
   );
-  await t.typeText(Selector('[name="p2p_checker_name"]'), 'Eelin Keelin');
+  await t.typeText(
+    getInspectionField(inspectionBatchBody, 'p2p_checker_name'),
+    'Eelin Keelin'
+  );
 
   // Click the "Mark as ready for Talpa" button
   await t.click(Selector('button').withText(fi.batches.actions.markToTalpa));
   await t.click(Selector('button').withText(fi.utility.confirm));
 
+  await t
+    .expect(
+      Selector('[role="heading"]').withText(
+        fi.batches.notifications.statusChange.accepted.heading
+      ).exists
+    )
+    .ok({ timeout: 10_000 });
+
   // See if the last tab is populated with the batch
-  await t.click(Selector('li').withText(fi.batches.tabs.completion));
+  await t.click(getBatchTab(fi.batches.tabs.completion));
 
   await t
     .expect(completionHeading.textContent)
-    .contains(`(${Number(currentCompletedBatchesCount) + 1})`, {
-      timeout: 10000,
+    .contains(`(${currentCompletedBatchesCount + 1})`, {
+      timeout: 10_000,
     });
 });

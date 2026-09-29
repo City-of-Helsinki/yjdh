@@ -67,7 +67,7 @@ describe('useCompanySearch', () => {
       onQuietSave: jest.fn(),
       onDelete: jest.fn(),
     });
-    onCompanySelected.mockResolvedValue();
+    onCompanySelected.mockImplementation(() => Promise.resolve());
   });
 
   describe('getSuggestions', () => {

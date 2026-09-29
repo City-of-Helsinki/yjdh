@@ -142,7 +142,7 @@ AlterationAccordionItemProps): React.ReactElement => {
   };
 
   return (
-    <$AlterationAccordionItemContainer>
+    <$AlterationAccordionItemContainer data-testid="alteration-item">
       <$DecisionCalculatorAccordionIconContainer aria-hidden="true">
         <IconInfoCircle />
       </$DecisionCalculatorAccordionIconContainer>

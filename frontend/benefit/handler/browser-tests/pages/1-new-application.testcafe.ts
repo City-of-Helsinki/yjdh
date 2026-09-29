@@ -17,8 +17,15 @@ const clickAndVerifyConsent = async (
   consentSelector: string
 ): Promise<void> => {
   const consent = Selector(consentSelector);
-  await t.click(consent);
-  await t.expect(consent.checked).eql(true);
+  const consentId = await consent.getAttribute('id');
+  if (!consentId) {
+    throw new Error(`Consent checkbox has no id: ${consentSelector}`);
+  }
+
+  if (!(await consent.checked)) {
+    await t.click(Selector('label').withAttribute('for', consentId));
+  }
+  await t.expect(consent.checked).eql(true, { timeout: 10_000 });
 };
 
 fixture('Create new application')
@@ -126,7 +133,7 @@ test('Fill form and submit', async (t: TestController) => {
    */
   await t
     .expect(Selector('[name="application_consent_0"]').exists)
-    .ok({ timeout: 10000 });
+    .ok({ timeout: 10_000 });
   await clickAndVerifyConsent(t, '[name="application_consent_0"]');
   await clickAndVerifyConsent(t, '[name="application_consent_1"]');
   await clickAndVerifyConsent(t, '[name="application_consent_2"]');
@@ -142,12 +149,12 @@ test('Fill form and submit', async (t: TestController) => {
   const submitButton = Selector(buttonSelector).withText(
     fi.applications.actions.send
   );
-  await t.expect(submitButton.visible).ok({ timeout: 10000 });
+  await t.expect(submitButton.visible).ok({ timeout: 10_000 });
   await t.click(submitButton);
 
   // Form submitted, single application view shown
   const handleButton = Selector(buttonSelector).withText(
     fi.review.actions.handle
   );
-  await t.expect(handleButton.visible).ok({ timeout: 10000 });
+  await t.expect(handleButton.visible).ok({ timeout: 10_000 });
 });

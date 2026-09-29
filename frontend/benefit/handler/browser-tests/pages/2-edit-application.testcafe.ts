@@ -6,6 +6,7 @@ import { Selector } from 'testcafe';
 import fi from '../../public/locales/fi/common.json';
 import { EDIT_FORM_DATA as form, NEW_FORM_DATA } from '../constants/forms';
 import MainIngress from '../page-model/MainIngress';
+import { getApplicationLinkByEmployeeName } from '../utils/application';
 import handlerUser from '../utils/handlerUser';
 import { clearAndFill, uploadFileAttachment } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
@@ -28,13 +29,9 @@ test('Open form and edit fields, then submit', async (t: TestController) => {
   await t.click('#tab-2-button');
 
   // Open already created application in index page
-  const applicationLink = Selector('td')
-    .withText(
-      `${NEW_FORM_DATA.employee.firstName} ${NEW_FORM_DATA.employee.lastName}`
-    )
-    .sibling('td')
-    .nth(0)
-    .find('a');
+  const applicationLink = getApplicationLinkByEmployeeName(
+    `${NEW_FORM_DATA.employee.firstName} ${NEW_FORM_DATA.employee.lastName}`
+  );
   await t.click(applicationLink);
 
   // // Start handling the application

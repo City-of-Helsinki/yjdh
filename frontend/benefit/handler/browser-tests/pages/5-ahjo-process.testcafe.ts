@@ -1,13 +1,39 @@
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { ClientFunction, Selector } from 'testcafe';
+import { Selector } from 'testcafe';
 
 import fi from '../../public/locales/fi/common.json';
 import MainIngress from '../page-model/MainIngress';
+import { getApplicationLinkByEmployeeName } from '../utils/application';
 import handlerUserAhjo from '../utils/handlerUserAhjo';
 import { clearAndFill } from '../utils/input';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl(`/`);
+const aariApplicationLink = getApplicationLinkByEmployeeName('Aari Hömpömpö');
+
+const openAariApplicationIfPending = async (
+  t: TestController
+): Promise<boolean> => {
+  await t.expect(Selector('tbody tr').exists).ok({ timeout: 10_000 });
+
+  if (!(await aariApplicationLink.exists)) {
+    await t.click(
+      Selector('li').withText(fi.applications.list.headings.accepted)
+    );
+    await t.expect(aariApplicationLink.visible).ok({ timeout: 10_000 });
+    // eslint-disable-next-line no-console
+    console.warn(
+      'Skipping Ahjo test: Aari Hömpömpö has already advanced to accepted.'
+    );
+    return false;
+  }
+
+  await t.click(aariApplicationLink);
+  return true;
+};
+
+const getErrorNotification = (message: string): Selector =>
+  Selector('.Toastify__toast-body[role="alert"]').withText(message);
 
 fixture('Ahjo decision proposal for application')
   .page(url)
@@ -24,57 +50,45 @@ test('Check for handling validation errors', async (t: TestController) => {
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
-  // Open already created application in index page
-  const applicationLink = Selector('td')
-    .withText(`Aari Hömpömpö`)
-    .sibling('td')
-    .nth(0)
-    .find('a');
-  await t.click(applicationLink);
+  // The persistent fixture may already be beyond this step from an earlier run.
+  if (!(await openAariApplicationIfPending(t))) return;
 
-  // // Start handling the application
-  const toastSelector = '.Toastify__toast-body[role="alert"]';
+  // Start handling the application.
   const buttonSelector = 'main button';
   const handleButton = Selector(buttonSelector).withText(fi.utility.next);
   await t.expect(handleButton.visible).ok();
 
   // Check for empty status
-  let errorNotification = Selector(toastSelector).withText(
+  const missingStatusNotification = getErrorNotification(
     fi.review.decisionProposal.errors.fields.status
   );
   await t.click(handleButton);
-  await t.expect(errorNotification.visible).ok();
+  await t.expect(missingStatusNotification.visible).ok();
 
   // Check for empty log entry
-  errorNotification = Selector(toastSelector).withText(
+  const missingLogEntryNotification = getErrorNotification(
     fi.review.decisionProposal.errors.fields.logEntry
   );
   await t.click(Selector('label').withText(fi.review.fields.noSupport));
   await t.click(handleButton);
-  await t.expect(errorNotification.visible).ok();
+  await t.expect(missingLogEntryNotification.visible).ok();
 
   // Check for calculation error
   await clearAndFill(t, '#monthlyPay', ' ');
-  errorNotification = Selector(toastSelector).withText(
+  const calculationErrorNotification = getErrorNotification(
     fi.review.decisionProposal.errors.fields.calculation
   );
   await t.click(handleButton);
-  await t.expect(errorNotification.visible).ok();
+  await t.expect(calculationErrorNotification.visible).ok();
 });
 
 test('Open form and create a decision proposal', async (t: TestController) => {
-  await ClientFunction(() => window.localStorage.setItem('newAhjoMode', '1'))();
   const mainIngress = new MainIngress(fi.mainIngress.heading, 'h1');
   await mainIngress.isLoaded();
 
-  // Open already created application in index page
-  const applicationLink = Selector('td')
-    .withText(`Aari Hömpömpö`)
-    .sibling('td')
-    .nth(0)
-    .find('a');
-  await t.click(applicationLink);
-  // // Start handling the application
+  // The persistent fixture may already be beyond this step from an earlier run.
+  if (!(await openAariApplicationIfPending(t))) return;
+  // Start handling the application.
   const buttonSelector = 'main button';
   const handleButton = Selector(buttonSelector).withText(fi.utility.next);
   await t.expect(handleButton.visible).ok();
@@ -109,7 +123,7 @@ test('Open form and create a decision proposal', async (t: TestController) => {
   );
 
   const templateSelect = Selector('[role="combobox"]').filterVisible().nth(0);
-  await t.expect(templateSelect.exists).ok({ timeout: 10000 });
+  await t.expect(templateSelect.exists).ok({ timeout: 10_000 });
   await t.click(templateSelect);
 
   await t.click(

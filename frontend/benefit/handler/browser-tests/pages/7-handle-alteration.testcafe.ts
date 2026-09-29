@@ -21,6 +21,8 @@ fixture('Basic alteration handled by handler')
   });
 
 const alterationList = Selector('div[data-testid="alteration-list"]');
+const alterationItemSelector = '[data-testid="alteration-item"]';
+const dialog = Selector('div[role="dialog"]');
 const submitButton = Selector('button').withText(
   fi.applications.alterations.new.actions.submit
 );
@@ -28,8 +30,12 @@ const calculateButton = Selector('button').withText(
   fi.applications.alterations.handling.calculation.actions.calculate
 );
 const calculationResult = Selector('div[data-testid="calculationResult"]');
+const outOfDateCalculationAlert = Selector('div').withText(
+  fi.applications.alterations.handling.calculation.outOfDate.heading
+);
 const recoveryStartDate = Selector('#recovery-start-date');
 const recoveryEndDate = Selector('#recovery-end-date');
+const recoveryJustification = '#recovery-justification';
 const accordionItemTitle = 'div[role="heading"]';
 const recoveryStartDateError = '#recovery-start-date-error';
 const recoveryEndDateError = '#recovery-end-date-error';
@@ -55,8 +61,23 @@ const mainDecisionHeading = Selector('h2').withText(
   fi.applications.decision.headings.mainHeading
 );
 
-const getSuspensionAlterationItem = (): Selector =>
-  alterationList.find('div').withText(/keskeytynyt 24\.6\.2024/);
+const getReceivedSuspensionAlteration = (): Selector =>
+  alterationList
+    .find(alterationItemSelector)
+    .withText(/keskeytynyt 24\.6\.2024/)
+    .withText(fi.applications.decision.alterationList.item.state.received);
+
+const getSuspensionAlterationCard = (): Selector =>
+  alterationList
+    .find(alterationItemSelector)
+    .withText(/keskeytynyt 24\.6\.2024/);
+
+const getHandledSuspensionAlteration = (): Selector =>
+  getSuspensionAlterationCard()
+    .find('[data-testid="alteration-state-tag"]')
+    .withExactText(fi.applications.decision.alterationList.item.state.handled)
+    .parent()
+    .parent();
 
 const getCurrencyString = (value: number, decimals = 2): string =>
   value.toLocaleString('fi-FI', {
@@ -86,31 +107,57 @@ const expectHandleButtonDisabled = async (
 const createSuspensionAlterationIfMissing = async (
   t: TestController
 ): Promise<void> => {
-  if (await getSuspensionAlterationItem().exists) {
+  if (await getReceivedSuspensionAlteration().exists) {
     return;
   }
 
-  const reportAlterationButtonAttributes =
-    await reportAlterationButton.attributes;
-  if (reportAlterationButtonAttributes.disabled !== undefined) {
-    const firstAlterationItem = alterationList.child(0);
-    await t.expect(firstAlterationItem.exists).ok();
-    await t.click(firstAlterationItem.find(accordionItemTitle));
+  const handledSuspension = getHandledSuspensionAlteration();
+  let handledCount = await handledSuspension.count;
+  while (await handledSuspension.exists) {
+    await t.click(handledSuspension.find(accordionItemTitle));
     await t.click(
-      firstAlterationItem.find('button').withText(deleteAlterationButtonText)
+      handledSuspension
+        .find('button')
+        .withText(fi.applications.decision.alterationList.item.actions.cancel)
+    );
+    const cancelModal = dialog.withText(
+      fi.applications.decision.alterationList.cancelModal.body
+    );
+    await t.expect(cancelModal.exists).ok({ timeout: 10_000 });
+    await t.click(
+      cancelModal
+        .find('button')
+        .withText(
+          fi.applications.decision.alterationList.cancelModal.setCancelled
+        )
     );
     await t
-      .expect(
-        Selector('div[role="dialog"] h2').withText(deleteAlterationModalTitle)
-          .visible
-      )
-      .ok();
+      .expect(handledSuspension.count)
+      .eql(handledCount - 1, { timeout: 10_000 });
+    handledCount -= 1;
+  }
+
+  let reportButtonAttributes = await reportAlterationButton.attributes;
+  while (reportButtonAttributes.disabled !== undefined) {
+    const receivedAlterations = alterationList
+      .find(alterationItemSelector)
+      .withText(fi.applications.decision.alterationList.item.state.received);
+    const receivedAlterationCount = await receivedAlterations.count;
+    const receivedAlteration = receivedAlterations.nth(0);
+    await t.expect(receivedAlteration.exists).ok();
+    await t.click(receivedAlteration.find(accordionItemTitle));
     await t.click(
-      Selector('div[role="dialog"] button').withText(
-        deleteAlterationModalConfirm
-      )
+      receivedAlteration.find('button').withText(deleteAlterationButtonText)
     );
+    await t
+      .expect(dialog.find('h2').withText(deleteAlterationModalTitle).visible)
+      .ok();
+    await t.click(dialog.find('button').withText(deleteAlterationModalConfirm));
     await t.expect(mainDecisionHeading.visible).ok();
+    await t
+      .expect(receivedAlterations.count)
+      .eql(receivedAlterationCount - 1, { timeout: 10_000 });
+    reportButtonAttributes = await reportAlterationButton.attributes;
   }
 
   await t.click(reportAlterationButton, {
@@ -145,7 +192,7 @@ const createSuspensionAlterationIfMissing = async (
 
   await t.click(submitButton);
   await t.expect(mainDecisionHeading.visible).ok();
-  await t.expect(getSuspensionAlterationItem().exists).ok();
+  await t.expect(getReceivedSuspensionAlteration().exists).ok();
 };
 
 test('Handler creates another alteration and tries to handle it with errors', async (t: TestController) => {
@@ -154,7 +201,7 @@ test('Handler creates another alteration and tries to handle it with errors', as
   await createSuspensionAlterationIfMissing(t);
 
   // Find the list item and begin handling the alteration
-  const item = getSuspensionAlterationItem();
+  const item = getReceivedSuspensionAlteration();
   await t.click(item.find(accordionItemTitle));
   await t.click(
     item
@@ -167,8 +214,8 @@ test('Handler creates another alteration and tries to handle it with errors', as
   // Verify that validation fails
   await expectHandleButtonDisabled(t);
   await t.click(Selector('[for="is-recoverable-no"]'));
-  await t.click('#recovery-justification');
-  await t.selectText('#recovery-justification');
+  await t.click(recoveryJustification);
+  await t.selectText(recoveryJustification);
   await t.pressKey('delete');
   await t.click(handleButton);
 
@@ -278,10 +325,8 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
   await navigateToAlterationTestApplication(t);
   await createSuspensionAlterationIfMissing(t);
 
-  let resultText = '';
-
   // Find the list item and begin handling the alteration
-  const item = getSuspensionAlterationItem();
+  const item = getReceivedSuspensionAlteration();
   await t.click(item.find(accordionItemTitle));
   await t.click(
     item
@@ -315,28 +360,16 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
   await clearAndFill(t, recoveryEndDate, '22.7.2024');
 
   // Verify that the out-of-date calculation alert is visible
-  await t
-    .expect(
-      Selector('div').withText(
-        fi.applications.alterations.handling.calculation.outOfDate.heading
-      ).exists
-    )
-    .ok();
+  await t.expect(outOfDateCalculationAlert.exists).ok();
 
   // Recalculate and verify that the calculation matches the three rows' subtotals (€0, €19, €43)
   await t.click(calculateButton);
   await t.expect(calculationResult.exists).ok();
-  resultText = await calculationResult.textContent;
-  await t.expect(resultText.includes(getCurrencyString(62, 0))).ok();
+  const rowRangeResult = await calculationResult.textContent;
+  await t.expect(rowRangeResult.includes(getCurrencyString(62, 0))).ok();
 
   // Verify that the out-of-date calculation alert is no longer visible
-  await t
-    .expect(
-      Selector('div').withText(
-        fi.applications.alterations.handling.calculation.outOfDate.heading
-      ).exists
-    )
-    .notOk();
+  await t.expect(outOfDateCalculationAlert.exists).notOk();
 
   // Set the date range to the last day of the last row
   await clearAndFill(t, recoveryStartDate, '24.6.2024');
@@ -344,11 +377,13 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
 
   // Recalculate and verify that the calculation is not zero
   await t.click(calculateButton);
-  resultText = await calculationResult.textContent;
+  const lastDayResult = await calculationResult.textContent;
   const expectedAmount = (68 * (0.03 / 0.27)).toFixed(0);
   await t
     .expect(
-      resultText.includes(getCurrencyString(parseInt(expectedAmount, 10), 0))
+      lastDayResult.includes(
+        getCurrencyString(Number.parseInt(expectedAmount, 10), 0)
+      )
     )
     .ok();
 
@@ -374,8 +409,8 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
   // Verify that the calculation is now the manually set amount
   // and not the calculated amount (€179.50)
   await t.click(calculateButton);
-  resultText = await calculationResult.textContent;
-  await t.expect(resultText.includes(getCurrencyString(10, 0))).ok();
+  const manualResult = await calculationResult.textContent;
+  await t.expect(manualResult.includes(getCurrencyString(10, 0))).ok();
 
   // Verify that a warning is not shown when the alteration with a small calculated recovery sum
   // is set to not be recoverable
@@ -413,13 +448,13 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
     .notOk();
 
   // Fill in the justification
-  await t.typeText('#recovery-justification', 'Selvä kuin pläkki');
+  await t.typeText(recoveryJustification, 'Selvä kuin pläkki');
 
   // Submit the handling form
   await t.click(csvButton);
   await t.click(handleButton);
 
-  const modal = Selector('div[role="dialog"]').withText(
+  const modal = dialog.withText(
     fi.applications.alterations.handling.confirmation.recoverable.title
   );
   await t.click(modal.find('button').withText(fi.utility.confirm));
@@ -431,17 +466,21 @@ test('Handler handles the alteration from the last test properly', async (t: Tes
         .visible
     )
     .ok();
-  await t.click(item.find(accordionItemTitle));
+  const handledItem = getHandledSuspensionAlteration();
+  await t.expect(handledItem.exists).ok({ timeout: 10_000 });
+  await t.click(handledItem.find(accordionItemTitle));
   await t
     .expect(
-      item
+      handledItem
         .find('[data-testid="alteration-state-tag"]')
         .withText(fi.applications.decision.alterationList.item.state.handled)
         .exists
     )
     .ok();
   await t
-    .expect(item.find('dl dd').withText(getCurrencyString(180, 0)).exists)
+    .expect(
+      handledItem.find('dl dd').withText(getCurrencyString(180, 0)).exists
+    )
     .ok();
 });
 
