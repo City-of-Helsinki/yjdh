@@ -21,7 +21,7 @@ const useBatchQuery = (
   };
 
   const query = useQuery<BatchProposal[], Error>({
-    queryKey: ['applicationsList'],
+    queryKey: ['applicationsList', 'batches', ...status, params.order_by],
     queryFn: async () => {
       const res = axios.get<BatchProposal[]>(
         `${BackendEndpoint.APPLICATION_BATCHES}`,
