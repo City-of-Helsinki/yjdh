@@ -749,6 +749,37 @@ class EmployerApplicationSerializer(
             if settings.UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT:
                 self._schedule_ytj_update(instance.company)
 
+        if (
+            new_status == EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+            and instance.status != EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+        ):
+            LOGGER.debug(
+                "Transitioning application to ACCEPTED_FOR_PAYMENT. Resetting "
+                "is_exported on summer_vouchers.",
+                extra={"application_id": instance.pk},
+            )
+            instance.summer_vouchers.filter(invoiced_at__isnull=True).update(
+                is_exported=False
+            )
+        elif (
+            new_status
+            in (
+                EmployerApplicationStatus.SUBMITTED,
+                EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            )
+            and instance.status != new_status
+            and instance.status != EmployerApplicationStatus.DRAFT
+        ):
+            LOGGER.debug(
+                "Returning application to queue status %s. Resetting "
+                "is_exported on un-invoiced summer_vouchers.",
+                new_status,
+                extra={"application_id": instance.pk},
+            )
+            instance.summer_vouchers.filter(invoiced_at__isnull=True).update(
+                is_exported=False
+            )
+
         _clear_assignee_on_terminal_status(
             validated_data=validated_data,
             new_status=new_status,

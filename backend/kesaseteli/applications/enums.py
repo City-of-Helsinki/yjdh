@@ -75,6 +75,20 @@ class EmployerApplicationStatus(models.TextChoices):
     CANCELLED = "cancelled", _("Cancelled")
 
     @staticmethod
+    def pending_payment_values():
+        """
+        Employer application statuses that have not yet been sent to payment.
+        Used by the Excel "unhandled" export.
+        """
+        return [
+            EmployerApplicationStatus.SUBMITTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.APPLICATION_HANDLING,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+        ]
+
+    @staticmethod
     def handled_values():
         """
         Employer application statuses which have been handled.
