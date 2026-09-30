@@ -18,11 +18,12 @@ import useLocale from 'shared/hooks/useLocale';
 
 import {
   CreateNotePayload,
-  ExternalMessages,
+  EmployerExternalMessages,
   HandlerNote,
   NoteTargetType,
   NoteType,
   UpdateNotePayload,
+  YouthExternalMessages,
 } from '../../types/note';
 import {
   $CharCounter,
@@ -122,6 +123,22 @@ const NoteForm: React.FC<Props> = ({
     return t('common:handlerNotes.addNote');
   };
 
+  const getMessageTemplates = () => {
+    let templates = null;
+    if (targetType === NoteTargetType.EMPLOYER_APPLICATION)
+      templates = Object.keys(EmployerExternalMessages).map((key) => ({
+        label: t(`common:employerExternalMessages.${EmployerExternalMessages[key]}.label`),
+        value: EmployerExternalMessages[key],
+      }));
+    else {
+      templates = Object.keys(YouthExternalMessages).map((key) => ({
+        label: t(`common:youthExternalMessages.${YouthExternalMessages[key]}.label`),
+        value: YouthExternalMessages[key],
+      }));
+    }
+    return templates;
+  }
+
   const submitForm = (): void => {
     if (noteType === NoteType.EXTERNAL_MESSAGE) setSelectedTemplate('');
 
@@ -193,16 +210,7 @@ const NoteForm: React.FC<Props> = ({
               language: 'fi',
               assistive: `Hakemuksen kieli: ${applicationLanguage || 'fi'}`
             }}
-            options={(
-              Object.keys(ExternalMessages) as Array<
-                keyof typeof ExternalMessages
-              >
-            ).map((key) => ({
-              label: t(
-                `common:externalMessages.${ExternalMessages[key]}.label`
-              ),
-              value: ExternalMessages[key],
-            }))}
+            options={getMessageTemplates()}
             value={selectedTemplate}
             onChange={(
               selectedOptions: Array<{ label: string; value: string }>
@@ -210,9 +218,13 @@ const NoteForm: React.FC<Props> = ({
               const selected = selectedOptions[0];
               if (selected) {
                 setSelectedTemplate(selected.value);
-                setContent(
+                setContent(targetType === NoteTargetType.EMPLOYER_APPLICATION ?
                   t(
-                    `common:externalMessages.${selected.value}.${applicationLanguage || 'fi'}`,
+                    `common:employerExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`
+                  )
+                  :
+                  t(
+                    `common:youthExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`
                   )
                 );
               }
