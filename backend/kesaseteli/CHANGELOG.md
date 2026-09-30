@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.21.0...kesaseteli-backend-v1.21.1) (2026-09-30)
+
+
+### Dependencies
+
+* Bump pyjwt from 2.13.0 to 2.14.0 in /backend/kesaseteli ([8fe43f2](https://github.com/City-of-Helsinki/yjdh/commit/8fe43f2548e60f2f2ff3dc61f248f608524eabd3))
+
 ## [1.21.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.20.0...kesaseteli-backend-v1.21.0) (2026-09-30)
 
 
