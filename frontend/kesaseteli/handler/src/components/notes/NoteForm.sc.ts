@@ -111,3 +111,9 @@ export const $Instructions = styled.div`
     font-size: var(--fontsize-body-m);
   }
 `;
+
+export const $CheckboxContainer = styled.div`
+  display: block;
+  background-color: var(--color-suomenlinna);
+  padding: var(--spacing-s);
+`;

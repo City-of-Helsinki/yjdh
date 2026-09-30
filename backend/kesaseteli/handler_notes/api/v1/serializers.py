@@ -17,6 +17,9 @@ class NoteSerializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
     target_type = serializers.CharField(required=False)
     target_id = serializers.UUIDField(required=False)
+    mark_as_additional_info_requested = serializers.BooleanField(
+        write_only=True, required=False
+    )
 
     class Meta:
         model = Note
@@ -32,6 +35,7 @@ class NoteSerializer(serializers.ModelSerializer):
             "modified_at",
             "target_type",
             "target_id",
+            "mark_as_additional_info_requested",
             "seen_at",
             "seen_by",
         ]
@@ -108,6 +112,9 @@ class NoteSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        # Remove write-only field before creating the model instance
+        validated_data.pop("mark_as_additional_info_requested", None)
+
         request = self.context.get("request")
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user

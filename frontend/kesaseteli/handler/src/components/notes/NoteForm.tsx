@@ -27,6 +27,7 @@ import {
 } from '../../types/note';
 import {
   $CharCounter,
+  $CheckboxContainer,
   $FormActions,
   $FormContainer,
   $Instructions,
@@ -72,6 +73,7 @@ const NoteForm: React.FC<Props> = ({
   const [isImportant, setIsImportant] = useState(
     initialNote?.is_important || false
   );
+  const [markAsAdditionalInfoRequested, setMarkAsAdditionalInfoRequested] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>('');
 
   const isEditing = Boolean(initialNote);
@@ -147,6 +149,7 @@ const NoteForm: React.FC<Props> = ({
           content,
           note_type: noteType,
           is_important: isImportant,
+          mark_as_additional_info_requested: markAsAdditionalInfoRequested,
         } as UpdateNotePayload)
       : ({
           target_type: targetType,
@@ -154,6 +157,7 @@ const NoteForm: React.FC<Props> = ({
           content,
           note_type: noteType,
           is_important: isImportant,
+          mark_as_additional_info_requested: markAsAdditionalInfoRequested,
         } as CreateNotePayload);
 
     onSubmit(payload, () => {
@@ -218,6 +222,7 @@ const NoteForm: React.FC<Props> = ({
               const selected = selectedOptions[0];
               if (selected) {
                 setSelectedTemplate(selected.value);
+                console.log(selected.value);
                 setContent(targetType === NoteTargetType.EMPLOYER_APPLICATION ?
                   t(
                     `common:employerExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`
@@ -227,6 +232,11 @@ const NoteForm: React.FC<Props> = ({
                     `common:youthExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`
                   )
                 );
+                if (selected.value === 'thankYouForInformation') {
+                  setMarkAsAdditionalInfoRequested(false);
+                  } else {
+                  setMarkAsAdditionalInfoRequested(true);
+                }
               }
             }}
           />
@@ -301,6 +311,7 @@ const NoteForm: React.FC<Props> = ({
           />
         </$OptionsGroup>
 
+
         <$FormActions>
           {isEditing && onCancel && (
             <Button
@@ -322,6 +333,22 @@ const NoteForm: React.FC<Props> = ({
             {getSubmitButtonText()}
           </Button>
         </$FormActions>
+      </$Toolbar>
+      <$Toolbar>
+        <$OptionsGroup>
+          {targetType === NoteTargetType.EMPLOYER_APPLICATION && noteType === NoteType.EXTERNAL_MESSAGE && (
+            <$CheckboxContainer>
+              <Checkbox
+                id='mark-as-additional-info-requested'
+                label={t('common:handlerNotes.additionalInfoRequested')}
+                checked={markAsAdditionalInfoRequested}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setMarkAsAdditionalInfoRequested(e.target.checked)
+                }
+              />
+            </$CheckboxContainer>
+          )}
+        </$OptionsGroup>
       </$Toolbar>
     </$FormContainer>
     <Dialog
