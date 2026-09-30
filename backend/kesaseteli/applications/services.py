@@ -1,9 +1,11 @@
 import enum
 import json
 import logging
-from dataclasses import dataclass
+import uuid
+from collections.abc import Callable
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING, TypedDict
+from typing import Optional, TYPE_CHECKING, TypedDict, Unpack
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import AbstractBaseUser
@@ -14,12 +16,14 @@ from auditlog.models import LogEntry
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.template import Context, Template
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils import timezone
 from requests import ReadTimeout
 from requests.exceptions import RequestException
+from rest_framework.exceptions import ValidationError
 
 import applications.target_groups
 from applications.api.integration_views import TALPA_INVOICEABLE_STATUSES
@@ -53,6 +57,164 @@ from shared.vtj.vtj_client import VTJClient
 LOGGER = logging.getLogger(__name__)
 
 User = get_user_model()
+
+
+@dataclass
+class ApproverActionResult:
+    successful_ids: list[uuid.UUID | str] = field(default_factory=list)
+    failed_ids: list[uuid.UUID | str] = field(default_factory=list)
+
+
+class EmployerApplicationApproverService:
+    """
+    Service for handling employer application approver's actions:
+    - accepting for payment
+    - rejecting
+    - returning to payment review
+    - returning to handlers' queue
+    """
+
+    class ExtraArguments(TypedDict, total=False):
+        approver: User | None
+        handler: User | None
+        handled_at: datetime | None
+        accepted_for_payment_at: datetime | None
+        is_exported: bool
+
+    @classmethod
+    def _transition_one(
+        cls,
+        app_id: uuid.UUID | str,
+        source_status: EmployerApplicationStatus,
+        target: EmployerApplicationStatus
+        | Callable[[EmployerApplication], EmployerApplicationStatus],
+        **kwargs: Unpack[ExtraArguments],
+    ) -> uuid.UUID | str:
+        """
+        Transition a single application inside its own transaction, so audit logging and
+        timeline activity logs are also either all updated or nothing is updated.
+
+        Also set all the existing attributes given in keyword arguments,
+        except `status`, to the employer application or to its employer summer vouchers
+        in the case of `is_exported` flag. The `assignee` is always cleared.
+
+        :param app_id: ID of the employer application to transition
+        :param source_status: The valid source status of the employer application
+        :param target: Target employer application status or callable that returns it
+        :param kwargs: Extra attributes to set on the application (e.g. `approver`),
+            or on the related summer vouchers in case of `is_exported` flag.
+        :return: The ID of the transitioned employer application
+        :raises ValueError: if application is not in the given source status, or
+            at least one of the keyword arguments doesn't exist in the application
+        """
+        with transaction.atomic():
+            app = EmployerApplication.objects.select_for_update().get(pk=app_id)
+            if app.status != source_status:
+                raise ValueError("Invalid source status for approver action")
+            for key, value in kwargs.items():
+                setattr(app, key, value)
+            target_status: EmployerApplicationStatus = (
+                target(app) if callable(target) else target
+            )
+            app.assignee = None  # No assignee after any approver actions
+            app.status = target_status
+            if "is_exported" in kwargs:
+                # NOTE: This is trying to be similar to the is_exported updating in
+                # EmployerApplicationSerializer.update:
+                app.summer_vouchers.filter(invoiced_at__isnull=True).update(
+                    is_exported=kwargs["is_exported"]
+                )
+            app.save()
+            return app.pk
+
+    @classmethod
+    def _transition(
+        cls,
+        app_ids: list[uuid.UUID | str],
+        source_status: EmployerApplicationStatus,
+        target: EmployerApplicationStatus
+        | Callable[[EmployerApplication], EmployerApplicationStatus],
+        **kwargs: Unpack[ExtraArguments],
+    ) -> ApproverActionResult:
+        """
+        Transition given employer applications, collecting their successful & failed IDs
+
+        :param app_ids: IDs of the employer applications to transition
+        :param source_status: The valid source status of the employer applications
+        :param target: Target employer application status or callable that returns it
+        :param kwargs: Extra attributes to set on the applications (e.g. approver)
+        :return: IDs of the successful and failed employer applications
+        :raises ValidationError: if app_ids is over APPROVER_BULK_SIZE_LIMIT in length
+        """
+        limit = settings.APPROVER_BULK_SIZE_LIMIT
+        if len(app_ids) > limit:
+            raise ValidationError({"application_ids": f"Limit is {limit} applications"})
+
+        ok, failed = [], []
+        for app_id in app_ids:
+            try:
+                ok.append(cls._transition_one(app_id, source_status, target, **kwargs))
+            except (EmployerApplication.DoesNotExist, ValueError):
+                failed.append(app_id)
+        return ApproverActionResult(successful_ids=ok, failed_ids=failed)
+
+    @classmethod
+    def accept_for_payment(cls, app_ids, approver) -> ApproverActionResult:
+        """Accept given employer applications for payment as approver"""
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.PAYMENT_REVIEW,
+            target=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            # Set approver & approval timestamp when accepting for payment:
+            approver=approver,
+            accepted_for_payment_at=timezone.now(),
+            # Clear is_exported when accepting for payment:
+            is_exported=False,
+        )
+
+    @classmethod
+    def reject(cls, app_ids, approver) -> ApproverActionResult:
+        """Reject given employer applications as approver"""
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.PAYMENT_REVIEW,
+            target=EmployerApplicationStatus.REJECTED,
+            # Set handler & handling timestamp when rejecting:
+            handler=approver,
+            handled_at=timezone.now(),
+            # Empty approver & approval timestamp when rejecting:
+            approver=None,
+            accepted_for_payment_at=None,
+        )
+
+    @classmethod
+    def return_to_handler_queue(cls, app_ids, approver) -> ApproverActionResult:
+        """Return given employer applications to handler queue as approver"""
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.PAYMENT_REVIEW,
+            target=EmployerApplication.get_handler_queue_return_status,
+            # Empty handler & handling timestamp when returning handler queue:
+            handler=None,
+            handled_at=None,
+            # Empty approver & approval timestamp when returning to handler queue:
+            approver=None,
+            accepted_for_payment_at=None,
+            # Clear is_exported when returning to handler queue:
+            is_exported=False,
+        )
+
+    @classmethod
+    def return_to_payment_review(cls, app_ids, approver) -> ApproverActionResult:
+        """Return given employer applications to payment review as approver"""
+        return cls._transition(
+            app_ids=app_ids,
+            source_status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            target=EmployerApplicationStatus.PAYMENT_REVIEW,
+            # Empty approver & approval timestamp when returning to payment review:
+            approver=None,
+            accepted_for_payment_at=None,
+        )
 
 
 class TargetGroupValidationService:

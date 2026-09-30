@@ -77,6 +77,7 @@ env = environ.Env(
     YTJ_BASE_URL=(str, "https://avoindata.prh.fi/opendata-ytj-api/v3"),
     YTJ_TIMEOUT=(int, 30),
     UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT=(bool, False),
+    APPROVER_BULK_SIZE_LIMIT=(int, 250),
     TALPA_WEBHOOK_API_KEY=(str, ""),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, ""),
     REPORTING_EXPORT_API_KEY=(str, ""),
@@ -502,6 +503,11 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 # When an employer application is submitted, trigger a background update
 # of the company details (name, company form, address etc.) from YTJ.
 UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT = env.bool("UPDATE_COMPANY_FROM_YTJ_ON_SUBMIT")
+APPROVER_BULK_SIZE_LIMIT = env.int("APPROVER_BULK_SIZE_LIMIT")
+if APPROVER_BULK_SIZE_LIMIT < 1:
+    raise ImproperlyConfigured(
+        f"Invalid APPROVER_BULK_SIZE_LIMIT value of {APPROVER_BULK_SIZE_LIMIT}"
+    )
 
 # Mock flag for testing purposes
 NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
