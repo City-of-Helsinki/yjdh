@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.21.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.20.0...kesaseteli-backend-v1.21.0) (2026-09-30)
+
+
+### Features
+
+* **ks:** Add handler accept and reject logic for employer applications ([e1dda6f](https://github.com/City-of-Helsinki/yjdh/commit/e1dda6f9e2834fd7868f761f3702f66569ab9671))
+
+
+### Bug Fixes
+
+* **ks:** Include active handling states in unhandled excel export ([48064d0](https://github.com/City-of-Helsinki/yjdh/commit/48064d072587201b79f591f768c4061310dc667d))
+
 ## [1.20.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.19.0...kesaseteli-backend-v1.20.0) (2026-09-28)
 
 
