@@ -8,6 +8,8 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from applications.enums import EmployerApplicationStatus
+from applications.models import EmployerApplication
 from common.permissions import HandlerPermission
 from handler_notes.api.v1.serializers import NoteSerializer
 from handler_notes.enums import NoteType
@@ -70,6 +72,26 @@ class NoteViewSet(viewsets.ModelViewSet):
                 qs = qs.none()
 
         return qs.order_by("-created_at")
+
+    def perform_create(self, serializer):
+        note = serializer.save()
+        self._handle_additional_info_request(note, serializer.validated_data)
+
+    def perform_update(self, serializer):
+        note = serializer.save()
+        self._handle_additional_info_request(note, serializer.validated_data)
+
+    def _handle_additional_info_request(self, note, validated_data):
+        mark_as_additional_info_requested = validated_data.get(
+            "mark_as_additional_info_requested", False
+        )
+        if mark_as_additional_info_requested:
+            target = note.content_object
+            if isinstance(target, EmployerApplication):
+                target.status = (
+                    EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+                )
+                target.save(update_fields=["status"])
 
     @action(
         methods=["get"],

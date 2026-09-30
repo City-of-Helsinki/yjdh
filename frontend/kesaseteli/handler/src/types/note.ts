@@ -35,12 +35,14 @@ export type CreateNotePayload = {
   content: string;
   note_type: NoteType;
   is_important: boolean;
+  mark_as_additional_info_requested?: boolean;
 };
 
 export type UpdateNotePayload = {
   content: string;
   note_type: NoteType;
   is_important: boolean;
+  mark_as_additional_info_requested?: boolean;
 };
 
 export enum EmployerExternalMessages {
