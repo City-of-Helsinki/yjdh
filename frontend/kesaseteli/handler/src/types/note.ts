@@ -43,7 +43,20 @@ export type UpdateNotePayload = {
   is_important: boolean;
 };
 
-export enum ExternalMessages {
-  ADDITIONAL_INFORMATION_REQUIRED = 'additionalInformationRequired',
-  APPLICATION_WILL_BE_REJECTED = 'applicationWillBeRejected'
+export enum EmployerExternalMessages {
+  SIGNATURES_MISSING = 'signaturesMissing',
+  HOLIDAY_COMPENSATION_MISSING = 'holidayCompensationMissing',
+  TOO_SMALL_SALARY = 'tooSmallSalary',
+  PAYROLL_MISSING = 'payrollMissing',
+  NOT_ENOUGH_WORKING_HOURS = 'notEnoughWorkingHours',
+  MINIMUM_WAGE = 'minimumWage',
+  TYEL_MISSING = 'tyelMissing',
+  THANK_YOU_FOR_INFORMATION = 'thankYouForInformation',
+}
+
+export enum YouthExternalMessages {
+  NOT_FROM_HELSINKI = 'notFromHelsinki',
+  WRONG_AGE = "wrongAge",
+  WRONG_CLASS = "wrongClass",
+  WHICH_CLASS = "whichClass"
 }
