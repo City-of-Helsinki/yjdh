@@ -86,6 +86,25 @@ def test_openapi_schema_includes_handler_excel_export_endpoints(client: Client):
     assert paths[youth_path]["get"]["tags"] == ["excel-download"]
 
 
+def test_openapi_schema_documents_approver_error_responses(client: Client):
+    """Verify approver action routes document their actual invalid request response."""
+    schema = client.get(reverse("schema"), HTTP_ACCEPT="application/json").json()
+    paths = schema["paths"]
+    approver_action_paths = (
+        "accept_for_payment",
+        "approver_reject",
+        "return_to_handler_queue",
+        "return_to_payment_review",
+    )
+
+    for action_path in approver_action_paths:
+        action_path = f"/v1/employerapplications/{action_path}/"
+        responses = paths[action_path]["post"]["responses"]
+        assert (
+            responses["400"]["description"] == "Invalid request or bulk limit exceeded"
+        )
+
+
 def test_schema_excludes_unsupported_kesaseteli_operations(client: Client):
     """
     Ensure the live schema only advertises operations the viewsets actually support.

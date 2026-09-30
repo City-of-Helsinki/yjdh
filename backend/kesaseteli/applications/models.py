@@ -63,7 +63,7 @@ LOGGER = logging.getLogger(__name__)
 # Optimization. When assigning or unassigning, we only need to update and refresh
 # these fields to handle locked rows correctly when using select_for_update.
 _ASSIGNEE_UPDATE_FIELDS = ("assignee", "status", "modified_at")
-_HANDLE_UPDATE_FIELDS = ("status", "assignee", "handler", "modified_at")
+_HANDLE_UPDATE_FIELDS = ("status", "assignee", "handler", "handled_at", "modified_at")
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -1437,6 +1437,21 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("timestamp when employer application was submitted"),
     )
+    additional_info_provided_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when additional info was last provided by employer"),
+    )
+    handled_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when last handled by handler or approver"),
+    )
+    accepted_for_payment_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("timestamp when last accepted for payment by approver"),
+    )
     # Historically street address, but now meant to be a full postal address.
     # Production database may contain both types, or since this is a free text,
     # it may contain anything.
@@ -1524,6 +1539,38 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         blank=True,
         null=True,
     )
+    approver = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        # Prevent deleting the approver because they are essential for the payment trail
+        on_delete=models.PROTECT,
+        related_name="approved_employer_applications",
+        verbose_name=_("approver"),
+        help_text=_(
+            "The user who accepted employer application for payment i.e. approved it"
+        ),
+        blank=True,
+        null=True,
+    )
+
+    @staticmethod
+    def get_handler_queue_return_status(
+        app: "EmployerApplication",
+    ) -> EmployerApplicationStatus:
+        """
+        Determine status for the employer application when returned to handler queue
+        """
+        return (
+            EmployerApplicationStatus.SUBMITTED
+            if app.additional_info_provided_at is None
+            else EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+        )
+
+    @property
+    def handler_queue_return_status(self) -> EmployerApplicationStatus:
+        """
+        The status for this employer application when returned to handler queue
+        """
+        return EmployerApplication.get_handler_queue_return_status(self)
 
     def assign(self, user, payload_modified_at):
         """
@@ -1587,7 +1634,7 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 )
 
             locked.assignee = None
-            locked.status = EmployerApplicationStatus.SUBMITTED
+            locked.status = locked.handler_queue_return_status
             locked.save(update_fields=_ASSIGNEE_UPDATE_FIELDS)
             self.refresh_from_db(fields=_ASSIGNEE_UPDATE_FIELDS)
 
@@ -1602,13 +1649,14 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     def _handle(self, status: str, handler):
         """
         Handle the employer application by setting the status,
-        handler and clearing the assignee.
+        handler, handler_at timestamp and clearing the assignee.
         """
         if status not in EmployerApplicationStatus.handled_values():
             raise ValueError(f"Invalid handle status: {status}")
         self.status = status
         self.assignee = None
         self.handler = handler
+        self.handled_at = timezone.now()
         self.save(update_fields=_HANDLE_UPDATE_FIELDS)
 
     def can_accept(self, handler) -> bool:

@@ -146,24 +146,40 @@ class EmployerApplicationStatusValidator:
         EmployerApplicationStatus.CANCELLED: (),
     }
 
+    @classmethod
+    def validate_status_transition(
+        cls,
+        old_status: EmployerApplicationStatus,
+        new_status: EmployerApplicationStatus,
+    ) -> None:
+        """
+        Validate EmployerApplication's status transition from old_status to new_status.
+
+        Raises:
+            serializers.ValidationError: If the transition is not allowed.
+        """
+        if (
+            old_status != new_status
+            and new_status not in cls.APPLICATION_STATUS_TRANSITIONS.get(old_status, ())
+        ):
+            raise serializers.ValidationError(
+                format_lazy(
+                    _(
+                        "EmployerApplication status transition not allowed from "
+                        "{old_status} to {new_status}"
+                    ),
+                    old_status=old_status,
+                    new_status=new_status,
+                )
+            )
+
     def __call__(self, value, serializer_field):
         if application := serializer_field.parent.instance:
             # In case it's an update operation, validate with the current status in
             # database
-            if (
-                value != application.status
-                and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
-            ):
-                raise serializers.ValidationError(
-                    format_lazy(
-                        _(
-                            "EmployerApplication state transition not allowed: {status}"
-                            " to {value}"
-                        ),
-                        status=application.status,
-                        value=value,
-                    )
-                )
+            self.validate_status_transition(
+                old_status=application.status, new_status=value
+            )
         else:
             if value != EmployerApplicationStatus.DRAFT:
                 raise serializers.ValidationError(
@@ -171,6 +187,29 @@ class EmployerApplicationStatusValidator:
                 )
 
         return value
+
+
+class ApproverBulkActionSerializer(serializers.Serializer):
+    application_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        allow_empty=False,
+    )
+
+    def validate_application_ids(self, value):
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError("Application IDs must be unique.")
+        return value
+
+
+class ApproverBulkActionResultSerializer(serializers.Serializer):
+    successful_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        help_text=_("IDs of the employer applications that were successfully updated"),
+    )
+    failed_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        help_text=_("IDs of the employer applications that failed to be updated"),
+    )
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -672,6 +711,7 @@ class EmployerApplicationSerializer(
             "language",
             "submitted_at",
             "is_mine",
+            "additional_info_provided_at",
             "assignee",
         ]
         read_only_fields = [
@@ -679,6 +719,7 @@ class EmployerApplicationSerializer(
             "modified_at",
             "submitted_at",
             "user",
+            "additional_info_provided_at",
             "assignee",
         ]
 
@@ -730,13 +771,14 @@ class EmployerApplicationSerializer(
             )
             self._update_summer_vouchers(summer_vouchers_data, instance)
 
+        old_status = instance.status
         new_status = validated_data.get("status")
         if (
             new_status == EmployerApplicationStatus.SUBMITTED
-            and instance.status == EmployerApplicationStatus.DRAFT
+            and old_status == EmployerApplicationStatus.DRAFT
         ):
             LOGGER.debug(
-                "Changing application status from DRAFT to SUBMITTED. "
+                f"Changing application status from {old_status} to {new_status}. "
                 "Setting submitted_at.",
                 extra={
                     "application_id": instance.pk,
@@ -750,11 +792,22 @@ class EmployerApplicationSerializer(
                 self._schedule_ytj_update(instance.company)
 
         if (
-            new_status == EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
-            and instance.status != EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+            new_status == EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+            and old_status == EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
         ):
             LOGGER.debug(
-                "Transitioning application to ACCEPTED_FOR_PAYMENT. Resetting "
+                f"Changing application status from {old_status} to {new_status}. "
+                "Setting additional_info_provided_at.",
+                extra={"application_id": instance.pk},
+            )
+            validated_data["additional_info_provided_at"] = timezone.now()
+
+        if (
+            new_status == EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+            and old_status != EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT
+        ):
+            LOGGER.debug(
+                f"Transitioning application to {new_status}. Resetting "
                 "is_exported on summer_vouchers.",
                 extra={"application_id": instance.pk},
             )
@@ -767,8 +820,8 @@ class EmployerApplicationSerializer(
                 EmployerApplicationStatus.SUBMITTED,
                 EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
             )
-            and instance.status != new_status
-            and instance.status != EmployerApplicationStatus.DRAFT
+            and old_status != new_status
+            and old_status != EmployerApplicationStatus.DRAFT
         ):
             LOGGER.debug(
                 "Returning application to queue status %s. Resetting "

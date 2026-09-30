@@ -49,6 +49,8 @@ from applications.api.v1.permissions import (
 from applications.api.v1.serializers import (
     ActivityLogItemSerializer,
     ApplicationAssignSerializer,
+    ApproverBulkActionResultSerializer,
+    ApproverBulkActionSerializer,
     AttachmentSerializer,
     EmployerApplicationSerializer,
     EmployerSummerVoucherAttachmentUploadInputSerializer,
@@ -86,14 +88,19 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
-from applications.services import AuditAccessLogService, TimelineService, VTJService
+from applications.services import (
+    AuditAccessLogService,
+    EmployerApplicationApproverService,
+    TimelineService,
+    VTJService,
+)
 from applications.target_groups import (
     AbstractTargetGroup,
     get_target_group_data,
 )
 from common.decorators import enforce_handler_view_adfs_login
 from common.fuzzy_matching import is_last_name_fuzzy_match_in_full_name
-from common.permissions import HandlerPermission
+from common.permissions import ApproverPermission, HandlerPermission
 from handler_notes.api.v1.serializers import NoteSerializer
 from shared.vtj.vtj_client import VTJClient
 
@@ -1402,6 +1409,10 @@ class EmployerApplicationFilter(filters.FilterSet):
     ),
 )
 class EmployerApplicationViewSet(ApplicationAssignmentViewSetMixin, ModelViewSet):
+    _SHARED_APPROVER_ACTION_RESPONSES = {
+        200: ApproverBulkActionResultSerializer,
+        400: OpenApiResponse(description="Invalid request or bulk limit exceeded"),
+    }
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
     permission_classes = [IsAuthenticated, EmployerApplicationPermission]
@@ -1531,6 +1542,87 @@ class EmployerApplicationViewSet(ApplicationAssignmentViewSetMixin, ModelViewSet
             raise ValidationError("Company & user can have only one draft application")
 
         return super().create(request, *args, **kwargs)
+
+    def _run_approver_action(self, request: Request, action) -> Response:
+        """
+        Run an approver action over several employer applications.
+
+        The response is always 200, successful_ids/failed_ids tell which employer
+        applications succeeded/failed.
+        """
+        serializer = ApproverBulkActionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = action(
+            serializer.validated_data["application_ids"], approver=request.user
+        )
+        response_serializer = ApproverBulkActionResultSerializer(
+            {"successful_ids": result.successful_ids, "failed_ids": result.failed_ids}
+        )
+        return Response(response_serializer.data)
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses={**_SHARED_APPROVER_ACTION_RESPONSES},
+        description="Accept employer applications for payment as approver",
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[*permission_classes, ApproverPermission],
+    )
+    def accept_for_payment(self, request: Request, *args, **kwargs) -> Response:
+        return self._run_approver_action(
+            request,
+            EmployerApplicationApproverService.accept_for_payment,
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses={**_SHARED_APPROVER_ACTION_RESPONSES},
+        description="Reject employer applications as approver",
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[*permission_classes, ApproverPermission],
+    )
+    def approver_reject(self, request: Request, *args, **kwargs) -> Response:
+        return self._run_approver_action(
+            request,
+            EmployerApplicationApproverService.reject,
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses={**_SHARED_APPROVER_ACTION_RESPONSES},
+        description="Return employer applications to handler queue as approver",
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[*permission_classes, ApproverPermission],
+    )
+    def return_to_handler_queue(self, request: Request, *args, **kwargs) -> Response:
+        return self._run_approver_action(
+            request,
+            EmployerApplicationApproverService.return_to_handler_queue,
+        )
+
+    @extend_schema(
+        request=ApproverBulkActionSerializer,
+        responses={**_SHARED_APPROVER_ACTION_RESPONSES},
+        description="Return employer applications to payment review as approver",
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[*permission_classes, ApproverPermission],
+    )
+    def return_to_payment_review(self, request: Request, *args, **kwargs) -> Response:
+        return self._run_approver_action(
+            request,
+            EmployerApplicationApproverService.return_to_payment_review,
+        )
 
     def update(self, request: Request, *args, **kwargs) -> Response:
         """
