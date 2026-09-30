@@ -104,6 +104,7 @@ env = environ.Env(
     ADFS_CLIENT_SECRET=(str, "client_secret"),
     ADFS_TENANT_ID=(str, "tenant_id"),
     ADFS_CONTROLLER_GROUP_UUIDS=(list, []),
+    ADFS_APPROVER_GROUP_UUIDS=(list, []),
     DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_BLOB_STORAGE_SAS_TOKEN=(str, ""),
@@ -599,6 +600,7 @@ ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 
 ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
+ADFS_APPROVER_GROUP_UUIDS = env.list("ADFS_APPROVER_GROUP_UUIDS")
 
 
 # Suomi.fi (djangosaml2)
