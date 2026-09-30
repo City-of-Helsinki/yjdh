@@ -89,3 +89,58 @@ class HandlerPermission(BasePermission):
             user, otherwise False.
         """
         return HandlerPermission.has_user_permission(request.user)
+
+
+class ApproverPermission(BasePermission):
+    """
+    Is the user an approver, e.g. can they accept employer applications for payment?
+    """
+
+    @staticmethod
+    def get_approver_group_names() -> list[str]:
+        return [
+            # Shared backend's HelsinkiAdfsAuthCodeBackend synchronizes group UUIDs
+            # to Django group names with an "adfs-" prefix:
+            f"adfs-{group_uuid}"
+            for group_uuid in getattr(settings, "ADFS_APPROVER_GROUP_UUIDS", [])
+        ]
+
+    @staticmethod
+    def has_user_permission(user) -> bool:
+        """
+        Does the user have permission to act as an approver, e.g. can they
+        accept employer applications for payment?
+
+        :return: True if user is active, authenticated and either
+            NEXT_PUBLIC_MOCK_FLAG setting is set, user is superuser,
+            or they belong to any AD group listed in
+            ADFS_APPROVER_GROUP_UUIDS setting, otherwise False.
+        """
+        if not (user and user.is_active and user.is_authenticated):
+            LOGGER.debug("User is not authenticated")
+            return False
+
+        if settings.NEXT_PUBLIC_MOCK_FLAG:  # For local dev / testing
+            LOGGER.info("NEXT_PUBLIC_MOCK_FLAG granted approver permission")
+            return True
+
+        if user.is_superuser:
+            LOGGER.info("Superuser status granted approver permission")
+            return True
+
+        has_approver_ad_group = user.groups.filter(
+            name__in=ApproverPermission.get_approver_group_names()
+        ).exists()
+        LOGGER.debug(f"User is approver by AD group: {has_approver_ad_group}")
+        return has_approver_ad_group
+
+    def has_permission(self, request, view):
+        """
+        Does the request's user have approver permission to the given view?
+
+        :return: True if request's user is active, authenticated and either
+            NEXT_PUBLIC_MOCK_FLAG setting is set, they are superuser,
+            or they belong to any AD group listed in
+            ADFS_APPROVER_GROUP_UUIDS setting, otherwise False.
+        """
+        return ApproverPermission.has_user_permission(request.user)

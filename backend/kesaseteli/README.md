@@ -204,6 +204,7 @@ When `NEXT_PUBLIC_MOCK_FLAG=true` (typically in local development):
 | `NEXT_PUBLIC_DISABLE_VTJ` | A boolean value. If set to True, VTJ client usage is disabled. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_CURRENT_YEAR` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the current year. Default is False. |
 | `CREATE_SUMMERVOUCHER_CONFIGURATION_2026` | A boolean value. If set to True, creates a new `SummerVoucherConfiguration` for the year 2026. Default is False. |
+| `ADFS_APPROVER_GROUP_UUIDS` | A comma-separated list of UUIDs of the ADFS groups whose active members are approvers in Kesäseteli handler UI (e.g. they may approve employer applications for payment). |
 | `AD_ADMIN_GROUP_NAME` | The name of the AD group that maps to Django admin permissions. Default is None (feature disabled). |
 | `ENABLE_AUTH_LOGGING` | A boolean value. If set to True, enables DVV compliance logging for Suomi.fi login/logout, mandate (eAuthorization), and VTJ query events. Default is False. |
 | `TALPA_WEBHOOK_API_KEY` | API key for the Talpa integration endpoints (`/v1/talpa/export/` and `/v1/talpa/webhook/`). When set, both endpoints accept an `X-Api-Key: <key>` header. Must be at least 32 characters. Required when Talpa integration is active. |
