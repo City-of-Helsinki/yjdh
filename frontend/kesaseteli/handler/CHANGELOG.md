@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.6.0...kesaseteli-handler-v2.7.0) (2026-09-30)
+
+
+### Features
+
+* **ks,handler:** Add employer application action buttons ([85c16e0](https://github.com/City-of-Helsinki/yjdh/commit/85c16e07c15973f7fb943d74dd729de394d7708a))
+
 ## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.5.0...kesaseteli-handler-v2.6.0) (2026-09-28)
 
 
