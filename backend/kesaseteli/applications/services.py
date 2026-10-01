@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING, TypedDict, Unpack
 
+from django.core.exceptions import FieldDoesNotExist
+
 if TYPE_CHECKING:
     from django.contrib.auth.models import AbstractBaseUser
 
@@ -104,25 +106,35 @@ class EmployerApplicationApproverService:
         :param kwargs: Extra attributes to set on the application (e.g. `approver`),
             or on the related summer vouchers in case of `is_exported` flag.
         :return: The ID of the transitioned employer application
-        :raises ValueError: if application is not in the given source status, or
-            at least one of the keyword arguments doesn't exist in the application
+        :raises ValueError: if application is not in the given source status.
+        :raises ValidationError: if at least one of the keyword arguments,
+            other than `is_exported`, doesn't exist as a field in EmployerApplication,
+            or is unexpected (i.e. not listed in ExtraArguments class).
         """
+        # Validate that there are only keyword arguments listed in ExtraArguments:
+        if set(kwargs.keys()) - set(cls.ExtraArguments.__annotations__.keys()):
+            raise ValidationError("Invalid keyword arguments")
+        is_exported = kwargs.pop("is_exported", None)
         with transaction.atomic():
             app = EmployerApplication.objects.select_for_update().get(pk=app_id)
             if app.status != source_status:
                 raise ValueError("Invalid source status for approver action")
             for key, value in kwargs.items():
+                try:
+                    _ = EmployerApplication._meta.get_field(key)
+                except FieldDoesNotExist:
+                    raise ValidationError(f"Invalid employer application field: {key}")
                 setattr(app, key, value)
             target_status: EmployerApplicationStatus = (
                 target(app) if callable(target) else target
             )
             app.assignee = None  # No assignee after any approver actions
             app.status = target_status
-            if "is_exported" in kwargs:
+            if is_exported is not None:
                 # NOTE: This is trying to be similar to the is_exported updating in
                 # EmployerApplicationSerializer.update:
                 app.summer_vouchers.filter(invoiced_at__isnull=True).update(
-                    is_exported=kwargs["is_exported"]
+                    is_exported=is_exported
                 )
             app.save()
             return app.pk
