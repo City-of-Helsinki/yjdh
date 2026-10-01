@@ -63,6 +63,14 @@ const applicationWithTerms = {
   },
 } as unknown as Application;
 
+const applicationWithConsents = {
+  ...applicationWithTerms,
+  applicantTermsInEffect: {
+    id: 'terms-id',
+    applicantConsents: [{ id: 'consent-1' }, { id: 'consent-2' }],
+  },
+} as unknown as Application;
+
 describe('useApplicationFormStep6', () => {
   beforeEach(() => {
     mockUseLocale.mockReturnValue('fi');
@@ -122,6 +130,26 @@ describe('useApplicationFormStep6', () => {
         result.current.handleSubmit();
       });
     }).not.toThrow();
+  });
+
+  it('preserves multiple consent changes in the same update batch', () => {
+    const setIsSubmittedApplication = jest.fn();
+
+    const { result } = renderHook(() =>
+      useApplicationFormStep6(
+        applicationWithConsents,
+        setIsSubmittedApplication
+      )
+    );
+
+    act(() => {
+      result.current.handleClick(0, true);
+      result.current.handleClick(1, true);
+    });
+
+    expect(result.current.checkedArray).toEqual([true, true]);
+    expect(result.current.getErrorText(0)).toBe('');
+    expect(result.current.getErrorText(1)).toBe('');
   });
 
   it.each([

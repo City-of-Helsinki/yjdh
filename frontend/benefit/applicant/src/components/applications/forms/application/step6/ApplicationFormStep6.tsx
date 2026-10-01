@@ -49,7 +49,7 @@ const ApplicationFormStep6: React.FC<
     applicantTerms2InEffectUrl,
     applicantTerms3InEffectUrl,
     applicantTerms4InEffectUrl,
-  ]
+  ];
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -123,7 +123,9 @@ const ApplicationFormStep6: React.FC<
                 checked={checkedArray[i]}
                 errorText={getErrorText(i)}
                 aria-invalid={false}
-                onChange={() => handleClick(i)}
+                onChange={(event) =>
+                  handleClick(i, event.currentTarget.checked)
+                }
               />
             </$GridCell>
           ))}
