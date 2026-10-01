@@ -2885,9 +2885,11 @@ def test_require_additional_information(handler_api_client, application, mailout
     "applications.management.commands.request_payslip._send_notification_mail",
     return_value=1,
 )
-def test_notify_applications_one_application(mock_send_notification_mail):
+def test_notify_applications_includes_all_application_origins(
+    mock_send_notification_mail,
+):
     """
-    One matching application
+    Applications from both origins with a waiting second instalment are eligible.
     notify_applications() should call _send_notification_mail once for each
     matching application and return the correct count.
     The Django outbox remains empty because _send_notification_mail is mocked.
@@ -2896,28 +2898,35 @@ def test_notify_applications_one_application(mock_send_notification_mail):
     days_to_notify = 150
     target_date = date.today() - relativedelta(days=days_to_notify)
 
-    app = DecidedApplicationFactory(
-        application_origin=ApplicationOrigin.APPLICANT,
-        status=ApplicationStatus.ACCEPTED,
-        start_date=target_date,
-    )
-    Instalment.objects.create(
-        calculation=app.calculation,
-        amount=1000,
-        instalment_number=2,
-        status=InstalmentStatus.WAITING,
-        due_date=target_date + relativedelta(months=6),
-    )
+    apps = []
+    for application_origin in (
+        ApplicationOrigin.APPLICANT,
+        ApplicationOrigin.HANDLER,
+    ):
+        app = DecidedApplicationFactory(
+            application_origin=application_origin,
+            status=ApplicationStatus.ACCEPTED,
+            start_date=target_date,
+        )
+        apps.append(app)
+        Instalment.objects.create(
+            calculation=app.calculation,
+            amount=1000,
+            instalment_number=2,
+            status=InstalmentStatus.WAITING,
+            due_date=target_date + relativedelta(months=6),
+        )
 
-    (count, apps) = notify_applications(days_to_notify)
+    (count, notified_application_numbers) = notify_applications(days_to_notify)
 
-    # _send_notification_mail must have been called exactly once, with the
-    # matching application
-    mock_send_notification_mail.assert_called_once_with(app)
+    assert mock_send_notification_mail.call_count == 2
+    assert {
+        call.args[0].application_number
+        for call in mock_send_notification_mail.call_args_list
+    } == {app.application_number for app in apps}
 
-    # notify_applications must return the sum of _send_notification_mail return values
-    assert count == 1
-    assert apps[0] == app.application_number
+    assert count == 2
+    assert set(notified_application_numbers) == {app.application_number for app in apps}
 
 
 @pytest.mark.django_db
