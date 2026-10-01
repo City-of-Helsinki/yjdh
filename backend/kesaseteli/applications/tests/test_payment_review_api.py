@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
+from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
@@ -97,6 +98,55 @@ def test_approver_extra_arguments_are_expected_model_fields(expected_model, fiel
     fields of expected models.
     """
     assert expected_model._meta.get_field(field_name) is not None
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "field_name", ["unexpected_field", "id", "bank_account_number"]
+)
+def test_approver_unexpected_extra_arguments_raise_validation_error(field_name):
+    """
+    Test that EmployerApplicationApproverService._transition_one raises
+    ValidationError if an unexpected field is given as keyword argument.
+    """
+
+    app = EmployerApplicationFactory(status=EmployerApplicationStatus.PAYMENT_REVIEW)
+
+    with pytest.raises(ValidationError, match="Invalid keyword arguments"):
+        EmployerApplicationApproverService._transition_one(
+            app.id,
+            EmployerApplicationStatus.PAYMENT_REVIEW,
+            EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+            # Intentionally testing with type unsafe values:
+            **{field_name: None},  # type: ignore
+        )
+
+
+@pytest.mark.django_db
+def test_approver_is_exported_keyword_argument_gets_set_on_voucher():
+    """
+    Test that EmployerApplicationApproverService._transition_one accepts
+    is_exported as keyword argument, does not set it to EmployerApplication
+    but to EmployerSummerVoucher.
+    """
+    voucher = EmployerSummerVoucherFactory(
+        application=EmployerApplicationFactory(
+            status=EmployerApplicationStatus.PAYMENT_REVIEW
+        ),
+        is_exported=True,
+    )
+    app = voucher.application
+
+    EmployerApplicationApproverService._transition_one(
+        app.id,
+        EmployerApplicationStatus.PAYMENT_REVIEW,
+        EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        is_exported=False,
+    )
+    app.refresh_from_db()
+    assert not hasattr(app, "is_exported")
+    assert app.summer_vouchers.count() == 1
+    assert app.summer_vouchers.first().is_exported is False
 
 
 @pytest.mark.parametrize("action_name", _APPROVER_ACTIONS)
