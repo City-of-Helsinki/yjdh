@@ -20,6 +20,12 @@ class IntegrationExportFilterSet(django_filters.FilterSet):
     created_at_lte = django_filters.DateFilter(
         field_name="created_at", lookup_expr="date__lte"
     )
+    accepted_for_payment_at_gte = django_filters.DateFilter(
+        field_name="application__accepted_for_payment_at", lookup_expr="date__gte"
+    )
+    accepted_for_payment_at_lte = django_filters.DateFilter(
+        field_name="application__accepted_for_payment_at", lookup_expr="date__lte"
+    )
 
     class Meta:
         model = EmployerSummerVoucher
@@ -29,6 +35,8 @@ class IntegrationExportFilterSet(django_filters.FilterSet):
             "submitted_at_lte",
             "created_at_gte",
             "created_at_lte",
+            "accepted_for_payment_at_gte",
+            "accepted_for_payment_at_lte",
         ]
 
     def filter_exclude_invoiced(self, queryset, name, value):

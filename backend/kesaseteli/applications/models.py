@@ -1734,6 +1734,8 @@ class EmployerSummerVoucherQuerySet(models.QuerySet):
                 "application",
                 "application__company",
                 "application__user",
+                "application__handler",
+                "application__approver",
                 "youth_summer_voucher",
                 "youth_summer_voucher__youth_application",
             )

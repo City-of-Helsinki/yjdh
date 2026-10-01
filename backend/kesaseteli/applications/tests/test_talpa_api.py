@@ -66,9 +66,71 @@ def test_export_returns_records(unauthenticated_api_client):
     assert len(response.data["results"]) == 1
     assert response.data["results"][0]["id"] == str(voucher.id)
     record = response.data["results"][0]
-    assert "company_name" in record
-    assert "bank_account_number" in record
-    assert "value_in_euros" in record
+
+    expected_fields = {
+        "id",
+        "submitted_at",
+        "language",
+        "summer_voucher_serial_number",
+        "target_group",
+        "company_form",
+        "company_name",
+        "company_business_id",
+        "company_street_address",
+        "company_postcode",
+        "company_city",
+        "payee_name",
+        "payee_address",
+        "bank_swift_bic_code",
+        "bank_name",
+        "bank_address",
+        "bank_account_number",
+        "value_in_euros",
+        "handler_id",
+        "handler_name",
+        "approver_id",
+        "approver_name",
+        "handled_at",
+        "accepted_for_payment_at",
+    }
+    assert set(record.keys()) == expected_fields
+
+    # Ensure sensitive and removed fields are not exposed
+    assert "employee_ssn" not in record
+    assert "employee_name" not in record
+    assert "is_vtj_data_restricted" not in record
+    assert "target_group_calculation_status" not in record
+
+
+@override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
+def test_export_filter_accepted_for_payment_at(unauthenticated_api_client):
+    EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        application__accepted_for_payment_at="2026-08-05T13:45:00Z",
+        is_exported=False,
+    )
+    EmployerSummerVoucherFactory(
+        application__status=EmployerApplicationStatus.ACCEPTED_FOR_PAYMENT,
+        application__accepted_for_payment_at="2026-08-10T13:45:00Z",
+        is_exported=False,
+    )
+    url = reverse("talpa-export")
+
+    # Filter should include only the first one
+    response = unauthenticated_api_client.get(
+        f"{url}?accepted_for_payment_at_lte=2026-08-06&limit=10",
+        HTTP_X_API_KEY=VALID_KEY,
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data["results"]) == 1
+
+    # Filter should include only the second one
+    response = unauthenticated_api_client.get(
+        f"{url}?accepted_for_payment_at_gte=2026-08-08&limit=10",
+        HTTP_X_API_KEY=VALID_KEY,
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data["results"]) == 1
 
 
 @override_settings(TALPA_WEBHOOK_API_KEY=VALID_KEY)
