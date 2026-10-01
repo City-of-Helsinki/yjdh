@@ -24,7 +24,7 @@ type ExtendedComponentProps = {
   handleSubmit: () => void;
   handleSave: () => void;
   handleDelete: () => void;
-  handleClick: (consentIndex: number) => void;
+  handleClick: (consentIndex: number, isChecked: boolean) => void;
   getErrorText: (consentIndex: number) => string;
   translationsBase: string;
   cbPrefix: string;
@@ -64,17 +64,17 @@ const useApplicationFormStep6 = (
     setIsSubmittedApplication
   );
 
-  const handleClick = (consentIndex: number): void => {
-    const newValue = !checkedArray[consentIndex];
-    const newArray = [
-      ...checkedArray.slice(0, consentIndex),
-      newValue,
-      ...checkedArray.slice(consentIndex + 1),
-    ];
-    setCheckedArray(newArray);
-    const newErrorsArray = [...errorsArray];
-    newErrorsArray[consentIndex] = !newArray[consentIndex];
-    setErrorsArray(newErrorsArray);
+  const handleClick = (consentIndex: number, isChecked: boolean): void => {
+    setCheckedArray((prev) => {
+      const newArray = [...prev];
+      newArray[consentIndex] = isChecked;
+      return newArray;
+    });
+    setErrorsArray((prev) => {
+      const newArray = [...prev];
+      newArray[consentIndex] = !isChecked;
+      return newArray;
+    });
   };
 
   const getErrors = (): boolean => {
@@ -163,9 +163,7 @@ const useApplicationFormStep6 = (
 
   const applicantTermsInEffectUrl = React.useMemo(() => {
     if (
-      application.applicantTermsInEffect?.[
-        `termsPdf${textLocale}` as TermsProp
-      ]
+      application.applicantTermsInEffect?.[`termsPdf${textLocale}` as TermsProp]
     )
       return application.applicantTermsInEffect[
         `termsPdf${textLocale}` as TermsProp
