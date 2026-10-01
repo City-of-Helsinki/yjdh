@@ -142,7 +142,7 @@ describe('ApplicationFormStep6', () => {
     );
   });
 
-  it('calls handleClick with checkbox index when consent is clicked', async () => {
+  it('passes the checkbox index and checked state when consent is clicked', async () => {
     const handleClick = jest.fn();
     mockUseApplicationFormStep6.mockReturnValue({
       ...mockHookReturn,
@@ -155,7 +155,7 @@ describe('ApplicationFormStep6', () => {
     const checkboxes = screen.getAllByTestId('application-terms-consent');
     await user.click(checkboxes[0]);
 
-    expect(handleClick).toHaveBeenCalledWith(0);
+    expect(handleClick).toHaveBeenCalledWith(0, true);
   });
 
   it('disables next button when some consents are unchecked', () => {
