@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.24.6](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.5...benefit-backend-v2.24.6) (2026-10-01)
+
+
+### Bug Fixes
+
+* **benefit:** Remove application_origin filter in request_payslip ([e095e71](https://github.com/City-of-Helsinki/yjdh/commit/e095e712bb745d845b29e31583b0083e63c2c9b4))
+
 ## [2.24.5](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.4...benefit-backend-v2.24.5) (2026-09-24)
 
 
