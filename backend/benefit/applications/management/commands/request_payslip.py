@@ -5,7 +5,7 @@ from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from applications.enums import ApplicationOrigin, ApplicationStatus
+from applications.enums import ApplicationStatus
 from applications.models import Application
 from calculator.enums import InstalmentStatus
 from calculator.models import Instalment
@@ -59,7 +59,6 @@ def notify_applications(days_to_notify: int) -> tuple[int, list[int]]:
 
     applications_to_notify = (
         Application.objects.filter(
-            application_origin=ApplicationOrigin.APPLICANT,
             status=ApplicationStatus.ACCEPTED,
             start_date__lte=target_date,
             alteration_set__isnull=True,
