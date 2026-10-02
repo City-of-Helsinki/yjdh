@@ -21,6 +21,7 @@ export type EmployerApplicationsQueryParams = {
   /** Valid ordering fields: created_at, company__name, company__business_id, status, modified_at, submitted_at */
   ordering?: string;
   is_assigned_to_me?: boolean;
+  year?: number;
 };
 
 const useEmployerApplicationsListQuery = <
@@ -43,6 +44,9 @@ const useEmployerApplicationsListQuery = <
   }
   if (params.is_assigned_to_me !== undefined) {
     searchParams.append('is_assigned_to_me', String(params.is_assigned_to_me));
+  }
+  if (params.year !== undefined) {
+    searchParams.append('year', String(params.year));
   }
 
   const query = useQuery({

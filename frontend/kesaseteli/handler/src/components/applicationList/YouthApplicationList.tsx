@@ -25,6 +25,7 @@ import ApplicationListTable, {
 } from './ApplicationListTable';
 import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
 import StatusFilter from './searchFilters/StatusFilter';
+import YearFilter from './searchFilters/YearFilter';
 
 const ASSIGNEE_TRANSLATION_KEY = 'common:application.assignee';
 const ASSIGNEE_TOOLTIP_TRANSLATION_KEY = 'common:application.assigneeTooltip';
@@ -174,6 +175,7 @@ type UseYouthApplicationsResultType = TableState<YouthApplication> & {
 
 const useYouthApplications = (
   initialStatuses: YouthApplicationStatus[],
+  selectedYear: number,
   initialAssignedToMe = false
 ): UseYouthApplicationsResultType & {
   isAssignedToMe: boolean;
@@ -187,7 +189,8 @@ const useYouthApplications = (
     useYouthApplicationsListQuery,
     selectedStatuses,
     DEFAULT_ORDERING as OrderingField<YouthApplication>,
-    isAssignedToMe
+    isAssignedToMe,
+    selectedYear
   );
 
   const { setPage } = tableQuery;
@@ -195,7 +198,7 @@ const useYouthApplications = (
   // Reset page when statuses change to avoid showing stale data
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, isAssignedToMe, setPage]);
+  }, [selectedStatuses, isAssignedToMe, selectedYear, setPage]);
 
   return {
     ...tableQuery,
@@ -214,6 +217,10 @@ export default function YouthApplicationList(): React.JSX.Element {
     0
   );
 
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
+
   const {
     page: pendingPage,
     setPage: setPendingPage,
@@ -224,7 +231,7 @@ export default function YouthApplicationList(): React.JSX.Element {
     count: pendingCount,
     isAssignedToMe: isPendingAssignedToMe,
     setIsAssignedToMe: setIsPendingAssignedToMe,
-  } = useYouthApplications(DEFAULT_PENDING_STATUSES);
+  } = useYouthApplications(DEFAULT_PENDING_STATUSES, selectedYear);
 
   const {
     page: processedPage,
@@ -236,7 +243,7 @@ export default function YouthApplicationList(): React.JSX.Element {
     count: processedCount,
     isAssignedToMe: isProcessedAssignedToMe,
     setIsAssignedToMe: setIsProcessedAssignedToMe,
-  } = useYouthApplications(PROCESSED_STATUSES);
+  } = useYouthApplications(PROCESSED_STATUSES, selectedYear);
 
   const columns = useYouthApplicationListColumns();
 
@@ -261,6 +268,11 @@ export default function YouthApplicationList(): React.JSX.Element {
             selectedStatuses={selectedPendingStatuses}
             onChange={setSelectedPendingStatuses}
             listType={APPLICATION_LIST_TYPES.YOUTH}
+          />
+          <YearFilter
+            id="youth-application-pending-year-filter"
+            selectedYear={selectedYear}
+            onChange={setSelectedYear}
           />
           <$FilterWrapper>
             <$FilterLabel>
@@ -319,6 +331,11 @@ export default function YouthApplicationList(): React.JSX.Element {
             selectedStatuses={selectedProcessedStatuses}
             onChange={setSelectedProcessedStatuses}
             listType={APPLICATION_LIST_TYPES.YOUTH}
+          />
+          <YearFilter
+            id="youth-application-processed-year-filter"
+            selectedYear={selectedYear}
+            onChange={setSelectedYear}
           />
           <$FilterWrapper>
             <$FilterLabel>

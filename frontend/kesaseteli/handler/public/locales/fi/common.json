@@ -46,6 +46,8 @@
     "paymentErrorsInfo": "Nämä hakemukset ovat kohdanneet virheen Talpa-maksujärjestelmässä. Ne vaativat erityistä tarkastelua.",
     "filterTitle": "Rajaa hakemuksia",
     "filterAssignedToMe": "Omassa käsittelyssäni",
+    "filterYear": "Vuosi",
+    "filterYearPlaceholder": "Valitse vuosi",
     "filterError": "Valitse vähintään yksi tila",
     "noSsn": "Ei hetua",
     "noSerialNumber": "Ei sarjanumeroa",

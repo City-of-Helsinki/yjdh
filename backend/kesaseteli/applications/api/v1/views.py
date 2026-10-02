@@ -225,6 +225,7 @@ class JobTypeListView(ListAPIView):
 
 class YouthApplicationFilter(filters.FilterSet):
     status = filters.MultipleChoiceFilter(choices=YouthApplicationStatus.choices)
+    year = filters.NumberFilter(field_name="created_at__year")
     # TODO: In the future, define search filters
     # (e.g., search = filters.CharFilter(method="filter_search"))
     # once requirements for text search across name/email are finalized.
@@ -1285,6 +1286,7 @@ class EmployerApplicationFilter(filters.FilterSet):
 
     only_mine = filters.BooleanFilter(method="filter_only_mine")
     status = filters.MultipleChoiceFilter(choices=EmployerApplicationStatus.choices)
+    year = filters.NumberFilter(field_name="submitted_at__year")
     created_at = filters.DateTimeFromToRangeFilter()
     modified_at = filters.DateTimeFromToRangeFilter()
     ordering = filters.OrderingFilter(
