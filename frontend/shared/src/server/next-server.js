@@ -19,7 +19,13 @@ const releaseNameByPackageName = {
   '@frontend/bf-handler': 'benefit-handler',
 };
 const releaseName = releaseNameByPackageName[packageName] || packageName;
-const app = next({ dev: process.env.NODE_ENV !== 'production' });
+// Next 16 defaults to Turbopack, which ignores next.config.js `webpack`, including
+// the WATCHPACK_POLLING watch options that Docker hot reload relies on. Opt into
+// Turbopack via TURBOPACK, matching next.config.js and the build script.
+const app = next({
+  dev: process.env.NODE_ENV !== 'production',
+  webpack: !process.env.TURBOPACK,
+});
 const handle = app.getRequestHandler();
 
 const RESPONSES = {
