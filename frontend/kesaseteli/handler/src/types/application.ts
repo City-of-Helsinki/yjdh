@@ -103,3 +103,8 @@ export type PaginatedResponse<T> = {
   previous: string | null;
   results: T[];
 };
+
+export type ApproverBulkActionResult = {
+  successful_ids: string[];
+  failed_ids: string[];
+};
