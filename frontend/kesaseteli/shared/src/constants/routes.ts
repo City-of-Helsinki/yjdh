@@ -11,6 +11,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   YOUTH_APPLICATIONS: '/youth-applications',
   EMPLOYER_APPLICATIONS: '/employer-applications',
+  PAYMENT_APPROVAL: '/payment-approval',
   CREATE_APPLICATION_WITHOUT_SSN: '/create-application-without-ssn/',
   FORBIDDEN: '/403',
   NOT_FOUND: '/404',

@@ -20,9 +20,30 @@
     "pendingProcessed": "Käsiteltävät: {{pending}}\nKäsitellyt: {{processed}}"
   },
   "utility": {
-    "pagination": "Sivutus"
+    "pagination": "Sivutus",
+    "close": "Sulje",
+    "save": "Tallenna",
+    "cancel": "Peruuta"
   },
   "applicationList": {
+    "bulkApproveSubmit": "Hyväksy valitut maksuun",
+    "bulkApproveSuccess": "{{count}} hakemusta hyväksytty maksuun",
+    "bulkApproveFailed": "{{count}} hakemusta epäonnistui",
+    "bulkApproveConfirm": "Oletko varma? Tätä toimintoa ei voi peruuttaa.",
+    "bulkApprovePageLimitInfo": "Voit valita ja hyväksyä kerrallaan vain yhdellä sivulla näkyvät hakemukset.",
+    "bulkRejectSubmit": "Hylkää valitut",
+    "bulkRejectSuccess": "{{count}} hakemusta hylätty",
+    "bulkRejectFailed": "{{count}} hakemuksen hylkäys epäonnistui",
+    "bulkRejectConfirm": "Oletko varma, että haluat hylätä valitut hakemukset? Tätä toimintoa ei voi peruuttaa.",
+    "bulkReturnToHandlerSubmit": "Palauta valitut käsittelijälle",
+    "bulkReturnToHandlerSuccess": "{{count}} hakemusta palautettu käsittelijälle",
+    "bulkReturnToHandlerFailed": "{{count}} hakemuksen palautus epäonnistui",
+    "bulkReturnToHandlerConfirm": "Oletko varma, että haluat palauttaa valitut hakemukset käsittelijälle?",
+    "bulkReturnToPaymentReviewSubmit": "Palauta valitut maksatuksen tarkistukseen",
+    "bulkReturnToPaymentReviewSuccess": "{{count}} hakemusta palautettu maksatuksen tarkistukseen",
+    "bulkReturnToPaymentReviewFailed": "{{count}} hakemuksen palautus epäonnistui",
+    "bulkReturnToPaymentReviewConfirm": "Oletko varma, että haluat palauttaa valitut hakemukset maksatuksen tarkistukseen?",
+    "paymentErrorsInfo": "Nämä hakemukset ovat kohdanneet virheen Talpa-maksujärjestelmässä. Ne vaativat erityistä tarkastelua.",
     "filterTitle": "Rajaa hakemuksia",
     "filterAssignedToMe": "Omassa käsittelyssäni",
     "filterError": "Valitse vähintään yksi tila",
@@ -70,7 +91,8 @@
     },
     "tabs": {
       "pending": "Käsiteltävät",
-      "processed": "Käsitellyt"
+      "processed": "Käsitellyt",
+      "paymentErrors": "Maksuvirheet"
     },
     "noApplications": "Ei hakemuksia"
   },
@@ -83,6 +105,7 @@
     "dashboardLabel": "Etusivu",
     "youthApplicationsLabel": "Nuorten hakemukset",
     "employerApplicationsLabel": "Työnantajien hakemukset",
+    "approverApplicationsLabel": "Maksatuksen hyväksyntä",
     "linkSkipToContent": "Siirry sisältöön",
     "menuToggleAriaLabel": "Valikko",
     "languageMenuButtonAriaLabel": "Valitse kieli"

@@ -10,4 +10,8 @@ export const SESSION_STORAGE_KEYS = {
    * The active tab index (Pending vs. Processed) for the youth applications list.
    */
   YOUTH_APPLICATIONS_ACTIVE_TAB: 'youth-applications-active-tab',
+  /**
+   * The active tab index (Pending vs. Processed) for the payment approval list.
+   */
+  PAYMENT_APPROVAL_ACTIVE_TAB: 'payment-approval-active-tab',
 } as const;

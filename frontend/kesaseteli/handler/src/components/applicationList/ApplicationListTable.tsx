@@ -45,6 +45,10 @@ type ApplicationListTableProps<T extends BaseApplication = BaseApplication> = {
   isLoading: boolean;
   /** Initial ordering column key (e.g. 'created_at'). Descending by default. */
   defaultSortColumnKey?: OrderingField<T>;
+  checkboxSelection?: boolean;
+  selectedRows?: (string | number)[];
+  setSelectedRows?: React.Dispatch<React.SetStateAction<(string | number)[]>>;
+  clearSelection?: () => void;
 };
 
 export type TableState<T extends BaseApplication = BaseApplication> = {
@@ -158,6 +162,10 @@ const ApplicationListTable: ApplicationListTableComponent =
     setOrdering,
     isLoading,
     defaultSortColumnKey = DEFAULT_ORDERING as OrderDirection<T>,
+    checkboxSelection,
+    selectedRows,
+    setSelectedRows,
+    clearSelection,
   }: ApplicationListTableProps<T>): React.JSX.Element {
     const { t } = useTranslation();
     const locale = useLocale();
@@ -199,6 +207,7 @@ const ApplicationListTable: ApplicationListTableComponent =
     const onPageChange = (e: React.MouseEvent, index: number): void => {
       e.preventDefault();
       setPage(index);
+      clearSelection?.();
     };
 
     if (isLoading) {
@@ -232,6 +241,9 @@ const ApplicationListTable: ApplicationListTableComponent =
             initialSortingOrder={initialSortingOrder}
             onSort={handleSort}
             variant="dark"
+            checkboxSelection={checkboxSelection}
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
             zebra
             caption={
               data.length === 0
