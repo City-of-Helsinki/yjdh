@@ -367,10 +367,6 @@ export default function PaymentApprovalList(): React.JSX.Element {
             />
           </ApplicationListTable.FilterSection>
 
-          <$PageNotification>
-            {t(BULK_APPROVE_PAGE_LIMIT_INFO_KEY)}
-          </$PageNotification>
-
           <$ActionsContainer>
             <$ActionsHeading id="payment-approval-pending-actions-heading">
               {t('common:handlerApplication.actionsTitle')}
@@ -414,6 +410,10 @@ export default function PaymentApprovalList(): React.JSX.Element {
               </Button>
             </$ButtonsRow>
           </$ActionsContainer>
+
+          <$PageNotification>
+            {t(BULK_APPROVE_PAGE_LIMIT_INFO_KEY)}
+          </$PageNotification>
 
           <ApplicationListTable<EmployerApplication>
             columns={columns}
@@ -468,6 +468,10 @@ export default function PaymentApprovalList(): React.JSX.Element {
               </Button>
             </$ButtonsRow>
           </$ActionsContainer>
+
+          <$PageNotification>
+            {t(BULK_APPROVE_PAGE_LIMIT_INFO_KEY)}
+          </$PageNotification>
 
           <ApplicationListTable<EmployerApplication>
             columns={columns}
