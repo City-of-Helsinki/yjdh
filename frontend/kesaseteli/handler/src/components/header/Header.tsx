@@ -15,6 +15,10 @@ const Header: React.FC = () => {
 
   const enableNewBetaUI = isHandlerNewBetaUiEnabled();
 
+  const login = useLogin();
+  const logout = useLogout();
+  const { user, isLoading, isAuthenticated, isApprover } = useUser();
+
   const navigationItems = [
     // Display new dashboard and list views only when the new Beta UI feature flag is enabled
     ...(enableNewBetaUI
@@ -37,6 +41,14 @@ const Header: React.FC = () => {
             label: t('common:header.employerApplicationsLabel'),
             url: ROUTES.EMPLOYER_APPLICATIONS,
           },
+          ...(isApprover
+            ? [
+                {
+                  label: t('common:header.approverApplicationsLabel'),
+                  url: ROUTES.PAYMENT_APPROVAL,
+                },
+              ]
+            : []),
         ]
       : [
           {
@@ -46,10 +58,6 @@ const Header: React.FC = () => {
           },
         ]),
   ];
-
-  const login = useLogin();
-  const logout = useLogout();
-  const { user, isLoading, isAuthenticated } = useUser();
 
   return (
     <BaseHeader
