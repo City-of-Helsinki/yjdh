@@ -1,10 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
 import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
+import useIsApprover from 'kesaseteli/handler/hooks/useIsApprover';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { ROUTES_FOR_ANONYMOUS_USERS } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import useAuth from 'shared/hooks/useAuth';
 import theme from 'shared/styles/theme';
 import User from 'shared/types/user';
 import { ThemeProvider } from 'styled-components';
@@ -21,6 +23,8 @@ export type UserContextType = {
   isFetching: boolean;
   /** Flag indicating if the user is authenticated. */
   isAuthenticated: boolean;
+  /** Flag indicating if the user has the approver role. */
+  isApprover: boolean;
   /** Function to explicitly clear the user cache. */
   clearUser: () => void;
 };
@@ -61,19 +65,28 @@ export const UserProvider: React.FC<React.PropsWithChildren<unknown>> = ({
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+
   const skipAuthCheck = React.useMemo(
     () => ROUTES_FOR_ANONYMOUS_USERS.includes(router.route),
     [router.route]
   );
 
-  const userQuery = useUserQuery({
-    enabled: !skipAuthCheck,
+  const {
+    data: user,
+    isFetching,
+    isError,
+    isLoading: isUserLoading,
+  } = useUserQuery({
+    enabled: isAuthenticated,
   });
 
-  const { data: user, isLoading, isFetching, isSuccess, isError } = userQuery;
+  const { isApprover, isLoading: isApproverLoading } = useIsApprover();
+  const isLoading = isAuthLoading || isUserLoading || isApproverLoading;
 
   const clearUser = React.useCallback(() => {
     queryClient.removeQueries({ queryKey: [BackendEndpoint.USER] });
+    queryClient.removeQueries({ queryKey: [BackendEndpoint.CURRENT_USER] });
   }, [queryClient]);
 
   const contextValue = React.useMemo(
@@ -81,10 +94,11 @@ export const UserProvider: React.FC<React.PropsWithChildren<unknown>> = ({
       user,
       isLoading,
       isFetching,
-      isAuthenticated: isSuccess && Boolean(user),
+      isAuthenticated,
+      isApprover,
       clearUser,
     }),
-    [user, isLoading, isFetching, isSuccess, clearUser]
+    [user, isLoading, isFetching, isAuthenticated, isApprover, clearUser]
   );
 
   if (!skipAuthCheck && (isLoading || (isError && !user))) {
