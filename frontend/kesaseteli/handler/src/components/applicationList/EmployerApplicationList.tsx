@@ -180,13 +180,13 @@ const useEmployerApplications = (
     useState<EmployerApplicationStatus[]>(initialStatuses);
   const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
 
-  const tableQuery = useApplicationTableQuery<EmployerApplication>(
-    useEmployerApplicationsListQuery,
-    selectedStatuses,
-    '-submitted_at',
+  const tableQuery = useApplicationTableQuery<EmployerApplication>({
+    useQueryHook: useEmployerApplicationsListQuery,
+    status: selectedStatuses,
+    defaultOrdering: '-submitted_at',
     isAssignedToMe,
-    selectedYear
-  );
+    year: selectedYear,
+  });
 
   const { setPage } = tableQuery;
 

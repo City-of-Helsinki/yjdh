@@ -81,17 +81,9 @@ export function useTableState<T extends BaseApplication = BaseApplication>(
   };
 }
 
-/**
- * Hook that combines table state management with the application list query logic.
- * This hook automatically handles pagination (limit/offset) and ordering for you.
- *
- * @param useQueryHook The query hook to use (e.g., useEmployerApplicationsListQuery).
- * @param status The status parameter to pass to the query hook.
- * @param defaultOrdering The default ordering string (defaults to '-created_at').
- *
- * @returns An object containing { page, setPage, ordering, setOrdering, query, count }
- */
-export function useApplicationTableQuery<T extends BaseApplication>(
+export type UseApplicationTableQueryProps<
+  T extends BaseApplication = BaseApplication
+> = {
   useQueryHook: (
     params: {
       status: T['status'][];
@@ -105,15 +97,42 @@ export function useApplicationTableQuery<T extends BaseApplication>(
       UseQueryOptions<PaginatedResponse<T>>,
       'queryKey' | 'queryFn'
     >
-  ) => UseQueryResult<PaginatedResponse<T>>,
-  status: T['status'][],
-  defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>,
-  isAssignedToMe?: boolean,
-  year?: number
-): TableState<T> & {
+  ) => UseQueryResult<PaginatedResponse<T>>;
+  status: T['status'][];
+  defaultOrdering?: OrderingField<T>;
+  isAssignedToMe?: boolean;
+  year?: number;
+};
+
+export type UseApplicationTableQueryResult<
+  T extends BaseApplication = BaseApplication
+> = TableState<T> & {
   query: UseQueryResult<PaginatedResponse<T>>;
   count: number;
-} {
+};
+
+/**
+ * Hook that combines table state management with the application list query logic.
+ * This hook automatically handles pagination (limit/offset) and ordering for you.
+ *
+ * @param props Configuration properties for the table query hook.
+ * @param props.useQueryHook The query hook to use (e.g., useEmployerApplicationsListQuery).
+ * @param props.status The status parameter to pass to the query hook.
+ * @param props.defaultOrdering The default ordering string (defaults to '-created_at').
+ * @param props.isAssignedToMe Filter for applications assigned to current user.
+ * @param props.year Filter for application year.
+ *
+ * @returns An object containing { page, setPage, ordering, setOrdering, query, count }
+ */
+export function useApplicationTableQuery<
+  T extends BaseApplication = BaseApplication
+>({
+  useQueryHook,
+  status,
+  defaultOrdering = DEFAULT_ORDERING as OrderingField<T>,
+  isAssignedToMe,
+  year,
+}: UseApplicationTableQueryProps<T>): UseApplicationTableQueryResult<T> {
   const tableState = useTableState(defaultOrdering);
 
   const queryParams = {

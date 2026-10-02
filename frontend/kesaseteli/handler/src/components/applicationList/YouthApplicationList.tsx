@@ -17,9 +17,7 @@ import {
 import { getAssigneeName } from '../../utils/assignee.utils';
 import ActionCell from './ActionCell';
 import ApplicationListTable, {
-  DEFAULT_ORDERING,
   HdsHeader,
-  OrderingField,
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
@@ -185,13 +183,12 @@ const useYouthApplications = (
     useState<YouthApplicationStatus[]>(initialStatuses);
   const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
 
-  const tableQuery = useApplicationTableQuery<YouthApplication>(
-    useYouthApplicationsListQuery,
-    selectedStatuses,
-    DEFAULT_ORDERING as OrderingField<YouthApplication>,
+  const tableQuery = useApplicationTableQuery<YouthApplication>({
+    useQueryHook: useYouthApplicationsListQuery,
+    status: selectedStatuses,
     isAssignedToMe,
-    selectedYear
-  );
+    year: selectedYear,
+  });
 
   const { setPage } = tableQuery;
 
