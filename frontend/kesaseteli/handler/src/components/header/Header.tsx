@@ -4,6 +4,7 @@ import useLogin from 'kesaseteli/handler/hooks/backend/useLogin';
 import useLogout from 'kesaseteli/handler/hooks/backend/useLogout';
 import useUser from 'kesaseteli/handler/hooks/useUser';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
@@ -12,12 +13,27 @@ import useLocale from 'shared/hooks/useLocale';
 const Header: React.FC = () => {
   const { t } = useTranslation();
   const locale = useLocale();
+  const { asPath } = useRouter();
 
   const enableNewBetaUI = isHandlerNewBetaUiEnabled();
 
   const login = useLogin();
   const logout = useLogout();
   const { user, isLoading, isAuthenticated, isApprover } = useUser();
+
+  const customActiveItemFn = React.useCallback(
+    (url: string) => {
+      const activePath = asPath || '/';
+      if (activePath === '/' && url === '/') {
+        return true;
+      }
+      if (url !== '/') {
+        return activePath.startsWith(url);
+      }
+      return false;
+    },
+    [asPath]
+  );
 
   const navigationItems = [
     // Display new dashboard and list views only when the new Beta UI feature flag is enabled
@@ -67,6 +83,7 @@ const Header: React.FC = () => {
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       isNavigationVisible
       navigationItems={navigationItems}
+      customActiveItemFn={customActiveItemFn}
       login={
         !isLoading
           ? {
