@@ -857,24 +857,28 @@ def test_required_fields_on_submission_including_new_fields(
 
 @pytest.mark.django_db
 def test_applications_list_filtered_by_year(api_client, company, user):
-    """Test filtering applications by year using the created_at__year query parameter."""
-    with freeze_time("2024-06-01 12:00:00"):
-        app_2024 = EmployerApplicationFactory(
-            company=company, user=user, status=EmployerApplicationStatus.SUBMITTED
-        )
-    with freeze_time("2025-06-01 12:00:00"):
-        app_2025 = EmployerApplicationFactory(
-            company=company, user=user, status=EmployerApplicationStatus.SUBMITTED
-        )
+    """Test filtering applications by year using the submitted_at__year query parameter."""
+    app_2024 = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+        submitted_at="2024-06-01T12:00:00Z",
+    )
+    app_2025 = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+        submitted_at="2025-06-01T12:00:00Z",
+    )
 
     # Filter for 2024
-    response = api_client.get(get_list_url(), {"created_at__year": 2024})
+    response = api_client.get(get_list_url(), {"year": 2024})
     assert response.status_code == 200
     assert len(response.data) == 1
     assert str(response.data[0]["id"]) == str(app_2024.id)
 
     # Filter for 2025
-    response = api_client.get(get_list_url(), {"created_at__year": 2025})
+    response = api_client.get(get_list_url(), {"year": 2025})
     assert response.status_code == 200
     assert len(response.data) == 1
     assert str(response.data[0]["id"]) == str(app_2025.id)

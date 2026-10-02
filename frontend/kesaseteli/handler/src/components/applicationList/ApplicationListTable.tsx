@@ -99,6 +99,7 @@ export function useApplicationTableQuery<T extends BaseApplication>(
       offset: number;
       ordering: OrderingField<T>;
       is_assigned_to_me?: boolean;
+      year?: number;
     },
     options?: Omit<
       UseQueryOptions<PaginatedResponse<T>>,
@@ -107,7 +108,8 @@ export function useApplicationTableQuery<T extends BaseApplication>(
   ) => UseQueryResult<PaginatedResponse<T>>,
   status: T['status'][],
   defaultOrdering: OrderingField<T> = DEFAULT_ORDERING as OrderingField<T>,
-  isAssignedToMe?: boolean
+  isAssignedToMe?: boolean,
+  year?: number
 ): TableState<T> & {
   query: UseQueryResult<PaginatedResponse<T>>;
   count: number;
@@ -120,6 +122,7 @@ export function useApplicationTableQuery<T extends BaseApplication>(
     offset: tableState.page * PAGE_SIZE,
     ordering: tableState.ordering,
     is_assigned_to_me: isAssignedToMe,
+    year,
   };
 
   // Only pass options argument when we need to disable the query,

@@ -23,6 +23,7 @@ import ApplicationListTable, {
 } from './ApplicationListTable';
 import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
 import StatusFilter from './searchFilters/StatusFilter';
+import YearFilter from './searchFilters/YearFilter';
 
 const ASSIGNEE_TRANSLATION_KEY = 'common:application.assignee';
 const ASSIGNEE_TOOLTIP_TRANSLATION_KEY = 'common:application.assigneeTooltip';
@@ -169,6 +170,7 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
  */
 const useEmployerApplications = (
   initialStatuses: EmployerApplicationStatus[],
+  selectedYear: number,
   initialAssignedToMe = false
 ): UseEmployerApplicationsResultType & {
   isAssignedToMe: boolean;
@@ -182,14 +184,15 @@ const useEmployerApplications = (
     useEmployerApplicationsListQuery,
     selectedStatuses,
     '-submitted_at',
-    isAssignedToMe
+    isAssignedToMe,
+    selectedYear
   );
 
   const { setPage } = tableQuery;
 
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, isAssignedToMe, setPage]);
+  }, [selectedStatuses, isAssignedToMe, selectedYear, setPage]);
 
   return {
     ...tableQuery,
@@ -208,6 +211,10 @@ export default function EmployerApplicationList(): React.JSX.Element {
     0
   );
 
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
+
   // Pending Tab States & Query
   const {
     page: pendingPage,
@@ -219,7 +226,7 @@ export default function EmployerApplicationList(): React.JSX.Element {
     count: pendingCount,
     isAssignedToMe: isPendingAssignedToMe,
     setIsAssignedToMe: setIsPendingAssignedToMe,
-  } = useEmployerApplications(DEFAULT_PENDING_STATUSES);
+  } = useEmployerApplications(DEFAULT_PENDING_STATUSES, selectedYear);
 
   // Processed Tab States & Query
   const {
@@ -232,7 +239,7 @@ export default function EmployerApplicationList(): React.JSX.Element {
     count: processedCount,
     isAssignedToMe: isProcessedAssignedToMe,
     setIsAssignedToMe: setIsProcessedAssignedToMe,
-  } = useEmployerApplications(PROCESSED_STATUSES);
+  } = useEmployerApplications(PROCESSED_STATUSES, selectedYear);
 
   const columns = useEmployerApplicationListColumns();
 
@@ -257,6 +264,11 @@ export default function EmployerApplicationList(): React.JSX.Element {
             selectedStatuses={selectedPendingStatuses}
             onChange={setSelectedPendingStatuses}
             listType={APPLICATION_LIST_TYPES.EMPLOYER}
+          />
+          <YearFilter
+            id="employer-application-pending-year-filter"
+            selectedYear={selectedYear}
+            onChange={setSelectedYear}
           />
           <$FilterWrapper>
             <$FilterLabel>
@@ -316,6 +328,11 @@ export default function EmployerApplicationList(): React.JSX.Element {
             selectedStatuses={selectedProcessedStatuses}
             onChange={setSelectedProcessedStatuses}
             listType={APPLICATION_LIST_TYPES.EMPLOYER}
+          />
+          <YearFilter
+            id="employer-application-processed-year-filter"
+            selectedYear={selectedYear}
+            onChange={setSelectedYear}
           />
           <$FilterWrapper>
             <$FilterLabel>

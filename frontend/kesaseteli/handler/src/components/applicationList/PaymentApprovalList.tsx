@@ -37,6 +37,7 @@ import ApplicationListTable, {
 } from './ApplicationListTable';
 import { useEmployerApplicationListColumns } from './EmployerApplicationList';
 import StatusFilter from './searchFilters/StatusFilter';
+import YearFilter from './searchFilters/YearFilter';
 
 const $TabList = styled(TabList)`
   margin-bottom: var(--spacing-m);
@@ -100,6 +101,7 @@ const BULK_RETURN_TO_PAYMENT_REVIEW_CONFIRM_KEY =
   'common:applicationList.bulkReturnToPaymentReviewConfirm'; // eslint-disable-line no-secrets/no-secrets
 const BULK_APPROVE_PAGE_LIMIT_INFO_KEY =
   'common:applicationList.bulkApprovePageLimitInfo'; // eslint-disable-line no-secrets/no-secrets
+const FILTER_TITLE_KEY = 'common:applicationList.filterTitle';
 
 type ApproverAction =
   | 'accept'
@@ -122,7 +124,8 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
 };
 
 const useEmployerApplications = (
-  initialStatuses: EmployerApplicationStatus[]
+  initialStatuses: EmployerApplicationStatus[],
+  selectedYear: number
 ): UseEmployerApplicationsResultType => {
   const [selectedStatuses, setSelectedStatuses] =
     useState<EmployerApplicationStatus[]>(initialStatuses);
@@ -130,14 +133,16 @@ const useEmployerApplications = (
   const tableQuery = useApplicationTableQuery<EmployerApplication>(
     useEmployerApplicationsListQuery,
     selectedStatuses,
-    '-submitted_at'
+    '-submitted_at',
+    undefined,
+    selectedYear
   );
 
   const { setPage } = tableQuery;
 
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, setPage]);
+  }, [selectedStatuses, selectedYear, setPage]);
 
   return {
     ...tableQuery,
@@ -162,6 +167,10 @@ export default function PaymentApprovalList(): React.JSX.Element {
     0
   );
 
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
+
   const [pendingSelectedRows, setPendingSelectedRows] = useState<
     (string | number)[]
   >([]);
@@ -179,7 +188,7 @@ export default function PaymentApprovalList(): React.JSX.Element {
     setOrdering: setPendingOrdering,
     query: pendingQuery,
     count: pendingCount,
-  } = useEmployerApplications(APPROVER_PENDING_STATUSES);
+  } = useEmployerApplications(APPROVER_PENDING_STATUSES, selectedYear);
 
   // Tab 1: Processed
   const {
@@ -190,7 +199,7 @@ export default function PaymentApprovalList(): React.JSX.Element {
     setSelectedStatuses: setSelectedProcessedStatuses,
     query: processedQuery,
     count: processedCount,
-  } = useEmployerApplications(APPROVER_PROCESSED_STATUSES);
+  } = useEmployerApplications(APPROVER_PROCESSED_STATUSES, selectedYear);
 
   useEffect(() => {
     setProcessedSelectedRows((prev) => (prev.length > 0 ? [] : prev));
@@ -203,7 +212,7 @@ export default function PaymentApprovalList(): React.JSX.Element {
     setOrdering: setErrorsOrdering,
     query: errorsQuery,
     count: errorsCount,
-  } = useEmployerApplications(APPROVER_PAYMENT_ERROR_STATUSES);
+  } = useEmployerApplications(APPROVER_PAYMENT_ERROR_STATUSES, selectedYear);
 
   const columns = useEmployerApplicationListColumns();
 
@@ -347,6 +356,17 @@ export default function PaymentApprovalList(): React.JSX.Element {
 
         {/* Tab 0: Pending Review */}
         <TabPanel>
+          <ApplicationListTable.FilterSection
+            ariaLabelledBy="payment-approval-pending-filters-heading"
+            title={t(FILTER_TITLE_KEY)}
+          >
+            <YearFilter
+              id="payment-approval-pending-year-filter"
+              selectedYear={selectedYear}
+              onChange={setSelectedYear}
+            />
+          </ApplicationListTable.FilterSection>
+
           <$PageNotification>
             {t(BULK_APPROVE_PAGE_LIMIT_INFO_KEY)}
           </$PageNotification>
@@ -415,7 +435,7 @@ export default function PaymentApprovalList(): React.JSX.Element {
         <TabPanel>
           <ApplicationListTable.FilterSection
             ariaLabelledBy="payment-approval-processed-filters-heading"
-            title={t('common:applicationList.filterTitle')}
+            title={t(FILTER_TITLE_KEY)}
           >
             <StatusFilter
               id="payment-approval-processed-status-filter"
@@ -423,6 +443,11 @@ export default function PaymentApprovalList(): React.JSX.Element {
               selectedStatuses={selectedProcessedStatuses}
               onChange={handleProcessedStatusFilterChange}
               listType={APPLICATION_LIST_TYPES.EMPLOYER}
+            />
+            <YearFilter
+              id="payment-approval-processed-year-filter"
+              selectedYear={selectedYear}
+              onChange={setSelectedYear}
             />
           </ApplicationListTable.FilterSection>
 
@@ -462,6 +487,17 @@ export default function PaymentApprovalList(): React.JSX.Element {
 
         {/* Tab 2: Payment Errors */}
         <TabPanel>
+          <ApplicationListTable.FilterSection
+            ariaLabelledBy="payment-approval-errors-filters-heading"
+            title={t(FILTER_TITLE_KEY)}
+          >
+            <YearFilter
+              id="payment-approval-errors-year-filter"
+              selectedYear={selectedYear}
+              onChange={setSelectedYear}
+            />
+          </ApplicationListTable.FilterSection>
+
           <$PageNotification>
             {t('common:applicationList.paymentErrorsInfo')}
           </$PageNotification>
