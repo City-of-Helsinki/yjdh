@@ -1,16 +1,20 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import useCurrentUserQuery from 'kesaseteli/handler/hooks/backend/useCurrentUserQuery';
 import useUserQuery from 'kesaseteli/handler/hooks/backend/useUserQuery';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useRouter } from 'next/router';
 import React from 'react';
+import useAuth from 'shared/hooks/useAuth';
 import User from 'shared/types/user';
 
 import { UserProvider, useUser } from '../UserContext';
 
 jest.mock('kesaseteli/handler/hooks/backend/useUserQuery');
+jest.mock('kesaseteli/handler/hooks/backend/useCurrentUserQuery');
+jest.mock('shared/hooks/useAuth');
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
@@ -42,13 +46,21 @@ const createWrapper = (): {
 };
 
 const TestComponent: React.FC = () => {
-  const { user, isLoading, isFetching, isAuthenticated, clearUser } = useUser();
+  const {
+    user,
+    isLoading,
+    isFetching,
+    isAuthenticated,
+    isApprover,
+    clearUser,
+  } = useUser();
   return (
     <div>
       <span data-testid="user-name">{user?.name ?? 'none'}</span>
       <span data-testid="is-loading">{String(isLoading)}</span>
       <span data-testid="is-fetching">{String(isFetching)}</span>
       <span data-testid="is-authenticated">{String(isAuthenticated)}</span>
+      <span data-testid="is-approver">{String(isApprover)}</span>
       <button type="button" onClick={clearUser} data-testid="clear-user-btn">
         Clear User
       </button>
@@ -69,6 +81,15 @@ describe('UserContext and UserProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useCurrentUserQuery as jest.Mock).mockReturnValue({
+      data: { is_approver: true },
+      isLoading: false,
+    });
+    (useAuth as jest.Mock).mockReturnValue({
+      isAuthenticated: true,
+      isLoading: false,
+      isError: false,
+    });
   });
 
   it('throws error when useUser is used outside UserProvider', () => {
@@ -83,6 +104,11 @@ describe('UserContext and UserProvider', () => {
 
   it('renders children immediately on anonymous routes without querying user', () => {
     mockRouter.route = ROUTES.LOGIN;
+    (useAuth as jest.Mock).mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
+      isError: false,
+    });
     (useUserQuery as jest.Mock).mockReturnValue({
       data: undefined,
       isLoading: false,
@@ -102,6 +128,7 @@ describe('UserContext and UserProvider', () => {
     expect(useUserQuery).toHaveBeenCalledWith({ enabled: false });
     expect(screen.getByTestId('user-name')).toHaveTextContent('none');
     expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+    expect(screen.getByTestId('is-approver')).toHaveTextContent('false');
     expect(
       screen.queryByTestId('page-loading-spinner')
     ).not.toBeInTheDocument();
@@ -177,6 +204,7 @@ describe('UserContext and UserProvider', () => {
     expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
     expect(screen.getByTestId('is-fetching')).toHaveTextContent('false');
     expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+    expect(screen.getByTestId('is-approver')).toHaveTextContent('true');
   });
 
   it('renders children during background fetch (isFetching: true) if user data exists', () => {

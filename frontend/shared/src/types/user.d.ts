@@ -8,5 +8,6 @@ type User = {
   organization_name?: string;
   is_staff?: boolean;
   csrf_token?: string;
+  is_approver?: boolean;
 };
 export default User;

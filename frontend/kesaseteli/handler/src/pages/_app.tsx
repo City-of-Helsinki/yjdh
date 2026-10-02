@@ -2,6 +2,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'hds-design-tokens';
 
 import { QueryClientProvider } from '@tanstack/react-query';
+import AuthProvider from 'kesaseteli/handler/auth/AuthProvider';
 import Footer from 'kesaseteli/handler/components/footer/Footer';
 import Header from 'kesaseteli/handler/components/header/Header';
 import { UserProvider } from 'kesaseteli/handler/contexts/UserContext';
@@ -45,23 +46,25 @@ const App: React.FC<AppProps> = (appProps: AppProps) => {
   return (
     <BackendAPIProvider baseURL={getBackendDomain()}>
       <QueryClientProvider client={queryClient}>
-        <UserProvider>
-          <DialogContextProvider>
-            {showCookieBanner && (
-              <CookieConsent
-                requiredGroups={getRequiredHandlerCookieGroups()}
-                siteName={COOKIE_CONSENT_SITE_NAME}
-              />
-            )}
-            <HandlerGlobalStyle />
-            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
-            <Portal>
-              <DialogContext.Consumer>
-                {([state]) => <ConfirmDialog {...state} />}
-              </DialogContext.Consumer>
-            </Portal>
-          </DialogContextProvider>
-        </UserProvider>
+        <AuthProvider>
+          <UserProvider>
+            <DialogContextProvider>
+              {showCookieBanner && (
+                <CookieConsent
+                  requiredGroups={getRequiredHandlerCookieGroups()}
+                  siteName={COOKIE_CONSENT_SITE_NAME}
+                />
+              )}
+              <HandlerGlobalStyle />
+              <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+              <Portal>
+                <DialogContext.Consumer>
+                  {([state]) => <ConfirmDialog {...state} />}
+                </DialogContext.Consumer>
+              </Portal>
+            </DialogContextProvider>
+          </UserProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </BackendAPIProvider>
   );

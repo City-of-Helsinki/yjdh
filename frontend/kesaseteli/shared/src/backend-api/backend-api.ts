@@ -25,6 +25,7 @@ export const BackendEndpoint = {
   HANDLER_NOTES: '/v1/handlernotes/',
   ATTACHMENTS: '/attachments/',
   USER: '/oidc/userinfo/',
+  CURRENT_USER: '/v1/users/me/',
   YOUTH_APPLICATIONS: '/v1/youthapplications/',
   CREATE_YOUTH_APPLICATION_WITHOUT_SSN:
     '/v1/youthapplications/create-without-ssn/',
