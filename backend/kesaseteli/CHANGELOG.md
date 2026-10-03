@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.22.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.21.1...kesaseteli-backend-v1.22.0) (2026-10-03)
+
+
+### Features
+
+* **ks,backend:** Add endpoints for approver bulk actions ([3af1440](https://github.com/City-of-Helsinki/yjdh/commit/3af1440674a2ecd4283fa0f953379780590d0754))
+* **ks,backend:** Add v1/users/me endpoint which includes is_approver ([cde66a6](https://github.com/City-of-Helsinki/yjdh/commit/cde66a6dddb810d2147ffa4da4cf1702a1ce50fc))
+* **ks,handler:** Add year filter to handler application lists ([833b397](https://github.com/City-of-Helsinki/yjdh/commit/833b397bf880fe34c42d68f1d3cdc072300246c1))
+* **ks:** Update Talpa export fields and OpenAPI schema ([eeb2986](https://github.com/City-of-Helsinki/yjdh/commit/eeb2986db9668ba9db5044419a96a959fae7ba61))
+
+
+### Bug Fixes
+
+* **ks,backend:** Fix writing is_exported to EmployerApplication & test ([1a01606](https://github.com/City-of-Helsinki/yjdh/commit/1a016067152fcdeb5a8e6bab825ce1ac310d6bc8))
+
 ## [1.21.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.21.0...kesaseteli-backend-v1.21.1) (2026-09-30)
 
 
