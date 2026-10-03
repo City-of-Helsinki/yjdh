@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.8.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.7.0...kesaseteli-handler-v2.8.0) (2026-10-03)
+
+
+### Features
+
+* **ks,handler:** Add approver bulk action mutation hooks ([b5b99a0](https://github.com/City-of-Helsinki/yjdh/commit/b5b99a076dcf4dbd691bcea92f204d6a63684b42))
+* **ks,handler:** Add year filter to handler application lists ([833b397](https://github.com/City-of-Helsinki/yjdh/commit/833b397bf880fe34c42d68f1d3cdc072300246c1))
+* **ks,shared,handler:** Add AuthProvider and approver role detection ([055b19a](https://github.com/City-of-Helsinki/yjdh/commit/055b19af223bc25648f79cb4bc907152f8cc110d))
+* **ks,shared,handler:** Implement payment approval view and navigation ([c332079](https://github.com/City-of-Helsinki/yjdh/commit/c3320792f5a056765d31e75e03f84733a059fa31))
+
+
+### Bug Fixes
+
+* **ks,handler:** Active tab indicator was shown only after reload ([7a5286a](https://github.com/City-of-Helsinki/yjdh/commit/7a5286a4ff213cf6c5e2159be99bbf807bca8356))
+
 ## [2.7.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.6.0...kesaseteli-handler-v2.7.0) (2026-09-30)
 
 
