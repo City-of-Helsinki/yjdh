@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { YouthApplicationStatus } from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
@@ -79,5 +80,35 @@ describe('ApplicationListTable', () => {
       />
     );
     expect(screen.getByRole('navigation')).toBeInTheDocument();
+  });
+
+  it('calls clearSelection when a sortable column with orderingField is sorted', async () => {
+    const clearSelection = jest.fn();
+    const sortableColumns: HdsHeader[] = [
+      {
+        key: 'status',
+        headerName: 'Tila',
+        isSortable: true,
+        orderingField: 'status',
+      },
+    ];
+    renderComponent(
+      <ApplicationListTable
+        columns={sortableColumns}
+        data={mockData}
+        totalCount={2}
+        page={0}
+        setPage={jest.fn()}
+        setOrdering={jest.fn()}
+        isLoading={false}
+        clearSelection={clearSelection}
+        checkboxSelection
+        selectedRows={[]}
+        setSelectedRows={jest.fn()}
+      />
+    );
+    const sortButton = screen.getByRole('button', { name: /tila/i });
+    await userEvent.click(sortButton);
+    expect(clearSelection).toHaveBeenCalledTimes(1);
   });
 });

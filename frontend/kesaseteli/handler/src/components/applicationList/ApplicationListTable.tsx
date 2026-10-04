@@ -208,6 +208,7 @@ const ApplicationListTable: ApplicationListTableComponent =
             : backendField;
         setOrdering(ordering);
         setPage(0); // reset to first page on sort change
+        clearSelection?.();
       }
       handleSortInternal();
     };
