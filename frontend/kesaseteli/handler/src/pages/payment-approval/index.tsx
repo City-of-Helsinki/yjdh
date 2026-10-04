@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
+import ErrorPage from 'shared/components/pages/ErrorPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import styled from 'styled-components';
 
@@ -32,14 +33,41 @@ function PaymentApprovalIndex(): React.ReactElement | null {
   const isRoleLookupPending = isAuthenticated && currentUserQuery.isLoading;
   const isLoading = isUserLoading || isRoleLookupPending;
 
+  // Only redirect to 403 Forbidden if queries have completed, the user is confirmed
+  // not to be an approver, and there was no network/backend error fetching the role.
   useEffect(() => {
-    if (!isLoading && !isApprover) {
+    if (!isLoading && !isApprover && !currentUserQuery.isError) {
       void router.replace(ROUTES.FORBIDDEN);
     }
-  }, [isApprover, isLoading, router]);
+  }, [isApprover, isLoading, currentUserQuery.isError, router]);
 
-  if (isLoading || !isApprover) {
-    return null; // Return nothing while redirecting or loading
+  // Wait while authentication or role lookup is in progress
+  if (isLoading) {
+    return null;
+  }
+
+  // Handle unauthorized or failed lookup cases
+  if (!isApprover) {
+    // Show an error screen with retry if the role lookup failed (e.g. 500 or network error)
+    // instead of falsely treating it as a permission denial.
+    if (currentUserQuery.isError) {
+      return (
+        <$PageContainer>
+          <Head>
+            <title>
+              {t('common:errorPage.title')} | {t('common:appName')}
+            </title>
+          </Head>
+          <ErrorPage
+            title={t('common:errorPage.title')}
+            message={t('common:errorPage.message')}
+            retry={() => void currentUserQuery.refetch()}
+          />
+        </$PageContainer>
+      );
+    }
+    // Confirmed non-approver; render nothing while redirecting to ROUTES.FORBIDDEN
+    return null;
   }
 
   return (
