@@ -10,7 +10,6 @@ import {
   Select,
 } from 'hds-react';
 import { useHandlerPermissions } from 'kesaseteli/handler/contexts/HandlerPermissionsContext';
-import isHandlerExternalMessagesEnabled from 'kesaseteli/handler/flags/is-handler-external-messages-enabled';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import Button from 'shared/components/button/Button';
@@ -39,6 +38,9 @@ import {
 
 const NOTE_MAX_CHARS = 4096;
 const CHAR_COUNTER_WARN_THRESHOLD = 100;
+
+const hasSuspiciousString = (text: string): boolean =>
+  /\d{6}[A-Z]\d{3}[\dA-Z]/.exec(text) !== null;
 
 type Props = {
   initialNote?: HandlerNote;
@@ -84,6 +86,8 @@ const NoteForm: React.FC<Props> = ({
   // Gate by assignee permission based on target type and note type, even when editing.
   const canAddNotes = hasNotePermission(targetType, noteType);
 
+  const cancelLabel = 'common:common.cancel';
+
   if (!canAddNotes) {
     return isEditing ? null : (
       <Notification
@@ -94,51 +98,6 @@ const NoteForm: React.FC<Props> = ({
         {t('common:handlerNotes.cannotAddNoteNotAssignee')}
       </Notification>
     );
-  }
-
-  const handleSubmit = (e: React.FormEvent): void => {
-    e.preventDefault();
-    if (!content.trim()) return;
-
-    if (noteType === NoteType.EXTERNAL_MESSAGE && hasSuspiciousString(content)) {
-      setIsSuspiciousStringDialogOpen(true);
-      return;
-    }
-
-    // Show confirmation dialog for external messages
-    if (noteType === NoteType.EXTERNAL_MESSAGE) {
-      setIsConfirmDialogOpen(true);
-      return;
-    }
-
-    // For internal notes, submit directly
-    submitForm();
-  };
-
-  const getSubmitButtonText = (): string => {
-    if (noteType === NoteType.EXTERNAL_MESSAGE) {
-      return t('common:common.send');
-    }
-    if (isEditing) {
-      return t('common:handlerNotes.saveNote');
-    }
-    return t('common:handlerNotes.addNote');
-  };
-
-  const getMessageTemplates = () => {
-    let templates = null;
-    if (targetType === NoteTargetType.EMPLOYER_APPLICATION)
-      templates = Object.keys(EmployerExternalMessages).map((key) => ({
-        label: t(`common:employerExternalMessages.${EmployerExternalMessages[key]}.label`),
-        value: EmployerExternalMessages[key],
-      }));
-    else {
-      templates = Object.keys(YouthExternalMessages).map((key) => ({
-        label: t(`common:youthExternalMessages.${YouthExternalMessages[key]}.label`),
-        value: YouthExternalMessages[key],
-      }));
-    }
-    return templates;
   }
 
   const submitForm = (): void => {
@@ -172,14 +131,64 @@ const NoteForm: React.FC<Props> = ({
     });
   };
 
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+    if (!content.trim()) return;
+
+    if (noteType === NoteType.EXTERNAL_MESSAGE && hasSuspiciousString(content)) {
+      setIsSuspiciousStringDialogOpen(true);
+      return;
+    }
+
+    // Show confirmation dialog for external messages
+    if (noteType === NoteType.EXTERNAL_MESSAGE) {
+      setIsConfirmDialogOpen(true);
+      return;
+    }
+
+    // For internal notes, submit directly
+    submitForm();
+  };
+
+  const getSubmitButtonText = (): string => {
+    if (noteType === NoteType.EXTERNAL_MESSAGE) {
+      return t('common:common.send');
+    }
+    if (isEditing) {
+      return t('common:handlerNotes.saveNote');
+    }
+    return t('common:handlerNotes.addNote');
+  };
+
+  const getMessageTemplates = (): { label: string; value: string }[] =>
+    targetType === NoteTargetType.EMPLOYER_APPLICATION
+      ? Object.keys(EmployerExternalMessages).map((key) => ({
+          label: t(
+            `common:employerExternalMessages.${
+              EmployerExternalMessages[
+                key as keyof typeof EmployerExternalMessages
+              ]
+            }.label`
+          ),
+          value:
+            EmployerExternalMessages[
+              key as keyof typeof EmployerExternalMessages
+            ],
+        }))
+      : Object.keys(YouthExternalMessages).map((key) => ({
+          label: t(
+            `common:youthExternalMessages.${
+              YouthExternalMessages[key as keyof typeof YouthExternalMessages]
+            }.label`
+          ),
+          value:
+            YouthExternalMessages[key as keyof typeof YouthExternalMessages],
+        }));
+
   const handleConfirmSend = (): void => {
     setIsConfirmDialogOpen(false);
     submitForm();
   };
-
-  const hasSuspiciousString = (text: string): boolean => {
-    return /\d{6}.?\d{3}[\dA-Z]/.exec(text) !== null;
-  }
 
   const charsLeft = NOTE_MAX_CHARS - content.length;
   const isNearLimit = charsLeft <= CHAR_COUNTER_WARN_THRESHOLD;
@@ -319,7 +328,7 @@ const NoteForm: React.FC<Props> = ({
               size={ButtonSize.Small}
               onClick={onCancel}
             >
-              {t('common:common.cancel')}
+              {t(cancelLabel)}
             </Button>
           )}
           <Button
@@ -369,7 +378,7 @@ const NoteForm: React.FC<Props> = ({
             onClick={() => setIsConfirmDialogOpen(false)}
             variant={ButtonVariant.Secondary}
           >
-            {t('common:common.cancel')}
+            {t(cancelLabel)}
           </Button>
           <Button onClick={handleConfirmSend} disabled={isLoading}>
             {t('common:common.send')}
@@ -395,7 +404,7 @@ const NoteForm: React.FC<Props> = ({
             onClick={() => setIsSuspiciousStringDialogOpen(false)}
             variant={ButtonVariant.Primary}
           >
-            {t('common:common.cancel')}
+            {t(cancelLabel)}
           </Button>
         </Dialog.ActionButtons>
       </Dialog>

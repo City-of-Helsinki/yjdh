@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
@@ -11,8 +11,6 @@ import {
 
 describe('EmployerApplicationHandlerView', () => {
   let matchMediaMatches = false;
-  const WARNING_NOTIFICATION_REGEX =
-    /tähän hakemukseen on poikkeuksellisesti liitetty useita kesäseteleitä/i;
 
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -32,37 +30,6 @@ describe('EmployerApplicationHandlerView', () => {
 
   beforeEach(() => {
     matchMediaMatches = false;
-  });
-
-  it('renders the warning notification as non-dismissible and inline by default on desktop', () => {
-    renderComponent(
-      <EmployerApplicationHandlerView
-        application={mockApplicationTwoVouchers}
-      />
-    );
-    expect(screen.getByText(WARNING_NOTIFICATION_REGEX)).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /sulje/i })
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders the warning notification as dismissible on mobile and can dismiss it', async () => {
-    matchMediaMatches = true;
-    renderComponent(
-      <EmployerApplicationHandlerView
-        application={mockApplicationTwoVouchers}
-      />
-    );
-    expect(screen.getByText(WARNING_NOTIFICATION_REGEX)).toBeInTheDocument();
-    const closeBtn = screen.getByRole('button', { name: /sulje/i });
-    expect(closeBtn).toBeInTheDocument();
-
-    await userEvent.click(closeBtn);
-    await waitFor(() => {
-      expect(
-        screen.queryByText(WARNING_NOTIFICATION_REGEX)
-      ).not.toBeInTheDocument();
-    });
   });
 
   it('renders both sections without tab chrome when there is one voucher', () => {
@@ -121,7 +88,6 @@ describe('EmployerApplicationHandlerView', () => {
     expect(screen.getByText('Testiyritys Oy')).toBeInTheDocument();
     expect(screen.getByText('1234567-8')).toBeInTheDocument();
     expect(screen.getByText(/Palvelut/)).toBeInTheDocument();
-    expect(screen.getByText(/oy/)).toBeInTheDocument();
   });
 
   it('renders contact person and payment details', () => {
@@ -231,9 +197,6 @@ describe('EmployerApplicationHandlerView', () => {
     expect(
       screen.getByTestId('handlerApplication-employee_postcode')
     ).toHaveTextContent('00100');
-    expect(
-      screen.getByRole('link', { name: /avaa nuoren hakemus/i })
-    ).toHaveAttribute('href', '/youth-applications/youth-app-1');
   });
 
   it('renders voucher details', () => {

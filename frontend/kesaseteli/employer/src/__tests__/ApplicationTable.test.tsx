@@ -200,6 +200,7 @@ describe('ApplicationTable', () => {
   });
 
   it('renders unread messages count when it is greater than 0', () => {
+    // Set up the mock BEFORE renderWithTheme
     (useUnreadMessagesCountQuery as jest.Mock).mockImplementation(
       (id: string) => ({
         data: { count: id === 'app1' ? 5 : 0 },
@@ -207,7 +208,29 @@ describe('ApplicationTable', () => {
         error: null,
       })
     );
-    renderWithTheme(mockApplications);
+
+    // Manually set up the applications query mock (since we're not using renderWithTheme)
+    (useApplicationsQuery as jest.Mock).mockImplementation(
+      ({ limit, offset }: { limit: number; offset: number }) => ({
+        data: {
+          count: mockApplications.length,
+          results: mockApplications.slice(offset, offset + limit),
+        },
+        isLoading: false,
+        error: null,
+      })
+    );
+
+    renderComponent(
+      <ApplicationTable>
+        <ApplicationTable.Header>
+          Aiemmat kesäsetelihakemukset
+        </ApplicationTable.Header>
+        <ApplicationTable.FilterBar />
+        <ApplicationTable.Table />
+      </ApplicationTable>
+    );
+
     expect(screen.getByText('5')).toBeInTheDocument();
   });
 });

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
 import { Notification, StatusLabel, Tab, TabList, TabPanel } from 'hds-react';
+import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
 import { useTranslation } from 'next-i18next';
+import React, { useState } from 'react';
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
-import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import useExternalMessagesQuery from '../../hooks/backend/useExternalMessagesQuery';
 import useMarkMessagesReadMutation from '../../hooks/backend/useMarkMessagesReadMutation';
 import useUnreadMessagesCountQuery from '../../hooks/backend/useUnreadMessagesCountQuery';
@@ -71,17 +71,27 @@ const EmployerApplicationPanel: React.FC<
           <h3>{t('common:handlerApplication.messages')}</h3>
           {messages.map((message) => (
             <$Message key={message.id}>
-              <p className={'message-date'}>{convertToUIDateAndTimeFormat(message.created_at)}</p>
+              <p className="message-date">
+                {convertToUIDateAndTimeFormat(message.created_at)}
+              </p>
               {!message.seen_at && (
-                <StatusLabel type="info" style={{ marginBottom: '1rem' }}>Uusi</StatusLabel>
+                <StatusLabel type="info" style={{ marginBottom: '1rem' }}>
+                  Uusi
+                </StatusLabel>
               )}
-              <div className={'message-content'}>
-                {message.content.split('\n').map((line, index) => (
-                  <React.Fragment key={line.replace(/\s+/g, '-').concat(index.toString())}>
-                    <p className={'message-line'}>{line}</p>
-                  </React.Fragment>
-                )
-                )}
+              <div className="message-content">
+                {message.content
+                  .split('\n')
+                  .map((line: string, index: number) => (
+                    <React.Fragment
+                      key={[
+                        ...line.replace(/\s+/g, '-'),
+                        ...index.toString(),
+                      ].join('')}
+                    >
+                      <p className="message-line">{line}</p>
+                    </React.Fragment>
+                  ))}
               </div>
             </$Message>
           ))}
@@ -104,6 +114,9 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(true);
   const { data: unreadCountData } = useUnreadMessagesCountQuery(application.id);
   const { mutate: markMessagesRead } = useMarkMessagesReadMutation(application.id);
+
+  const closeLabel = 'common:common.close';
+  const bottomRight = 'bottom-right';
 
   React.useEffect(() => {
     if (unreadCountData && unreadCountData.count > 0) {
@@ -128,9 +141,9 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
           <Notification
             label="Sinulla on uusia viestejä"
             type="info"
-            position={isMobile ? 'bottom-right' : 'inline'}
+            position={isMobile ? bottomRight : 'inline'}
             dismissible={isMobile}
-            closeButtonLabelText={t('common:common.close')}
+            closeButtonLabelText={t(closeLabel)}
             onClose={() => setIsNotificationOpen(false)}
             style={{ marginBottom: '2rem' }}
           >
@@ -158,9 +171,9 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
         <Notification
           label="Sinulla on uusia viestejä"
           type="info"
-          position={isMobile ? 'bottom-right' : 'inline'}
+          position={isMobile ? bottomRight : 'inline'}
           dismissible={isMobile}
-          closeButtonLabelText={t('common:common.close')}
+          closeButtonLabelText={t(closeLabel)}
           onClose={() => setIsNotificationOpen(false)}
           style={{ marginBottom: '2rem' }}
         >
@@ -171,9 +184,9 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
         <Notification
           label={t('common:handlerApplication.multipleVouchersNotification')}
           type="info"
-          position={isMobile ? 'bottom-right' : 'inline'}
+          position={isMobile ? bottomRight : 'inline'}
           dismissible={isMobile}
-          closeButtonLabelText={t('common:common.close')}
+          closeButtonLabelText={t(closeLabel)}
           onClose={() => setIsNotificationOpen(false)}
         />
       )}

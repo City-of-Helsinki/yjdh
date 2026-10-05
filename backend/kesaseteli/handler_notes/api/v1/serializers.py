@@ -36,8 +36,6 @@ class NoteSerializer(serializers.ModelSerializer):
             "target_type",
             "target_id",
             "mark_as_additional_info_requested",
-            "seen_at",
-            "seen_by",
         ]
         read_only_fields = [
             "id",
@@ -45,6 +43,8 @@ class NoteSerializer(serializers.ModelSerializer):
             "author_name",
             "created_at",
             "modified_at",
+            "seen_at",
+            "seen_by",
         ]
 
     def _resolve_and_validate_target(self, target_type, target_id):
@@ -87,6 +87,9 @@ class NoteSerializer(serializers.ModelSerializer):
         note_type = attrs.get("note_type")
         target_type = attrs.pop("target_type", None)
         target_id = attrs.pop("target_id", None)
+        mark_additional_info_requested = attrs.pop(
+            "mark_as_additional_info_requested", None
+        )
 
         if self.instance:
             if note_type is None:
@@ -107,6 +110,18 @@ class NoteSerializer(serializers.ModelSerializer):
         if target_model_name == "attachment" and note_type == NoteType.EXTERNAL_MESSAGE:
             raise serializers.ValidationError(
                 {"note_type": _("Attachments cannot have external messages.")}
+            )
+
+        if (
+            note_type == NoteType.INTERNAL
+            and mark_additional_info_requested is not None
+        ):
+            raise serializers.ValidationError(
+                {
+                    "mark_as_additional_info_requested": _(
+                        "Cannot use attribute for internal notes."
+                    )
+                }
             )
 
         return attrs

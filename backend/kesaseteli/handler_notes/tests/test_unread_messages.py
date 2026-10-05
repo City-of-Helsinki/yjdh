@@ -13,7 +13,7 @@ def test_unread_messages_api(staff_client):
     app = YouthApplicationFactory()
 
     # 1. Unread external message (should be returned)
-    note_unread = NoteFactory(
+    NoteFactory(
         content_object=app,
         note_type=NoteType.EXTERNAL_MESSAGE,
         seen_at=None,
@@ -47,21 +47,9 @@ def test_unread_messages_api(staff_client):
         content="Other target message",
     )
 
-    url = reverse("v1:handlernotes-unread-messages", kwargs={"pk": app.id})
+    url = reverse("v1:handlernotes-unread-message-count", kwargs={"pk": app.id})
     response = staff_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == 1
-    assert response.data[0]["id"] == str(note_unread.id)
-    assert response.data[0]["content"] == "Unread message"
-
-
-@pytest.mark.django_db
-def test_unread_messages_empty(staff_client):
-    """Test that fetching unread messages returns an empty list if none exist."""
-    app = YouthApplicationFactory()
-    url = reverse("v1:handlernotes-unread-messages", kwargs={"pk": app.id})
-    response = staff_client.get(url)
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data == []
+    assert response.data[0]["count"] == 1

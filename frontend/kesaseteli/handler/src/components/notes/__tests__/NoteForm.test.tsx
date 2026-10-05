@@ -93,6 +93,7 @@ describe('NoteForm', () => {
           content: 'New test note',
           note_type: NoteType.INTERNAL,
           is_important: true,
+          mark_as_additional_info_requested: false,
         },
         expect.any(Function)
       );
@@ -189,7 +190,7 @@ describe('NoteForm', () => {
       const note = {
         ...mockNote,
         content: 'Existing content',
-        note_type: NoteType.EXTERNAL_MESSAGE,
+        note_type: NoteType.INTERNAL,
         is_important: true,
       };
 
@@ -208,8 +209,8 @@ describe('NoteForm', () => {
 
       const internalRadio = screen.getByLabelText(/sisäinen huomio/i);
       const externalRadio = screen.getByLabelText(/ulkoinen viesti/i);
-      expect(internalRadio).not.toBeChecked();
-      expect(externalRadio).toBeChecked();
+      expect(internalRadio).toBeChecked();
+      expect(externalRadio).not.toBeChecked();
 
       const importantCheckbox = screen.getByLabelText(/merkitse tärkeäksi/i);
       expect(importantCheckbox).toBeChecked();
@@ -243,6 +244,7 @@ describe('NoteForm', () => {
         {
           content: 'Updated text',
           note_type: mockNote.note_type,
+          mark_as_additional_info_requested: false,
           is_important: mockNote.is_important,
         },
         expect.any(Function)

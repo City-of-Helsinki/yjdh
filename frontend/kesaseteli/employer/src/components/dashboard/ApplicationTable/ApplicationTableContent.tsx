@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   ButtonPresetTheme,
   ButtonSize,
@@ -8,17 +7,17 @@ import {
   Pagination,
   StatusLabel,
 } from 'hds-react';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
-import styled, { DefaultTheme } from 'styled-components';
-
 import useUnreadMessagesCountQuery from 'kesaseteli/employer/hooks/backend/useUnreadMessagesCountQuery';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import Application from 'kesaseteli-shared/types/application';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
 import Button from 'shared/components/button/Button';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import styled, { DefaultTheme } from 'styled-components';
 
 import StatusTag from '../StatusTag';
 import { useApplicationTable } from './ApplicationTableContext';
