@@ -14,9 +14,6 @@ const useMarkMessagesReadMutation = (
       handleResponse<void>(
         axios.post(`${BackendEndpoint.HANDLER_NOTES}${applicationId}/mark-read/`)
       ),
-    onSuccess: () => {
-      console.log('mark messages read');
-    },
     onError: errorHandler,
   });
 };

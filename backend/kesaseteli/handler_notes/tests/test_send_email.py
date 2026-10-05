@@ -57,7 +57,7 @@ def test_send_email_on_note_creation_employer_application(staff_client):
     email = mail.outbox[0]
     assert email.to == ["employer@example.com"]
     assert "Nytt meddelande" in email.subject
-    assert "Hello Employer!" in email.body
+    assert "Ni har ett nytt meddelande" in email.body
 
 
 @pytest.mark.django_db

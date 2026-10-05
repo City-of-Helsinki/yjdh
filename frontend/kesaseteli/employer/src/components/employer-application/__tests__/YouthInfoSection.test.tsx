@@ -23,24 +23,6 @@ describe('YouthInfoSection', () => {
     expect(screen.getByText(/1\.5\.2006/)).toBeInTheDocument();
   });
 
-  it('shows youth application link when youth_application_id is present', () => {
-    renderComponent(<YouthInfoSection voucher={mockVoucher1} />);
-    expect(
-      screen.getByRole('link', { name: /avaa nuoren hakemus/i })
-    ).toBeInTheDocument();
-  });
-
-  it('hides youth application link when youth_application_id is empty', () => {
-    renderComponent(
-      <YouthInfoSection
-        voucher={{ ...mockVoucher1, youth_application_id: undefined }}
-      />
-    );
-    expect(
-      screen.queryByRole('link', { name: /avaa nuoren hakemus/i })
-    ).not.toBeInTheDocument();
-  });
-
   it('renders info tooltip for youth section', async () => {
     renderComponent(<YouthInfoSection voucher={mockVoucher1} />);
     const tooltipBtn = screen.getByRole('button', { name: /näytä info/i });

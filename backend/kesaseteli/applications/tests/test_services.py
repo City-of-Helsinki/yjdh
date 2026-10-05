@@ -73,12 +73,12 @@ def test_ensure_templates_exist(mock_reinitialize):
 
     # Verification
     # Total combinations = Types * Languages
-    # But EmailTemplateType has 4 values, Language has 3 values (fi, sv, en)
+    # But EmailTemplateType has 6 values, Language has 3 values (fi, sv, en)
     # Check enums.py for exact count.
-    # EmailTemplateType has 4 choices.
+    # EmailTemplateType has 6 choices.
     # APPLICATION_LANGUAGE_CHOICES has 3.
-    # Total = 12.
-    expected_count = 4 * 3
+    # Total = 18.
+    expected_count = 6 * 3
     assert count == expected_count
     assert EmailTemplate.objects.count() == expected_count
     assert mock_reinitialize.call_count == expected_count

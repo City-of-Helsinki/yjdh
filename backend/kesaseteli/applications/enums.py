@@ -306,7 +306,6 @@ class EmailTemplateType(models.TextChoices):
     )
     PROCESSING = "processing", _("Processing")
     YOUTH_SUMMER_VOUCHER = "youth_summer_voucher", _("Youth summer voucher")
-    EXTERNAL_MESSAGE = "external_message", _("External message")
     YOUTH_EXTERNAL_MESSAGE = "youth_external_message", _("Youth external message")
     EMPLOYER_EXTERNAL_MESSAGE = (
         "employer_external_message",

@@ -3,10 +3,9 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import Button from 'shared/components/button/Button';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
-
-import { useHandlerPermissions } from '../../contexts/HandlerPermissionsContext';
 import { Language } from 'shared/i18n/i18n';
 
+import { useHandlerPermissions } from '../../contexts/HandlerPermissionsContext';
 import useDeleteNoteMutation from '../../hooks/backend/useDeleteNoteMutation';
 import useUpdateNoteMutation from '../../hooks/backend/useUpdateNoteMutation';
 import useUser from '../../hooks/useUser';
