@@ -1,9 +1,9 @@
-import { Notification, StatusLabel, Tab, TabList, TabPanel } from 'hds-react';
-import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
-import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
+import { Notification, StatusLabel, Tab, TabList, TabPanel } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
 
+import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import useExternalMessagesQuery from '../../hooks/backend/useExternalMessagesQuery';
 import useMarkMessagesReadMutation from '../../hooks/backend/useMarkMessagesReadMutation';

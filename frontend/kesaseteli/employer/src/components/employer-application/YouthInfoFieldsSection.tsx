@@ -1,11 +1,8 @@
-import { Link } from 'hds-react';
-import { ROUTES } from 'kesaseteli-shared/constants/routes';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import styled from 'styled-components';
 
 import type { HandlerSummerVoucher } from '../../types/HandlerEmployerApplication';
 import Field, { $DescriptionList } from '../form/Field';
@@ -13,10 +10,6 @@ import Field, { $DescriptionList } from '../form/Field';
 type Props = {
   voucher: HandlerSummerVoucher;
 };
-
-const $LinkContainer = styled.div`
-  margin-top: var(--spacing-m);
-`;
 
 /**
  * Renders the youth applicant information section (name, birthdate, school,
