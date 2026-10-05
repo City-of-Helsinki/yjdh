@@ -47,7 +47,6 @@
     "react-toastify": "^9.0.4",
     "snakecase-keys": "^5.4.2",
     "styled-components": "^6.1.19",
-    "uuid": "^14.0.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {

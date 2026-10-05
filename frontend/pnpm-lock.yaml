@@ -424,9 +424,6 @@ importers:
       styled-components:
         specifier: ^6.1.19
         version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      uuid:
-        specifier: '>=11.1.1'
-        version: 14.0.0
       yup:
         specifier: ^0.32.9
         version: 0.32.11
