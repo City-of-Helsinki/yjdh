@@ -222,7 +222,6 @@ const NoteForm: React.FC<Props> = ({
               const selected = selectedOptions[0];
               if (selected) {
                 setSelectedTemplate(selected.value);
-                console.log(selected.value);
                 setContent(targetType === NoteTargetType.EMPLOYER_APPLICATION ?
                   t(
                     `common:employerExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`

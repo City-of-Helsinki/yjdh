@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { NoteTargetType } from 'kesaseteli/handler/types/note';
+import { NoteTargetType } from 'kesaseteli/handler/types/note';
 import {
+  BackendEndpoint,
   getEmployerApplicationQueryKey,
   getEmployerApplicationTimelineKey,
   getHandlerNotesQueryKey,
@@ -24,7 +25,27 @@ const invalidateNoteQueries = (
     queryClient.invalidateQueries({
       queryKey: [getEmployerApplicationTimelineKey(targetId)],
     }),
+    // Invalidate external messages query for employer applications
+    queryClient.invalidateQueries({
+      queryKey: [BackendEndpoint.HANDLER_NOTES, targetId, 'external-messages'],
+    }),
   ];
+
+  // If the target is an application itself, invalidate its application query
+  // to refresh the status displayed at the top of the page
+  if (targetType === NoteTargetType.EMPLOYER_APPLICATION) {
+    actions.push(
+      queryClient.invalidateQueries({
+        queryKey: [getEmployerApplicationQueryKey(targetId)],
+      })
+    );
+  } else if (targetType === NoteTargetType.YOUTH_APPLICATION) {
+    actions.push(
+      queryClient.invalidateQueries({
+        queryKey: [getYouthApplicationQueryKey(targetId)],
+      })
+    );
+  }
 
   if (parentApplicationId) {
     // Note: parentApplicationId is a globally unique UUID. It will only ever match either
@@ -43,6 +64,10 @@ const invalidateNoteQueries = (
       }),
       queryClient.invalidateQueries({
         queryKey: [getYouthApplicationTimelineKey(parentApplicationId)],
+      }),
+      // Invalidate external messages query for parent application too
+      queryClient.invalidateQueries({
+        queryKey: [BackendEndpoint.HANDLER_NOTES, parentApplicationId, 'external-messages'],
       })
     );
   }
