@@ -32,7 +32,6 @@ class MockContextService:
             elif template_type == EmailTemplateType.YOUTH_SUMMER_VOUCHER:
                 return MockContextService._get_youth_summer_voucher_context(language)
             elif template_type in [
-                EmailTemplateType.EXTERNAL_MESSAGE,
                 EmailTemplateType.YOUTH_EXTERNAL_MESSAGE,
                 EmailTemplateType.EMPLOYER_EXTERNAL_MESSAGE,
             ]:
