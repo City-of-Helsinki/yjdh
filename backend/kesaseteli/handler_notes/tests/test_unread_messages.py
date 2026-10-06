@@ -47,9 +47,9 @@ def test_unread_messages_api(staff_client):
         content="Other target message",
     )
 
-    url = reverse("v1:handlernotes-unread-message-count", kwargs={"pk": app.id})
+    url = reverse("v1:handlernotes-unread-messages-count", kwargs={"pk": app.id})
     response = staff_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == 1
-    assert response.data[0]["count"] == 1
+    assert response.data["count"] == 1
