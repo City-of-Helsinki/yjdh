@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, timezone
+from uuid import UUID
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
+from logger_extra.logger_context import logger_context
 from resilient_logger.models import ResilientLogEntry
 from resilient_logger.sources.resilient_log_source_entry import ResilientLogSourceEntry
 
@@ -183,6 +185,17 @@ def test_log_origin(user):
     log_entry = ResilientLogEntry.objects.first()
     document = ResilientLogSourceEntry(log_entry).get_document()
     assert document["audit_event"]["origin"] == "yjdh-test"
+
+
+@pytest.mark.django_db
+def test_log_serializes_uuid_request_id(user):
+    request_id = UUID("12345678-1234-5678-1234-567812345678")
+
+    with logger_context({"request_id": request_id}):
+        audit_logging.log(user, "", Operation.READ, user)
+
+    log_entry = ResilientLogEntry.objects.first()
+    assert log_entry.context["request_id"] == str(request_id)
 
 
 @pytest.mark.django_db

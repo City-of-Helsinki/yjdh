@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 from typing import Callable, Optional, Union
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -8,6 +9,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 from django.db.models.base import ModelBase
+from logger_extra.logger_context import get_logger_context, logger_context
 from resilient_logger.sources.resilient_log_source import (
     ResilientLogSource,
     StructuredResilientLogEntryData,
@@ -217,4 +219,9 @@ def _create_resilient_log_entry(
         extra=extra,
     )
 
-    ResilientLogSource.bulk_create_structured([entry])
+    request_id = get_logger_context().get("request_id")
+    context_overrides = (
+        {"request_id": str(request_id)} if isinstance(request_id, UUID) else {}
+    )
+    with logger_context(context_overrides):
+        ResilientLogSource.bulk_create_structured([entry])
