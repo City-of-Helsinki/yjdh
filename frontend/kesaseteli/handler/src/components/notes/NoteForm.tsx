@@ -83,6 +83,10 @@ const NoteForm: React.FC<Props> = ({
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isSuspiciousStringDialogOpen, setIsSuspiciousStringDialogOpen] = useState(false);
 
+  const shouldSubmitAdditionalInfoRequested =
+    targetType === NoteTargetType.EMPLOYER_APPLICATION &&
+    noteType === NoteType.EXTERNAL_MESSAGE;
+
   // Gate by assignee permission based on target type and note type, even when editing.
   const canAddNotes = hasNotePermission(targetType, noteType);
 
@@ -103,12 +107,18 @@ const NoteForm: React.FC<Props> = ({
   const submitForm = (): void => {
     if (noteType === NoteType.EXTERNAL_MESSAGE) setSelectedTemplate('');
 
+    const additionalInfoRequestedPayload = shouldSubmitAdditionalInfoRequested
+      ? {
+          mark_as_additional_info_requested: markAsAdditionalInfoRequested,
+        }
+      : {};
+
     const payload = isEditing
       ? ({
           content,
           note_type: noteType,
           is_important: isImportant,
-          mark_as_additional_info_requested: markAsAdditionalInfoRequested,
+          ...additionalInfoRequestedPayload,
         } as UpdateNotePayload)
       : ({
           target_type: targetType,
@@ -116,7 +126,7 @@ const NoteForm: React.FC<Props> = ({
           content,
           note_type: noteType,
           is_important: isImportant,
-          mark_as_additional_info_requested: markAsAdditionalInfoRequested,
+          ...additionalInfoRequestedPayload,
         } as CreateNotePayload);
 
     onSubmit(payload, () => {
@@ -124,6 +134,7 @@ const NoteForm: React.FC<Props> = ({
         setContent('');
         setNoteType(NoteType.INTERNAL);
         setIsImportant(false);
+        setMarkAsAdditionalInfoRequested(false);
       }
       if (isEditing && onCancel) {
         onCancel();
@@ -162,28 +173,14 @@ const NoteForm: React.FC<Props> = ({
 
   const getMessageTemplates = (): { label: string; value: string }[] =>
     targetType === NoteTargetType.EMPLOYER_APPLICATION
-      ? Object.keys(EmployerExternalMessages).map((key) => ({
-          label: t(
-            `common:employerExternalMessages.${
-              EmployerExternalMessages[
-                key as keyof typeof EmployerExternalMessages
-              ]
-            }.label`
-          ),
-          value:
-            EmployerExternalMessages[
-              key as keyof typeof EmployerExternalMessages
-            ],
-        }))
-      : Object.keys(YouthExternalMessages).map((key) => ({
-          label: t(
-            `common:youthExternalMessages.${
-              YouthExternalMessages[key as keyof typeof YouthExternalMessages]
-            }.label`
-          ),
-          value:
-            YouthExternalMessages[key as keyof typeof YouthExternalMessages],
-        }));
+      ? Object.values(EmployerExternalMessages).map((value) => ({
+        label: t(`common:employerExternalMessages.${value}.label`),
+        value,
+       }))
+      : Object.values(YouthExternalMessages).map((value) => ({
+        label: t(`common:youthExternalMessages.${value}.label`),
+        value,
+       }))
 
   const handleConfirmSend = (): void => {
     setIsConfirmDialogOpen(false);
@@ -194,16 +191,19 @@ const NoteForm: React.FC<Props> = ({
   const isNearLimit = charsLeft <= CHAR_COUNTER_WARN_THRESHOLD;
   const showExternalOptions = targetType !== NoteTargetType.ATTACHMENT;
 
-  return (<>
+  return (
+    <>
       <$FormContainer
-      onSubmit={handleSubmit}
-      noValidate
-      aria-label={
-        isEditing
-          ? t('common:handlerNotes.saveNote')
-          : t('common:handlerNotes.addNote')
-      }
-    >       {noteType === NoteType.EXTERNAL_MESSAGE ? (
+        onSubmit={handleSubmit}
+        noValidate
+        aria-label={
+          isEditing
+            ? t('common:handlerNotes.saveNote')
+            : t('common:handlerNotes.addNote')
+        }
+      >
+        {' '}
+        {noteType === NoteType.EXTERNAL_MESSAGE ? (
           <$Instructions>
             <h3>{t('common:externalMessages.instructions.label')}</h3>
             <p>{t('common:externalMessages.instructions.content')}</p>
@@ -214,14 +214,13 @@ const NoteForm: React.FC<Props> = ({
             <p>{t('common:handlerNotes.instructions.content')}</p>
           </$Instructions>
         )}
-
         {noteType === NoteType.EXTERNAL_MESSAGE && (
           <Select
             required
             texts={{
               label: t('common:externalMessages.selectTemplate'),
               language: 'fi',
-              assistive: `Hakemuksen kieli: ${applicationLanguage || 'fi'}`
+              assistive: `Hakemuksen kieli: ${applicationLanguage || 'fi'}`,
             }}
             options={getMessageTemplates()}
             value={selectedTemplate}
@@ -231,135 +230,141 @@ const NoteForm: React.FC<Props> = ({
               const selected = selectedOptions[0];
               if (selected) {
                 setSelectedTemplate(selected.value);
-                setContent(targetType === NoteTargetType.EMPLOYER_APPLICATION ?
-                  t(
-                    `common:employerExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`
-                  )
-                  :
-                  t(
-                    `common:youthExternalMessages.${selected.value}.${applicationLanguage || 'fi'}`
-                  )
+                setContent(
+                  targetType === NoteTargetType.EMPLOYER_APPLICATION
+                    ? t(
+                        `common:employerExternalMessages.${selected.value}.${
+                          applicationLanguage || 'fi'
+                        }`
+                      )
+                    : t(
+                        `common:youthExternalMessages.${selected.value}.${
+                          applicationLanguage || 'fi'
+                        }`
+                      )
                 );
                 if (selected.value === 'thankYouForInformation') {
                   setMarkAsAdditionalInfoRequested(false);
-                  } else {
+                } else {
                   setMarkAsAdditionalInfoRequested(true);
                 }
               }
             }}
           />
         )}
-      <$TextArea
-        id={isEditing ? `edit-note-${initialNote?.id}` : 'add-note-content'}
-        label={
-          isEditing
-            ? t('common:handlerNotes.editNote')
-            : t('common:handlerNotes.notePlaceholder')
-        }
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        maxLength={NOTE_MAX_CHARS}
-        required
-        rows={4}
-      />
-      <$CharCounter $isNearLimit={isNearLimit}>
-        {`${charsLeft.toLocaleString(locale)} / ${NOTE_MAX_CHARS.toLocaleString(
-          locale
-        )}`}
-      </$CharCounter>
-
-      <$Toolbar>
-        {showExternalOptions && !canAddExternalMessage && (
-          <Notification
-            type="info"
-            size={NotificationSize.Small}
-            style={{ marginTop: 'var(--spacing-s)', width: '100%' }}
-          >
-            {t('common:handlerNotes.cannotAddExternalMessageNotAssignee')}
-          </Notification>
-        )}
-        <$OptionsGroup>
-          <RadioButton
-            id={
-              isEditing
-                ? `note-type-internal-${initialNote?.id}`
-                : 'note-type-internal'
-            }
-            label={t('common:handlerNotes.noteType.internal')}
-            value={NoteType.INTERNAL}
-            checked={noteType === NoteType.INTERNAL}
-            onChange={() => setNoteType(NoteType.INTERNAL)}
-          />
-          {showExternalOptions && (
+        <$TextArea
+          id={isEditing ? `edit-note-${initialNote?.id}` : 'add-note-content'}
+          label={
+            isEditing
+              ? t('common:handlerNotes.editNote')
+              : t('common:handlerNotes.notePlaceholder')
+          }
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          maxLength={NOTE_MAX_CHARS}
+          required
+          rows={4}
+        />
+        <$CharCounter $isNearLimit={isNearLimit}>
+          {`${charsLeft.toLocaleString(
+            locale
+          )} / ${NOTE_MAX_CHARS.toLocaleString(locale)}`}
+        </$CharCounter>
+        <$Toolbar>
+          {showExternalOptions && !canAddExternalMessage && (
+            <Notification
+              type="info"
+              size={NotificationSize.Small}
+              style={{ marginTop: 'var(--spacing-s)', width: '100%' }}
+            >
+              {t('common:handlerNotes.cannotAddExternalMessageNotAssignee')}
+            </Notification>
+          )}
+          <$OptionsGroup>
             <RadioButton
               id={
                 isEditing
-                  ? `note-type-external-${initialNote?.id}`
-                  : 'note-type-external'
+                  ? `note-type-internal-${initialNote?.id}`
+                  : 'note-type-internal'
               }
-              label={t('common:handlerNotes.noteType.external_message')}
-              value={NoteType.EXTERNAL_MESSAGE}
-              checked={noteType === NoteType.EXTERNAL_MESSAGE}
-              onChange={() => setNoteType(NoteType.EXTERNAL_MESSAGE)}
-              disabled={!canAddExternalMessage}
+              label={t('common:handlerNotes.noteType.internal')}
+              value={NoteType.INTERNAL}
+              checked={noteType === NoteType.INTERNAL}
+              onChange={() => {
+                setNoteType(NoteType.INTERNAL);
+                setMarkAsAdditionalInfoRequested(false);
+              }}
             />
-          )}
-          <$Separator aria-hidden="true" />
-          <Checkbox
-            id={
-              isEditing
-                ? `note-is-important-${initialNote?.id}`
-                : 'note-is-important'
-            }
-            label={t('common:handlerNotes.isImportantLabel')}
-            checked={isImportant}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setIsImportant(e.target.checked)
-            }
-          />
-        </$OptionsGroup>
-
-
-        <$FormActions>
-          {isEditing && onCancel && (
-            <Button
-              type="button"
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Small}
-              onClick={onCancel}
-            >
-              {t(cancelLabel)}
-            </Button>
-          )}
-          <Button
-            type="submit"
-            size={ButtonSize.Small}
-            disabled={!content.trim() || isLoading}
-            isLoading={isLoading}
-            loadingText={t('common:common.saving')}
-          >
-            {getSubmitButtonText()}
-          </Button>
-        </$FormActions>
-      </$Toolbar>
-      <$Toolbar>
-        <$OptionsGroup>
-          {targetType === NoteTargetType.EMPLOYER_APPLICATION && noteType === NoteType.EXTERNAL_MESSAGE && (
-            <$CheckboxContainer>
-              <Checkbox
-                id='mark-as-additional-info-requested'
-                label={t('common:handlerNotes.additionalInfoRequested')}
-                checked={markAsAdditionalInfoRequested}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setMarkAsAdditionalInfoRequested(e.target.checked)
+            {showExternalOptions && (
+              <RadioButton
+                id={
+                  isEditing
+                    ? `note-type-external-${initialNote?.id}`
+                    : 'note-type-external'
                 }
+                label={t('common:handlerNotes.noteType.external_message')}
+                value={NoteType.EXTERNAL_MESSAGE}
+                checked={noteType === NoteType.EXTERNAL_MESSAGE}
+                onChange={() => setNoteType(NoteType.EXTERNAL_MESSAGE)}
+                disabled={!canAddExternalMessage}
               />
-            </$CheckboxContainer>
-          )}
-        </$OptionsGroup>
-      </$Toolbar>
-    </$FormContainer>
-    <Dialog
+            )}
+            <$Separator aria-hidden="true" />
+            <Checkbox
+              id={
+                isEditing
+                  ? `note-is-important-${initialNote?.id}`
+                  : 'note-is-important'
+              }
+              label={t('common:handlerNotes.isImportantLabel')}
+              checked={isImportant}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setIsImportant(e.target.checked)
+              }
+            />
+          </$OptionsGroup>
+
+          <$FormActions>
+            {isEditing && onCancel && (
+              <Button
+                type="button"
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Small}
+                onClick={onCancel}
+              >
+                {t(cancelLabel)}
+              </Button>
+            )}
+            <Button
+              type="submit"
+              size={ButtonSize.Small}
+              disabled={!content.trim() || isLoading}
+              isLoading={isLoading}
+              loadingText={t('common:common.saving')}
+            >
+              {getSubmitButtonText()}
+            </Button>
+          </$FormActions>
+        </$Toolbar>
+        <$Toolbar>
+          <$OptionsGroup>
+            {targetType === NoteTargetType.EMPLOYER_APPLICATION &&
+              noteType === NoteType.EXTERNAL_MESSAGE && (
+                <$CheckboxContainer>
+                  <Checkbox
+                    id="mark-as-additional-info-requested"
+                    label={t('common:handlerNotes.additionalInfoRequested')}
+                    checked={markAsAdditionalInfoRequested}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setMarkAsAdditionalInfoRequested(e.target.checked)
+                    }
+                  />
+                </$CheckboxContainer>
+              )}
+          </$OptionsGroup>
+        </$Toolbar>
+      </$FormContainer>
+      <Dialog
         id="external-message-confirm-dialog"
         aria-labelledby="external-message-confirm-title"
         isOpen={isConfirmDialogOpen}

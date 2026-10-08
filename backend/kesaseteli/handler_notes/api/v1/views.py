@@ -17,6 +17,10 @@ from handler_notes.models import Note
 
 LOGGER = logging.getLogger(__name__)
 
+ALLOWED_EMPLOYER_ADDITIONAL_INFO_REQUEST_STATUSES = {
+    EmployerApplicationStatus.APPLICATION_HANDLING,
+}
+
 
 class NoteModificationPermission(permissions.BasePermission):
     """
@@ -75,23 +79,29 @@ class NoteViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         note = serializer.save()
-        self._handle_additional_info_request(note, serializer.validated_data)
+        self._handle_additional_info_request(note, serializer)
 
     def perform_update(self, serializer):
         note = serializer.save()
-        self._handle_additional_info_request(note, serializer.validated_data)
+        self._handle_additional_info_request(note, serializer)
 
-    def _handle_additional_info_request(self, note, validated_data):
-        mark_as_additional_info_requested = validated_data.get(
-            "mark_as_additional_info_requested", False
+    def _handle_additional_info_request(self, note, serializer):
+        mark_as_additional_info_requested = getattr(
+            serializer, "mark_as_additional_info_requested", False
         )
-        if mark_as_additional_info_requested:
-            target = note.content_object
-            if isinstance(target, EmployerApplication):
-                target.status = (
-                    EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
-                )
-                target.save(update_fields=["status"])
+        if not mark_as_additional_info_requested:
+            return
+
+        if (
+            note.content_object.status
+            not in ALLOWED_EMPLOYER_ADDITIONAL_INFO_REQUEST_STATUSES
+        ):
+            return
+
+        target = note.content_object
+        if isinstance(target, EmployerApplication):
+            target.status = EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+            target.save(update_fields=["status"])
 
     @action(
         methods=["get"],

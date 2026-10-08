@@ -21,6 +21,10 @@ class NoteSerializer(serializers.ModelSerializer):
         write_only=True, required=False
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mark_as_additional_info_requested = False
+
     class Meta:
         model = Note
         fields = [
@@ -87,7 +91,7 @@ class NoteSerializer(serializers.ModelSerializer):
         note_type = attrs.get("note_type")
         target_type = attrs.pop("target_type", None)
         target_id = attrs.pop("target_id", None)
-        mark_additional_info_requested = attrs.pop(
+        self.mark_as_additional_info_requested = attrs.pop(
             "mark_as_additional_info_requested", None
         )
 
@@ -114,7 +118,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
         if (
             note_type == NoteType.INTERNAL
-            and mark_additional_info_requested is not None
+            and self.mark_as_additional_info_requested is not None
         ):
             raise serializers.ValidationError(
                 {
@@ -127,9 +131,6 @@ class NoteSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # Remove write-only field before creating the model instance
-        validated_data.pop("mark_as_additional_info_requested", None)
-
         request = self.context.get("request")
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
