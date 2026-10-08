@@ -8,6 +8,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from applications.api.v1.permissions import has_employer_application_permission
 from applications.enums import EmployerApplicationStatus
 from applications.models import EmployerApplication
 from common.permissions import HandlerPermission
@@ -48,6 +49,22 @@ class NoteModificationPermission(permissions.BasePermission):
                 )
             return False
         return True
+
+
+class IsEmployerOrHandler(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if HandlerPermission().has_permission(request, view):
+            return True
+
+        application_id = view.kwargs.get("pk")
+        if not application_id:
+            return False
+
+        try:
+            application = EmployerApplication.objects.get(pk=application_id)
+            return has_employer_application_permission(request, application)
+        except EmployerApplication.DoesNotExist:
+            return False
 
 
 class NoteViewSet(viewsets.ModelViewSet):
@@ -108,6 +125,7 @@ class NoteViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="unread-messages-count",
         url_name="unread-messages-count",
+        permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
     )
     def unread_messages_count(self, request, pk=None):
         count = Note.objects.filter(
@@ -123,6 +141,7 @@ class NoteViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="external-messages",
         url_name="external-messages",
+        permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
     )
     def external_messages(self, request, pk=None):
         queryset = Note.objects.filter(
@@ -137,6 +156,7 @@ class NoteViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="mark-read",
         url_name="mark-read",
+        permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
     )
     def mark_read(self, request, pk=None):
         LOGGER.debug(f"Marking external messages as read for {pk=}")
