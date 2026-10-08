@@ -185,7 +185,6 @@ describe('NoteCard', () => {
       {
         content: 'Updated note content',
         note_type: NoteType.INTERNAL,
-        mark_as_additional_info_requested: false,
         is_important: false,
       },
       expect.any(Object)

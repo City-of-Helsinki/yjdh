@@ -93,7 +93,6 @@ describe('NoteForm', () => {
           content: 'New test note',
           note_type: NoteType.INTERNAL,
           is_important: true,
-          mark_as_additional_info_requested: false,
         },
         expect.any(Function)
       );
@@ -244,7 +243,6 @@ describe('NoteForm', () => {
         {
           content: 'Updated text',
           note_type: mockNote.note_type,
-          mark_as_additional_info_requested: false,
           is_important: mockNote.is_important,
         },
         expect.any(Function)

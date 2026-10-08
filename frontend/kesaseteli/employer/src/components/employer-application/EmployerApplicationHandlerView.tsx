@@ -1,4 +1,4 @@
-import { Notification, StatusLabel, Tab, TabList, TabPanel } from 'hds-react';
+import { Notification, Tab, TabList, TabPanel } from 'hds-react';
 import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
