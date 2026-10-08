@@ -1,4 +1,4 @@
-import { Notification, StatusLabel, Tab, TabList, TabPanel } from 'hds-react';
+import { Notification, Tab, TabList, TabPanel } from 'hds-react';
 import useMediaQuery from 'kesaseteli/employer/hooks/useMediaQuery';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -67,8 +67,8 @@ const EmployerApplicationPanel: React.FC<
         <EmployerInvoicerFieldsSection application={application} />
       </$InvoicerSection>
       {messages && messages.length > 0 && (
-        <div style={{ gridArea: 'messages', marginTop: '2rem' }}>
-          <h3>{t('common:handlerApplication.messages')}</h3>
+        <div style={{ gridArea: 'messages', marginTop: '-4rem' }}>
+          <h2>{t('common:handlerApplication.messages')}</h2>
           {messages.map((message) => (
             <$Message key={message.id}>
               <p className="message-date">
@@ -81,6 +81,7 @@ const EmployerApplicationPanel: React.FC<
                     <React.Fragment
                       key={[
                         ...line.replace(/\s+/g, '-'),
+                        ['-'],
                         ...index.toString(),
                       ].join('')}
                     >
@@ -107,6 +108,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
   const [isNotificationOpen, setIsNotificationOpen] = useState(true);
+  const [isMessageNotificationOpen, setIsMessageNotificationOpen] = useState(true);
   const { data: unreadCountData } = useUnreadMessagesCountQuery(application.id);
   const { mutate: markMessagesRead } = useMarkMessagesReadMutation(application.id);
 
@@ -122,27 +124,30 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const vouchers = application.summer_vouchers;
 
   if (vouchers.length === 0) {
-    return <div data-testid="no-vouchers">-</div>;
+    return (
+      <div role="status" aria-label="No vouchers" data-testid="no-vouchers">
+        -
+      </div>
+    );
   }
-
-  const showNotification = isNotificationOpen && unreadCountData && unreadCountData.count > 0;
+  const showMessageNotification =
+    isMessageNotificationOpen && unreadCountData && unreadCountData.count > 0;
 
   if (vouchers.length === 1) {
     const voucher = vouchers[0];
 
     return (
       <>
-        {showNotification && (
+        {showMessageNotification && (
           <Notification
-            label="Sinulla on uusia viestejä"
+            label={t('common:newMessages.title')}
             type="info"
             position={isMobile ? bottomRight : 'inline'}
             dismissible={isMobile}
             closeButtonLabelText={t(closeLabel)}
-            onClose={() => setIsNotificationOpen(false)}
-            style={{ marginBottom: '2rem' }}
+            onClose={() => setIsMessageNotificationOpen(false)}
           >
-            Sinulle on uusia viestejä. Katso ne sivun alalaidasta.
+            {t('common:newMessages.text')}
           </Notification>
         )}
         <EmployerApplicationPanel application={application} voucher={voucher} />
@@ -150,29 +155,19 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
     );
   }
 
-  // NOTE: There should be multiple vouchers only in legacy cases.
-  // These will be handled as new one-to-one applications in the future.
-
-  // eslint-disable-next-line no-console
-  console.warn(
-    'Multiple vouchers for 1 employer application.',
-    'This should happen only with legacy applications.',
-    { application_id: application.id }
-  );
-
   return (
     <>
-      {showNotification && (
+      {showMessageNotification && (
         <Notification
-          label="Sinulla on uusia viestejä"
+          label={t('common:newMessages.title')}
           type="info"
           position={isMobile ? bottomRight : 'inline'}
           dismissible={isMobile}
           closeButtonLabelText={t(closeLabel)}
-          onClose={() => setIsNotificationOpen(false)}
+          onClose={() => setIsMessageNotificationOpen(false)}
           style={{ marginBottom: '2rem' }}
         >
-          Sinulle on uusia viestejä. Katso ne sivun alalaidasta.
+          {t('common:newMessages.text')}
         </Notification>
       )}
       {isNotificationOpen && vouchers.length > 1 && (

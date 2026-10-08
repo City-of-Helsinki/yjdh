@@ -1,13 +1,19 @@
 import logging
 
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
-from applications.enums import EmailTemplateType
+from applications.enums import EmailTemplateType, EmployerApplicationStatus
 from applications.models import EmployerApplication, YouthApplication
 from applications.services import EmailTemplateService
 from handler_notes.enums import NoteType
+from handler_notes.models import Note
 
 LOGGER = logging.getLogger(__name__)
+
+ALLOWED_EMPLOYER_ADDITIONAL_INFO_REQUEST_STATUSES = {
+    EmployerApplicationStatus.APPLICATION_HANDLING,
+}
 
 
 def send_external_message_email(note):
@@ -52,3 +58,39 @@ def send_external_message_email(note):
     )
 
     return success
+
+
+def _handle_additional_info_request(note, serializer, user):
+    mark_as_additional_info_requested = getattr(
+        serializer, "mark_as_additional_info_requested", False
+    )
+    if not mark_as_additional_info_requested:
+        return
+
+    target = note.content_object
+    if not isinstance(target, EmployerApplication):
+        return
+
+    target = EmployerApplication.objects.select_for_update().get(pk=target.pk)
+
+    if target.assignee_id != user.pk:
+        return
+
+    if target.status not in ALLOWED_EMPLOYER_ADDITIONAL_INFO_REQUEST_STATUSES:
+        return
+
+    target.status = EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+    target.assignee = None
+    target.save(update_fields=["status", "assignee", "modified_at"])
+
+
+def _get_employer_application_content_type():
+    return ContentType.objects.get_for_model(EmployerApplication)
+
+
+def _get_employer_application_external_messages_queryset(application_id):
+    return Note.objects.filter(
+        content_type=_get_employer_application_content_type(),
+        object_id=application_id,
+        note_type=NoteType.EXTERNAL_MESSAGE,
+    )

@@ -40,7 +40,7 @@ const NOTE_MAX_CHARS = 4096;
 const CHAR_COUNTER_WARN_THRESHOLD = 100;
 
 const hasSuspiciousString = (text: string): boolean =>
-  /\d{6}[A-Z]\d{3}[\dA-Z]/.exec(text) !== null;
+  /\d{6}[+A-Za-z-]\d{3}[\dA-Z]/.exec(text) !== null;
 
 type Props = {
   initialNote?: HandlerNote;
@@ -66,7 +66,7 @@ const NoteForm: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const locale = useLocale();
-  const { canAddExternalMessage, hasNotePermission } = useHandlerPermissions();
+  const { canAddExternalMessage, canRequestAdditionalInfo, hasNotePermission } = useHandlerPermissions();
 
   const [content, setContent] = useState(initialNote?.content || '');
   const [noteType, setNoteType] = useState<NoteType>(
@@ -349,7 +349,8 @@ const NoteForm: React.FC<Props> = ({
         <$Toolbar>
           <$OptionsGroup>
             {targetType === NoteTargetType.EMPLOYER_APPLICATION &&
-              noteType === NoteType.EXTERNAL_MESSAGE && (
+              noteType === NoteType.EXTERNAL_MESSAGE &&
+              canRequestAdditionalInfo && (
                 <$CheckboxContainer>
                   <Checkbox
                     id="mark-as-additional-info-requested"

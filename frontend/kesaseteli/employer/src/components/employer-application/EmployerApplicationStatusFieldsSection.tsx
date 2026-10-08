@@ -27,7 +27,7 @@ const EmployerApplicationStatusSection: React.FC<{
         <Field
           type="status"
           value={t(
-            `common:applicationList.employer.status.${application.status}`
+            `common:applications.statuses.${application.status}`
           )}
         />
         <Field

@@ -1,11 +1,11 @@
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from applications.enums import TimelineItemType
 from handler_notes.enums import NoteType
 from handler_notes.models import Note
-from handler_notes.services import send_external_message_email
 from handler_notes.utils import get_note_target_model
 
 
@@ -25,6 +25,9 @@ class NoteSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         self.mark_as_additional_info_requested = False
 
+        if self.instance:
+            self.fields["note_type"].read_only = True
+
     class Meta:
         model = Note
         fields = [
@@ -37,6 +40,8 @@ class NoteSerializer(serializers.ModelSerializer):
             "is_important",
             "created_at",
             "modified_at",
+            "seen_at",
+            "seen_by",
             "target_type",
             "target_id",
             "mark_as_additional_info_requested",
@@ -117,13 +122,13 @@ class NoteSerializer(serializers.ModelSerializer):
             )
 
         if (
-            note_type == NoteType.INTERNAL
-            and self.mark_as_additional_info_requested is not None
+            note_type != NoteType.EXTERNAL_MESSAGE
+            and self.mark_as_additional_info_requested
         ):
             raise serializers.ValidationError(
                 {
                     "mark_as_additional_info_requested": _(
-                        "Cannot use attribute for internal notes."
+                        "Only external messages can request additional information."
                     )
                 }
             )
@@ -135,17 +140,8 @@ class NoteSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
 
-        instance = super().create(validated_data)
-
-        if instance.note_type == NoteType.EXTERNAL_MESSAGE:
-            if not send_external_message_email(instance):
-                # NOTE: This prevents creating notes that fail to send email.
-                # To support retrying without creating another note, we should
-                # add a status field to the Note model, e.g., 'sent' or 'failed',
-                # and allow retrying for failed notes.
-                raise serializers.ValidationError(
-                    _("Failed to send external message email.")
-                )
+        with transaction.atomic():
+            instance = super().create(validated_data)
 
         return instance
 

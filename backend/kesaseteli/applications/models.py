@@ -1563,10 +1563,6 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         if app.additional_info_provided_at is not None:
             return EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
 
-        # If currently in ADDITIONAL_INFO_REQUESTED, preserve that status
-        if app.status == EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
-            return EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
-
         # Otherwise, return to SUBMITTED (the default initial status)
         return EmployerApplicationStatus.SUBMITTED
 
@@ -1633,7 +1629,6 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             # ADDITIONAL_INFORMATION_REQUESTED
             valid_statuses = [
                 EmployerApplicationStatus.APPLICATION_HANDLING,
-                EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
             ]
 
             if locked.assignee_id != user.pk or locked.status not in valid_statuses:
