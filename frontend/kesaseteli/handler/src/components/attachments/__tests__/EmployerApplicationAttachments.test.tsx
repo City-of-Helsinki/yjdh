@@ -4,10 +4,8 @@ import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render
 import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import React from 'react';
 
-import {
-  mockApplicationSingleVoucher,
-  mockVoucher1,
-} from '../../employer-application/fixtures';
+import type HandlerEmployerApplication from '../../../types/HandlerEmployerApplication';
+import type { HandlerSummerVoucher } from '../../../types/HandlerEmployerApplication';
 import EmployerApplicationAttachments from '../EmployerApplicationAttachments';
 
 const mockOpenAttachment = jest.fn();
@@ -52,6 +50,8 @@ jest.mock('shared/components/toast/show-success-toast', () => ({
 
 describe('EmployerApplicationAttachments', () => {
   const fakeObjectFactory = new FakeObjectFactory();
+  let mockVoucher1: HandlerSummerVoucher;
+  let mockApplicationSingleVoucher: HandlerEmployerApplication;
 
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -71,6 +71,14 @@ describe('EmployerApplicationAttachments', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockVoucher1 = {
+      ...fakeObjectFactory.fakeHandlerSummerVoucher(),
+      attachments: [],
+    };
+    mockApplicationSingleVoucher = {
+      ...fakeObjectFactory.fakeHandlerEmployerApplication(),
+      summer_vouchers: [mockVoucher1],
+    };
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: jest.fn().mockImplementation((query) => ({

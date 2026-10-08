@@ -1,21 +1,21 @@
 import { screen } from '@testing-library/react';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 
 import { HANDLED_EMPLOYER_APPLICATION_STATUSES } from '../../../types/application';
 import EmployerApplicationStatusSection from '../EmployerApplicationStatusFieldsSection';
-import { mockApplicationSingleVoucher } from '../fixtures';
 
 describe('EmployerApplicationStatusFieldsSection', () => {
+  const fakeObjectFactory = new FakeObjectFactory();
+
   it('renders AssignmentControls inside $AssigneeBox when application status is not handled', () => {
+    const application = fakeObjectFactory.fakeHandlerEmployerApplication({
+      status: EmployerApplicationStatus.SUBMITTED,
+    });
     renderComponent(
-      <EmployerApplicationStatusSection
-        application={{
-          ...mockApplicationSingleVoucher,
-          status: EmployerApplicationStatus.SUBMITTED,
-        }}
-      />
+      <EmployerApplicationStatusSection application={application} />
     );
 
     expect(
@@ -29,14 +29,12 @@ describe('EmployerApplicationStatusFieldsSection', () => {
   it.each(HANDLED_EMPLOYER_APPLICATION_STATUSES)(
     'omits AssignmentControls when application status is %s',
     (status) => {
+      const application = fakeObjectFactory.fakeHandlerEmployerApplication({
+        status,
+        assignee: null,
+      });
       renderComponent(
-        <EmployerApplicationStatusSection
-          application={{
-            ...mockApplicationSingleVoucher,
-            status,
-            assignee: null,
-          }}
-        />
+        <EmployerApplicationStatusSection application={application} />
       );
 
       expect(
@@ -52,13 +50,11 @@ describe('EmployerApplicationStatusFieldsSection', () => {
   );
 
   it('renders status as a StatusLabel pill', () => {
+    const application = fakeObjectFactory.fakeHandlerEmployerApplication({
+      status: EmployerApplicationStatus.SUBMITTED,
+    });
     renderComponent(
-      <EmployerApplicationStatusSection
-        application={{
-          ...mockApplicationSingleVoucher,
-          status: EmployerApplicationStatus.SUBMITTED,
-        }}
-      />
+      <EmployerApplicationStatusSection application={application} />
     );
 
     expect(screen.getByText('Uusi hakemus')).toBeInTheDocument();

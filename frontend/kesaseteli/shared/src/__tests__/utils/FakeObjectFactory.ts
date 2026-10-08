@@ -190,6 +190,47 @@ class FakeObjectFactory {
   public fakeApplications(count = faker.datatype.number(10)): Application[] {
     return generateArray(() => this.fakeApplication(), count);
   }
+
+  public fakeHandlerSummerVoucher(
+    override?: Partial<Employment> & { youth_application_id?: string }
+  ): Required<Employment> & { youth_application_id?: string } {
+    return {
+      ...this.fakeEmployment(),
+      youth_application_id: this.generateId(),
+      ...override,
+    };
+  }
+
+  public fakeHandlerEmployerApplication<
+    T = Application & {
+      is_separate_invoicer: boolean;
+      invoicer_name: string;
+      invoicer_email: string;
+      invoicer_phone_number: string;
+      created_at: string;
+    }
+  >(
+    override?: Partial<Application> & {
+      is_separate_invoicer?: boolean;
+      invoicer_name?: string;
+      invoicer_email?: string;
+      invoicer_phone_number?: string;
+      created_at?: string;
+      summer_vouchers?: unknown[];
+    }
+  ): T {
+    const app = this.fakeApplication();
+    return {
+      ...app,
+      is_separate_invoicer: false,
+      invoicer_name: faker.name.findName(),
+      invoicer_email: faker.internet.exampleEmail(),
+      invoicer_phone_number: faker.phone.phoneNumber(),
+      created_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),
+      summer_vouchers: [this.fakeHandlerSummerVoucher()],
+      ...override,
+    } as unknown as T;
+  }
 }
 
 export default FakeObjectFactory;

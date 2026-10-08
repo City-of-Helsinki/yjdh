@@ -1,13 +1,100 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import FakeObjectFactory from 'kesaseteli-shared/__tests__/utils/FakeObjectFactory';
+import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import React from 'react';
 
+import HandlerEmployerApplication, {
+  HandlerSummerVoucher,
+} from '../../../types/HandlerEmployerApplication';
 import EmployerApplicationHandlerView from '../EmployerApplicationHandlerView';
-import {
-  mockApplicationSingleVoucher,
-  mockApplicationTwoVouchers,
-} from '../fixtures';
+
+const fakeObjectFactory = new FakeObjectFactory();
+
+const mockVoucher1: HandlerSummerVoucher = {
+  ...fakeObjectFactory.fakeHandlerSummerVoucher({
+    id: 'voucher-1',
+    summer_voucher_serial_number: 'SN-001',
+    employee_name: 'Maija Meikäläinen',
+    employee_birthdate: '2006-05-01',
+    employee_school: 'Helsingin lukio',
+    employee_phone_number: '0401234567',
+    employee_home_city: 'Helsinki',
+    employee_postcode: '00100',
+    employment_postcode: '00100',
+    employment_start_date: '2024-06-01',
+    employment_end_date: '2024-06-30',
+    employment_work_hours: 60,
+    employment_salary_paid: 500,
+    employment_description: 'Siivoustehtäviä',
+    hired_without_voucher_assessment: 'yes',
+    attachments: [],
+    youth_application_id: 'youth-app-1',
+  }),
+};
+
+const mockVoucher2: HandlerSummerVoucher = {
+  ...fakeObjectFactory.fakeHandlerSummerVoucher({
+    id: 'voucher-2',
+    summer_voucher_serial_number: 'SN-002',
+    employee_name: 'Matti Meikäläinen',
+    employee_birthdate: '2005-06-15',
+    employee_school: 'Ammattikoulu',
+    employee_phone_number: '0501234567',
+    employee_home_city: 'Espoo',
+    employee_postcode: '02100',
+    employment_postcode: '00200',
+    employment_start_date: '2024-07-01',
+    employment_end_date: '2024-07-31',
+    employment_work_hours: 60,
+    employment_salary_paid: 500,
+    employment_description: 'Kahvilatyöntekijä',
+    hired_without_voucher_assessment: 'no',
+    attachments: [],
+  }),
+};
+
+const mockApplicationSingleVoucher: HandlerEmployerApplication = {
+  ...fakeObjectFactory.fakeHandlerEmployerApplication({
+    id: 'app-1',
+    status: EmployerApplicationStatus.SUBMITTED,
+    submitted_at: '2024-05-15',
+    created_at: '2024-05-10',
+    company: {
+      id: 'company-1',
+      name: 'Testiyritys Oy',
+      business_id: '1234567-8',
+      industry: 'Palvelut',
+      company_form: 'oy',
+      street_address: 'Testikatu 1',
+      postcode: '00100',
+      city: 'Helsinki',
+    },
+    contact_person_name: 'Testi Henkilö',
+    contact_person_email: 'testi@yritys.fi',
+    contact_person_phone_number: '0401112222',
+    street_address: 'Laskutuskatu 2',
+    bank_account_number: 'FI1234567890123456',
+    payee_name: '',
+    payee_address: '',
+    bank_swift_bic_code: '',
+    bank_name: '',
+    bank_address: '',
+    is_separate_invoicer: false,
+    invoicer_name: '',
+    invoicer_email: '',
+    invoicer_phone_number: '',
+    language: 'fi',
+    summer_vouchers: [mockVoucher1],
+  }),
+};
+
+const mockApplicationTwoVouchers: HandlerEmployerApplication = {
+  ...mockApplicationSingleVoucher,
+  id: 'app-2',
+  summer_vouchers: [mockVoucher1, mockVoucher2],
+};
 
 describe('EmployerApplicationHandlerView', () => {
   let matchMediaMatches = false;

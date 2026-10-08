@@ -39,6 +39,7 @@ export type HandlerPermissionsContextType = {
   canDeleteAttachments: boolean;
   canAddAttachmentComments: boolean;
   canAddExternalMessage: boolean;
+  canRequestAdditionalInfo: boolean;
   hasNotePermission: (
     targetType: NoteTargetType,
     noteType: NoteType
@@ -67,8 +68,8 @@ export const HandlerPermissionsProvider: React.FC<
 
   const value: HandlerPermissionsContextType = React.useMemo(() => {
     const canAddAttachmentComments = isAssignee;
-    const canAddExternalMessage =
-      isAssignee && isHandlerExternalMessagesEnabled();
+    const canAddExternalMessage = isHandlerExternalMessagesEnabled();
+    const canRequestAdditionalInfo = isAssignee;
 
     return {
       isAssignee,
@@ -76,6 +77,7 @@ export const HandlerPermissionsProvider: React.FC<
       canDeleteAttachments: isAssignee && !isHandled,
       canAddAttachmentComments,
       canAddExternalMessage,
+      canRequestAdditionalInfo,
       hasNotePermission: (targetType: NoteTargetType, noteType: NoteType) =>
         checkNotePermission(
           targetType,
