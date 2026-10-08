@@ -74,11 +74,6 @@ const EmployerApplicationPanel: React.FC<
               <p className="message-date">
                 {convertToUIDateAndTimeFormat(message.created_at)}
               </p>
-              {!message.seen_at && (
-                <StatusLabel type="info" style={{ marginBottom: '1rem' }}>
-                  Uusi
-                </StatusLabel>
-              )}
               <div className="message-content">
                 {message.content
                   .split('\n')
