@@ -135,7 +135,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
       <>
         {showNotification && (
           <Notification
-            label="Sinulla on uusia viestejä"
+            label={t("common:newMessages.title")}
             type="info"
             position={isMobile ? bottomRight : 'inline'}
             dismissible={isMobile}
@@ -143,7 +143,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
             onClose={() => setIsNotificationOpen(false)}
             style={{ marginBottom: '2rem' }}
           >
-            Sinulle on uusia viestejä. Katso ne sivun alalaidasta.
+            {t("common:newMessages.text")}
           </Notification>
         )}
         <EmployerApplicationPanel application={application} voucher={voucher} />
@@ -165,7 +165,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
     <>
       {showNotification && (
         <Notification
-          label="Sinulla on uusia viestejä"
+          label={t('common:newMessages.title')}
           type="info"
           position={isMobile ? bottomRight : 'inline'}
           dismissible={isMobile}
@@ -173,7 +173,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
           onClose={() => setIsNotificationOpen(false)}
           style={{ marginBottom: '2rem' }}
         >
-          Sinulle on uusia viestejä. Katso ne sivun alalaidasta.
+          {t('common:newMessages.text')}
         </Notification>
       )}
       {isNotificationOpen && vouchers.length > 1 && (

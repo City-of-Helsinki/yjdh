@@ -421,5 +421,9 @@
       "accepted": "Hakemus on hyväksytty ja kesäseteli on lähetetty sähköpostitse.",
       "rejected": "Hakemus on hylätty."
     }
+  },
+  "newMessages": {
+    "title": "Sinulla on uusia viestejä",
+    "text": "Sinulle on uusia viestejä. Katso ne sivun alalaidasta."
   }
 }

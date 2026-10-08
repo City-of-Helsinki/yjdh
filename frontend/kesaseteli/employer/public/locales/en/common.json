@@ -421,5 +421,9 @@
       "accepted": "The application has been accepted and the summer voucher has been sent via email.",
       "rejected": "The application has been rejected."
     }
+  },
+  "newMessages": {
+    "title": "You have new messages",
+    "text": "You have new messages. Please check them from the bottom of the page."
   }
 }

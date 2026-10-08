@@ -421,5 +421,9 @@
       "accepted": "Ansökan har godkänts och sommarsedeln har skickats via e-post.",
       "rejected": "Ansökan har avvisats."
     }
+  },
+  "newMessages": {
+    "title": "Du har nya meddelanden.",
+    "text": "Du har nya meddelanden. Se dem från den nedre delen av sidan."
   }
 }
