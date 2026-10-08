@@ -138,7 +138,14 @@ class NoteSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         if instance.note_type == NoteType.EXTERNAL_MESSAGE:
-            send_external_message_email(instance)
+            if not send_external_message_email(instance):
+                # NOTE: This prevents creating notes that fail to send email.
+                # To support retrying without creating another note, we should
+                # add a status field to the Note model, e.g., 'sent' or 'failed',
+                # and allow retrying for failed notes.
+                raise serializers.ValidationError(
+                    _("Failed to send external message email.")
+                )
 
         return instance
 
