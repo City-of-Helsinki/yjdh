@@ -302,6 +302,7 @@
     "pagination": "Pagination"
   },
   "handlerApplication": {
+    "messages": "Messages",
     "attachmentComments": "Comments",
     "viewAttachmentComments": "View attachment comments",
     "title": "Application details",

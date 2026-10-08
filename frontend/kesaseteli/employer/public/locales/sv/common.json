@@ -302,6 +302,7 @@
     "pagination": "Sidor"
   },
   "handlerApplication": {
+    "messages": "Meddelanden",
     "attachmentComments": "Kommentarer",
     "viewAttachmentComments": "Visa bilagans kommentarer",
     "title": "Ansökans uppgifter",

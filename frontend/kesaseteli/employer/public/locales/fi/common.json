@@ -302,6 +302,7 @@
     "pagination": "Sivut"
   },
   "handlerApplication": {
+    "messages": "Viestit",
     "attachmentComments": "Kommentit",
     "viewAttachmentComments": "Näytä liitteen kommentit",
     "title": "Hakemuksen tiedot",

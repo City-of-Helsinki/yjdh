@@ -8,7 +8,10 @@ from django.urls import reverse
 from freezegun import freeze_time
 from rest_framework import serializers, status
 
-from applications.enums import ActionType, TimelineItemType
+from applications.enums import (
+    ActionType,
+    TimelineItemType,
+)
 from common.tests.factories import (
     AttachmentFactory,
     EmployerApplicationFactory,

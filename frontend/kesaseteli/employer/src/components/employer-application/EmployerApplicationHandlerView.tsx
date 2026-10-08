@@ -81,6 +81,7 @@ const EmployerApplicationPanel: React.FC<
                     <React.Fragment
                       key={[
                         ...line.replace(/\s+/g, '-'),
+                        ['-'],
                         ...index.toString(),
                       ].join('')}
                     >

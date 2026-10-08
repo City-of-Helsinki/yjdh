@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -116,14 +117,11 @@ class NoteSerializer(serializers.ModelSerializer):
                 {"note_type": _("Attachments cannot have external messages.")}
             )
 
-        if (
-            note_type == NoteType.INTERNAL
-            and self.mark_as_additional_info_requested is not None
-        ):
+        if note_type == NoteType.INTERNAL and self.mark_as_additional_info_requested:
             raise serializers.ValidationError(
                 {
                     "mark_as_additional_info_requested": _(
-                        "Cannot use attribute for internal notes."
+                        "Internal notes cannot request additional information."
                     )
                 }
             )
@@ -135,17 +133,19 @@ class NoteSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
 
-        instance = super().create(validated_data)
-
-        if instance.note_type == NoteType.EXTERNAL_MESSAGE:
-            if not send_external_message_email(instance):
-                # NOTE: This prevents creating notes that fail to send email.
-                # To support retrying without creating another note, we should
-                # add a status field to the Note model, e.g., 'sent' or 'failed',
-                # and allow retrying for failed notes.
-                raise serializers.ValidationError(
-                    _("Failed to send external message email.")
-                )
+        with transaction.atomic():
+            instance = super().create(validated_data)
+        if (
+            instance.note_type == NoteType.EXTERNAL_MESSAGE
+            and not send_external_message_email(instance)
+        ):
+            # NOTE: This prevents creating notes that fail to send email.
+            # To support retrying without creating another note, we should
+            # add a status field to the Note model, e.g., 'sent' or 'failed',
+            # and allow retrying for failed notes.
+            raise serializers.ValidationError(
+                _("Failed to send external message email.")
+            )
 
         return instance
 

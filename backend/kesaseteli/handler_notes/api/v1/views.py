@@ -1,7 +1,9 @@
 import logging
 from datetime import timedelta
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, status, viewsets
@@ -63,7 +65,7 @@ class IsEmployerOrHandler(permissions.BasePermission):
         try:
             application = EmployerApplication.objects.get(pk=application_id)
             return has_employer_application_permission(request, application)
-        except EmployerApplication.DoesNotExist:
+        except (EmployerApplication.DoesNotExist, ValidationError):
             return False
 
 
@@ -94,13 +96,23 @@ class NoteViewSet(viewsets.ModelViewSet):
 
         return qs.order_by("-created_at")
 
+    def _get_employer_application_content_type(self):
+        return ContentType.objects.get_for_model(EmployerApplication)
+
+    def _get_employer_application_external_messages_queryset(self, application_id):
+        return Note.objects.filter(
+            content_type=self._get_employer_application_content_type(),
+            object_id=application_id,
+            note_type=NoteType.EXTERNAL_MESSAGE,
+        )
+
+    @transaction.atomic
     def perform_create(self, serializer):
         note = serializer.save()
         self._handle_additional_info_request(note, serializer)
 
     def perform_update(self, serializer):
-        note = serializer.save()
-        self._handle_additional_info_request(note, serializer)
+        serializer.save()
 
     def _handle_additional_info_request(self, note, serializer):
         mark_as_additional_info_requested = getattr(
@@ -128,11 +140,13 @@ class NoteViewSet(viewsets.ModelViewSet):
         permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
     )
     def unread_messages_count(self, request, pk=None):
-        count = Note.objects.filter(
-            object_id=pk,
-            note_type=NoteType.EXTERNAL_MESSAGE,
-            seen_at__isnull=True,
-        ).count()
+        count = (
+            self._get_employer_application_external_messages_queryset(pk)
+            .filter(
+                seen_at__isnull=True,
+            )
+            .count()
+        )
 
         return Response(status=status.HTTP_200_OK, data={"count": count})
 
@@ -144,8 +158,8 @@ class NoteViewSet(viewsets.ModelViewSet):
         permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
     )
     def external_messages(self, request, pk=None):
-        queryset = Note.objects.filter(
-            object_id=pk, note_type=NoteType.EXTERNAL_MESSAGE
+        queryset = self._get_employer_application_external_messages_queryset(
+            pk
         ).order_by("-created_at")
 
         serializer = self.get_serializer(queryset, many=True)
@@ -160,9 +174,7 @@ class NoteViewSet(viewsets.ModelViewSet):
     )
     def mark_read(self, request, pk=None):
         LOGGER.debug(f"Marking external messages as read for {pk=}")
-        Note.objects.filter(
-            object_id=pk,
-            note_type=NoteType.EXTERNAL_MESSAGE,
+        self._get_employer_application_external_messages_queryset(pk).filter(
             seen_at__isnull=True,
         ).update(seen_at=timezone.now(), seen_by=request.user)
 

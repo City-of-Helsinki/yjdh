@@ -40,7 +40,7 @@ const NOTE_MAX_CHARS = 4096;
 const CHAR_COUNTER_WARN_THRESHOLD = 100;
 
 const hasSuspiciousString = (text: string): boolean =>
-  /\d{6}[A-Z]\d{3}[\dA-Z]/.exec(text) !== null;
+  /\d{6}[+A-Za-z-]\d{3}[\dA-Z]/.exec(text) !== null;
 
 type Props = {
   initialNote?: HandlerNote;
