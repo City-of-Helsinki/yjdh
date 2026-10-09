@@ -8,7 +8,7 @@ from common.tests.factories import EmployerApplicationFactory, YouthApplicationF
 from handler_notes.enums import NoteType
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 def test_send_email_on_note_creation_youth_application(staff_client):
     """Test that email is sent automatically when a youth application note is created."""
     # Ensure templates exist in DB
@@ -33,7 +33,7 @@ def test_send_email_on_note_creation_youth_application(staff_client):
     assert "Hello Youth!" in email.body
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 def test_send_email_on_note_creation_employer_application(staff_client):
     """Test that email is sent automatically when an employer application note is created."""
     # Ensure templates exist in DB
@@ -76,3 +76,36 @@ def test_no_email_on_internal_note_creation(staff_client):
 
     assert response.status_code == status.HTTP_201_CREATED
     assert len(mail.outbox) == 0
+
+
+@pytest.mark.django_db(transaction=True)
+def test_no_email_sent_when_transaction_rolls_back(staff_client, monkeypatch):
+    """Test that email is not sent if the database transaction rolls back after note creation."""
+    EmailTemplateService.ensure_templates_exist()
+
+    app = EmployerApplicationFactory(
+        contact_person_email="employer@example.com", language="fi"
+    )
+    payload = {
+        "target_type": "employerapplication",
+        "target_id": str(app.id),
+        "content": "Hello Employer!",
+        "note_type": NoteType.EXTERNAL_MESSAGE,
+    }
+
+    url = reverse("v1:handlernotes-list")
+
+    def fail_handle(*args, **kwargs):
+        raise RuntimeError("Database error after note save")
+
+    from handler_notes.api.v1.views import NoteViewSet
+
+    monkeypatch.setattr(NoteViewSet, "_handle_additional_info_request", fail_handle)
+
+    with pytest.raises(RuntimeError):
+        staff_client.post(url, data=payload)
+
+    assert len(mail.outbox) == 0
+    from handler_notes.models import Note
+
+    assert Note.objects.count() == 0

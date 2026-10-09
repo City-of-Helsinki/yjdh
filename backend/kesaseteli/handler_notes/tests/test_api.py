@@ -303,6 +303,8 @@ def test_note_serializer_fields(staff_client, user):
         "is_important": True,
         "created_at": serializers.DateTimeField().to_representation(note.created_at),
         "modified_at": serializers.DateTimeField().to_representation(note.modified_at),
+        "seen_at": None,
+        "seen_by": None,
         "target_type": note.content_type.model,
         "target_id": str(note.object_id),
     }

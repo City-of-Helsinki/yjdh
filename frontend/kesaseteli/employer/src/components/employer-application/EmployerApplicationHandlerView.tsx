@@ -108,6 +108,7 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.m})`);
   const [isNotificationOpen, setIsNotificationOpen] = useState(true);
+  const [isMessageNotificationOpen, setIsMessageNotificationOpen] = useState(true);
   const { data: unreadCountData } = useUnreadMessagesCountQuery(application.id);
   const { mutate: markMessagesRead } = useMarkMessagesReadMutation(application.id);
 
@@ -125,25 +126,25 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
   if (vouchers.length === 0) {
     return <div data-testid="no-vouchers">-</div>;
   }
-
-  const showNotification = isNotificationOpen && unreadCountData && unreadCountData.count > 0;
+  const showMessageNotification =
+    isMessageNotificationOpen && unreadCountData && unreadCountData.count > 0;
 
   if (vouchers.length === 1) {
     const voucher = vouchers[0];
 
     return (
       <>
-        {showNotification && (
+        {showMessageNotification && (
           <Notification
-            label={t("common:newMessages.title")}
+            label={t('common:newMessages.title')}
             type="info"
             position={isMobile ? bottomRight : 'inline'}
             dismissible={isMobile}
             closeButtonLabelText={t(closeLabel)}
-            onClose={() => setIsNotificationOpen(false)}
+            onClose={() => setIsMessageNotificationOpen(false)}
             style={{ marginBottom: '2rem' }}
           >
-            {t("common:newMessages.text")}
+            {t('common:newMessages.text')}
           </Notification>
         )}
         <EmployerApplicationPanel application={application} voucher={voucher} />
@@ -151,26 +152,16 @@ const EmployerApplicationHandlerView: React.FC<Props> = ({ application }) => {
     );
   }
 
-  // NOTE: There should be multiple vouchers only in legacy cases.
-  // These will be handled as new one-to-one applications in the future.
-
-  // eslint-disable-next-line no-console
-  console.warn(
-    'Multiple vouchers for 1 employer application.',
-    'This should happen only with legacy applications.',
-    { application_id: application.id }
-  );
-
   return (
     <>
-      {showNotification && (
+      {showMessageNotification && (
         <Notification
           label={t('common:newMessages.title')}
           type="info"
           position={isMobile ? bottomRight : 'inline'}
           dismissible={isMobile}
           closeButtonLabelText={t(closeLabel)}
-          onClose={() => setIsNotificationOpen(false)}
+          onClose={() => setIsMessageNotificationOpen(false)}
           style={{ marginBottom: '2rem' }}
         >
           {t('common:newMessages.text')}

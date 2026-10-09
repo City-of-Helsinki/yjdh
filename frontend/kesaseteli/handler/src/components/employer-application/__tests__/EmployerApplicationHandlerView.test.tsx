@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
@@ -32,6 +32,7 @@ describe('EmployerApplicationHandlerView', () => {
 
   beforeEach(() => {
     matchMediaMatches = false;
+    cleanup();
   });
 
   it('renders the warning notification as non-dismissible and inline by default on desktop', () => {

@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from common.tests.factories import YouthApplicationFactory
+from common.tests.factories import EmployerApplicationFactory, YouthApplicationFactory
 from handler_notes.enums import NoteType
 from handler_notes.tests.factories import NoteFactory
 
@@ -10,7 +10,7 @@ from handler_notes.tests.factories import NoteFactory
 @pytest.mark.django_db
 def test_unread_messages_api(staff_client):
     """Test fetching unread external messages for a target."""
-    app = YouthApplicationFactory()
+    app = EmployerApplicationFactory()
 
     # 1. Unread external message (should be returned)
     NoteFactory(

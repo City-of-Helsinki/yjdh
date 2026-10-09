@@ -38,6 +38,8 @@ class NoteSerializer(serializers.ModelSerializer):
             "is_important",
             "created_at",
             "modified_at",
+            "seen_at",
+            "seen_by",
             "target_type",
             "target_id",
             "mark_as_additional_info_requested",
@@ -133,19 +135,9 @@ class NoteSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
 
-        with transaction.atomic():
-            instance = super().create(validated_data)
-        if (
-            instance.note_type == NoteType.EXTERNAL_MESSAGE
-            and not send_external_message_email(instance)
-        ):
-            # NOTE: This prevents creating notes that fail to send email.
-            # To support retrying without creating another note, we should
-            # add a status field to the Note model, e.g., 'sent' or 'failed',
-            # and allow retrying for failed notes.
-            raise serializers.ValidationError(
-                _("Failed to send external message email.")
-            )
+        instance = super().create(validated_data)
+        if instance.note_type == NoteType.EXTERNAL_MESSAGE:
+            transaction.on_commit(lambda: send_external_message_email(instance))
 
         return instance
 
