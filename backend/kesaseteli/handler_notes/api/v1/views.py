@@ -1,13 +1,28 @@
+import logging
 from datetime import timedelta
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
+from applications.api.v1.permissions import has_employer_application_permission
+from applications.enums import EmployerApplicationStatus
+from applications.models import EmployerApplication
 from common.permissions import HandlerPermission
 from handler_notes.api.v1.serializers import NoteSerializer
+from handler_notes.enums import NoteType
 from handler_notes.models import Note
+
+LOGGER = logging.getLogger(__name__)
+
+ALLOWED_EMPLOYER_ADDITIONAL_INFO_REQUEST_STATUSES = {
+    EmployerApplicationStatus.APPLICATION_HANDLING,
+}
 
 
 class NoteModificationPermission(permissions.BasePermission):
@@ -38,6 +53,22 @@ class NoteModificationPermission(permissions.BasePermission):
         return True
 
 
+class IsEmployerOrHandler(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if HandlerPermission().has_permission(request, view):
+            return True
+
+        application_id = view.kwargs.get("pk")
+        if not application_id:
+            return False
+
+        try:
+            application = EmployerApplication.objects.get(pk=application_id)
+            return has_employer_application_permission(request, application)
+        except (EmployerApplication.DoesNotExist, ValidationError):
+            return False
+
+
 class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = NoteSerializer
     permission_classes = [
@@ -64,3 +95,87 @@ class NoteViewSet(viewsets.ModelViewSet):
                 qs = qs.none()
 
         return qs.order_by("-created_at")
+
+    def _get_employer_application_content_type(self):
+        return ContentType.objects.get_for_model(EmployerApplication)
+
+    def _get_employer_application_external_messages_queryset(self, application_id):
+        return Note.objects.filter(
+            content_type=self._get_employer_application_content_type(),
+            object_id=application_id,
+            note_type=NoteType.EXTERNAL_MESSAGE,
+        )
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        note = serializer.save()
+        self._handle_additional_info_request(note, serializer)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def _handle_additional_info_request(self, note, serializer):
+        mark_as_additional_info_requested = getattr(
+            serializer, "mark_as_additional_info_requested", False
+        )
+        if not mark_as_additional_info_requested:
+            return
+
+        if (
+            note.content_object.status
+            not in ALLOWED_EMPLOYER_ADDITIONAL_INFO_REQUEST_STATUSES
+        ):
+            return
+
+        target = note.content_object
+        if isinstance(target, EmployerApplication):
+            target.status = EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+            target.save(update_fields=["status"])
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="unread-messages-count",
+        url_name="unread-messages-count",
+        permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
+    )
+    def unread_messages_count(self, request, pk=None):
+        count = (
+            self._get_employer_application_external_messages_queryset(pk)
+            .filter(
+                seen_at__isnull=True,
+            )
+            .count()
+        )
+
+        return Response(status=status.HTTP_200_OK, data={"count": count})
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="external-messages",
+        url_name="external-messages",
+        permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
+    )
+    def external_messages(self, request, pk=None):
+        queryset = self._get_employer_application_external_messages_queryset(
+            pk
+        ).order_by("-created_at")
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="mark-read",
+        url_name="mark-read",
+        permission_classes=[permissions.IsAuthenticated, IsEmployerOrHandler],
+    )
+    def mark_read(self, request, pk=None):
+        LOGGER.debug(f"Marking external messages as read for {pk=}")
+        self._get_employer_application_external_messages_queryset(pk).filter(
+            seen_at__isnull=True,
+        ).update(seen_at=timezone.now(), seen_by=request.user)
+
+        return Response(status=status.HTTP_200_OK)

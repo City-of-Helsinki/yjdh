@@ -31,6 +31,11 @@ class MockContextService:
                 return MockContextService._get_processing_context(language)
             elif template_type == EmailTemplateType.YOUTH_SUMMER_VOUCHER:
                 return MockContextService._get_youth_summer_voucher_context(language)
+            elif template_type in [
+                EmailTemplateType.YOUTH_EXTERNAL_MESSAGE,
+                EmailTemplateType.EMPLOYER_EXTERNAL_MESSAGE,
+            ]:
+                return MockContextService._get_external_message_context(language)
         return {}
 
     @staticmethod
@@ -88,6 +93,13 @@ class MockContextService:
             "min_work_compensation_with_euro_sign": (
                 voucher.min_work_compensation_with_euro_sign
             ),
+        }
+
+    @staticmethod
+    def _get_external_message_context(language):
+        return {
+            "message_content": "This is a mock external message content.",
+            "language": language,
         }
 
 

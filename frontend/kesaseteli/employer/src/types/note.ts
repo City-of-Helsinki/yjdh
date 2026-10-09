@@ -9,7 +9,6 @@ export enum NoteType {
  * Must match the lowercase model name the backend uses for ContentType lookups.
  */
 export enum NoteTargetType {
-  YOUTH_APPLICATION = 'youthapplication',
   EMPLOYER_APPLICATION = 'employerapplication',
   ATTACHMENT = 'attachment',
 }
@@ -54,11 +53,4 @@ export enum EmployerExternalMessages {
   MINIMUM_WAGE = 'minimumWage',
   TYEL_MISSING = 'tyelMissing',
   THANK_YOU_FOR_INFORMATION = 'thankYouForInformation',
-}
-
-export enum YouthExternalMessages {
-  NOT_FROM_HELSINKI = 'notFromHelsinki',
-  WRONG_AGE = "wrongAge",
-  WRONG_CLASS = "wrongClass",
-  WHICH_CLASS = "whichClass"
 }

@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
+import { Language } from 'shared/i18n/i18n';
 
 import type { HandlerNote } from '../../types/note';
 import Timeline, { TimelineSize } from '../timeline/Timeline';
@@ -10,6 +11,7 @@ import NoteCard from './NoteCard';
 type Props = {
   notes: HandlerNote[];
   parentApplicationId?: string;
+  applicationLanguage?: Language;
 };
 
 /**
@@ -25,6 +27,7 @@ type Props = {
 const NotesSectionTimeline: React.FC<Props> = ({
   notes,
   parentApplicationId,
+  applicationLanguage,
 }) => {
   const { t } = useTranslation();
   const locale = useLocale();
@@ -69,6 +72,7 @@ const NotesSectionTimeline: React.FC<Props> = ({
                 key={note.id}
                 note={note}
                 parentApplicationId={parentApplicationId}
+                applicationLanguage={applicationLanguage}
               />
             </Timeline.Item.Content>
           </Timeline.Item>

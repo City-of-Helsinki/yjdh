@@ -1559,11 +1559,16 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         """
         Determine status for the employer application when returned to handler queue
         """
-        return (
-            EmployerApplicationStatus.SUBMITTED
-            if app.additional_info_provided_at is None
-            else EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
-        )
+        # If additional info was provided, return to that status
+        if app.additional_info_provided_at is not None:
+            return EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+
+        # If currently in ADDITIONAL_INFO_REQUESTED, preserve that status
+        if app.status == EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED:
+            return EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+
+        # Otherwise, return to SUBMITTED (the default initial status)
+        return EmployerApplicationStatus.SUBMITTED
 
     @property
     def handler_queue_return_status(self) -> EmployerApplicationStatus:
@@ -1618,16 +1623,20 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         Unassign the application from the current handler user.
 
         :param user: Handler user requesting to unassign the application.
-        :raises ValueError: If the user is not the assignee or status is not
-            APPLICATION_HANDLING.
+        :raises ValueError: If the user is not the assignee or status is not valid
+            for unassignment.
         """
         with transaction.atomic():
             locked = self.lock_for_update()
 
-            if (
-                locked.assignee_id != user.pk
-                or locked.status != EmployerApplicationStatus.APPLICATION_HANDLING
-            ):
+            # Allow unassignment from APPLICATION_HANDLING or
+            # ADDITIONAL_INFORMATION_REQUESTED
+            valid_statuses = [
+                EmployerApplicationStatus.APPLICATION_HANDLING,
+                EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            ]
+
+            if locked.assignee_id != user.pk or locked.status not in valid_statuses:
                 raise ValueError(
                     f"Cannot unassign employer application with status {locked.status} "
                     f"for user {user.pk}"

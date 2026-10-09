@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ApplicationTable from 'kesaseteli/employer/components/dashboard/ApplicationTable';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
+import useUnreadMessagesCountQuery from 'kesaseteli/employer/hooks/backend/useUnreadMessagesCountQuery';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { EmployerApplicationStatus } from 'kesaseteli-shared/constants/employer-application-status';
 import Application from 'kesaseteli-shared/types/application';
@@ -10,6 +11,10 @@ import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 jest.mock('kesaseteli/employer/hooks/backend/useApplicationsQuery', () =>
   jest.fn()
+);
+jest.mock(
+  'kesaseteli/employer/hooks/backend/useUnreadMessagesCountQuery',
+  () => jest.fn()
 );
 
 const mockPush = jest.fn();
@@ -56,6 +61,12 @@ const renderWithTheme = (apps: Application[]): void => {
     })
   );
 
+  (useUnreadMessagesCountQuery as jest.Mock).mockImplementation(() => ({
+    data: { count: 0 },
+    isLoading: false,
+    error: null,
+  }));
+
   renderComponent(
     <ApplicationTable>
       <ApplicationTable.Header>
@@ -78,10 +89,11 @@ describe('ApplicationTable', () => {
     expect(screen.getByText('Kesäsetelin sarjanumero')).toBeInTheDocument();
     expect(screen.getByText('Viimeksi päivitetty')).toBeInTheDocument();
     expect(screen.getByText('Tila')).toBeInTheDocument();
-    // empty message row should span all 5 columns
+    expect(screen.getByText('Viestejä')).toBeInTheDocument();
+    // empty message row should span all 6 columns
     expect(
       screen.getByRole('cell', { name: /ei aiempia hakemuksia/i })
-    ).toHaveAttribute('colspan', '5');
+    ).toHaveAttribute('colspan', '6');
   });
 
   it('renders voucher data correctly', () => {
@@ -185,5 +197,40 @@ describe('ApplicationTable', () => {
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining('/application?id=app2')
     );
+  });
+
+  it('renders unread messages count when it is greater than 0', () => {
+    // Set up the mock BEFORE renderWithTheme
+    (useUnreadMessagesCountQuery as jest.Mock).mockImplementation(
+      (id: string) => ({
+        data: { count: id === 'app1' ? 5 : 0 },
+        isLoading: false,
+        error: null,
+      })
+    );
+
+    // Manually set up the applications query mock (since we're not using renderWithTheme)
+    (useApplicationsQuery as jest.Mock).mockImplementation(
+      ({ limit, offset }: { limit: number; offset: number }) => ({
+        data: {
+          count: mockApplications.length,
+          results: mockApplications.slice(offset, offset + limit),
+        },
+        isLoading: false,
+        error: null,
+      })
+    );
+
+    renderComponent(
+      <ApplicationTable>
+        <ApplicationTable.Header>
+          Aiemmat kesäsetelihakemukset
+        </ApplicationTable.Header>
+        <ApplicationTable.FilterBar />
+        <ApplicationTable.Table />
+      </ApplicationTable>
+    );
+
+    expect(screen.getByText('5')).toBeInTheDocument();
   });
 });

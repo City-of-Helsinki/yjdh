@@ -8,7 +8,10 @@ from django.urls import reverse
 from freezegun import freeze_time
 from rest_framework import serializers, status
 
-from applications.enums import ActionType, TimelineItemType
+from applications.enums import (
+    ActionType,
+    TimelineItemType,
+)
 from common.tests.factories import (
     AttachmentFactory,
     EmployerApplicationFactory,
@@ -300,6 +303,8 @@ def test_note_serializer_fields(staff_client, user):
         "is_important": True,
         "created_at": serializers.DateTimeField().to_representation(note.created_at),
         "modified_at": serializers.DateTimeField().to_representation(note.modified_at),
+        "seen_at": None,
+        "seen_by": None,
         "target_type": note.content_type.model,
         "target_id": str(note.object_id),
     }
