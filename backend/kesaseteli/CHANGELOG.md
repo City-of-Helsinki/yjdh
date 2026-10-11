@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.22.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.21.1...kesaseteli-backend-v1.22.0) (2026-10-11)
+
+
+### Features
+
+* **ks,backend:** Add endpoints for approver bulk actions ([3af1440](https://github.com/City-of-Helsinki/yjdh/commit/3af1440674a2ecd4283fa0f953379780590d0754))
+* **ks,backend:** Add v1/users/me endpoint which includes is_approver ([cde66a6](https://github.com/City-of-Helsinki/yjdh/commit/cde66a6dddb810d2147ffa4da4cf1702a1ce50fc))
+* **ks,handler:** Add year filter to handler application lists ([833b397](https://github.com/City-of-Helsinki/yjdh/commit/833b397bf880fe34c42d68f1d3cdc072300246c1))
+* **ks:** Update Talpa export fields and OpenAPI schema ([eeb2986](https://github.com/City-of-Helsinki/yjdh/commit/eeb2986db9668ba9db5044419a96a959fae7ba61))
+
+
+### Bug Fixes
+
+* **ks,backend:** Fix writing is_exported to EmployerApplication & test ([1a01606](https://github.com/City-of-Helsinki/yjdh/commit/1a016067152fcdeb5a8e6bab825ce1ac310d6bc8))
+
+
+### Dependencies
+
+* Bump pyjwt from 2.14.0 to 2.15.0 in /backend/kesaseteli ([5071b76](https://github.com/City-of-Helsinki/yjdh/commit/5071b76a7a940ea2c7eca95f7fa93af37f9397bc))
+* Bump virtualenv from 21.5.0 to 21.7.13 in /backend/kesaseteli ([2e77539](https://github.com/City-of-Helsinki/yjdh/commit/2e775397e76a2d4f8c38c0f0242fe15921ca6943))
+* Bump werkzeug from 3.1.8 to 3.1.9 in /backend/kesaseteli ([ed7073f](https://github.com/City-of-Helsinki/yjdh/commit/ed7073ff782e670a9ed4442f4b4eea8c7e61b3b2))
+* Upgrade resilient logger and normalize audit request IDs ([9a97d10](https://github.com/City-of-Helsinki/yjdh/commit/9a97d101f9e528c370a25fb86d91f59f7edb9ff7))
+
 ## [1.21.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.21.0...kesaseteli-backend-v1.21.1) (2026-09-30)
 
 
