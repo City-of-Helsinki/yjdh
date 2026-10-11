@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.2...kesaseteli-employer-v2.5.3) (2026-10-11)
+
+
+### Dependencies
+
+* Upgrade next.js to 16.3.3 ([115efe2](https://github.com/City-of-Helsinki/yjdh/commit/115efe2b45a73947f142268b5291a1d21f9af299))
+
 ## [2.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.1...kesaseteli-employer-v2.5.2) (2026-09-30)
 
 
