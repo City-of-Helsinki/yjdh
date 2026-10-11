@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.24.7](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.6...benefit-backend-v2.24.7) (2026-10-11)
+
+
+### Dependencies
+
+* Bump virtualenv from 21.7.9 to 21.7.13 in /backend/benefit ([1fbb7d0](https://github.com/City-of-Helsinki/yjdh/commit/1fbb7d067734a8548f3d91717d62a6b5c54228f4))
+* Bump werkzeug from 3.1.8 to 3.1.9 in /backend/benefit ([8071176](https://github.com/City-of-Helsinki/yjdh/commit/80711768336a9f95ed5ccc0a52a7e4c2a68da7f2))
+* Upgrade resilient logger and normalize audit request IDs ([9a97d10](https://github.com/City-of-Helsinki/yjdh/commit/9a97d101f9e528c370a25fb86d91f59f7edb9ff7))
+
 ## [2.24.6](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.5...benefit-backend-v2.24.6) (2026-10-01)
 
 
