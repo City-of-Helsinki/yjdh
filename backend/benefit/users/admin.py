@@ -16,5 +16,6 @@ class UserAdmin(DjangoUserAdmin):
         if obj:
             fieldsets = deepcopy(fieldsets)
             fieldsets[0][1]["fields"] += ("id", "uuid")
+            fieldsets[1][1]["fields"] += ("ad_username",)
             fieldsets[2][1]["fields"] += ("department_name", "ad_groups")
         return fieldsets
