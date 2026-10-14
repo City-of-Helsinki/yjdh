@@ -64,6 +64,7 @@ from messages.automatic_messages import (
 )
 from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
+from shared.common.tests.factories import UserFactory
 from shared.service_bus.enums import YtjOrganizationCode
 from terms.models import TermsOfServiceApproval
 
@@ -510,6 +511,26 @@ def test_applications_simple_list_as_handler(handler_api_client, received_applic
     for key in ["calculation", "handled_at"]:
         # handler-only fields must still be found
         assert key in response.data[0]
+
+
+@pytest.mark.django_db
+def test_applications_simple_list_as_handler_with_non_staff_assigned_handler(
+    handler_api_client, received_application
+):
+    received_application.handler = UserFactory(is_staff=False)
+    received_application.save()
+
+    with mock.patch(
+        "shared.oidc.utils.request_organization_roles"
+    ) as mock_request_organization_roles:
+        response = handler_api_client.get(
+            reverse("v1:handler-application-simplified-application-list")
+        )
+
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert response.data[0]["handler"]["terms_of_service_approval_needed"] is False
+    mock_request_organization_roles.assert_not_called()
 
 
 @pytest.mark.django_db

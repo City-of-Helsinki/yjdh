@@ -79,10 +79,15 @@ class UserSerializer(serializers.ModelSerializer):
     )
 
     def is_terms_of_service_approval_needed(self, obj):
-        if settings.NEXT_PUBLIC_MOCK_FLAG or (
-            hasattr(obj, "is_handler") and obj.is_handler()
+        request = self.context.get("request")
+        requester = getattr(request, "user", None)
+        if (
+            settings.NEXT_PUBLIC_MOCK_FLAG
+            or (hasattr(obj, "is_handler") and obj.is_handler())
+            # Handlers log in via ADFS, so their sessions lack Suomi.fi eAuth tokens
+            or (hasattr(requester, "is_handler") and requester.is_handler())
         ):
             return False
         return TermsOfServiceApproval.terms_approval_needed(
-            obj, get_company_from_request(self.context.get("request"))
+            obj, get_company_from_request(request)
         )
