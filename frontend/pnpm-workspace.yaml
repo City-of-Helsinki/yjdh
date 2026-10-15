@@ -11,6 +11,16 @@ minimumReleaseAge: 10080
 # the release-age gate so the pnpm audit passes. Dev-only transitive via ajv.
 minimumReleaseAgeExclude:
   - 'fast-uri@4.1.2'
+  - '@next/env@16.4.1'
+  - '@next/swc-darwin-arm64@16.4.1'
+  - '@next/swc-darwin-x64@16.4.1'
+  - '@next/swc-linux-arm64-gnu@16.4.1'
+  - '@next/swc-linux-arm64-musl@16.4.1'
+  - '@next/swc-linux-x64-gnu@16.4.1'
+  - '@next/swc-linux-x64-musl@16.4.1'
+  - '@next/swc-win32-arm64-msvc@16.4.1'
+  - '@next/swc-win32-x64-msvc@16.4.1'
+  - next@16.4.1
 
 # Don't run the deps status check before `pnpm <script>`. In the dev Docker
 # container there is no TTY to confirm purging node_modules, which otherwise
