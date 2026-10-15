@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.24.8](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.7...benefit-backend-v2.24.8) (2026-10-15)
+
+
+### Bug Fixes
+
+* Skip eauth lookup in tos check for handler requests ([ddf37f7](https://github.com/City-of-Helsinki/yjdh/commit/ddf37f78310d8233b203179af6217368f796a322))
+
 ## [2.24.7](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.6...benefit-backend-v2.24.7) (2026-10-13)
 
 
