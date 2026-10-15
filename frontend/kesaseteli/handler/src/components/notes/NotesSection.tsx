@@ -1,12 +1,13 @@
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
+import { Language } from 'shared/i18n/i18n';
 
 import useCreateNoteMutation from '../../hooks/backend/useCreateNoteMutation';
 import useHandlerNotesQuery from '../../hooks/backend/useHandlerNotesQuery';
 import { CreateNotePayload, NoteTargetType, NoteType } from '../../types/note';
 import NoteForm from './NoteForm';
-import { $Instructions, $NotesContainer } from './NotesSection.sc';
+import { $NotesContainer } from './NotesSection.sc';
 import NotesSectionTimeline from './NotesSectionTimeline';
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
   targetType: NoteTargetType;
   parentApplicationId?: string;
   showTimeline?: boolean;
+  applicationLanguage?: Language;
 };
 
 const NotesSection: React.FC<Props> = ({
@@ -21,6 +23,7 @@ const NotesSection: React.FC<Props> = ({
   targetType,
   parentApplicationId,
   showTimeline,
+  applicationLanguage,
 }) => {
   const { t } = useTranslation();
 
@@ -37,10 +40,6 @@ const NotesSection: React.FC<Props> = ({
 
   return (
     <$NotesContainer>
-      <$Instructions>
-        <h3>{t('common:handlerNotes.instructions.label')}</h3>
-        <p>{t('common:handlerNotes.instructions.content')}</p>
-      </$Instructions>
       {targetId && (
         <NoteForm
           targetType={targetType}
@@ -64,6 +63,7 @@ const NotesSection: React.FC<Props> = ({
         <NotesSectionTimeline
           notes={notes}
           parentApplicationId={parentApplicationId}
+          applicationLanguage={applicationLanguage}
         />
       )}
     </$NotesContainer>

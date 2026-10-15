@@ -306,6 +306,11 @@ class EmailTemplateType(models.TextChoices):
     )
     PROCESSING = "processing", _("Processing")
     YOUTH_SUMMER_VOUCHER = "youth_summer_voucher", _("Youth summer voucher")
+    YOUTH_EXTERNAL_MESSAGE = "youth_external_message", _("Youth external message")
+    EMPLOYER_EXTERNAL_MESSAGE = (
+        "employer_external_message",
+        _("Employer external message"),
+    )
 
 
 class TimelineItemType(models.TextChoices):

@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import Button from 'shared/components/button/Button';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
+import { Language } from 'shared/i18n/i18n';
 
 import { useHandlerPermissions } from '../../contexts/HandlerPermissionsContext';
 import useDeleteNoteMutation from '../../hooks/backend/useDeleteNoteMutation';
@@ -21,11 +22,16 @@ import NoteForm from './NoteForm';
 type Props = {
   note: HandlerNote;
   parentApplicationId?: string;
+  applicationLanguage?: Language;
 };
 
 const modifiableForTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
+const NoteCard: React.FC<Props> = ({
+  note,
+  parentApplicationId,
+  applicationLanguage,
+}) => {
   const { t } = useTranslation();
   const { user } = useUser();
   const { hasNotePermission } = useHandlerPermissions();
@@ -109,6 +115,7 @@ const NoteCard: React.FC<Props> = ({ note, parentApplicationId }) => {
             })
           }
           onCancel={() => setIsEditing(false)}
+          applicationLanguage={applicationLanguage}
         />
       ) : (
         <>

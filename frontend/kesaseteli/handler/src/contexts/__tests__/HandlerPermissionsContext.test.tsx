@@ -47,7 +47,7 @@ describe('HandlerPermissionsContext', () => {
       (isHandlerExternalMessagesEnabled as jest.Mock).mockReturnValue(true);
     });
 
-    it('all permissions are false', () => {
+    it('all permissions are false except canAddExternalMessages', () => {
       const { result } = renderHook(() => useHandlerPermissions(), {
         wrapper: getWrapper({
           applicationType: APPLICATION_LIST_TYPES.YOUTH,
@@ -61,7 +61,8 @@ describe('HandlerPermissionsContext', () => {
         canUploadAttachments: false,
         canDeleteAttachments: false,
         canAddAttachmentComments: false,
-        canAddExternalMessage: false,
+        canAddExternalMessage: true,
+        canRequestAdditionalInfo: false,
         hasNotePermission: expect.any(Function),
       });
     });
@@ -88,6 +89,7 @@ describe('HandlerPermissionsContext', () => {
         canDeleteAttachments: true, // not handled
         canAddAttachmentComments: true,
         canAddExternalMessage: true, // feature flag is true
+        canRequestAdditionalInfo: true,
         hasNotePermission: expect.any(Function),
       });
     });

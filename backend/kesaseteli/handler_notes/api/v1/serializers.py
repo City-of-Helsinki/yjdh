@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -16,6 +17,16 @@ class NoteSerializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
     target_type = serializers.CharField(required=False)
     target_id = serializers.UUIDField(required=False)
+    mark_as_additional_info_requested = serializers.BooleanField(
+        write_only=True, required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mark_as_additional_info_requested = False
+
+        if self.instance:
+            self.fields["note_type"].read_only = True
 
     class Meta:
         model = Note
@@ -29,8 +40,11 @@ class NoteSerializer(serializers.ModelSerializer):
             "is_important",
             "created_at",
             "modified_at",
+            "seen_at",
+            "seen_by",
             "target_type",
             "target_id",
+            "mark_as_additional_info_requested",
         ]
         read_only_fields = [
             "id",
@@ -38,6 +52,8 @@ class NoteSerializer(serializers.ModelSerializer):
             "author_name",
             "created_at",
             "modified_at",
+            "seen_at",
+            "seen_by",
         ]
 
     def _resolve_and_validate_target(self, target_type, target_id):
@@ -80,6 +96,9 @@ class NoteSerializer(serializers.ModelSerializer):
         note_type = attrs.get("note_type")
         target_type = attrs.pop("target_type", None)
         target_id = attrs.pop("target_id", None)
+        self.mark_as_additional_info_requested = attrs.pop(
+            "mark_as_additional_info_requested", None
+        )
 
         if self.instance:
             if note_type is None:
@@ -102,6 +121,18 @@ class NoteSerializer(serializers.ModelSerializer):
                 {"note_type": _("Attachments cannot have external messages.")}
             )
 
+        if (
+            note_type != NoteType.EXTERNAL_MESSAGE
+            and self.mark_as_additional_info_requested
+        ):
+            raise serializers.ValidationError(
+                {
+                    "mark_as_additional_info_requested": _(
+                        "Only external messages can request additional information."
+                    )
+                }
+            )
+
         return attrs
 
     def create(self, validated_data):
@@ -109,7 +140,10 @@ class NoteSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data["author"] = request.user
 
-        return super().create(validated_data)
+        with transaction.atomic():
+            instance = super().create(validated_data)
+
+        return instance
 
     def get_author_name(self, obj) -> str:
         if obj.author:

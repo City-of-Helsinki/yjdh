@@ -72,11 +72,7 @@ const EmployerVoucherFieldsSection: React.FC<Props> = ({ voucher }) => {
                   // eslint-disable-next-line no-secrets/no-secrets
                   `common:handlerApplication.hired_without_voucher_assessment_${voucher.hired_without_voucher_assessment}`
                 )
-              : t(
-                  // eslint-disable-next-line no-secrets/no-secrets
-                  'common:handlerApplication.hired_without_voucher_assessment_',
-                  '-'
-                )
+              : '-'
           }
         />
       </$DescriptionList>

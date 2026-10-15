@@ -146,8 +146,13 @@ describe('NotesSection', () => {
     const externalRadio = screen.getByLabelText(/ulkoinen viesti/i);
     await userEvent.click(externalRadio);
 
-    const submitBtn = screen.getByRole('button', { name: /lisää huomio/i });
+    const submitBtn = screen.getByRole('button', { name: /lähetä/i });
     await userEvent.click(submitBtn);
+
+    // Confirm the external message in the dialog
+    // Use getAllByRole to get all "lähetä" buttons, the second one is in the dialog
+    const sendButtons = screen.getAllByRole('button', { name: /lähetä/i });
+    await userEvent.click(sendButtons[1]);
 
     expect(mockMutate).toHaveBeenCalledWith(
       expect.objectContaining({

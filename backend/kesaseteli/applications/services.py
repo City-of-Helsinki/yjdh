@@ -417,10 +417,7 @@ class EmailTemplateService:
         try:
             template = EmailTemplate.objects.get(type=template_type, language=language)
         except EmailTemplate.DoesNotExist:
-            LOGGER.error(
-                f"EmailTemplate not found for type {template_type} and "
-                f"language {language}"
-            )
+            LOGGER.error("EmailTemplate not found.")
             return False
 
         django_context = Context(context)

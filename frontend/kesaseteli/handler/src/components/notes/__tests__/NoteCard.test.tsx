@@ -199,32 +199,6 @@ describe('NoteCard', () => {
     );
   });
 
-  it('shows success toast when editing an external message succeeds', async () => {
-    const externalNote = {
-      ...mockNote,
-      note_type: NoteType.EXTERNAL_MESSAGE,
-    };
-    renderComponent(<NoteCard note={externalNote} />);
-
-    await userEvent.click(screen.getByRole('button', { name: /muokkaa/i }));
-
-    const textArea = screen.getByRole('textbox', { name: /muokkaa/i });
-    await userEvent.clear(textArea);
-    await userEvent.type(textArea, 'Updated message content');
-
-    await userEvent.click(
-      screen.getByRole('button', { name: /tallenna huomio/i })
-    );
-
-    const updateOptions = mockMutateUpdate.mock.calls[0][1];
-    updateOptions.onSuccess();
-
-    expect(mockShowSuccessToast).toHaveBeenCalledWith(
-      'Viestin tallentaminen onnistui',
-      ''
-    );
-  });
-
   it('renders delete dialog and confirms deletion', async () => {
     renderComponent(<NoteCard note={mockNote} />);
 
