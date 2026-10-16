@@ -501,7 +501,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       dompurify:
-        specifier: ^3.4.13
+        specifier: ^3.4.16
         version: 3.4.16
       dotenv:
         specifier: ^16.0.0
