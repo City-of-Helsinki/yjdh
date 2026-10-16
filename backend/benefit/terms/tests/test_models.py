@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.enums import TermsType
-from terms.models import Terms
+from terms.models import Terms, TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsFactory
 
@@ -96,3 +96,11 @@ def test_current_terms(applicant_terms):
     assert (
         Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS) == applicant_terms
     )
+
+
+@pytest.mark.django_db
+def test_terms_of_service_approval_needed_without_company(
+    settings, user, terms_of_service
+):
+    settings.DUMMY_COMPANY_FORM_CODE = 16
+    assert TermsOfServiceApproval.terms_approval_needed(user, None) is True

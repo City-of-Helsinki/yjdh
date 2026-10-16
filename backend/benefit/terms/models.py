@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 
 from applications.enums import ApplicationOrigin
 from applications.models import Application
-from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import get_dummy_company_data
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
@@ -309,7 +308,7 @@ class TermsOfServiceApproval(AbstractTermsApproval):
                     del dummy_data["id"]
                     dummy_company = Company(**dummy_data)
                     dummy_company.save()
-                company = CompanySerializer(dummy_company).data
+                company = dummy_company
             else:
                 raise ValueError("valid company needed")
 
