@@ -970,7 +970,9 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         ).distinct()
         return Response(
             HandlerApplicationListSerializer(
-                applications_with_unread_messages, many=True
+                applications_with_unread_messages,
+                many=True,
+                context=self.get_serializer_context(),
             ).data,
         )
 

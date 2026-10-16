@@ -2894,6 +2894,27 @@ def test_applications_with_unread_messages_non_staff_handler(
 
 
 @pytest.mark.django_db
+def test_applications_with_unread_messages_passes_request_to_serializer(
+    handler_api_client, application, terms_of_service, bf_user
+):
+    bf_user.is_staff = False
+    bf_user.save()
+    application.handler = bf_user
+    application.save()
+    MessageFactory(
+        application=application,
+        message_type=MessageType.APPLICANT_MESSAGE,
+        content="Hello",
+    )
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-with-unread-messages"),
+    )
+    assert response.status_code == 200
+    assert response.data[0]["handler"]["terms_of_service_approval_needed"] is False
+
+
+@pytest.mark.django_db
 @pytest.mark.freeze_time("2021-06-04")
 def test_require_additional_information(handler_api_client, application, mailoutbox):
     application.status = ApplicationStatus.HANDLING
