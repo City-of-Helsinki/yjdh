@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.2...kesaseteli-employer-v2.5.3) (2026-10-20)
+
+
+### Dependencies
+
+* Next 16.4.1 critical patch Refs: RATY-401 ([1631241](https://github.com/City-of-Helsinki/yjdh/commit/163124197c5fd15ca8c263187528297705568c68))
+* Upgrade next.js to 16.3.3 ([115efe2](https://github.com/City-of-Helsinki/yjdh/commit/115efe2b45a73947f142268b5291a1d21f9af299))
+
 ## [2.5.2](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.1...kesaseteli-employer-v2.5.2) (2026-09-30)
 
 
