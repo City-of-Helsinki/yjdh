@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.24.9](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.8...benefit-backend-v2.24.9) (2026-10-20)
+
+
+### Bug Fixes
+
+* Pass request context in unread messages endpoint ([965ffa9](https://github.com/City-of-Helsinki/yjdh/commit/965ffa96fcdf3dbb5f85b02daf97ba714cdd8a3c))
+* Use company instance in terms approval check ([edbaa15](https://github.com/City-of-Helsinki/yjdh/commit/edbaa159c01359c4eead05bdaf22efc612e05c01))
+
 ## [2.24.8](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.7...benefit-backend-v2.24.8) (2026-10-15)
 
 

@@ -1,6 +1,6 @@
 [project]
 name = "benefit-backend"
-version = "2.24.8"
+version = "2.24.9"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "yjdh-backend-shared",
