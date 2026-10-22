@@ -8,7 +8,7 @@ USER root
 RUN microdnf update -y && microdnf install -y ca-certificates gzip && microdnf clean all
 
 # Install pnpm
-RUN npm install -g pnpm@11.18.0
+RUN npm install -g pnpm@11.28.5
 
 # =============================
 FROM distbase AS appbase
