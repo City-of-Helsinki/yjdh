@@ -8,7 +8,7 @@ ARG UWSGI_COMMON_REF=main
 USER root
 WORKDIR /app
 
-COPY --from=ghcr.io/astral-sh/uv:0.12.13@sha256:b485bd65cc2cf1c9a93b3554012c9c3778cf7b1b5fd3d3096ce9e1226c97e1e6 /uv /uvx /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.5@sha256:32a7bb39b496babbd997b0a39a4d66c126bdaf5661b302bf6f06abda8deca6ff /uv /uvx /usr/local/bin/
 
 ENV UV_PROJECT_ENVIRONMENT=/opt/app-root \
     UV_COMPILE_BYTECODE=1 \

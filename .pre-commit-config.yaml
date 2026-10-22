@@ -27,7 +27,7 @@ repos:
           - "@commitlint/cli@21.2.2"
           - "@commitlint/config-conventional@21.2.2"
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.12.13
+    rev: 0.13.5
     hooks:
       - id: uv-lock
         name: uv-lock (benefit-backend)
