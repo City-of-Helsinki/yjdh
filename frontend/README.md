@@ -29,7 +29,7 @@ Project is automatically deployed to testing environment when merging a PR to ma
 ## Requirements
 
 - Node v24 (LTS) (match with dockerfile: registry.access.redhat.com/ubi9/nodejs-24)
-- pnpm 11.18.0
+- pnpm 11.28.5
 - Git
 - Docker
 
