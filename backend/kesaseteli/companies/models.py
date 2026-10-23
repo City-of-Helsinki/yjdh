@@ -46,3 +46,16 @@ class Company(UUIDModel, TimeStampedModel):
 
     def __str__(self):
         return f"{self.name} ({self.business_id})"
+
+
+class Office(UUIDModel, TimeStampedModel):
+    name = models.CharField(max_length=50, verbose_name=_("name"))
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="offices",
+        verbose_name=_("company"),
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.company})"

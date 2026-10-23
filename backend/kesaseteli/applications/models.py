@@ -1420,6 +1420,12 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         related_name="employer_applications",
         verbose_name=_("company"),
     )
+    office = models.CharField(max_length=50,
+                              blank=True,
+                              verbose_name=_("office"))
+    cost_center = models.CharField(max_length=50,
+                                   blank=True,
+                                   verbose_name=_("cost center"))
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

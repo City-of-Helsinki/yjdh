@@ -706,6 +706,8 @@ class EmployerApplicationSerializer(
             "bank_name",
             "bank_address",
             "company",
+            "office",
+            "cost_center",
             "user",
             "summer_vouchers",
             "language",

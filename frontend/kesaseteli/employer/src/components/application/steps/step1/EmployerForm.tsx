@@ -47,6 +47,7 @@ const EmployerForm: React.FC = () => {
         <TextInput
           id="contact_person_name"
           validation={{ required: true, maxLength: 256 }}
+          autoComplete="name"
         />
         <TextInput
           id="contact_person_email"
@@ -55,10 +56,12 @@ const EmployerForm: React.FC = () => {
             maxLength: 254,
             pattern: EMAIL_REGEX,
           }}
+          autoComplete="work email"
         />
         <TextInput
           id="contact_person_phone_number"
           validation={{ required: true, maxLength: 64 }}
+          autoComplete="work tel"
         />
         <TextInput
           id="street_address"

@@ -38,7 +38,7 @@ from common.tests.faker import get_faker
 from common.tests.mixins import SaveAfterPostGenerationMixin
 from common.tests.utils import get_random_social_security_number_for_year
 from common.utils import get_age
-from companies.models import Company
+from companies.models import Company, Office
 from shared.common.tests.factories import (
     DuplicateAllowingUserFactory,
     HandlerUserFactory,
@@ -61,6 +61,14 @@ class CompanyFactory(SaveAfterPostGenerationMixin, factory.django.DjangoModelFac
 
     class Meta:
         model = Company
+
+
+class OfficeFactory(SaveAfterPostGenerationMixin, factory.django.DjangoModelFactory):
+    name = factory.Faker("city")
+    company = factory.SubFactory(CompanyFactory)
+
+    class Meta:
+        model = Office
 
 
 class AttachmentFactory(
