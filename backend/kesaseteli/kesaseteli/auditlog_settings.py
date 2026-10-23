@@ -63,4 +63,5 @@ AUDITLOG_INCLUDE_TRACKING_MODELS = (
     "auth.user_groups",
     "auth.user_user_permissions",
     "companies.company",
+    "companies.office",
 )

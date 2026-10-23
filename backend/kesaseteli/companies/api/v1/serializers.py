@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from companies.models import Company
+from companies.models import Company, Office
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -17,3 +17,12 @@ class CompanySerializer(serializers.ModelSerializer):
             "postcode",
             "city",
         ]
+
+
+class OfficeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Office
+        fields = [
+            "name"
+        ]
+

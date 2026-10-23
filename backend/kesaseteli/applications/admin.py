@@ -41,6 +41,7 @@ from applications.services import (
 )
 from applications.target_groups import get_target_group_choices
 from common.utils import mask_social_security_number
+from companies.models import Office
 
 TARGET_GROUP_CHOICES_DICT = dict(get_target_group_choices())
 
@@ -1354,3 +1355,4 @@ if apps.is_installed("django.contrib.admin"):
     admin.site.register(EmployerApplication, EmployerApplicationAdmin)
     admin.site.register(EmployerSummerVoucher, EmployerSummerVoucherAdmin)
     admin.site.register(Attachment, AttachmentAdmin)
+    admin.site.register(Office)

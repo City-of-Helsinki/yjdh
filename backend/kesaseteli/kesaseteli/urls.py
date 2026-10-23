@@ -23,7 +23,7 @@ from applications.api.youth_application_views import (
 from applications.views import EmployerExcelDownloadPageView
 from common.openapi_views import KesaseteliRedocView, KesaseteliSwaggerView
 from common.views import healthz, readiness
-from companies.api.v1.views import GetCompanyView
+from companies.api.v1.views import GetCompanyView, OfficeViewSet
 from handler_notes.api.v1.views import NoteViewSet
 from shared.suomi_fi.views import (
     HelsinkiSaml2LogoutServiceView,
@@ -44,6 +44,16 @@ router.register(r"handlernotes", NoteViewSet, basename="handlernotes")
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/company/", GetCompanyView.as_view(), name="company"),
+    path(
+        "v1/company/<str:company_id>/offices/",
+        OfficeViewSet.as_view(),
+        name="company-offices",
+    ),
+    path(
+        "v1/company/<str:company_id>/office/",
+        OfficeViewSet.as_view(),
+        name="company-office",
+    ),
     path("v1/schools/", application_views.SchoolListView.as_view(), name="school-list"),
     path(
         "v1/target_groups/",
