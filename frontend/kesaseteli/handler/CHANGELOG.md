@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.9.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.8.0...kesaseteli-handler-v2.9.0) (2026-10-24)
+
+
+### Features
+
+* **ks, employer:** Frontend for unread messages ([197758b](https://github.com/City-of-Helsinki/yjdh/commit/197758b3316b887119b2939a65f6de7b40a910e5))
+* **ks, employer:** Templates in the frontend ([7c9fa6e](https://github.com/City-of-Helsinki/yjdh/commit/7c9fa6e929100935593cf787a1e2583d0823c189))
+* **ks, handler:** Additional info requested state ([1549ba5](https://github.com/City-of-Helsinki/yjdh/commit/1549ba5d5b5280ee537f6f3bdc35829ea56fa125))
+* **ks, handler:** Additional information status ([47f3d4d](https://github.com/City-of-Helsinki/yjdh/commit/47f3d4db566bdb88a489b34eeff549476d0a7668))
+* **ks, handler:** Allowed transitions and flag sending ([8c62bfa](https://github.com/City-of-Helsinki/yjdh/commit/8c62bfa7c18555e20691f8ced9706a6d0e136c5a))
+* **ks, handler:** External messaging to handler UI ([4374031](https://github.com/City-of-Helsinki/yjdh/commit/4374031204465240c45c7e8ccaf5f2c696118163))
+* **ks:** Fixes from ai and pr review ([02eb994](https://github.com/City-of-Helsinki/yjdh/commit/02eb9943718531c7ff68fa3559c609804fdac720))
+* **ks:** Linting and frontend test fixes ([37fd9ae](https://github.com/City-of-Helsinki/yjdh/commit/37fd9ae9f6000b976035a159ed9f2aba9bda332e))
+
 ## [2.8.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.7.0...kesaseteli-handler-v2.8.0) (2026-10-20)
 
 
