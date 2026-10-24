@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.24.10](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.9...benefit-backend-v2.24.10) (2026-10-24)
+
+
+### Bug Fixes
+
+* **benefit:** Bump uv version to 0.13.5 ([3d83034](https://github.com/City-of-Helsinki/yjdh/commit/3d830347777a3a265fc69a33109b189ff873b401))
+
 ## [2.24.9](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.8...benefit-backend-v2.24.9) (2026-10-20)
 
 
