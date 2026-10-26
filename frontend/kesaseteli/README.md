@@ -39,9 +39,9 @@ Project is automatically deployed to testing environment when merging a PR to ma
 
 ## Requirements
 
-- Node >=24.18.1
+- Node v24 (LTS)
 - Lerna
-- pnpm 11.18.0
+- pnpm 11.28.5
 - Git
 - Docker
 

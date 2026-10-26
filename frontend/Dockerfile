@@ -8,7 +8,7 @@ USER root
 RUN yum update -y && yum install -y ca-certificates && yum clean all
 
 # Install pnpm
-RUN npm install -g pnpm@11.18.0
+RUN npm install -g pnpm@11.28.5
 
 # =============================
 FROM distbase AS appbase
