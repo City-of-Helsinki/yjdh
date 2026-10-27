@@ -10,6 +10,7 @@ from applications.api.employer_summer_voucher_reporting_views import (
     EmployerSummerVoucherReportingExportView,
 )
 from applications.api.handler_excel_views import (
+    EmployerApplicationExcelDownloadView,
     EmployerApplicationExcelExportView,
     YouthApplicationExcelExportViewSet,
 )
@@ -78,6 +79,11 @@ urlpatterns = [
         "excel-download/",
         EmployerExcelDownloadPageView.as_view(),
         name="excel-download",
+    ),
+    path(
+        "excel-download/employer-applications/",
+        EmployerApplicationExcelDownloadView.as_view(),
+        name="employer-excel-download",
     ),
     path(
         "excel-download/employer-applications/<str:export_kind>/<str:columns>/",

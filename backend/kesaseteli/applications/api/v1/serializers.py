@@ -705,6 +705,8 @@ class EmployerApplicationSerializer(
             "bank_swift_bic_code",
             "bank_name",
             "bank_address",
+            "office",
+            "cost_center",
             "company",
             "office",
             "cost_center",
