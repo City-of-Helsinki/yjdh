@@ -3539,13 +3539,7 @@ def _create_random_applications():
 
 
 @pytest.mark.django_db
-@mock.patch(
-    "applications.services.generate_application_summary.pdfkit.from_string",
-    return_value=b"%PDF-1.4 fake",
-)
-def test_handler_application_pdf_accepted(
-    mock_pdf, handler_api_client, application_batch
-):
+def test_handler_application_pdf_accepted(handler_api_client, application_batch):
     application = application_batch.applications.first()
     url = reverse(
         "v1:handler-application-application-pdf",
@@ -3555,15 +3549,10 @@ def test_handler_application_pdf_accepted(
     assert response.status_code == 200
     assert response["Content-Type"] == "application/pdf"
     assert b"%PDF" in response.content
-    mock_pdf.assert_called_once()
 
 
 @pytest.mark.django_db
-@mock.patch(
-    "applications.services.generate_application_summary.pdfkit.from_string",
-    return_value=b"%PDF-1.4 fake",
-)
-def test_handler_application_pdf_rejected(mock_pdf, handler_api_client):
+def test_handler_application_pdf_rejected(handler_api_client):
     batch = ApplicationBatchFactory(
         proposal_for_decision="rejected",
         application_1__status="rejected",
@@ -3577,7 +3566,7 @@ def test_handler_application_pdf_rejected(mock_pdf, handler_api_client):
     response = handler_api_client.get(url)
     assert response.status_code == 200
     assert response["Content-Type"] == "application/pdf"
-    mock_pdf.assert_called_once()
+    assert b"%PDF" in response.content
 
 
 @pytest.mark.django_db

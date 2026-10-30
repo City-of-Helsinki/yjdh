@@ -143,7 +143,6 @@ env = environ.Env(
     EMAIL_TIMEOUT=(int, 15),
     DEFAULT_FROM_EMAIL=(str, "Helsinki-lisä <noreply-helsinkilisa@hel.fi>"),
     DEFAULT_SYSTEM_EMAIL=(str, "helsinkilisa@hel.fi"),
-    WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DUMMY_COMPANY_FORM_CODE=(
         int,
         YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
@@ -621,8 +620,6 @@ AZURE_URL_EXPIRATION_SECS = env(
 
 MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
-
-WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 
 TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
 POWER_BI_AUTH_CREDENTIAL = env("POWER_BI_AUTH_CREDENTIAL")
