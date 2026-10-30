@@ -6,6 +6,8 @@ export const EMPLOYER_FIELDS: (keyof Application)[] = [
   'contact_person_phone_number',
   'street_address',
   'bank_account_number',
+  'office',
+  'cost_center',
   'payee_name',
   'payee_address',
   'bank_swift_bic_code',

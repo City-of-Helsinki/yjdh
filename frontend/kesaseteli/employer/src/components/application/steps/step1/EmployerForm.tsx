@@ -1,9 +1,10 @@
-import { Notification as HdsNotification } from 'hds-react';
+import { Notification as HdsNotification, Search } from 'hds-react';
 import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo';
 import IbanInput from 'kesaseteli/employer/components/application/form/IbanInput';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import EmployerErrorSummary from 'kesaseteli/employer/components/application/steps/step1/EmployerErrorSummary';
 import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
+import useOfficesQuery from 'kesaseteli/employer/hooks/backend/useOfficesQuery';
 import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -15,8 +16,42 @@ import { EMAIL_REGEX } from 'shared/constants';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
-  const { setValue, unregister } = useFormContext<ApplicationFormData>();
+  const { setValue, unregister, watch } = useFormContext<ApplicationFormData>();
   const isForeignIban = useIsForeignIban();
+  const { data: offices = [] } = useOfficesQuery();
+
+  const officeValue = watch('office') || '';
+
+  const searchTexts = React.useMemo(
+    () => ({
+      label: t('common:application.form.inputs.office'),
+      placeholder:
+        t('common:application.form.placeholders.office', {
+          defaultValue: '',
+        }) || undefined,
+      searchPlaceholder:
+        t('common:application.form.placeholders.office', {
+          defaultValue: '',
+        }) || undefined,
+      searching: t('common:application.loading'),
+    }),
+    [t]
+  );
+
+  const onSearchOffices = React.useCallback(
+    async (searchValue: string) => {
+      const filtered = offices.filter((office) =>
+        office.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      return {
+        options: filtered.map((office) => ({
+          label: office.name,
+          value: office.name,
+        })),
+      };
+    },
+    [offices]
+  );
 
   React.useEffect(() => {
     if (!isForeignIban) {
@@ -68,6 +103,27 @@ const EmployerForm: React.FC = () => {
           validation={{ required: true, maxLength: 256 }}
         />
         <IbanInput id="bank_account_number" />
+        <Search
+          id="office"
+          texts={searchTexts}
+          onSearch={onSearchOffices}
+          onSend={(val) => {
+            setValue('office', val, { shouldDirty: true, shouldTouch: true });
+          }}
+          onChange={(selectedOptions, clickedOption) => {
+            if (clickedOption?.value) {
+              setValue('office', clickedOption.value, {
+                shouldDirty: true,
+                shouldTouch: true,
+              });
+            }
+          }}
+          defaultValue={officeValue}
+        />
+        <TextInput
+          id="cost_center"
+          validation={{ maxLength: 50 }}
+        />
         {isForeignIban && (
           <>
             <$GridCell $colSpan={2}>
