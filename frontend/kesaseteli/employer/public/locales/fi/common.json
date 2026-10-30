@@ -49,6 +49,8 @@
     "createApplicationGuidance": "Luo uusi kesäsetelihakemus napsauttamalla alla olevaa painiketta.",
     "previousApplications": "Aiemmat kesäsetelihakemukset",
     "organisationName": "Asioit organisaation {{name}} puolesta.",
+    "downloadExcelGuidance": "Painamalla alla olevaa nappia voit ladata kesäsetelihakemuksesi Excel-muodossa.",
+    "downloadExcelButton": "Lataa hakemukset",
     "filterBar": {
       "label": "Omat hakemukset",
       "ariaLabel": "Omat hakemukset -suodatin",

@@ -1,4 +1,5 @@
-import { IconPlus } from 'hds-react';
+import { BackendEndpoint, getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
+import { IconDownload, IconPlus } from 'hds-react';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -78,6 +79,10 @@ const Dashboard = ({
     });
   };
 
+  const handleDownloadExcel = (): void => {
+    window.location.assign(getBackendUrl(BackendEndpoint.EMPLOYER_EXCEL_DOWNLOAD));
+  };
+
   return (
     <Container>
       <Head>
@@ -120,6 +125,18 @@ const Dashboard = ({
             loadingText={t('common:appName')}
           >
             {t('common:thankyouPage.createNewApplication')}
+          </Button>
+        </$ButtonContainer>
+        <$IntroText>
+        </$IntroText>
+       <$ButtonContainer>
+          <p>{t('common:dashboard.downloadExcelGuidance')}</p>
+          <Button
+            iconStart={(<IconDownload aria-hidden />) as React.ReactElement}
+            onClick={handleDownloadExcel}
+            isLoading={createApplicationQuery.isPending}
+            loadingText={t('common:appName')}>
+            {t('common:dashboard.downloadExcelButton')}
           </Button>
         </$ButtonContainer>
       </$HeaderGrid>
