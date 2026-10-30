@@ -35,7 +35,6 @@ dependencies = [
     "mozilla-django-oidc",
     "openpyxl",
     "pandas",
-    "pdfkit",
     "pillow",
     "psycopg2",
     "python-dateutil",
@@ -45,6 +44,7 @@ dependencies = [
     "requests",
     "sentry-sdk[django]",
     "uritemplate",
+    "weasyprint",
 ]
 
 [dependency-groups]

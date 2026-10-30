@@ -32,6 +32,7 @@ RUN dnf update -y \
        xmlsec1-openssl \
        cyrus-sasl-devel \
        openssl-devel \
+       pango \
     && uv sync --locked --no-dev --group prod \
     && mkdir -p /usr/local/lib/uwsgi/plugins \
     && uwsgi --build-plugin https://github.com/City-of-Helsinki/uwsgi-sentry \
@@ -48,16 +49,6 @@ RUN mkdir -p /usr/src/python-uwsgi-common && \
     rm -rf /usr/src/python-uwsgi-common && \
     dnf remove -y gcc cyrus-sasl-devel openssl-devel && \
     dnf clean all
-
-# Install wkhtmltopdf and it's deps from CentOS9 repo and binary
-# Note that the wkhtmltopdf used is compiled for x86-64, so the platform should
-# be set accordingly in the compose file.
-COPY --chown=default:root docker/ubi/centos9.repo /etc/yum.repos.d/centos9.repo
-RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official \
-    && dnf install -y xorg-x11-server-Xvfb compat-openssl11 \
-    && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox-0.12.6.1-3.fedora37.x86_64.rpm \
-    && dnf localinstall -y wkhtmltox-0.12.6.1-3.fedora37.x86_64.rpm \
-    && rm -f /etc/yum.repos.d/centos9.repo && rm -f wkhtmltox-0.12.6.1-3.fedora37.x86_64.rpm && dnf clean all
 
 COPY --chown=default:root /benefit/ /app/
 COPY --chown=root:root --chmod=644 benefit/pyproject.toml benefit/uv.lock /app/

@@ -29,4 +29,5 @@ jobs:
         echo 'OIDC_OP_BASE_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect' >> .env
         echo 'CSRF_TRUSTED_ORIGINS=https://*.dev.hel.ninja' >> .env
 
-        sudo apt-get install wkhtmltopdf
+        # Required packages for installing weasyprint from wheels
+        sudo apt-get install libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libharfbuzz-subset0
