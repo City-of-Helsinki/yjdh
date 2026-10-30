@@ -1,5 +1,4 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import axios from 'axios';
 import useCompanyQuery from 'kesaseteli/employer/hooks/backend/useCompanyQuery';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
@@ -19,13 +18,11 @@ const useOfficesQuery = (): UseQueryResult<Office[]> => {
   });
 
   const query = useQuery<Office[], Error>({
-    queryKey: [BackendEndpoint.COMPANY, companyIdentifier, 'offices'],
-    queryFn: async () => {
-      const response = await axios.get<Office[]>(
-        `${BackendEndpoint.COMPANY}${companyIdentifier}/offices/`
-      );
-      return response.data;
-    },
+    queryKey: [
+      companyIdentifier
+        ? `${BackendEndpoint.COMPANY}${companyIdentifier}/offices/`
+        : undefined,
+    ],
     enabled: Boolean(companyIdentifier),
     staleTime: Infinity,
   });
