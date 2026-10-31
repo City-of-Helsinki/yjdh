@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.23.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.22.0...kesaseteli-backend-v1.23.0) (2026-10-31)
+
+
+### Features
+
+* **ks, employer:** Backend API for getting unread message counts ([d8866c5](https://github.com/City-of-Helsinki/yjdh/commit/d8866c5cb4dcfc0319478bf801b158fb56b69870))
+* **ks, employer:** Backend for unread messages ([f5a2a7a](https://github.com/City-of-Helsinki/yjdh/commit/f5a2a7abcd8338f0610ffbb260ca21b95f96cd01))
+* **ks, employer:** Backend for unread messages ([281d3f6](https://github.com/City-of-Helsinki/yjdh/commit/281d3f6a55f56aa611d079292321e291e20cf02e))
+* **ks, employer:** Mark messages read ([6ba19bc](https://github.com/City-of-Helsinki/yjdh/commit/6ba19bc01301b1cce54558bf84b25490bc947d87))
+* **ks, employer:** Send email backend logic ([ed77aff](https://github.com/City-of-Helsinki/yjdh/commit/ed77aff5b6e88839c013387d4f9c8b4678921d26))
+* **ks, employer:** Templates in the frontend ([7c9fa6e](https://github.com/City-of-Helsinki/yjdh/commit/7c9fa6e929100935593cf787a1e2583d0823c189))
+* **ks, handler:** Additional info requested state ([1549ba5](https://github.com/City-of-Helsinki/yjdh/commit/1549ba5d5b5280ee537f6f3bdc35829ea56fa125))
+* **ks, handler:** Additional information status ([47f3d4d](https://github.com/City-of-Helsinki/yjdh/commit/47f3d4db566bdb88a489b34eeff549476d0a7668))
+* **ks, handler:** Allowed transitions and flag sending ([8c62bfa](https://github.com/City-of-Helsinki/yjdh/commit/8c62bfa7c18555e20691f8ced9706a6d0e136c5a))
+* **ks, handler:** Handle email sending error ([c7226f7](https://github.com/City-of-Helsinki/yjdh/commit/c7226f772f930410619d12b790c4fca496344527))
+* **ks:** Backend test fixes ([4bd1c6b](https://github.com/City-of-Helsinki/yjdh/commit/4bd1c6b0024c8a2df25881699312524fc4e0a6c5))
+* **ks:** Fixes from ai and pr review ([02eb994](https://github.com/City-of-Helsinki/yjdh/commit/02eb9943718531c7ff68fa3559c609804fdac720))
+* **ks:** Handle permissions correctly ([1704286](https://github.com/City-of-Helsinki/yjdh/commit/17042861857eade8808b8ba7c5a8c0a6ef97b884))
+* **ks:** Linting and frontend test fixes ([37fd9ae](https://github.com/City-of-Helsinki/yjdh/commit/37fd9ae9f6000b976035a159ed9f2aba9bda332e))
+
 ## [1.22.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-backend-v1.21.1...kesaseteli-backend-v1.22.0) (2026-10-20)
 
 
