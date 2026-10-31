@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.3...kesaseteli-employer-v2.6.0) (2026-10-31)
+
+
+### Features
+
+* **ks, employer:** Employer UI for showing applications ([7627c6e](https://github.com/City-of-Helsinki/yjdh/commit/7627c6eecd5afb1092e52cfcf7af9f2f32adaebe))
+* **ks, employer:** Frontend for unread messages ([197758b](https://github.com/City-of-Helsinki/yjdh/commit/197758b3316b887119b2939a65f6de7b40a910e5))
+* **ks, employer:** Mark messages read ([6ba19bc](https://github.com/City-of-Helsinki/yjdh/commit/6ba19bc01301b1cce54558bf84b25490bc947d87))
+* **ks, employer:** Remove a tag from employer view ([100b2a8](https://github.com/City-of-Helsinki/yjdh/commit/100b2a8cc56b0d9f03c67776f7e4fb27373675cb))
+* **ks, employer:** Translation files ([2b02fbd](https://github.com/City-of-Helsinki/yjdh/commit/2b02fbd25bc94f68618b0de0a9464d99570bbf3f))
+* **ks, employer:** Unread message count to employer UI ([f33b85c](https://github.com/City-of-Helsinki/yjdh/commit/f33b85ca8a8579121aef280ef4d32dbc451a6722))
+* **ks, handler:** Additional information status ([47f3d4d](https://github.com/City-of-Helsinki/yjdh/commit/47f3d4db566bdb88a489b34eeff549476d0a7668))
+* **ks:** Fixes from ai and pr review ([02eb994](https://github.com/City-of-Helsinki/yjdh/commit/02eb9943718531c7ff68fa3559c609804fdac720))
+* **ks:** Linting and frontend test fixes ([37fd9ae](https://github.com/City-of-Helsinki/yjdh/commit/37fd9ae9f6000b976035a159ed9f2aba9bda332e))
+
 ## [2.5.3](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.2...kesaseteli-employer-v2.5.3) (2026-10-20)
 
 
