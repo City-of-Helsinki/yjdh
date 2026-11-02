@@ -59,6 +59,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@sentry/cli": "^2.58.6",
     "eslint-config-adjunct": "^4.11.1",
     "typescript": "^5.9.3"
   }
