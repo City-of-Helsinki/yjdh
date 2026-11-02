@@ -63,6 +63,7 @@ ARG SENTRY_PROJECT
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_URL
 ARG SENTRY_RELEASE
+ARG SENTRY_SOURCEMAPS_PATH
 ARG APP_RELEASE
 ARG NEXT_PUBLIC_RELEASE
 ARG NEXT_PUBLIC_ASKEM_API_KEY
@@ -89,6 +90,14 @@ RUN if [ -z "$NEXT_PUBLIC_RELEASE" ]; then \
       export NEXT_PUBLIC_RELEASE="${APP_RELEASE:-$SENTRY_RELEASE}"; \
     fi && \
     pnpm build
+
+# Sentry CLI rewrites and injects debug IDs to source files and maps.
+# Skipped unless SENTRY_SOURCEMAPS_PATH is set and non-empty.
+RUN if [ -n "$SENTRY_SOURCEMAPS_PATH" ]; then \
+      pnpm exec sentry-cli sourcemaps inject $SENTRY_SOURCEMAPS_PATH; \
+    else \
+      echo "SENTRY_SOURCEMAPS_PATH not set, skipping sentry-cli sourcemaps inject"; \
+    fi
 
 # ==========================================
 FROM appbase AS production
