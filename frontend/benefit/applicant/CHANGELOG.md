@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.5.0...benefit-applicant-v4.5.1) (2026-11-02)
+
+
+### Dependencies
+
+* **benefit:** Sentry-cli Refs: RATY-432 ([7b75cf7](https://github.com/City-of-Helsinki/yjdh/commit/7b75cf7fc4d9f359dc87e70aa5d4da6b946e5b28))
+
 ## [4.5.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.4.2...benefit-applicant-v4.5.0) (2026-10-15)
 
 
