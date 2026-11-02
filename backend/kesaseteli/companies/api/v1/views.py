@@ -4,10 +4,11 @@ from django.conf import settings
 from django.db import models, transaction
 from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema
+from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from companies.api.v1.serializers import CompanySerializer, OfficeSerializer
+from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company, Office
 from companies.services import get_or_create_company_using_organization_roles
 from companies.tests.data.company_data import DUMMY_COMPANY_DATA
@@ -52,7 +53,7 @@ class GetCompanyView(APIView):
 
 
 class OfficeViewSet(APIView):
-    @extend_schema(responses=OfficeSerializer(many=True))
+    @extend_schema(responses=serializers.ListField(child=serializers.CharField()))
     def get(
         self,
         request: HttpRequest,
@@ -77,6 +78,11 @@ class OfficeViewSet(APIView):
             or params.get("business_id")
         )
 
+        if request.user.is_staff:
+            offices = Office.objects.all().order_by("name")
+            office_data = [x.name for x in offices]
+            return Response(office_data)
+
         if not company_identifier:
             return Response([])
 
@@ -92,7 +98,7 @@ class OfficeViewSet(APIView):
             )
 
         offices = offices.order_by("name")
-        office_data = OfficeSerializer(offices, many=True).data
+        office_data = [x.name for x in offices]
         return Response(office_data)
 
 

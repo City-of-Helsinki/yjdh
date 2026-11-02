@@ -22,8 +22,8 @@ def test_get_offices_by_company_uuid(api_client):
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data == [
-        {"name": "Espoo"},
-        {"name": "Helsinki"},
+        "Espoo",
+        "Helsinki",
     ]
 
 
@@ -35,7 +35,7 @@ def test_get_offices_by_company_business_id(api_client):
     response = api_client.get(get_company_offices_url(company.business_id))
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == [{"name": "Vantaa"}]
+    assert response.data == ["Vantaa"]
 
 
 @pytest.mark.django_db
@@ -51,14 +51,14 @@ def test_get_offices_only_returns_pertaining_company_offices(api_client):
     assert response_a.status_code == status.HTTP_200_OK
     assert len(response_a.data) == 2
     assert response_a.data == [
-        {"name": office_a1.name},
-        {"name": office_a2.name},
+        office_a1.name,
+        office_a2.name,
     ]
 
     response_b = api_client.get(get_company_offices_url(company_b.id))
     assert response_b.status_code == status.HTTP_200_OK
     assert len(response_b.data) == 1
-    assert response_b.data == [{"name": office_b.name}]
+    assert response_b.data == [office_b.name]
 
 
 @pytest.mark.django_db
@@ -108,24 +108,24 @@ def test_office_viewset_direct_kwargs(user):
     # Test company_id kwarg
     response = view.get(request, company_id=str(company.id))
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == [{"name": "Direct Test Office"}]
+    assert response.data == ["Direct Test Office"]
 
     # Test pk kwarg
     response = view.get(request, pk=str(company.id))
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == [{"name": "Direct Test Office"}]
+    assert response.data == ["Direct Test Office"]
 
     # Test company_pk kwarg
     response = view.get(request, company_pk=str(company.id))
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == [{"name": "Direct Test Office"}]
+    assert response.data == ["Direct Test Office"]
 
     # Test query param
     req_with_param = factory.get(f"/?company_id={company.id}")
     req_with_param.user = user
     response = view.get(req_with_param)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == [{"name": "Direct Test Office"}]
+    assert response.data == ["Direct Test Office"]
 
     # Test no company identifier
     response = view.get(request)

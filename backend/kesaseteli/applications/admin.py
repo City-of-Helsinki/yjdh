@@ -937,6 +937,8 @@ class EmployerApplicationAdmin(AuditlogAdminViewAccessLogMixin, admin.ModelAdmin
                     "contact_person_email",
                     "contact_person_phone_number",
                     "street_address",
+                    "office",
+                    "cost_center",
                 )
             },
         ),

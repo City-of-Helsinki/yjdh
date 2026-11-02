@@ -4,7 +4,9 @@ import IbanInput from 'kesaseteli/employer/components/application/form/IbanInput
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import EmployerErrorSummary from 'kesaseteli/employer/components/application/steps/step1/EmployerErrorSummary';
 import useIsForeignIban from 'kesaseteli/employer/hooks/application/useIsForeignIban';
-import useOfficesQuery from 'kesaseteli/employer/hooks/backend/useOfficesQuery';
+import useOfficesQuery, {
+  Office,
+} from 'kesaseteli/employer/hooks/backend/useOfficesQuery';
 import ApplicationFormData from 'kesaseteli-shared/types/application-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -19,6 +21,12 @@ const EmployerForm: React.FC = () => {
   const { setValue, unregister, watch } = useFormContext<ApplicationFormData>();
   const isForeignIban = useIsForeignIban();
   const { data: offices = [] } = useOfficesQuery();
+
+  const officesRef = React.useRef(offices);
+
+  React.useEffect(() => {
+    officesRef.current = offices;
+  }, [offices]);
 
   const officeValue = watch('office') || '';
 
@@ -38,20 +46,26 @@ const EmployerForm: React.FC = () => {
     [t]
   );
 
-  const onSearchOffices = React.useCallback(
-    async (searchValue: string) => {
-      const filtered = offices.filter((office) =>
-        office.name.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      return {
-        options: filtered.map((office) => ({
-          label: office.name,
-          value: office.name,
-        })),
-      };
-    },
-    [offices]
-  );
+  const onSearchOffices = React.useCallback(async (searchValue: string) => {
+    const getOfficeName = (office: Office): string =>
+      typeof office === 'string' ? office : office?.name ?? '';
+
+    const normalizedSearchValue = searchValue.toLowerCase();
+
+    const filtered = officesRef.current.filter((office) =>
+      getOfficeName(office).toLowerCase().includes(normalizedSearchValue)
+    );
+
+    return {
+      options: filtered.map((office) => {
+        const name = getOfficeName(office);
+        return {
+          label: name,
+          value: name,
+        };
+      }),
+    };
+  }, []);
 
   React.useEffect(() => {
     if (!isForeignIban) {
@@ -110,13 +124,11 @@ const EmployerForm: React.FC = () => {
           onSend={(val) => {
             setValue('office', val, { shouldDirty: true, shouldTouch: true });
           }}
-          onChange={(selectedOptions, clickedOption) => {
-            if (clickedOption?.value) {
-              setValue('office', clickedOption.value, {
-                shouldDirty: true,
-                shouldTouch: true,
-              });
-            }
+          onChange={(event) => {
+            setValue('office', event.target.value, {
+              shouldDirty: true,
+              shouldTouch: true,
+            });
           }}
           defaultValue={officeValue}
         />
