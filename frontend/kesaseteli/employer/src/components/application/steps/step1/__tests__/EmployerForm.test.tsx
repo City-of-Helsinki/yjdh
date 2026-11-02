@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import useOfficesQuery from 'kesaseteli/employer/hooks/backend/useOfficesQuery';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
@@ -86,5 +86,37 @@ describe('EmployerForm', () => {
     });
     await user.type(officeSearchInput, 'Helsinki Office');
     expect(officeSearchInput).toHaveValue('Helsinki Office');
+  });
+
+  it('displays search suggestions when offices are string array', async () => {
+    (useOfficesQuery as jest.Mock).mockReturnValue({
+      data: ['Helsinki Office', 'Espoo Office'],
+    });
+
+    renderWithProviders();
+
+    const officeSearchInput = screen.getByRole('combobox', {
+      name: /common:application.form.inputs.office/i,
+    });
+    await userEvent.type(officeSearchInput, 'Hel');
+    await waitFor(() => {
+      expect(screen.getByRole('option')).toHaveTextContent('Helsinki Office');
+    });
+  });
+
+  it('displays search suggestions when offices are object array', async () => {
+    (useOfficesQuery as jest.Mock).mockReturnValue({
+      data: [{ name: 'Helsinki Office' }, { name: 'Espoo Office' }],
+    });
+
+    renderWithProviders();
+
+    const officeSearchInput = screen.getByRole('combobox', {
+      name: /common:application.form.inputs.office/i,
+    });
+    await userEvent.type(officeSearchInput, 'Esp');
+    await waitFor(() => {
+      expect(screen.getByRole('option')).toHaveTextContent('Espoo Office');
+    });
   });
 });

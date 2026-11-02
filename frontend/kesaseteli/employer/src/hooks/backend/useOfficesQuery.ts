@@ -4,9 +4,11 @@ import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
-export type Office = {
-  name: string;
-};
+export type Office =
+  | string
+  | {
+      name: string;
+    };
 
 const useOfficesQuery = (): UseQueryResult<Office[]> => {
   const { data: company } = useCompanyQuery();
