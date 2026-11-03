@@ -72,7 +72,7 @@
     "step1": {
       "name": "Arbetsgivare och anställning",
       "header": "1. Arbetsgivarens uppgifter",
-      "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på Spara och fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede.",
+      "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på Spara och fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede. Alla fält markerade med en stjärna * är obligatoriska. Verksamhet- och kostnadställe-fält är valfria, och organisationen kan lägga till ytterligare information till dem.",
       "companyInfoGrid": {
         "title": "Foretag information",
         "header": {

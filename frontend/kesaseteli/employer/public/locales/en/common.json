@@ -72,7 +72,7 @@
     "step1": {
       "name": "Employer and employment",
       "header": "1. Details of the employer",
-      "tooltip": "Write your information in the form. Click Save and continue to move forward. You can return to the data also at the next stage.",
+      "tooltip": "Write your information in the form. Click Save and continue to move forward. You can return to the data also at the next stage. All fields marked with an asterisk * are required. Site and Cost center fields are optional, and the organisation can add additional information to them.",
       "companyInfoGrid": {
         "title": "Company information",
         "header": {
