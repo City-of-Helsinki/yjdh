@@ -18,7 +18,8 @@ import { EMAIL_REGEX } from 'shared/constants';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
-  const { setValue, unregister, watch } = useFormContext<ApplicationFormData>();
+  const { setValue, unregister, watch, getValues } =
+    useFormContext<ApplicationFormData>();
   const isForeignIban = useIsForeignIban();
   const { data: offices = [] } = useOfficesQuery();
 
@@ -67,20 +68,57 @@ const EmployerForm: React.FC = () => {
     };
   }, []);
 
-  React.useEffect(() => {
-    if (!isForeignIban) {
-      setValue('payee_name', '');
-      setValue('payee_address', '');
-      setValue('bank_swift_bic_code', '');
-      setValue('bank_name', '');
-      setValue('bank_address', '');
-      unregister('payee_name');
-      unregister('payee_address');
-      unregister('bank_swift_bic_code');
-      unregister('bank_name');
-      unregister('bank_address');
-    }
-  }, [isForeignIban, setValue, unregister]);
+   const setOfficeValue = React.useCallback(
+     (value: string) => {
+       setValue('office', value, {
+         shouldDirty: true,
+         shouldTouch: true,
+         shouldValidate: true,
+       });
+     },
+     [setValue]
+   );
+
+   const normalizeOfficeValue = React.useCallback((value: unknown): string => {
+     if (typeof value === 'string') {
+       return value;
+     }
+
+     if (
+       value &&
+       typeof value === 'object' &&
+       'value' in value &&
+       typeof value.value === 'string'
+     ) {
+       return value.value;
+     }
+
+     if (
+       value &&
+       typeof value === 'object' &&
+       'label' in value &&
+       typeof value.label === 'string'
+     ) {
+       return value.label;
+     }
+
+     return '';
+   }, []);
+
+   React.useEffect(() => {
+     if (!isForeignIban) {
+       setValue('payee_name', '');
+       setValue('payee_address', '');
+       setValue('bank_swift_bic_code', '');
+       setValue('bank_name', '');
+       setValue('bank_address', '');
+       unregister('payee_name');
+       unregister('payee_address');
+       unregister('bank_swift_bic_code');
+       unregister('bank_name');
+       unregister('bank_address');
+     }
+   }, [isForeignIban, setValue, unregister]);
 
   const stepTitle = t('common:application.step1.header');
   return (
@@ -121,21 +159,15 @@ const EmployerForm: React.FC = () => {
           id="office"
           texts={searchTexts}
           onSearch={onSearchOffices}
-          onSend={(val) => {
-            setValue('office', val, { shouldDirty: true, shouldTouch: true });
+          onSend={(value) => {
+            setOfficeValue(normalizeOfficeValue(value));
           }}
           onChange={(event) => {
-            setValue('office', event.target.value, {
-              shouldDirty: true,
-              shouldTouch: true,
-            });
+            setOfficeValue(event.target.value);
           }}
           defaultValue={officeValue}
         />
-        <TextInput
-          id="cost_center"
-          validation={{ maxLength: 50 }}
-        />
+        <TextInput id="cost_center" validation={{ maxLength: 50 }} />
         {isForeignIban && (
           <>
             <$GridCell $colSpan={2}>

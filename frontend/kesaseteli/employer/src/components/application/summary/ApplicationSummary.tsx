@@ -33,6 +33,8 @@ const ApplicationSummary: React.FC<Props> = ({
       contact_person_email,
       contact_person_phone_number,
       street_address,
+      office,
+      cost_center,
       bank_account_number,
       payee_name,
       payee_address,
@@ -127,6 +129,14 @@ const ApplicationSummary: React.FC<Props> = ({
               </$ApplicationSummaryField>
             </>
           )}
+          <$ApplicationSummaryField data-testid="office">
+            {t('common:application.form.inputs.office')}:{' '}
+            {office || '-'}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="cost_center">
+            {t('common:application.form.inputs.cost_center')}:{' '}
+            {cost_center || '-'}
+          </$ApplicationSummaryField>
         </FormSection>
         <FormSection
           header={t('common:application.step2.employmentTitle')}
