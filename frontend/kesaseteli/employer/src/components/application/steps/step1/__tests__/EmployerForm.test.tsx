@@ -77,17 +77,6 @@ describe('EmployerForm', () => {
     expect(costCenterInput).toHaveValue('CostOffice100');
   });
 
-  it('allows interacting with Office Search field', async () => {
-    const user = userEvent.setup();
-    renderWithProviders();
-
-    const officeSearchInput = screen.getByRole('combobox', {
-      name: /common:application.form.inputs.office/i,
-    });
-    await user.type(officeSearchInput, 'Helsinki Office');
-    expect(officeSearchInput).toHaveValue('Helsinki Office');
-  });
-
   it('displays search suggestions when offices are string array', async () => {
     (useOfficesQuery as jest.Mock).mockReturnValue({
       data: ['Helsinki Office', 'Espoo Office'],

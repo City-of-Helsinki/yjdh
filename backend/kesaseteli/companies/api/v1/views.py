@@ -100,5 +100,3 @@ class OfficeViewSet(APIView):
         offices = offices.order_by("name")
         office_data = [x.name for x in offices]
         return Response(office_data)
-
-

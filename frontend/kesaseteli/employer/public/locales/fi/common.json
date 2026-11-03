@@ -72,7 +72,7 @@
     "step1": {
       "name": "Työnantaja ja työsuhde",
       "header": "1. Työnantajan tiedot",
-      "tooltip": "Kirjoita kaavakkeeseen tietosi. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
+      "tooltip": "Kirjoita kaavakkeeseen tietosi. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa. Kaikki tähdellä merkityt kentät ovat pakollisia. Toimipiste- ja Kustannuspaikka-kentät ovat vapaaehtoisia, ja organisaatio voi niihin lisätä itselleen tarpeellista tietoa.",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot",
         "header": {

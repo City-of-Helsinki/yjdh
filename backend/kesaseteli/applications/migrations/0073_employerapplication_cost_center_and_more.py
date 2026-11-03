@@ -4,20 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('applications', '0072_alter_emailtemplate_type'),
+        ("applications", "0072_alter_emailtemplate_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='employerapplication',
-            name='cost_center',
-            field=models.CharField(blank=True, max_length=50, verbose_name='cost center'),
+            model_name="employerapplication",
+            name="cost_center",
+            field=models.CharField(
+                blank=True, max_length=50, verbose_name="cost center"
+            ),
         ),
         migrations.AddField(
-            model_name='employerapplication',
-            name='office',
-            field=models.CharField(blank=True, max_length=50, verbose_name='office'),
+            model_name="employerapplication",
+            name="office",
+            field=models.CharField(blank=True, max_length=50, verbose_name="office"),
         ),
     ]

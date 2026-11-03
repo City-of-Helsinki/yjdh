@@ -18,107 +18,122 @@ import { EMAIL_REGEX } from 'shared/constants';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
-  const { setValue, unregister, watch, getValues } =
+  const { setValue, unregister, watch } =
     useFormContext<ApplicationFormData>();
   const isForeignIban = useIsForeignIban();
   const { data: offices = [] } = useOfficesQuery();
 
-  const officesRef = React.useRef(offices);
+    const officesRef = React.useRef(offices);
 
-  React.useEffect(() => {
-    officesRef.current = offices;
-  }, [offices]);
+    React.useEffect(() => {
+      officesRef.current = offices;
+    }, [offices]);
 
-  const officeValue = watch('office') || '';
+    const officeValue = watch('office') || '';
+    const [officeInputValue, setOfficeInputValue] = React.useState(officeValue);
 
-  const searchTexts = React.useMemo(
-    () => ({
-      label: t('common:application.form.inputs.office'),
-      placeholder:
-        t('common:application.form.placeholders.office', {
-          defaultValue: '',
-        }) || undefined,
-      searchPlaceholder:
-        t('common:application.form.placeholders.office', {
-          defaultValue: '',
-        }) || undefined,
-      searching: t('common:application.loading'),
-    }),
-    [t]
-  );
+    React.useEffect(() => {
+      setOfficeInputValue(officeValue);
+    }, [officeValue]);
 
-  const onSearchOffices = React.useCallback(async (searchValue: string) => {
-    const getOfficeName = (office: Office): string =>
-      typeof office === 'string' ? office : office?.name ?? '';
-
-    const normalizedSearchValue = searchValue.toLowerCase();
-
-    const filtered = officesRef.current.filter((office) =>
-      getOfficeName(office).toLowerCase().includes(normalizedSearchValue)
+    const searchTexts = React.useMemo(
+      () => ({
+        label: t('common:application.form.inputs.office'),
+        placeholder:
+          t('common:application.form.placeholders.office', {
+            defaultValue: '',
+          }) || undefined,
+        searchPlaceholder:
+          t('common:application.form.placeholders.office', {
+            defaultValue: '',
+          }) || undefined,
+        searching: t('common:application.loading'),
+      }),
+      [t]
     );
 
-    return {
-      options: filtered.map((office) => {
-        const name = getOfficeName(office);
-        return {
-          label: name,
-          value: name,
-        };
-      }),
-    };
-  }, []);
+    const onSearchOffices = React.useCallback(async (searchValue: string) => {
+      const getOfficeName = (office: Office): string =>
+        typeof office === 'string' ? office : office?.name ?? '';
 
-   const setOfficeValue = React.useCallback(
-     (value: string) => {
-       setValue('office', value, {
-         shouldDirty: true,
-         shouldTouch: true,
-         shouldValidate: true,
-       });
-     },
-     [setValue]
-   );
+      const normalizedSearchValue = searchValue.toLowerCase();
 
-   const normalizeOfficeValue = React.useCallback((value: unknown): string => {
-     if (typeof value === 'string') {
-       return value;
-     }
+      const filtered = officesRef.current.filter((office) =>
+        getOfficeName(office).toLowerCase().includes(normalizedSearchValue)
+      );
 
-     if (
-       value &&
-       typeof value === 'object' &&
-       'value' in value &&
-       typeof value.value === 'string'
-     ) {
-       return value.value;
-     }
+      return {
+        options: filtered.map((office) => {
+          const name = getOfficeName(office);
+          return {
+            label: name,
+            value: name,
+          };
+        }),
+      };
+    }, []);
 
-     if (
-       value &&
-       typeof value === 'object' &&
-       'label' in value &&
-       typeof value.label === 'string'
-     ) {
-       return value.label;
-     }
+    const setOfficeValue = React.useCallback(
+      (value: string) => {
+        setOfficeInputValue(value);
+        setValue('office', value, {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        });
+      },
+      [setValue]
+    );
 
-     return '';
-   }, []);
+    const normalizeOfficeValue = React.useCallback((value: unknown): string => {
+      if (typeof value === 'string') {
+        return value;
+      }
 
-   React.useEffect(() => {
-     if (!isForeignIban) {
-       setValue('payee_name', '');
-       setValue('payee_address', '');
-       setValue('bank_swift_bic_code', '');
-       setValue('bank_name', '');
-       setValue('bank_address', '');
-       unregister('payee_name');
-       unregister('payee_address');
-       unregister('bank_swift_bic_code');
-       unregister('bank_name');
-       unregister('bank_address');
-     }
-   }, [isForeignIban, setValue, unregister]);
+      if (
+        value &&
+        typeof value === 'object' &&
+        'value' in value &&
+        typeof value.value === 'string'
+      ) {
+        return value.value;
+      }
+
+      if (
+        value &&
+        typeof value === 'object' &&
+        'label' in value &&
+        typeof value.label === 'string'
+      ) {
+        return value.label;
+      }
+
+      return '';
+    }, []);
+
+    const saveCurrentOfficeInputValue = React.useCallback(() => {
+      window.requestAnimationFrame(() => {
+        const input = document.querySelector<HTMLInputElement>('#office');
+        if (input) {
+          setOfficeValue(input.value);
+        }
+      });
+    }, [setOfficeValue]);
+
+    React.useEffect(() => {
+      if (!isForeignIban) {
+        setValue('payee_name', '');
+        setValue('payee_address', '');
+        setValue('bank_swift_bic_code', '');
+        setValue('bank_name', '');
+        setValue('bank_address', '');
+        unregister('payee_name');
+        unregister('payee_address');
+        unregister('bank_swift_bic_code');
+        unregister('bank_name');
+        unregister('bank_address');
+      }
+    }, [isForeignIban, setValue, unregister]);
 
   const stepTitle = t('common:application.step1.header');
   return (
@@ -155,18 +170,27 @@ const EmployerForm: React.FC = () => {
           validation={{ required: true, maxLength: 256 }}
         />
         <IbanInput id="bank_account_number" />
-        <Search
-          id="office"
-          texts={searchTexts}
-          onSearch={onSearchOffices}
-          onSend={(value) => {
-            setOfficeValue(normalizeOfficeValue(value));
+        <div
+          onKeyUpCapture={(event) => {
+            if (event.key === 'Enter') {
+              saveCurrentOfficeInputValue();
+            }
           }}
-          onChange={(event) => {
-            setOfficeValue(event.target.value);
-          }}
-          defaultValue={officeValue}
-        />
+        >
+          <Search
+            id="office"
+            css={{ maxWidth: '600px !important' }}
+            texts={searchTexts}
+            onSearch={onSearchOffices}
+            onSend={(value) => {
+              setOfficeValue(normalizeOfficeValue(value));
+            }}
+            onChange={(event) => {
+              setOfficeValue(event.target.value);
+            }}
+            value={officeInputValue}
+          />
+        </div>
         <TextInput id="cost_center" validation={{ maxLength: 50 }} />
         {isForeignIban && (
           <>
