@@ -1,7 +1,5 @@
-import uuid
-
 from django.conf import settings
-from django.db import models, transaction
+from django.db import transaction
 from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -57,46 +55,18 @@ class OfficeViewSet(APIView):
     def get(
         self,
         request: HttpRequest,
-        company_id: str | None = None,
-        pk: str | None = None,
-        company_pk: str | None = None,
-        format: str | None = None,
-        **kwargs,
+        business_id: str | None = None,
     ) -> Response:
-        params = getattr(request, "query_params", request.GET)
-        company_identifier = (
-            company_id
-            or pk
-            or company_pk
-            or kwargs.get("company_id")
-            or kwargs.get("company_pk")
-            or kwargs.get("pk")
-            or kwargs.get("company")
-            or kwargs.get("business_id")
-            or params.get("company_id")
-            or params.get("company")
-            or params.get("business_id")
-        )
 
         if request.user.is_staff:
             offices = Office.objects.all().order_by("name")
             office_data = [x.name for x in offices]
             return Response(office_data)
 
-        if not company_identifier:
+        if not business_id:
             return Response([])
 
-        try:
-            uuid_val = uuid.UUID(str(company_identifier))
-            offices = Office.objects.filter(
-                models.Q(company_id=uuid_val)
-                | models.Q(company__business_id=str(company_identifier))
-            )
-        except (ValueError, AttributeError, TypeError):
-            offices = Office.objects.filter(
-                company__business_id=str(company_identifier)
-            )
+        offices = Office.objects.filter(company__business_id=str(business_id))
 
-        offices = offices.order_by("name")
         office_data = [x.name for x in offices]
         return Response(office_data)

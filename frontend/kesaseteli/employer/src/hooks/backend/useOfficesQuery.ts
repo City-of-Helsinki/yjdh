@@ -12,7 +12,7 @@ export type Office =
 
 const useOfficesQuery = (): UseQueryResult<Office[]> => {
   const { data: company } = useCompanyQuery();
-  const companyIdentifier = company?.id || company?.business_id;
+  const companyIdentifier = company?.business_id;
 
   const errorHandler = useErrorHandler({
     onServerError: () => {},

@@ -59,3 +59,6 @@ class Office(UUIDModel, TimeStampedModel):
 
     def __str__(self):
         return f"{self.name} ({self.company})"
+
+    class Meta:
+        ordering = ["name"]
