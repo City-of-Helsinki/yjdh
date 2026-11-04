@@ -45,7 +45,7 @@ urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/company/", GetCompanyView.as_view(), name="company"),
     path(
-        "v1/company/<str:company_id>/offices/",
+        "v1/company/<str:business_id>/offices/",
         OfficeViewSet.as_view(),
         name="company-offices",
     ),
