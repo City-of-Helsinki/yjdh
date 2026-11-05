@@ -1,8 +1,10 @@
+const { withThirdPartyLicenses } = require('@city-of-helsinki/license-notices/next');
 const { withSentryConfig } = require('@sentry/nextjs');
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const pc = require('picocolors');
 const packageJson = require('./package.json');
+const { thirdPartyLicensesConfig } = require('./scripts/thirdPartyLicenses.config');
 const fs = require('fs');
 const path = require('path');
 
@@ -68,7 +70,9 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     console.warn(`${pc.yellow('notice')}- Build won't use sentry treeshaking (NEXTJS_SENTRY_DEBUG)`);
   }
 
-  const config = {
+  const baseConfig = {
+    // The third-party license notices are read from these source maps, so
+    // NEXT_DISABLE_SOURCEMAPS makes `next build` fail.
     productionBrowserSourceMaps: !disableSourceMaps,
     poweredByHeader: false,
     // Disable the dev static/build indicator. Its HMR `isrManifest` handler still
@@ -167,6 +171,11 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
     },
     ...restOverrides,
   };
+
+  // Writes public/third-party-licenses.txt and public/oss-licenses.json during
+  // `next build`. Must wrap the config before withSentryConfig, see
+  // https://github.com/City-of-Helsinki/license-notices#nextjs
+  const config = withThirdPartyLicenses(baseConfig, thirdPartyLicensesConfig);
 
   const cloudSentryEnabled =
     process.env?.NEXT_PUBLIC_SENTRY_ENVIRONMENT &&

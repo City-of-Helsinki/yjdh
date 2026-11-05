@@ -39,6 +39,7 @@
     - [Maintenance tasks (Kesäseteli)](#maintenance-tasks-kes%C3%A4seteli)
     - [Known issues](#known-issues)
   - [Git blame ignore refs](#git-blame-ignore-refs)
+  - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -402,3 +403,46 @@ following command:
 ```shell
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
+
+## License
+
+The source code in this repository is licensed under the MIT License; see
+[LICENSE](./LICENSE). [frontend/LICENSE](./frontend/LICENSE) is an identical
+copy, because the frontend Docker builds use `frontend` as their build context.
+
+The licenses of the third-party code included in the production build of each
+frontend are listed in `third-party-licenses.txt`, which is generated during
+`next build` into the app's `public` directory and served from the root of the
+deployed application. The same information is written alongside it as
+`oss-licenses.json`, for license audit tooling. The repository-specific
+settings, including the license decisions, are in
+[frontend/scripts/thirdPartyLicenses.config.js](./frontend/scripts/thirdPartyLicenses.config.js).
+The notices are read from the browser source maps, so the build fails if
+`NEXT_DISABLE_SOURCEMAPS` is set.
+
+The MIT License covers source code only. The following files are **not**
+covered by it and remain with their respective rights holders:
+
+| Files                                                         | Rights holder and terms                                                                                                                                          |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `frontend/*/*/public/favicons/`                               | City of Helsinki, from the Helsinki Design System favicon kit. CC BY 4.0, except the City of Helsinki logo, which is a registered trademark.                     |
+| `frontend/benefit/applicant/public/employee_consent_*.pdf`    | City of Helsinki. Employee consent forms for the Helsinki benefit service, in Finnish, Swedish and English; not offered for reuse under the MIT License.         |
+| `backend/kesaseteli/applications/templates/images/`           | City of Helsinki. The City of Helsinki logo, which is a registered trademark, and the Kesäseteli voucher images used in emails; not offered for reuse under MIT. |
+| `backend/benefit/applications/services/pdf_templates/images/` | City of Helsinki. The City of Helsinki logo, which is a registered trademark, used in generated PDF documents.                                                   |
+
+The following are loaded at runtime from external services instead of being
+bundled, so they do not appear in either generated file and are not
+redistributed by this repository or by its build output:
+
+- The Helsinki Grotesk typeface used by the user interface is proprietary and
+  licensed by Camelot Typefaces. No font files are stored in this repository;
+  they are loaded from a City of Helsinki service. See
+  [fonts.ts](./frontend/shared/src/styles/fonts.ts).
+- The City of Helsinki logo in the benefit emails is loaded from a City of
+  Helsinki service. See
+  [helsinki-logo.mjml](./frontend/benefit/common/src/emails/templates/partials/helsinki-logo.mjml).
+- The Matomo tracking script is loaded from the City of Helsinki analytics
+  service configured with `NEXT_PUBLIC_MATOMO_URL`.
+- The Askem feedback widget in the benefit applicant UI is a third-party
+  service, loaded from `cdn.reactandshare.com`. See
+  [useAnalytics.ts](./frontend/benefit/applicant/src/hooks/useAnalytics.ts).
