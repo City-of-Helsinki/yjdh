@@ -62,8 +62,16 @@ describe('EmployerForm', () => {
       cost_center: '12345',
     });
 
-    expect(screen.getByRole('combobox', { name: /common:application.form.inputs.office/i })).toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name: /common:application.form.inputs.cost_center/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', {
+        name: /common:application.form.inputs.office/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', {
+        name: /common:application.form.inputs.cost_center/i,
+      })
+    ).toBeInTheDocument();
   });
 
   it('allows typing into Cost Office field', async () => {

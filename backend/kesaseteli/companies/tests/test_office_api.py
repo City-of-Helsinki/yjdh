@@ -71,7 +71,4 @@ def test_get_offices_unauthenticated(unauthenticated_api_client):
         get_company_offices_url(company.business_id)
     )
 
-    assert response.status_code in [
-        status.HTTP_401_UNAUTHORIZED,
-        status.HTTP_403_FORBIDDEN,
-    ]
+    assert response.status_code == status.HTTP_403_FORBIDDEN
