@@ -1927,6 +1927,14 @@ class EmployerSummerVoucher(TalpaIntegrationMixin, TimeStampedModel, UUIDModel):
             else False
         )
 
+    @property
+    def status(self) -> str:
+        return (
+            self.application.status
+            if self.application
+            else ""
+        )
+
     employment_postcode = models.CharField(
         max_length=256,
         blank=True,

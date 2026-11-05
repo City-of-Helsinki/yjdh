@@ -45,6 +45,7 @@ VOUCHER_NUMBER_FIELD_TITLE = _("Setelin numero")
 JOB_TYPE_FIELD_TITLE = _("Työtehtävien pääluokka")
 OFFICE_FIELD_TITLE = _("Toimipaikka")
 COST_CENTER_FIELD_TITLE = _("Kustannuspaikka")
+STATUS_FIELD_TITLE = _("Tila")
 
 
 def resolve_target_group_and_status(youth_application) -> tuple[str, str]:
@@ -109,6 +110,7 @@ REMOVABLE_REPORTING_FIELD_TITLES = [
     _("Tarkastaja sukunimi"),
     _("Hyväksyjä etunimi"),
     _("Hyväksyjä sukunimi"),
+    STATUS_FIELD_TITLE,
 ]
 
 
@@ -143,6 +145,7 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     _("Työnantajan kokemus"),
     _("Muuta"),
     JOB_TYPE_FIELD_TITLE,
+    STATUS_FIELD_TITLE,
 ]
 
 # These fields are omitted when exporting the "Reporting" Excel sheet.
@@ -389,6 +392,7 @@ FIELDS = [
         30,
         "white",
     ),
+    ExcelField(STATUS_FIELD_TITLE, "%s", ["status"], 30, "#F7DAE3"),
 ]
 
 
