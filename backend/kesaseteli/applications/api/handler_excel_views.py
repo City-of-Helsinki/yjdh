@@ -100,18 +100,16 @@ class EmployerApplicationExcelDownloadView(APIView):
         user = request.user
         user_company = get_user_company(request)
 
-        queryset = EmployerSummerVoucher.objects.for_export()
-        """
-        if user_company:
+        if user.is_staff or user.is_superuser:
+            queryset = EmployerSummerVoucher.objects.for_export()
+        elif user_company:
             queryset = EmployerSummerVoucher.objects.filter(
                 application__company=user_company,
                 application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
             ).for_export()
-        elif user.is_staff or user.is_superuser:
-            queryset = EmployerSummerVoucher.objects.for_export()
         else:
             queryset = EmployerSummerVoucher.objects.none()
-        """
+
         if not queryset.exists():
             return HttpResponse(_("Hakemuksia ei löytynyt."))
 
