@@ -100,6 +100,8 @@ class EmployerApplicationExcelDownloadView(APIView):
         user = request.user
         user_company = get_user_company(request)
 
+        queryset = EmployerSummerVoucher.objects.for_export()
+        """
         if user_company:
             queryset = EmployerSummerVoucher.objects.filter(
                 application__company=user_company,
@@ -109,7 +111,7 @@ class EmployerApplicationExcelDownloadView(APIView):
             queryset = EmployerSummerVoucher.objects.for_export()
         else:
             queryset = EmployerSummerVoucher.objects.none()
-
+        """
         if not queryset.exists():
             return HttpResponse(_("Hakemuksia ei löytynyt."))
 
@@ -122,13 +124,11 @@ class EmployerApplicationExcelDownloadView(APIView):
             },
         )
 
-        columns_param = request.query_params.get(
-            "columns", ExcelColumns.REPORTING.value
-        )
+        columns_param = request.query_params.get("columns", ExcelColumns.DOWNLOAD.value)
         columns = (
             ExcelColumns(columns_param)
             if columns_param in ExcelColumns.values
-            else ExcelColumns.REPORTING
+            else ExcelColumns.DOWNLOAD
         )
 
         service = EmployerExcelExportService(request)
