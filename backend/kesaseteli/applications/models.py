@@ -1456,10 +1456,6 @@ class EmployerApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("timestamp when last accepted for payment by approver"),
     )
-    office = models.CharField(max_length=50, blank=True, verbose_name=_("office"))
-    cost_center = models.CharField(
-        max_length=50, blank=True, verbose_name=_("cost center")
-    )
     # Historically street address, but now meant to be a full postal address.
     # Production database may contain both types, or since this is a free text,
     # it may contain anything.
