@@ -7,6 +7,8 @@
 !package.json
 !next.config.js
 !start.js
+!LICENSE
+!scripts/thirdPartyLicenses.config.js
 
 !shared/src
 !shared/package.json

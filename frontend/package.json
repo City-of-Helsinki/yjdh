@@ -54,6 +54,7 @@
     "ks-shared:test": "pnpm --dir kesaseteli/shared run test"
   },
   "dependencies": {
+    "@city-of-helsinki/license-notices": "^0.2.0",
     "@sentry/nextjs": "^10.56.0",
     "lerna-update-wizard": "^1.1.2",
     "picocolors": "1.0.0"
