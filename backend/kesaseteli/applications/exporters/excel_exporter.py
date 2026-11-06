@@ -188,8 +188,6 @@ TALPA_END_FIELD_TITLES = [
     _("Erikoistapauksen laskentatila"),
 ]
 
-DOWNLOAD_END_FIELD_TITLES = []
-
 FIELDS = [
     # Field title, field value, field names in summer voucher model, column width,
     # background color
@@ -435,16 +433,9 @@ def get_download_columns():
     REMOVABLE_DOWNLOAD_FIELD_TITLES. Additionally:
 
     """
-    normal_fields = [
-        field
-        for field in FIELDS
-        if field.title not in REMOVABLE_DOWNLOAD_FIELD_TITLES
-        and field.title not in DOWNLOAD_END_FIELD_TITLES
+    return [
+        field for field in FIELDS if field.title not in REMOVABLE_DOWNLOAD_FIELD_TITLES
     ]
-    if getattr(settings, "EXCLUDE_2026_EXCEL_FIELDS", True):
-        return normal_fields
-    end_fields = [field for field in FIELDS if field.title in DOWNLOAD_END_FIELD_TITLES]
-    return normal_fields + end_fields
 
 
 def get_exportable_fields(columns: ExcelColumns):

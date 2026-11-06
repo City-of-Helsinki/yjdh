@@ -97,12 +97,9 @@ class EmployerApplicationExcelDownloadView(APIView):
 
     @openapi_employer_excel_download_schema
     def get(self, request: Request) -> HttpResponse:
-        user = request.user
         user_company = get_user_company(request)
 
-        if user.is_staff or user.is_superuser:
-            queryset = EmployerSummerVoucher.objects.for_export()
-        elif user_company:
+        if user_company:
             queryset = EmployerSummerVoucher.objects.filter(
                 application__company=user_company,
                 application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
@@ -122,13 +119,7 @@ class EmployerApplicationExcelDownloadView(APIView):
             },
         )
 
-        columns_param = request.query_params.get("columns", ExcelColumns.DOWNLOAD.value)
-        columns = (
-            ExcelColumns(columns_param)
-            if columns_param in ExcelColumns.values
-            else ExcelColumns.DOWNLOAD
-        )
-
+        columns = ExcelColumns(ExcelColumns.DOWNLOAD.value)
         service = EmployerExcelExportService(request)
         return service.build_xlsx_response(queryset, columns)
 

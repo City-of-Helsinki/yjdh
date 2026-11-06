@@ -1091,10 +1091,7 @@ def test_employer_excel_download_unallowed_methods(api_client, http_method):
 @pytest.mark.django_db
 def test_employer_excel_download_unauthenticated(unauthenticated_api_client):
     response = unauthenticated_api_client.get(employer_excel_download_url())
-    assert response.status_code in (
-        status.HTTP_401_UNAUTHORIZED,
-        status.HTTP_403_FORBIDDEN,
-    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db
@@ -1206,17 +1203,3 @@ def test_employer_excel_download_writes_audit_log(api_client, submitted_summer_v
     assert audit_event.content_type == ContentType.objects.get_for_model(
         EmployerSummerVoucher
     )
-
-
-@pytest.mark.django_db
-def test_employer_excel_download_custom_columns(api_client, submitted_summer_voucher):
-    response = api_client.get(
-        f"{employer_excel_download_url()}?columns={ExcelColumns.TALPA.value}"
-    )
-    assert response.status_code == status.HTTP_200_OK
-    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
-    headers = [
-        "" if cell.value is None else cell.value for cell in next(workbook.active.rows)
-    ]
-    expected_headers = [field.title for field in get_talpa_columns()]
-    assert headers == expected_headers

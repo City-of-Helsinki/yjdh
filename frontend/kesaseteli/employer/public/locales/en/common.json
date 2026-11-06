@@ -49,7 +49,7 @@
     "createApplicationGuidance": "Here you can create a new application to request a summer voucher.",
     "previousApplications": "Previous summer job voucher applications",
     "organisationName": "You are acting on behalf of {{name}}.",
-    "downloadExcelGuidance": "You can download your applications in Excel format by pressing the button below.",
+    "downloadExcelGuidance": "From here, you can download your organization’s application in Excel format for internal use within your organization.",
     "downloadExcelButton": "Download applications",
     "filterBar": {
       "label": "My applications",
