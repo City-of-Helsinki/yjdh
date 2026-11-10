@@ -219,6 +219,15 @@ const nextConfig = ({ env: envOverrides, ...restOverrides }) => {
         : {
             dryRun: NEXTJS_SENTRY_UPLOAD_DRY_RUN,
             disableLogger: !NEXTJS_SENTRY_DEBUG,
+            // By default the Sentry webpack plugin deletes the client source maps
+            // right after compiling, even when it has no auth token to upload
+            // them, so the license notices hook could not read them. Upload and
+            // delete in runAfterProductionCompile instead, which Sentry chains
+            // after the license notices hook.
+            useRunAfterProductionCompileHook: true,
+            sourcemaps: {
+              deleteSourcemapsAfterUpload: true,
+            },
           }),
     });
   } else {
