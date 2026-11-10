@@ -89,7 +89,8 @@ def test_is_configured_failure(
     redirect_uri: str,
 ):
     if token_url and client_id and client_secret and redirect_uri:
-        pytest.skip("success case is covered by test_is_configured_success")
+        # success case is covered by test_is_configured_success
+        return
 
     ahjo_connector = AhjoConnector()
     ahjo_connector.token_url = token_url
