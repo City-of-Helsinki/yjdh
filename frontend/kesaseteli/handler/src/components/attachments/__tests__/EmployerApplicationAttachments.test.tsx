@@ -212,7 +212,7 @@ describe('EmployerApplicationAttachments', () => {
     );
 
     const contractRadio = screen.getByLabelText(/työsopimus/i);
-    const payslipRadio = screen.getByLabelText(/palkkatodistus/i);
+    const payslipRadio = screen.getByLabelText(/palkkalaskelma/i);
 
     expect(contractRadio).toBeChecked();
     expect(payslipRadio).not.toBeChecked();
