@@ -116,6 +116,10 @@ def employer_excel_export_url(
     )
 
 
+def employer_excel_download_url() -> str:
+    return reverse("employer-excel-download")
+
+
 def youth_excel_download_url():
     return reverse("youth-excel-download")
 
@@ -1073,3 +1077,129 @@ def test_reset_is_exported_on_status_transitions(from_status, to_status):
     assert un_invoiced_voucher.is_exported is False
     # Already invoiced vouchers must NEVER have is_exported reset
     assert invoiced_voucher.is_exported is True
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("http_method", ["delete", "patch", "post", "put"])
+def test_employer_excel_download_unallowed_methods(api_client, http_method):
+    client_http_method_func = getattr(api_client, http_method)
+    assert callable(client_http_method_func)
+    response = client_http_method_func(employer_excel_download_url())
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_unauthenticated(unauthenticated_api_client):
+    response = unauthenticated_api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_no_applications(api_client):
+    response = api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_200_OK
+    assert NO_APPLICATIONS_FINNISH in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_authenticated_with_applications(
+    api_client, submitted_summer_voucher
+):
+    response = api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_200_OK
+    assert (
+        response["Content-Type"]
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    assert "attachment; filename=" in response["Content-Disposition"]
+    assert response["Content-Disposition"].endswith(".xlsx")
+
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows = list(workbook.active.rows)
+    # Header row + 1 data row
+    assert len(rows) == 2
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_does_not_mark_is_exported(
+    api_client, submitted_summer_voucher
+):
+    assert submitted_summer_voucher.is_exported is False
+    response = api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_200_OK
+    submitted_summer_voucher.refresh_from_db()
+    assert submitted_summer_voucher.is_exported is False
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_company_isolation(
+    api_client,
+    company,
+    company2,
+    user,
+    other_user,
+):
+    # Application for company 1
+    app1 = EmployerApplicationFactory(
+        status=EmployerApplicationStatus.SUBMITTED, company=company, user=user
+    )
+    youth_app1 = YouthApplicationFactory(
+        first_name="FirstCompany1", last_name="LastCompany1"
+    )
+    EmployerSummerVoucherFactory(
+        application=app1,
+        youth_summer_voucher__youth_application=youth_app1,
+    )
+
+    # Application for company 2
+    app2 = EmployerApplicationFactory(
+        status=EmployerApplicationStatus.SUBMITTED, company=company2, user=other_user
+    )
+    youth_app2 = YouthApplicationFactory(
+        first_name="FirstCompany2", last_name="LastCompany2"
+    )
+    EmployerSummerVoucherFactory(
+        application=app2,
+        youth_summer_voucher__youth_application=youth_app2,
+    )
+
+    response = api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_200_OK
+    workbook = openpyxl.load_workbook(filename=BytesIO(response.getvalue()))
+    rows = list(workbook.active.rows)
+    # Header row + 1 data row (only Company 1)
+    assert len(rows) == 2
+    data_values = [cell.value for cell in rows[1]]
+    assert "FirstCompany1 LastCompany1" in data_values
+    assert "FirstCompany2 LastCompany2" not in data_values
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_excludes_draft_applications(api_client, company, user):
+    # Draft application
+    app_draft = EmployerApplicationFactory(
+        status=EmployerApplicationStatus.DRAFT, company=company, user=user
+    )
+    EmployerSummerVoucherFactory(application=app_draft)
+
+    response = api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_200_OK
+    assert NO_APPLICATIONS_FINNISH in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_employer_excel_download_writes_audit_log(api_client, submitted_summer_voucher):
+    old_count = LogEntry.objects.count()
+    response = api_client.get(employer_excel_download_url())
+    assert response.status_code == status.HTTP_200_OK
+    assert LogEntry.objects.count() == old_count + 1
+
+    audit_event = LogEntry.objects.filter(
+        action=LogEntry.Action.ACCESS,
+        additional_data__method="EmployerApplicationExcelDownloadView.get",
+    ).first()
+    assert audit_event is not None
+    assert audit_event.actor_id == response.wsgi_request.user.id
+    assert audit_event.content_type == ContentType.objects.get_for_model(
+        EmployerSummerVoucher
+    )

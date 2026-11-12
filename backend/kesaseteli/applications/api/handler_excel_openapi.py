@@ -90,3 +90,31 @@ openapi_youth_excel_export_viewset_schema = extend_schema_view(
         },
     ),
 )
+
+
+openapi_employer_excel_download_schema = extend_schema(
+    tags=[_EXCEL_DOWNLOAD_TAG],
+    description=(
+        "Download employer summer voucher applications for the authenticated "
+        "employer as Excel."
+    ),
+    parameters=[
+        OpenApiParameter(
+            name="columns",
+            type=str,
+            enum=list(ExcelColumns.values),
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description=(
+                "Column layout for the spreadsheet. "
+                f"Supported values: {', '.join(ExcelColumns.values)}. "
+                "Defaults to reporting."
+            ),
+        ),
+    ],
+    responses={
+        (200, _EXCEL_MEDIA_TYPE): _SPREADSHEET_RESPONSE,
+        401: OpenApiResponse(description="Authentication required."),
+        403: OpenApiResponse(description="Permission denied."),
+    },
+)

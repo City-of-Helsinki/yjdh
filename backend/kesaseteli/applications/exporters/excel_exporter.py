@@ -43,6 +43,9 @@ INVOICER_NAME_FIELD_TITLE = _("Laskuttajan nimi")
 INVOICER_PHONE_NUMBER_FIELD_TITLE = _("Laskuttajan Puhelin")
 VOUCHER_NUMBER_FIELD_TITLE = _("Setelin numero")
 JOB_TYPE_FIELD_TITLE = _("Työtehtävien pääluokka")
+OFFICE_FIELD_TITLE = _("Toimipaikka")
+COST_CENTER_FIELD_TITLE = _("Kustannuspaikka")
+STATUS_FIELD_TITLE = _("Tila")
 
 
 def resolve_target_group_and_status(youth_application) -> tuple[str, str]:
@@ -88,6 +91,70 @@ REMOVABLE_REPORTING_FIELD_TITLES = [
     _("Yhdyshenkilö"),
     _("Erillinen laskuttaja"),
     INVOICER_NAME_FIELD_TITLE,
+    OFFICE_FIELD_TITLE,
+    COST_CENTER_FIELD_TITLE,
+    _("Raporttiin luokittelu"),
+    _("Liite: Työsopimus 1"),
+    _("Liite: Työsopimus 2"),
+    _("Liite: Työsopimus 3"),
+    _("Liite: Työsopimus 4"),
+    _("Liite: Työsopimus 5"),
+    _("Liite: Palkkalaskelma 1"),
+    _("Liite: Palkkalaskelma 2"),
+    _("Liite: Palkkalaskelma 3"),
+    _("Liite: Palkkalaskelma 4"),
+    _("Liite: Palkkalaskelma 5"),
+    BANK_ACCOUNT_NUMBER_FIELD_TITLE,
+    SUM_FIELD_TITLE,
+    _("Tarkastaja etunimi"),
+    _("Tarkastaja sukunimi"),
+    _("Hyväksyjä etunimi"),
+    _("Hyväksyjä sukunimi"),
+    STATUS_FIELD_TITLE,
+]
+
+
+# These fields are omitted from the Talpa Excel export to keep the columns minimal
+# and focused on robot-required data.
+REMOVABLE_TALPA_FIELD_TITLES = [
+    _("Henkilötunnus"),
+    _("Koulu"),
+    _("Kotipostinumero"),
+    _("Puhelin"),
+    _("Kotikaupunki"),
+    _("Työnantaja muoto"),
+    _("Yhdyshenkilö"),
+    _("Yhdyshenkilön sähköposti"),
+    _("Yhdyshenkilön Puhelin"),
+    _("Erillinen laskuttaja"),
+    INVOICER_NAME_FIELD_TITLE,
+    INVOICER_EMAIL_FIELD_TITLE,
+    INVOICER_PHONE_NUMBER_FIELD_TITLE,
+    OFFICE_FIELD_TITLE,
+    COST_CENTER_FIELD_TITLE,
+    _("Yrityksen toimiala"),
+    _("Työn suorituspaikan postinumero"),
+    EMPLOYMENT_START_DATE_FIELD_TITLE,
+    EMPLOYMENT_END_DATE_FIELD_TITLE,
+    WORK_HOURS_FIELD_TITLE,
+    SALARY_PAID_FIELD_TITLE,
+    _("Muut edut"),
+    _("Raporttiin luokittelu"),
+    _("Työtehtävät"),
+    HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
+    _("Työnantajan kokemus"),
+    _("Muuta"),
+    JOB_TYPE_FIELD_TITLE,
+    STATUS_FIELD_TITLE,
+]
+
+# These fields are omitted when exporting the "Reporting" Excel sheet.
+# The reporting export should focus on application/voucher content and omit
+# handler-specific or detailed company fields.
+REMOVABLE_DOWNLOAD_FIELD_TITLES = [
+    _("Yhdyshenkilö"),
+    _("Erillinen laskuttaja"),
+    INVOICER_NAME_FIELD_TITLE,
     _("Raporttiin luokittelu"),
     _("Liite: Työsopimus 1"),
     _("Liite: Työsopimus 2"),
@@ -108,37 +175,6 @@ REMOVABLE_REPORTING_FIELD_TITLES = [
 ]
 
 
-# These fields are omitted from the Talpa Excel export to keep the columns minimal
-# and focused on robot-required data.
-REMOVABLE_TALPA_FIELD_TITLES = [
-    _("Henkilötunnus"),
-    _("Koulu"),
-    _("Kotipostinumero"),
-    _("Puhelin"),
-    _("Kotikaupunki"),
-    _("Työnantaja muoto"),
-    _("Yhdyshenkilö"),
-    _("Yhdyshenkilön sähköposti"),
-    _("Yhdyshenkilön Puhelin"),
-    _("Erillinen laskuttaja"),
-    INVOICER_NAME_FIELD_TITLE,
-    INVOICER_EMAIL_FIELD_TITLE,
-    INVOICER_PHONE_NUMBER_FIELD_TITLE,
-    _("Yrityksen toimiala"),
-    _("Työn suorituspaikan postinumero"),
-    EMPLOYMENT_START_DATE_FIELD_TITLE,
-    EMPLOYMENT_END_DATE_FIELD_TITLE,
-    WORK_HOURS_FIELD_TITLE,
-    SALARY_PAID_FIELD_TITLE,
-    _("Muut edut"),
-    _("Raporttiin luokittelu"),
-    _("Työtehtävät"),
-    HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
-    _("Työnantajan kokemus"),
-    _("Muuta"),
-    JOB_TYPE_FIELD_TITLE,
-]
-
 # The fields introduced in 2026 (including the calculation status field)
 # that should be positioned at the very end of the Talpa Excel columns
 # to avoid disrupting Talpa robot processing.
@@ -151,7 +187,6 @@ TALPA_END_FIELD_TITLES = [
     _("Pankin käyntiosoite"),
     _("Erikoistapauksen laskentatila"),
 ]
-
 
 FIELDS = [
     # Field title, field value, field names in summer voucher model, column width,
@@ -199,6 +234,8 @@ FIELDS = [
     ExcelField(
         _("Y-tunnus"), "%s", ["application__company__business_id"], 15, "#E7E3F9"
     ),
+    ExcelField(_("Toimipaikka"), "%s", ["application__office"], 15, "#E7E3F9"),
+    ExcelField(_("Kustannuspaikka"), "%s", ["application__cost_center"], 15, "#E7E3F9"),
     ExcelField(
         _("Työnantajan lähiosoite"),
         "%s",
@@ -353,6 +390,7 @@ FIELDS = [
         30,
         "white",
     ),
+    ExcelField(STATUS_FIELD_TITLE, "%s", ["status"], 30, "#F7DAE3"),
 ]
 
 
@@ -387,10 +425,24 @@ def get_talpa_columns():
     return normal_fields + end_fields
 
 
+def get_download_columns():
+    """
+    Get columns for the Talpa Excel export.
+
+    This function filters the main FIELDS list by excluding fields present in
+    REMOVABLE_DOWNLOAD_FIELD_TITLES. Additionally:
+
+    """
+    return [
+        field for field in FIELDS if field.title not in REMOVABLE_DOWNLOAD_FIELD_TITLES
+    ]
+
+
 def get_exportable_fields(columns: ExcelColumns):
     return {
         ExcelColumns.REPORTING.value: get_reporting_columns,
         ExcelColumns.TALPA.value: get_talpa_columns,
+        ExcelColumns.DOWNLOAD.value: get_download_columns,
     }[columns]()
 
 
