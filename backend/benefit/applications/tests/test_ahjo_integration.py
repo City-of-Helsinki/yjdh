@@ -174,14 +174,11 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
     ],
 )
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_single_approved_template_html(
-    mock_pdf_convert,
     company_form_code: YtjOrganizationCode,
     company_form: str,
     should_show_de_minimis_aid_footer: bool,
 ):
-    mock_pdf_convert.return_value = {}
     company = CompanyFactory(
         company_form_code=company_form_code, company_form=company_form
     )
@@ -217,9 +214,7 @@ def test_generate_single_approved_template_html(
 
 
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
-def test_generate_single_declined_template_html(mock_pdf_convert):
-    mock_pdf_convert.return_value = {}
+def test_generate_single_declined_template_html():
     company = CompanyFactory()
     apps = ApplicationFactory.create_batch(
         3, company=company, status=ApplicationStatus.REJECTED
@@ -248,9 +243,7 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
 
 
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
-def test_generate_composed_template_html(mock_pdf_convert):
-    mock_pdf_convert.return_value = {}
+def test_generate_composed_template_html():
     accepted_app_1 = DecidedApplicationFactory(
         status=ApplicationStatus.ACCEPTED,
         start_date=date.today(),
@@ -347,9 +340,7 @@ def test_export_application_batch(application_batch):
 
 
 @pytest.mark.django_db
-@patch("applications.services.ahjo_integration.pdfkit.from_string")
-def test_multiple_benefit_per_application(mock_pdf_convert):
-    mock_pdf_convert.return_value = {}
+def test_multiple_benefit_per_application():
     # Test case data and expected results collected from
     # calculator/tests/Helsinki-lisa laskurin testitapaukset.xlsx/ Sheet Palkan
     # Helsinki-lisä / Column E

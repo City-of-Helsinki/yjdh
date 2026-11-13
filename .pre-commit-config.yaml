@@ -13,19 +13,19 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=1024']
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.7
+    rev: v0.17.3
     hooks:
       - id: ruff-check
         args: [ "--fix" ]
       - id: ruff-format
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.26.0
+    rev: v9.27.0
     hooks:
       - id: commitlint
         stages: [commit-msg, manual]
         additional_dependencies:
-          - "@commitlint/cli@21.2.2"
-          - "@commitlint/config-conventional@21.2.2"
+          - "@commitlint/cli@21.2.4"
+          - "@commitlint/config-conventional@21.2.4"
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.13.5
     hooks:

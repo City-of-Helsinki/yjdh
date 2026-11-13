@@ -55,8 +55,9 @@ Run commands from `backend/benefit`. This backend has its own `pyproject.toml`,
 
 - Run `uv sync --locked` to install application and development dependencies into `.venv`.
 - The shared backend at `../shared` is installed in editable mode automatically.
-- If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
-  `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
+- If you are not using the Docker image, install the system dependencies required
+  by `weasyprint` to export application batches as PDFs:
+  `sudo apt-get install libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libharfbuzz-subset0`
 
 ### Database
 
