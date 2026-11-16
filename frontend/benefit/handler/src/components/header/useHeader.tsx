@@ -46,7 +46,7 @@ const useHeader = (): ExtendedComponentProps => {
   }, [axios, isAuthenticated]);
 
   const { data: alterationData, isLoading: isAlterationListLoading } =
-    useApplicationAlterationsQuery();
+    useApplicationAlterationsQuery('id', isAuthenticated);
 
   const items = {
     default: [

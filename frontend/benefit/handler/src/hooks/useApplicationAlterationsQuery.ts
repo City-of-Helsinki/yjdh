@@ -10,7 +10,8 @@ import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 const state = ['received'];
 
 const useApplicationAlterationsQuery = (
-  orderBy = 'id'
+  orderBy = 'id',
+  enabled = true
 ): UseQueryResult<ApplicationAlterationData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ const useApplicationAlterationsQuery = (
       );
       return handleResponse(res);
     },
+    enabled,
   });
 
   const handleError = useCallback(() => {
