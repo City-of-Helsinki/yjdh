@@ -6,6 +6,7 @@ import { GetStaticProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useEffect } from 'react';
+import AuthContext from 'shared/auth/AuthContext';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
@@ -29,7 +30,11 @@ const AlterationsPage: NextPage = () => {
     };
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 
-  const { data, isLoading } = useApplicationAlterationsQuery();
+  const { isAuthenticated } = React.useContext(AuthContext);
+  const { data, isLoading } = useApplicationAlterationsQuery(
+    'id',
+    isAuthenticated
+  );
 
   return (
     <Container>
