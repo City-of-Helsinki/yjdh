@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 import { QueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import createQueryCaches from '../create-query-caches';
+import createQueryCaches, { normalizeUrl } from '../create-query-caches';
 
 jest.mock('@sentry/nextjs', () => ({
   captureException: jest.fn(),
@@ -89,5 +89,15 @@ describe('createQueryCaches', () => {
         fingerprint: ['{{ default }}', '500', 'get', '/v1/x/'],
       })
     );
+  });
+
+  it('normalizes ids and query strings in urls', () => {
+    expect(
+      normalizeUrl(
+        '/v1/handlerapplications/00000000-0000-0000-0000-000000000000/?x=1'
+      )
+    ).toBe('/v1/handlerapplications/:id/');
+    expect(normalizeUrl('/v1/items/42/files/')).toBe('/v1/items/:id/files/');
+    expect(normalizeUrl()).toBe('');
   });
 });
