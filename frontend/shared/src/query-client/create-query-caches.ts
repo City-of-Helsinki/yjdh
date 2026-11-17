@@ -4,6 +4,16 @@ import { isAxiosError } from 'axios';
 
 const EXPECTED_AUTH_STATUSES = new Set([401, 403]);
 
+const ID_SEGMENT = /^(?:\d+|[\da-f-]{36})$/i;
+
+// Strips query string and replaces ids so failures aggregate per endpoint.
+export const normalizeUrl = (url = ''): string =>
+  url
+    .split(/[#?]/)[0]
+    .split('/')
+    .map((segment) => (ID_SEGMENT.test(segment) ? ':id' : segment))
+    .join('/');
+
 const captureException = (error: Error): void => {
   if (isAxiosError(error)) {
     const status = error.response?.status;
@@ -20,7 +30,7 @@ const captureException = (error: Error): void => {
         '{{ default }}',
         String(status ?? 'none'),
         error.config?.method ?? '',
-        error.config?.url ?? '',
+        normalizeUrl(error.config?.url),
       ],
     });
     return;
