@@ -103,6 +103,7 @@ dependencies = [
     { name = "django-environ" },
     { name = "django-extensions" },
     { name = "django-filter" },
+    { name = "django-helsinki-health-endpoints" },
     { name = "django-helusers" },
     { name = "django-localflavor" },
     { name = "django-logger-extra" },
@@ -164,6 +165,7 @@ requires-dist = [
     { name = "django-environ" },
     { name = "django-extensions" },
     { name = "django-filter" },
+    { name = "django-helsinki-health-endpoints" },
     { name = "django-helusers" },
     { name = "django-localflavor" },
     { name = "django-logger-extra" },
@@ -538,6 +540,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cb/3e/563965173d4cbb5fc308087e7b3d11a115b7b67273d093622480b1e31f78/django_filter-26.1.tar.gz", hash = "sha256:66ea04031b068c77c86e1ac26ced7a3f8f13ce797f5795751707e3deefc58054", size = 144299, upload-time = "2026-07-11T09:27:02.767Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1f/01/afffed1e3c4540fb75bf550a18b6176a9f6371b5f3e52b69a28995b6480c/django_filter-26.1-py3-none-any.whl", hash = "sha256:7d98ef2899218e6242619b532cb1b95af14e09dfcf74844aecb550ad27b59ff2", size = 94069, upload-time = "2026-07-11T09:27:01.012Z" },
+]
+
+[[package]]
+name = "django-helsinki-health-endpoints"
+version = "2.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8c/66/553765ecc49e70adec29584483b44565149ecdec4355099238e773f98959/django_helsinki_health_endpoints-2.0.1.tar.gz", hash = "sha256:a6c92962467c0718d4a28bf7ac669193fe37274e13d50aed664e2d72267c2562", size = 10678, upload-time = "2026-11-05T12:13:37.925Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ab/a9/ab1572763c941c4fc568d54a001413269072a05e243f6f24b00bc0673ef3/django_helsinki_health_endpoints-2.0.1-py3-none-any.whl", hash = "sha256:5c295ad8dac58f70d493c7e376ea1035de9852fd5b7d40ec77b27138bec69b2d", size = 7158, upload-time = "2026-11-05T12:13:36.743Z" },
 ]
 
 [[package]]

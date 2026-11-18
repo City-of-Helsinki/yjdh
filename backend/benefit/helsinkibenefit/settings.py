@@ -257,6 +257,7 @@ def sentry_traces_sampler(sampling_context: SamplingContext) -> float:
 
 
 SENTRY_DSN = env("SENTRY_DSN")
+SENTRY_RELEASE = env("SENTRY_RELEASE")
 
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -267,7 +268,7 @@ if SENTRY_DSN:
         include_local_variables=env.bool("SENTRY_INCLUDE_LOCAL_VARIABLES"),
         dsn=SENTRY_DSN,
         environment=env("SENTRY_ENVIRONMENT"),
-        release=env("SENTRY_RELEASE"),
+        release=SENTRY_RELEASE,
         integrations=[DjangoIntegration()],
         traces_sampler=sentry_traces_sampler,
         profile_session_sample_rate=env("SENTRY_PROFILE_SESSION_SAMPLE_RATE"),
@@ -332,6 +333,7 @@ INSTALLED_APPS = [
     "social_django",
     "helusers.apps.HelusersConfig",
     "helusers.apps.HelusersAdminConfig",
+    "helsinki_health_endpoints",
     "logger_extra",
     "resilient_logger",
 ]

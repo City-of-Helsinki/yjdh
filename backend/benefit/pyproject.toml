@@ -10,6 +10,7 @@ dependencies = [
     "django-extensions",
     "django-filter",
     "django-helusers",
+    "django-helsinki-health-endpoints",
     "social-auth-app-django",
     "django-localflavor",
     "django-logger-extra",
