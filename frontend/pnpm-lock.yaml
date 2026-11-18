@@ -423,7 +423,7 @@ importers:
         version: 5.5.0
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       yup:
         specifier: ^0.32.9
         version: 0.32.11
@@ -508,7 +508,7 @@ importers:
         version: 1.0.2
       dompurify:
         specifier: ^3.4.13
-        version: 3.4.13
+        version: 3.4.17
       dotenv:
         specifier: ^16.0.0
         version: 16.6.1
@@ -565,7 +565,7 @@ importers:
         version: 5.5.0
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       uuid:
         specifier: '>=11.1.1'
         version: 14.0.0
@@ -629,7 +629,7 @@ importers:
         version: 19.2.8(react@19.2.8)
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       yup:
         specifier: ^0.32.9
         version: 0.32.11
@@ -720,7 +720,7 @@ importers:
         version: 17.6.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       eslint-config-adjunct:
         specifier: 4.11.1
@@ -793,7 +793,7 @@ importers:
         version: 9.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-node:
         specifier: ^10.0.0
         version: 10.9.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(@types/node@22.19.20)(typescript@5.9.3)
@@ -827,7 +827,7 @@ importers:
         version: 7.78.0(react@19.2.8)
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       eslint-config-adjunct:
         specifier: 4.11.1
@@ -909,7 +909,7 @@ importers:
         version: 9.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-node:
         specifier: ^10.0.0
         version: 10.9.2(@swc/core@1.15.40(@swc/helpers@0.5.23))(@types/node@22.19.20)(typescript@5.9.3)
@@ -991,7 +991,7 @@ importers:
         version: 9.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       styled-components:
         specifier: ^6.1.19
-        version: 6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       uuid:
         specifier: '>=11.1.1'
         version: 14.0.0
@@ -1832,9 +1832,11 @@ packages:
 
   '@devexpress/bin-v8-flags-filter@1.3.0':
     resolution: {integrity: sha512-LWLNfYGwVJKYpmHUDoODltnlqxdEAl5Qmw7ha1+TSpsABeF94NKSWkQTTV1TB4CM02j2pZyqn36nHgaFl8z7qw==}
+    deprecated: The @devexpress/bin-v8-flags-filter package is deprecated and will no longer receive updates.
 
   '@devexpress/callsite-record@4.1.7':
     resolution: {integrity: sha512-qr3VQYc0KopduFkEY6SxaOIi1Xhm0jIWQfrxxMVboI/p2rjF/Mj/iqaiUxQQP6F3ujpW/7l0mzhf17uwcFZhBA==}
+    deprecated: The @devexpress/callsite-record package is deprecated and will no longer receive updates.
 
   '@electron/asar@3.4.1':
     resolution: {integrity: sha512-i4/rNPRS84t0vSRa2HorerGRXWyF4vThfHesw0dmcWHp+cspK743UanA0suA5Q5y8kzY2y6YKrvbIUn69BCAiA==}
@@ -3901,11 +3903,6 @@ packages:
 
   ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
 
   ajv-keywords@5.1.0:
     resolution: {integrity: sha512-YCS/JNFAUyr5vAuhk1DWm1CBxRHW9LbJ2ozWeemrIqpbsqKjHVxYPyi5GC0rjZIT5JxJ3virVTS8wk4i/Z+krw==}
@@ -5008,8 +5005,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.13:
-    resolution: {integrity: sha512-2vmYIoqjze2d+kakP8S/nS5shfsl587kzwEjcGlTdiksUVgFHnFCsLYDVj/JNqJVOQZGSYBTmuycv0PodwmnMQ==}
+  dompurify@3.4.17:
+    resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -9358,13 +9355,10 @@ packages:
     resolution: {integrity: sha512-WLnTRAIRJsmCQfPXoEDDd1YMML+ImxQ8YGVVg60FALxsn/rpWiQWSJCZDNfu/buAcBFnTUr8ev6CBR8rb7xLiQ==}
     engines: {node: '>= 16'}
     peerDependencies:
-      css-to-react-native: '>= 3.2.0'
       react: '>= 16.8.0'
       react-dom: '>= 16.8.0'
       react-native: '>= 0.68.0'
     peerDependenciesMeta:
-      css-to-react-native:
-        optional: true
       react-dom:
         optional: true
       react-native:
@@ -13270,8 +13264,8 @@ snapshots:
       clean-stack: 2.2.0
       indent-string: 4.0.0
 
-  ajv-formats@2.1.1(ajv@8.20.0):
-    optionalDependencies:
+  ajv-formats@2.1.1:
+    dependencies:
       ajv: 8.20.0
 
   ajv-keywords@5.1.0(ajv@8.20.0):
@@ -13705,8 +13699,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  camelize@1.0.1:
-    optional: true
+  camelize@1.0.1: {}
 
   caniuse-api@3.0.0:
     dependencies:
@@ -14110,8 +14103,7 @@ snapshots:
 
   crypto-md5@1.0.0: {}
 
-  css-color-keywords@1.0.0:
-    optional: true
+  css-color-keywords@1.0.0: {}
 
   css-declaration-sorter@7.4.0(postcss@8.5.25):
     dependencies:
@@ -14134,7 +14126,6 @@ snapshots:
       camelize: 1.0.1
       css-color-keywords: 1.0.0
       postcss-value-parser: 4.2.0
-    optional: true
 
   css-tree@1.1.3:
     dependencies:
@@ -14453,7 +14444,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.13:
+  dompurify@3.4.17:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -19717,7 +19708,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
-      ajv-formats: 2.1.1(ajv@8.20.0)
+      ajv-formats: 2.1.1
       ajv-keywords: 5.1.0(ajv@8.20.0)
 
   screenfull@5.2.0: {}
@@ -20150,14 +20141,14 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styled-components@6.5.0(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  styled-components@6.5.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
+      css-to-react-native: 3.2.0
       csstype: 3.2.3
       react: 19.2.8
       stylis: 4.3.6
     optionalDependencies:
-      css-to-react-native: 3.2.0
       react-dom: 19.2.8(react@19.2.8)
 
   styled-jsx@5.1.6(@babel/core@7.29.7)(react@19.2.8):
