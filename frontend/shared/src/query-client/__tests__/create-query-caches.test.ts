@@ -1,7 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 import { QueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
-import createQueryCaches from '../create-query-caches';
+import createQueryCaches, { normalizeUrl } from '../create-query-caches';
 
 jest.mock('@sentry/nextjs', () => ({
   captureException: jest.fn(),
@@ -14,6 +15,26 @@ const createClient = (): QueryClient =>
       queries: { retry: false },
     },
   });
+
+const failWithStatus = async (status: number): Promise<void> => {
+  const error = new AxiosError(
+    'fail',
+    'ERR',
+    { url: '/v1/x/', method: 'get' } as never,
+    {},
+    { status } as never
+  );
+  await createClient()
+    .fetchQuery({
+      queryKey: ['axios', status],
+      queryFn: async () => {
+        throw error;
+      },
+    })
+    .catch(() => {
+      // error is reported via the query cache onError
+    });
+};
 
 describe('createQueryCaches', () => {
   beforeEach(() => {
@@ -50,5 +71,33 @@ describe('createQueryCaches', () => {
     await expect(mutation.execute({})).rejects.toBe(error);
 
     expect(Sentry.captureException).toHaveBeenCalledWith(error);
+  });
+
+  it.each([401, 403])(
+    'does not report expected %s responses',
+    async (status) => {
+      await failWithStatus(status);
+      expect(Sentry.captureException).not.toHaveBeenCalled();
+    }
+  );
+
+  it('fingerprints other axios errors by status and endpoint', async () => {
+    await failWithStatus(500);
+    expect(Sentry.captureException).toHaveBeenCalledWith(
+      expect.any(AxiosError),
+      expect.objectContaining({
+        fingerprint: ['{{ default }}', '500', 'get', '/v1/x/'],
+      })
+    );
+  });
+
+  it('normalizes ids and query strings in urls', () => {
+    expect(
+      normalizeUrl(
+        '/v1/handlerapplications/00000000-0000-0000-0000-000000000000/?x=1'
+      )
+    ).toBe('/v1/handlerapplications/:id/');
+    expect(normalizeUrl('/v1/items/42/files/')).toBe('/v1/items/:id/files/');
+    expect(normalizeUrl()).toBe('');
   });
 });
