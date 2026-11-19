@@ -76,6 +76,7 @@ def test_openapi_schema_includes_handler_excel_export_endpoints(client: Client):
     }
     assert employer_parameters["columns"]["in"] == "path"
     assert set(employer_parameters["columns"]["schema"]["enum"]) == {
+        "download",
         "reporting",
         "talpa",
     }
