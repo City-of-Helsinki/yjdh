@@ -6,7 +6,6 @@ settings:
 
 overrides:
   '@tootallnate/once': '>=2.0.1'
-  '@opentelemetry/core': '>=2.8.0'
   '@typescript-eslint/eslint-plugin': 5.28.0
   '@typescript-eslint/parser': 5.28.0
   '@typescript-eslint/typescript-estree': 5.28.0
