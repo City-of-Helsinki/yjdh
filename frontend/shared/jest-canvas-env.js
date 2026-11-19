@@ -49,4 +49,19 @@ try {
   // canvas is not resolvable at all, nothing to stub
 }
 
-module.exports = require('jest-environment-jsdom');
+const JSDOMEnvironment = require('jest-environment-jsdom');
+const { TextDecoder, TextEncoder } = require('util');
+
+// jsdom does not expose TextEncoder/TextDecoder, but @sentry/nextjs's server
+// build (resolved via the node export condition) uses them at import time.
+class CanvasStubEnvironment extends (JSDOMEnvironment.TestEnvironment ||
+  JSDOMEnvironment) {
+  constructor(...args) {
+    super(...args);
+    this.global.TextEncoder ??= TextEncoder;
+    this.global.TextDecoder ??= TextDecoder;
+  }
+}
+
+module.exports = CanvasStubEnvironment;
+module.exports.TestEnvironment = CanvasStubEnvironment;
