@@ -177,7 +177,7 @@
         "summer_voucher_serial_number": "Sommarsedelns serienummer",
         "employee_school": "Skolans namn",
         "employment_contract": "Arbetskontrakt",
-        "payslip": "Löneintyg",
+        "payslip": "Lönebeskedet",
         "employment_start_date": "Anställningen började",
         "employment_end_date": "Anställningen slutade",
         "employment_work_hours": "Arbetstimmar",
@@ -199,8 +199,8 @@
         "format": "Använd ett format",
         "attachments": "Du kan lägga till upp till 5 bilagor. Tillåtna filformat: pdf, jpg och png. Maximal storlek 10 MB",
         "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
-        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln.",
-        "payslip_foreign_iban": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "payslip": "Bifoga här lönebeskedet för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "payslip_foreign_iban": "Bifoga här lönebeskedet för sommarjobbaren du anställt med Sommarjobbsedeln.",
         "bank_account": "Fyll i kontonumret i IBAN-format"
       },
       "errors": {
@@ -270,7 +270,7 @@
             "message": ""
           },
           "payslip": {
-            "title": "Löneintyg",
+            "title": "Lönebeskedet",
             "message": ""
           }
         },
@@ -368,7 +368,7 @@
     "hired_without_voucher_assessment_maybe": "Kanske",
     "hired_without_voucher_assessment_": "-",
     "employment_contract": "Arbetskontrakt",
-    "payslip": "Löneintyg",
+    "payslip": "Lönebeskedet",
     "attachmentsTitle": "Bilagor",
     "attachmentsTitle_one": "Bilagor ({{count}} st)",
     "attachmentsTitle_other": "Bilagor ({{count}} st)",

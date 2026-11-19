@@ -177,7 +177,7 @@
         "summer_voucher_serial_number": "Serial number of the Summer Job Voucher",
         "employee_school": "Name of the school",
         "employment_contract": "Employment contract",
-        "payslip": "Pay Statement",
+        "payslip": "Payslip",
         "employment_start_date": "Employment start date",
         "employment_end_date": "Employment end date",
         "employment_work_hours": "Hours worked",
@@ -199,8 +199,8 @@
         "format": "Use format",
         "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
         "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
-        "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher.",
-        "payslip_foreign_iban": "Attach here the pay statement of the youth employed with the Summer Job Voucher.",
+        "payslip": "Attach here the payslip of the youth employed with the Summer Job Voucher.",
+        "payslip_foreign_iban": "Attach here the payslip of the youth employed with the Summer Job Voucher.",
         "bank_account": "Fill in the account number in IBAN- format"
       },
       "errors": {
@@ -270,7 +270,7 @@
             "message": ""
           },
           "payslip": {
-            "title": "Pay statement",
+            "title": "Payslip",
             "message": ""
           }
         },
@@ -368,7 +368,7 @@
     "hired_without_voucher_assessment_maybe": "Maybe",
     "hired_without_voucher_assessment_": "-",
     "employment_contract": "Employment contract",
-    "payslip": "Pay statement",
+    "payslip": "Payslip",
     "attachmentsTitle": "Attachments",
     "attachmentsTitle_one": "Attachments ({{count}} pcs)",
     "attachmentsTitle_other": "Attachments ({{count}} pcs)",
