@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.6.0...kesaseteli-employer-v2.6.1) (2026-11-21)
+
+
+### Dependencies
+
+* Bump sentry/nextjs to 10.75.2 ([18d96f4](https://github.com/City-of-Helsinki/yjdh/commit/18d96f4dd1150ecd41cc02d70121be658c97166e))
+
 ## [2.6.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-employer-v2.5.3...kesaseteli-employer-v2.6.0) (2026-11-11)
 
 
