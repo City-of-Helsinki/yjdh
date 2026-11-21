@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.5.1...benefit-applicant-v4.5.2) (2026-11-21)
+
+
+### Dependencies
+
+* Bump sentry/nextjs to 10.75.2 ([18d96f4](https://github.com/City-of-Helsinki/yjdh/commit/18d96f4dd1150ecd41cc02d70121be658c97166e))
+
 ## [4.5.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.5.0...benefit-applicant-v4.5.1) (2026-11-02)
 
 
