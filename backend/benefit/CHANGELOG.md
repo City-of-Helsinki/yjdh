@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.25.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.10...benefit-backend-v2.25.0) (2026-11-21)
+
+
+### Features
+
+* Replace pdfkit with weasyprint ([f82eb1e](https://github.com/City-of-Helsinki/yjdh/commit/f82eb1e786fd265f8a31bd2158c6437b1cced648))
+* Use django-helsinki-health-endpoints for readiness and healthz ([432552c](https://github.com/City-of-Helsinki/yjdh/commit/432552c95d59c236e78a0558325fa6620afa64e6))
+
+
+### Dependencies
+
+* Bump authlib from 1.8.0 to 1.9.1 in /backend/benefit ([fbf3769](https://github.com/City-of-Helsinki/yjdh/commit/fbf3769cb0480c112138baff00bcd13bdd984952))
+* Bump oauthlib from 4.0.0 to 4.0.1 in /backend/benefit ([344cde7](https://github.com/City-of-Helsinki/yjdh/commit/344cde746d9f1c35d98e2460103c188aff197432))
+
 ## [2.24.10](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.9...benefit-backend-v2.24.10) (2026-10-26)
 
 
