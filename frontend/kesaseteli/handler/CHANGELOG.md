@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.9.0...kesaseteli-handler-v2.9.1) (2026-11-21)
+
+
+### Dependencies
+
+* Bump sentry/nextjs to 10.75.2 ([18d96f4](https://github.com/City-of-Helsinki/yjdh/commit/18d96f4dd1150ecd41cc02d70121be658c97166e))
+
 ## [2.9.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.8.0...kesaseteli-handler-v2.9.0) (2026-11-12)
 
 
