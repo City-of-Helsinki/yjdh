@@ -148,14 +148,31 @@ REMOVABLE_TALPA_FIELD_TITLES = [
     STATUS_FIELD_TITLE,
 ]
 
-# These fields are omitted when exporting the "Reporting" Excel sheet.
-# The reporting export should focus on application/voucher content and omit
-# handler-specific or detailed company fields.
+# These fields are omitted when exporting the "Download" Excel sheet.
+# The collection of these fields should contain only necessary information
+# for the employer
 REMOVABLE_DOWNLOAD_FIELD_TITLES = [
-    _("Yhdyshenkilö"),
+    ORDER_FIELD_TITLE,
+    APPLICATION_LANGUAGE_FIELD_TITLE,
+    _("Henkilötunnus"),
+    _("Koulu"),
+    _("Kotipostinumero"),
+    _("Puhelin"),
+    _("Kotikaupunki"),
+    "",
+    SPECIAL_CASE_FIELD_TITLE,
+    _("VTJ-tietojen luovutuskielto (ts. turvakielto)"),
+    _("Työnantaja muoto"),
     _("Erillinen laskuttaja"),
     INVOICER_NAME_FIELD_TITLE,
+    INVOICER_EMAIL_FIELD_TITLE,
+    INVOICER_PHONE_NUMBER_FIELD_TITLE,
+    _("Muut edut"),
+    _("Yrityksen toimiala"),
     _("Raporttiin luokittelu"),
+    HIRED_WITHOUT_VOUCHER_ASSESSMENT_FIELD_TITLE,
+    _("Työnantajan kokemus"),
+    _("Muuta"),
     _("Liite: Työsopimus 1"),
     _("Liite: Työsopimus 2"),
     _("Liite: Työsopimus 3"),
@@ -167,11 +184,17 @@ REMOVABLE_DOWNLOAD_FIELD_TITLES = [
     _("Liite: Palkkalaskelma 4"),
     _("Liite: Palkkalaskelma 5"),
     BANK_ACCOUNT_NUMBER_FIELD_TITLE,
+    _("Maksunsaajan nimi"),
+    _("Maksunsaajan osoite"),
+    _("Pankin SWIFT / BIC koodi"),
+    _("Pankin nimi"),
+    _("Pankin käyntiosoite"),
     SUM_FIELD_TITLE,
     _("Tarkastaja etunimi"),
     _("Tarkastaja sukunimi"),
     _("Hyväksyjä etunimi"),
     _("Hyväksyjä sukunimi"),
+    _("Erikoistapauksen laskentatila"),
 ]
 
 
