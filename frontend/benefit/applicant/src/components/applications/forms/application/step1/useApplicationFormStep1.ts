@@ -76,7 +76,7 @@ const shouldDisplayDeMinimisError = (
   t: TFunction
 ): boolean => {
   if (isUnfinishedDeminimisAid) {
-    void showErrorToast(
+    showErrorToast(
       t(`${translationsBase}.notifications.deMinimisUnfinished.label`),
       t(`${translationsBase}.notifications.deMinimisUnfinished.content`)
     );
@@ -288,7 +288,7 @@ const useApplicationFormStep1 = (
   const applicationId = values?.id ? String(values.id) : undefined;
   const handleDelete = applicationId
     ? (): void => {
-        void onDelete(applicationId);
+        onDelete(applicationId);
       }
     : undefined;
 

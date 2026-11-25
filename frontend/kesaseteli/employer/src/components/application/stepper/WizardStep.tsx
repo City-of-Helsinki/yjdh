@@ -14,7 +14,7 @@ const WizardStep: React.FC<Props> = ({ title, index = 0 }) => {
 
   const goToIndexStep = (): void => {
     if (index <= lastCompleted + 1) {
-      void goToStep(index);
+      goToStep(index);
     }
   };
 

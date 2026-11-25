@@ -86,7 +86,7 @@ const useApplicationFormStep5 = (
     void onSave(application);
   };
   const handleDelete = (): void => {
-    void onDelete(application.id ?? '');
+    onDelete(application.id ?? '');
   };
 
   const handleSubmit = (): void => {

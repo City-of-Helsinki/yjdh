@@ -167,7 +167,7 @@ const useApplicationFormStep2 = (
   };
 
   const handleDelete = (): void => {
-    void onDelete(values.id ?? '');
+    onDelete(values.id ?? '');
   };
 
   const clearCommissionValues = React.useCallback((): void => {

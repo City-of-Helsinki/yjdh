@@ -52,7 +52,7 @@ const IbanInput: React.FC<IbanInputProps> = ({
     HTMLInputElement | HTMLTextAreaElement
   > = (node) => {
     inputElementRef.current = node;
-    void (maskitoRef as unknown as (target: HTMLElement | null) => void)(
+    (maskitoRef as unknown as (target: HTMLElement | null) => void)(
       node as HTMLElement | null
     );
   };

@@ -57,7 +57,7 @@ const withOrganisation = <P extends React.JSX.IntrinsicAttributes>(
         (isNoOrganisation || isAuthError) &&
         router.pathname !== '/no-organisation'
       ) {
-        void goToPage('/no-organisation');
+        goToPage('/no-organisation');
       }
     }, [
       isAuthenticated,
