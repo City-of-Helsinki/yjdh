@@ -72,7 +72,7 @@ const useApplicationFormStep4 = (
     void onSave(application);
   };
   const handleDelete = (): void => {
-    void onDelete(application.id ?? '');
+    onDelete(application.id ?? '');
   };
 
   const getEmployeeConsentAttachment = (): BenefitAttachment | undefined =>

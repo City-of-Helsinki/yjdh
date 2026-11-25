@@ -109,7 +109,7 @@ const CompanySection: React.FC<Props> = ({
   const setCompanyBankAccountInputRef: React.RefCallback<HTMLInputElement> = (
     node
   ) => {
-    void (
+    (
       companyBankAccountMaskRef as unknown as (
         target: HTMLElement | null
       ) => void

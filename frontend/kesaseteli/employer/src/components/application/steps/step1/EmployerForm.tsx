@@ -232,11 +232,6 @@ const EmployerForm: React.FC = () => {
                           {null}
                         </LinkText>
                       ),
-                      lnk: (
-                        <a target="_blank" rel="noopener noreferrer">
-                          {null}
-                        </a>
-                      ),
                     }}
                   />
                 </HdsNotification>

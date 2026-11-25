@@ -139,7 +139,7 @@ const useApplicationFormStep6 = (
     void onSave(application);
   };
   const handleDelete = (): void => {
-    void onDelete(application.id ?? '');
+    onDelete(application.id ?? '');
   };
 
   const getTermsMarkdownByLanguage = (): string | undefined => {
