@@ -37,6 +37,14 @@ export const $FilterWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
+export const $FilterDivider = styled.hr`
+  width: 100%;
+  margin: -10px 0 0 0;
+  border: 0;
+  border-top: 1px solid
+    ${(props: { theme: DefaultTheme }) => props.theme.colors.black};
+`;
+
 const $FilterControls = styled.div`
   display: flex;
   align-items: flex-start;
@@ -45,7 +53,8 @@ const $FilterControls = styled.div`
 
   @media (min-width: ${(props: { theme: DefaultTheme }) =>
       props.theme.breakpoints.m}) {
-    gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl4};
+    column-gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.xl4};
+    row-gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
   }
 `;
 

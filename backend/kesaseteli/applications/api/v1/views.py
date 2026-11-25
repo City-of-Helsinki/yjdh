@@ -7,7 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Count, F, Func, Prefetch
+from django.db.models import CharField, Count, F, Func, Prefetch, Q, Value
+from django.db.models.functions import Concat
 from django.db.utils import ProgrammingError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -226,6 +227,7 @@ class JobTypeListView(ListAPIView):
 class YouthApplicationFilter(filters.FilterSet):
     status = filters.MultipleChoiceFilter(choices=YouthApplicationStatus.choices)
     year = filters.NumberFilter(field_name="created_at__year")
+    search = filters.CharFilter(method="filter_search")
     # TODO: In the future, define search filters
     # (e.g., search = filters.CharFilter(method="filter_search"))
     # once requirements for text search across name/email are finalized.
@@ -248,6 +250,18 @@ class YouthApplicationFilter(filters.FilterSet):
     class Meta:
         model = YouthApplication
         fields = ["status"]
+
+    def filter_search(self, queryset, name, value):
+        if value:
+            return queryset.annotate(
+                full_name=Concat(
+                    "first_name",
+                    Value(" "),
+                    "last_name",
+                    output_field=CharField(),
+                )
+            ).filter(full_name__icontains=value)
+        return queryset
 
     def filter_is_assigned_to_me(self, queryset, name, value):
         if value:

@@ -21,7 +21,8 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
-import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
+import { $FilterDivider, $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
+import SearchFieldFilter from './searchFilters/SearchFieldFilter';
 import StatusFilter from './searchFilters/StatusFilter';
 import YearFilter from './searchFilters/YearFilter';
 
@@ -169,12 +170,15 @@ type UseYouthApplicationsResultType = TableState<YouthApplication> & {
     React.SetStateAction<YouthApplicationStatus[]>
   >;
   selectedStatuses: YouthApplicationStatus[];
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const useYouthApplications = (
   initialStatuses: YouthApplicationStatus[],
   selectedYear: number,
-  initialAssignedToMe = false
+  initialAssignedToMe = false,
+  initialSearch = ''
 ): UseYouthApplicationsResultType & {
   isAssignedToMe: boolean;
   setIsAssignedToMe: React.Dispatch<React.SetStateAction<boolean>>;
@@ -182,12 +186,14 @@ const useYouthApplications = (
   const [selectedStatuses, setSelectedStatuses] =
     useState<YouthApplicationStatus[]>(initialStatuses);
   const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
+  const [search, setSearch] = useState<string>(initialSearch);
 
   const tableQuery = useApplicationTableQuery<YouthApplication>({
     useQueryHook: useYouthApplicationsListQuery,
     status: selectedStatuses,
     isAssignedToMe,
     year: selectedYear,
+    search,
   });
 
   const { setPage } = tableQuery;
@@ -195,7 +201,7 @@ const useYouthApplications = (
   // Reset page when statuses change to avoid showing stale data
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, isAssignedToMe, selectedYear, setPage]);
+  }, [selectedStatuses, isAssignedToMe, selectedYear, search, setPage]);
 
   return {
     ...tableQuery,
@@ -203,6 +209,8 @@ const useYouthApplications = (
     selectedStatuses,
     isAssignedToMe,
     setIsAssignedToMe,
+    search,
+    setSearch,
   };
 };
 
@@ -228,6 +236,8 @@ export default function YouthApplicationList(): React.JSX.Element {
     count: pendingCount,
     isAssignedToMe: isPendingAssignedToMe,
     setIsAssignedToMe: setIsPendingAssignedToMe,
+    search: pendingSearch,
+    setSearch: setPendingSearch,
   } = useYouthApplications(DEFAULT_PENDING_STATUSES, selectedYear);
 
   const {
@@ -240,6 +250,8 @@ export default function YouthApplicationList(): React.JSX.Element {
     count: processedCount,
     isAssignedToMe: isProcessedAssignedToMe,
     setIsAssignedToMe: setIsProcessedAssignedToMe,
+    search: processedSearch,
+    setSearch: setProcessedSearch,
   } = useYouthApplications(PROCESSED_STATUSES, selectedYear);
 
   const columns = useYouthApplicationListColumns();
@@ -306,6 +318,12 @@ export default function YouthApplicationList(): React.JSX.Element {
               }}
             />
           </$FilterWrapper>
+          <$FilterDivider />
+          <SearchFieldFilter
+            id="youth-application-pending-search-filter"
+            value={pendingSearch}
+            onSearch={setPendingSearch}
+          />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable
           columns={columns}
@@ -333,6 +351,11 @@ export default function YouthApplicationList(): React.JSX.Element {
             id="youth-application-processed-year-filter"
             selectedYear={selectedYear}
             onChange={setSelectedYear}
+          />
+          <SearchFieldFilter
+            id="youth-application-processed-search-filter"
+            value={processedSearch}
+            onSearch={setProcessedSearch}
           />
           <$FilterWrapper>
             <$FilterLabel>

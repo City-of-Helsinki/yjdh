@@ -21,6 +21,7 @@ export type YouthApplicationsQueryParams = {
   ordering?: string;
   is_assigned_to_me?: boolean;
   year?: number;
+  search?: string;
 };
 
 const useYouthApplicationsListQuery = (
@@ -47,6 +48,9 @@ const useYouthApplicationsListQuery = (
   }
   if (params.year !== undefined) {
     searchParams.append('year', String(params.year));
+  }
+  if (params.search) {
+    searchParams.append('search', params.search);
   }
 
   const query = useQuery({

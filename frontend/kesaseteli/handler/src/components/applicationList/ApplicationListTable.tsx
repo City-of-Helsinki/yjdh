@@ -92,6 +92,7 @@ export type UseApplicationTableQueryProps<
       ordering: OrderingField<T>;
       is_assigned_to_me?: boolean;
       year?: number;
+      search?: string;
     },
     options?: Omit<
       UseQueryOptions<PaginatedResponse<T>>,
@@ -102,6 +103,7 @@ export type UseApplicationTableQueryProps<
   defaultOrdering?: OrderingField<T>;
   isAssignedToMe?: boolean;
   year?: number;
+  search?: string;
 };
 
 export type UseApplicationTableQueryResult<
@@ -132,6 +134,7 @@ export function useApplicationTableQuery<
   defaultOrdering = DEFAULT_ORDERING as OrderingField<T>,
   isAssignedToMe,
   year,
+  search,
 }: UseApplicationTableQueryProps<T>): UseApplicationTableQueryResult<T> {
   const tableState = useTableState(defaultOrdering);
 
@@ -142,6 +145,7 @@ export function useApplicationTableQuery<
     ordering: tableState.ordering,
     is_assigned_to_me: isAssignedToMe,
     year,
+    search,
   };
 
   // Only pass options argument when we need to disable the query,

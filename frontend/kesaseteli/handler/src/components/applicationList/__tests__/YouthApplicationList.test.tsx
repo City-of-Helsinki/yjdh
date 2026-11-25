@@ -207,6 +207,43 @@ describe('YouthApplicationList', () => {
       })
     );
   });
+
+  it('sends search query parameter when search button is clicked in pending tab', async () => {
+    renderComponent(<YouthApplicationList />);
+
+    const searchInput = screen.getByRole('textbox');
+    await userEvent.type(searchInput, 'Matti');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: 'Matti',
+        offset: 0,
+      })
+    );
+  });
+
+  it('sends search query parameter when search button is clicked in processed tab', async () => {
+    renderComponent(<YouthApplicationList />);
+
+    // Switch to processed tab
+    await userEvent.click(screen.getByText('Käsitellyt (8)'));
+
+    const searchInput = screen.getByRole('textbox');
+    await userEvent.type(searchInput, 'Maija');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: 'Maija',
+        offset: 0,
+      })
+    );
+  });
 });
 
 /* eslint-enable scanjs-rules/property_sessionStorage, scanjs-rules/identifier_sessionStorage */
