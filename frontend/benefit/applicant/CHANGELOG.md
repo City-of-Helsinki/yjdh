@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.5.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.5.1...benefit-applicant-v4.5.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* Only major sonar fixes ([5e8512c](https://github.com/City-of-Helsinki/yjdh/commit/5e8512c837955675abdc682a77af951c8e38941c))
+
+
+### Dependencies
+
+* Bump i18next from 25.10.10 to 26.3.4 in /frontend ([5d8d48d](https://github.com/City-of-Helsinki/yjdh/commit/5d8d48dbacd0838e892efcea8746f3daaa585a5a))
+* Bump sentry/nextjs to 10.75.2 ([18d96f4](https://github.com/City-of-Helsinki/yjdh/commit/18d96f4dd1150ecd41cc02d70121be658c97166e))
+
 ## [4.5.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-applicant-v4.5.0...benefit-applicant-v4.5.1) (2026-11-02)
 
 
