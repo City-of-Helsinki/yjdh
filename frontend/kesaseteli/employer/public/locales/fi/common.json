@@ -49,7 +49,7 @@
     "createApplicationGuidance": "Luo uusi kesäsetelihakemus napsauttamalla alla olevaa painiketta.",
     "previousApplications": "Aiemmat kesäsetelihakemukset",
     "organisationName": "Asioit organisaation {{name}} puolesta.",
-    "downloadExcelGuidance": "Tästä voit ladata organisaatiosi hakemuksen Excel-muodossa organisaatiosi sisäiseen käyttöön.",
+    "downloadExcelGuidance": "Lataa tästä organisaatiosi hakemukset Excel-tiedostona organisaatiosi sisäiseen käyttöön. Käsittele tiedostoa organisaatiosi tietosuojakäytäntöjen mukaisesti.",
     "downloadExcelButton": "Lataa hakemukset",
     "filterBar": {
       "label": "Omat hakemukset",

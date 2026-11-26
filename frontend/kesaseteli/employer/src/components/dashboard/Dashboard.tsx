@@ -1,4 +1,4 @@
-import { IconDownload, IconPlus, Tooltip } from 'hds-react';
+import { IconDownload, IconPlus } from 'hds-react';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import { BackendEndpoint, getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import Head from 'next/head';
@@ -51,10 +51,13 @@ const $ButtonContainer = styled.div`
 `;
 
 const $DownloadExcelContainer = styled.div`
-  display: flex;
-  align-items: center;
+  display: block;
   gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
   margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+
+  p {
+    width: 50%;
+  }
 `;
 
 type Props = {
@@ -145,6 +148,7 @@ const Dashboard = ({
         <ApplicationTable.Table />
       </ApplicationTable>
       <$DownloadExcelContainer>
+        <p>{t('common:dashboard.downloadExcelGuidance')}</p>
         <Button
           iconStart={(<IconDownload aria-hidden />) as React.ReactElement}
           onClick={handleDownloadExcel}
@@ -153,7 +157,6 @@ const Dashboard = ({
         >
           {t('common:dashboard.downloadExcelButton')}
         </Button>
-        <Tooltip>{t('common:dashboard.downloadExcelGuidance')}</Tooltip>
       </$DownloadExcelContainer>
     </Container>
   ) as React.ReactElement;
