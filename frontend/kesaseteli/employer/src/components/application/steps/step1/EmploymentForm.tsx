@@ -28,6 +28,7 @@ import FormSectionHeading from 'shared/components/forms/section/FormSectionHeadi
 import LinkText from 'shared/components/link-text/LinkText';
 import { POSTAL_CODE_REGEX } from 'shared/constants';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import {$Instructions} from "kesaseteli/employer/components/application/steps/step1/Step1EmployerAndEmployment.sc";
 
 /**
  * Hook to manage the state of the "Fetch Employee Data" button.
@@ -154,8 +155,11 @@ const EmploymentForm: React.FC<Props> = ({ index }) => {
         columns={2}
         withoutDivider
         header={t('common:application.step1.employment_section.header')}
-        tooltip={t('common:application.step1.employment_section.tooltip')}
       >
+        <$Instructions>
+          <p>{t('common:application.step1.employment_section.instructionText')}</p>
+        </$Instructions>
+        <p/>
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
