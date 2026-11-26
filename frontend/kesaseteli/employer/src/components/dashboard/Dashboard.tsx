@@ -1,5 +1,6 @@
-import { IconPlus } from 'hds-react';
+import { IconDownload, IconPlus } from 'hds-react';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
+import { BackendEndpoint, getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
@@ -49,9 +50,23 @@ const $ButtonContainer = styled.div`
   }
 `;
 
+const $DownloadExcelContainer = styled.div`
+  display: block;
+  gap: ${(props: { theme: DefaultTheme }) => props.theme.spacing.s};
+  margin-top: ${(props: { theme: DefaultTheme }) => props.theme.spacing.m};
+
+  p {
+    width: 50%;
+  }
+`;
+
 type Props = {
   draftApplicationId?: string;
   organisationName?: string;
+};
+
+const handleDownloadExcel = (): void => {
+  window.location.assign(getBackendUrl(BackendEndpoint.EMPLOYER_EXCEL_DOWNLOAD));
 };
 
 const Dashboard = ({
@@ -78,10 +93,12 @@ const Dashboard = ({
     });
   };
 
+  const appName = t('common:appName');
+
   return (
     <Container>
       <Head>
-        <title>{t('common:appName')}</title>
+        <title>{appName}</title>
       </Head>
       <$Header>
         <$Heading>{t('common:dashboard.header')}</$Heading>
@@ -117,7 +134,7 @@ const Dashboard = ({
             iconStart={(<IconPlus aria-hidden />) as React.ReactElement}
             onClick={handleCreateNew}
             isLoading={createApplicationQuery.isPending}
-            loadingText={t('common:appName')}
+            loadingText={appName}
           >
             {t('common:thankyouPage.createNewApplication')}
           </Button>
@@ -130,6 +147,17 @@ const Dashboard = ({
         <ApplicationTable.FilterBar />
         <ApplicationTable.Table />
       </ApplicationTable>
+      <$DownloadExcelContainer>
+        <p>{t('common:dashboard.downloadExcelGuidance')}</p>
+        <Button
+          iconStart={(<IconDownload aria-hidden />) as React.ReactElement}
+          onClick={handleDownloadExcel}
+          isLoading={createApplicationQuery.isPending}
+          loadingText={appName}
+        >
+          {t('common:dashboard.downloadExcelButton')}
+        </Button>
+      </$DownloadExcelContainer>
     </Container>
   ) as React.ReactElement;
 };

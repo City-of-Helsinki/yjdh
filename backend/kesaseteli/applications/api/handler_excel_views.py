@@ -10,7 +10,7 @@ from django.http import HttpResponse, StreamingHttpResponse
 from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -18,8 +18,14 @@ from xlsxwriter import Workbook
 from xlsxwriter.worksheet import Format, Worksheet
 
 from applications.api.handler_excel_openapi import (
+    openapi_employer_excel_download_schema,
     openapi_employer_excel_export_schema,
     openapi_youth_excel_export_viewset_schema,
+)
+from applications.api.v1.permissions import (
+    ALLOWED_APPLICATION_VIEW_STATUSES,
+    EmployerApplicationPermission,
+    get_user_company,
 )
 from applications.api.v1.serializers import YouthApplicationExportSerializer
 from applications.employer_excel_export import (
@@ -28,6 +34,7 @@ from applications.employer_excel_export import (
     excel_download_error_redirect,
     parse_export_parameters,
 )
+from applications.enums import ExcelColumns
 from applications.models import EmployerSummerVoucher, YouthApplication
 from applications.services import AuditAccessLogService
 from common.decorators import enforce_handler_view_adfs_login
@@ -80,6 +87,41 @@ class EmployerApplicationExcelExportView(APIView):
             return service.export(parameters)
         except EmployerExcelExportError as error:
             return excel_download_error_redirect(error.code)
+
+
+class EmployerApplicationExcelDownloadView(APIView):
+    """Excel download for employer applications for the authenticated employer."""
+
+    http_method_names = ["get", "head", "options"]
+    permission_classes = [IsAuthenticated, EmployerApplicationPermission]
+
+    @openapi_employer_excel_download_schema
+    def get(self, request: Request) -> HttpResponse:
+        user_company = get_user_company(request)
+
+        if user_company:
+            queryset = EmployerSummerVoucher.objects.filter(
+                application__company=user_company,
+                application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
+            ).for_export()
+        else:
+            queryset = EmployerSummerVoucher.objects.none()
+
+        if not queryset.exists():
+            return HttpResponse(_("Hakemuksia ei löytynyt."))
+
+        AuditAccessLogService.create_access_log_entry_with_no_related_object_instance(
+            actor=request.user,
+            actor_email=getattr(request.user, "email", ""),
+            content_type=ContentType.objects.get_for_model(EmployerSummerVoucher),
+            additional_data={
+                "method": f"{self.__class__.__name__}.get",
+            },
+        )
+
+        columns = ExcelColumns(ExcelColumns.DOWNLOAD.value)
+        service = EmployerExcelExportService(request)
+        return service.build_xlsx_response(queryset, columns)
 
 
 @openapi_youth_excel_export_viewset_schema

@@ -21,6 +21,7 @@ export const BackendEndpoint = {
   COMPANY: '/v1/company/',
   DASHBOARD_STATS: '/v1/dashboard/stats/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
+  EMPLOYER_EXCEL_DOWNLOAD: '/excel-download/employer-applications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   HANDLER_NOTES: '/v1/handlernotes/',
   ATTACHMENTS: '/attachments/',

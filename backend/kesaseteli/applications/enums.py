@@ -31,6 +31,7 @@ class ExcelColumns(models.TextChoices):
     Excel export output column set choices.
     """
 
+    DOWNLOAD = "download", _("Download")
     REPORTING = "reporting", _("Reporting")
     TALPA = "talpa", _("Talpa")
 
