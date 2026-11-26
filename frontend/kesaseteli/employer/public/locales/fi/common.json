@@ -177,7 +177,7 @@
         "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
         "employee_school": "Koulun nimi",
         "employment_contract": "Työsopimus",
-        "payslip": "Palkkatodistus",
+        "payslip": "Palkkalaskelma",
         "employment_start_date": "Työsuhteen alkamispäivä",
         "employment_end_date": "Työsuhteen päättymispäivä",
         "employment_work_hours": "Tehdyt työtunnit",
@@ -199,8 +199,8 @@
         "format": "Käytä muotoa",
         "attachments": "Voit lisätä korkeintaan viisi liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Suurin mahdollinen koko on 10 megatavua",
         "employment_contract": "Liitä tähän kesäsetelillä palkatun nuoren työsopimus.",
-        "payslip": "Liitä tähän kesäsetelin avulla palkatun nuoren palkkatodistus.",
-        "payslip_foreign_iban": "Liitä tähän kesäsetelin avulla palkatun nuoren palkkatodistus. Jos kyseessä on ulkomainen tilinumero, myös rahansiirtotodistus on pakollinen. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
+        "payslip": "Liitä tähän kesäsetelin avulla palkatun nuoren palkkalaskelma.",
+        "payslip_foreign_iban": "Liitä tähän kesäsetelin avulla palkatun nuoren palkkalaskelma. Jos kyseessä on ulkomainen tilinumero, myös rahansiirtotodistus on pakollinen. Voit ladata mallipohjan <lnk href=\"https://nuorten.hel.fi/opiskelu-ja-tyo/kesaseteli/lomakkeet/\">tästä</lnk>.",
         "bank_account": "Syötä IBAN-muodossa"
       },
       "errors": {
@@ -270,7 +270,7 @@
             "message": ""
           },
           "payslip": {
-            "title": "Palkkatodistus",
+            "title": "Palkkalaskelma",
             "message": ""
           }
         },
@@ -368,7 +368,7 @@
     "hired_without_voucher_assessment_maybe": "Ehkä",
     "hired_without_voucher_assessment_": "-",
     "employment_contract": "Työsopimus",
-    "payslip": "Palkkatodistus",
+    "payslip": "Palkkalaskelma",
     "attachmentsTitle": "Liitteet",
     "attachmentsTitle_one": "Liitteet ({{count}} kpl)",
     "attachmentsTitle_other": "Liitteet ({{count}} kpl)",
