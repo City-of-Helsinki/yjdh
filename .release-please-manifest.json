@@ -4,6 +4,6 @@
   "frontend/benefit/handler": "5.5.2",
   "frontend/benefit/applicant": "4.5.2",
   "frontend/kesaseteli/employer": "2.6.0",
-  "frontend/kesaseteli/handler": "2.9.0",
+  "frontend/kesaseteli/handler": "2.9.1",
   "frontend/kesaseteli/youth": "2.5.1"
 }
