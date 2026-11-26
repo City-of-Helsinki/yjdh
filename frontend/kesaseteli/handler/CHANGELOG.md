@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.1](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.9.0...kesaseteli-handler-v2.9.1) (2026-11-26)
+
+
+### Dependencies
+
+* Bump i18next from 25.10.10 to 26.3.4 in /frontend ([5d8d48d](https://github.com/City-of-Helsinki/yjdh/commit/5d8d48dbacd0838e892efcea8746f3daaa585a5a))
+* Bump sentry/nextjs to 10.75.2 ([18d96f4](https://github.com/City-of-Helsinki/yjdh/commit/18d96f4dd1150ecd41cc02d70121be658c97166e))
+
 ## [2.9.0](https://github.com/City-of-Helsinki/yjdh/compare/kesaseteli-handler-v2.8.0...kesaseteli-handler-v2.9.0) (2026-11-12)
 
 
