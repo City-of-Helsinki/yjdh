@@ -15,6 +15,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import LinkText from 'shared/components/link-text/LinkText';
 import { EMAIL_REGEX } from 'shared/constants';
+import { $Instructions } from './Step1EmployerAndEmployment.sc';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
@@ -162,12 +163,17 @@ const EmployerForm: React.FC = () => {
     <>
       <FormSection
         header={stepTitle}
-        tooltip={t('common:application.step1.tooltip')}
         withoutDivider
       />
       <CompanyInfoGrid />
       <EmployerErrorSummary />
       <FormSection columns={2}>
+        <$Instructions>
+          <p>
+            {t('common:application.step1.instructionText')}
+          </p>
+        </$Instructions>
+        <p/>
         <TextInput
           id="contact_person_name"
           validation={{ required: true, maxLength: 256 }}
