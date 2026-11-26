@@ -21,7 +21,11 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
-import { $FilterDivider, $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
+import {
+  $FilterDivider,
+  $FilterLabel,
+  $FilterWrapper,
+  $ResultCount } from './searchFilters/FilterSection';
 import SearchFieldFilter from './searchFilters/SearchFieldFilter';
 import StatusFilter from './searchFilters/StatusFilter';
 import YearFilter from './searchFilters/YearFilter';
@@ -317,13 +321,17 @@ export default function EmployerApplicationList(): React.JSX.Element {
               }}
             />
           </$FilterWrapper>
-          <$FilterDivider/>
+          <$FilterDivider />
           <SearchFieldFilter
             id="employer-application-pending-search-filter"
             value={pendingSearch}
             onSearch={setPendingSearch}
           />
+          <$ResultCount>
+            <p>Haku tuotti {pendingQuery.data?.results.length ?? 0} tulosta</p>
+          </$ResultCount>
         </ApplicationListTable.FilterSection>
+
         <ApplicationListTable<EmployerApplication>
           columns={columns}
           data={pendingQuery.data?.results ?? []}

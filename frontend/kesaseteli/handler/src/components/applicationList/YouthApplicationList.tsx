@@ -21,7 +21,7 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
-import { $FilterDivider, $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
+import { $FilterDivider, $FilterLabel, $FilterWrapper, $ResultCount } from './searchFilters/FilterSection';
 import SearchFieldFilter from './searchFilters/SearchFieldFilter';
 import StatusFilter from './searchFilters/StatusFilter';
 import YearFilter from './searchFilters/YearFilter';
@@ -369,12 +369,15 @@ export default function YouthApplicationList(): React.JSX.Element {
               onChange={(e) => setIsProcessedAssignedToMe(e.target.checked)}
             />
           </$FilterWrapper>
-          <$FilterDivider/>
+          <$FilterDivider />
           <SearchFieldFilter
             id="youth-application-processed-search-filter"
             value={processedSearch}
             onSearch={setProcessedSearch}
           />
+          <$ResultCount>
+            <p>Haku tuotti {processedQuery.data?.results.length ?? 0} tulosta</p>
+          </$ResultCount>
         </ApplicationListTable.FilterSection>
         <ApplicationListTable
           columns={columns}

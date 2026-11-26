@@ -58,6 +58,11 @@ const $FilterControls = styled.div`
   }
 `;
 
+export const $ResultCount = styled.div`
+  margin-top: var(--spacing-xl);
+`;
+
+
 type FilterSectionProps = {
   ariaLabelledBy: string;
   title: string;
