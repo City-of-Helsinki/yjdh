@@ -21,7 +21,8 @@ import ApplicationListTable, {
   TableState,
   useApplicationTableQuery,
 } from './ApplicationListTable';
-import { $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
+import { $FilterDivider, $FilterLabel, $FilterWrapper } from './searchFilters/FilterSection';
+import SearchFieldFilter from './searchFilters/SearchFieldFilter';
 import StatusFilter from './searchFilters/StatusFilter';
 import YearFilter from './searchFilters/YearFilter';
 
@@ -162,6 +163,8 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
     React.SetStateAction<EmployerApplicationStatus[]>
   >;
   selectedStatuses: EmployerApplicationStatus[];
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
 };
 
 /**
@@ -171,7 +174,8 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
 const useEmployerApplications = (
   initialStatuses: EmployerApplicationStatus[],
   selectedYear: number,
-  initialAssignedToMe = false
+  initialAssignedToMe = false,
+  initialSearch = ''
 ): UseEmployerApplicationsResultType & {
   isAssignedToMe: boolean;
   setIsAssignedToMe: React.Dispatch<React.SetStateAction<boolean>>;
@@ -179,6 +183,7 @@ const useEmployerApplications = (
   const [selectedStatuses, setSelectedStatuses] =
     useState<EmployerApplicationStatus[]>(initialStatuses);
   const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
+  const [search, setSearch] = useState<string>(initialSearch);
 
   const tableQuery = useApplicationTableQuery<EmployerApplication>({
     useQueryHook: useEmployerApplicationsListQuery,
@@ -186,13 +191,14 @@ const useEmployerApplications = (
     defaultOrdering: '-submitted_at',
     isAssignedToMe,
     year: selectedYear,
+    search,
   });
 
   const { setPage } = tableQuery;
 
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, isAssignedToMe, selectedYear, setPage]);
+  }, [selectedStatuses, isAssignedToMe, selectedYear, search, setPage]);
 
   return {
     ...tableQuery,
@@ -200,6 +206,8 @@ const useEmployerApplications = (
     selectedStatuses,
     isAssignedToMe,
     setIsAssignedToMe,
+    search,
+    setSearch,
   };
 };
 
@@ -226,6 +234,8 @@ export default function EmployerApplicationList(): React.JSX.Element {
     count: pendingCount,
     isAssignedToMe: isPendingAssignedToMe,
     setIsAssignedToMe: setIsPendingAssignedToMe,
+    search: pendingSearch,
+    setSearch: setPendingSearch,
   } = useEmployerApplications(DEFAULT_PENDING_STATUSES, selectedYear);
 
   // Processed Tab States & Query
@@ -239,6 +249,8 @@ export default function EmployerApplicationList(): React.JSX.Element {
     count: processedCount,
     isAssignedToMe: isProcessedAssignedToMe,
     setIsAssignedToMe: setIsProcessedAssignedToMe,
+    search: processedSearch,
+    setSearch: setProcessedSearch,
   } = useEmployerApplications(PROCESSED_STATUSES, selectedYear);
 
   const columns = useEmployerApplicationListColumns();
@@ -305,6 +317,12 @@ export default function EmployerApplicationList(): React.JSX.Element {
               }}
             />
           </$FilterWrapper>
+          <$FilterDivider/>
+          <SearchFieldFilter
+            id="employer-application-pending-search-filter"
+            value={pendingSearch}
+            onSearch={setPendingSearch}
+          />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
           columns={columns}
@@ -333,6 +351,11 @@ export default function EmployerApplicationList(): React.JSX.Element {
             id="employer-application-processed-year-filter"
             selectedYear={selectedYear}
             onChange={setSelectedYear}
+          />
+          <SearchFieldFilter
+            id="employer-application-processed-search-filter"
+            value={processedSearch}
+            onSearch={setProcessedSearch}
           />
           <$FilterWrapper>
             <$FilterLabel>

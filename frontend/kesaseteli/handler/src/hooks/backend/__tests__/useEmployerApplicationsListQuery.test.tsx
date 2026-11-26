@@ -139,4 +139,29 @@ describe('useEmployerApplicationsListQuery', () => {
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
+
+  it('serializes search query parameter', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.EMPLOYER_APPLICATIONS)
+      .query(
+        (queryObj) =>
+          queryObj.limit === '20' &&
+          queryObj.offset === '0' &&
+          queryObj.search === 'test'
+      )
+      .reply(200, mockListResponse);
+
+    const { result } = renderHook(
+      () =>
+        useEmployerApplicationsListQuery({
+          limit: 20,
+          offset: 0,
+          search: 'test',
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
 });

@@ -66,7 +66,9 @@
       "businessId": "Y-tunnus",
       "summerVoucherSerialNumber": "Kesäsetelin sarjanumero",
       "targetGroup": "Kohderyhmä",
-      "age": "Ikä"
+      "age": "Ikä",
+      "bankAccountNumber": "Tilinumero",
+      "contactPersonName": "Yhteyshenkilö"
     },
     "youth": {
       "status": {
