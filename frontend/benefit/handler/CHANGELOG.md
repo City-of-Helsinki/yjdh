@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.5.2](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.5.1...benefit-handler-v5.5.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* **bf-handler:** Alterations page auth query Refs: HL-1876 ([33c99ed](https://github.com/City-of-Helsinki/yjdh/commit/33c99ed3e3bb4d3b86eb18fa4521a4b7b2238f2d))
+* **bf-handler:** Alterations query authenticated Refs: HL-1876 ([84af5e5](https://github.com/City-of-Helsinki/yjdh/commit/84af5e5b2a4d6390a768c6c33851cbee26352235))
+* Only major sonar fixes ([5e8512c](https://github.com/City-of-Helsinki/yjdh/commit/5e8512c837955675abdc682a77af951c8e38941c))
+
+
+### Dependencies
+
+* Bump i18next from 25.10.10 to 26.3.4 in /frontend ([5d8d48d](https://github.com/City-of-Helsinki/yjdh/commit/5d8d48dbacd0838e892efcea8746f3daaa585a5a))
+* Bump sentry/nextjs to 10.75.2 ([18d96f4](https://github.com/City-of-Helsinki/yjdh/commit/18d96f4dd1150ecd41cc02d70121be658c97166e))
+
 ## [5.5.1](https://github.com/City-of-Helsinki/yjdh/compare/benefit-handler-v5.5.0...benefit-handler-v5.5.1) (2026-11-02)
 
 
