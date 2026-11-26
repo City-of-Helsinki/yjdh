@@ -1,4 +1,4 @@
-import { Button, TextInput } from 'hds-react';
+import { Button, ButtonVariant, TextInput } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
@@ -26,6 +26,7 @@ type SearchFieldFilterProps = {
   label?: string;
   placeholder?: string;
   buttonText?: string;
+  resetButtonText?: string;
 };
 
 export default function SearchFieldFilter({
@@ -36,6 +37,7 @@ export default function SearchFieldFilter({
   label,
   placeholder,
   buttonText,
+  resetButtonText,
 }: Readonly<SearchFieldFilterProps>): React.JSX.Element {
   const { t } = useTranslation();
   const initialValue = propValue ?? search ?? '';
@@ -43,6 +45,11 @@ export default function SearchFieldFilter({
 
   const handleSearch = (): void => {
     onSearch(searchValue);
+  };
+
+  const handleReset = (): void => {
+    setSearchValue('');
+    onSearch('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -67,6 +74,14 @@ export default function SearchFieldFilter({
       />
       <Button id={`${id}-search-button`} onClick={handleSearch} type="button">
         {buttonText ?? t('common:applicationList.searchButton', 'Hae')}
+      </Button>
+      <Button
+        id={`${id}-reset-button`}
+        variant={ButtonVariant.Secondary}
+        onClick={handleReset}
+        type="button"
+      >
+        {resetButtonText ?? t('common:applicationList.resetButton', 'Tyhjennä')}
       </Button>
     </$Wrapper>
   );

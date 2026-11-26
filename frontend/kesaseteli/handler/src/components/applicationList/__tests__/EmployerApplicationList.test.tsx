@@ -254,6 +254,34 @@ describe('EmployerApplicationList', () => {
       })
     );
   });
+
+  it('clears search query parameter when reset button is clicked in pending tab', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    const searchInput = screen.getByRole('textbox');
+    await userEvent.type(searchInput, 'Yritys');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: 'Yritys',
+        offset: 0,
+      })
+    );
+
+    const resetButton = screen.getByRole('button', { name: 'Tyhjennä' });
+    await userEvent.click(resetButton);
+
+    expect(searchInput).toHaveValue('');
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: '',
+        offset: 0,
+      })
+    );
+  });
 });
 
 /* eslint-enable scanjs-rules/property_sessionStorage, scanjs-rules/identifier_sessionStorage */

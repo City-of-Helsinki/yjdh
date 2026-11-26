@@ -6,7 +6,7 @@ import React from 'react';
 import SearchFieldFilter from '../SearchFieldFilter';
 
 describe('SearchFieldFilter', () => {
-  it('renders input field and search button', () => {
+  it('renders input field, search button and reset button', () => {
     const handleSearch = jest.fn();
     renderComponent(
       <SearchFieldFilter
@@ -18,6 +18,9 @@ describe('SearchFieldFilter', () => {
     expect(screen.getByRole('textbox')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Hae' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Tyhjennä' })
     ).toBeInTheDocument();
   });
 
@@ -54,6 +57,46 @@ describe('SearchFieldFilter', () => {
 
     expect(handleSearch).toHaveBeenCalledTimes(1);
     expect(handleSearch).toHaveBeenCalledWith('111111-1111');
+  });
+
+  it('clears input field and calls onSearch with empty string when "Tyhjennä" button is clicked', async () => {
+    const handleSearch = jest.fn();
+    renderComponent(
+      <SearchFieldFilter
+        id="test-search-filter"
+        onSearch={handleSearch}
+        value="Initial Query"
+      />
+    );
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveValue('Initial Query');
+
+    const resetButton = screen.getByRole('button', { name: 'Tyhjennä' });
+    await userEvent.click(resetButton);
+
+    expect(input).toHaveValue('');
+    expect(handleSearch).toHaveBeenCalledTimes(1);
+    expect(handleSearch).toHaveBeenCalledWith('');
+  });
+
+  it('renders custom button texts if provided via props', () => {
+    const handleSearch = jest.fn();
+    renderComponent(
+      <SearchFieldFilter
+        id="test-search-filter"
+        onSearch={handleSearch}
+        buttonText="Custom Search"
+        resetButtonText="Custom Reset"
+      />
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Custom Search' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Custom Reset' })
+    ).toBeInTheDocument();
   });
 
   it('initializes with default value if provided via prop', () => {

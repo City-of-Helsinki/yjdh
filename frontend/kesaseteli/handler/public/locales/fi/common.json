@@ -53,6 +53,7 @@
     "filterSearch": "Haku",
     "filterSearchPlaceholder": "Hae hakemuksia",
     "searchButton": "Hae",
+    "resetButton": "Tyhjennä",
     "filterError": "Valitse vähintään yksi tila",
     "noSsn": "Ei hetua",
     "noSerialNumber": "Ei sarjanumeroa",

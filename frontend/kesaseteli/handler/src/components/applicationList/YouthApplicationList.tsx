@@ -352,11 +352,6 @@ export default function YouthApplicationList(): React.JSX.Element {
             selectedYear={selectedYear}
             onChange={setSelectedYear}
           />
-          <SearchFieldFilter
-            id="youth-application-processed-search-filter"
-            value={processedSearch}
-            onSearch={setProcessedSearch}
-          />
           <$FilterWrapper>
             <$FilterLabel>
               {t(ASSIGNEE_TRANSLATION_KEY)}
@@ -374,6 +369,12 @@ export default function YouthApplicationList(): React.JSX.Element {
               onChange={(e) => setIsProcessedAssignedToMe(e.target.checked)}
             />
           </$FilterWrapper>
+          <$FilterDivider/>
+          <SearchFieldFilter
+            id="youth-application-processed-search-filter"
+            value={processedSearch}
+            onSearch={setProcessedSearch}
+          />
         </ApplicationListTable.FilterSection>
         <ApplicationListTable
           columns={columns}
