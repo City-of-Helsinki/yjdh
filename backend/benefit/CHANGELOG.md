@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.25.0](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.10...benefit-backend-v2.25.0) (2026-11-26)
+
+
+### Features
+
+* Replace pdfkit with weasyprint ([f82eb1e](https://github.com/City-of-Helsinki/yjdh/commit/f82eb1e786fd265f8a31bd2158c6437b1cced648))
+* Use django-helsinki-health-endpoints for readiness and healthz ([432552c](https://github.com/City-of-Helsinki/yjdh/commit/432552c95d59c236e78a0558325fa6620afa64e6))
+
+
+### Dependencies
+
+* Bump authlib from 1.8.0 to 1.9.1 in /backend/benefit ([fbf3769](https://github.com/City-of-Helsinki/yjdh/commit/fbf3769cb0480c112138baff00bcd13bdd984952))
+* Bump django-helusers ([55a303a](https://github.com/City-of-Helsinki/yjdh/commit/55a303aac124a62f8d8c8f87fabb5547b614a199))
+* Bump filelock from 3.32.6 to 4.2.1 in /backend/benefit ([29067a7](https://github.com/City-of-Helsinki/yjdh/commit/29067a79757eaeafd77456c40ea227157855f137))
+* Bump joserfc from 1.7.5 to 1.7.6 in /backend/benefit ([d00c67d](https://github.com/City-of-Helsinki/yjdh/commit/d00c67dc7a151abdba91b740455d642eda37fbea))
+* Bump oauthlib from 4.0.0 to 4.0.1 in /backend/benefit ([344cde7](https://github.com/City-of-Helsinki/yjdh/commit/344cde746d9f1c35d98e2460103c188aff197432))
+* Bump pyjwt from 2.14.0 to 2.15.0 in /backend/benefit ([7b41252](https://github.com/City-of-Helsinki/yjdh/commit/7b412527e37314b79dc71f466fb35b9f59446d2d))
+* Bump social-auth-core from 5.2.0 to 6.2.0 in /backend/benefit ([b615557](https://github.com/City-of-Helsinki/yjdh/commit/b6155573197abbaaa708717974c284f94ab0057f))
+
 ## [2.24.10](https://github.com/City-of-Helsinki/yjdh/compare/benefit-backend-v2.24.9...benefit-backend-v2.24.10) (2026-10-26)
 
 
