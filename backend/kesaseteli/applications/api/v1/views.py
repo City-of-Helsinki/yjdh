@@ -227,6 +227,14 @@ class JobTypeListView(ListAPIView):
 class YouthApplicationFilter(filters.FilterSet):
     status = filters.MultipleChoiceFilter(choices=YouthApplicationStatus.choices)
     year = filters.NumberFilter(field_name="created_at__year")
+    start_date = filters.DateFilter(
+        field_name="created_at",
+        lookup_expr="date__gte",
+    )
+    end_date = filters.DateFilter(
+        field_name="created_at",
+        lookup_expr="date__lte",
+    )
     search = filters.CharFilter(method="filter_search")
 
     ordering = filters.OrderingFilter(
@@ -1366,8 +1374,7 @@ class EmployerApplicationFilter(filters.FilterSet):
             ]
 
             search_filter |= Q(
-                summer_vouchers__youth_summer_voucher__summer_voucher_serial_number__in=
-                matching_voucher_serial_numbers
+                summer_vouchers__youth_summer_voucher__summer_voucher_serial_number__in=matching_voucher_serial_numbers
             )
 
             return queryset.filter(search_filter).distinct()

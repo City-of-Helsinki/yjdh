@@ -172,13 +172,19 @@ type UseYouthApplicationsResultType = TableState<YouthApplication> & {
   selectedStatuses: YouthApplicationStatus[];
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  startDate: string;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  endDate: string;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const useYouthApplications = (
   initialStatuses: YouthApplicationStatus[],
   selectedYear: number,
   initialAssignedToMe = false,
-  initialSearch = ''
+  initialSearch = '',
+  initialStartDate = '',
+  initialEndDate = ''
 ): UseYouthApplicationsResultType & {
   isAssignedToMe: boolean;
   setIsAssignedToMe: React.Dispatch<React.SetStateAction<boolean>>;
@@ -187,6 +193,8 @@ const useYouthApplications = (
     useState<YouthApplicationStatus[]>(initialStatuses);
   const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
   const [search, setSearch] = useState<string>(initialSearch);
+  const [startDate, setStartDate] = useState<string>(initialStartDate);
+  const [endDate, setEndDate] = useState<string>(initialEndDate);
 
   const tableQuery = useApplicationTableQuery<YouthApplication>({
     useQueryHook: useYouthApplicationsListQuery,
@@ -194,6 +202,8 @@ const useYouthApplications = (
     isAssignedToMe,
     year: selectedYear,
     search,
+    startDate,
+    endDate,
   });
 
   const { setPage } = tableQuery;
@@ -201,7 +211,15 @@ const useYouthApplications = (
   // Reset page when statuses change to avoid showing stale data
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, isAssignedToMe, selectedYear, search, setPage]);
+  }, [
+    selectedStatuses,
+    isAssignedToMe,
+    selectedYear,
+    search,
+    startDate,
+    endDate,
+    setPage,
+  ]);
 
   return {
     ...tableQuery,
@@ -211,6 +229,10 @@ const useYouthApplications = (
     setIsAssignedToMe,
     search,
     setSearch,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
   };
 };
 
@@ -238,6 +260,10 @@ export default function YouthApplicationList(): React.JSX.Element {
     setIsAssignedToMe: setIsPendingAssignedToMe,
     search: pendingSearch,
     setSearch: setPendingSearch,
+    startDate: pendingStartDate,
+    setStartDate: setPendingStartDate,
+    endDate: pendingEndDate,
+    setEndDate: setPendingEndDate,
   } = useYouthApplications(DEFAULT_PENDING_STATUSES, selectedYear);
 
   const {
@@ -252,6 +278,10 @@ export default function YouthApplicationList(): React.JSX.Element {
     setIsAssignedToMe: setIsProcessedAssignedToMe,
     search: processedSearch,
     setSearch: setProcessedSearch,
+    startDate: processedStartDate,
+    setStartDate: setProcessedStartDate,
+    endDate: processedEndDate,
+    setEndDate: setProcessedEndDate,
   } = useYouthApplications(PROCESSED_STATUSES, selectedYear);
 
   const columns = useYouthApplicationListColumns();
@@ -322,8 +352,18 @@ export default function YouthApplicationList(): React.JSX.Element {
           <SearchFieldFilter
             id="youth-application-pending-search-filter"
             value={pendingSearch}
-            onSearch={setPendingSearch}
+            showDateInputs
+            startDate={pendingStartDate}
+            endDate={pendingEndDate}
+            onSearch={(search, startDate, endDate) => {
+              setPendingSearch(search);
+              setPendingStartDate(startDate ?? '');
+              setPendingEndDate(endDate ?? '');
+            }}
           />
+          <$ResultCount>
+            <p>Haku tuotti {pendingQuery.data?.results.length ?? 0} tulosta</p>
+          </$ResultCount>
         </ApplicationListTable.FilterSection>
         <ApplicationListTable
           columns={columns}
@@ -373,7 +413,14 @@ export default function YouthApplicationList(): React.JSX.Element {
           <SearchFieldFilter
             id="youth-application-processed-search-filter"
             value={processedSearch}
-            onSearch={setProcessedSearch}
+            showDateInputs
+            startDate={processedStartDate}
+            endDate={processedEndDate}
+            onSearch={(search, startDate, endDate) => {
+              setProcessedSearch(search);
+              setProcessedStartDate(startDate ?? '');
+              setProcessedEndDate(endDate ?? '');
+            }}
           />
           <$ResultCount>
             <p>Haku tuotti {processedQuery.data?.results.length ?? 0} tulosta</p>

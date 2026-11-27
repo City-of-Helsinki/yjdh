@@ -192,4 +192,31 @@ describe('useYouthApplicationsListQuery', () => {
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
+
+  it('serializes start_date and end_date query parameters', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.YOUTH_APPLICATIONS)
+      .query(
+        (queryObj) =>
+          queryObj.limit === '20' &&
+          queryObj.offset === '0' &&
+          queryObj.start_date === '2024-06-01' &&
+          queryObj.end_date === '2024-06-30'
+      )
+      .reply(200, mockListResponse);
+
+    const { result } = renderHook(
+      () =>
+        useYouthApplicationsListQuery({
+          limit: 20,
+          offset: 0,
+          start_date: '2024-06-01',
+          end_date: '2024-06-30',
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
 });

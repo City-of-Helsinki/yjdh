@@ -1,0 +1,82 @@
+import {
+  keepPreviousData,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
+import {
+  BaseApplication,
+  PaginatedResponse,
+} from 'kesaseteli/handler/types/application';
+import { BackendPath } from 'kesaseteli-shared/backend-api/backend-api';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
+
+export type ApplicationsQueryParams = {
+  /** List of statuses to filter by */
+  status?: string[];
+  limit: number;
+  offset: number;
+  /** Valid ordering fields: created_at, company__name, company__business_id, status, modified_at, submitted_at */
+  ordering?: string;
+  is_assigned_to_me?: boolean;
+  year?: number;
+  search?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
+const useApplicationsListQuery = <T extends BaseApplication = BaseApplication>(
+  endpoint: BackendPath,
+  params: ApplicationsQueryParams,
+  options?: Omit<UseQueryOptions<PaginatedResponse<T>>, 'queryKey' | 'queryFn'>
+): UseQueryResult<PaginatedResponse<T>> => {
+  const { axios, handleResponse } = useBackendAPI();
+  const handleError = useErrorHandler();
+
+  const searchParams = new URLSearchParams();
+  if (params.status && params.status.length > 0) {
+    params.status.forEach((s) => searchParams.append('status', s));
+  }
+  searchParams.append('limit', String(params.limit));
+  searchParams.append('offset', String(params.offset));
+  if (params.ordering) {
+    searchParams.append('ordering', params.ordering);
+  }
+  if (params.is_assigned_to_me !== undefined) {
+    searchParams.append('is_assigned_to_me', String(params.is_assigned_to_me));
+  }
+  if (params.year !== undefined) {
+    searchParams.append('year', String(params.year));
+  }
+  if (params.search) {
+    searchParams.append('search', params.search);
+  }
+  if (params.start_date) {
+    searchParams.append('start_date', params.start_date);
+  }
+  if (params.end_date) {
+    searchParams.append('end_date', params.end_date);
+  }
+
+  const query = useQuery({
+    queryKey: [endpoint, params],
+    queryFn: () =>
+      handleResponse(
+        axios.get<PaginatedResponse<T>>(endpoint, {
+          params: searchParams,
+        })
+      ),
+    placeholderData: keepPreviousData,
+    ...options,
+  });
+
+  useQuerySideEffect(query, {
+    onError: handleError,
+  });
+
+  return query;
+};
+
+export default useApplicationsListQuery;

@@ -3100,6 +3100,48 @@ def test_list_youth_applications_staff_sorting(staff_client, field):
 
 
 @pytest.mark.django_db
+def test_list_youth_applications_filtered_by_start_and_end_date(staff_client):
+    """Test filtering youth applications by start_date and end_date on created_at."""
+    app_may = AcceptedYouthApplicationFactory.create()
+    app_june = AcceptedYouthApplicationFactory.create()
+    app_july = AcceptedYouthApplicationFactory.create()
+
+    YouthApplication.objects.filter(pk=app_may.pk).update(
+        created_at=timezone.make_aware(timezone.datetime(2024, 5, 15, 10, 0, 0))
+    )
+    YouthApplication.objects.filter(pk=app_june.pk).update(
+        created_at=timezone.make_aware(timezone.datetime(2024, 6, 15, 10, 0, 0))
+    )
+    YouthApplication.objects.filter(pk=app_july.pk).update(
+        created_at=timezone.make_aware(timezone.datetime(2024, 7, 15, 10, 0, 0))
+    )
+
+    # Filter by start_date only
+    response = staff_client.get(get_list_url(), {"start_date": "2024-06-01"})
+    assert response.status_code == status.HTTP_200_OK
+    ids = [str(item["id"]) for item in response.data["results"]]
+    assert str(app_may.id) not in ids
+    assert str(app_june.id) in ids
+    assert str(app_july.id) in ids
+
+    # Filter by end_date only
+    response = staff_client.get(get_list_url(), {"end_date": "2024-06-30"})
+    assert response.status_code == status.HTTP_200_OK
+    ids = [str(item["id"]) for item in response.data["results"]]
+    assert str(app_may.id) in ids
+    assert str(app_june.id) in ids
+    assert str(app_july.id) not in ids
+
+    # Filter by both start_date and end_date
+    response = staff_client.get(
+        get_list_url(), {"start_date": "2024-06-01", "end_date": "2024-06-30"}
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data["results"]) == 1
+    assert str(response.data["results"][0]["id"]) == str(app_june.id)
+
+
+@pytest.mark.django_db
 def test_employer_applications_field_not_leaked_to_unauthenticated_user(
     unauth_api_client,
     settings,

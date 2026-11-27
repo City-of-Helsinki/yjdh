@@ -1,0 +1,90 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+import { renderHook, waitFor } from '@testing-library/react';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import nock from 'nock';
+import React from 'react';
+import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
+import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
+
+import useApplicationsListQuery from '../useApplicationsListQuery';
+
+jest.mock('shared/hooks/useErrorHandler', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
+const API_BASE_TEST_URL = 'https://kesaseteli-api-unit-test.invalid';
+const mockListResponse = { count: 2, next: null, previous: null, results: [] };
+
+describe('useApplicationsListQuery', () => {
+  const axios = createAxiosTestContext(API_BASE_TEST_URL);
+  const queryClient = createReactQueryTestClient(axios, API_BASE_TEST_URL);
+  const mockErrorHandler = jest.fn();
+
+  const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <BackendAPIProvider baseURL={API_BASE_TEST_URL}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </BackendAPIProvider>
+  );
+
+  beforeAll(() => {
+    nock.disableNetConnect();
+  });
+  afterAll(() => {
+    nock.enableNetConnect();
+  });
+  beforeEach(() => {
+    queryClient.clear();
+    nock.cleanAll();
+    (useErrorHandler as jest.Mock).mockReturnValue(mockErrorHandler);
+    jest.clearAllMocks();
+  });
+
+  it('fetches paginated applications successfully', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.EMPLOYER_APPLICATIONS)
+      .query({
+        status: ['submitted', 'handling'],
+        limit: '20',
+        offset: '0',
+        ordering: '-created_at',
+        year: '2024',
+      })
+      .reply(200, mockListResponse);
+
+    const { result } = renderHook(
+      () =>
+        useApplicationsListQuery(BackendEndpoint.EMPLOYER_APPLICATIONS, {
+          status: ['submitted', 'handling'],
+          limit: 20,
+          offset: 0,
+          ordering: '-created_at',
+          year: 2024,
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
+
+  it('calls useErrorHandler on error', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.YOUTH_APPLICATIONS)
+      .query(true)
+      .reply(500, 'server error');
+
+    const { result } = renderHook(
+      () =>
+        useApplicationsListQuery(BackendEndpoint.YOUTH_APPLICATIONS, {
+          limit: 20,
+          offset: 0,
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(mockErrorHandler).toHaveBeenCalled();
+  });
+});
