@@ -169,6 +169,10 @@ type UseEmployerApplicationsResultType = TableState<EmployerApplication> & {
   selectedStatuses: EmployerApplicationStatus[];
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  startDate: string;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  endDate: string;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
 /**
@@ -179,7 +183,9 @@ const useEmployerApplications = (
   initialStatuses: EmployerApplicationStatus[],
   selectedYear: number,
   initialAssignedToMe = false,
-  initialSearch = ''
+  initialSearch = '',
+  initialStartDate = '',
+  initialEndDate = ''
 ): UseEmployerApplicationsResultType & {
   isAssignedToMe: boolean;
   setIsAssignedToMe: React.Dispatch<React.SetStateAction<boolean>>;
@@ -188,6 +194,8 @@ const useEmployerApplications = (
     useState<EmployerApplicationStatus[]>(initialStatuses);
   const [isAssignedToMe, setIsAssignedToMe] = useState(initialAssignedToMe);
   const [search, setSearch] = useState<string>(initialSearch);
+  const [startDate, setStartDate] = useState<string>(initialStartDate);
+  const [endDate, setEndDate] = useState<string>(initialEndDate);
 
   const tableQuery = useApplicationTableQuery<EmployerApplication>({
     useQueryHook: useEmployerApplicationsListQuery,
@@ -196,13 +204,23 @@ const useEmployerApplications = (
     isAssignedToMe,
     year: selectedYear,
     search,
+    startDate,
+    endDate,
   });
 
   const { setPage } = tableQuery;
 
   useEffect(() => {
     setPage(0);
-  }, [selectedStatuses, isAssignedToMe, selectedYear, search, setPage]);
+  }, [
+    selectedStatuses,
+    isAssignedToMe,
+    selectedYear,
+    search,
+    startDate,
+    endDate,
+    setPage,
+  ]);
 
   return {
     ...tableQuery,
@@ -212,6 +230,10 @@ const useEmployerApplications = (
     setIsAssignedToMe,
     search,
     setSearch,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
   };
 };
 
@@ -240,6 +262,10 @@ export default function EmployerApplicationList(): React.JSX.Element {
     setIsAssignedToMe: setIsPendingAssignedToMe,
     search: pendingSearch,
     setSearch: setPendingSearch,
+    startDate: pendingStartDate,
+    setStartDate: setPendingStartDate,
+    endDate: pendingEndDate,
+    setEndDate: setPendingEndDate,
   } = useEmployerApplications(DEFAULT_PENDING_STATUSES, selectedYear);
 
   // Processed Tab States & Query
@@ -255,6 +281,10 @@ export default function EmployerApplicationList(): React.JSX.Element {
     setIsAssignedToMe: setIsProcessedAssignedToMe,
     search: processedSearch,
     setSearch: setProcessedSearch,
+    startDate: processedStartDate,
+    setStartDate: setProcessedStartDate,
+    endDate: processedEndDate,
+    setEndDate: setProcessedEndDate,
   } = useEmployerApplications(PROCESSED_STATUSES, selectedYear);
 
   const columns = useEmployerApplicationListColumns();
@@ -325,7 +355,14 @@ export default function EmployerApplicationList(): React.JSX.Element {
           <SearchFieldFilter
             id="employer-application-pending-search-filter"
             value={pendingSearch}
-            onSearch={setPendingSearch}
+            showDateInputs
+            startDate={pendingStartDate}
+            endDate={pendingEndDate}
+            onSearch={(search, startDate, endDate) => {
+              setPendingSearch(search);
+              setPendingStartDate(startDate ?? '');
+              setPendingEndDate(endDate ?? '');
+            }}
           />
           <$ResultCount>
             <p>Haku tuotti {pendingQuery.data?.results.length ?? 0} tulosta</p>
@@ -360,11 +397,6 @@ export default function EmployerApplicationList(): React.JSX.Element {
             selectedYear={selectedYear}
             onChange={setSelectedYear}
           />
-          <SearchFieldFilter
-            id="employer-application-processed-search-filter"
-            value={processedSearch}
-            onSearch={setProcessedSearch}
-          />
           <$FilterWrapper>
             <$FilterLabel>
               {t(ASSIGNEE_TRANSLATION_KEY)}
@@ -382,6 +414,22 @@ export default function EmployerApplicationList(): React.JSX.Element {
               onChange={(e) => setIsProcessedAssignedToMe(e.target.checked)}
             />
           </$FilterWrapper>
+          <$FilterDivider />
+          <SearchFieldFilter
+            id="employer-application-processed-search-filter"
+            value={processedSearch}
+            showDateInputs
+            startDate={processedStartDate}
+            endDate={processedEndDate}
+            onSearch={(search, startDate, endDate) => {
+              setProcessedSearch(search);
+              setProcessedStartDate(startDate ?? '');
+              setProcessedEndDate(endDate ?? '');
+            }}
+          />
+          <$ResultCount>
+            <p>Haku tuotti {processedQuery.data?.results.length ?? 0} tulosta</p>
+          </$ResultCount>
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
           columns={columns}

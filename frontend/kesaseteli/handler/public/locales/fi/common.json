@@ -50,6 +50,8 @@
     "filterAssignedToMe": "Omassa käsittelyssäni",
     "filterYear": "Vuosi",
     "filterYearPlaceholder": "Valitse vuosi",
+    "filterStartDate": "Alkupäivä",
+    "filterEndDate": "Loppupäivä",
     "filterSearch": "Haku",
     "filterSearchPlaceholder": "Hae hakemuksia",
     "searchButton": "Hae",

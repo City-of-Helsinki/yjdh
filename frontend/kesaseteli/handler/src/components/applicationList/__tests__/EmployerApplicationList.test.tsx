@@ -221,7 +221,7 @@ describe('EmployerApplicationList', () => {
   it('sends search query parameter when search button is clicked in pending tab', async () => {
     renderComponent(<EmployerApplicationList />);
 
-    const searchInput = screen.getByRole('textbox');
+    const searchInput = screen.getByRole('textbox', { name: /haku/i });
     await userEvent.type(searchInput, 'Yritys');
 
     const searchButton = screen.getByRole('button', { name: 'Hae' });
@@ -241,7 +241,7 @@ describe('EmployerApplicationList', () => {
     // Switch to processed tab
     await userEvent.click(screen.getByText('Käsitellyt (10)'));
 
-    const searchInput = screen.getByRole('textbox');
+    const searchInput = screen.getByRole('textbox', { name: /haku/i });
     await userEvent.type(searchInput, 'Testiyritys');
 
     const searchButton = screen.getByRole('button', { name: 'Hae' });
@@ -258,7 +258,7 @@ describe('EmployerApplicationList', () => {
   it('clears search query parameter when reset button is clicked in pending tab', async () => {
     renderComponent(<EmployerApplicationList />);
 
-    const searchInput = screen.getByRole('textbox');
+    const searchInput = screen.getByRole('textbox', { name: /haku/i });
     await userEvent.type(searchInput, 'Yritys');
 
     const searchButton = screen.getByRole('button', { name: 'Hae' });
@@ -277,6 +277,89 @@ describe('EmployerApplicationList', () => {
     expect(searchInput).toHaveValue('');
     expect(mockUseQuery).toHaveBeenCalledWith(
       expect.objectContaining({
+        search: '',
+        offset: 0,
+      })
+    );
+  });
+
+  it('sends start_date and end_date query parameters when search button is clicked in pending tab', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    const startDateInput = screen.getByRole('textbox', { name: /alkupäivä/i });
+    const endDateInput = screen.getByRole('textbox', { name: /loppupäivä/i });
+    const searchInput = screen.getByRole('textbox', { name: /haku/i });
+
+    await userEvent.type(startDateInput, '1.6.2024');
+    await userEvent.type(endDateInput, '30.6.2024');
+    await userEvent.type(searchInput, 'Yritys');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: 'Yritys',
+        start_date: '1.6.2024',
+        end_date: '30.6.2024',
+        offset: 0,
+      })
+    );
+  });
+
+  it('sends start_date and end_date query parameters when search button is clicked in processed tab', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    // Switch to processed tab
+    await userEvent.click(screen.getByText('Käsitellyt (10)'));
+
+    const startDateInput = screen.getByRole('textbox', { name: /alkupäivä/i });
+    const endDateInput = screen.getByRole('textbox', { name: /loppupäivä/i });
+
+    await userEvent.type(startDateInput, '1.5.2024');
+    await userEvent.type(endDateInput, '31.5.2024');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        start_date: '1.5.2024',
+        end_date: '31.5.2024',
+        offset: 0,
+      })
+    );
+  });
+
+  it('clears start_date, end_date and date input fields when reset button is clicked', async () => {
+    renderComponent(<EmployerApplicationList />);
+
+    const startDateInput = screen.getByRole('textbox', { name: /alkupäivä/i });
+    const endDateInput = screen.getByRole('textbox', { name: /loppupäivä/i });
+
+    await userEvent.type(startDateInput, '1.6.2024');
+    await userEvent.type(endDateInput, '30.6.2024');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        start_date: '1.6.2024',
+        end_date: '30.6.2024',
+        offset: 0,
+      })
+    );
+
+    const resetButton = screen.getByRole('button', { name: 'Tyhjennä' });
+    await userEvent.click(resetButton);
+
+    expect(startDateInput).toHaveValue('');
+    expect(endDateInput).toHaveValue('');
+    expect(mockUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        start_date: '',
+        end_date: '',
         search: '',
         offset: 0,
       })

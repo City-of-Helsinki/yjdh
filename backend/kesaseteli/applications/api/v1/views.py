@@ -1301,6 +1301,16 @@ class EmployerApplicationFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name="submitted_at__year")
     created_at = filters.DateTimeFromToRangeFilter()
     modified_at = filters.DateTimeFromToRangeFilter()
+    start_date = filters.DateFilter(
+        field_name="submitted_at",
+        lookup_expr="date__gte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
+    )
+    end_date = filters.DateFilter(
+        field_name="submitted_at",
+        lookup_expr="date__lte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
+    )
     search = filters.CharFilter(method="filter_search")
     ordering = filters.OrderingFilter(
         # (Model field name, parameter name) tuples:

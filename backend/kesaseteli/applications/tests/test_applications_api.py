@@ -885,6 +885,61 @@ def test_applications_list_filtered_by_year(api_client, company, user):
 
 
 @pytest.mark.django_db
+def test_applications_list_filtered_by_start_and_end_date(api_client, company, user):
+    """Test filtering applications by start_date and end_date on submitted_at."""
+    app_may = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+        submitted_at="2024-05-15T10:00:00Z",
+    )
+    app_june = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+        submitted_at="2024-06-15T10:00:00Z",
+    )
+    app_july = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+        submitted_at="2024-07-15T10:00:00Z",
+    )
+
+    # Filter by start_date only (dd.mm.yyyy)
+    response = api_client.get(get_list_url(), {"start_date": "01.06.2024"})
+    assert response.status_code == 200
+    ids = [str(item["id"]) for item in response.data]
+    assert str(app_may.id) not in ids
+    assert str(app_june.id) in ids
+    assert str(app_july.id) in ids
+
+    # Filter by end_date only (dd.mm.yyyy)
+    response = api_client.get(get_list_url(), {"end_date": "30.06.2024"})
+    assert response.status_code == 200
+    ids = [str(item["id"]) for item in response.data]
+    assert str(app_may.id) in ids
+    assert str(app_june.id) in ids
+    assert str(app_july.id) not in ids
+
+    # Filter by both start_date and end_date (dd.mm.yyyy)
+    response = api_client.get(
+        get_list_url(), {"start_date": "01.06.2024", "end_date": "30.06.2024"}
+    )
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert str(response.data[0]["id"]) == str(app_june.id)
+
+    # Filter with d.m.yyyy format
+    response = api_client.get(
+        get_list_url(), {"start_date": "1.6.2024", "end_date": "30.6.2024"}
+    )
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert str(response.data[0]["id"]) == str(app_june.id)
+
+
+@pytest.mark.django_db
 def test_handler_can_accept_application_in_handling_state(staff_client, application):
     """Test that a handler can accept an application in the handling state."""
     application.status = EmployerApplicationStatus.APPLICATION_HANDLING

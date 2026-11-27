@@ -59,7 +59,7 @@ const $FilterControls = styled.div`
 `;
 
 export const $ResultCount = styled.div`
-  margin-top: var(--spacing-xl);
+  margin-top: -2rem;
 `;
 
 

@@ -23,6 +23,8 @@ export type EmployerApplicationsQueryParams = {
   is_assigned_to_me?: boolean;
   year?: number;
   search?: string;
+  start_date?: string;
+  end_date?: string;
 };
 
 const useEmployerApplicationsListQuery = <
@@ -51,6 +53,12 @@ const useEmployerApplicationsListQuery = <
   }
   if (params.search) {
     searchParams.append('search', params.search);
+  }
+  if (params.start_date) {
+    searchParams.append('start_date', params.start_date);
+  }
+  if (params.end_date) {
+    searchParams.append('end_date', params.end_date);
   }
 
   const query = useQuery({

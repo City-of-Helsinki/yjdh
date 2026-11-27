@@ -111,4 +111,64 @@ describe('SearchFieldFilter', () => {
 
     expect(screen.getByRole('textbox')).toHaveValue('Initial Query');
   });
+
+  it('renders date inputs when showDateInputs is true and passes dates on search', async () => {
+    const handleSearch = jest.fn();
+    renderComponent(
+      <SearchFieldFilter
+        id="test-search-filter"
+        onSearch={handleSearch}
+        showDateInputs
+      />
+    );
+
+    const startDateInput = screen.getByRole('textbox', { name: /alkupäivä/i });
+    const endDateInput = screen.getByRole('textbox', { name: /loppupäivä/i });
+    const searchInput = screen.getByRole('textbox', { name: /haku/i });
+
+    expect(startDateInput).toBeInTheDocument();
+    expect(endDateInput).toBeInTheDocument();
+    expect(searchInput).toBeInTheDocument();
+
+    await userEvent.type(startDateInput, '1.6.2024');
+    await userEvent.type(endDateInput, '30.6.2024');
+    await userEvent.type(searchInput, 'Yritys');
+
+    const searchButton = screen.getByRole('button', { name: 'Hae' });
+    await userEvent.click(searchButton);
+
+    expect(handleSearch).toHaveBeenCalledTimes(1);
+    expect(handleSearch).toHaveBeenCalledWith('Yritys', '1.6.2024', '30.6.2024');
+  });
+
+  it('clears date inputs when reset button is clicked', async () => {
+    const handleSearch = jest.fn();
+    renderComponent(
+      <SearchFieldFilter
+        id="test-search-filter"
+        onSearch={handleSearch}
+        showDateInputs
+        value="Query"
+        startDate="1.6.2024"
+        endDate="30.6.2024"
+      />
+    );
+
+    const startDateInput = screen.getByRole('textbox', { name: /alkupäivä/i });
+    const endDateInput = screen.getByRole('textbox', { name: /loppupäivä/i });
+    const searchInput = screen.getByRole('textbox', { name: /haku/i });
+
+    expect(startDateInput).toHaveValue('1.6.2024');
+    expect(endDateInput).toHaveValue('30.6.2024');
+    expect(searchInput).toHaveValue('Query');
+
+    const resetButton = screen.getByRole('button', { name: 'Tyhjennä' });
+    await userEvent.click(resetButton);
+
+    expect(startDateInput).toHaveValue('');
+    expect(endDateInput).toHaveValue('');
+    expect(searchInput).toHaveValue('');
+    expect(handleSearch).toHaveBeenCalledTimes(1);
+    expect(handleSearch).toHaveBeenCalledWith('', '', '');
+  });
 });

@@ -93,6 +93,8 @@ export type UseApplicationTableQueryProps<
       is_assigned_to_me?: boolean;
       year?: number;
       search?: string;
+      start_date?: string;
+      end_date?: string;
     },
     options?: Omit<
       UseQueryOptions<PaginatedResponse<T>>,
@@ -104,6 +106,8 @@ export type UseApplicationTableQueryProps<
   isAssignedToMe?: boolean;
   year?: number;
   search?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 export type UseApplicationTableQueryResult<
@@ -123,6 +127,8 @@ export type UseApplicationTableQueryResult<
  * @param props.defaultOrdering The default ordering string (defaults to '-created_at').
  * @param props.isAssignedToMe Filter for applications assigned to current user.
  * @param props.year Filter for application year.
+ * @param props.startDate Filter for start date (sent as start_date to backend).
+ * @param props.endDate Filter for end date (sent as end_date to backend).
  *
  * @returns An object containing { page, setPage, ordering, setOrdering, query, count }
  */
@@ -135,6 +141,8 @@ export function useApplicationTableQuery<
   isAssignedToMe,
   year,
   search,
+  startDate,
+  endDate,
 }: UseApplicationTableQueryProps<T>): UseApplicationTableQueryResult<T> {
   const tableState = useTableState(defaultOrdering);
 
@@ -146,6 +154,8 @@ export function useApplicationTableQuery<
     is_assigned_to_me: isAssignedToMe,
     year,
     search,
+    start_date: startDate,
+    end_date: endDate,
   };
 
   // Only pass options argument when we need to disable the query,
