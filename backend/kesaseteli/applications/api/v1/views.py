@@ -230,10 +230,12 @@ class YouthApplicationFilter(filters.FilterSet):
     start_date = filters.DateFilter(
         field_name="created_at",
         lookup_expr="date__gte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
     )
     end_date = filters.DateFilter(
         field_name="created_at",
         lookup_expr="date__lte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
     )
     search = filters.CharFilter(method="filter_search")
 
@@ -1368,13 +1370,17 @@ class EmployerApplicationFilter(filters.FilterSet):
 
             matching_voucher_serial_numbers = [
                 voucher.summer_voucher_serial_number
-                for voucher in YouthSummerVoucher.objects.all()
+                for voucher in YouthSummerVoucher.objects.filter(
+                    employer_summer_vouchers__application__in=queryset
+                ).distinct()
                 if normalized_value.lower()
                 in voucher.user_showable_serial_number.replace(" ", "").lower()
             ]
 
             search_filter |= Q(
                 summer_vouchers__youth_summer_voucher__summer_voucher_serial_number__in=matching_voucher_serial_numbers
+            ) | Q(
+                summer_vouchers___obsolete_unclean_serial_number__in=matching_voucher_serial_numbers
             )
 
             return queryset.filter(search_filter).distinct()

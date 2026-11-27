@@ -56,6 +56,7 @@ describe('EmployerApplicationList', () => {
     renderComponent(<EmployerApplicationList />);
     expect(screen.getByText('Käsiteltävät (5)')).toBeInTheDocument();
     expect(screen.getByText('Käsitellyt (10)')).toBeInTheDocument();
+    expect(screen.getByText('Haku tuotti 5 tulosta')).toBeInTheDocument();
 
     // Verify first tab content is displayed
     expect(screen.getByText('Company Pending Oy')).toBeInTheDocument();
@@ -68,6 +69,7 @@ describe('EmployerApplicationList', () => {
     await userEvent.click(screen.getByText('Käsitellyt (10)'));
     // The processed tab becomes active; verify it's selected/visible
     expect(screen.getByText('Käsitellyt (10)')).toBeVisible();
+    expect(screen.getByText('Haku tuotti 10 tulosta')).toBeInTheDocument();
 
     // Verify processed tab content is displayed
     expect(screen.getByText('Company Processed Oy')).toBeInTheDocument();

@@ -58,6 +58,7 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
     expect(screen.getByText('Käsiteltävät (4)')).toBeInTheDocument();
     expect(screen.getByText('Käsitellyt (8)')).toBeInTheDocument();
+    expect(screen.getByText('Haku tuotti 4 tulosta')).toBeInTheDocument();
 
     // Verify first tab content is displayed
     expect(screen.getByText('111111-1111')).toBeInTheDocument();
@@ -70,6 +71,7 @@ describe('YouthApplicationList', () => {
     renderComponent(<YouthApplicationList />);
     await userEvent.click(screen.getByText('Käsitellyt (8)'));
     expect(screen.getByText('Käsitellyt (8)')).toBeVisible();
+    expect(screen.getByText('Haku tuotti 8 tulosta')).toBeInTheDocument();
 
     // Verify processed tab content is displayed
     expect(screen.getByText('222222-2222')).toBeInTheDocument();

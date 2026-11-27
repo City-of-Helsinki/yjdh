@@ -940,6 +940,69 @@ def test_applications_list_filtered_by_start_and_end_date(api_client, company, u
 
 
 @pytest.mark.django_db
+def test_applications_list_filtered_by_search_voucher_serial_number(
+    api_client, company, user
+):
+    """Test searching employer applications by summer voucher serial number (full and partial)."""
+    app1 = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+    )
+    y_voucher1 = YouthSummerVoucherFactory(summer_voucher_serial_number=123456)
+    EmployerSummerVoucherFactory(application=app1, youth_summer_voucher=y_voucher1)
+
+    app2 = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+    )
+    y_voucher2 = YouthSummerVoucherFactory(summer_voucher_serial_number=98765)
+    EmployerSummerVoucherFactory(application=app2, youth_summer_voucher=y_voucher2)
+
+    app3 = EmployerApplicationFactory(
+        company=company,
+        user=user,
+        status=EmployerApplicationStatus.SUBMITTED,
+    )
+    EmployerSummerVoucherFactory(
+        application=app3,
+        youth_summer_voucher=None,
+        _obsolete_unclean_serial_number="98765",
+    )
+
+    # An unrelated youth summer voucher that is not linked to any of this user's employer applications
+    YouthSummerVoucherFactory(summer_voucher_serial_number=555555)
+
+    # Search with full showable serial number of app1
+    response = api_client.get(
+        get_list_url(), {"search": y_voucher1.user_showable_serial_number}
+    )
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert str(response.data[0]["id"]) == str(app1.id)
+
+    # Search with partial showable serial number of app1
+    response = api_client.get(get_list_url(), {"search": "3rj"})
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert str(response.data[0]["id"]) == str(app1.id)
+
+    # Search with partial match on app2 and app3 (via _obsolete_unclean_serial_number)
+    response = api_client.get(get_list_url(), {"search": "876"})
+    assert response.status_code == 200
+    assert len(response.data) == 2
+    app_ids = {str(item["id"]) for item in response.data}
+    assert str(app2.id) in app_ids
+    assert str(app3.id) in app_ids
+
+    # Search for serial of unlinked voucher returns nothing
+    response = api_client.get(get_list_url(), {"search": "555555"})
+    assert response.status_code == 200
+    assert len(response.data) == 0
+
+
+@pytest.mark.django_db
 def test_handler_can_accept_application_in_handling_state(staff_client, application):
     """Test that a handler can accept an application in the handling state."""
     application.status = EmployerApplicationStatus.APPLICATION_HANDLING

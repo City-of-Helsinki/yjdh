@@ -54,6 +54,7 @@
     "filterEndDate": "Loppupäivä",
     "filterSearch": "Haku",
     "filterSearchPlaceholder": "Hae hakemuksia",
+    "resultCount": "Haku tuotti {{ count }} tulosta",
     "searchButton": "Hae",
     "resetButton": "Tyhjennä",
     "filterError": "Valitse vähintään yksi tila",

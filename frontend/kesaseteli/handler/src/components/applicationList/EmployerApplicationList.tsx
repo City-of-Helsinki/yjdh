@@ -365,7 +365,11 @@ export default function EmployerApplicationList(): React.JSX.Element {
             }}
           />
           <$ResultCount>
-            <p>Haku tuotti {pendingQuery.data?.results.length ?? 0} tulosta</p>
+            <p>
+              {t('common:applicationList.resultCount', {
+                count: pendingQuery.data?.count ?? 0,
+              })}
+            </p>
           </$ResultCount>
         </ApplicationListTable.FilterSection>
 
@@ -428,7 +432,11 @@ export default function EmployerApplicationList(): React.JSX.Element {
             }}
           />
           <$ResultCount>
-            <p>Haku tuotti {processedQuery.data?.results.length ?? 0} tulosta</p>
+            <p>
+              {t('common:applicationList.resultCount', {
+                count: processedQuery.data?.count ?? 0,
+              })}
+            </p>
           </$ResultCount>
         </ApplicationListTable.FilterSection>
         <ApplicationListTable<EmployerApplication>
