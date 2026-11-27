@@ -1,27 +1,15 @@
-import {
-  keepPreviousData,
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import {
   PaginatedResponse,
   YouthApplication,
 } from 'kesaseteli/handler/types/application';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useErrorHandler from 'shared/hooks/useErrorHandler';
-import useQuerySideEffect from 'shared/hooks/useQuerySideEffect';
 
-export type YouthApplicationsQueryParams = {
-  /** List of statuses to filter by */
-  status?: string[];
-  limit: number;
-  offset: number;
-  ordering?: string;
-  is_assigned_to_me?: boolean;
-  year?: number;
-};
+import useApplicationsListQuery, {
+  ApplicationsQueryParams,
+} from './useApplicationsListQuery';
+
+export type YouthApplicationsQueryParams = ApplicationsQueryParams;
 
 const useYouthApplicationsListQuery = (
   params: YouthApplicationsQueryParams,
@@ -29,46 +17,11 @@ const useYouthApplicationsListQuery = (
     UseQueryOptions<PaginatedResponse<YouthApplication>>,
     'queryKey' | 'queryFn'
   >
-): UseQueryResult<PaginatedResponse<YouthApplication>> => {
-  const { axios, handleResponse } = useBackendAPI();
-  const handleError = useErrorHandler();
-
-  const searchParams = new URLSearchParams();
-  if (params.status && params.status.length > 0) {
-    params.status.forEach((s) => searchParams.append('status', s));
-  }
-  searchParams.append('limit', String(params.limit));
-  searchParams.append('offset', String(params.offset));
-  if (params.ordering) {
-    searchParams.append('ordering', params.ordering);
-  }
-  if (params.is_assigned_to_me !== undefined) {
-    searchParams.append('is_assigned_to_me', String(params.is_assigned_to_me));
-  }
-  if (params.year !== undefined) {
-    searchParams.append('year', String(params.year));
-  }
-
-  const query = useQuery({
-    queryKey: [BackendEndpoint.YOUTH_APPLICATIONS, params],
-    queryFn: () =>
-      handleResponse(
-        axios.get<PaginatedResponse<YouthApplication>>(
-          BackendEndpoint.YOUTH_APPLICATIONS,
-          {
-            params: searchParams,
-          }
-        )
-      ),
-    placeholderData: keepPreviousData,
-    ...options,
-  });
-
-  useQuerySideEffect(query, {
-    onError: handleError,
-  });
-
-  return query;
-};
+): UseQueryResult<PaginatedResponse<YouthApplication>> =>
+  useApplicationsListQuery<YouthApplication>(
+    BackendEndpoint.YOUTH_APPLICATIONS,
+    params,
+    options
+  );
 
 export default useYouthApplicationsListQuery;

@@ -50,6 +50,13 @@
     "filterAssignedToMe": "Omassa käsittelyssäni",
     "filterYear": "Vuosi",
     "filterYearPlaceholder": "Valitse vuosi",
+    "filterStartDate": "Alkupäivä",
+    "filterEndDate": "Loppupäivä",
+    "filterSearch": "Haku",
+    "filterSearchPlaceholder": "Hae hakemuksia",
+    "resultCount": "Haku tuotti {{ count }} tulosta",
+    "searchButton": "Hae",
+    "resetButton": "Tyhjennä",
     "filterError": "Valitse vähintään yksi tila",
     "noSsn": "Ei hetua",
     "noSerialNumber": "Ei sarjanumeroa",
@@ -63,7 +70,9 @@
       "businessId": "Y-tunnus",
       "summerVoucherSerialNumber": "Kesäsetelin sarjanumero",
       "targetGroup": "Kohderyhmä",
-      "age": "Ikä"
+      "age": "Ikä",
+      "bankAccountNumber": "Tilinumero",
+      "contactPersonName": "Yhteyshenkilö"
     },
     "youth": {
       "status": {

@@ -7,7 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Count, F, Func, Prefetch
+from django.db.models import CharField, Count, F, Func, Prefetch, Q, Value
+from django.db.models.functions import Concat
 from django.db.utils import ProgrammingError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -226,9 +227,18 @@ class JobTypeListView(ListAPIView):
 class YouthApplicationFilter(filters.FilterSet):
     status = filters.MultipleChoiceFilter(choices=YouthApplicationStatus.choices)
     year = filters.NumberFilter(field_name="created_at__year")
-    # TODO: In the future, define search filters
-    # (e.g., search = filters.CharFilter(method="filter_search"))
-    # once requirements for text search across name/email are finalized.
+    start_date = filters.DateFilter(
+        field_name="created_at",
+        lookup_expr="date__gte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
+    )
+    end_date = filters.DateFilter(
+        field_name="created_at",
+        lookup_expr="date__lte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
+    )
+    search = filters.CharFilter(method="filter_search")
+
     ordering = filters.OrderingFilter(
         fields=[
             (field_name, field_name)
@@ -248,6 +258,18 @@ class YouthApplicationFilter(filters.FilterSet):
     class Meta:
         model = YouthApplication
         fields = ["status"]
+
+    def filter_search(self, queryset, name, value):
+        if value:
+            return queryset.annotate(
+                full_name=Concat(
+                    "first_name",
+                    Value(" "),
+                    "last_name",
+                    output_field=CharField(),
+                )
+            ).filter(full_name__icontains=value)
+        return queryset
 
     def filter_is_assigned_to_me(self, queryset, name, value):
         if value:
@@ -1289,6 +1311,17 @@ class EmployerApplicationFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name="submitted_at__year")
     created_at = filters.DateTimeFromToRangeFilter()
     modified_at = filters.DateTimeFromToRangeFilter()
+    start_date = filters.DateFilter(
+        field_name="submitted_at",
+        lookup_expr="date__gte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
+    )
+    end_date = filters.DateFilter(
+        field_name="submitted_at",
+        lookup_expr="date__lte",
+        input_formats=["%d.%m.%Y", "%Y-%m-%d"],
+    )
+    search = filters.CharFilter(method="filter_search")
     ordering = filters.OrderingFilter(
         # (Model field name, parameter name) tuples:
         fields=[
@@ -1319,6 +1352,40 @@ class EmployerApplicationFilter(filters.FilterSet):
         if user and user.is_authenticated:
             return queryset.filter(user=user)
         return queryset.none()
+
+    def filter_search(self, queryset, name, value):
+        """
+        Filter queryset by the search string.
+        Find applications by company name, contact person name,
+        summer voucher serial number, or bank account number.
+        """
+        if value:
+            normalized_value = value.replace(" ", "")
+
+            search_filter = (
+                Q(company__name__icontains=value)
+                | Q(contact_person_name__icontains=value)
+                | Q(bank_account_number__icontains=normalized_value)
+            )
+
+            matching_voucher_serial_numbers = [
+                voucher.summer_voucher_serial_number
+                for voucher in YouthSummerVoucher.objects.filter(
+                    employer_summer_vouchers__application__in=queryset
+                ).distinct()
+                if normalized_value.lower()
+                in voucher.user_showable_serial_number.replace(" ", "").lower()
+            ]
+
+            search_filter |= Q(
+                summer_vouchers__youth_summer_voucher__summer_voucher_serial_number__in=matching_voucher_serial_numbers
+            ) | Q(
+                summer_vouchers___obsolete_unclean_serial_number__in=matching_voucher_serial_numbers
+            )
+
+            return queryset.filter(search_filter).distinct()
+
+        return queryset
 
     def filter_only_mine(self, queryset, name, value):
         """

@@ -139,4 +139,56 @@ describe('useEmployerApplicationsListQuery', () => {
     expect(result.current.data).toEqual(mockListResponse);
     expect(nock.isDone()).toBe(true);
   });
+
+  it('serializes search query parameter', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.EMPLOYER_APPLICATIONS)
+      .query(
+        (queryObj) =>
+          queryObj.limit === '20' &&
+          queryObj.offset === '0' &&
+          queryObj.search === 'test'
+      )
+      .reply(200, mockListResponse);
+
+    const { result } = renderHook(
+      () =>
+        useEmployerApplicationsListQuery({
+          limit: 20,
+          offset: 0,
+          search: 'test',
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
+
+  it('serializes start_date and end_date query parameters', async () => {
+    nock(API_BASE_TEST_URL)
+      .get(BackendEndpoint.EMPLOYER_APPLICATIONS)
+      .query(
+        (queryObj) =>
+          queryObj.limit === '20' &&
+          queryObj.offset === '0' &&
+          queryObj.start_date === '01.06.2024' &&
+          queryObj.end_date === '30.06.2024'
+      )
+      .reply(200, mockListResponse);
+
+    const { result } = renderHook(
+      () =>
+        useEmployerApplicationsListQuery({
+          limit: 20,
+          offset: 0,
+          start_date: '01.06.2024',
+          end_date: '30.06.2024',
+        }),
+      { wrapper }
+    );
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual(mockListResponse);
+    expect(nock.isDone()).toBe(true);
+  });
 });
